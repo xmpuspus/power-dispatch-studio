@@ -1,15 +1,17 @@
-import type { GridKey } from '../lib/types'
+import type { Dispatch, GridKey } from '../lib/types'
 import { num, php, pct, fuelLabel } from '../lib/data'
-import { Panel, StatTile, Chip } from '../ui/kit'
+import { Panel, StatTile, Chip, EmptyNote } from '../ui/kit'
 import { MeritStack, FlowDiagram } from './charts'
 import { DataGrid, type Column } from '../ui/DataGrid'
 import {
   CLASSES,
   effNum,
   overrideKey,
+  solveModel,
   type ClassId,
   type ObjRow,
   type Overrides,
+  type Scenario,
   type SolvedModel,
 } from './model'
 
@@ -381,6 +383,120 @@ export function MembershipsView({
           </div>
         </div>
       ))}
+    </div>
+  )
+}
+
+// Solve every scenario and compare the headline metrics side by side. The Base Case
+// column is the reference; a cell that differs from it is highlighted.
+export function CompareView({
+  d,
+  objects,
+  scenarios,
+}: {
+  d: Dispatch
+  objects: Record<ClassId, ObjRow[]>
+  scenarios: Scenario[]
+}) {
+  const solved = scenarios.map((s) => solveModel(d, objects, s.overrides))
+  const metrics: {
+    label: string
+    fmt: (s: SolvedModel) => string
+    raw: (s: SolvedModel) => number
+  }[] = [
+    {
+      label: 'Luzon price',
+      fmt: (s) => php(s.coupled.price.luzon),
+      raw: (s) => s.coupled.price.luzon,
+    },
+    {
+      label: 'Visayas price',
+      fmt: (s) => php(s.coupled.price.visayas),
+      raw: (s) => s.coupled.price.visayas,
+    },
+    {
+      label: 'Mindanao price',
+      fmt: (s) => php(s.coupled.price.mindanao),
+      raw: (s) => s.coupled.price.mindanao,
+    },
+    {
+      label: 'Leyte-Luzon flow',
+      fmt: (s) => `${num(Math.abs(s.coupled.leyte.flow))} MW`,
+      raw: (s) => s.coupled.leyte.flow,
+    },
+    {
+      label: 'Leyte-Luzon rent',
+      fmt: (s) => php(s.coupled.leyte.rent),
+      raw: (s) => s.coupled.leyte.rent,
+    },
+    {
+      label: 'Luzon reserve margin',
+      fmt: (s) => pct(s.reserveMarginPct.luzon / 100, 1),
+      raw: (s) => s.reserveMarginPct.luzon,
+    },
+    {
+      label: 'Luzon LOLP',
+      fmt: (s) => pct(s.reliability.luzon.lolp_pct / 100, 2),
+      raw: (s) => s.reliability.luzon.lolp_pct,
+    },
+    {
+      label: 'Visayas reserve margin',
+      fmt: (s) => pct(s.reserveMarginPct.visayas / 100, 1),
+      raw: (s) => s.reserveMarginPct.visayas,
+    },
+  ]
+  return (
+    <div className="view">
+      <Panel
+        title="Compare scenarios"
+        subtitle="Every scenario solved side by side. The Base Case is the reference; a changed cell is highlighted."
+      >
+        {scenarios.length < 2 && (
+          <EmptyNote>
+            Only the Base Case so far. Edit some properties, add a scenario with + New in
+            the ribbon, and they line up here.
+          </EmptyNote>
+        )}
+        <div className="propgrid-wrap">
+          <table className="propgrid compare">
+            <thead>
+              <tr>
+                <th className="propgrid__obj">Metric</th>
+                {scenarios.map((s, i) => (
+                  <th key={i} className="propgrid__num">
+                    {s.name}
+                    <span className="propgrid__unit">
+                      {' '}
+                      ({Object.keys(s.overrides).length})
+                    </span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {metrics.map((m) => {
+                const baseRaw = m.raw(solved[0])
+                return (
+                  <tr key={m.label}>
+                    <td className="propgrid__obj">{m.label}</td>
+                    {solved.map((s, i) => {
+                      const diff = i > 0 && Math.abs(m.raw(s) - baseRaw) > 1e-6
+                      return (
+                        <td
+                          key={i}
+                          className={`propgrid__num${diff ? ' compare__diff' : ''}`}
+                        >
+                          {m.fmt(s)}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Panel>
     </div>
   )
 }

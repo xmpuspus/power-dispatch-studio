@@ -17,6 +17,7 @@ import {
   type SolvedModel,
 } from './model'
 import {
+  CompareView,
   MembershipsView,
   ObjectsList,
   PropertiesGrid,
@@ -33,6 +34,7 @@ type AnalysisId = 'reserve' | 'bill' | 'market'
 type Nav =
   | { kind: 'class'; id: ClassId }
   | { kind: 'quick' }
+  | { kind: 'compare' }
   | { kind: 'sol'; id: SolId }
   | { kind: 'analysis'; id: AnalysisId }
 
@@ -197,6 +199,7 @@ export function Studio({
               grid={grid}
               solved={solved}
               objects={objects}
+              scenarios={scenarios}
               overrides={active.overrides}
               dirty={dirty}
               onEdit={edit}
@@ -448,6 +451,13 @@ function Explorer({
                 onClick={() => setNav({ kind: 'sol', id })}
               />
             ))}
+            <TreeItem
+              label="Compare scenarios"
+              icon="sol"
+              live
+              active={isActive({ kind: 'compare' })}
+              onClick={() => setNav({ kind: 'compare' })}
+            />
           </TreeGroup>
           <TreeGroup label="Analysis">
             {(Object.keys(ANALYSIS_LABEL) as AnalysisId[]).map((id) => (
@@ -472,6 +482,7 @@ function DataPane({
   grid,
   solved,
   objects,
+  scenarios,
   overrides,
   dirty,
   onEdit,
@@ -483,12 +494,15 @@ function DataPane({
   grid: GridKey
   solved: SolvedModel
   objects: ReturnType<typeof baseObjects>
+  scenarios: Scenario[]
   overrides: Scenario['overrides']
   dirty: boolean
   onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
   onRevert: (cls: ClassId, id: string, prop: string) => void
   onRun: () => void
 }) {
+  if (nav.kind === 'compare')
+    return <CompareView d={d} objects={objects} scenarios={scenarios} />
   if (nav.kind === 'class') {
     return (
       <ClassPane
@@ -557,6 +571,9 @@ function Crumbs({
   } else if (nav.kind === 'quick') {
     root = 'System'
     leaf = 'Quick scenario'
+  } else if (nav.kind === 'compare') {
+    root = 'Solution'
+    leaf = 'Compare scenarios'
   } else if (nav.kind === 'sol') {
     root = 'Solution'
     leaf = SOL_LABEL[nav.id]
