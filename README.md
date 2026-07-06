@@ -149,6 +149,17 @@ the DICT forecast of **1,500 MW** of data centers by 2028 (a labeled DICT foreca
 October 2025) and that margin falls to **-2.5%**: 109 five-minute intervals in the
 window go short, 1,547 MWh unserved.
 
+That reserve margin is a single number; a forced outage is a coin toss, so the model
+also runs it as a distribution. A Monte Carlo of **20,000** draws trips the 11 named
+units at their sourced forced-outage rates (NERC GADS for coal ~10% and gas ~5%; the
+rest labeled industry-typical) and draws an evening-peak load each time. Today Luzon
+loses load in only **0.19%** of tight evenings, with the worst draw shedding
+**2,224 MW** when a big unit trips into a high load. Add the DICT 1.5 GW wave and the
+loss-of-load probability climbs more than tenfold to **2.44%**: a 1-in-100 draw sheds
+**471 MW**, and the expected unserved energy over the evening-peak window is
+**4,051 MWh**. The point estimate said the margin turns negative; the distribution says
+how often, and how badly.
+
 The panel re-clears the baked stack in the browser. Move the levers (add a data
 center as flat 24/7 load, trip any of the 11 named units for an N-1, add firm
 capacity, relieve a choke point) and the clearing price and any supply shortfall

@@ -788,7 +788,23 @@ function sideSimulate(){
   ${g==="luzon" && dict.added_mw ? "Add the DICT forecast of " + fmt(dict.added_mw) +
   " MW of data centers by 2028 and the Luzon margin falls to <b>" +
   fmt(dict.reserve_margin_with_dc_pct,1) + "%</b> (" + fmt(dict.shortfall_intervals_with_dc) +
-  " intervals short, " + fmt(dict.eue_mwh_with_dc) + " MWh unserved in the window). DICT forecast, Oct 2025." : ""}</div>`;
+  " intervals short, " + fmt(dict.eue_mwh_with_dc) + " MWh unserved in the window). DICT forecast, Oct 2025." : ""}</div>
+  ${reliabilityNote(disp, g)}`;
+}
+
+// the deterministic margin is a point; the Monte Carlo turns it into a probability
+function reliabilityNote(disp, g){
+  const mc = disp.reliability_mc; if (!mc) return "";
+  const v = (mc.per_grid || {})[g]; if (!v) return "";
+  const dd = g === "luzon" ? (mc.dict_2028_luzon || {}).distribution : null;
+  return `<div class="note" id="sim-mc-note">Reserve margin is one number; a forced
+    outage is a coin toss. Sample the ${fmt(mc.draws)} draws (each trips the named
+    units at their sourced forced-outage rate, NERC GADS for coal and gas, then draws
+    an evening-peak load): this grid loses load in <b>${fmt(v.lolp_pct,2)}%</b> of tight
+    evenings, expected shortfall ${fmt(v.expected_shortfall_mw)} MW, worst draw
+    ${fmt(v.shortfall_mw_max)} MW.${dd ? " Add the DICT 1.5 GW wave and the loss-of-load"
+    + " probability climbs to <b>" + fmt(dd.lolp_pct,2) + "%</b> (1-in-100 draw sheds "
+    + fmt(dd.shortfall_mw_p99) + " MW). DICT forecast, Oct 2025." : ""}</div>`;
 }
 
 // assemble the three-grid coupled scenario from the current levers. The relieve

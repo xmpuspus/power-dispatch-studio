@@ -26,6 +26,7 @@ Outputs baked to web/data/dispatch.json (+ generators.geojson):
 from __future__ import annotations
 
 import math
+import random
 import re
 
 from build_data import REGION_MAP, dataset_files, day_of, f, rows_of
@@ -34,6 +35,8 @@ from coupled_dispatch import CORRIDORS, clear_coupled
 from fleet_ph import (
     COAL_COMMIT_PHP_KWH,
     COAL_MIN_LOAD_FRAC,
+    FORCED_OUTAGE_RATE,
+    FUEL_AVAIL,
     FUEL_CO2_T_PER_MWH,
     FUEL_COST_PHP_KWH,
     GRID_FUEL_MW,
@@ -301,6 +304,96 @@ def _coupling_binding_threshold(intervals: dict) -> dict:
     }
 
 
+def _pctl(sorted_vals: list[float], p: float) -> float:
+    if not sorted_vals:
+        return 0.0
+    i = min(len(sorted_vals) - 1, int(p * len(sorted_vals)))
+    return sorted_vals[i]
+
+
+def build_reliability_mc(hourly_dem: dict, draws: int = 20000, seed: int = 42) -> dict:
+    """Monte Carlo forced-outage reliability: the deterministic LOLE/EUE is a point,
+    this is a distribution. Each draw is one independent tight-hour realisation: it
+    samples the 11 named large units as up or forced-out (Bernoulli at the sourced
+    per-fuel rate), then samples one evening-peak load (hours 18-21, when solar is
+    gone and the risk sits), and takes the shortfall. Over the draws that gives a
+    loss-of-load probability (share of tight intervals that go short) and the
+    distribution of shortfall size. Still not PLEXOS: only the named contingency
+    drivers are sampled, and the mean available capacity is pinned to the
+    deterministic model so the outages add variance, not a lower mean. Snapshot
+    draws, so no single outage is frozen across the window.
+    """
+    rng = random.Random(seed)
+    named = {g: [u for u in GENERATORS if u["grid"] == g] for g in GRIDS}
+    run_cap, det_cap = {}, {}  # running-capacity-if-up, and deterministic derated MW
+    for g in GRIDS:
+        for u in named[g]:
+            fa = FUEL_AVAIL.get(u["fuel"], 1.0)
+            fr = FORCED_OUTAGE_RATE.get(u["fuel"], 0.0)
+            det_cap[u["name"]] = u["capacity_mw"] * fa
+            run_cap[u["name"]] = u["capacity_mw"] * fa / (1 - fr) if fr < 1 else 0.0
+    det_named = {g: sum(det_cap[u["name"]] for u in named[g]) for g in GRIDS}
+    # evening-peak capacity (hour 19, solar ~ 0) and the tight-hour load pool
+    eve_avail = {g: round(sum(b["mw"] for b in stack(g, PEAK_HOUR)), 1) for g in GRIDS}
+    eve_load = {g: [d for h in range(18, 22) for d in hourly_dem[g][h]] for g in GRIDS}
+
+    def run(loads, base_eve, det_named_g, units):
+        shorts = []
+        n_short = 0
+        for _ in range(draws):
+            contrib = sum(run_cap[u["name"]] for u in units
+                          if rng.random() >= FORCED_OUTAGE_RATE.get(u["fuel"], 0.0))
+            avail = base_eve + (contrib - det_named_g)
+            sf = rng.choice(loads) - avail
+            if sf > 0:
+                shorts.append(sf)
+                n_short += 1
+            else:
+                shorts.append(0.0)
+        shorts.sort()
+        n_eve = len(loads)
+        exp_sf = sum(shorts) / draws
+        return {
+            "lolp_pct": round(100 * n_short / draws, 2),
+            "expected_shortfall_mw": round(exp_sf, 1),
+            "shortfall_mw_p50": round(_pctl(shorts, 0.50), 1),
+            "shortfall_mw_p90": round(_pctl(shorts, 0.90), 1),
+            "shortfall_mw_p99": round(_pctl(shorts, 0.99), 1),
+            "shortfall_mw_max": round(shorts[-1], 1),
+            # expected unserved energy over the evening-peak window (mean, not a
+            # frozen tail): expected shortfall MW times the tight intervals in it
+            "eue_mwh_evening_window": round(exp_sf * n_eve * 5 / 60, 1),
+        }
+
+    per_grid = {g.lower(): run(eve_load[g], eve_avail[g], det_named[g], named[g])
+                for g in GRIDS}
+    dict_dist = run([d + 1500 for d in eve_load["LUZON"]], eve_avail["LUZON"],
+                    det_named["LUZON"], named["LUZON"])
+
+    return {
+        "method": "Monte Carlo forced outages on the 11 named large units (Bernoulli "
+                  "at the sourced per-fuel rate) vs a sampled evening-peak load; "
+                  "snapshot draws give a loss-of-load probability and a shortfall "
+                  "distribution, not a point. Still not PLEXOS.",
+        "draws": draws,
+        "seed": seed,
+        "load_hours": "18-21 (evening peak, solar ~ 0)",
+        "forced_outage_rates": FORCED_OUTAGE_RATE,
+        "src_for": "https://www.nerc.com/programs/reliability-assessment--performance-analysis/generating-availability-data-system/gads-conventional/general-availability-review-weighted-efor-dashboard",
+        "note": "Coal (~10%) and gas (~5%) forced-outage rates are from NERC GADS; "
+                "hydro, geothermal, oil, and biomass are labeled industry-typical "
+                "values. Only the named units are sampled; the rest of the fleet is "
+                "held at its deterministic availability, so the mean is unchanged and "
+                "the draws add the outage variance.",
+        "per_grid": per_grid,
+        "dict_2028_luzon": {
+            "added_mw": 1500, "owner": "DICT", "date": "2025-10",
+            "src": "https://www.bworldonline.com/corporate/2025/10/23/707346/",
+            "distribution": dict_dist,
+        },
+    }
+
+
 def build_dispatch() -> dict:
     prices = _read_prices()
     rtd = dataset_files("RTDSUM")
@@ -336,6 +429,10 @@ def build_dispatch() -> dict:
     # hourly accumulation for the representative curves (mean over the window)
     hourly: dict[str, dict[int, list]] = {g: {h: [] for h in range(24)}
                                           for g in GRIDS}
+    # per-hour demand over ALL intervals (physical, whole window) for the Monte
+    # Carlo reliability model, which is about capacity adequacy not market price
+    hourly_dem: dict[str, dict[int, list]] = {g: {h: [] for h in range(24)}
+                                              for g in GRIDS}
     days_seen: set[str] = set()
     # per-interval simultaneous demand across all three grids, for the coupled model
     intervals: dict[tuple, dict] = {}
@@ -374,6 +471,7 @@ def build_dispatch() -> dict:
             res = clear(blocks, gen)
             peak_demand[grid] = max(peak_demand[grid], gen)
             demands[grid].append(gen)
+            hourly_dem[grid][hour].append(gen)
             if res["shortfall_mw"] > 0:
                 lole_intervals[grid] += 1
                 eue_mwh[grid] += res["shortfall_mw"] * 5 / 60
@@ -583,6 +681,7 @@ def build_dispatch() -> dict:
         }
 
     coupling = build_coupling(intervals, prices)
+    reliability_mc = build_reliability_mc(hourly_dem)
 
     return {
         "available": True,
@@ -621,6 +720,7 @@ def build_dispatch() -> dict:
         "n1": n1,
         "adequacy": adequacy,
         "reliability": reliability,
+        "reliability_mc": reliability_mc,
         "emissions": emissions,
     }
 

@@ -57,6 +57,11 @@ cpl = disp.get("coupling", {})
 checks.append(("coupling block baked (spread decomposition + corridors)",
                bool(cpl.get("spread_decomposition")) and len(cpl.get("corridors", [])) == 2
                and cpl.get("outage_scenario", {}).get("leyte_luzon_saturated_pct") is not None))
+mc = disp.get("reliability_mc", {})
+checks.append(("reliability MC + unit commitment baked",
+               mc.get("draws", 0) >= 2000
+               and mc.get("dict_2028_luzon", {}).get("distribution", {}).get("lolp_pct") is not None
+               and bool(disp.get("unit_commitment", {}).get("per_grid"))))
 html = urllib.request.urlopen(base + "/").read().decode()
 checks.append(("page mentions the three questions",
                "Can the grid handle" in json.dumps(ans) and "gridbill-ph" in html))

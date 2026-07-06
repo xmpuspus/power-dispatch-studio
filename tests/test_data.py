@@ -356,5 +356,33 @@ check("evening-peak scarcity residual survives commitment (still the honest sign
       cal["visayas"]["evening_peak_residual_php_kwh"] > 15
       and cal["luzon"]["evening_peak_residual_php_kwh"] > 5)
 
+# --- probabilistic reliability (item 3) ----------------------------------------
+# Monte Carlo forced outages turn the deterministic LOLE/EUE point into a
+# distribution. Sourced FOR (NERC GADS for coal/gas), seeded so the bake is stable.
+mc = disp["reliability_mc"]
+check("reliability MC present + labeled not-PLEXOS + seeded + sourced FOR",
+      "not PLEXOS" in mc.get("method", "") and mc.get("draws", 0) >= 2000
+      and mc.get("seed") is not None and mc.get("src_for")
+      and math.isclose(mc["forced_outage_rates"]["coal"], 0.10)
+      and math.isclose(mc["forced_outage_rates"]["natural_gas"], 0.05))
+mcg = mc["per_grid"]
+check("MC reports a distribution per grid (LOLP + expected + tail shortfall)", all(
+    all(k in mcg[g] for k in ("lolp_pct", "expected_shortfall_mw",
+                              "shortfall_mw_p99", "shortfall_mw_max",
+                              "eue_mwh_evening_window")) for g in mcg))
+check("MC LOLP is a probability in [0, 100] on every grid",
+      all(0 <= mcg[g]["lolp_pct"] <= 100 for g in mcg))
+check("baseline evening-peak grid is adequate (Luzon LOLP under 1% in the window)",
+      mcg["luzon"]["lolp_pct"] < 1)
+mcd = mc["dict_2028_luzon"]
+check("DICT wave scenario is a labeled 1.5 GW DICT forecast with src",
+      mcd["added_mw"] == 1500 and mcd["owner"] == "DICT" and mcd.get("src"))
+check("the DICT wave raises loss-of-load probability well above baseline",
+      mcd["distribution"]["lolp_pct"] > 2 * mcg["luzon"]["lolp_pct"]
+      and mcd["distribution"]["lolp_pct"] > mcg["luzon"]["lolp_pct"])
+check("the DICT wave has a real shortfall tail (p99 or max above zero)",
+      mcd["distribution"]["shortfall_mw_p99"] > 0
+      or mcd["distribution"]["shortfall_mw_max"] > 500)
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

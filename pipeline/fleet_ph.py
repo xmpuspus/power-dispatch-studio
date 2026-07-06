@@ -103,6 +103,23 @@ SOLAR_PROFILE = {
     16: 0.34, 17: 0.14, 18: 0.02, 19: 0.0, 20: 0.0, 21: 0.0, 22: 0.0, 23: 0.0,
 }
 
+# --- forced outage rate by fuel (probability a unit is unexpectedly unavailable) -
+# Used by the Monte Carlo reliability model. Coal and gas are SOURCED to NERC GADS
+# (coal weighted EFOR ~10-12%, gas ~2-5%); the rest are LABELED industry-typical
+# values (IEEE-RTS-style) with no clean PH-specific published rate. Solar and wind
+# carry no forced-outage rate here: their variability is already in SOLAR_PROFILE
+# and the availability derate, not an unplanned-trip model.
+# https://www.nerc.com/programs/reliability-assessment--performance-analysis/generating-availability-data-system/gads-conventional/general-availability-review-weighted-efor-dashboard
+FORCED_OUTAGE_RATE = {
+    "coal": 0.10,         # SOURCED: NERC GADS coal EFOR ~10-12%
+    "natural_gas": 0.05,  # SOURCED: NERC GADS gas ~2-5%
+    "oil": 0.10,          # LABELED: diesel/bunker peaker typical
+    "geothermal": 0.08,   # LABELED: steam-field/well outages, typical
+    "hydro": 0.04,        # LABELED: industry-typical
+    "biomass": 0.08,      # LABELED: industry-typical
+    "solar": 0.0, "wind": 0.0,
+}
+
 # --- CO2 emission factors (tCO2 per MWh) --------------------------------------
 # LABELLED ASSUMPTIONS (IPCC/EIA typical direct-combustion factors).
 FUEL_CO2_T_PER_MWH = {
