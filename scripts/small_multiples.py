@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Small-multiples, ported from gridbill-us small_multiples.py: the three island
-grids side by side, each showing its own price-vs-load shape. Luzon carries the
+"""Small-multiples: the three island grids side by side, each showing its own price-vs-load shape. Luzon carries the
 volume and a long climb; the smaller grids are flatter until they run tight. One row
 makes the point that the same load does different things on different islands.
 

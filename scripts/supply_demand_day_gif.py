@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Animated GIF, ported from gridbill-us supply_demand_day.py: one real Luzon day,
-dispatched generation meeting demand through 24 hours, with the WESM price tracking
+"""Animated GIF: one real Luzon day, dispatched generation meeting demand through 24 hours, with the WESM price tracking
 it. Deep supply keeps the price low most of the day; it climbs into the evening peak
 and spikes when the grid runs tight.
 

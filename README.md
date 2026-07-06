@@ -99,13 +99,14 @@ generation-price join: [`web/data/prices.json`](web/data/prices.json) and
 ### The same load, three different islands
 
 Each island grid answers a new load differently. Luzon carries the volume and climbs
-a long way; the smaller grids stay flat until they run tight. And unlike a US market,
-WESM is energy-only, so there is no capacity auction to price, which is why this
-project has no capacity-market chart.
+a long way; the smaller grids stay flat until they run tight. WESM is an energy-only
+market: generators are paid for the energy they dispatch, not for standing capacity,
+so there is no capacity auction to price, which is why this project has no
+capacity-market chart.
 
 ![Three small-multiple panels, one per island grid, each plotting the average WESM price against dispatched generation: Luzon a long climb from 3 to 14 pesos, Visayas rising then easing, Mindanao climbing steeply past 22 pesos](docs/small-multiples.png)
 
-![A table comparing one US ISO or RTO against the Philippine split: IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC regulates, DOE sets policy, and the last row shows the US has capacity markets while WESM has none, energy-only](docs/wesm-roles.png)
+![Who runs the Philippine power market: IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC regulates, DOE sets policy, and the last row notes WESM is energy-only with no capacity auction](docs/wesm-roles.png)
 
 ## What this is
 
@@ -142,33 +143,37 @@ project has no capacity-market chart.
   separation, not a per-node charge), so that layer stays archived, not displayed.
   Full resolution in [`docs/research-launch-20260705.md`](docs/research-launch-20260705.md).
 
-## Related projects
+## Where the data comes from
 
-Honest adjacent work. The techniques here have US ancestors; the assembly and the
-Philippine geography are the new part.
+The primary Philippine sources this project reads, archives, or reconciles against.
+Every number on the map traces back to one of these.
 
-- [GridStatus / `gridstatus`](https://github.com/gridstatus/gridstatus). open Python
-  API to US ISO supply, demand, and LMP data plus a hosted nodal price and congestion
-  map; the closest sibling to this method, and a durable archive of ISO data, for the
-  US instead of WESM.
-- [ERCOT SCED Shadow Prices and Binding Transmission Constraints (NP6-86-CD)](https://www.ercot.com/mp/data-products/data-product-details?id=NP6-86-CD).
-  the US analog of IEMOP's "congestions manifesting" file: names the overloaded
-  element, stations, kV, and shadow price. Published with a ~7-day window, which is
-  why an archive is needed.
-- [Electricity Maps](https://app.electricitymaps.com/). live global map of grid
-  carbon intensity and generation mix with an open parser repo; the reference live
-  grid map, on emissions rather than congestion or price.
-- [Ember Electricity Data Explorer](https://ember-energy.org/data/electricity-data-explorer/).
-  fully open (CC-BY-4.0) global electricity dataset and API; the open-data licensing
-  model this project follows, at national and annual granularity.
-- [EPRI DCFlex](https://dcflex.epri.com/). industry initiative treating data centers
-  as flexible grid assets and asking how much load today's grid can integrate under
-  real constraints; the adjacent "can the grid host the wave?" question, US and
-  framework-level.
+- [IEMOP market data](https://www.iemop.ph/market-data/). the Independent Electricity
+  Market Operator's public files: congestions manifesting (named binding equipment per
+  five-minute interval), regional summaries, load-weighted average prices, HVDC limits,
+  outage schedules. The rolling ~90-day window is what `pipeline/archive_iemop.py`
+  turns into a permanent archive.
+- [IEMOP monthly reports](https://www.iemop.ph/news/). the operator's narrative on each
+  billing month: which links bound, why prices moved, supply-and-demand margins. The
+  prose the archive turns into receipts.
+- [NGCP Transmission Development Plan](https://www.ngcp.ph/tdp). the system operator's
+  2025-2050 plan: the corridors, the reinforcement projects, and the schedule that
+  says when a choke point is meant to be relieved.
+- [DOE Power Statistics](https://doe.gov.ph/electric-power/electric-power-statistics).
+  the Department of Energy's installed and dependable capacity by grid and by fuel,
+  and the list of existing power plants; the reference the dispatch fleet is
+  reconciled to.
+- [WESM / PEMC](https://www.wesm.ph/). the spot market rules and the Philippine
+  Electricity Market Corporation's governance; why WESM is energy-only and how the
+  regional price separation this map shows is settled.
 - [ICSC Philippine Power Outlook](https://icsc.ngo/tag/philippine-power-outlook/).
-  annual PH grid-adequacy analysis (reserve margins, alert risk, HVDC constraints)
-  built on NGCP and DOE outlooks; the PH-native neighbor to the supply question, in
-  static-report form.
+  the Institute for Climate and Sustainable Cities' annual PH grid-adequacy analysis
+  (reserve margins, alert risk, HVDC constraints) built on NGCP and DOE outlooks; the
+  neighbor to the supply question, in static-report form.
+- [DataCenterMap](https://www.datacentermap.com/philippines/) and
+  [Cushman & Wakefield APAC updates](https://www.cushmanwakefield.com/en/singapore/insights/apac-data-centre-update).
+  the public facility inventories the data-center layer is drawn and cross-checked
+  against (named sites with a citable source each).
 
 ## Reproduce locally
 

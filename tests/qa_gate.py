@@ -33,6 +33,16 @@ BANNED = [
      r"bill(s)?\s+(rose|up|jumped|climbed)\s+38\.5\s*%"),
 ]
 
+# US-market framing must not creep back into user-facing artifacts. This map stands
+# on Philippine terms only; a US-ISO name in the copy reads as a ported artifact.
+# Word-boundary matched so SPP/MISO/PJM don't fire inside ordinary words.
+US_FRAMING = [
+    r"\bERCOT\b", r"\bPJM\b", r"\bNYISO\b", r"\bISO-NE\b", r"\bMISO\b",
+    r"\bSPP\b", r"\bCAISO\b", r"\bGridStatus\b", r"\bgridstatus\b",
+    r"\bgridbill-us\b", r"\bElectricity Maps\b", r"\belectricitymaps\b",
+    r"\bEPRI\b", r"\bDCFlex\b", r"\bWattTime\b",
+]
+
 AI_JARGON = [
     "delve", "leverage", "utilize", "seamless", "robust", "tapestry", "pivotal",
     "in today's", "it's important to note", "game-changer", "cutting-edge",
@@ -65,6 +75,11 @@ def scan(path, text):
     for label, rx in BANNED:
         if re.search(rx, text, re.I):
             fails.append(f"{base}: BANNED framing {label}")
+    for rx in US_FRAMING:
+        m = re.search(rx, text)
+        if m:
+            fails.append(f"{base}: US-market framing '{m.group(0)}' "
+                         "(map stands on PH terms only)")
     for j in AI_JARGON:
         if j in low:
             fails.append(f"{base}: AI-jargon '{j}'")

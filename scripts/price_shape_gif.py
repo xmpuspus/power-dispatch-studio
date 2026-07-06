@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Animated GIF, ported from gridbill-us price_gif.py: the price is a shape, not a
-number. A data center plugs in the same power every hour, but the effect on the WESM
+"""Animated GIF: the price is a shape, not a number. A data center plugs in the same power every hour, but the effect on the WESM
 price depends on how busy the grid already is. Nearly nothing when there is room, a
 jump when the grid is full.
 

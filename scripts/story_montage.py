@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """One attachable view for LinkedIn: tile the figure panels into a single GIF with
-plain-English labels, so the whole gridbill-ph story reads in one frame. Ported from
-gridbill-us scripts/story_montage.py.
+plain-English labels, so the whole gridbill-ph story reads in one frame.
 
 Thesis: the choke points already bind daily and the market prices them; the announced
 data-center wave is the size of the margin; and a WESM swing is only a lagged slice of

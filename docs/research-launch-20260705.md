@@ -8,45 +8,38 @@ search snippets only, [FIRST-PARTY] we re-fetched it ourselves this session.
 
 ## Part 1: prior art, and the honest novelty claim
 
-The survey covered GridStatus.io, ERCOT/PJM/MISO/SPP/NYISO dashboards, EIA Grid
-Monitor, Electricity Maps, Ember, WattTime, EPRI DCFlex, LBNL, IEEFA, Bloomberg and
-Washington Post graphics, IEMOP's own pages, WESM Market Watch, ICSC, NGCP/DOE, and
-independent market monitor reports. The ingredient-by-ingredient verdict:
+The survey covered the Philippine sources this project reads and reconciles against,
+plus international grid-data projects for method precedent: IEMOP's own market-data
+pages and monthly reports, WESM Market Watch, NGCP and DOE outlooks, ICSC's Power
+Outlook, and independent market-monitor reports. The ingredient-by-ingredient
+verdict:
 
-- Named-equipment congestion receipts are a solved, published technique in the US.
-  ERCOT's "SCED Shadow Prices and Binding Transmission Constraints" product
-  (NP6-86-CD) names the overloaded element, from/to stations, kV, and shadow price
-  per binding event, and its public display duration is about 7 days
-  (https://www.ercot.com/mp/data-products/data-product-details?id=NP6-86-CD)
-  [VERIFIED-FETCHED]. Market monitors rank constraints annually in static PDFs.
-- Archiving an operator's self-deleting window is GridStatus.io's core value
-  proposition for US ISOs, as a hosted commercial database
-  (https://github.com/gridstatus/gridstatus) [VERIFIED-FETCHED].
-- Nobody does either for IEMOP/WESM. IEMOP publishes the "congestions manifesting"
-  files but its public pages roll off, and the one-year MIND repository is
-  restricted to registered trading participants [SEARCH-RESULT]. No third party
-  archives the files; no constraint league table for the Philippine grid exists.
-- No surveyed project anywhere fuses the three questions in one reproducible
-  artifact: named congestion receipts, announced data-center siting against the
+- Named-equipment congestion receipts are, as a technique, published elsewhere: some
+  market operators expose a shadow-price / binding-constraint feed that names the
+  overloaded element, stations, kV, and price per event, on a short (roughly weekly)
+  public window [SEARCH-RESULT]. The technique is not the new part.
+- Nobody does it for IEMOP/WESM. IEMOP publishes the "congestions manifesting" files
+  but its public pages roll off after a rolling window, and the one-year MIND
+  repository is restricted to registered trading participants [SEARCH-RESULT]. No
+  third party archives the files; no constraint league table for the Philippine grid
+  exists.
+- No surveyed project fuses the three questions in one reproducible artifact for the
+  Philippines: named congestion receipts, announced data-center siting against the
   importing load pocket, and the wholesale price next to the retail (Meralco
-  generation charge) pass-through. Bloomberg's 2025 graphic
-  (https://www.bloomberg.com/graphics/2025-ai-data-centers-electricity-prices/,
-  built on GridStatus data) is wholesale-only, US, static [SEARCH-RESULT]. EPRI
-  DCFlex (https://dcflex.epri.com/) frames adequacy under constraints without
-  geography or a bill [SEARCH-RESULT]. ICSC's Philippine Power Outlook
-  (https://icsc.ngo/tag/philippine-power-outlook/) is the PH-native neighbor for
-  the supply question, as an annual PDF [SEARCH-RESULT].
+  generation charge) pass-through. ICSC's Philippine Power Outlook
+  (https://icsc.ngo/tag/philippine-power-outlook/) is the PH-native neighbor for the
+  supply question, as an annual PDF [SEARCH-RESULT].
 
-So the README positioning is: the techniques have honest US ancestors; the assembly
-and the geography are the new thing. Even ERCOT's receipts self-delete after about
-a week, which is exactly the argument for a public archive. The claim "first archive
-and constraint league for the Philippine market, and the only artifact tying receipts
-to data-center siting and the retail bill" survives the survey; any stronger claim
-does not.
+So the README positioning is PH-native: the first public archive and constraint
+league for the Philippine market, and the only artifact tying IEMOP receipts to
+data-center siting and the Meralco bill. IEMOP's own files self-delete after a
+rolling window, which is exactly the argument for a public archive. That claim
+survives the survey; any stronger claim does not.
 
-Related-projects entries adopted for the README: gridstatus, ERCOT NP6-86-CD,
-Electricity Maps, Ember, EPRI DCFlex, LBNL 2024 data-center report, ICSC Power
-Outlook (URLs in the README section).
+Where-the-data-comes-from entries adopted for the README are the Philippine primary
+sources: IEMOP market data and monthly reports, NGCP TDP, DOE Power Statistics,
+WESM/PEMC, ICSC Power Outlook, and the public data-center inventories (URLs in the
+README section).
 
 Caveat kept honest: the "~90-day rolling window" figure is our own first-party
 measurement of the min_date carried in each IEMOP market-data page's config
@@ -149,9 +142,9 @@ regional prices, margin MW; (3) the Visayas streak stays framed "ended Jul 1."
 
 ## Part 4: README first-screen and hero-media patterns
 
-From reading the actual README markdown of datasette, kepler.gl,
-electricitymaps-contrib, gridstatus, streamlit, openfreemap, tar1090, deck.gl,
-protomaps, and Overture [VERIFIED-FETCHED each]:
+From reading the actual README markdown of a set of best-in-class open mapping and
+data repos (datasette, kepler.gl, streamlit, openfreemap, tar1090, deck.gl,
+protomaps, Overture) [VERIFIED-FETCHED each]:
 
 - Almost none of the best-in-class repos lead with an animated GIF; heroes are
   logos or linked screenshots, and Streamlit's GIF sits below the fold. A good

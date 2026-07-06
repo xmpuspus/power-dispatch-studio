@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""The wholesale-to-retail wedge, ported from gridbill-us but built on the actual
-Meralco peso breakdown instead of approximate shares. The lesson is the same: a move
+"""The wholesale-to-retail wedge, built on the actual Meralco peso breakdown. A move
 in the WESM wholesale price only touches the generation slice of the bill, and only
 through a monthly pass-through, so a wholesale swing is never a one-for-one bill swing.
 

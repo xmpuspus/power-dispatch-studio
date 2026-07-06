@@ -44,8 +44,7 @@ mislabeled or the post has no share image.
    generation charge, and WESM cost; the June system average, three regional prices,
    and margin MW. URLs to watch are in the research doc.
 10. **Privacy-friendly analytics.** One script tag (GoatCounter or Plausible) so the
-    launch is measurable. The sibling gridbill-us shipped without it and could not
-    tell which layer landed.
+    launch is measurable. Without it there is no way to tell which layer landed.
 
 ## Phase 2: new layers (M each, ranked by openness x novelty x honesty-fit)
 

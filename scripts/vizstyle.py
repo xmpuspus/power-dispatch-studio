@@ -4,7 +4,6 @@
 Tufte: maximize data-ink, drop chartjunk (no top/right spines, faint y-grid only, no
 heavy borders), direct labels over legends, standalone with a sourced caption.
 MBB palette: navy / steel blue / coral, one muted grey for context, on white.
-Ported from gridbill-us scripts/vizstyle.py so the sibling maps share one look.
 
 Usage in a chart script:
     import vizstyle as vz
