@@ -96,6 +96,7 @@ const NO_LEVERS = (grid: GridKey): Levers => ({
   trip: '',
   coalPrice: d.assumptions.fuel_marginal_cost_php_kwh.coal,
   reliefMW: 0,
+  lngSwitch: false,
 })
 
 const UNITS: TrippableUnit[] = [] // trips exercised in a dedicated test below
@@ -131,6 +132,23 @@ describe('lever behavior', () => {
     const marg = raised.filter((b) => b.fuel === 'coal' && b.cost === 9.0)
     expect(commit.length).toBe(1) // committed tranche untouched at P4.14
     expect(marg.length).toBe(1) // marginal tranche re-priced to P9.00
+  })
+
+  it('the Malampaya to imported-LNG switch reprices Luzon gas upward', () => {
+    const lngCost = d.assumptions.fuel_marginal_cost_php_kwh.lng
+    const gasCost = d.assumptions.fuel_marginal_cost_php_kwh.natural_gas
+    const before = buildStack(d.merit_order.luzon.fuel_avail_mw, {}, [], stackParams())
+    const gasBefore = before.find((b) => b.fuel === 'natural_gas')
+    const withLng = solveScenario(
+      d,
+      { ...NO_LEVERS('luzon'), addGas: 500, lngSwitch: true },
+      UNITS
+    )
+    const gasAfter = withLng.stack.filter((b) => b.fuel === 'natural_gas')
+    expect(lngCost).toBeGreaterThan(gasCost) // LNG dearer than Malampaya
+    expect(gasBefore?.cost).toBe(gasCost) // baseline gas at Malampaya price
+    // every gas block (base + added firm) is repriced to the LNG cost
+    expect(gasAfter.every((b) => b.cost === lngCost)).toBe(true)
   })
 
   it('relieving the feeding corridor lowers a congested downstream price', () => {

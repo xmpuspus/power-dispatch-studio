@@ -27,6 +27,7 @@ export interface Levers {
   trip: string // named unit tripped on the selected grid (matched by name)
   coalPrice: number // administered coal price for the marginal coal tranche (PhP/kWh)
   reliefMW: number // extra operating limit on the corridor feeding the selected grid (MW)
+  lngSwitch: boolean // reprice gas from Malampaya to imported LNG (the ~2027 cliff)
 }
 
 export interface TrippableUnit {
@@ -253,13 +254,18 @@ export interface ScenarioOut {
   solarMiddayMW: number // what the same solar would deliver at midday (the caveat)
 }
 
-function stackParams(d: Dispatch, coalPrice?: number): StackParams {
+function stackParams(d: Dispatch, coalPrice?: number, lngSwitch = false): StackParams {
   const a = d.assumptions
+  const costs = a.fuel_marginal_cost_php_kwh
+  // the Malampaya-to-imported-LNG switch reprices gas from the sourced Malampaya
+  // cost to the sourced imported-LNG cost (Malampaya depletes around 2027).
+  const effCosts =
+    lngSwitch && costs.lng != null ? { ...costs, natural_gas: costs.lng } : costs
   return {
     coalCommit: a.coal_commit_php_kwh,
     coalMinFrac: a.coal_min_load_frac,
     coalPrice: coalPrice ?? a.fuel_marginal_cost_php_kwh.coal,
-    costs: a.fuel_marginal_cost_php_kwh,
+    costs: effCosts,
   }
 }
 
@@ -270,6 +276,7 @@ function addedBlocks(
 ): { blocks: Block[]; solarDelivered: number; solarMidday: number } {
   const mo = d.merit_order[lv.grid]
   const costs = d.assumptions.fuel_marginal_cost_php_kwh
+  const gasCost = lv.lngSwitch && costs.lng != null ? costs.lng : costs.natural_gas
   const blocks: Block[] = []
   // solar is derated by the availability fraction at the reference hour (~0 at the
   // evening peak): the add-solar lever barely moves adequacy, storage does.
@@ -277,8 +284,7 @@ function addedBlocks(
   const solarMidday = round1(lv.addSolar * mo.solar_avail_frac_midday)
   if (solarDelivered > 0)
     blocks.push({ fuel: 'solar', cost: costs.solar ?? 0, mw: solarDelivered })
-  if (lv.addGas > 0)
-    blocks.push({ fuel: 'natural_gas', cost: costs.natural_gas, mw: lv.addGas })
+  if (lv.addGas > 0) blocks.push({ fuel: 'natural_gas', cost: gasCost, mw: lv.addGas })
   if (lv.addCoal > 0) blocks.push({ fuel: 'coal', cost: lv.coalPrice, mw: lv.addCoal })
   if (lv.addStorage > 0) {
     const disc = d.storage?.discharge_offer_php_kwh ?? 5.17
@@ -321,11 +327,14 @@ export function solveScenario(
   const stacks: Record<GridKey, Block[]> = {} as Record<GridKey, Block[]>
   for (const g of GRID_KEYS) {
     const sel = g === lv.grid
+    // the LNG switch is a supply-side fuel change (gas sits only on Luzon), so it
+    // reprices every grid's stack, not just the selected one; the coal price is a
+    // per-grid what-if and stays scoped to the selected grid.
     stacks[g] = buildStack(
       d.merit_order[g].fuel_avail_mw,
       sel ? removedSel : {},
       sel ? added : [],
-      stackParams(d, sel ? lv.coalPrice : undefined)
+      stackParams(d, sel ? lv.coalPrice : undefined, lv.lngSwitch)
     )
   }
 

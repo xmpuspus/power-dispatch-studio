@@ -18,6 +18,7 @@ function initLevers(d: Dispatch, grid: GridKey): Levers {
     trip: '',
     coalPrice: d.assumptions.fuel_marginal_cost_php_kwh.coal,
     reliefMW: 0,
+    lngSwitch: false,
   }
 }
 
@@ -166,6 +167,21 @@ export function ScenarioView({ d, grid }: { d: Dispatch; grid: GridKey }) {
                 onChange={(v) => set({ reliefMW: v })}
               />
             )}
+            <label className="lever lever--check">
+              <input
+                type="checkbox"
+                checked={lv.lngSwitch}
+                onChange={(e) => set({ lngSwitch: e.target.checked })}
+              />
+              <span>
+                <span className="lever__label">Switch gas to imported LNG</span>
+                <span className="lever__tick">
+                  Malampaya depletes around 2027; gas reprices from ₱
+                  {d.assumptions.fuel_marginal_cost_php_kwh.natural_gas.toFixed(2)} to ₱
+                  {d.assumptions.fuel_marginal_cost_php_kwh.lng.toFixed(2)}/kWh
+                </span>
+              </span>
+            </label>
             <label className="lever">
               <span className="lever__label">Trip a unit (N-1)</span>
               <select

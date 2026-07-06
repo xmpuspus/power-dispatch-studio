@@ -984,3 +984,15 @@
     grid-template-columns: 120px 1fr 36px;
   }
 }
+
+.lever--check {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  cursor: pointer;
+}
+.lever--check input {
+  margin-top: 3px;
+  accent-color: var(--primary);
+  flex: none;
+}
