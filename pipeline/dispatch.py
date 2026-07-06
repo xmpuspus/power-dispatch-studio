@@ -110,6 +110,27 @@ def _mean(xs: list[float]) -> float | None:
     return sum(xs) / len(xs) if xs else None
 
 
+def _marg_label(fuel: str | None, price: float) -> str:
+    """Readable marginal-block label; splits coal into the committed and the
+    administered tranche so the overnight vs peak margin is visible."""
+    if not fuel:
+        return "unserved"
+    if fuel == "coal":
+        return ("coal (committed)"
+                if abs(price - COAL_COMMIT_PHP_KWH) < 0.01 else "coal (marginal)")
+    return fuel
+
+
+def _duration_curve(vals: list[float], step: int = 2) -> list[dict]:
+    """Price-duration curve: price at each percentile of time, sorted high to low."""
+    if not vals:
+        return []
+    s = sorted(vals, reverse=True)
+    n = len(s)
+    return [{"pct": p, "price": round(s[min(n - 1, int(p / 100 * n))], 3)}
+            for p in range(0, 101, step)]
+
+
 def build_coupling(intervals: dict, prices: dict) -> dict:
     """Couple the three grids over the market window and decompose the regional
     price spread the coupled model reproduces vs the residual it cannot.
@@ -517,6 +538,8 @@ def build_dispatch() -> dict:
     obs: dict[str, list[float]] = {g: [] for g in GRIDS}
     mod: dict[str, list[float]] = {g: [] for g in GRIDS}
     mod_nc: dict[str, list[float]] = {g: [] for g in GRIDS}
+    # how often each marginal block sets the modeled price (which fuel is on the margin)
+    marg_freq: dict[str, dict[str, int]] = {g: {} for g in GRIDS}
     peak_demand: dict[str, float] = {g: 0.0 for g in GRIDS}
     demands: dict[str, list[float]] = {g: [] for g in GRIDS}
     fuel_mwh: dict[str, dict[str, float]] = {g: {} for g in GRIDS}
@@ -579,6 +602,8 @@ def build_dispatch() -> dict:
                 mod[grid].append(res["price"])
                 mod_nc[grid].append(clear(stk_nc(grid, hour), gen)["price"])
                 hourly[grid][hour].append((gen, res["price"], price))
+                lbl = _marg_label(res["marginal_fuel"], res["price"])
+                marg_freq[grid][lbl] = marg_freq[grid].get(lbl, 0) + 1
 
     calibration = {}
     for g in GRIDS:
@@ -780,6 +805,30 @@ def build_dispatch() -> dict:
     reliability_mc = build_reliability_mc(hourly_dem)
     storage = build_storage(hourly_dem)
 
+    # price-duration curve (modeled vs observed overlay) and the marginal-block
+    # frequency table (which fuel sets the price how often), per grid, market window
+    price_duration = {}
+    marginal_frequency = {}
+    for g in GRIDS:
+        if not obs[g]:
+            continue
+        price_duration[g.lower()] = {
+            "modeled": _duration_curve(mod[g]),
+            "observed": _duration_curve(obs[g]),
+            "note": "Price at each percentile of the market window, high to low. The "
+                    "cost stack is a low, flat plateau; the observed curve has a tall "
+                    "scarcity tail on the left and a cheaper tail on the right that a "
+                    "competitive cost model does not reach.",
+        }
+        tot = sum(marg_freq[g].values())
+        marginal_frequency[g.lower()] = {
+            "n_intervals": tot,
+            "by_block": [
+                {"block": lbl, "share_pct": round(100 * c / tot, 1)}
+                for lbl, c in sorted(marg_freq[g].items(), key=lambda kv: -kv[1])
+            ],
+        }
+
     return {
         "available": True,
         "unit": "PhP/kWh clearing price from a merit-order stack vs observed "
@@ -812,6 +861,8 @@ def build_dispatch() -> dict:
         "merit_order": merit_order,
         "coupling": coupling,
         "unit_commitment": unit_commitment,
+        "price_duration": price_duration,
+        "marginal_frequency": marginal_frequency,
         "calibration": calibration,
         "representative_day": representative,
         "n1": n1,

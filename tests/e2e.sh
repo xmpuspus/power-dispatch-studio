@@ -66,6 +66,9 @@ stg = disp.get("storage", {})
 checks.append(("storage block baked (assets + buyback)",
                stg.get("assets", {}).get("luzon", {}).get("total_mw") == 1319
                and stg.get("reliability_buyback", {}).get("luzon_dict_2028") is not None))
+checks.append(("price-duration + marginal-frequency baked",
+               bool(disp.get("price_duration", {}).get("luzon", {}).get("observed"))
+               and bool(disp.get("marginal_frequency", {}).get("luzon", {}).get("by_block"))))
 html = urllib.request.urlopen(base + "/").read().decode()
 checks.append(("page mentions the three questions",
                "Can the grid handle" in json.dumps(ans) and "gridbill-ph" in html))
@@ -134,6 +137,17 @@ if command -v agent-browser >/dev/null 2>&1; then
   AR=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.imp===250, d.coupledPrice!=null].join("|")' 2>/dev/null | strip)
   echo "coupled: baked=$CB price=$BR afterRelieve=$AR"
   [[ "$CB" == "true" && "$AR" == true\|true ]] && ok "coupled clear + relieve lever re-clears" || bad "coupled clear ($CB/$AR)"
+  # storage lever shaves the peak, and the item-5 charts rendered in the panel
+  agent-browser eval 'document.querySelector(".gsel[data-grid=luzon]").click();
+    const d=document.getElementById("sim-dc"); d.value=3000; d.dispatchEvent(new Event("input"))' >/dev/null 2>&1
+  sleep 1
+  SB=$(agent-browser eval '(window.__diag.simulate||{}).price' 2>/dev/null | strip)
+  agent-browser eval 'const s=document.getElementById("sim-stor"); s.value=1500; s.dispatchEvent(new Event("input"))' >/dev/null 2>&1
+  sleep 1
+  SA=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.stor===1500, d.price<'"$SB"'].join("|")' 2>/dev/null | strip)
+  CH=$(agent-browser eval '[!!window.__diag.priceDuration, !!document.querySelector("#sim-duration svg"), !!document.getElementById("sim-margfreq")].join("|")' 2>/dev/null | strip)
+  echo "storage: before=$SB after=$SA charts=$CH"
+  [[ "$SA" == true\|true && "$CH" == true\|true\|true ]] && ok "storage lever shaves peak + item-5 charts render" || bad "storage/charts ($SA / $CH)"
   agent-browser close >/dev/null 2>&1
 else
   echo "SKIP browser block (agent-browser not installed)"

@@ -172,10 +172,21 @@ peak interval, not a multi-day event, and existing storage is already inside the
 observed prices, so this is a forward scenario against the modeled wave, not a
 calibration change.
 
+Two views make the whole calibration honest at a glance. The **price-duration curve**
+sorts every market interval high to low and overlays modeled against observed: the
+cost stack is a low, flat plateau from about **P4.80 to P12**, while the observed curve
+runs from a **P35** scarcity spike on the left down to a negative **-P11** oversupply
+tail on the right. A competitive cost model reaches neither end. The **who-sets-the-
+price** table counts the marginal block: on Luzon coal is on the margin **97%** of the
+time (why the modeled line is so flat), while on Visayas the committed overnight coal
+tranche is marginal **24.5%** of the time, which is the unit-commitment layer showing
+its work. Block dispatch cannot name the individual plant, so both stay at the fuel
+level.
+
 The panel re-clears the baked stack in the browser. Move the levers (add a data
 center as flat 24/7 load, trip any of the 11 named units for an N-1, add firm
-capacity, relieve a choke point) and the clearing price and any supply shortfall
-update live, on the same stack the Python engine produced. The named-generator layer,
+capacity, relieve a choke point, discharge storage) and the clearing price and any
+supply shortfall update live, on the same stack the Python engine produced. The named-generator layer,
 the N-1 table, and the full model: [`web/data/dispatch.json`](web/data/dispatch.json)
 and [`web/data/generators.geojson`](web/data/generators.geojson); the engine is
 `pipeline/dispatch.py` on the sourced fleet in `pipeline/fleet_ph.py`.

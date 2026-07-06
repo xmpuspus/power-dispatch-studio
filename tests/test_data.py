@@ -406,5 +406,28 @@ check("storage lowers the DC-wave expected unserved energy too",
       rbk["luzon_dict_2028"]["with_storage"]["eue_mwh_evening_window"]
       < rbk["luzon_dict_2028"]["without"]["eue_mwh_evening_window"])
 
+# --- price-duration curve + marginal-block frequency (item 5) -------------------
+pdur = disp["price_duration"]
+check("price-duration curves baked for 3 grids (modeled + observed)",
+      set(pdur) == {"luzon", "visayas", "mindanao"}
+      and all(pdur[g]["modeled"] and pdur[g]["observed"] for g in pdur))
+lz_dur = pdur["luzon"]
+check("duration curves are sorted high to low (monotone non-increasing)", all(
+    all(c[i]["price"] >= c[i + 1]["price"] - 1e-9 for i in range(len(c) - 1))
+    for c in (lz_dur["modeled"], lz_dur["observed"])))
+check("observed price-duration has a scarcity tail the cost stack never reaches",
+      lz_dur["observed"][0]["price"] > lz_dur["modeled"][0]["price"])
+check("observed price-duration spans wider than the modeled plateau",
+      (lz_dur["observed"][0]["price"] - lz_dur["observed"][-1]["price"])
+      > (lz_dur["modeled"][0]["price"] - lz_dur["modeled"][-1]["price"]))
+mfreq = disp["marginal_frequency"]
+check("marginal-frequency table baked for 3 grids, shares near 100%", all(
+    abs(sum(b["share_pct"] for b in mfreq[g]["by_block"]) - 100) < 1.5 for g in mfreq))
+check("coal is the dominant marginal block on Luzon",
+      mfreq["luzon"]["by_block"][0]["block"].startswith("coal"))
+check("the committed-coal tranche is marginal on Visayas (the commitment layer at "
+      "light load)", any(b["block"] == "coal (committed)"
+                         for b in mfreq["visayas"]["by_block"]))
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

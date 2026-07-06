@@ -300,6 +300,1310 @@
    }
   }
  },
+ "price_duration": {
+  "luzon": {
+   "modeled": [
+    {
+     "pct": 0,
+     "price": 12.0
+    },
+    {
+     "pct": 2,
+     "price": 6.0
+    },
+    {
+     "pct": 4,
+     "price": 6.0
+    },
+    {
+     "pct": 6,
+     "price": 6.0
+    },
+    {
+     "pct": 8,
+     "price": 6.0
+    },
+    {
+     "pct": 10,
+     "price": 6.0
+    },
+    {
+     "pct": 12,
+     "price": 6.0
+    },
+    {
+     "pct": 14,
+     "price": 6.0
+    },
+    {
+     "pct": 16,
+     "price": 6.0
+    },
+    {
+     "pct": 18,
+     "price": 6.0
+    },
+    {
+     "pct": 20,
+     "price": 6.0
+    },
+    {
+     "pct": 22,
+     "price": 6.0
+    },
+    {
+     "pct": 24,
+     "price": 6.0
+    },
+    {
+     "pct": 26,
+     "price": 6.0
+    },
+    {
+     "pct": 28,
+     "price": 6.0
+    },
+    {
+     "pct": 30,
+     "price": 6.0
+    },
+    {
+     "pct": 32,
+     "price": 6.0
+    },
+    {
+     "pct": 34,
+     "price": 6.0
+    },
+    {
+     "pct": 36,
+     "price": 6.0
+    },
+    {
+     "pct": 38,
+     "price": 6.0
+    },
+    {
+     "pct": 40,
+     "price": 6.0
+    },
+    {
+     "pct": 42,
+     "price": 6.0
+    },
+    {
+     "pct": 44,
+     "price": 6.0
+    },
+    {
+     "pct": 46,
+     "price": 6.0
+    },
+    {
+     "pct": 48,
+     "price": 6.0
+    },
+    {
+     "pct": 50,
+     "price": 6.0
+    },
+    {
+     "pct": 52,
+     "price": 6.0
+    },
+    {
+     "pct": 54,
+     "price": 6.0
+    },
+    {
+     "pct": 56,
+     "price": 6.0
+    },
+    {
+     "pct": 58,
+     "price": 6.0
+    },
+    {
+     "pct": 60,
+     "price": 6.0
+    },
+    {
+     "pct": 62,
+     "price": 6.0
+    },
+    {
+     "pct": 64,
+     "price": 6.0
+    },
+    {
+     "pct": 66,
+     "price": 6.0
+    },
+    {
+     "pct": 68,
+     "price": 6.0
+    },
+    {
+     "pct": 70,
+     "price": 6.0
+    },
+    {
+     "pct": 72,
+     "price": 6.0
+    },
+    {
+     "pct": 74,
+     "price": 6.0
+    },
+    {
+     "pct": 76,
+     "price": 6.0
+    },
+    {
+     "pct": 78,
+     "price": 6.0
+    },
+    {
+     "pct": 80,
+     "price": 6.0
+    },
+    {
+     "pct": 82,
+     "price": 6.0
+    },
+    {
+     "pct": 84,
+     "price": 6.0
+    },
+    {
+     "pct": 86,
+     "price": 6.0
+    },
+    {
+     "pct": 88,
+     "price": 6.0
+    },
+    {
+     "pct": 90,
+     "price": 6.0
+    },
+    {
+     "pct": 92,
+     "price": 6.0
+    },
+    {
+     "pct": 94,
+     "price": 6.0
+    },
+    {
+     "pct": 96,
+     "price": 6.0
+    },
+    {
+     "pct": 98,
+     "price": 5.0
+    },
+    {
+     "pct": 100,
+     "price": 4.8
+    }
+   ],
+   "observed": [
+    {
+     "pct": 0,
+     "price": 35.36
+    },
+    {
+     "pct": 2,
+     "price": 32.661
+    },
+    {
+     "pct": 4,
+     "price": 30.731
+    },
+    {
+     "pct": 6,
+     "price": 20.32
+    },
+    {
+     "pct": 8,
+     "price": 18.181
+    },
+    {
+     "pct": 10,
+     "price": 16.293
+    },
+    {
+     "pct": 12,
+     "price": 14.691
+    },
+    {
+     "pct": 14,
+     "price": 12.599
+    },
+    {
+     "pct": 16,
+     "price": 12.006
+    },
+    {
+     "pct": 18,
+     "price": 11.743
+    },
+    {
+     "pct": 20,
+     "price": 10.959
+    },
+    {
+     "pct": 22,
+     "price": 10.214
+    },
+    {
+     "pct": 24,
+     "price": 8.945
+    },
+    {
+     "pct": 26,
+     "price": 8.547
+    },
+    {
+     "pct": 28,
+     "price": 7.631
+    },
+    {
+     "pct": 30,
+     "price": 7.579
+    },
+    {
+     "pct": 32,
+     "price": 7.566
+    },
+    {
+     "pct": 34,
+     "price": 7.403
+    },
+    {
+     "pct": 36,
+     "price": 7.306
+    },
+    {
+     "pct": 38,
+     "price": 7.145
+    },
+    {
+     "pct": 40,
+     "price": 7.003
+    },
+    {
+     "pct": 42,
+     "price": 6.766
+    },
+    {
+     "pct": 44,
+     "price": 6.204
+    },
+    {
+     "pct": 46,
+     "price": 6.101
+    },
+    {
+     "pct": 48,
+     "price": 6.018
+    },
+    {
+     "pct": 50,
+     "price": 5.839
+    },
+    {
+     "pct": 52,
+     "price": 5.775
+    },
+    {
+     "pct": 54,
+     "price": 5.678
+    },
+    {
+     "pct": 56,
+     "price": 5.062
+    },
+    {
+     "pct": 58,
+     "price": 4.791
+    },
+    {
+     "pct": 60,
+     "price": 4.628
+    },
+    {
+     "pct": 62,
+     "price": 4.391
+    },
+    {
+     "pct": 64,
+     "price": 4.141
+    },
+    {
+     "pct": 66,
+     "price": 3.956
+    },
+    {
+     "pct": 68,
+     "price": 3.856
+    },
+    {
+     "pct": 70,
+     "price": 3.761
+    },
+    {
+     "pct": 72,
+     "price": 3.582
+    },
+    {
+     "pct": 74,
+     "price": 3.479
+    },
+    {
+     "pct": 76,
+     "price": 3.395
+    },
+    {
+     "pct": 78,
+     "price": 3.287
+    },
+    {
+     "pct": 80,
+     "price": 3.216
+    },
+    {
+     "pct": 82,
+     "price": 3.15
+    },
+    {
+     "pct": 84,
+     "price": 3.108
+    },
+    {
+     "pct": 86,
+     "price": 3.021
+    },
+    {
+     "pct": 88,
+     "price": 2.923
+    },
+    {
+     "pct": 90,
+     "price": 2.891
+    },
+    {
+     "pct": 92,
+     "price": 2.864
+    },
+    {
+     "pct": 94,
+     "price": 2.166
+    },
+    {
+     "pct": 96,
+     "price": 0.0
+    },
+    {
+     "pct": 98,
+     "price": -0.001
+    },
+    {
+     "pct": 100,
+     "price": -10.648
+    }
+   ],
+   "note": "Price at each percentile of the market window, high to low. The cost stack is a low, flat plateau; the observed curve has a tall scarcity tail on the left and a cheaper tail on the right that a competitive cost model does not reach."
+  },
+  "visayas": {
+   "modeled": [
+    {
+     "pct": 0,
+     "price": 6.0
+    },
+    {
+     "pct": 2,
+     "price": 6.0
+    },
+    {
+     "pct": 4,
+     "price": 6.0
+    },
+    {
+     "pct": 6,
+     "price": 6.0
+    },
+    {
+     "pct": 8,
+     "price": 6.0
+    },
+    {
+     "pct": 10,
+     "price": 6.0
+    },
+    {
+     "pct": 12,
+     "price": 6.0
+    },
+    {
+     "pct": 14,
+     "price": 6.0
+    },
+    {
+     "pct": 16,
+     "price": 6.0
+    },
+    {
+     "pct": 18,
+     "price": 6.0
+    },
+    {
+     "pct": 20,
+     "price": 6.0
+    },
+    {
+     "pct": 22,
+     "price": 6.0
+    },
+    {
+     "pct": 24,
+     "price": 6.0
+    },
+    {
+     "pct": 26,
+     "price": 6.0
+    },
+    {
+     "pct": 28,
+     "price": 6.0
+    },
+    {
+     "pct": 30,
+     "price": 6.0
+    },
+    {
+     "pct": 32,
+     "price": 6.0
+    },
+    {
+     "pct": 34,
+     "price": 6.0
+    },
+    {
+     "pct": 36,
+     "price": 6.0
+    },
+    {
+     "pct": 38,
+     "price": 6.0
+    },
+    {
+     "pct": 40,
+     "price": 6.0
+    },
+    {
+     "pct": 42,
+     "price": 6.0
+    },
+    {
+     "pct": 44,
+     "price": 6.0
+    },
+    {
+     "pct": 46,
+     "price": 6.0
+    },
+    {
+     "pct": 48,
+     "price": 6.0
+    },
+    {
+     "pct": 50,
+     "price": 6.0
+    },
+    {
+     "pct": 52,
+     "price": 6.0
+    },
+    {
+     "pct": 54,
+     "price": 6.0
+    },
+    {
+     "pct": 56,
+     "price": 5.0
+    },
+    {
+     "pct": 58,
+     "price": 5.0
+    },
+    {
+     "pct": 60,
+     "price": 5.0
+    },
+    {
+     "pct": 62,
+     "price": 5.0
+    },
+    {
+     "pct": 64,
+     "price": 5.0
+    },
+    {
+     "pct": 66,
+     "price": 5.0
+    },
+    {
+     "pct": 68,
+     "price": 5.0
+    },
+    {
+     "pct": 70,
+     "price": 5.0
+    },
+    {
+     "pct": 72,
+     "price": 5.0
+    },
+    {
+     "pct": 74,
+     "price": 5.0
+    },
+    {
+     "pct": 76,
+     "price": 4.14
+    },
+    {
+     "pct": 78,
+     "price": 4.14
+    },
+    {
+     "pct": 80,
+     "price": 4.14
+    },
+    {
+     "pct": 82,
+     "price": 4.14
+    },
+    {
+     "pct": 84,
+     "price": 4.14
+    },
+    {
+     "pct": 86,
+     "price": 4.14
+    },
+    {
+     "pct": 88,
+     "price": 4.14
+    },
+    {
+     "pct": 90,
+     "price": 4.14
+    },
+    {
+     "pct": 92,
+     "price": 4.14
+    },
+    {
+     "pct": 94,
+     "price": 4.14
+    },
+    {
+     "pct": 96,
+     "price": 4.14
+    },
+    {
+     "pct": 98,
+     "price": 4.14
+    },
+    {
+     "pct": 100,
+     "price": 4.14
+    }
+   ],
+   "observed": [
+    {
+     "pct": 0,
+     "price": 44.454
+    },
+    {
+     "pct": 2,
+     "price": 33.598
+    },
+    {
+     "pct": 4,
+     "price": 33.344
+    },
+    {
+     "pct": 6,
+     "price": 33.19
+    },
+    {
+     "pct": 8,
+     "price": 32.747
+    },
+    {
+     "pct": 10,
+     "price": 32.64
+    },
+    {
+     "pct": 12,
+     "price": 32.151
+    },
+    {
+     "pct": 14,
+     "price": 31.296
+    },
+    {
+     "pct": 16,
+     "price": 29.442
+    },
+    {
+     "pct": 18,
+     "price": 28.188
+    },
+    {
+     "pct": 20,
+     "price": 26.718
+    },
+    {
+     "pct": 22,
+     "price": 23.727
+    },
+    {
+     "pct": 24,
+     "price": 21.337
+    },
+    {
+     "pct": 26,
+     "price": 20.391
+    },
+    {
+     "pct": 28,
+     "price": 19.418
+    },
+    {
+     "pct": 30,
+     "price": 17.637
+    },
+    {
+     "pct": 32,
+     "price": 17.175
+    },
+    {
+     "pct": 34,
+     "price": 15.426
+    },
+    {
+     "pct": 36,
+     "price": 13.841
+    },
+    {
+     "pct": 38,
+     "price": 12.064
+    },
+    {
+     "pct": 40,
+     "price": 11.373
+    },
+    {
+     "pct": 42,
+     "price": 10.721
+    },
+    {
+     "pct": 44,
+     "price": 8.752
+    },
+    {
+     "pct": 46,
+     "price": 7.594
+    },
+    {
+     "pct": 48,
+     "price": 7.579
+    },
+    {
+     "pct": 50,
+     "price": 7.569
+    },
+    {
+     "pct": 52,
+     "price": 7.373
+    },
+    {
+     "pct": 54,
+     "price": 7.148
+    },
+    {
+     "pct": 56,
+     "price": 7.004
+    },
+    {
+     "pct": 58,
+     "price": 6.515
+    },
+    {
+     "pct": 60,
+     "price": 6.02
+    },
+    {
+     "pct": 62,
+     "price": 5.779
+    },
+    {
+     "pct": 64,
+     "price": 5.213
+    },
+    {
+     "pct": 66,
+     "price": 4.795
+    },
+    {
+     "pct": 68,
+     "price": 4.593
+    },
+    {
+     "pct": 70,
+     "price": 4.358
+    },
+    {
+     "pct": 72,
+     "price": 4.096
+    },
+    {
+     "pct": 74,
+     "price": 3.995
+    },
+    {
+     "pct": 76,
+     "price": 3.939
+    },
+    {
+     "pct": 78,
+     "price": 3.849
+    },
+    {
+     "pct": 80,
+     "price": 3.762
+    },
+    {
+     "pct": 82,
+     "price": 3.619
+    },
+    {
+     "pct": 84,
+     "price": 3.561
+    },
+    {
+     "pct": 86,
+     "price": 3.428
+    },
+    {
+     "pct": 88,
+     "price": 3.284
+    },
+    {
+     "pct": 90,
+     "price": 3.175
+    },
+    {
+     "pct": 92,
+     "price": 3.075
+    },
+    {
+     "pct": 94,
+     "price": 2.987
+    },
+    {
+     "pct": 96,
+     "price": 2.898
+    },
+    {
+     "pct": 98,
+     "price": 0.0
+    },
+    {
+     "pct": 100,
+     "price": -10.274
+    }
+   ],
+   "note": "Price at each percentile of the market window, high to low. The cost stack is a low, flat plateau; the observed curve has a tall scarcity tail on the left and a cheaper tail on the right that a competitive cost model does not reach."
+  },
+  "mindanao": {
+   "modeled": [
+    {
+     "pct": 0,
+     "price": 12.0
+    },
+    {
+     "pct": 2,
+     "price": 12.0
+    },
+    {
+     "pct": 4,
+     "price": 6.0
+    },
+    {
+     "pct": 6,
+     "price": 6.0
+    },
+    {
+     "pct": 8,
+     "price": 6.0
+    },
+    {
+     "pct": 10,
+     "price": 6.0
+    },
+    {
+     "pct": 12,
+     "price": 6.0
+    },
+    {
+     "pct": 14,
+     "price": 6.0
+    },
+    {
+     "pct": 16,
+     "price": 6.0
+    },
+    {
+     "pct": 18,
+     "price": 6.0
+    },
+    {
+     "pct": 20,
+     "price": 6.0
+    },
+    {
+     "pct": 22,
+     "price": 6.0
+    },
+    {
+     "pct": 24,
+     "price": 6.0
+    },
+    {
+     "pct": 26,
+     "price": 6.0
+    },
+    {
+     "pct": 28,
+     "price": 6.0
+    },
+    {
+     "pct": 30,
+     "price": 6.0
+    },
+    {
+     "pct": 32,
+     "price": 6.0
+    },
+    {
+     "pct": 34,
+     "price": 6.0
+    },
+    {
+     "pct": 36,
+     "price": 6.0
+    },
+    {
+     "pct": 38,
+     "price": 6.0
+    },
+    {
+     "pct": 40,
+     "price": 6.0
+    },
+    {
+     "pct": 42,
+     "price": 6.0
+    },
+    {
+     "pct": 44,
+     "price": 6.0
+    },
+    {
+     "pct": 46,
+     "price": 6.0
+    },
+    {
+     "pct": 48,
+     "price": 6.0
+    },
+    {
+     "pct": 50,
+     "price": 6.0
+    },
+    {
+     "pct": 52,
+     "price": 6.0
+    },
+    {
+     "pct": 54,
+     "price": 6.0
+    },
+    {
+     "pct": 56,
+     "price": 6.0
+    },
+    {
+     "pct": 58,
+     "price": 6.0
+    },
+    {
+     "pct": 60,
+     "price": 6.0
+    },
+    {
+     "pct": 62,
+     "price": 6.0
+    },
+    {
+     "pct": 64,
+     "price": 6.0
+    },
+    {
+     "pct": 66,
+     "price": 6.0
+    },
+    {
+     "pct": 68,
+     "price": 6.0
+    },
+    {
+     "pct": 70,
+     "price": 6.0
+    },
+    {
+     "pct": 72,
+     "price": 6.0
+    },
+    {
+     "pct": 74,
+     "price": 6.0
+    },
+    {
+     "pct": 76,
+     "price": 6.0
+    },
+    {
+     "pct": 78,
+     "price": 6.0
+    },
+    {
+     "pct": 80,
+     "price": 6.0
+    },
+    {
+     "pct": 82,
+     "price": 6.0
+    },
+    {
+     "pct": 84,
+     "price": 6.0
+    },
+    {
+     "pct": 86,
+     "price": 6.0
+    },
+    {
+     "pct": 88,
+     "price": 6.0
+    },
+    {
+     "pct": 90,
+     "price": 6.0
+    },
+    {
+     "pct": 92,
+     "price": 6.0
+    },
+    {
+     "pct": 94,
+     "price": 6.0
+    },
+    {
+     "pct": 96,
+     "price": 6.0
+    },
+    {
+     "pct": 98,
+     "price": 6.0
+    },
+    {
+     "pct": 100,
+     "price": 5.0
+    }
+   ],
+   "observed": [
+    {
+     "pct": 0,
+     "price": 39.198
+    },
+    {
+     "pct": 2,
+     "price": 35.318
+    },
+    {
+     "pct": 4,
+     "price": 34.444
+    },
+    {
+     "pct": 6,
+     "price": 32.95
+    },
+    {
+     "pct": 8,
+     "price": 32.653
+    },
+    {
+     "pct": 10,
+     "price": 31.816
+    },
+    {
+     "pct": 12,
+     "price": 30.518
+    },
+    {
+     "pct": 14,
+     "price": 29.096
+    },
+    {
+     "pct": 16,
+     "price": 26.048
+    },
+    {
+     "pct": 18,
+     "price": 22.486
+    },
+    {
+     "pct": 20,
+     "price": 20.399
+    },
+    {
+     "pct": 22,
+     "price": 18.795
+    },
+    {
+     "pct": 24,
+     "price": 18.056
+    },
+    {
+     "pct": 26,
+     "price": 17.322
+    },
+    {
+     "pct": 28,
+     "price": 15.838
+    },
+    {
+     "pct": 30,
+     "price": 14.117
+    },
+    {
+     "pct": 32,
+     "price": 12.676
+    },
+    {
+     "pct": 34,
+     "price": 11.748
+    },
+    {
+     "pct": 36,
+     "price": 10.733
+    },
+    {
+     "pct": 38,
+     "price": 8.987
+    },
+    {
+     "pct": 40,
+     "price": 7.645
+    },
+    {
+     "pct": 42,
+     "price": 7.581
+    },
+    {
+     "pct": 44,
+     "price": 7.572
+    },
+    {
+     "pct": 46,
+     "price": 7.443
+    },
+    {
+     "pct": 48,
+     "price": 7.015
+    },
+    {
+     "pct": 50,
+     "price": 6.471
+    },
+    {
+     "pct": 52,
+     "price": 6.016
+    },
+    {
+     "pct": 54,
+     "price": 5.788
+    },
+    {
+     "pct": 56,
+     "price": 5.358
+    },
+    {
+     "pct": 58,
+     "price": 4.96
+    },
+    {
+     "pct": 60,
+     "price": 4.705
+    },
+    {
+     "pct": 62,
+     "price": 4.468
+    },
+    {
+     "pct": 64,
+     "price": 4.206
+    },
+    {
+     "pct": 66,
+     "price": 4.091
+    },
+    {
+     "pct": 68,
+     "price": 4.016
+    },
+    {
+     "pct": 70,
+     "price": 3.944
+    },
+    {
+     "pct": 72,
+     "price": 3.868
+    },
+    {
+     "pct": 74,
+     "price": 3.813
+    },
+    {
+     "pct": 76,
+     "price": 3.744
+    },
+    {
+     "pct": 78,
+     "price": 3.673
+    },
+    {
+     "pct": 80,
+     "price": 3.636
+    },
+    {
+     "pct": 82,
+     "price": 3.529
+    },
+    {
+     "pct": 84,
+     "price": 3.46
+    },
+    {
+     "pct": 86,
+     "price": 3.36
+    },
+    {
+     "pct": 88,
+     "price": 3.262
+    },
+    {
+     "pct": 90,
+     "price": 3.181
+    },
+    {
+     "pct": 92,
+     "price": 3.128
+    },
+    {
+     "pct": 94,
+     "price": 3.06
+    },
+    {
+     "pct": 96,
+     "price": 2.941
+    },
+    {
+     "pct": 98,
+     "price": 0.0
+    },
+    {
+     "pct": 100,
+     "price": -10.747
+    }
+   ],
+   "note": "Price at each percentile of the market window, high to low. The cost stack is a low, flat plateau; the observed curve has a tall scarcity tail on the left and a cheaper tail on the right that a competitive cost model does not reach."
+  }
+ },
+ "marginal_frequency": {
+  "luzon": {
+   "n_intervals": 16127,
+   "by_block": [
+    {
+     "block": "coal (marginal)",
+     "share_pct": 97.0
+    },
+    {
+     "block": "biomass",
+     "share_pct": 1.4
+    },
+    {
+     "block": "natural_gas",
+     "share_pct": 1.4
+    },
+    {
+     "block": "oil",
+     "share_pct": 0.1
+    }
+   ]
+  },
+  "visayas": {
+   "n_intervals": 16127,
+   "by_block": [
+    {
+     "block": "coal (marginal)",
+     "share_pct": 54.6
+    },
+    {
+     "block": "coal (committed)",
+     "share_pct": 24.5
+    },
+    {
+     "block": "biomass",
+     "share_pct": 20.9
+    }
+   ]
+  },
+  "mindanao": {
+   "n_intervals": 16127,
+   "by_block": [
+    {
+     "block": "coal (marginal)",
+     "share_pct": 97.1
+    },
+    {
+     "block": "oil",
+     "share_pct": 2.8
+    },
+    {
+     "block": "biomass",
+     "share_pct": 0.0
+    }
+   ]
+  }
+ },
  "calibration": {
   "luzon": {
    "n_intervals": 16127,

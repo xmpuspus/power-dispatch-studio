@@ -731,6 +731,31 @@ function couplingNote(disp){
     the corridor.</div>`;
 }
 
+// price-duration curve: modeled (flat plateau) vs observed (scarcity + cheap tails)
+function durationSVG(pd){
+  if (!pd || !pd.modeled) return "";
+  const W = 300, H = 120, padL = 26, padB = 14, padT = 6, padR = 6;
+  const all = pd.modeled.concat(pd.observed).map(d => d.price);
+  const ymin = Math.min(...all), ymax = Math.max(...all), span = (ymax - ymin) || 1;
+  const x = p => padL + (W - padL - padR) * (p / 100);
+  const y = v => padT + (H - padT - padB) * (1 - (v - ymin) / span);
+  const line = (arr, col) => `<polyline fill="none" stroke="${col}" stroke-width="1.4"
+    points="${arr.map(d => x(d.pct).toFixed(1) + "," + y(d.price).toFixed(1)).join(" ")}"/>`;
+  const zero = (ymin < 0 && ymax > 0)
+    ? `<line x1="${padL}" y1="${y(0).toFixed(1)}" x2="${W-padR}" y2="${y(0).toFixed(1)}" stroke="#ccc" stroke-width="0.5" stroke-dasharray="2 2"/>` : "";
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Price-duration curve, modeled versus observed">
+    ${zero}${line(pd.observed, "#b3261e")}${line(pd.modeled, "#333")}
+    <text x="2" y="${(y(ymax)+3).toFixed(1)}" font-size="7" fill="#888">P${fmt(ymax,0)}</text>
+    <text x="2" y="${(y(ymin)+2).toFixed(1)}" font-size="7" fill="#888">P${fmt(ymin,0)}</text>
+    <text x="${padL}" y="${H-2}" font-size="7" fill="#888">0%</text>
+    <text x="${W-padR}" y="${H-2}" font-size="7" fill="#888" text-anchor="end">100% of time</text></svg>`;
+}
+function marginalFreqHTML(mf){
+  if (!mf || !mf.by_block) return "";
+  return mf.by_block.map(b => `<div class="kv"><span>${esc(fuelLabel(b.block))}</span>
+    <span>${fmt(b.share_pct,1)}%</span></div>`).join("");
+}
+
 function sideSimulate(){
   const disp = D["dispatch.json"] || {};
   if (!disp.available) return `<h2>Simulate the dispatch</h2>
@@ -754,6 +779,9 @@ function sideSimulate(){
   const adq = (disp.adequacy||{})[g] || {};
   const dict = (disp.adequacy||{}).dict_2028 || {};
   const mo = (disp.merit_order||{})[g] || {};
+  const pdur = (disp.price_duration||{})[g];
+  const mfreq = (disp.marginal_frequency||{})[g];
+  window.__diag.priceDuration = !!pdur;
   return `<h2>Simulate the dispatch</h2>
   <p class="sub">A simplified merit-order model, <b>not PLEXOS</b>: it stacks the
   sourced fleet by marginal cost against demand and reads off the clearing price.
@@ -786,6 +814,15 @@ function sideSimulate(){
   over-prices the overnight trough and under-prices the evening peak; the evening
   residual of P${fmt(cal.evening_peak_residual_php_kwh,2)}/kWh is scarcity and offer
   behaviour, not data-center load.${cal.note ? " " + esc(cal.note) + "." : ""}</div>
+  ${pdur ? `<h2 style="margin-top:12px">Price-duration curve</h2>
+  <div id="sim-duration">${durationSVG(pdur)}</div>
+  <div class="note"><b style="color:#333">modeled</b> vs
+    <b style="color:#b3261e">observed</b>. ${esc(pdur.note)}</div>` : ""}
+  ${mfreq ? `<h2 style="margin-top:12px">Who sets the price</h2>
+  <div id="sim-margfreq">${marginalFreqHTML(mfreq)}</div>
+  <div class="note">Share of market intervals each block is on the margin. Block
+  dispatch cannot name the individual plant, so this is at the fuel level; coal is
+  split into its committed (overnight) and marginal (peak) tranches.</div>` : ""}
   <h2 style="margin-top:12px">N-1: trip each named unit</h2>
   <table><thead><tr><th>Unit</th><th>MW</th><th>Evening price</th><th>Shed at peak</th></tr></thead>
   <tbody>${n1rows || "<tr><td colspan=4>Bake pending.</td></tr>"}</tbody></table>
