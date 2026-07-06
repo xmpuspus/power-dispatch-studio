@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Dispatch, GridKey } from '../lib/types'
 import { GRIDS } from '../lib/types'
-import { pct, useGenerators } from '../lib/data'
+import { php, pct, useGenerators } from '../lib/data'
 import { Segmented, ThemeToggle } from '../ui/kit'
 import { DurationView, MarginalView, ReliabilityView, ReserveView } from './views'
 import { ScenarioView } from './Scenario'
@@ -133,9 +133,20 @@ export function Studio({
     (nav.kind === 'sol' && GRID_SOL.has(nav.id)) ||
     (nav.kind === 'analysis' && nav.id === 'reserve')
 
+  const revertAll = () => {
+    setScenarios((prev) => prev.map((s, i) => (i === ai ? { ...s, overrides: {} } : s)))
+    setDirty(true)
+  }
+  const copySummary = () => {
+    const g = (k: GridKey) =>
+      `${k[0].toUpperCase() + k.slice(1)} ${php(solved.coupled.price[k])}/kWh, margin ${pct(solved.reserveMarginPct[k] / 100, 1)}, LOLP ${pct(solved.reliability[k].lolp_pct / 100, 2)}`
+    const text = `gridbill-ph studio, scenario "${active.name}"\n${GRIDS.map(g).join('\n')}`
+    void navigator.clipboard?.writeText(text)
+  }
+
   return (
     <div className="studio" data-testid="studio">
-      <header className="studio__bar">
+      <header className="studio__titlebar">
         <div className="studio__brand">
           <BrandMark />
           <div>
@@ -145,56 +156,34 @@ export function Studio({
             <div className="studio__tag">open dispatch studio</div>
           </div>
         </div>
-
-        <div className="studio__ribbon">
-          <label className="ribbon__scn">
-            <span>Scenario</span>
-            <select
-              value={ai}
-              onChange={(e) => pickScenario(Number(e.target.value))}
-              aria-label="Active scenario"
-            >
-              {scenarios.map((s, i) => (
-                <option key={i} value={i}>
-                  {s.name}
-                  {i > 0 ? ` (${Object.keys(s.overrides).length})` : ''}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button className="btn btn--ghost btn--sm" onClick={addScenario}>
-            + Scenario
-          </button>
-          <button
-            className={`btn btn--run${dirty ? ' is-dirty' : ''}`}
-            onClick={run}
-            aria-label="Run the simulation"
-          >
-            <PlayIcon /> Run
-          </button>
+        <span className="studio__homage" title="An independent, open homage.">
+          An independent homage. Not affiliated with Energy Exemplar. Not PLEXOS.
+        </span>
+        <div className="studio__barright">
           <span className={`statuschip statuschip--${dirty ? 'unsolved' : 'solved'}`}>
             <Dot /> {dirty ? 'Unsolved' : 'Solved'}
           </span>
-        </div>
-
-        <div className="studio__barright">
-          {gridScoped && (
-            <Segmented
-              ariaLabel="Select grid"
-              value={grid}
-              onChange={setGrid}
-              options={GRIDS.map((g) => ({
-                value: g,
-                label: g[0].toUpperCase() + g.slice(1),
-              }))}
-            />
-          )}
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
           <button className="btn btn--ghost" onClick={onExit}>
             Close studio
           </button>
         </div>
       </header>
+
+      <Ribbon
+        scenarios={scenarios}
+        ai={ai}
+        dirty={dirty}
+        editCount={editCount}
+        grid={grid}
+        gridScoped={gridScoped}
+        onRun={run}
+        onPick={pickScenario}
+        onAdd={addScenario}
+        onRevertAll={revertAll}
+        onCopy={copySummary}
+        onGrid={setGrid}
+      />
 
       <div className="studio__body">
         <Explorer nav={nav} setNav={setNav} editCount={editCount} />
@@ -231,6 +220,146 @@ export function Studio({
         <span className="studio__statspace" />
         <span>simplified merit-order model, calibrated against observed prices</span>
       </footer>
+    </div>
+  )
+}
+
+function Ribbon({
+  scenarios,
+  ai,
+  dirty,
+  editCount,
+  grid,
+  gridScoped,
+  onRun,
+  onPick,
+  onAdd,
+  onRevertAll,
+  onCopy,
+  onGrid,
+}: {
+  scenarios: Scenario[]
+  ai: number
+  dirty: boolean
+  editCount: number
+  grid: GridKey
+  gridScoped: boolean
+  onRun: () => void
+  onPick: (i: number) => void
+  onAdd: () => void
+  onRevertAll: () => void
+  onCopy: () => void
+  onGrid: (g: GridKey) => void
+}) {
+  const [tab, setTab] = useState<'home' | 'model' | 'solution'>('home')
+  const tabs = ['home', 'model', 'solution'] as const
+  return (
+    <div className="ribbon">
+      <div className="ribbon__tabs" role="tablist">
+        {tabs.map((t) => (
+          <button
+            key={t}
+            role="tab"
+            aria-selected={t === tab}
+            className={`ribbon__tab ${t === tab ? 'is-active' : ''}`}
+            onClick={() => setTab(t)}
+          >
+            {t[0].toUpperCase() + t.slice(1)}
+          </button>
+        ))}
+      </div>
+      <div className="ribbon__groups">
+        {tab === 'home' && (
+          <>
+            <RibbonGroup label="Simulation">
+              <button
+                className={`btn btn--run${dirty ? ' is-dirty' : ''}`}
+                onClick={onRun}
+                aria-label="Run the simulation"
+              >
+                <PlayIcon /> Run
+              </button>
+            </RibbonGroup>
+            <RibbonGroup label="Scenario">
+              <select
+                className="ribbon__select"
+                value={ai}
+                onChange={(e) => onPick(Number(e.target.value))}
+                aria-label="Active scenario"
+              >
+                {scenarios.map((s, i) => (
+                  <option key={i} value={i}>
+                    {s.name}
+                    {i > 0 ? ` (${Object.keys(s.overrides).length})` : ''}
+                  </option>
+                ))}
+              </select>
+              <button className="btn btn--ghost btn--sm" onClick={onAdd}>
+                + New
+              </button>
+            </RibbonGroup>
+            {gridScoped && (
+              <RibbonGroup label="Region">
+                <Segmented
+                  ariaLabel="Select grid"
+                  value={grid}
+                  onChange={onGrid}
+                  options={GRIDS.map((g) => ({
+                    value: g,
+                    label: g[0].toUpperCase() + g.slice(1),
+                  }))}
+                />
+              </RibbonGroup>
+            )}
+          </>
+        )}
+        {tab === 'model' && (
+          <>
+            <RibbonGroup label="Edits">
+              <button
+                className="btn btn--ghost btn--sm"
+                onClick={onRevertAll}
+                disabled={editCount === 0}
+              >
+                Revert all
+              </button>
+              <span className="ribbon__meta mono">{editCount} edited</span>
+            </RibbonGroup>
+            <RibbonGroup label="Objects">
+              <button
+                className="btn btn--ghost btn--sm"
+                disabled
+                title="The fleet is fixed to the sourced units in this open build"
+              >
+                + Add object
+              </button>
+            </RibbonGroup>
+          </>
+        )}
+        {tab === 'solution' && (
+          <>
+            <RibbonGroup label="Phase">
+              <span className="ribbon__meta">
+                ST Schedule <span className="tree__live">active</span>
+              </span>
+            </RibbonGroup>
+            <RibbonGroup label="Export">
+              <button className="btn btn--ghost btn--sm" onClick={onCopy}>
+                Copy summary
+              </button>
+            </RibbonGroup>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function RibbonGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="ribbon__group">
+      <div className="ribbon__cmds">{children}</div>
+      <div className="ribbon__grouplabel">{label}</div>
     </div>
   )
 }
