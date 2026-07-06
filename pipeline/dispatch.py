@@ -812,13 +812,22 @@ def build_dispatch() -> dict:
     for g in GRIDS:
         if not obs[g]:
             continue
+        omin, omax = min(obs[g]), max(obs[g])
         price_duration[g.lower()] = {
             "modeled": _duration_curve(mod[g]),
             "observed": _duration_curve(obs[g]),
-            "note": "Price at each percentile of the market window, high to low. The "
-                    "cost stack is a low, flat plateau; the observed curve has a tall "
-                    "scarcity tail on the left and a cheaper tail on the right that a "
-                    "competitive cost model does not reach.",
+            "observed_min_php_kwh": round(omin, 3),
+            "observed_max_php_kwh": round(omax, 3),
+            "note": "Raw 5-minute LWAP at each percentile of the market window, high "
+                    "to low. The cost stack is a low, flat plateau; the observed "
+                    "curve has a tall scarcity tail on the left and a cheaper tail on "
+                    "the right that a competitive cost model does not reach. Regional "
+                    "LWAP carries congestion and loss components, so it runs above the "
+                    "energy offer cap in scarcity and below zero during oversupply "
+                    "(midday solar); these are real market prints, not a cap or floor "
+                    "we imposed. prices.json shows the daily means, which are smoother "
+                    "and sit in a tighter band.",
+            "src": "https://powerphilippines.com/erc-approves-higher-secondary-price-cap-thresholds-in-wesm/",
         }
         tot = sum(marg_freq[g].values())
         marginal_frequency[g.lower()] = {

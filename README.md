@@ -173,10 +173,14 @@ observed prices, so this is a forward scenario against the modeled wave, not a
 calibration change.
 
 Two views make the whole calibration honest at a glance. The **price-duration curve**
-sorts every market interval high to low and overlays modeled against observed: the
-cost stack is a low, flat plateau from about **P4.80 to P12**, while the observed curve
-runs from a **P35** scarcity spike on the left down to a negative **-P11** oversupply
-tail on the right. A competitive cost model reaches neither end. The **who-sets-the-
+sorts every 5-minute market interval high to low and overlays modeled against observed:
+the cost stack is a low, flat plateau from about **P4.80 to P12**, while the observed
+curve runs from a **P35** scarcity spike on the left down to a negative oversupply tail
+on the right. A competitive cost model reaches neither end. Those raw tails are real
+IEMOP prints, not a cap or floor this project imposed: regional LWAP carries congestion
+and loss components, so it climbs above the energy offer cap when supply is tight and
+turns negative during midday oversupply. The daily means in `prices.json` average those
+5-minute extremes away, which is why that series sits in a tighter band. The **who-sets-the-
 price** table counts the marginal block: on Luzon coal is on the margin **97%** of the
 time (why the modeled line is so flat), while on Visayas the committed overnight coal
 tranche is marginal **24.5%** of the time, which is the unit-commitment layer showing
