@@ -3,8 +3,9 @@
 Written to the proven civic-tech pattern (leaves.ph, solar-map-ph): a live hook,
 specific numbers early, "computed from public data," "measurement not a verdict,"
 open code and data, a "check it yourself" close, dated sources. Honesty-lock-safe:
-never "data centers raised prices," no brownout prophecy, forecasts carry owners,
-the wholesale price and the retail bill are kept apart. Do not post until every
+never blame the buildout for this year's prices, no brownout prophecy, forecasts
+carry owners, the wholesale price and the retail bill are kept apart. Do not post
+until every
 pre-post gate is true. Links go in the FIRST COMMENT, not the body.
 
 ## Pre-post gates (all must be true before posting)
@@ -17,8 +18,8 @@ pre-post gate is true. Links go in the FIRST COMMENT, not the body.
 - [ ] Post the map, GitHub, and methodology links in the FIRST COMMENT (off-platform
       links in the body are down-ranked).
 - [ ] Hero: upload the story GIF as a native clip or the og.png card, not a bare link.
-- [ ] Re-read against the rails: no "data centers raised prices," no brownout
-      prophecy, forecasts labeled with owners.
+- [ ] Re-read against the rails: never blame the buildout for prices, no
+      brownout prophecy, forecasts labeled with owners.
 
 ## Primary hook (the receipts angle, safe today)
 
