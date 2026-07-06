@@ -53,6 +53,10 @@ checks.append(("N-1 table covers 11 units", len(disp.get("n1", [])) == 11))
 checks.append(("merit-order stacks baked", all(
     (disp.get("merit_order", {}).get(g, {}).get("blocks"))
     for g in ("luzon","visayas","mindanao"))))
+cpl = disp.get("coupling", {})
+checks.append(("coupling block baked (spread decomposition + corridors)",
+               bool(cpl.get("spread_decomposition")) and len(cpl.get("corridors", [])) == 2
+               and cpl.get("outage_scenario", {}).get("leyte_luzon_saturated_pct") is not None))
 html = urllib.request.urlopen(base + "/").read().decode()
 checks.append(("page mentions the three questions",
                "Can the grid handle" in json.dumps(ans) and "gridbill-ph" in html))
@@ -109,6 +113,18 @@ if command -v agent-browser >/dev/null 2>&1; then
   sleep 1
   TR=$(agent-browser eval '!!(window.__diag.simulate||{}).trip' 2>/dev/null | strip)
   [[ "$TR" == "true" ]] && ok "simulate N-1 trip registers" || bad "simulate trip ($TR)"
+  # coupled clear: switch to Visayas, add load toward the 250 MW link, then relieve
+  # it and confirm the coupled price responds through real coupling (not a fixed block)
+  agent-browser eval 'document.querySelector(".gsel[data-grid=visayas]").click();
+    const d=document.getElementById("sim-dc"); d.value=1500; d.dispatchEvent(new Event("input"))' >/dev/null 2>&1
+  sleep 1
+  CB=$(agent-browser eval '(window.__diag.simulate||{}).coupledPrice!=null' 2>/dev/null | strip)
+  BR=$(agent-browser eval '(window.__diag.simulate||{}).coupledPrice' 2>/dev/null | strip)
+  agent-browser eval 'const i=document.getElementById("sim-imp"); i.value=250; i.dispatchEvent(new Event("input"))' >/dev/null 2>&1
+  sleep 1
+  AR=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.imp===250, d.coupledPrice!=null].join("|")' 2>/dev/null | strip)
+  echo "coupled: baked=$CB price=$BR afterRelieve=$AR"
+  [[ "$CB" == "true" && "$AR" == true\|true ]] && ok "coupled clear + relieve lever re-clears" || bad "coupled clear ($CB/$AR)"
   agent-browser close >/dev/null 2>&1
 else
   echo "SKIP browser block (agent-browser not installed)"

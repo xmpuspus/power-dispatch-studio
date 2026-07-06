@@ -616,24 +616,77 @@ function clearJS(blocks, demand){
   return { price, avail: total, shortfall: Math.max(0, demand-total), marginal };
 }
 
-// build the scenario stack for the current levers (trip removes a unit's MW)
-function simStack(){
-  const disp = D["dispatch.json"] || {}; const g = SIM.grid;
+// build a grid's scenario stack for the current levers. `sel` true = the grid the
+// user is driving (trip / add-firm apply only there).
+function gridStack(g, sel){
+  const disp = D["dispatch.json"] || {};
   const mo = (disp.merit_order || {})[g]; if (!mo) return null;
   const blocks = mo.blocks.map(b => ({ ...b }));
-  if (SIM.trip){
+  if (sel && SIM.trip){
     const feats = (D["generators.geojson"]||{}).features || [];
     const u = feats.map(f=>f.properties).find(p => p.name === SIM.trip && p.grid.toLowerCase()===g);
     if (u){ const blk = blocks.find(b => b.fuel === u.fuel);
       if (blk) blk.mw = Math.max(0, blk.mw - u.capacity_mw); }
   }
-  if (SIM.addFirm > 0) blocks.push({ fuel:"firm", cost:FUEL_COST_FIRM, mw:SIM.addFirm });
-  if (SIM.imp > 0) blocks.push({ fuel:"import", cost:FUEL_COST_IMPORT, mw:SIM.imp });
-  const demand = mo.typical_evening_demand_mw + SIM.addDC;
-  return { mo, blocks, demand };
+  if (sel && SIM.addFirm > 0) blocks.push({ fuel:"firm", cost:FUEL_COST_FIRM, mw:SIM.addFirm });
+  return { mo, blocks };
+}
+function simStack(){
+  const g = SIM.grid;
+  const s = gridStack(g, true); if (!s) return null;
+  const demand = s.mo.typical_evening_demand_mw + SIM.addDC;
+  return { mo: s.mo, blocks: s.blocks, demand };
 }
 const FUEL_COST_FIRM = 6.0;   // new firm capacity priced at coal (labeled)
-const FUEL_COST_IMPORT = 4.8; // cheap inter-island import (labeled: raises HVDC headroom)
+
+// ---- inter-island coupled clear, a browser port of pipeline/coupled_dispatch.py.
+// Same radial min-cost path solve, same wheeling tie-break; drives the "relieve a
+// choke point" lever as a real corridor-cap change, not a fixed import block.
+const WHEEL = 0.02;
+const OILC = 12.0;
+function margJS(blocks, gmw){
+  if (!blocks.length) return OILC;
+  if (gmw <= 0) return blocks[0].cost;
+  let cum = 0;
+  for (const b of blocks){ cum += b.mw; if (cum >= gmw) return b.cost; }
+  return blocks[blocks.length-1].cost;
+}
+function rootDecr(phi, lo, hi, target){
+  for (let i=0; i<40 && hi-lo>0.25; i++){ const m=(lo+hi)/2; if (phi(m) > target) lo=m; else hi=m; }
+  return (lo+hi)/2;
+}
+function optFlow(phi, lo, hi){
+  if (hi <= lo) return lo;
+  const zero = Math.min(Math.max(0, lo), hi), p0 = phi(zero);
+  if (p0 > WHEEL) return phi(hi) >= WHEEL ? hi : rootDecr(phi, zero, hi, WHEEL);
+  if (p0 < -WHEEL) return phi(lo) <= -WHEEL ? lo : rootDecr(phi, lo, zero, -WHEEL);
+  return zero;
+}
+// demand {luzon,visayas,mindanao} MW; stacks same keys; caps {leyte,mvip} MW.
+function clearCoupledJS(demand, stacks, caps){
+  const dL=demand.luzon, dV=demand.visayas, dM=demand.mindanao;
+  const bL=stacks.luzon, bV=stacks.visayas, bM=stacks.mindanao;
+  const availV = bV.reduce((s,b)=>s+b.mw,0);
+  const c1=caps.leyte, c2=caps.mvip;
+  const mcL=f1=>margJS(bL,dL+f1), mcV=(f1,f2)=>margJS(bV,dV+f2-f1), mcM=f2=>margJS(bM,dM-f2);
+  let f1=0,f2=0;
+  for (let i=0;i<60;i++){
+    const lo=Math.max(-c1,-dL), hi=Math.min(c1,dV+f2);
+    const nf1=optFlow(x=>mcV(x,f2)-mcL(x), lo, hi);
+    const lo2=Math.max(-c2,nf1-dV), hi2=Math.min(c2,dM);
+    const nf2=optFlow(x=>mcM(x)-mcV(nf1,x), lo2, hi2);
+    if (Math.abs(nf1-f1)+Math.abs(nf2-f2) < 0.25){ f1=nf1; f2=nf2; break; }
+    f1=nf1; f2=nf2;
+  }
+  const gen={luzon:dL+f1, visayas:dV+f2-f1, mindanao:dM-f2};
+  const avail={luzon:bL.reduce((s,b)=>s+b.mw,0), visayas:availV, mindanao:bM.reduce((s,b)=>s+b.mw,0)};
+  const price={luzon:margJS(bL,gen.luzon), visayas:margJS(bV,gen.visayas), mindanao:margJS(bM,gen.mindanao)};
+  const shortfall={}; for (const k in gen) shortfall[k]=Math.max(0, gen[k]-avail[k]);
+  const sat1=Math.abs(f1)>=c1-0.5, sat2=Math.abs(f2)>=c2-0.5;
+  return { price, gen, shortfall, flowLV:f1, flowVM:f2,
+    leyte:{ flow:f1, sat:sat1, rent: sat1 ? +(price.visayas-price.luzon).toFixed(3) : 0 },
+    mvip:{ flow:f2, sat:sat2, rent: sat2 ? +(price.mindanao-price.visayas).toFixed(3) : 0 } };
+}
 
 function stackSVG(blocks, demand){
   const W = 300, H = 42, pad = 2;
@@ -651,6 +704,26 @@ function stackSVG(blocks, demand){
     stroke="#111" stroke-width="1.6" stroke-dasharray="3 2"/>
     <text x="${Math.min(dx+3,W-70).toFixed(1)}" y="40" font-size="8.5" fill="#111">demand ${fmt(demand)} MW</text>`;
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Merit-order supply stack with the demand line">${segs}</svg>`;
+}
+
+// the coupled-model finding, read straight from the baked coupling block
+function couplingNote(disp){
+  const c = disp.coupling; if (!c) return "";
+  const sd = (c.spread_decomposition || {}).visayas_vs_luzon || {};
+  const o = c.outage_scenario || {};
+  const bt = c.dc_binding_threshold || {};
+  const pct = v => v == null ? "?" : fmt(Math.abs(v * 100) < 0.5 ? 0 : v * 100, 0);
+  return `<div class="note" id="sim-coupling-note">Couple the three grids and cheap
+    Luzon power flows south over the HVDC links up to their limits. Over the market
+    window that reproduces almost none of the observed P${fmt(sd.observed_php_kwh,2)}/kWh
+    Visayas-Luzon spread (about ${pct(sd.explained_fraction)}%): most hours all three
+    islands sit on the coal margin and the 250 MW link does not bind. That spread is
+    the scarcity of the 52-day streak, not transmission. Re-clear the streak with the
+    documented ${fmt(o.outage_mw)} MW Visayas outage and the link saturates
+    ${fmt(o.leyte_luzon_saturated_pct,0)}% of the time at a P${fmt(o.leyte_luzon_mean_rent_php_kwh,2)}/kWh
+    rent, reproducing ${pct(o.explained_fraction)}% of the spread. At a typical evening
+    just ${fmt(bt.added_visayas_load_to_bind_leyte_mw)} MW of added Visayas load binds
+    the corridor.</div>`;
 }
 
 function sideSimulate(){
@@ -684,6 +757,7 @@ function sideSimulate(){
   <div class="gselrow">${gridBtn}</div>
   <div id="sim-read"></div>
   <div id="sim-stack" style="margin:6px 0 2px"></div>
+  <div id="sim-coupled"></div>
   <div class="simctl">
     <label>Add a data center (flat 24/7 load): <b id="sim-dcv">${fmt(SIM.addDC)}</b> MW
       <span class="tick">DICT 2028 forecast: 1,500 MW</span>
@@ -692,9 +766,10 @@ function sideSimulate(){
       <select id="sim-trip">${tripOpts}</select></label>
     <label>Add firm capacity: <b id="sim-firmv">${fmt(SIM.addFirm)}</b> MW
       <input type="range" id="sim-firm" min="0" max="1000" step="50" value="${SIM.addFirm}"></label>
-    <label>Relieve a choke point (extra inter-island import): <b id="sim-impv">${fmt(SIM.imp)}</b> MW
+    <label>Relieve the feeding HVDC corridor (extra operating limit): <b id="sim-impv">${fmt(SIM.imp)}</b> MW
       <input type="range" id="sim-imp" min="0" max="${impMax}" step="25" value="${SIM.imp}"></label>
   </div>
+  ${couplingNote(disp)}
   <div class="note" id="sim-cal">Over ${fmt(cal.n_intervals)} five-minute intervals
   in the market-priced window (after WESM resumed ${esc((disp.calibration_window||{}).from)}),
   the cost stack averaged P${fmt(cal.modeled_mean_php_kwh,2)}/kWh against an observed
@@ -716,13 +791,33 @@ function sideSimulate(){
   " intervals short, " + fmt(dict.eue_mwh_with_dc) + " MWh unserved in the window). DICT forecast, Oct 2025." : ""}</div>`;
 }
 
+// assemble the three-grid coupled scenario from the current levers. The relieve
+// lever raises the operating limit of the corridor that FEEDS the selected grid.
+function coupledSim(){
+  const disp = D["dispatch.json"] || {}; const mo = disp.merit_order || {};
+  if (!mo.luzon || !mo.visayas || !mo.mindanao) return null;
+  const g = SIM.grid;
+  const demand = {}, stacks = {};
+  for (const k of ["luzon","visayas","mindanao"]){
+    demand[k] = mo[k].typical_evening_demand_mw + (k===g ? SIM.addDC : 0);
+    stacks[k] = (gridStack(k, k===g) || {}).blocks || [];
+  }
+  const cor = (disp.coupling || {}).corridors || [];
+  const lim = id => (cor.find(c=>c.id===id) || {}).limit_mw;
+  const baseLeyte = lim("leyte_luzon_hvdc") || 250, baseMvip = lim("mvip_hvdc") || 450;
+  const feed = g === "mindanao" ? "mvip" : "leyte";  // luzon is the source, no feed
+  const caps = { leyte: baseLeyte + (feed==="leyte" && g!=="luzon" ? SIM.imp : 0),
+                 mvip: baseMvip + (feed==="mvip" ? SIM.imp : 0) };
+  return { res: clearCoupledJS(demand, stacks, caps), g, feed, caps };
+}
+
 function updateSim(){
   const s = simStack(); if (!s) return;
   const base = clearJS(s.mo.blocks.map(b=>({...b})), s.mo.typical_evening_demand_mw);
   const res = clearJS(s.blocks, s.demand);
   const read = $("sim-read");
   if (read) read.innerHTML =
-    `<div class="kv"><span>Clearing price (marginal fuel)</span>
+    `<div class="kv"><span>Single-grid clearing price (marginal fuel)</span>
        <span><b>P${fmt(res.price,2)}/kWh</b> &middot; ${esc(fuelLabel(res.marginal))}</span></div>
      <div class="kv"><span>vs base case (no levers)</span>
        <span>P${fmt(base.price,2)} &rarr; P${fmt(res.price,2)} (${res.price>=base.price?"+":""}P${fmt(res.price-base.price,2)})</span></div>
@@ -731,9 +826,26 @@ function updateSim(){
     (res.shortfall > 0 ? `<div class="kv shortfall"><span>Supply shortfall (load shed)</span>
        <span><b>${fmt(res.shortfall)} MW</b></span></div>` : "");
   const st = $("sim-stack"); if (st) st.innerHTML = stackSVG(s.blocks, s.demand);
+
+  // coupled readout: the selected grid cleared together with the other two islands
+  const cs = coupledSim();
+  const cread = $("sim-coupled");
+  let cp = null, csat = null, crent = null;
+  if (cs && cread){
+    const g = cs.g, p = cs.res.price[g], corr = cs.res[cs.feed];
+    cp = p; csat = corr.sat; crent = corr.rent;
+    const feedName = cs.feed === "mvip" ? "MVIP (from Visayas)" : "Leyte-Luzon (from Luzon)";
+    const rows = `<div class="kv"><span>Coupled clearing price (with the two other islands)</span>
+       <span><b>P${fmt(p,2)}/kWh</b></span></div>` +
+      (g === "luzon"
+        ? `<div class="note" style="margin:2px 0">Luzon is the exporting grid: it sets the floor the others import from. Relieving a corridor helps the grid downstream, not Luzon.</div>`
+        : `<div class="kv"><span>${feedName} link</span><span>${fmt(Math.abs(corr.flow))} MW ${corr.flow>0?"in":"reverse"}${corr.sat?", <b>saturated</b>":", open"}</span></div>` +
+          (corr.sat ? `<div class="kv"><span>Congestion rent across the binding link</span><span><b>P${fmt(corr.rent,2)}/kWh</b></span></div>` : ``));
+    cread.innerHTML = rows;
+  }
   window.__diag.simulate = { grid:SIM.grid, addDC:SIM.addDC, addFirm:SIM.addFirm,
     imp:SIM.imp, trip:SIM.trip, price:res.price, shortfall:res.shortfall,
-    marginal:res.marginal };
+    marginal:res.marginal, coupledPrice:cp, coupledSaturated:csat, coupledRent:crent };
 }
 
 function wireSim(){
