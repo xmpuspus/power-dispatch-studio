@@ -32,6 +32,7 @@
    "reference_hour": 19,
    "installed_mw": 21073,
    "avail_mw": 15680.1,
+   "typical_evening_demand_mw": 11945,
    "peak_demand_mw": 14589,
    "blocks": [
     {
@@ -75,6 +76,7 @@
    "reference_hour": 19,
    "installed_mw": 3962,
    "avail_mw": 2788.6,
+   "typical_evening_demand_mw": 1822,
    "peak_demand_mw": 2559,
    "blocks": [
     {
@@ -113,6 +115,7 @@
    "reference_hour": 19,
    "installed_mw": 4818,
    "avail_mw": 3528.6,
+   "typical_evening_demand_mw": 2805,
    "peak_demand_mw": 3227,
    "blocks": [
     {

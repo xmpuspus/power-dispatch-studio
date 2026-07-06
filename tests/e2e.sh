@@ -15,7 +15,8 @@ for p in / /methodology.html; do
 done
 for f in meta.json answers.json congestion.json prices.json reliability.json \
          outages.json market_anchors.json demand_anchors.json \
-         congestion_premium.json chokepoints.geojson dc_sites.geojson sual.geojson; do
+         congestion_premium.json chokepoints.geojson dc_sites.geojson sual.geojson \
+         generators.geojson dispatch.json; do
   [ "$(code /data/$f)" = "200" ] && ok "GET /data/$f" || bad "GET /data/$f"
 done
 
@@ -42,6 +43,16 @@ checks.append(("every finding has a map focus", all(
     for f in fnd.get("findings", []))))
 lc = cong.get("corridor_receipts", {}).get("leyte_cebu_230kv", {})
 checks.append(("Leyte-Cebu corridor receipts joined", lc.get("days", 0) >= 60))
+gens = get("/data/generators.geojson")
+checks.append(("11 named generators", len(gens["features"]) == 11))
+disp = get("/data/dispatch.json")
+checks.append(("dispatch model available", disp.get("available") is True))
+checks.append(("dispatch calibration 3 grids",
+               set(disp.get("calibration", {})) == {"luzon","visayas","mindanao"}))
+checks.append(("N-1 table covers 11 units", len(disp.get("n1", [])) == 11))
+checks.append(("merit-order stacks baked", all(
+    (disp.get("merit_order", {}).get(g, {}).get("blocks"))
+    for g in ("luzon","visayas","mindanao"))))
 html = urllib.request.urlopen(base + "/").read().decode()
 checks.append(("page mentions the three questions",
                "Can the grid handle" in json.dumps(ans) and "gridbill-ph" in html))
@@ -80,6 +91,24 @@ if command -v agent-browser >/dev/null 2>&1; then
   sleep 1
   SU=$(agent-browser eval 'const on=(window.__diag||{}).sual; const b=document.getElementById("sualbtn"); (on===b.classList.contains("on"))?"sync":"DESYNC"' 2>/dev/null | strip)
   [[ "$SU" == "sync" ]] && ok "sual toggle stays in sync across mode switch" || bad "sual desync ($SU)"
+  # Simulate mode: generators layer + dispatch model surface, and levers re-clear
+  agent-browser eval 'document.querySelector("[data-mode=simulate]").click()' >/dev/null 2>&1
+  sleep 1
+  SM=$(agent-browser eval 'const d=window.__diag||{};[d.mode,d.dispatch,d.generators===11,!!d.simulate].join("|")' 2>/dev/null | strip)
+  echo "simulate: $SM"
+  [[ "$SM" == simulate\|true\|true\|true ]] && ok "simulate mode + dispatch + generators" || bad "simulate mode ($SM)"
+  # move the add-a-data-center slider and confirm the model re-clears in the browser
+  BP=$(agent-browser eval '(window.__diag.simulate||{}).price' 2>/dev/null | strip)
+  agent-browser eval 'const s=document.getElementById("sim-dc"); s.value=1500; s.dispatchEvent(new Event("input"))' >/dev/null 2>&1
+  sleep 1
+  AP=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.addDC===1500, d.price!=null].join("|")' 2>/dev/null | strip)
+  echo "sim add-DC: base=$BP after=$AP"
+  [[ "$AP" == true\|true ]] && ok "simulate lever re-clears the stack" || bad "simulate lever ($AP)"
+  # trip a unit (N-1) and confirm the diag records the tripped unit
+  agent-browser eval 'const t=document.getElementById("sim-trip"); t.value=t.options[1].value; t.dispatchEvent(new Event("change"))' >/dev/null 2>&1
+  sleep 1
+  TR=$(agent-browser eval '!!(window.__diag.simulate||{}).trip' 2>/dev/null | strip)
+  [[ "$TR" == "true" ]] && ok "simulate N-1 trip registers" || bad "simulate trip ($TR)"
   agent-browser close >/dev/null 2>&1
 else
   echo "SKIP browser block (agent-browser not installed)"

@@ -60,6 +60,18 @@
   .sual-btn{ width:100%; margin-top:9px; border:1px solid var(--line); background:#fff; color:var(--ink);
     border-radius:7px; padding:7px 10px; cursor:pointer; font-size:12.5px; font-weight:600; }
   .sual-btn.on{ background:var(--sual); border-color:var(--sual); color:#fff; }
+  /* simulate panel */
+  .gselrow{ display:flex; gap:6px; margin:2px 0 8px; }
+  .gsel{ flex:1; border:1px solid var(--line); background:#fff; color:var(--muted);
+    border-radius:6px; padding:5px 6px; cursor:pointer; font-size:12px; }
+  .gsel.on{ background:var(--navy,#12335c); border-color:var(--navy,#12335c); color:#fff; }
+  .simctl{ margin:8px 0 2px; display:flex; flex-direction:column; gap:8px; }
+  .simctl label{ font-size:11.5px; color:var(--muted); display:flex; flex-direction:column; gap:3px; }
+  .simctl label b{ color:var(--ink); font-variant-numeric:tabular-nums; }
+  .simctl input[type=range]{ width:100%; accent-color:var(--navy,#12335c); }
+  .simctl .tick{ font-size:10px; color:var(--muted); opacity:.8; }
+  .simctl select{ padding:5px 6px; border:1px solid var(--line); border-radius:6px; font-size:12px; }
+  .kv.shortfall span:last-child{ color:var(--sual,#b3261e); }
   /* story rail */
   #rail{ left:50%; transform:translateX(-50%); bottom:16px; width:min(600px, calc(100% - 24px)); padding:0; overflow:hidden; }
   .r-top{ display:flex; align-items:center; gap:8px; padding:9px 13px 7px; border-bottom:1px solid var(--line); }
@@ -153,6 +165,7 @@
   <button class="mode on" data-mode="supply" role="tab">1 Supply</button>
   <button class="mode" data-mode="choke" role="tab">2 Choke points</button>
   <button class="mode" data-mode="price" role="tab">3 Prices</button>
+  <button class="mode" data-mode="simulate" role="tab">Simulate</button>
 </div>
 
 <div id="side" class="panel"></div>
@@ -187,7 +200,8 @@
 <script>
 window.__diag = { ready:false, mode:"supply", chokepoints:0, dcs:0, league:0,
   priceDays:0, railIndex:0, answers:false, sual:false, layers:0,
-  findings:0, drawerOpen:false, activeFinding:null, fetchFailures:[], baked:null };
+  findings:0, drawerOpen:false, activeFinding:null, fetchFailures:[], baked:null,
+  generators:0, dispatch:false, simulate:null };
 
 const $ = (id) => document.getElementById(id);
 const fmt = (n, d=0) => n == null ? "n/a" :
@@ -196,7 +210,7 @@ const fmt = (n, d=0) => n == null ? "n/a" :
 const FILES = ["meta.json","answers.json","congestion.json","prices.json",
   "reliability.json","outages.json","market_anchors.json","demand_anchors.json",
   "congestion_premium.json","findings.json","chokepoints.geojson",
-  "dc_sites.geojson","sual.geojson"];
+  "dc_sites.geojson","sual.geojson","generators.geojson","dispatch.json"];
 const D = {};
 
 async function loadAll(){
@@ -270,6 +284,19 @@ function addLayers(){
         "circle-stroke-width": 3, "circle-stroke-color": "#b3261e" }});
     n++;
   }
+  if (D["generators.geojson"]){
+    map.addSource("gen", { type:"geojson", data: D["generators.geojson"] });
+    map.addLayer({ id:"gen-pt", type:"circle", source:"gen",
+      layout:{ visibility:"none" },
+      paint:{
+        "circle-radius": ["interpolate", ["linear"], ["get","capacity_mw"],
+          200, 6, 1340, 15],
+        "circle-color": ["match", ["get","fuel"],
+          "natural_gas", "#4e79a7", "coal", "#6b6b6b", "#8a97a0"],
+        "circle-opacity": .82,
+        "circle-stroke-width": 1.6, "circle-stroke-color": "#333" }});
+    n++;
+  }
   window.__diag.layers = n;
 
   const hover = (layer, html) => {
@@ -307,6 +334,12 @@ function addLayers(){
     (p.note ? `<br>${esc(p.note)}` : "") + `<br><i>Pin is city-precision.</i>`);
   hover("sual-pt", p => `<b>${esc(p.name)}</b><br>${esc(p.location)}<br>` +
     `${fmt(p.units)} x ${fmt(p.unit_mw)} MW, the largest single units on the Luzon grid.`);
+  hover("gen-pt", p => `<b>${esc(p.name)}</b><br>${esc(p.city)} &middot; ${esc(p.grid)}` +
+    `<br>${fmt(p.capacity_mw)} MW ${esc(String(p.fuel||"").replace("_"," "))}` +
+    `, ~P${fmt(p.marginal_cost_php_kwh,2)}/kWh marginal` +
+    (p.owner ? `<br>${esc(p.owner)}` : "") +
+    (p.note ? `<br>${esc(p.note)}` : "") +
+    `<br><i>Pin is city-precision. Pick it in Simulate to trip it (N-1).</i>`);
 }
 
 /* ---------- rail ---------- */
@@ -489,7 +522,11 @@ const LEGENDS = {
   price: { title:"Prices and the links", keys: [
     ["ln","#9c3d12","HVDC links: when they bind, the regional prices separate"],
     ["sw","#1a7f48","Data-center sites for reference"]],
-    note:"Regional price series in the panel; the spread is the geography." }
+    note:"Regional price series in the panel; the spread is the geography." },
+  simulate: { title:"Named generators (price movers)", keys: [
+    ["sw","#6b6b6b","Coal unit (size by capacity)"],
+    ["sw","#4e79a7","Natural-gas unit"]],
+    note:"The units large enough that one trip is felt on the grid. Pins are city-precision. Trip one in the panel to run the N-1." }
 };
 function legendRender(){
   const L = LEGENDS[MODE];
@@ -506,7 +543,8 @@ function setMode(m, syncRail = true){
   document.querySelectorAll(".mode").forEach(b =>
     b.classList.toggle("on", b.dataset.mode === m));
   const S = $("side");
-  S.innerHTML = m === "supply" ? sideSupply() : m === "choke" ? sideChoke() : sideprice();
+  S.innerHTML = m === "supply" ? sideSupply() : m === "choke" ? sideChoke()
+    : m === "simulate" ? sideSimulate() : sideprice();
   legendRender();
   if (m === "choke"){
     const btn = $("sualbtn");
@@ -517,8 +555,12 @@ function setMode(m, syncRail = true){
       if (SUAL_ON){ SUAL_ON = false; sualToggle(btn); }
     }
   }
+  if (m === "simulate"){ wireSim(); updateSim(); }
   if (map.getLayer("dc-pt"))
-    map.setLayoutProperty("dc-pt", "visibility", m === "choke" ? "none" : "visible");
+    map.setLayoutProperty("dc-pt", "visibility",
+      (m === "choke" || m === "simulate") ? "none" : "visible");
+  if (map.getLayer("gen-pt"))
+    map.setLayoutProperty("gen-pt", "visibility", m === "simulate" ? "visible" : "none");
   if (syncRail){
     const idx = ["supply","choke","price"].indexOf(m);
     if (idx >= 0 && idx !== RAIL_I){ RAIL_I = idx; railRender(); }
@@ -553,6 +595,157 @@ function sualToggle(btn){
     on the Luzon grid; the toggle subtracts one unit from the May 2026 system margin
     as arithmetic, not a dispatch simulation.`;
   }
+}
+
+/* ---------- simulate: merit-order dispatch, re-cleared in the browser ---------- */
+const FUELCOL = { solar:"#e0b93b", wind:"#7fb2d6", hydro:"#3a6b8a",
+  geothermal:"#8a6bb0", natural_gas:"#4e79a7", biomass:"#5a9e6f", coal:"#6b6b6b",
+  oil:"#b3261e", import:"#1a7f48", firm:"#125c34" };
+const HVDC_IMPORT_LIMIT = { luzon:250, visayas:250, mindanao:450 };
+let SIM = { grid:"luzon", addDC:0, addFirm:0, imp:0, trip:"" };
+
+function fuelLabel(f){ return String(f||"").replace(/_/g," "); }
+
+// mirror of fleet_ph.clear: stack the blocks by cost, read the marginal price
+function clearJS(blocks, demand){
+  const merged = blocks.slice().sort((a,b)=>a.cost-b.cost);
+  const total = merged.reduce((s,b)=>s+b.mw, 0);
+  let cum = 0, price = merged.length ? merged[merged.length-1].cost : 0;
+  let marginal = merged.length ? merged[merged.length-1].fuel : null;
+  for (const b of merged){ cum += b.mw; if (cum >= demand){ price = b.cost; marginal = b.fuel; break; } }
+  return { price, avail: total, shortfall: Math.max(0, demand-total), marginal };
+}
+
+// build the scenario stack for the current levers (trip removes a unit's MW)
+function simStack(){
+  const disp = D["dispatch.json"] || {}; const g = SIM.grid;
+  const mo = (disp.merit_order || {})[g]; if (!mo) return null;
+  const blocks = mo.blocks.map(b => ({ ...b }));
+  if (SIM.trip){
+    const feats = (D["generators.geojson"]||{}).features || [];
+    const u = feats.map(f=>f.properties).find(p => p.name === SIM.trip && p.grid.toLowerCase()===g);
+    if (u){ const blk = blocks.find(b => b.fuel === u.fuel);
+      if (blk) blk.mw = Math.max(0, blk.mw - u.capacity_mw); }
+  }
+  if (SIM.addFirm > 0) blocks.push({ fuel:"firm", cost:FUEL_COST_FIRM, mw:SIM.addFirm });
+  if (SIM.imp > 0) blocks.push({ fuel:"import", cost:FUEL_COST_IMPORT, mw:SIM.imp });
+  const demand = mo.typical_evening_demand_mw + SIM.addDC;
+  return { mo, blocks, demand };
+}
+const FUEL_COST_FIRM = 6.0;   // new firm capacity priced at coal (labeled)
+const FUEL_COST_IMPORT = 4.8; // cheap inter-island import (labeled: raises HVDC headroom)
+
+function stackSVG(blocks, demand){
+  const W = 300, H = 42, pad = 2;
+  const scaleMax = Math.max(demand, blocks.reduce((s,b)=>s+b.mw,0)) * 1.02;
+  const sorted = blocks.slice().sort((a,b)=>a.cost-b.cost);
+  let x = pad, segs = "";
+  for (const b of sorted){
+    const w = (W - 2*pad) * b.mw / scaleMax;
+    segs += `<rect x="${x.toFixed(1)}" y="8" width="${Math.max(0,w).toFixed(1)}" height="20"
+      fill="${FUELCOL[b.fuel]||'#999'}"><title>${fuelLabel(b.fuel)} ${fmt(b.mw)} MW @ P${b.cost}/kWh</title></rect>`;
+    x += w;
+  }
+  const dx = pad + (W - 2*pad) * demand / scaleMax;
+  segs += `<line x1="${dx.toFixed(1)}" y1="4" x2="${dx.toFixed(1)}" y2="34"
+    stroke="#111" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text x="${Math.min(dx+3,W-70).toFixed(1)}" y="40" font-size="8.5" fill="#111">demand ${fmt(demand)} MW</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Merit-order supply stack with the demand line">${segs}</svg>`;
+}
+
+function sideSimulate(){
+  const disp = D["dispatch.json"] || {};
+  if (!disp.available) return `<h2>Simulate the dispatch</h2>
+    <p class="note">Dispatch bake pending. Run make data.</p>`;
+  const g = SIM.grid;
+  const cal = (disp.calibration || {})[g] || {};
+  const feats = (D["generators.geojson"]||{}).features || [];
+  const units = feats.map(f=>f.properties).filter(p => p.grid.toLowerCase()===g)
+    .sort((a,b)=>b.capacity_mw-a.capacity_mw);
+  const tripOpts = `<option value="">none (all units running)</option>` +
+    units.map(u => `<option value="${esc(u.name)}"${SIM.trip===u.name?" selected":""}>` +
+      `${esc(u.name)} (-${fmt(u.capacity_mw)} MW ${esc(fuelLabel(u.fuel))})</option>`).join("");
+  const impMax = HVDC_IMPORT_LIMIT[g] || 250;
+  const gridBtn = ["luzon","visayas","mindanao"].map(k =>
+    `<button class="gsel${k===g?' on':''}" data-grid="${k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join("");
+  const n1 = (disp.n1||[]).filter(n=>n.grid===g).slice(0,6);
+  const n1rows = n1.map(n =>
+    `<tr><td>${esc(n.unit)}</td><td class="num">${fmt(n.capacity_mw)}</td>
+     <td class="num">P${fmt(n.base_price_php_kwh,0)}&rarr;P${fmt(n.tripped_price_php_kwh,0)}</td>
+     <td class="num">${fmt(n.shortfall_at_peak_mw)}</td></tr>`).join("");
+  const adq = (disp.adequacy||{})[g] || {};
+  const dict = (disp.adequacy||{}).dict_2028 || {};
+  const mo = (disp.merit_order||{})[g] || {};
+  return `<h2>Simulate the dispatch</h2>
+  <p class="sub">A simplified merit-order model, <b>not PLEXOS</b>: it stacks the
+  sourced fleet by marginal cost against demand and reads off the clearing price.
+  Move the levers; the price re-clears here in your browser, on the same stack the
+  model baked. Calibrated against observed prices, not a predictor of them.</p>
+  <div class="gselrow">${gridBtn}</div>
+  <div id="sim-read"></div>
+  <div id="sim-stack" style="margin:6px 0 2px"></div>
+  <div class="simctl">
+    <label>Add a data center (flat 24/7 load): <b id="sim-dcv">${fmt(SIM.addDC)}</b> MW
+      <span class="tick">DICT 2028 forecast: 1,500 MW</span>
+      <input type="range" id="sim-dc" min="0" max="3000" step="50" value="${SIM.addDC}"></label>
+    <label>Trip a unit (N-1):
+      <select id="sim-trip">${tripOpts}</select></label>
+    <label>Add firm capacity: <b id="sim-firmv">${fmt(SIM.addFirm)}</b> MW
+      <input type="range" id="sim-firm" min="0" max="1000" step="50" value="${SIM.addFirm}"></label>
+    <label>Relieve a choke point (extra inter-island import): <b id="sim-impv">${fmt(SIM.imp)}</b> MW
+      <input type="range" id="sim-imp" min="0" max="${impMax}" step="25" value="${SIM.imp}"></label>
+  </div>
+  <div class="note" id="sim-cal">Over ${fmt(cal.n_intervals)} five-minute intervals,
+  the cost stack averaged P${fmt(cal.modeled_mean_php_kwh,2)}/kWh against an observed
+  P${fmt(cal.observed_mean_php_kwh,2)}/kWh (MAE P${fmt(cal.mae_php_kwh,2)}). It
+  over-prices the overnight trough and under-prices the evening peak; the evening
+  residual of P${fmt(cal.evening_peak_residual_php_kwh,2)}/kWh is scarcity and offer
+  behaviour, not data-center load.${cal.note ? " " + esc(cal.note) + "." : ""}</div>
+  <h2 style="margin-top:12px">N-1: trip each named unit</h2>
+  <table><thead><tr><th>Unit</th><th>MW</th><th>Evening price</th><th>Shed at peak</th></tr></thead>
+  <tbody>${n1rows || "<tr><td colspan=4>Bake pending.</td></tr>"}</tbody></table>
+  <div class="note">The panel starts at a typical evening peak
+  (${fmt(mo.typical_evening_demand_mw)} MW); the annual peak of
+  ${fmt(mo.peak_demand_mw)} MW already clears on oil. Reserve margin now:
+  <b>${fmt(adq.reserve_margin_pct,1)}%</b>
+  (${fmt(adq.avail_at_peak_mw)} MW available at peak vs ${fmt(adq.peak_demand_mw)} MW peak).
+  ${g==="luzon" && dict.added_mw ? "Add the DICT forecast of " + fmt(dict.added_mw) +
+  " MW of data centers by 2028 and the Luzon margin falls to <b>" +
+  fmt(dict.reserve_margin_with_dc_pct,1) + "%</b> (" + fmt(dict.shortfall_intervals_with_dc) +
+  " intervals short, " + fmt(dict.eue_mwh_with_dc) + " MWh unserved in the window). DICT forecast, Oct 2025." : ""}</div>`;
+}
+
+function updateSim(){
+  const s = simStack(); if (!s) return;
+  const base = clearJS(s.mo.blocks.map(b=>({...b})), s.mo.typical_evening_demand_mw);
+  const res = clearJS(s.blocks, s.demand);
+  const read = $("sim-read");
+  if (read) read.innerHTML =
+    `<div class="kv"><span>Clearing price (marginal fuel)</span>
+       <span><b>P${fmt(res.price,2)}/kWh</b> &middot; ${esc(fuelLabel(res.marginal))}</span></div>
+     <div class="kv"><span>vs base case (no levers)</span>
+       <span>P${fmt(base.price,2)} &rarr; P${fmt(res.price,2)} (${res.price>=base.price?"+":""}P${fmt(res.price-base.price,2)})</span></div>
+     <div class="kv"><span>Available vs demand</span>
+       <span>${fmt(res.avail)} MW vs ${fmt(s.demand)} MW</span></div>` +
+    (res.shortfall > 0 ? `<div class="kv shortfall"><span>Supply shortfall (load shed)</span>
+       <span><b>${fmt(res.shortfall)} MW</b></span></div>` : "");
+  const st = $("sim-stack"); if (st) st.innerHTML = stackSVG(s.blocks, s.demand);
+  window.__diag.simulate = { grid:SIM.grid, addDC:SIM.addDC, addFirm:SIM.addFirm,
+    imp:SIM.imp, trip:SIM.trip, price:res.price, shortfall:res.shortfall,
+    marginal:res.marginal };
+}
+
+function wireSim(){
+  document.querySelectorAll(".gsel").forEach(b => b.onclick = () => {
+    SIM = { grid:b.dataset.grid, addDC:0, addFirm:0, imp:0, trip:"" };
+    $("side").innerHTML = sideSimulate(); wireSim(); updateSim();
+  });
+  const bind = (id, key, valId) => { const el = $(id); if (!el) return;
+    el.oninput = () => { SIM[key] = +el.value; if (valId) $(valId).textContent = fmt(SIM[key]); updateSim(); }; };
+  bind("sim-dc", "addDC", "sim-dcv");
+  bind("sim-firm", "addFirm", "sim-firmv");
+  bind("sim-imp", "imp", "sim-impv");
+  const trip = $("sim-trip"); if (trip) trip.onchange = () => { SIM.trip = trip.value; updateSim(); };
 }
 
 /* ---------- findings drawer ---------- */
@@ -645,6 +838,8 @@ loadAll().then(() => {
     addLayers();
     window.__diag.chokepoints = (D["chokepoints.geojson"]||{features:[]}).features.length;
     window.__diag.dcs = (D["dc_sites.geojson"]||{features:[]}).features.length;
+    window.__diag.generators = (D["generators.geojson"]||{features:[]}).features.length;
+    window.__diag.dispatch = !!(D["dispatch.json"] && D["dispatch.json"].available);
     railRender(); setMode("supply", false);
     URL_READY = true; applyURL();
     window.__diag.ready = true;

@@ -205,14 +205,21 @@ def build_dispatch() -> dict:
         if hrs:
             representative[g.lower()] = hrs
 
-    # merit-order stack for the Simulate panel (reference = evening peak hour)
+    # merit-order stack for the Simulate panel (reference = evening peak hour). The
+    # panel's baseline demand is the TYPICAL evening peak (mean demand at hour 19),
+    # not the annual maximum: at the annual max Luzon already clears on oil, so the
+    # levers only move shortfall; at a typical evening the grid is on the coal margin
+    # and a lever visibly flips the price from coal to oil.
     merit_order = {}
     for g in GRIDS:
         blocks = stack(g, PEAK_HOUR)
+        eve = hourly[g][PEAK_HOUR]
+        typical = round(sum(p[0] for p in eve) / len(eve)) if eve else 0
         merit_order[g.lower()] = {
             "reference_hour": PEAK_HOUR,
             "installed_mw": sum(GRID_FUEL_MW[g].values()),
             "avail_mw": round(sum(b["mw"] for b in blocks), 1),
+            "typical_evening_demand_mw": typical,
             "peak_demand_mw": round(peak_demand[g]),
             "blocks": blocks,
         }
