@@ -180,6 +180,13 @@ export interface N1Solved {
   shortfall_mw: number
 }
 
+export interface McResult {
+  lolp_pct: number
+  expected_shortfall_mw: number
+  shortfall_p99_mw: number
+  draws: number
+}
+
 export interface SolvedModel {
   coupled: CoupledResult
   stacks: Record<GridKey, Block[]>
@@ -188,6 +195,67 @@ export interface SolvedModel {
   reserveMarginPct: Record<GridKey, number>
   n1: N1Solved[]
   marginalFuel: Record<GridKey, string | null>
+  reliability: Record<GridKey, McResult>
+}
+
+const MC_DRAWS = 4000
+const MC_SEED = 42
+
+// small seeded PRNG so a Run gives a stable loss-of-load probability, not a jittery
+// one; a standard-normal draw by Box-Muller for the load sample.
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0
+  return () => {
+    a |= 0
+    a = (a + 0x6d2b79f5) | 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+function gaussian(rng: () => number): number {
+  const u = Math.max(1e-9, rng())
+  const v = rng()
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v)
+}
+
+/**
+ * Client Monte Carlo loss-of-load, on the EDITED model. Each draw trips the named
+ * units at their (edited) forced-outage rate, samples an evening load from the baked
+ * distribution centred on the (edited) region load, and takes the shortfall against
+ * available capacity. Same idea as the pipeline's snapshot draws, run live so the
+ * reliability responds to edits (add capacity, lower LOLP; add load or cut a unit,
+ * raise it). Only the named units carry an outage rate; the rest holds deterministic.
+ */
+function reliabilityMC(
+  grid: GridKey,
+  fuelAvail: Record<string, number>,
+  gens: { fuel: string; cap: number; forFrac: number }[],
+  loadMean: number,
+  loadStd: number
+): McResult {
+  const totalAvail = Object.values(fuelAvail).reduce((s, v) => s + v, 0)
+  const rng = mulberry32(MC_SEED + grid.length)
+  const shortfalls: number[] = []
+  let losses = 0
+  for (let i = 0; i < MC_DRAWS; i++) {
+    let out = 0
+    for (const g of gens) if (rng() < g.forFrac) out += g.cap
+    const avail = Math.max(0, totalAvail - out)
+    const load = loadMean + loadStd * gaussian(rng)
+    const sf = Math.max(0, load - avail)
+    shortfalls.push(sf)
+    if (sf > 0.5) losses++
+  }
+  shortfalls.sort((x, y) => x - y)
+  const p99 = shortfalls[Math.min(shortfalls.length - 1, Math.floor(0.99 * MC_DRAWS))]
+  const mean = shortfalls.reduce((s, v) => s + v, 0) / MC_DRAWS
+  return {
+    lolp_pct: Math.round((1000 * losses) / MC_DRAWS) / 10,
+    expected_shortfall_mw: Math.round(mean * 10) / 10,
+    shortfall_p99_mw: Math.round(p99),
+    draws: MC_DRAWS,
+  }
 }
 
 /** Apply base + overrides, rebuild the stacks, and solve the coupled dispatch. */
@@ -347,7 +415,51 @@ export function solveModel(
     }
   })
 
-  return { coupled, stacks, demand, avail, reserveMarginPct, n1, marginalFuel }
+  // live loss-of-load per grid, from the edited model
+  const loadDist = d.reliability_mc.load_dist
+  const gensBy = (grid: GridKey) =>
+    objects.generator
+      .filter((g) => g.grid === grid)
+      .map((g) => ({
+        fuel: g.props.fuel as string,
+        cap: effNum(ov, 'generator', g.id, 'capacity_mw', g.props.capacity_mw as number),
+        forFrac:
+          effNum(ov, 'generator', g.id, 'for_pct', g.props.for_pct as number) / 100,
+      }))
+  const reliability: Record<GridKey, McResult> = {
+    luzon: reliabilityMC(
+      'luzon',
+      fuelAvail.luzon,
+      gensBy('luzon'),
+      demand.luzon,
+      loadDist.luzon.std
+    ),
+    visayas: reliabilityMC(
+      'visayas',
+      fuelAvail.visayas,
+      gensBy('visayas'),
+      demand.visayas,
+      loadDist.visayas.std
+    ),
+    mindanao: reliabilityMC(
+      'mindanao',
+      fuelAvail.mindanao,
+      gensBy('mindanao'),
+      demand.mindanao,
+      loadDist.mindanao.std
+    ),
+  }
+
+  return {
+    coupled,
+    stacks,
+    demand,
+    avail,
+    reserveMarginPct,
+    n1,
+    marginalFuel,
+    reliability,
+  }
 }
 
 function objForId(rows: ObjRow[], id: string): ObjRow {

@@ -108,4 +108,19 @@ describe('property edits move the solution the right way', () => {
     for (const row of s.n1)
       expect(row.tripped_price).toBeGreaterThanOrEqual(row.base_price - 1e-9)
   })
+
+  it('the client Monte Carlo is deterministic and rises with load', () => {
+    const base = solveModel(d, OBJ, {})
+    const again = solveModel(d, OBJ, {})
+    // seeded, so a re-run gives the identical LOLP
+    expect(again.reliability.luzon.lolp_pct).toBe(base.reliability.luzon.lolp_pct)
+    expect(base.reliability.luzon.lolp_pct).toBeGreaterThanOrEqual(0)
+    const heavy = solveModel(d, OBJ, {
+      [overrideKey('region', 'luzon', 'demand_mw')]:
+        (OBJ.region.find((r) => r.id === 'luzon')!.props.demand_mw as number) + 4000,
+    })
+    expect(heavy.reliability.luzon.lolp_pct).toBeGreaterThanOrEqual(
+      base.reliability.luzon.lolp_pct
+    )
+  })
 })

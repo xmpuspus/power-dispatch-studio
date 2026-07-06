@@ -202,6 +202,7 @@ export interface ReliabilityMc {
   src_for: string
   note: string
   per_grid: Record<GridKey, McDist>
+  load_dist: Record<GridKey, { mean: number; std: number }>
   dict_2028_luzon: {
     added_mw: number
     owner: string

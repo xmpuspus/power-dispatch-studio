@@ -261,6 +261,49 @@ export function SolvedRegionsView({ s }: { s: SolvedModel }) {
   )
 }
 
+export function SolvedReliabilityView({ s }: { s: SolvedModel }) {
+  const grids: GridKey[] = ['luzon', 'visayas', 'mindanao']
+  return (
+    <div className="view">
+      <Panel
+        title="Probabilistic reliability"
+        subtitle={`${num(s.reliability.luzon.draws)} Monte Carlo draws on the current model. Each trips the named units at their forced-outage rate against a sampled evening load.`}
+      >
+        <div className="stat-row">
+          {grids.map((g) => (
+            <StatTile
+              key={g}
+              label={`LOLP ${cap(g)}`}
+              value={pct(s.reliability[g].lolp_pct / 100, 2)}
+              hint={`E[shed] ${num(s.reliability[g].expected_shortfall_mw)} MW`}
+              tone={s.reliability[g].lolp_pct > 1 ? 'danger' : 'positive'}
+            />
+          ))}
+        </div>
+        <div className="stat-row">
+          {grids.map((g) => (
+            <StatTile
+              key={g}
+              label={`1-in-100 shed, ${cap(g)}`}
+              value={num(s.reliability[g].shortfall_p99_mw)}
+              unit="MW"
+              tone={s.reliability[g].shortfall_p99_mw > 0 ? 'danger' : 'default'}
+            />
+          ))}
+        </div>
+        <p className="note">
+          Loss-of-load probability is the share of tight evenings that go short. Only the
+          named units carry an outage rate; the rest of the fleet holds at its
+          deterministic availability, so the draws add outage variance, not a lower mean.
+          Edit a unit's forced outage or capacity, or a region's load, and Run to move it.
+          The 20,000-draw pipeline distribution and the storage buy-back are shown below
+          as base-case reference.
+        </p>
+      </Panel>
+    </div>
+  )
+}
+
 export function ObjectsList({ rows }: { rows: ObjRow[] }) {
   return (
     <div className="objlist">

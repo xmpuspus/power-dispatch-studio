@@ -23,6 +23,7 @@ import {
   SolvedMeritView,
   SolvedN1View,
   SolvedRegionsView,
+  SolvedReliabilityView,
 } from './model-views'
 
 type SolId =
@@ -49,7 +50,7 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   market: 'Market power',
 }
 // views that recompute from the current model (the rest read the calibrated base case)
-const LIVE_SOL = new Set<SolId>(['merit', 'flows', 'n1', 'regions'])
+const LIVE_SOL = new Set<SolId>(['merit', 'flows', 'n1', 'regions', 'reliability'])
 // navs that pick a grid
 const GRID_SOL = new Set<SolId>(['merit', 'n1', 'duration', 'marginal'])
 const PHASES = ['LT Plan', 'PASA', 'MT Schedule', 'ST Schedule']
@@ -399,6 +400,17 @@ function DataPane({
   if (sol === 'flows') return <SolvedFlowsView s={solved} />
   if (sol === 'n1') return <SolvedN1View s={solved} grid={grid} />
   if (sol === 'regions') return <SolvedRegionsView s={solved} />
+  if (sol === 'reliability')
+    return (
+      <div>
+        <SolvedReliabilityView s={solved} />
+        <div className="basecase-banner">
+          Base case reference: the 20,000-draw pipeline distribution and the storage
+          buy-back, calibrated and not recomputed from your edits.
+        </div>
+        <ReliabilityView d={d} />
+      </div>
+    )
   // baked, calibrated base-case reference views
   return (
     <div>
@@ -408,7 +420,6 @@ function DataPane({
       </div>
       {sol === 'duration' && <DurationView d={d} grid={grid} />}
       {sol === 'marginal' && <MarginalView d={d} grid={grid} />}
-      {sol === 'reliability' && <ReliabilityView d={d} />}
     </div>
   )
 }

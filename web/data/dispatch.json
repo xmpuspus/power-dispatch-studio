@@ -2562,6 +2562,20 @@
     "eue_mwh_evening_window": 0.0
    }
   },
+  "load_dist": {
+   "luzon": {
+    "mean": 11943.6,
+    "std": 630.6
+   },
+   "visayas": {
+    "mean": 1817.7,
+    "std": 107.8
+   },
+   "mindanao": {
+    "mean": 2805.2,
+    "std": 128.1
+   }
+  },
   "dict_2028_luzon": {
    "added_mw": 1500,
    "owner": "DICT",
