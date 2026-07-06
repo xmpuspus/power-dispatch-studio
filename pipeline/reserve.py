@@ -13,11 +13,21 @@ NOT PLEXOS, and not a model: these are the operator's own published reserve
 clearing prices (PhP/MWh -> PhP/kWh) over a sample of recent days.
 
 The WESM Reserve Market ran full commercial operations from 26 January 2024, with
-three reserve products (Frequency Control Ancillary Services): Regulation (up and
-down), Contingency, and Dispatchable. The RTD reserve schedule commodity codes map
-to those products: Ru/Rd = Regulation up/down, Dr = Dispatchable, Fr = Contingency.
+three reserve products (Frequency Control Ancillary Services): Regulation, Contingency,
+and Dispatchable (definitions sourced, see below). The RTD reserve schedule tags each
+row with a commodity CODE (Ru, Rd, Dr, Fr). IEMOP does not publish a code->product key
+on the dataset page, so the mapping here is INFERRED from the sourced product
+definitions and corroborated by the scheduled quantities, not asserted as sourced:
+  - Ru / Rd = Regulation (up / down): small (~285 MW each) and dear, the profile of
+    the frequency-regulation product that corrects moment-to-moment deviations.
+  - Dr = Dispatchable: cheapest and large, the reserve that replenishes contingency.
+  - Fr = Contingency: ~890 MW, close to the largest single contingency on the grid
+    (a 647 MW Sual unit plus margin), the reserve held to cover the loss of the
+    biggest unit. This last code is the least certain and is labelled as inferred in
+    the baked output.
+Sources (three-product structure and definitions; commercial-ops date):
   https://www.iemop.ph/news/iemop-commences-the-full-commercial-operations-of-reserve-market/
-  https://www.iemop.ph/market-data/rtd-reserve-schedule/
+  https://www.iemop.ph/market-data/rtd-reserve-schedule/  (the RTDRS dataset)
 """
 from __future__ import annotations
 
@@ -34,13 +44,16 @@ RTDRS_DIR = os.path.join(HERE, "..", "data", "raw", "RTDRS")
 # IEMOP region code -> our grid key.
 REGION_GRID = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao"}
 
-# RTD reserve schedule commodity code -> (category key, human label). The three
-# published products are Regulation (up/down), Contingency, and Dispatchable.
+# RTD reserve schedule commodity code -> (category key, human label, mapping basis).
+# The three published products are Regulation (up/down), Contingency, and
+# Dispatchable. The code->product mapping is inferred (see module docstring): the
+# regulation and dispatchable reads are well corroborated; the contingency code is
+# the least certain and is flagged as such in the output.
 COMMODITY = {
-    "Ru": ("regulation_up", "Regulation (up)"),
-    "Rd": ("regulation_down", "Regulation (down)"),
-    "Fr": ("contingency", "Contingency"),
-    "Dr": ("dispatchable", "Dispatchable"),
+    "Ru": ("regulation_up", "Regulation (up)", "inferred_corroborated"),
+    "Rd": ("regulation_down", "Regulation (down)", "inferred_corroborated"),
+    "Fr": ("contingency", "Contingency", "inferred"),
+    "Dr": ("dispatchable", "Dispatchable", "inferred_corroborated"),
 }
 
 # The reserve offer cap is PhP25,000/MWh (PhP25/kWh) in this window; a clearing
@@ -117,7 +130,7 @@ def build_reserve() -> dict:
         }
 
     categories = []
-    for code, (catkey, label) in COMMODITY.items():
+    for code, (catkey, label, basis) in COMMODITY.items():
         vals = price_cat.get(catkey)
         if not vals:
             continue
@@ -126,6 +139,7 @@ def build_reserve() -> dict:
             "code": code,
             "category": catkey,
             "label": label,
+            "code_mapping": basis,
             **s,
             "mean_system_mw": round(mean(sys_mw[catkey])) if sys_mw[catkey] else 0,
         })
@@ -135,7 +149,7 @@ def build_reserve() -> dict:
     by_grid = {}
     for grid in ("luzon", "visayas", "mindanao"):
         rows = []
-        for code, (catkey, label) in COMMODITY.items():
+        for code, (catkey, label, _basis) in COMMODITY.items():
             vals = price.get((grid, catkey))
             if not vals:
                 continue
@@ -172,6 +186,13 @@ def build_reserve() -> dict:
         "categories": categories,
         "by_grid": by_grid,
         "scarcity": scarcity,
+        "mapping_note": "The three reserve products (Regulation, Contingency, "
+                        "Dispatchable) and their definitions are sourced to IEMOP. "
+                        "IEMOP does not publish a code key on the dataset, so the RTD "
+                        "schedule commodity codes (Ru/Rd regulation, Dr dispatchable, "
+                        "Fr contingency) are mapped by inference from those "
+                        "definitions and the scheduled quantities: contingency clears "
+                        "about 890 MW, close to the largest single unit it must cover.",
         "note": "The WESM Reserve Market co-optimises energy and reserves in "
                 "real-time dispatch: a unit holding reserve cannot also sell that "
                 "MW as energy, and in a tight hour the reserve clearing price "

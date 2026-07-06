@@ -462,7 +462,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
           {cats.map((c) => (
             <StatTile
               key={c.code}
-              label={c.label}
+              label={c.code_mapping === 'inferred' ? c.label + ' *' : c.label}
               value={php(c.mean_php_kwh)}
               hint={`${num(c.mean_system_mw)} MW · at cap ${pct(c.cap_hit_pct / 100, 0)} of the time`}
               tone={c.mean_php_kwh > energy ? 'danger' : 'default'}
@@ -475,6 +475,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
           energy-only stack cannot see it. These are the operator's own published reserve
           clearing prices, not a model output. <Source href={res.src_data} label="data" />
         </p>
+        {res.mapping_note && <p className="note">* {res.mapping_note}</p>}
       </Panel>
 
       {dearest && (

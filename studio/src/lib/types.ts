@@ -279,6 +279,7 @@ export interface ReserveCategory {
   code: string
   category: string
   label: string
+  code_mapping: string
   mean_php_kwh: number
   min_php_kwh: number
   max_php_kwh: number
@@ -308,6 +309,7 @@ export interface Reserve {
     mean_php_kwh: number
     top_decile_mean_php_kwh: number
   }
+  mapping_note?: string
   note: string
   disclaimer?: string
   src_market?: string
