@@ -476,6 +476,18 @@ def build_reliability_mc(hourly_dem: dict, draws: int = 20000, seed: int = 42) -
     per_grid = {g.lower(): run(eve_load[g], eve_avail[g], g) for g in GRIDS}
     dict_dist = run([d + 1500 for d in eve_load["LUZON"]], eve_avail["LUZON"], "LUZON")
 
+    # evening-load distribution per grid (mean + std of the 18-21 pool), so the
+    # studio can run its own Monte Carlo against the EDITED model and get a live
+    # loss-of-load probability. The client samples Normal(edited load, std).
+    def _mean_std(xs):
+        n = len(xs)
+        if n == 0:
+            return {"mean": 0.0, "std": 0.0}
+        m = sum(xs) / n
+        var = sum((x - m) ** 2 for x in xs) / n
+        return {"mean": round(m, 1), "std": round(var ** 0.5, 1)}
+    load_dist = {g.lower(): _mean_std(eve_load[g]) for g in GRIDS}
+
     return {
         "method": "Monte Carlo forced outages on the 11 named large units (Bernoulli "
                   "at the sourced per-fuel rate) vs a sampled evening-peak load; "
@@ -492,6 +504,7 @@ def build_reliability_mc(hourly_dem: dict, draws: int = 20000, seed: int = 42) -
                 "held at its deterministic availability, so the mean is unchanged and "
                 "the draws add the outage variance.",
         "per_grid": per_grid,
+        "load_dist": load_dist,
         "dict_2028_luzon": {
             "added_mw": 1500, "owner": "DICT", "date": "2025-10",
             "src": "https://www.bworldonline.com/corporate/2025/10/23/707346/",
