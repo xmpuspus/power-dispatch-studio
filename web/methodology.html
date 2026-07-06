@@ -46,9 +46,10 @@ shortfalls computed from the archived real-time regional summaries.</li>
 public "congestions manifesting" files; the two HVDC inter-island links and three
 named AC corridors from primary reports; Sual unit-trip arithmetic against the
 published margin; Sual outage days read from archived outage schedules.</li>
-<li><b>Prices.</b> Daily load-weighted average prices per grid from archived LWAP
-files; regional spreads; the nodal congestion price component from sampled
-settlement files; the WESM-to-Meralco pass-through from the June 2026 advisory.</li>
+<li><b>Prices.</b> Each day's average of the load-weighted five-minute prices per
+grid from archived LWAP files, split into the administered (pre-resumption) and
+market regimes; regional spreads; the WESM-to-Meralco pass-through from the June
+2026 advisory.</li>
 </ol>
 </div>
 
@@ -65,8 +66,12 @@ via <code>wp-admin/admin-ajax.php</code> (action
 <tr><td>Congestions Manifesting in RTD / DAP (daily CSV)</td>
 <td><a href="https://www.iemop.ph/market-data/congestions-manifesting-in-rtd/">RTD</a>,
 <a href="https://www.iemop.ph/market-data/congestions-manifesting-in-dap/">DAP</a></td>
-<td>The constraint league: named equipment and station, days seen, 5-minute rows,
-base-case vs contingency, max overload MW.</td></tr>
+<td>The constraint league: named equipment and station, ranked by days at a limit
+(a day counts once, so a day-ahead re-run cannot inflate it). Real-time (RTD)
+five-minute intervals and day-ahead (DAP) hourly rows are kept in separate columns,
+because the day-ahead market re-prices through the day and its raw row count
+measures re-run persistence, not time at the limit. Plus max overload MW and the
+per-corridor receipts joined onto the Leyte-Cebu line.</td></tr>
 <tr><td>RTD Regional Summaries (daily CSV; CLUZ/CVIS/CMIN; En/Dr/Fr/Ru/Rd)</td>
 <td><a href="https://www.iemop.ph/market-data/rtd-regional-summaries/">page</a></td>
 <td>Per grid per day: peak scheduled demand (LOAD_BID), curtailed energy
@@ -86,10 +91,15 @@ daily inter-grid spread and the widest spread in the window.</td></tr>
 LMP_SMP + LMP_LOSS + LMP_CONGESTION)</td>
 <td><a href="https://www.iemop.ph/market-data/dipc-energy-results-final/">page</a></td>
 <td>Archived (sample days; the files lag publication by about a week). NOT
-displayed yet: in the sampled hours the LMP_CONGESTION column read zero across
-all nodes even while nodal LMPs spread widely, so the decomposition's semantics
-need verification against WESM pricing documentation before any number ships
-(v1.1). Honest gap, stated here instead of a guessed chart.</td></tr>
+displayed, on purpose: in the sampled hours the LMP_CONGESTION column reads zero
+across all nodes even while nodal LMPs spread widely. Resolved against the WESM
+price-determination methodology: about 72% of the sampled intervals are re-priced
+under the price substitution methodology at the unconstrained (congestion-free)
+marginal price, and even in normal intervals WESM expresses inter-island congestion
+as one regional price per island grid, not a per-node charge, while intra-region
+soft constraints are relaxed to zero shadow price. So a "congestion premium = 0"
+chart would assert the opposite of what is true; the layer stays archived. Full
+resolution in docs/research-launch-20260705.md.</td></tr>
 </table>
 <p class="muted">Courtesy: fetches are sequential with a 250 ms sleep and abort
 after 5 consecutive errors. IEMOP data is republished here as-is for public
