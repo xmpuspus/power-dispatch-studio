@@ -10,20 +10,34 @@ This is an independent, open homage. Not affiliated with Energy Exemplar. Not PL
 
 ## What it does
 
-The studio opens on the Scenario builder. Move a lever (add a data center or flat load,
-add solar/gas/coal/storage, trip a named unit, change the administered coal price,
-switch gas from Malampaya to imported LNG, relieve an HVDC corridor) and the clearing
-price, coupled flows, congestion rent, and shortfall re-clear live. The re-solve is a
-typed transcription of the pipeline's economic dispatch (`../pipeline/fleet_ph.py` +
-`../pipeline/coupled_dispatch.py`) in `src/studio/engine.ts`; the pipeline stays the
-source of truth, and `dispatch.json` carries golden input/output pairs from the real
-Python solve that `engine.test.ts` asserts the browser engine reproduces.
+The studio follows the PLEXOS desktop shape (build a model, Run it, browse the
+Solution). The Explorer has a System tree (the object classes) and a Simulation tree
+(the phases, plus the Solution and Analysis views). The Data pane has Objects,
+Memberships, and Properties tabs.
 
-The other views read the baked solution: the merit-order stack, the price-duration
-curve, the coupled inter-island flows, probabilistic reliability (Monte Carlo
-loss-of-load), the WESM Reserve Market clearing prices the energy-only stack omits, the
-contract-cover Bill impact (a WESM move buffered through Meralco's bilateral contracts),
-and the Market power lens (ERC capacity shares, HHI, pivotal supplier).
+Authoring is the editable Properties grid. Pick a class (Generators, Fuels, Interfaces,
+Regions) and type into a cell: a generator's max capacity, a fuel's price or available
+MW, an interface flow limit, a region's load. Edits are tagged to the active Scenario
+(shown in accent, with an x to revert to the base value). Press Run and the model
+re-solves; the status flips from Unsolved to Solved. The solve is a typed transcription
+of the pipeline's economic dispatch (`../pipeline/fleet_ph.py` +
+`../pipeline/coupled_dispatch.py`) in `src/studio/engine.ts`, driven by the object model
+in `src/studio/model.ts`. It runs in the browser in under a second, so the Run gate is
+authentic without the wait. The pipeline stays the source of truth: `dispatch.json`
+carries golden input/output pairs from the real Python solve that the tests assert the
+browser engine and the model reproduce.
+
+The Solution views recompute from the solved model (Merit order, Coupled flows, N-1,
+Regions) and carry a LIVE badge. Price duration, Marginal units, and Reliability read
+the calibrated base case behind a labeled banner (they need the full observed window, so
+a browser edit cannot recompute them). The Analysis group keeps the WESM Reserve Market
+prices, the contract-cover Bill impact, and the Market power lens. A slider-driven Quick
+scenario stays under System as a fast what-if.
+
+Honest block-dispatch stance, no fabricated per-plant fleet: the Fuels class sets the
+aggregate merit-order stack; the Generators class names the 11 sourced units and drives
+N-1 (editing a unit shifts its fuel's available capacity by the change, a labeled
+approximation, not plant-level unit commitment).
 
 ## Walkthrough
 
@@ -72,9 +86,12 @@ src/
   lib/       types.ts (baked-model types), data.ts (loader hooks + formatters)
   ui/        kit.tsx (Panel, StatTile, Chip, Segmented, ThemeToggle), DataGrid.tsx
   map/       MapView.tsx (MapLibre network view)
-  studio/    Studio.tsx (shell + model tree), views.tsx (read-only tabs), charts.tsx (SVG)
-             engine.ts (typed dispatch re-solve), engine.test.ts (golden parity)
-             Scenario.tsx (interactive levers), Bill.tsx, MarketPower.tsx
+  studio/    Studio.tsx (PLEXOS shell: explorer, ribbon, Run gate)
+             model.ts (editable objects + scenario overrides + solveModel)
+             engine.ts (typed dispatch re-solve), engine.test.ts + model.test.ts
+             model-views.tsx (editable Properties grid + solved Solution views)
+             views.tsx (base-case reference views), charts.tsx (SVG)
+             Scenario.tsx (Quick scenario sliders), Bill.tsx, MarketPower.tsx
   styles/    tokens.css (design tokens, light + dark), base.css, app.css
 ```
 
