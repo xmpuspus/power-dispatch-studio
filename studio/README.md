@@ -11,9 +11,11 @@ This is an independent, open homage. Not affiliated with Energy Exemplar. Not PL
 ## What it does
 
 The studio follows the PLEXOS desktop shape (build a model, Run it, browse the
-Solution). The Explorer has a System tree (the object classes) and a Simulation tree
-(the phases, plus the Solution and Analysis views). The Data pane has Objects,
-Memberships, and Properties tabs.
+Solution). A title bar and an Office-style ribbon (Home / Model / Solution tabs with
+grouped commands) sit above an Explorer with a System tree (the object classes) and a
+Simulation tree (the phases, plus the Solution and Analysis views). The Data pane has
+working Objects, Memberships, and Properties tabs; Memberships shows the object
+relations (a Generator to its Region and Fuel, a Region to its member units).
 
 Authoring is the editable Properties grid. Pick a class (Generators, Fuels, Interfaces,
 Regions) and type into a cell: a generator's max capacity, a fuel's price or available
@@ -28,11 +30,14 @@ carries golden input/output pairs from the real Python solve that the tests asse
 browser engine and the model reproduce.
 
 The Solution views recompute from the solved model (Merit order, Coupled flows, N-1,
-Regions) and carry a LIVE badge. Price duration, Marginal units, and Reliability read
-the calibrated base case behind a labeled banner (they need the full observed window, so
-a browser edit cannot recompute them). The Analysis group keeps the WESM Reserve Market
-prices, the contract-cover Bill impact, and the Market power lens. A slider-driven Quick
-scenario stays under System as a fast what-if.
+Regions, and a live 4,000-draw Monte Carlo Reliability that trips the named units at
+their edited forced-outage rate) and carry a LIVE badge. Compare scenarios solves every
+scenario and tables the headline metrics with the changes highlighted. Price duration
+and Marginal units read the calibrated base case behind a labeled banner (they need the
+full observed window); the richer 20,000-draw pipeline distribution and the storage
+buy-back sit below the live reliability as base-case reference. The Analysis group keeps
+the WESM Reserve Market prices, the contract-cover Bill impact, and the Market power
+lens. A slider-driven Quick scenario stays under System as a fast what-if.
 
 Honest block-dispatch stance, no fabricated per-plant fleet: the Fuels class sets the
 aggregate merit-order stack; the Generators class names the 11 sourced units and drives
