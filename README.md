@@ -2,49 +2,86 @@
 
 Can the Philippine grid host the announced data-center wave? An interactive map and
 a daily archive built on the market operator's own public files: where transmission
-already binds (named equipment, 5-minute receipts), where the announced data-center
-megawatts land, and what the spot market and the Meralco bill are doing. Open the
-map, switch between the three questions, hover any line or pin for its source.
+already binds (named equipment, five-minute receipts), where the announced
+data-center megawatts land, and what the spot market and the Meralco bill are doing.
+Inputs, method, and every number are open and reproducible from a clean clone.
 
+[![CI](https://github.com/xmpuspus/gridbill-ph/actions/workflows/ci.yml/badge.svg)](https://github.com/xmpuspus/gridbill-ph/actions/workflows/ci.yml)
 [![License: MIT (code) / CC-BY-4.0 (data)](https://img.shields.io/badge/license-MIT%20%2F%20CC--BY--4.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![Status](https://img.shields.io/badge/status-alpha-orange.svg)](README.md)
 
-## The three questions
+<!-- LIVE_URL and the hero recording land at deploy (gated on the maintainer). Until
+     then the hero links to the in-repo methodology page; swap both at deploy. -->
+[<img width="820" alt="A walkthrough of the gridbill-ph map: the three questions across the top (supply, choke points, prices), the constraint league showing named 230 kV equipment at its limit on most of a 90-day window led by the Tabango-Daanbantayan corridor, the Leyte-Cebu line hovered to show its archive receipts, a Sual-unit toggle subtracting 647 MW from the system margin, and the regional price sparkline fanning apart after the market reopened" src="docs/hero.gif">](web/methodology.html)
 
-**1. If the Philippines builds more data centers, is there supply for them?**
-DICT's own forecast is 1.5 GW of data-center capacity by 2028 (a labeled forecast,
-not a measurement); Meralco has committed 1,000 MW for 10 data centers (PCIJ). The
-whole system's supply margin in May 2026, the first full month after WESM trading
-resumed, was 3,629 MW (IEMOP). The forecast alone is about 41% of that margin, and
-a data center is near-flat 24/7 load. In the same archive window, the operator's
-dispatch schedules recorded load curtailed on dozens of grid-days. Headroom for a
-wave this size means new firm supply; the map draws the announced megawatts against
-the margin so the arithmetic is visible.
+Live map: deploying alongside the July Meralco and June WESM prints. For now, open
+`web/index.html` after `make data`, or read [every number and source](web/methodology.html).
 
-**2. Is the infrastructure ready, and where would data centers have to sit?**
-The choke points are named, public, and already binding. IEMOP's December 2025
-report has the Leyte-Luzon HVDC (440 MW nameplate, 250 MW operating limit) at its
-limit or offline 69% of the billing period; the May 2026 report has both HVDC
-links frequently at maximum. Our own archive of IEMOP's "congestions manifesting"
-files counts named equipment at 100% of its binding limit across tens of thousands
-of 5-minute intervals in 90 days, led by the Tabango-Daanbantayan corridor
-(Leyte-Cebu), the same corridor the reports name. Nearly every pinned data-center
-site sits in the Luzon load pocket, on the importing side of those links. Sual's
-two 647 MW units are the largest single contingencies on the Luzon grid; one unit
-equals about 18% of the May margin, which is why a single trip moves the whole
-grid. The map's toggle does that subtraction in the open.
+## The grid names its own choke point
 
-**3. What would it do to wholesale and retail prices?**
-One market on paper, three prices in practice. May 2026 averaged P7.79/kWh
-system-wide (+38.5% vs April): Luzon P7.02, Visayas P10.20, Mindanao P9.28. The
-archived daily LWAP series shows the islands pricing apart when the links bind,
-with double-digit peso spreads on the worst days. WESM passes into the Meralco
-generation charge monthly: the June 2026 advisory carried WESM at P7.03/kWh inside
-a P9.07/kWh generation charge on a P14.48/kWh total rate. The map never claims
-data centers set today's prices (current data-center load is small against a
-roughly 15 GW Luzon peak); it shows the pricing machinery that any new flat 24/7
-load plugs into.
+The choke points are not inferred. IEMOP publishes a "congestions manifesting" file
+that names the exact transmission equipment sitting at its binding limit, per
+five-minute interval, and this repo archives and ranks them. A row **literally named
+`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **68 of the window's 90 days**.
+The 230 kV lines that carry that corridor, Tabango (Leyte) to Daanbantayan (Cebu),
+top the league at a limit on **87 of 90 days**. The same corridor IEMOP's December
+2025 report names in prose; here it is the receipts behind the prose.
+
+![The constraint league filling in bar by bar: named transmission equipment ranked by days at a binding limit over the 90-day archive window, the Leyte-Cebu corridor lines highlighted in coral topping the list at 87 of 90 days](docs/constraint-league.gif)
+
+Across the 90-day window, **84 distinct pieces of equipment** hit a limit at least
+once. The map ranks them by days at a limit (a day counts once, so a day-ahead
+re-run cannot inflate it) and keeps the real-time and day-ahead counts in separate
+columns, because the day-ahead market re-prices hourly and its raw row count
+measures re-run persistence, not time at the limit. Per-equipment receipts:
+[`web/data/congestion.json`](web/data/congestion.json); rebuild with `make data`.
+
+## Thin is the normal state
+
+In the operator's own real-time dispatch schedules, **Luzon scheduled reserves fell
+below the stated requirement on 54 of the window's 90 days**, and load was curtailed
+in the dispatch schedules on **91 grid-days (4,125.4 MWh)** across the three grids.
+This is observed curtailment in published schedules and observed reserve shortfall,
+not a brownout forecast. The Visayas grid ran a **52-day daily yellow-alert streak
+(May 11 to July 1, 2026)** that ended when one 150 MW unit returned, with 935.3 MW
+still unavailable that day.
+
+Against that thin margin, the announced data-center wave is the size of the margin
+itself: DICT's forecast is **1,500 MW by 2028** (a labeled forecast, not a
+measurement) and Meralco has committed **1,000 MW for 10 data centers**, while the
+whole system's May 2026 supply margin was **3,629 MW**. A data center is near-flat
+24/7 load, so it consumes margin in every interval, not just at the evening peak.
+Per-day reserve and curtailment series:
+[`web/data/reliability.json`](web/data/reliability.json).
+
+![The Sual arithmetic: the May 2026 system margin bar of 3,629 MW with one 647 MW unit subtracted, then both, showing one unit is 18 percent of the margin](docs/sual-margin.gif)
+
+## One market, three prices
+
+WESM is one market on paper and three prices in practice. While the market was
+suspended under administered pricing (through May 1, 2026), the three island grids
+priced within **P0.015/kWh** of each other. Once trading resumed, they split: over
+the market-priced days the average was **Luzon P7.65, Visayas P12.96, Mindanao
+P11.52 per kWh**, with **28 days spreading beyond P5/kWh** and a widest daily spread
+of **P15.72/kWh on June 8**. The links between the islands are the reason the numbers
+differ, and the map keeps the two regimes labeled so the suspension is never folded
+into a market-outcome claim.
+
+![The regional price lines moving together at about 5 to 6 pesos per kWh while WESM was suspended, then fanning apart after the market reopens on May 1, with Visayas and Mindanao climbing above Luzon](docs/price-spread.gif)
+
+That wholesale price passes into the Meralco bill monthly. The June 2026 advisory
+carried WESM at **P7.03/kWh** inside a **P9.07/kWh** generation charge on a
+**P14.48/kWh** total rate. One Sual unit (**647 MW**) equals **18% of the May system
+margin**, which is why a single trip moves the whole grid; the map's toggle does that
+subtraction in the open, as arithmetic on the published margin, not a dispatch
+simulation.
+
+The map never claims data centers set today's prices. Current data-center load is
+small against a roughly 15 GW Luzon peak, and the window's prices are driven by fuel,
+outages, weather, and the market restart. What the map shows is the pricing machinery
+that any new flat 24/7 load plugs into. Daily price series and regime split:
+[`web/data/prices.json`](web/data/prices.json).
 
 ## What this is
 
@@ -52,14 +89,19 @@ load plugs into.
   `pipeline/archive_iemop.py` plus a GitHub Actions cron turns that window into a
   permanent public archive under `data/raw/` (the git history is the archive):
   named binding constraints (RTD + DAP), regional summaries (demand, curtailment,
-  reserve slack), load-weighted average prices, HVDC limits, outage schedules.
-- **A baked, checkable map.** `pipeline/build_data.py` computes every number the
-  site shows into `web/data/*.json`; the page renders only baked artifacts, so
-  copy cannot drift from data. `web/index.html` is a single-file MapLibre map.
-- **A sourced constants layer.** Choke-point corridors (schematic lines between
-  named converter stations and substations), 14 data-center sites with a citable
-  source each (public MW on 11 of them, 591.3 MW named total), and every market
-  anchor with its primary source, in `pipeline/constants_ph.py`.
+  reserve slack), load-weighted average prices, HVDC limits, outage schedules. The
+  archiver fails loud and a staleness gate turns the cron red if the archive stops
+  growing, because losing a day is permanent once the public window rolls past it.
+- **A baked, checkable map.** `pipeline/build_data.py` computes every number the site
+  shows into `web/data/*.json`; the page renders only baked artifacts, so copy cannot
+  drift from data. `web/index.html` is a single-file MapLibre map with a findings
+  drawer (each computed finding flies the map to its evidence) and deep-linkable
+  `?q=&finding=` URLs.
+- **A sourced constants layer.** Choke-point corridors (schematic lines between named
+  converter stations and substations, with their archive receipts joined on), 14
+  data-center sites with a citable source each (public MW on 11 of them, 591.3 MW
+  named total), and every market anchor with its primary source, in
+  `pipeline/constants_ph.py`.
 
 ## What it is not
 
@@ -68,9 +110,41 @@ load plugs into.
 - Not a brownout forecast. It shows observed curtailment in dispatch schedules,
   observed reserve shortfalls, and arithmetic on published margins.
 - Not a complete data-center inventory (Cushman counts 24 operational facilities;
-  DataCenterMap lists 44; only publicly sourced sites are pinned, at city
-  precision).
+  DataCenterMap lists 44; only publicly-sourced sites are pinned, at city precision).
 - Not route maps: corridor lines are schematic links between named endpoints.
+- Not a nodal congestion-premium layer. WESM's settlement-final files report the LMP
+  congestion component as zero (the market re-prices most intervals under a
+  substitution methodology and expresses inter-island congestion as regional price
+  separation, not a per-node charge), so that layer stays archived, not displayed.
+  Full resolution in [`docs/research-launch-20260705.md`](docs/research-launch-20260705.md).
+
+## Related projects
+
+Honest adjacent work. The techniques here have US ancestors; the assembly and the
+Philippine geography are the new part.
+
+- [GridStatus / `gridstatus`](https://github.com/gridstatus/gridstatus). open Python
+  API to US ISO supply, demand, and LMP data plus a hosted nodal price and congestion
+  map; the closest sibling to this method, and a durable archive of ISO data, for the
+  US instead of WESM.
+- [ERCOT SCED Shadow Prices and Binding Transmission Constraints (NP6-86-CD)](https://www.ercot.com/mp/data-products/data-product-details?id=NP6-86-CD).
+  the US analog of IEMOP's "congestions manifesting" file: names the overloaded
+  element, stations, kV, and shadow price. Published with a ~7-day window, which is
+  why an archive is needed.
+- [Electricity Maps](https://app.electricitymaps.com/). live global map of grid
+  carbon intensity and generation mix with an open parser repo; the reference live
+  grid map, on emissions rather than congestion or price.
+- [Ember Electricity Data Explorer](https://ember-energy.org/data/electricity-data-explorer/).
+  fully open (CC-BY-4.0) global electricity dataset and API; the open-data licensing
+  model this project follows, at national and annual granularity.
+- [EPRI DCFlex](https://dcflex.epri.com/). industry initiative treating data centers
+  as flexible grid assets and asking how much load today's grid can integrate under
+  real constraints; the adjacent "can the grid host the wave?" question, US and
+  framework-level.
+- [ICSC Philippine Power Outlook](https://icsc.ngo/tag/philippine-power-outlook/).
+  annual PH grid-adequacy analysis (reserve margins, alert risk, HVDC constraints)
+  built on NGCP and DOE outlooks; the PH-native neighbor to the supply question, in
+  static-report form.
 
 ## Reproduce locally
 
@@ -87,47 +161,46 @@ make e2e         # behavioral checks against the running map
 ```
 
 The committed `data/raw/` means `make data` works offline from a clean clone;
-`make backfill` tops up any days the archive is missing (fetches are sequential
-and throttled out of courtesy to IEMOP's servers).
+`make backfill` tops up any days the archive is missing (fetches are sequential and
+throttled out of courtesy to IEMOP's servers). `make archive` is the daily
+incremental the cron runs; `python3 pipeline/archive_iemop.py --check` is the
+staleness gate that fails the cron if the archive stops growing.
 
 ## Data products
 
 | File | What it is |
 |---|---|
-| `data/raw/RTDCV/`, `data/raw/DAPCV/` | IEMOP "congestions manifesting" daily CSVs: named equipment, station, binding limit, MW flow, overload, per 5-minute interval |
+| `data/raw/RTDCV/`, `data/raw/DAPCV/` | IEMOP "congestions manifesting" daily CSVs: named equipment, station, binding limit, MW flow, overload, per five-minute interval (RTD) or hourly (DAP) |
 | `data/raw/RTDSUM/` | RTD regional summaries: energy and reserve rows per grid (demand bids, load curtailed, reserve requirement vs scheduled) |
-| `data/raw/LWAPF/` | Load-weighted average prices, final, per grid per 5-minute interval (PhP/MWh) |
+| `data/raw/LWAPF/` | Load-weighted average prices, final, per grid per five-minute interval (PhP/MWh) |
 | `data/raw/HVDCRTD/`, `data/raw/OUTRTD/` | HVDC limits imposed in RTD; outage schedules used in RTD |
-| `web/data/*.json` | The baked layers: constraint league, reliability series, daily price series and spreads, choke points, data-center sites, the three answers |
+| `web/data/congestion.json` | Constraint league (ranked by days, RT and DAP counts separate) plus per-corridor receipts joined to the choke-point lines |
+| `web/data/prices.json` | Daily regional price series, the administered-vs-market regime split, and the widest-spread day |
+| `web/data/findings.json` | The findings drawer: computed cards, each with the map focus that flies to its evidence |
+| `web/data/*.json` | The rest of the baked layers: reliability series, the three answers, choke points, data-center sites, anchors |
 
 ## Methodology
 
-Every number, source, unit conversion, and caveat: [`web/methodology.html`](web/methodology.html).
-Working notes and the non-negotiable stance (no attribution claims, no prophecy,
-labeled forecasts, schematic lines, city-precision pins): [`CLAUDE.md`](CLAUDE.md).
-
-## Roadmap
-
-- DIPCEF nodal congestion-premium layer (hourly zips; the first listing attempt
-  hit a transient TLS failure, the archiver retries daily).
-- Per-interval HVDC limit series from the archived HVDCRTD files.
-- Node-code to location mapping for nodal price geography (the resource codes
-  need a hand-built reference join, the same way community reserve-market
-  dashboards do it).
-- Meralco generation-charge series scraped from the monthly advisories.
+Every number, source, unit conversion, and caveat:
+[`web/methodology.html`](web/methodology.html). The launch research (prior art, the
+WESM price-determination resolution, the news sweep) is in
+[`docs/research-launch-20260705.md`](docs/research-launch-20260705.md). Working notes
+and the non-negotiable stance (no attribution claims, no prophecy, labeled forecasts,
+schematic lines, city-precision pins): [`CLAUDE.md`](CLAUDE.md).
 
 ## License and attribution
 
-Code: MIT. Baked data products: CC-BY-4.0. Upstream market data belongs to its
-publishers (IEMOP, NGCP, Meralco); this repository mirrors public files as-is for
-research with attribution, and will honor any takedown request from the publisher.
+Code: MIT. Baked data products: CC-BY-4.0. See [`LICENSE`](LICENSE) and
+[`CITATION.cff`](CITATION.cff). Upstream market data belongs to its publishers
+(IEMOP, NGCP, Meralco); this repository mirrors public files as-is for research with
+attribution, and will honor any takedown request from the publisher.
 
 Attribution when redistributing the baked data: *gridbill-ph (2026), IEMOP public
 market data archive, https://github.com/xmpuspus/gridbill-ph*.
 
 ## Public-record disclaimer
 
-All data sourced from public records (IEMOP market files, NGCP publications,
-Meralco advisories, PCIJ reporting, company announcements). This tool computes
-statistical indicators only. Patterns may have legitimate explanations. Specific
-allegations, if any, require independent investigation and corroboration.
+All data sourced from public records (IEMOP market files, NGCP publications, Meralco
+advisories, PCIJ reporting, company announcements). This tool computes statistical
+indicators only. Patterns may have legitimate explanations. Specific allegations, if
+any, require independent investigation and corroboration.
