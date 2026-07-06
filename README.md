@@ -112,7 +112,9 @@ capacity-market chart.
 
 The map's fourth mode is a simplified merit-order model of the grid. It is **not
 PLEXOS**: it stacks a sourced generator fleet by marginal cost against the archive's
-own dispatched generation, per grid, and reads off the marginal clearing price. Coal
+own dispatched generation, per grid, and reads off the marginal clearing price.
+
+![A walkthrough of the Simulate mode on the Luzon grid: the merit-order stack sits on the coal margin at a P6 clearing price, then a data-center slider adds flat load until the demand line crosses into the oil block and the price flips to P12, then tripping the Sual coal unit opens a 645 MW supply shortfall, then an inter-island import lever shrinks it, then the grid switches to the tighter Visayas stack where a competitive cost stack of P6 sits far below the observed P13 scarcity price](docs/dispatch-demo.gif) Coal
 marginal cost is the ERC administered price of **P6.00/kWh** and Malampaya gas is
 **P4.80/kWh**, both sourced; the availability derates and the split of the fleet
 across grids are labeled model assumptions, and that split reconciles exactly to the
