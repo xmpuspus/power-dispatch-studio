@@ -77,6 +77,8 @@ margin**, which is why a single trip moves the whole grid; the map's toggle does
 subtraction in the open, as arithmetic on the published margin, not a dispatch
 simulation.
 
+![The Meralco June 2026 bill as a horizontal bar: the WESM spot cost at 7.03 pesos per kWh is 49 percent, the rest of the generation charge 14 percent, and transmission distribution and taxes 37 percent, with an arrow noting a WESM swing moves only the spot slice and only on the next month's bill](docs/bill-wedge.png)
+
 The map never claims data centers set today's prices. Current data-center load is
 small against a roughly 15 GW Luzon peak, and the window's prices are driven by fuel,
 outages, weather, and the market restart. What the map shows is the pricing machinery

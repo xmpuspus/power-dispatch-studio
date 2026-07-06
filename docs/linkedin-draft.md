@@ -17,7 +17,10 @@ pre-post gate is true. Links go in the FIRST COMMENT, not the body.
       July print teased. Decide on the day.
 - [ ] Post the map, GitHub, and methodology links in the FIRST COMMENT (off-platform
       links in the body are down-ranked).
-- [ ] Hero: upload the story GIF as a native clip or the og.png card, not a bare link.
+- [ ] Hero: upload the story GIF (docs/hero.gif) as a native clip, or the og.png
+      card, not a bare link. Carousel option: docs/story-montage.gif (all four panels
+      in one frame) as slide 1, docs/bill-wedge.png as slide 2. Both are honest,
+      sourced, and need no interaction.
 - [ ] Re-read against the rails: never blame the buildout for prices, no
       brownout prophecy, forecasts labeled with owners.
 
