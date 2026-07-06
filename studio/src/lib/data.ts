@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { Dispatch, GeneratorProps, Reserve } from './types'
+import type { Bill, Dispatch, GeneratorProps, Reserve } from './types'
 
 const BASE = `${import.meta.env.BASE_URL}data`
 const cache = new Map<string, Promise<unknown>>()
@@ -45,6 +45,7 @@ function useJson<T>(file: string): Async<T> {
 
 export const useDispatch = () => useJson<Dispatch>('dispatch.json')
 export const useReserve = () => useJson<Reserve>('reserve.json')
+export const useBill = () => useJson<Bill>('bill.json')
 
 export interface FeatureCollection<P> {
   type: 'FeatureCollection'

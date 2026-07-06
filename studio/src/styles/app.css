@@ -943,3 +943,44 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ============ Bill: supply-mix bars ============ */
+.mixbars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mixbars__row {
+  display: grid;
+  grid-template-columns: 160px 1fr 40px;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: var(--fs-13);
+}
+.mixbars__label {
+  color: var(--text-muted);
+}
+.mixbars__track {
+  height: 12px;
+  background: var(--surface-3);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+.mixbars__fill {
+  display: block;
+  height: 100%;
+  background: var(--fuel-coal);
+  border-radius: var(--r-sm);
+}
+.mixbars__fill--spot {
+  background: var(--accent);
+}
+.mixbars__val {
+  text-align: right;
+  color: var(--text);
+}
+@media (max-width: 760px) {
+  .mixbars__row {
+    grid-template-columns: 120px 1fr 36px;
+  }
+}
