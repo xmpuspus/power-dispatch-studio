@@ -329,5 +329,32 @@ bt = cp["dc_binding_threshold"]
 check("DC-wave lever: added Visayas load that binds Leyte is below the DICT 1.5 GW",
       bt["available"] and 0 < bt["added_visayas_load_to_bind_leyte_mw"] < 1500)
 
+# --- minimal unit commitment (item 2) ------------------------------------------
+# The committed must-run coal tranche lowers the modeled overnight price. Its inputs
+# are sourced (40% min stable load; the H1 2025 WESM average offer), not tuned. The
+# honest bar: it must not worsen MAE, it must lift correlation somewhere, and it must
+# NOT touch the evening-peak residual (the scarcity signal stays put).
+uc = disp["unit_commitment"]
+check("unit-commitment layer sourced (min-load + offer both carry a src)",
+      uc.get("src_min_load") and uc.get("src_offer")
+      and math.isclose(uc["min_load_frac"], 0.40)
+      and math.isclose(uc["commit_offer_php_kwh"], 4.14))
+ucg = uc["per_grid"]
+check("commitment never worsens MAE on any grid", all(
+    ucg[g]["mae_after_php_kwh"] <= ucg[g]["mae_before_php_kwh"] + 1e-9 for g in ucg))
+check("commitment lifts correlation where the grid's demand dips below the "
+      "committed tranche (Visayas from flat/undefined to a real fit)",
+      ucg["visayas"]["correlation_before"] is None
+      and ucg["visayas"]["correlation_after"] > 0.3)
+check("commitment lifts Luzon correlation too",
+      ucg["luzon"]["correlation_after"] > ucg["luzon"]["correlation_before"])
+check("commitment lowers the modeled overnight (mean drops or holds on every grid)",
+      all(ucg[g]["modeled_mean_after_php_kwh"]
+          <= ucg[g]["modeled_mean_before_php_kwh"] + 1e-9 for g in ucg))
+# the evening-peak residual must be preserved: commitment only bites at light load
+check("evening-peak scarcity residual survives commitment (still the honest signal)",
+      cal["visayas"]["evening_peak_residual_php_kwh"] > 15
+      and cal["luzon"]["evening_peak_residual_php_kwh"] > 5)
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

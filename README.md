@@ -122,13 +122,26 @@ DOE national fuel totals (a test pins every column).
 
 The honest result is that a competitive cost stack predicts a nearly flat **~P6/kWh**
 line. Calibrated on the market-priced window only (the 56 days after WESM resumed on
-May 1; the suspension's administered prices are excluded), Luzon averages
-**P6.01/kWh** against an observed **P7.65/kWh** (mean absolute error **P4.49**): it
-over-prices the overnight trough, because real units bid below cost to stay committed,
-and under-prices the evening peak. That evening gap is scarcity and offer behavior,
-not data-center load. On the Visayas grid, tight through the 52-day yellow-alert
-streak, the evening residual runs **P16.84/kWh** above the cost stack. The daily shape
-and the island spread are commitment, scarcity, and offers, not new load.
+May 1; the suspension's administered prices are excluded), the stack over-prices the
+overnight trough, because real units bid below cost to stay committed, and
+under-prices the evening peak. That evening gap is scarcity and offer behavior, not
+data-center load. On the Visayas grid, tight through the 52-day yellow-alert streak,
+the evening residual runs **P16.87/kWh** above the cost stack. The daily shape and the
+island spread are commitment, scarcity, and offers, not new load.
+
+A minimal unit-commitment layer takes the first bite out of the overnight miss.
+Committed baseload coal does not shut down overnight; it keeps its minimum stable load
+online (about **40%** of capacity, a sourced technical minimum) and offers it down to
+the H1 2025 WESM average of **P4.14/kWh**, below the P6.00 administered price. Both
+numbers are sourced, not fitted to the trough. The effect, reported honestly: it never
+worsens the fit and it lifts correlation where a grid's demand dips below the committed
+tranche. Visayas goes from a flat, undefined correlation to **0.58** and its MAE falls
+from **P8.90** to **P8.59**; Luzon correlation rises from **0.10** to **0.18** and MAE
+from **P4.49** to **P4.46**. Mindanao barely moves, because its overnight demand still
+sits above the committed tranche, and that gap stays in the residual rather than being
+tuned away. After the layer, Luzon averages a modeled **P5.98/kWh** against an observed
+**P7.65/kWh**. The evening-peak residual is untouched: commitment only bites at light
+load, so the scarcity signal stays exactly where it was.
 
 The adequacy number is the checkable one. At the evening peak Luzon has about
 **15,680 MW** available against a **14,589 MW** peak, a **7.5%** reserve margin. Add
