@@ -384,5 +384,27 @@ check("the DICT wave has a real shortfall tail (p99 or max above zero)",
       mcd["distribution"]["shortfall_mw_p99"] > 0
       or mcd["distribution"]["shortfall_mw_max"] > 500)
 
+# --- storage as a peak-firming time-shifter (item 4) ---------------------------
+st = disp["storage"]
+check("storage assets sourced (batteries + Kalayaan pumped hydro, both with src)",
+      st.get("src_bess") and st.get("src_pumped_hydro")
+      and st["assets"]["luzon"]["bess_mw"] == 634
+      and st["assets"]["luzon"]["pumped_hydro_mw"] == 685
+      and st["assets"]["luzon"]["total_mw"] == 1319)
+check("storage discharge offer sits above the charge floor (round-trip loss)",
+      st["discharge_offer_php_kwh"] > 4.14 and st["round_trip_eff"] < 1)
+pp = st["dict_wave_peak_price"]
+check("storage shaves the tight-evening DICT-wave peak from oil to coal",
+      pp["without_storage_marginal_fuel"] == "oil"
+      and pp["with_storage_marginal_fuel"] == "coal"
+      and pp["with_storage_php_kwh"] < pp["without_storage_php_kwh"])
+rbk = st["reliability_buyback"]
+check("storage buys back the DC-wave loss-of-load probability",
+      rbk["luzon_dict_2028"]["with_storage"]["lolp_pct"]
+      < rbk["luzon_dict_2028"]["without"]["lolp_pct"])
+check("storage lowers the DC-wave expected unserved energy too",
+      rbk["luzon_dict_2028"]["with_storage"]["eue_mwh_evening_window"]
+      < rbk["luzon_dict_2028"]["without"]["eue_mwh_evening_window"])
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

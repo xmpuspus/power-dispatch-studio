@@ -62,6 +62,10 @@ checks.append(("reliability MC + unit commitment baked",
                mc.get("draws", 0) >= 2000
                and mc.get("dict_2028_luzon", {}).get("distribution", {}).get("lolp_pct") is not None
                and bool(disp.get("unit_commitment", {}).get("per_grid"))))
+stg = disp.get("storage", {})
+checks.append(("storage block baked (assets + buyback)",
+               stg.get("assets", {}).get("luzon", {}).get("total_mw") == 1319
+               and stg.get("reliability_buyback", {}).get("luzon_dict_2028") is not None))
 html = urllib.request.urlopen(base + "/").read().decode()
 checks.append(("page mentions the three questions",
                "Can the grid handle" in json.dumps(ans) and "gridbill-ph" in html))

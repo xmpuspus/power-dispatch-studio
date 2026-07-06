@@ -600,9 +600,9 @@ function sualToggle(btn){
 /* ---------- simulate: merit-order dispatch, re-cleared in the browser ---------- */
 const FUELCOL = { solar:"#e0b93b", wind:"#7fb2d6", hydro:"#3a6b8a",
   geothermal:"#8a6bb0", natural_gas:"#4e79a7", biomass:"#5a9e6f", coal:"#6b6b6b",
-  oil:"#b3261e", import:"#1a7f48", firm:"#125c34" };
+  oil:"#b3261e", import:"#1a7f48", firm:"#125c34", storage:"#c77dff" };
 const HVDC_IMPORT_LIMIT = { luzon:250, visayas:250, mindanao:450 };
-let SIM = { grid:"luzon", addDC:0, addFirm:0, imp:0, trip:"" };
+let SIM = { grid:"luzon", addDC:0, addFirm:0, imp:0, stor:0, trip:"" };
 
 function fuelLabel(f){ return String(f||"").replace(/_/g," "); }
 
@@ -634,8 +634,13 @@ function gridStack(g, sel){
 function simStack(){
   const g = SIM.grid;
   const s = gridStack(g, true); if (!s) return null;
+  const blocks = s.blocks.slice();
+  if (SIM.stor > 0){
+    const disc = ((D["dispatch.json"]||{}).storage||{}).discharge_offer_php_kwh || 5.17;
+    blocks.push({ fuel:"storage", cost:disc, mw:SIM.stor });
+  }
   const demand = s.mo.typical_evening_demand_mw + SIM.addDC;
-  return { mo: s.mo, blocks: s.blocks, demand };
+  return { mo: s.mo, blocks, demand };
 }
 const FUEL_COST_FIRM = 6.0;   // new firm capacity priced at coal (labeled)
 
@@ -768,8 +773,12 @@ function sideSimulate(){
       <input type="range" id="sim-firm" min="0" max="1000" step="50" value="${SIM.addFirm}"></label>
     <label>Relieve the feeding HVDC corridor (extra operating limit): <b id="sim-impv">${fmt(SIM.imp)}</b> MW
       <input type="range" id="sim-imp" min="0" max="${impMax}" step="25" value="${SIM.imp}"></label>
+    <label>Discharge storage at the peak: <b id="sim-storv">${fmt(SIM.stor)}</b> MW
+      <span class="tick">Luzon has ${fmt(((disp.storage||{}).assets||{}).luzon ? disp.storage.assets.luzon.total_mw : 1319)} MW today</span>
+      <input type="range" id="sim-stor" min="0" max="2000" step="50" value="${SIM.stor}"></label>
   </div>
   ${couplingNote(disp)}
+  ${storageNote(disp, g)}
   <div class="note" id="sim-cal">Over ${fmt(cal.n_intervals)} five-minute intervals
   in the market-priced window (after WESM resumed ${esc((disp.calibration_window||{}).from)}),
   the cost stack averaged P${fmt(cal.modeled_mean_php_kwh,2)}/kWh against an observed
@@ -790,6 +799,24 @@ function sideSimulate(){
   fmt(dict.reserve_margin_with_dc_pct,1) + "%</b> (" + fmt(dict.shortfall_intervals_with_dc) +
   " intervals short, " + fmt(dict.eue_mwh_with_dc) + " MWh unserved in the window). DICT forecast, Oct 2025." : ""}</div>
   ${reliabilityNote(disp, g)}`;
+}
+
+// storage as a peak-firming time-shifter: buys back the DC-wave adequacy gap
+function storageNote(disp, g){
+  if (g !== "luzon") return "";
+  const st = disp.storage; if (!st) return "";
+  const a = st.assets.luzon, pp = st.dict_wave_peak_price;
+  const rb = (st.reliability_buyback || {}).luzon_dict_2028 || {};
+  const w = rb.without || {}, wi = rb.with_storage || {};
+  return `<div class="note" id="sim-stor-note">Batteries (${fmt(a.bess_mw)} MW) and
+    Kalayaan pumped hydro (${fmt(a.pumped_hydro_mw)} MW) charge off-peak and discharge
+    at the evening peak. At a tight evening under the DICT 1.5 GW wave the cost stack
+    clears on oil at P${fmt(pp.without_storage_php_kwh,2)}/kWh; the ${fmt(a.total_mw)} MW
+    of storage on the grid shaves it back to P${fmt(pp.with_storage_php_kwh,2)}/kWh
+    (coal). It buys back most of the adequacy gap too: the DC-wave loss-of-load
+    probability falls from <b>${fmt(w.lolp_pct,2)}%</b> to <b>${fmt(wi.lolp_pct,2)}%</b>.
+    Energy is limited, so this firms the peak interval, not a multi-day event. DOE and
+    CBK Power figures.</div>`;
 }
 
 // the deterministic margin is a point; the Monte Carlo turns it into a probability
@@ -860,13 +887,13 @@ function updateSim(){
     cread.innerHTML = rows;
   }
   window.__diag.simulate = { grid:SIM.grid, addDC:SIM.addDC, addFirm:SIM.addFirm,
-    imp:SIM.imp, trip:SIM.trip, price:res.price, shortfall:res.shortfall,
+    imp:SIM.imp, stor:SIM.stor, trip:SIM.trip, price:res.price, shortfall:res.shortfall,
     marginal:res.marginal, coupledPrice:cp, coupledSaturated:csat, coupledRent:crent };
 }
 
 function wireSim(){
   document.querySelectorAll(".gsel").forEach(b => b.onclick = () => {
-    SIM = { grid:b.dataset.grid, addDC:0, addFirm:0, imp:0, trip:"" };
+    SIM = { grid:b.dataset.grid, addDC:0, addFirm:0, imp:0, stor:0, trip:"" };
     $("side").innerHTML = sideSimulate(); wireSim(); updateSim();
   });
   const bind = (id, key, valId) => { const el = $(id); if (!el) return;
@@ -874,6 +901,7 @@ function wireSim(){
   bind("sim-dc", "addDC", "sim-dcv");
   bind("sim-firm", "addFirm", "sim-firmv");
   bind("sim-imp", "imp", "sim-impv");
+  bind("sim-stor", "stor", "sim-storv");
   const trip = $("sim-trip"); if (trip) trip.onchange = () => { SIM.trip = trip.value; updateSim(); };
 }
 

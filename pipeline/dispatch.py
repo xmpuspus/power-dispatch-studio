@@ -42,6 +42,8 @@ from fleet_ph import (
     GRID_FUEL_MW,
     GRIDS,
     NATIONAL_FUEL_MW,
+    STORAGE_MW,
+    STORAGE_ROUND_TRIP_EFF,
     avail_mw,
     clear,
     stack,
@@ -311,6 +313,59 @@ def _pctl(sorted_vals: list[float], p: float) -> float:
     return sorted_vals[i]
 
 
+def _named_outage_model():
+    """Per named unit: running capacity when up (so E[contribution] = the unit's
+    deterministic derated MW) and the deterministic derated MW; plus each grid's
+    named list and deterministic named total."""
+    named = {g: [u for u in GENERATORS if u["grid"] == g] for g in GRIDS}
+    run_cap, det_cap = {}, {}
+    for g in GRIDS:
+        for u in named[g]:
+            fa = FUEL_AVAIL.get(u["fuel"], 1.0)
+            fr = FORCED_OUTAGE_RATE.get(u["fuel"], 0.0)
+            det_cap[u["name"]] = u["capacity_mw"] * fa
+            run_cap[u["name"]] = u["capacity_mw"] * fa / (1 - fr) if fr < 1 else 0.0
+    det_named = {g: sum(det_cap[u["name"]] for u in named[g]) for g in GRIDS}
+    return named, run_cap, det_named
+
+
+def _mc_distribution(rng, loads, base_eve, det_named_g, units, run_cap, draws):
+    """One snapshot Monte Carlo: each draw trips the units (Bernoulli at their
+    forced-outage rate) and samples a tight-hour load; returns the shortfall
+    distribution and loss-of-load probability."""
+    shorts = []
+    n_short = 0
+    for _ in range(draws):
+        contrib = sum(run_cap[u["name"]] for u in units
+                      if rng.random() >= FORCED_OUTAGE_RATE.get(u["fuel"], 0.0))
+        avail = base_eve + (contrib - det_named_g)
+        sf = rng.choice(loads) - avail
+        if sf > 0:
+            shorts.append(sf)
+            n_short += 1
+        else:
+            shorts.append(0.0)
+    shorts.sort()
+    exp_sf = sum(shorts) / draws
+    return {
+        "lolp_pct": round(100 * n_short / draws, 2),
+        "expected_shortfall_mw": round(exp_sf, 1),
+        "shortfall_mw_p50": round(_pctl(shorts, 0.50), 1),
+        "shortfall_mw_p90": round(_pctl(shorts, 0.90), 1),
+        "shortfall_mw_p99": round(_pctl(shorts, 0.99), 1),
+        "shortfall_mw_max": round(shorts[-1], 1),
+        "eue_mwh_evening_window": round(exp_sf * len(loads) * 5 / 60, 1),
+    }
+
+
+def _eve_capacity_and_load(hourly_dem: dict):
+    """Evening-peak available capacity (hour 19, solar ~ 0) and the tight-hour
+    (18-21) load pool per grid."""
+    eve_avail = {g: round(sum(b["mw"] for b in stack(g, PEAK_HOUR)), 1) for g in GRIDS}
+    eve_load = {g: [d for h in range(18, 22) for d in hourly_dem[g][h]] for g in GRIDS}
+    return eve_avail, eve_load
+
+
 def build_reliability_mc(hourly_dem: dict, draws: int = 20000, seed: int = 42) -> dict:
     """Monte Carlo forced-outage reliability: the deterministic LOLE/EUE is a point,
     this is a distribution. Each draw is one independent tight-hour realisation: it
@@ -324,51 +379,15 @@ def build_reliability_mc(hourly_dem: dict, draws: int = 20000, seed: int = 42) -
     draws, so no single outage is frozen across the window.
     """
     rng = random.Random(seed)
-    named = {g: [u for u in GENERATORS if u["grid"] == g] for g in GRIDS}
-    run_cap, det_cap = {}, {}  # running-capacity-if-up, and deterministic derated MW
-    for g in GRIDS:
-        for u in named[g]:
-            fa = FUEL_AVAIL.get(u["fuel"], 1.0)
-            fr = FORCED_OUTAGE_RATE.get(u["fuel"], 0.0)
-            det_cap[u["name"]] = u["capacity_mw"] * fa
-            run_cap[u["name"]] = u["capacity_mw"] * fa / (1 - fr) if fr < 1 else 0.0
-    det_named = {g: sum(det_cap[u["name"]] for u in named[g]) for g in GRIDS}
-    # evening-peak capacity (hour 19, solar ~ 0) and the tight-hour load pool
-    eve_avail = {g: round(sum(b["mw"] for b in stack(g, PEAK_HOUR)), 1) for g in GRIDS}
-    eve_load = {g: [d for h in range(18, 22) for d in hourly_dem[g][h]] for g in GRIDS}
+    named, run_cap, det_named = _named_outage_model()
+    eve_avail, eve_load = _eve_capacity_and_load(hourly_dem)
 
-    def run(loads, base_eve, det_named_g, units):
-        shorts = []
-        n_short = 0
-        for _ in range(draws):
-            contrib = sum(run_cap[u["name"]] for u in units
-                          if rng.random() >= FORCED_OUTAGE_RATE.get(u["fuel"], 0.0))
-            avail = base_eve + (contrib - det_named_g)
-            sf = rng.choice(loads) - avail
-            if sf > 0:
-                shorts.append(sf)
-                n_short += 1
-            else:
-                shorts.append(0.0)
-        shorts.sort()
-        n_eve = len(loads)
-        exp_sf = sum(shorts) / draws
-        return {
-            "lolp_pct": round(100 * n_short / draws, 2),
-            "expected_shortfall_mw": round(exp_sf, 1),
-            "shortfall_mw_p50": round(_pctl(shorts, 0.50), 1),
-            "shortfall_mw_p90": round(_pctl(shorts, 0.90), 1),
-            "shortfall_mw_p99": round(_pctl(shorts, 0.99), 1),
-            "shortfall_mw_max": round(shorts[-1], 1),
-            # expected unserved energy over the evening-peak window (mean, not a
-            # frozen tail): expected shortfall MW times the tight intervals in it
-            "eue_mwh_evening_window": round(exp_sf * n_eve * 5 / 60, 1),
-        }
+    def run(loads, base_eve, g):
+        return _mc_distribution(rng, loads, base_eve, det_named[g], named[g],
+                                run_cap, draws)
 
-    per_grid = {g.lower(): run(eve_load[g], eve_avail[g], det_named[g], named[g])
-                for g in GRIDS}
-    dict_dist = run([d + 1500 for d in eve_load["LUZON"]], eve_avail["LUZON"],
-                    det_named["LUZON"], named["LUZON"])
+    per_grid = {g.lower(): run(eve_load[g], eve_avail[g], g) for g in GRIDS}
+    dict_dist = run([d + 1500 for d in eve_load["LUZON"]], eve_avail["LUZON"], "LUZON")
 
     return {
         "method": "Monte Carlo forced outages on the 11 named large units (Bernoulli "
@@ -390,6 +409,83 @@ def build_reliability_mc(hourly_dem: dict, draws: int = 20000, seed: int = 42) -
             "added_mw": 1500, "owner": "DICT", "date": "2025-10",
             "src": "https://www.bworldonline.com/corporate/2025/10/23/707346/",
             "distribution": dict_dist,
+        },
+    }
+
+
+def build_storage(hourly_dem: dict, draws: int = 20000, seed: int = 42) -> dict:
+    """Storage as a peak-firming time-shifter (item 4). Batteries and Kalayaan
+    pumped hydro charge off-peak and discharge at the evening peak. Two honest
+    questions: how much does the existing 634 MW of batteries plus 685 MW of pumped
+    hydro shave the DICT-wave peak price, and how much of the DC-wave loss-of-load
+    probability does it buy back. Existing storage is already in the observed prices,
+    so this is a forward scenario against the modeled DC wave, not a calibration
+    change. Energy is limited (BESS ~1-4h, pumped hydro longer): it firms the peak
+    interval, not a multi-day event.
+    """
+    lz = STORAGE_MW["LUZON"]
+    storage_mw = lz["bess"] + lz["pumped_hydro"]
+    disc = round(COAL_COMMIT_PHP_KWH / STORAGE_ROUND_TRIP_EFF, 2)
+
+    # peak price under the DICT wave, with and without the storage discharge block,
+    # at a TIGHT (95th-percentile) evening where the grid is on the oil margin and
+    # storage can actually shave it. At a typical evening Luzon is still on coal and
+    # storage does not move the price, which we would be over-claiming to show.
+    eve_luzon = sorted(hourly_dem["LUZON"][PEAK_HOUR])
+    p95_eve = eve_luzon[min(len(eve_luzon) - 1, int(0.95 * len(eve_luzon)))] \
+        if eve_luzon else 0
+    dc_demand = round(p95_eve + 1500)
+    base = stack("LUZON", PEAK_HOUR)
+    with_stor = base + [{"fuel": "storage", "cost": disc, "mw": storage_mw}]
+    price_without = clear(base, dc_demand)
+    price_with = clear(with_stor, dc_demand)
+
+    # reliability buy-back: rerun the MC with storage added to evening capacity
+    rng = random.Random(seed)
+    named, run_cap, det_named = _named_outage_model()
+    eve_avail, eve_load = _eve_capacity_and_load(hourly_dem)
+
+    def dist(loads, base_eve, g):
+        return _mc_distribution(rng, loads, base_eve, det_named[g], named[g],
+                                run_cap, draws)
+
+    lz_base_load = eve_load["LUZON"]
+    lz_dict_load = [d + 1500 for d in lz_base_load]
+    av = eve_avail["LUZON"]
+    return {
+        "assets": {
+            "luzon": {"bess_mw": lz["bess"], "pumped_hydro_mw": lz["pumped_hydro"],
+                      "total_mw": storage_mw},
+        },
+        "round_trip_eff": STORAGE_ROUND_TRIP_EFF,
+        "discharge_offer_php_kwh": disc,
+        "src_bess": "https://legacy.doe.gov.ph/electric-power/list-existing-power-plants-march-2025",
+        "src_pumped_hydro": "http://www.cbkpower.com/project/kalayaan-pumped-storage-power-plant-kpspp/",
+        "note": "Batteries (634 MW, DOE) plus Kalayaan pumped hydro (685 MW, CBK "
+                "Power), both on Luzon (the national BESS placed on Luzon is a "
+                "labeled simplification). They charge off-peak near the P4.14 "
+                "commitment offer and discharge at about P" + f"{disc:.2f}" + "/kWh "
+                "after round-trip loss. Energy-limited, so this firms the evening "
+                "peak interval, not a sustained multi-day shortfall.",
+        "dict_wave_peak_price": {
+            "reference": "95th-percentile evening demand plus the DICT 1.5 GW wave",
+            "demand_mw": dc_demand,
+            "without_storage_php_kwh": price_without["price"],
+            "with_storage_php_kwh": price_with["price"],
+            "without_storage_marginal_fuel": price_without["marginal_fuel"],
+            "with_storage_marginal_fuel": price_with["marginal_fuel"],
+            "shortfall_without_mw": price_without["shortfall_mw"],
+            "shortfall_with_mw": price_with["shortfall_mw"],
+        },
+        "reliability_buyback": {
+            "luzon_baseline": {
+                "lolp_without_pct": dist(lz_base_load, av, "LUZON")["lolp_pct"],
+                "lolp_with_pct": dist(lz_base_load, av + storage_mw, "LUZON")["lolp_pct"],
+            },
+            "luzon_dict_2028": {
+                "without": dist(lz_dict_load, av, "LUZON"),
+                "with_storage": dist(lz_dict_load, av + storage_mw, "LUZON"),
+            },
         },
     }
 
@@ -682,6 +778,7 @@ def build_dispatch() -> dict:
 
     coupling = build_coupling(intervals, prices)
     reliability_mc = build_reliability_mc(hourly_dem)
+    storage = build_storage(hourly_dem)
 
     return {
         "available": True,
@@ -721,6 +818,7 @@ def build_dispatch() -> dict:
         "adequacy": adequacy,
         "reliability": reliability,
         "reliability_mc": reliability_mc,
+        "storage": storage,
         "emissions": emissions,
     }
 

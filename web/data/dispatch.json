@@ -1016,6 +1016,56 @@
    }
   }
  },
+ "storage": {
+  "assets": {
+   "luzon": {
+    "bess_mw": 634,
+    "pumped_hydro_mw": 685,
+    "total_mw": 1319
+   }
+  },
+  "round_trip_eff": 0.8,
+  "discharge_offer_php_kwh": 5.17,
+  "src_bess": "https://legacy.doe.gov.ph/electric-power/list-existing-power-plants-march-2025",
+  "src_pumped_hydro": "http://www.cbkpower.com/project/kalayaan-pumped-storage-power-plant-kpspp/",
+  "note": "Batteries (634 MW, DOE) plus Kalayaan pumped hydro (685 MW, CBK Power), both on Luzon (the national BESS placed on Luzon is a labeled simplification). They charge off-peak near the P4.14 commitment offer and discharge at about P5.17/kWh after round-trip loss. Energy-limited, so this firms the evening peak interval, not a sustained multi-day shortfall.",
+  "dict_wave_peak_price": {
+   "reference": "95th-percentile evening demand plus the DICT 1.5 GW wave",
+   "demand_mw": 14509,
+   "without_storage_php_kwh": 12.0,
+   "with_storage_php_kwh": 6.0,
+   "without_storage_marginal_fuel": "oil",
+   "with_storage_marginal_fuel": "coal",
+   "shortfall_without_mw": 0.0,
+   "shortfall_with_mw": 0.0
+  },
+  "reliability_buyback": {
+   "luzon_baseline": {
+    "lolp_without_pct": 0.19,
+    "lolp_with_pct": 0.0
+   },
+   "luzon_dict_2028": {
+    "without": {
+     "lolp_pct": 2.33,
+     "expected_shortfall_mw": 11.8,
+     "shortfall_mw_p50": 0.0,
+     "shortfall_mw_p90": 0.0,
+     "shortfall_mw_p99": 455.7,
+     "shortfall_mw_max": 3385.8,
+     "eue_mwh_evening_window": 3854.6
+    },
+    "with_storage": {
+     "lolp_pct": 0.12,
+     "expected_shortfall_mw": 0.5,
+     "shortfall_mw_p50": 0.0,
+     "shortfall_mw_p90": 0.0,
+     "shortfall_mw_p99": 0.0,
+     "shortfall_mw_max": 1653.6,
+     "eue_mwh_evening_window": 176.2
+    }
+   }
+  }
+ },
  "emissions": {
   "luzon": {
    "by_fuel": {

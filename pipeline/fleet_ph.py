@@ -120,6 +120,26 @@ FORCED_OUTAGE_RATE = {
     "solar": 0.0, "wind": 0.0,
 }
 
+# --- storage: batteries + pumped hydro (peak-firming time-shifters) -----------
+# Excluded from the energy dispatch stack (they store, they do not generate net
+# energy), storage charges off-peak and discharges at the evening peak. For the
+# adequacy and reliability model, what matters at the tight evening interval is the
+# discharge POWER (MW), assuming the store is charged. SOURCED:
+#   - Battery ESS 634 MW national (DOE, as of 2025-03-31). Placed on Luzon here as a
+#     labeled simplification (most PH BESS, the SMC fleet, sits on Luzon).
+#     https://legacy.doe.gov.ph/electric-power/list-existing-power-plants-march-2025
+#   - Kalayaan pumped storage 685 MW (KPSPP I 336 + KPSPP II 348.6 MW GNCC, CBK
+#     Power), Laguna, on Luzon. Southeast Asia's first pumped-storage plant.
+#     http://www.cbkpower.com/project/kalayaan-pumped-storage-power-plant-kpspp/
+# Energy is limited (BESS ~1-4h, pumped hydro longer), so this firms the peak
+# interval, not a multi-day event. Round-trip efficiency ~80% (labeled).
+STORAGE_MW = {
+    "LUZON": {"bess": 634, "pumped_hydro": 685},
+    "VISAYAS": {"bess": 0, "pumped_hydro": 0},
+    "MINDANAO": {"bess": 0, "pumped_hydro": 0},
+}
+STORAGE_ROUND_TRIP_EFF = 0.80
+
 # --- CO2 emission factors (tCO2 per MWh) --------------------------------------
 # LABELLED ASSUMPTIONS (IPCC/EIA typical direct-combustion factors).
 FUEL_CO2_T_PER_MWH = {

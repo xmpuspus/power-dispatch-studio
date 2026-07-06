@@ -160,6 +160,18 @@ loss-of-load probability climbs more than tenfold to **2.44%**: a 1-in-100 draw 
 **4,051 MWh**. The point estimate said the margin turns negative; the distribution says
 how often, and how badly.
 
+Storage is the answer the wave calls for. Luzon already has **634 MW** of batteries
+(DOE) and **685 MW** of Kalayaan pumped hydro (CBK Power), and both are time-shifters:
+they charge off-peak near the P4.14 commitment offer and discharge at the evening peak
+at about **P5.17/kWh** after round-trip loss. At a tight evening under the DICT wave the
+cost stack clears on oil at **P12.00/kWh**; the **1,319 MW** of storage on the grid
+shaves that back to coal at **P6.00**. It buys back most of the adequacy gap too: the
+DC-wave loss-of-load probability falls from **2.33%** to **0.12%** and the expected
+unserved energy from **3,855 MWh** to **176 MWh**. Energy is limited, so this firms the
+peak interval, not a multi-day event, and existing storage is already inside the
+observed prices, so this is a forward scenario against the modeled wave, not a
+calibration change.
+
 The panel re-clears the baked stack in the browser. Move the levers (add a data
 center as flat 24/7 load, trip any of the 11 named units for an N-1, add firm
 capacity, relieve a choke point) and the clearing price and any supply shortfall
