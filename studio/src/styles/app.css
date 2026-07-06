@@ -1028,3 +1028,266 @@
   color: var(--primary);
   font-weight: 500;
 }
+
+/* ============ PLEXOS shell: ribbon, run, status ============ */
+.studio__ribbon {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex: 1;
+  justify-content: center;
+}
+.ribbon__scn {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+.ribbon__scn select {
+  font: inherit;
+  font-size: var(--fs-13);
+  padding: 5px var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text);
+}
+.btn--sm {
+  height: 30px;
+  padding: 0 var(--sp-3);
+  font-size: var(--fs-12);
+}
+.btn--run {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: transparent;
+  height: 34px;
+}
+.btn--run:hover {
+  background: var(--primary-hover);
+}
+.btn--run.is-dirty {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+.statuschip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-12);
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+.statuschip--solved {
+  color: var(--positive);
+  background: color-mix(in srgb, var(--positive) 12%, transparent);
+  border-color: transparent;
+}
+.statuschip--unsolved {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: transparent;
+}
+
+/* ============ Explorer tabs + phases ============ */
+.tree__tabs {
+  display: flex;
+  gap: 2px;
+  padding: var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+.tree__tab {
+  flex: 1;
+  font-size: var(--fs-12);
+  font-weight: 500;
+  padding: 6px;
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.tree__tab.is-active {
+  background: var(--surface-3);
+  color: var(--text);
+}
+.tree__phase {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 5px var(--sp-3);
+  font-size: var(--fs-13);
+  color: var(--text-muted);
+}
+.tree__phase.is-off {
+  opacity: 0.45;
+}
+.tree__phase.is-active {
+  color: var(--text);
+}
+
+/* ============ Data pane: tabs + property grid ============ */
+.datapane {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  max-width: 980px;
+  margin: 0 auto;
+}
+.datatabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+}
+.datatabs__tab {
+  font-size: var(--fs-13);
+  padding: 6px var(--sp-3);
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+}
+.datatabs__tab.is-active {
+  color: var(--text);
+  border-bottom-color: var(--primary);
+  font-weight: 500;
+}
+.datatabs__tab.is-off {
+  opacity: 0.4;
+}
+.datapane__hint {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.datapane__run {
+  margin-left: auto;
+}
+.datapane__objects {
+  margin-top: var(--sp-3);
+}
+.propgrid-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+.propgrid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-13);
+}
+.propgrid th,
+.propgrid td {
+  padding: 6px var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+.propgrid thead th {
+  background: var(--surface-2);
+  font-weight: 500;
+  color: var(--text-muted);
+  position: sticky;
+  top: 0;
+}
+.propgrid__num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.propgrid__unit {
+  color: var(--text-faint);
+  font-weight: 400;
+}
+.propgrid__obj {
+  font-weight: 500;
+}
+.propgrid__edit {
+  position: relative;
+  padding: 2px 4px;
+}
+.propgrid__input {
+  width: 84px;
+  font: inherit;
+  font-size: var(--fs-13);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text);
+}
+.propgrid__input:hover {
+  border-color: var(--border);
+}
+.propgrid__input:focus {
+  border-color: var(--primary);
+  background: var(--surface);
+  outline: none;
+}
+.propgrid__input.is-set {
+  color: var(--accent);
+  font-weight: 600;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.propgrid__revert {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  line-height: 14px;
+  text-align: center;
+  border-radius: 999px;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 12px;
+}
+.propgrid__revert:hover {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.objlist {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.objlist__row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 4px var(--sp-2);
+  font-size: var(--fs-13);
+  border-bottom: 1px solid var(--border);
+}
+.objlist__grid {
+  margin-left: auto;
+  color: var(--text-faint);
+  font-size: var(--fs-11);
+}
+.basecase-banner {
+  max-width: 980px;
+  margin: 0 auto var(--sp-3);
+  padding: 6px var(--sp-3);
+  font-size: var(--fs-12);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-radius: var(--r-sm);
+}
+.crumbs__stale {
+  margin-left: var(--sp-3);
+  font-size: var(--fs-11);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* hide native number spinners so the revert affordance is clean */
+.propgrid__input::-webkit-outer-spin-button,
+.propgrid__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.propgrid__input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
