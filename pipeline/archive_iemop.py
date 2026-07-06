@@ -53,7 +53,15 @@ DATASETS = {
     "HVDCRTD": "hvdc-limits-imposed-in-rtd",
     "OUTRTD": "outage-schedules-used-in-rtd",
     "DIPCEF": "dipc-energy-results-final",
+    "RTDRS": "rtd-reserve-schedule",
 }
+
+# Large datasets kept as a static SAMPLE of recent days, not the full public
+# window: one day is multi-MB, so committing 90 of them would bloat the repo.
+# The daily cron fetches 0 of these (sample_days defaults to 0 on --daily); a
+# human tops up the sample with --sample-days N on a backfill. RTDRS (reserve
+# schedules with co-optimised reserve clearing prices) joins DIPCEF here.
+SAMPLE_KEYS = {"DIPCEF", "RTDRS"}
 
 
 def curl(args: list[str], timeout: int = 60) -> tuple[int, bytes]:
@@ -129,18 +137,19 @@ def recent_pht_stamps(days: int) -> set[str]:
     return {(now - timedelta(days=d)).strftime("%Y%m%d") for d in range(days)}
 
 
-def wanted(key: str, name: str, mode: str, dipcef_days: int,
+def wanted(key: str, name: str, mode: str, sample_days: int,
            newest_stamp: str = "", newest_on_disk: str = "") -> bool:
     m = re.search(r"(\d{8})", name)
     stamp = m.group(1) if m else ""
-    if key == "DIPCEF":
-        # Settlement-final files lag publication by days; filter relative to the
-        # newest stamp IN THE LISTING, not to today.
-        if dipcef_days <= 0 or not stamp or not newest_stamp:
+    if key in SAMPLE_KEYS:
+        # Sample datasets keep only the most recent N days, filtered relative to
+        # the newest stamp IN THE LISTING (final files lag publication by days),
+        # not to today. sample_days <= 0 fetches none (the daily-cron default).
+        if sample_days <= 0 or not stamp or not newest_stamp:
             return False
         anchor = datetime.strptime(newest_stamp, "%Y%m%d")
         keep = {(anchor - timedelta(days=d)).strftime("%Y%m%d")
-                for d in range(dipcef_days)}
+                for d in range(sample_days)}
         return stamp in keep
     if mode == "daily":
         # Fetch everything newer than what is already on disk, not a fixed
@@ -153,7 +162,7 @@ def wanted(key: str, name: str, mode: str, dipcef_days: int,
     return True
 
 
-def archive(keys: list[str], mode: str, dipcef_days: int) -> list[str]:
+def archive(keys: list[str], mode: str, sample_days: int) -> list[str]:
     """Fetch into data/raw/, update manifest.json, return failure strings."""
     manifest_path = os.path.join(RAW, "manifest.json")
     manifest = {}
@@ -182,7 +191,7 @@ def archive(keys: list[str], mode: str, dipcef_days: int) -> list[str]:
                    if (m := re.search(r"(\d{8})", n))]
         newest_on_disk = max(on_disk) if on_disk else ""
         for b64, name in files:
-            if not wanted(key, name, mode, dipcef_days, newest_stamp,
+            if not wanted(key, name, mode, sample_days, newest_stamp,
                           newest_on_disk):
                 continue
             dest = os.path.join(ddir, name)
@@ -226,7 +235,7 @@ def archive(keys: list[str], mode: str, dipcef_days: int) -> list[str]:
 # DIPCEF is a static sample by design and is exempt. A dataset older than its
 # budget means the cron has been failing silently: --check exits nonzero so
 # the workflow goes red instead.
-LAG_BUDGET_DAYS = {"LWAPF": 16, "DIPCEF": None}
+LAG_BUDGET_DAYS = {"LWAPF": 16, "DIPCEF": None, "RTDRS": None}
 LAG_DEFAULT_DAYS = 4
 
 
@@ -268,10 +277,12 @@ def main() -> int:
     g.add_argument("--check", action="store_true",
                    help="staleness check against manifest.json (exit 1 if stale)")
     ap.add_argument("--only", help="comma-separated dataset keys")
-    ap.add_argument("--dipcef-days", type=int, default=None,
-                    help="fetch DIPCEF hourly zips for the last N days "
-                         "(default: 3 on backfill, 0 on daily; the DIPCEF "
-                         "sample stays static so the repo stays light)")
+    ap.add_argument("--sample-days", "--dipcef-days", dest="sample_days",
+                    type=int, default=None,
+                    help="fetch the last N days of the SAMPLE datasets "
+                         "(DIPCEF, RTDRS; default: 3 on backfill, 0 on daily). "
+                         "These files are multi-MB per day, so the sample stays "
+                         "static and the repo stays light.")
     a = ap.parse_args()
     if a.check:
         return check_staleness()
@@ -283,10 +294,10 @@ def main() -> int:
             print(f"unknown dataset keys: {bad}")
             return 2
     mode = "daily" if a.daily else "backfill"
-    dipcef_days = a.dipcef_days
-    if dipcef_days is None:
-        dipcef_days = 0 if mode == "daily" else 3
-    failures = archive(keys, mode, dipcef_days)
+    sample_days = a.sample_days
+    if sample_days is None:
+        sample_days = 0 if mode == "daily" else 3
+    failures = archive(keys, mode, sample_days)
     if failures:
         print(f"{len(failures)} dataset failure(s); exiting nonzero so the "
               "cron goes red instead of silently losing window days")

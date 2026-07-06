@@ -782,6 +782,12 @@ def main() -> int:
     with open(os.path.join(OUT, "dispatch.json"), "w") as fh:
         json.dump(dispatch, fh, indent=1)
 
+    from reserve import build_reserve
+
+    reserve = build_reserve()
+    with open(os.path.join(OUT, "reserve.json"), "w") as fh:
+        json.dump(reserve, fh, indent=1)
+
     for name, obj in [("congestion.json", congestion),
                       ("reliability.json", reliability),
                       ("prices.json", prices),
@@ -802,7 +808,7 @@ def main() -> int:
         "notes": NOTES,
         "datasets": {k: len(dataset_files(k)) for k in
                      ("RTDCV", "DAPCV", "RTDSUM", "LWAPF", "HVDCRTD",
-                      "OUTRTD", "DIPCEF")},
+                      "OUTRTD", "DIPCEF", "RTDRS")},
     }
     with open(os.path.join(OUT, "meta.json"), "w") as fh:
         json.dump(meta, fh, indent=1)

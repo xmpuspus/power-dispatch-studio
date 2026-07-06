@@ -275,6 +275,45 @@ export interface Dispatch {
   storage: Storage
 }
 
+export interface ReserveCategory {
+  code: string
+  category: string
+  label: string
+  mean_php_kwh: number
+  min_php_kwh: number
+  max_php_kwh: number
+  cap_hit_pct: number
+  mean_system_mw: number
+}
+
+export interface ReserveGridRow {
+  code: string
+  category: string
+  label: string
+  mean_php_kwh: number
+  mean_mw: number
+}
+
+export interface Reserve {
+  available: boolean
+  commercial_since?: string
+  sample_days?: string[]
+  n_intervals?: number
+  reserve_cap_php_kwh?: number
+  categories?: ReserveCategory[]
+  by_grid?: Record<GridKey, ReserveGridRow[]>
+  scarcity?: {
+    category: string
+    label: string
+    mean_php_kwh: number
+    top_decile_mean_php_kwh: number
+  }
+  note: string
+  disclaimer?: string
+  src_market?: string
+  src_data?: string
+}
+
 export interface GeneratorProps {
   name: string
   grid: string

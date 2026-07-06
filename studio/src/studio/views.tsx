@@ -1,5 +1,5 @@
-import type { Dispatch, GridKey } from '../lib/types'
-import { num, php, pct, fuelLabel } from '../lib/data'
+import type { Dispatch, GridKey, ReserveCategory, ReserveGridRow } from '../lib/types'
+import { num, php, pct, fuelLabel, useReserve } from '../lib/data'
 import { Panel, StatTile, Chip, Source, EmptyNote } from '../ui/kit'
 import { DataGrid, type Column } from '../ui/DataGrid'
 import { MeritStack, DurationCurve, ShareBars, FlowDiagram, CompareBars } from './charts'
@@ -413,6 +413,109 @@ export function InterfacesView({ d }: { d: Dispatch }) {
         subtitle="The two links that couple the grids, with how often each binds."
       >
         <DataGrid columns={cols} rows={d.coupling.corridors} getKey={(c) => c.id} />
+      </Panel>
+    </div>
+  )
+}
+
+export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
+  const r = useReserve()
+  if (r.loading) return <EmptyNote>Loading the reserve market.</EmptyNote>
+  if (r.error || !r.data?.available)
+    return (
+      <EmptyNote>
+        Reserve schedules not baked. Run{' '}
+        <code>archive_iemop.py --backfill --only RTDRS --sample-days 3</code> then{' '}
+        <code>make data</code>.
+      </EmptyNote>
+    )
+  const res = r.data
+  const cats: ReserveCategory[] = res.categories ?? []
+  const gridRows: ReserveGridRow[] = res.by_grid?.[grid] ?? []
+  const energy = d.calibration[grid].observed_mean_php_kwh
+  const dearest = cats[0]
+  const cols: Column<ReserveGridRow>[] = [
+    { key: 'label', header: 'Reserve product', render: (x) => x.label },
+    {
+      key: 'price',
+      header: 'Mean clearing price',
+      align: 'right',
+      mono: true,
+      render: (x) => php(x.mean_php_kwh),
+    },
+    {
+      key: 'mw',
+      header: 'Mean scheduled MW',
+      align: 'right',
+      mono: true,
+      render: (x) => num(x.mean_mw),
+    },
+  ]
+  return (
+    <div className="view">
+      <Panel
+        title="WESM Reserve Market"
+        subtitle={`Live since ${res.commercial_since}. Real-time dispatch co-optimises energy and reserves; the studio's merit order clears energy only. Sample of ${num(res.n_intervals)} intervals over ${res.sample_days?.join(', ')}.`}
+        right={<Source href={res.src_market} label="market source" />}
+      >
+        <div className="stat-row">
+          {cats.map((c) => (
+            <StatTile
+              key={c.code}
+              label={c.label}
+              value={php(c.mean_php_kwh)}
+              hint={`${num(c.mean_system_mw)} MW · at cap ${pct(c.cap_hit_pct / 100, 0)} of the time`}
+              tone={c.mean_php_kwh > energy ? 'danger' : 'default'}
+            />
+          ))}
+        </div>
+        <p className="note">
+          The dearest reserve products clear well above the energy coal margin. A unit
+          holding reserve cannot also sell that MW as energy, so this cost is real and the
+          energy-only stack cannot see it. These are the operator's own published reserve
+          clearing prices, not a model output. <Source href={res.src_data} label="data" />
+        </p>
+      </Panel>
+
+      {dearest && (
+        <Panel
+          title="Reserve versus energy"
+          subtitle={`${dearest.label} is the scarcest product. Compared with the observed energy clearing price on ${cap(grid)}.`}
+        >
+          <CompareBars
+            unit=""
+            dp={2}
+            items={[
+              {
+                label: 'Clearing price, PhP/kWh',
+                a: dearest.mean_php_kwh,
+                b: energy ?? 0,
+                aLabel: dearest.label + ' reserve',
+                bLabel: 'energy (observed mean)',
+              },
+            ]}
+          />
+          {res.scarcity && (
+            <p className="note">
+              In the tightest tenth of intervals the {res.scarcity.label.toLowerCase()}{' '}
+              reserve price averages {php(res.scarcity.top_decile_mean_php_kwh)}, near the{' '}
+              {php(res.reserve_cap_php_kwh)} reserve cap: scarcity prices reserve and
+              energy together. {res.disclaimer}
+            </p>
+          )}
+        </Panel>
+      )}
+
+      <Panel
+        title={`Reserve clearing prices on ${cap(grid)}`}
+        subtitle="Mean price and scheduled quantity per reserve product for this grid."
+      >
+        <DataGrid
+          columns={cols}
+          rows={gridRows}
+          getKey={(x) => x.code}
+          empty="No reserve rows for this grid in the sample."
+        />
       </Panel>
     </div>
   )

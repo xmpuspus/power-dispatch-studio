@@ -9,6 +9,7 @@ import {
   MarginalView,
   FlowsView,
   ReliabilityView,
+  ReserveView,
   N1View,
   RegionsView,
   InterfacesView,
@@ -21,12 +22,20 @@ type ViewId =
   | 'duration'
   | 'marginal'
   | 'flows'
+  | 'reserve'
   | 'reliability'
   | 'generators'
   | 'interfaces'
   | 'regions'
 
-const GRID_SCOPED: ViewId[] = ['scenario', 'merit', 'duration', 'marginal', 'generators']
+const GRID_SCOPED: ViewId[] = [
+  'scenario',
+  'merit',
+  'duration',
+  'marginal',
+  'reserve',
+  'generators',
+]
 
 const TREE: {
   group: string
@@ -50,6 +59,7 @@ const TREE: {
       { id: 'merit', label: 'Merit order' },
       { id: 'duration', label: 'Price duration' },
       { id: 'flows', label: 'Coupled flows' },
+      { id: 'reserve', label: 'Reserve market' },
       { id: 'reliability', label: 'Reliability' },
       { id: 'marginal', label: 'Marginal units' },
     ],
@@ -62,6 +72,7 @@ const TITLE: Record<ViewId, string> = {
   duration: 'Price duration',
   marginal: 'Marginal units',
   flows: 'Coupled flows',
+  reserve: 'Reserve market',
   reliability: 'Reliability',
   generators: 'Generators',
   interfaces: 'Interfaces',
@@ -165,6 +176,7 @@ export function Studio({
             {view === 'duration' && <DurationView d={d} grid={grid} />}
             {view === 'marginal' && <MarginalView d={d} grid={grid} />}
             {view === 'flows' && <FlowsView d={d} />}
+            {view === 'reserve' && <ReserveView d={d} grid={grid} />}
             {view === 'reliability' && <ReliabilityView d={d} />}
             {view === 'generators' && <N1View d={d} grid={grid} />}
             {view === 'interfaces' && <InterfacesView d={d} />}

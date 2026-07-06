@@ -1,0 +1,154 @@
+{
+ "available": true,
+ "commercial_since": "2024-01-26",
+ "sample_days": [
+  "2026-07-03",
+  "2026-07-05"
+ ],
+ "n_intervals": 576,
+ "reserve_cap_php_kwh": 25.0,
+ "categories": [
+  {
+   "code": "Ru",
+   "category": "regulation_up",
+   "label": "Regulation (up)",
+   "mean_php_kwh": 17.222,
+   "min_php_kwh": 0.0,
+   "max_php_kwh": 25.0,
+   "cap_hit_pct": 9.8,
+   "mean_system_mw": 300
+  },
+  {
+   "code": "Rd",
+   "category": "regulation_down",
+   "label": "Regulation (down)",
+   "mean_php_kwh": 15.874,
+   "min_php_kwh": 0.0,
+   "max_php_kwh": 25.0,
+   "cap_hit_pct": 10.2,
+   "mean_system_mw": 300
+  },
+  {
+   "code": "Fr",
+   "category": "contingency",
+   "label": "Contingency",
+   "mean_php_kwh": 6.651,
+   "min_php_kwh": 0.085,
+   "max_php_kwh": 25.0,
+   "cap_hit_pct": 8.0,
+   "mean_system_mw": 890
+  },
+  {
+   "code": "Dr",
+   "category": "dispatchable",
+   "label": "Dispatchable",
+   "mean_php_kwh": 1.797,
+   "min_php_kwh": 0.0,
+   "max_php_kwh": 25.0,
+   "cap_hit_pct": 0.7,
+   "mean_system_mw": 865
+  }
+ ],
+ "by_grid": {
+  "luzon": [
+   {
+    "code": "Ru",
+    "category": "regulation_up",
+    "label": "Regulation (up)",
+    "mean_php_kwh": 16.552,
+    "mean_mw": 216
+   },
+   {
+    "code": "Rd",
+    "category": "regulation_down",
+    "label": "Regulation (down)",
+    "mean_php_kwh": 14.142,
+    "mean_mw": 216
+   },
+   {
+    "code": "Fr",
+    "category": "contingency",
+    "label": "Contingency",
+    "mean_php_kwh": 6.957,
+    "mean_mw": 644
+   },
+   {
+    "code": "Dr",
+    "category": "dispatchable",
+    "label": "Dispatchable",
+    "mean_php_kwh": 2.318,
+    "mean_mw": 644
+   }
+  ],
+  "visayas": [
+   {
+    "code": "Rd",
+    "category": "regulation_down",
+    "label": "Regulation (down)",
+    "mean_php_kwh": 18.313,
+    "mean_mw": 42
+   },
+   {
+    "code": "Ru",
+    "category": "regulation_up",
+    "label": "Regulation (up)",
+    "mean_php_kwh": 17.784,
+    "mean_mw": 42
+   },
+   {
+    "code": "Fr",
+    "category": "contingency",
+    "label": "Contingency",
+    "mean_php_kwh": 9.039,
+    "mean_mw": 133
+   },
+   {
+    "code": "Dr",
+    "category": "dispatchable",
+    "label": "Dispatchable",
+    "mean_php_kwh": 3.488,
+    "mean_mw": 111
+   }
+  ],
+  "mindanao": [
+   {
+    "code": "Ru",
+    "category": "regulation_up",
+    "label": "Regulation (up)",
+    "mean_php_kwh": 17.654,
+    "mean_mw": 41
+   },
+   {
+    "code": "Rd",
+    "category": "regulation_down",
+    "label": "Regulation (down)",
+    "mean_php_kwh": 14.674,
+    "mean_mw": 41
+   },
+   {
+    "code": "Fr",
+    "category": "contingency",
+    "label": "Contingency",
+    "mean_php_kwh": 4.163,
+    "mean_mw": 113
+   },
+   {
+    "code": "Dr",
+    "category": "dispatchable",
+    "label": "Dispatchable",
+    "mean_php_kwh": 0.056,
+    "mean_mw": 111
+   }
+  ]
+ },
+ "scarcity": {
+  "category": "regulation_up",
+  "label": "Regulation (up)",
+  "mean_php_kwh": 17.222,
+  "top_decile_mean_php_kwh": 24.988
+ },
+ "note": "The WESM Reserve Market co-optimises energy and reserves in real-time dispatch: a unit holding reserve cannot also sell that MW as energy, and in a tight hour the reserve clearing price spikes with the energy price. The studio's merit order clears energy only, so it does not price this layer. These are the operator's own published RTD reserve clearing prices over a sample of recent days, not a model output.",
+ "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations.",
+ "src_market": "https://www.iemop.ph/news/iemop-commences-the-full-commercial-operations-of-reserve-market/",
+ "src_data": "https://www.iemop.ph/market-data/rtd-reserve-schedule/"
+}
