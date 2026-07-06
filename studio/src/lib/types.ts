@@ -16,7 +16,50 @@ export interface MeritOrder {
   avail_mw: number
   typical_evening_demand_mw: number
   peak_demand_mw: number
+  // dispatchable MW per fuel at the reference hour, before the coal commit/marginal
+  // split. The scenario engine rebuilds the stack from this (see engine.ts).
+  fuel_avail_mw: Record<string, number>
+  solar_avail_frac_ref: number
+  solar_avail_frac_midday: number
+  solar_installed_mw: number
   blocks: Block[]
+}
+
+export interface Assumptions {
+  fuel_marginal_cost_php_kwh: Record<string, number>
+  national_fuel_mw: Record<string, number>
+  coal_commit_php_kwh: number
+  coal_min_load_frac: number
+  wheeling_cost_php_kwh: number
+  note: string
+}
+
+export interface GoldenCase {
+  label: string
+  input: {
+    demand: Record<GridKey, number>
+    removed: Partial<Record<GridKey, Record<string, number>>>
+    caps: { leyte: number; mvip: number }
+  }
+  expect: {
+    price: Record<GridKey, number>
+    gen_mw: Record<GridKey, number>
+    shortfall_mw: Record<GridKey, number>
+    flow_lv_mw: number
+    flow_vm_mw: number
+    leyte_saturated: boolean
+    leyte_rent_php_kwh: number
+    mvip_saturated: boolean
+    mvip_rent_php_kwh: number
+  }
+}
+
+export interface ScenarioGolden {
+  reference_hour: number
+  tolerance_php_kwh: number
+  tolerance_mw: number
+  note: string
+  cases: GoldenCase[]
 }
 
 export interface Calibration {
@@ -208,8 +251,10 @@ export interface Dispatch {
   available: boolean
   model: string
   days: number
+  assumptions: Assumptions
   calibration_window: { regime: string; from: string; days: number; note: string }
   merit_order: Record<GridKey, MeritOrder>
+  scenario_golden: ScenarioGolden
   coupling: Coupling
   unit_commitment: UnitCommitment
   price_duration: Record<GridKey, PriceDuration>

@@ -42,6 +42,7 @@ from fleet_ph import (
     GRID_FUEL_MW,
     GRIDS,
     NATIONAL_FUEL_MW,
+    SOLAR_PROFILE,
     STORAGE_MW,
     STORAGE_ROUND_TRIP_EFF,
     avail_mw,
@@ -295,6 +296,71 @@ def _coupling_outage(intervals: dict, prices: dict) -> dict:
         "explained_fraction": (round(s_mod / s_obs, 3)
                                if s_obs not in (None, 0) and s_mod is not None
                                else None),
+    }
+
+
+def build_scenario_golden(merit_order: dict) -> dict:
+    """Golden input/output pairs computed by the real coupled_dispatch engine.
+
+    The client scenario engine (studio/src/studio/engine.ts) is a transcription of
+    the same solve. These pairs are the parity harness: the TS test rebuilds each
+    stack from merit_order[g].fuel_avail_mw, runs its own clear, and must reproduce
+    the prices/flows/rents below to the rounding. That ties the browser engine to
+    the Python source of truth instead of trusting the transcription.
+    """
+    base = {g: merit_order[g.lower()]["typical_evening_demand_mw"] for g in GRIDS}
+    c1 = CORRIDORS[0]["limit_mw"]
+    c2 = CORRIDORS[1]["limit_mw"]
+    cases = [
+        {"label": "baseline typical evening", "demand": dict(base),
+         "removed": {}, "caps": {}},
+        {"label": "DICT 1.5 GW data centre on Luzon",
+         "demand": {**base, "LUZON": base["LUZON"] + 1500},
+         "removed": {}, "caps": {}},
+        {"label": "added Visayas load binds the Leyte-Luzon link",
+         "demand": {**base, "VISAYAS": base["VISAYAS"] + 900},
+         "removed": {}, "caps": {}},
+        {"label": "documented 935 MW Visayas coal outage",
+         "demand": dict(base), "removed": {"VISAYAS": {"coal": 935}}, "caps": {}},
+        {"label": "relieve the Leyte-Luzon corridor by 250 MW under the bind",
+         "demand": {**base, "VISAYAS": base["VISAYAS"] + 900},
+         "removed": {}, "caps": {"leyte_luzon_hvdc": c1 + 250}},
+    ]
+    out = []
+    for c in cases:
+        res = clear_coupled(c["demand"], PEAK_HOUR,
+                            removed=c["removed"] or None, caps=c["caps"] or None)
+        out.append({
+            "label": c["label"],
+            "input": {
+                "demand": {k.lower(): v for k, v in c["demand"].items()},
+                "removed": {k.lower(): v for k, v in c["removed"].items()},
+                "caps": {"leyte": c["caps"].get("leyte_luzon_hvdc", c1),
+                         "mvip": c["caps"].get("mvip_hvdc", c2)},
+            },
+            "expect": {
+                "price": {g: res["grids"][g]["price"] for g in
+                          ("luzon", "visayas", "mindanao")},
+                "gen_mw": {g: res["grids"][g]["gen_mw"] for g in
+                           ("luzon", "visayas", "mindanao")},
+                "shortfall_mw": {g: res["grids"][g]["shortfall_mw"] for g in
+                                 ("luzon", "visayas", "mindanao")},
+                "flow_lv_mw": res["flow_lv_mw"],
+                "flow_vm_mw": res["flow_vm_mw"],
+                "leyte_saturated": res["corridors"][0]["saturated"],
+                "leyte_rent_php_kwh": res["corridors"][0]["congestion_rent_php_kwh"],
+                "mvip_saturated": res["corridors"][1]["saturated"],
+                "mvip_rent_php_kwh": res["corridors"][1]["congestion_rent_php_kwh"],
+            },
+        })
+    return {
+        "reference_hour": PEAK_HOUR,
+        "tolerance_php_kwh": 0.02,
+        "tolerance_mw": 1.0,
+        "note": "Input/output pairs from coupled_dispatch.clear_coupled at the "
+                "evening reference hour. The browser scenario engine must reproduce "
+                "these; the studio test asserts it.",
+        "cases": out,
     }
 
 
@@ -694,12 +760,28 @@ def build_dispatch() -> dict:
         blocks = stack(g, PEAK_HOUR)
         eve = hourly[g][PEAK_HOUR]
         typical = round(sum(p[0] for p in eve) / len(eve)) if eve else 0
+        # dispatchable MW per fuel at the reference hour, BEFORE the coal commit/
+        # marginal split (this is exactly what fleet_ph.stack() starts from). The
+        # client scenario engine rebuilds the stack from this so a unit trip, a
+        # fuel add, or a re-price reproduces the pipeline's stack() exactly instead
+        # of mutating the already-split baked blocks (which would misattribute a
+        # coal trip to the wrong tranche). Pipeline stays the source of truth.
+        fuel_avail = {f: round(avail_mw(g, f, PEAK_HOUR), 1)
+                      for f in GRID_FUEL_MW[g] if avail_mw(g, f, PEAK_HOUR) > 0}
         merit_order[g.lower()] = {
             "reference_hour": PEAK_HOUR,
             "installed_mw": sum(GRID_FUEL_MW[g].values()),
             "avail_mw": round(sum(b["mw"] for b in blocks), 1),
             "typical_evening_demand_mw": typical,
             "peak_demand_mw": round(peak_demand[g]),
+            "fuel_avail_mw": fuel_avail,
+            # solar availability so the client scenario engine can add solar honestly:
+            # at the evening reference hour the profile is ~0 (the added-solar lever
+            # barely moves adequacy; storage does), so it is carried alongside the
+            # midday maximum to make that caveat concrete rather than a silent no-op.
+            "solar_avail_frac_ref": SOLAR_PROFILE.get(PEAK_HOUR, 0.0),
+            "solar_avail_frac_midday": max(SOLAR_PROFILE.values()),
+            "solar_installed_mw": GRID_FUEL_MW[g].get("solar", 0),
             "blocks": blocks,
         }
 
@@ -804,6 +886,7 @@ def build_dispatch() -> dict:
     coupling = build_coupling(intervals, prices)
     reliability_mc = build_reliability_mc(hourly_dem)
     storage = build_storage(hourly_dem)
+    scenario_golden = build_scenario_golden(merit_order)
 
     # price-duration curve (modeled vs observed overlay) and the marginal-block
     # frequency table (which fuel sets the price how often), per grid, market window
@@ -847,6 +930,9 @@ def build_dispatch() -> dict:
         "assumptions": {
             "fuel_marginal_cost_php_kwh": FUEL_COST_PHP_KWH,
             "national_fuel_mw": NATIONAL_FUEL_MW,
+            "coal_commit_php_kwh": COAL_COMMIT_PHP_KWH,
+            "coal_min_load_frac": COAL_MIN_LOAD_FRAC,
+            "wheeling_cost_php_kwh": coupling["wheeling_cost_php_kwh"],
             "note": "Coal (P6.00) and Malampaya gas (P4.80) costs are sourced (ERC "
                     "administered price; Malampaya FOI). Availability derates, the "
                     "solar profile, the oil peaker cost, and the per-grid fuel "
@@ -868,6 +954,7 @@ def build_dispatch() -> dict:
                     "metrics (peak, adequacy, N-1, emissions) use the whole window.",
         },
         "merit_order": merit_order,
+        "scenario_golden": scenario_golden,
         "coupling": coupling,
         "unit_commitment": unit_commitment,
         "price_duration": price_duration,

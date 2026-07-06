@@ -24,6 +24,9 @@
    "wind": 427,
    "biomass": 595
   },
+  "coal_commit_php_kwh": 4.14,
+  "coal_min_load_frac": 0.4,
+  "wheeling_cost_php_kwh": 0.02,
   "note": "Coal (P6.00) and Malampaya gas (P4.80) costs are sourced (ERC administered price; Malampaya FOI). Availability derates, the solar profile, the oil peaker cost, and the per-grid fuel split are labeled model assumptions. A competitive cost stack gives a near-flat ~P6 line: it over-prices the overnight trough (units bid below cost to stay committed) and under-prices the evening peak (scarcity and offers). The daily shape and the island spread are commitment, scarcity, and offer behaviour, not data-center load."
  },
  "days": 80,
@@ -40,6 +43,18 @@
    "avail_mw": 15680.1,
    "typical_evening_demand_mw": 12031,
    "peak_demand_mw": 14589,
+   "fuel_avail_mw": {
+    "coal": 7522.5,
+    "natural_gas": 3358.8,
+    "oil": 2116.0,
+    "hydro": 1554.3,
+    "geothermal": 778.5,
+    "wind": 105.0,
+    "biomass": 245.0
+   },
+   "solar_avail_frac_ref": 0.0,
+   "solar_avail_frac_midday": 0.78,
+   "solar_installed_mw": 1800,
    "blocks": [
     {
      "fuel": "wind",
@@ -89,6 +104,17 @@
    "avail_mw": 2788.6,
    "typical_evening_demand_mw": 1812,
    "peak_demand_mw": 2559,
+   "fuel_avail_mw": {
+    "coal": 1317.5,
+    "oil": 460.0,
+    "hydro": 5.5,
+    "geothermal": 877.5,
+    "wind": 23.1,
+    "biomass": 105.0
+   },
+   "solar_avail_frac_ref": 0.0,
+   "solar_avail_frac_midday": 0.78,
+   "solar_installed_mw": 700,
    "blocks": [
     {
      "fuel": "wind",
@@ -133,6 +159,16 @@
    "avail_mw": 3528.6,
    "typical_evening_demand_mw": 2795,
    "peak_demand_mw": 3227,
+   "fuel_avail_mw": {
+    "coal": 2215.1,
+    "oil": 596.2,
+    "hydro": 550.0,
+    "geothermal": 100.8,
+    "biomass": 66.5
+   },
+   "solar_avail_frac_ref": 0.0,
+   "solar_avail_frac_midday": 0.78,
+   "solar_installed_mw": 357,
    "blocks": [
     {
      "fuel": "hydro",
@@ -166,6 +202,208 @@
     }
    ]
   }
+ },
+ "scenario_golden": {
+  "reference_hour": 19,
+  "tolerance_php_kwh": 0.02,
+  "tolerance_mw": 1.0,
+  "note": "Input/output pairs from coupled_dispatch.clear_coupled at the evening reference hour. The browser scenario engine must reproduce these; the studio test asserts it.",
+  "cases": [
+   {
+    "label": "baseline typical evening",
+    "input": {
+     "demand": {
+      "luzon": 12031,
+      "visayas": 1812,
+      "mindanao": 2795
+     },
+     "removed": {},
+     "caps": {
+      "leyte": 250,
+      "mvip": 450
+     }
+    },
+    "expect": {
+     "price": {
+      "luzon": 6.0,
+      "visayas": 6.0,
+      "mindanao": 6.0
+     },
+     "gen_mw": {
+      "luzon": 12031.0,
+      "visayas": 1812.0,
+      "mindanao": 2795.0
+     },
+     "shortfall_mw": {
+      "luzon": 0.0,
+      "visayas": 0.0,
+      "mindanao": 0.0
+     },
+     "flow_lv_mw": 0.0,
+     "flow_vm_mw": 0.0,
+     "leyte_saturated": false,
+     "leyte_rent_php_kwh": 0.0,
+     "mvip_saturated": false,
+     "mvip_rent_php_kwh": 0.0
+    }
+   },
+   {
+    "label": "DICT 1.5 GW data centre on Luzon",
+    "input": {
+     "demand": {
+      "luzon": 13531,
+      "visayas": 1812,
+      "mindanao": 2795
+     },
+     "removed": {},
+     "caps": {
+      "leyte": 250,
+      "mvip": 450
+     }
+    },
+    "expect": {
+     "price": {
+      "luzon": 6.0,
+      "visayas": 6.0,
+      "mindanao": 6.0
+     },
+     "gen_mw": {
+      "luzon": 13531.0,
+      "visayas": 1812.0,
+      "mindanao": 2795.0
+     },
+     "shortfall_mw": {
+      "luzon": 0.0,
+      "visayas": 0.0,
+      "mindanao": 0.0
+     },
+     "flow_lv_mw": 0.0,
+     "flow_vm_mw": 0.0,
+     "leyte_saturated": false,
+     "leyte_rent_php_kwh": 0.0,
+     "mvip_saturated": false,
+     "mvip_rent_php_kwh": 0.0
+    }
+   },
+   {
+    "label": "added Visayas load binds the Leyte-Luzon link",
+    "input": {
+     "demand": {
+      "luzon": 12031,
+      "visayas": 2712,
+      "mindanao": 2795
+     },
+     "removed": {},
+     "caps": {
+      "leyte": 250,
+      "mvip": 450
+     }
+    },
+    "expect": {
+     "price": {
+      "luzon": 6.0,
+      "visayas": 12.0,
+      "mindanao": 6.0
+     },
+     "gen_mw": {
+      "luzon": 12280.9,
+      "visayas": 2328.6,
+      "mindanao": 2928.5
+     },
+     "shortfall_mw": {
+      "luzon": 0.0,
+      "visayas": 0.0,
+      "mindanao": 0.0
+     },
+     "flow_lv_mw": 249.9,
+     "flow_vm_mw": -133.5,
+     "leyte_saturated": true,
+     "leyte_rent_php_kwh": 6.0,
+     "mvip_saturated": false,
+     "mvip_rent_php_kwh": 0.0
+    }
+   },
+   {
+    "label": "documented 935 MW Visayas coal outage",
+    "input": {
+     "demand": {
+      "luzon": 12031,
+      "visayas": 1812,
+      "mindanao": 2795
+     },
+     "removed": {
+      "visayas": {
+       "coal": 935
+      }
+     },
+     "caps": {
+      "leyte": 250,
+      "mvip": 450
+     }
+    },
+    "expect": {
+     "price": {
+      "luzon": 6.0,
+      "visayas": 12.0,
+      "mindanao": 12.0
+     },
+     "gen_mw": {
+      "luzon": 12281,
+      "visayas": 1424.6,
+      "mindanao": 2932.4
+     },
+     "shortfall_mw": {
+      "luzon": 0.0,
+      "visayas": 0.0,
+      "mindanao": 0.0
+     },
+     "flow_lv_mw": 250,
+     "flow_vm_mw": -137.4,
+     "leyte_saturated": true,
+     "leyte_rent_php_kwh": 6.0,
+     "mvip_saturated": false,
+     "mvip_rent_php_kwh": 0.0
+    }
+   },
+   {
+    "label": "relieve the Leyte-Luzon corridor by 250 MW under the bind",
+    "input": {
+     "demand": {
+      "luzon": 12031,
+      "visayas": 2712,
+      "mindanao": 2795
+     },
+     "removed": {},
+     "caps": {
+      "leyte": 500,
+      "mvip": 450
+     }
+    },
+    "expect": {
+     "price": {
+      "luzon": 6.0,
+      "visayas": 6.0,
+      "mindanao": 6.0
+     },
+     "gen_mw": {
+      "luzon": 12414.4,
+      "visayas": 2328.6,
+      "mindanao": 2795.0
+     },
+     "shortfall_mw": {
+      "luzon": 0.0,
+      "visayas": 0.0,
+      "mindanao": 0.0
+     },
+     "flow_lv_mw": 383.4,
+     "flow_vm_mw": 0.0,
+     "leyte_saturated": false,
+     "leyte_rent_php_kwh": 0.0,
+     "mvip_saturated": false,
+     "mvip_rent_php_kwh": 0.0
+    }
+   }
+  ]
  },
  "coupling": {
   "model": "inter-island coupled economic dispatch (radial 3-grid path over the two HVDC corridors); still not PLEXOS",

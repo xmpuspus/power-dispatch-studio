@@ -13,8 +13,10 @@ import {
   RegionsView,
   InterfacesView,
 } from './views'
+import { ScenarioView } from './Scenario'
 
 type ViewId =
+  | 'scenario'
   | 'merit'
   | 'duration'
   | 'marginal'
@@ -24,9 +26,16 @@ type ViewId =
   | 'interfaces'
   | 'regions'
 
-const GRID_SCOPED: ViewId[] = ['merit', 'duration', 'marginal', 'generators']
+const GRID_SCOPED: ViewId[] = ['scenario', 'merit', 'duration', 'marginal', 'generators']
 
-const TREE: { group: string; items: { id: ViewId; label: string }[] }[] = [
+const TREE: {
+  group: string
+  items: { id: ViewId; label: string; live?: boolean }[]
+}[] = [
+  {
+    group: 'Scenario',
+    items: [{ id: 'scenario', label: 'Scenario builder', live: true }],
+  },
   {
     group: 'Objects',
     items: [
@@ -48,6 +57,7 @@ const TREE: { group: string; items: { id: ViewId; label: string }[] }[] = [
 ]
 
 const TITLE: Record<ViewId, string> = {
+  scenario: 'Scenario builder',
   merit: 'Merit order',
   duration: 'Price duration',
   marginal: 'Marginal units',
@@ -69,7 +79,7 @@ export function Studio({
   theme: 'light' | 'dark'
   onToggleTheme: () => void
 }) {
-  const [view, setView] = useState<ViewId>('flows')
+  const [view, setView] = useState<ViewId>('scenario')
   const [grid, setGrid] = useState<GridKey>('luzon')
   const scoped = GRID_SCOPED.includes(view)
   const dcLolp = d.reliability_mc.dict_2028_luzon.distribution.lolp_pct
@@ -126,6 +136,7 @@ export function Studio({
                     >
                       <NodeIcon group={sec.group} />
                       {it.label}
+                      {it.live && <span className="tree__live">live</span>}
                     </button>
                   </li>
                 ))}
@@ -149,6 +160,7 @@ export function Studio({
             )}
           </div>
           <div className="studio__scroll">
+            {view === 'scenario' && <ScenarioView d={d} grid={grid} />}
             {view === 'merit' && <MeritView d={d} grid={grid} />}
             {view === 'duration' && <DurationView d={d} grid={grid} />}
             {view === 'marginal' && <MarginalView d={d} grid={grid} />}

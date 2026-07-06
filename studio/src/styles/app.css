@@ -840,3 +840,106 @@
   color: var(--text-muted);
   background: var(--surface-2);
 }
+
+/* ============ Scenario builder ============ */
+.tree__live {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--positive);
+  background: color-mix(in srgb, var(--positive) 14%, transparent);
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+.scn__lede {
+  margin: 0;
+  font-size: var(--fs-14);
+  color: var(--text-muted);
+  line-height: 1.55;
+  max-width: 82ch;
+}
+.scn {
+  display: grid;
+  grid-template-columns: minmax(300px, 360px) 1fr;
+  gap: var(--sp-4);
+  align-items: start;
+}
+.scn__results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+.levers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.lever {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.lever__label {
+  font-size: var(--fs-13);
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  align-items: baseline;
+}
+.lever__val {
+  color: var(--primary);
+  font-size: var(--fs-13);
+  flex: none;
+}
+.lever__tick {
+  font-size: var(--fs-11);
+  color: var(--text-faint);
+}
+.lever__range {
+  width: 100%;
+  accent-color: var(--primary);
+  margin: 2px 0 0;
+  cursor: pointer;
+}
+.lever__select {
+  font: inherit;
+  font-size: var(--fs-13);
+  padding: 6px var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--text);
+}
+.lever__reset {
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.kvs {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.kv {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  align-items: baseline;
+  font-size: var(--fs-13);
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+}
+.kv:last-child {
+  border-bottom: none;
+}
+.kv > span:first-child {
+  color: var(--text-muted);
+}
+@media (max-width: 760px) {
+  .scn {
+    grid-template-columns: 1fr;
+  }
+}
