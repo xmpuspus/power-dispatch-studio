@@ -32,6 +32,8 @@ from build_data import REGION_MAP, dataset_files, day_of, f, rows_of
 from constants_ph import DEMAND_ANCHORS, GENERATORS, MARKET_ANCHORS
 from coupled_dispatch import CORRIDORS, clear_coupled
 from fleet_ph import (
+    COAL_COMMIT_PHP_KWH,
+    COAL_MIN_LOAD_FRAC,
     FUEL_CO2_T_PER_MWH,
     FUEL_COST_PHP_KWH,
     GRID_FUEL_MW,
@@ -306,8 +308,10 @@ def build_dispatch() -> dict:
         return {"available": False,
                 "note": "RTDSUM or LWAPF absent; dispatch model omitted"}
 
-    # cache one stack per (grid, hour) so we clear cheaply over many intervals
+    # cache one stack per (grid, hour) so we clear cheaply over many intervals. The
+    # `nc` cache is the static (no unit-commitment) stack, for the before/after.
     stack_cache: dict[tuple, list[dict]] = {}
+    stack_cache_nc: dict[tuple, list[dict]] = {}
 
     def stk(grid: str, hour: int) -> list[dict]:
         key = (grid, hour)
@@ -315,8 +319,15 @@ def build_dispatch() -> dict:
             stack_cache[key] = stack(grid, hour)
         return stack_cache[key]
 
+    def stk_nc(grid: str, hour: int) -> list[dict]:
+        key = (grid, hour)
+        if key not in stack_cache_nc:
+            stack_cache_nc[key] = stack(grid, hour, commitment=False)
+        return stack_cache_nc[key]
+
     obs: dict[str, list[float]] = {g: [] for g in GRIDS}
     mod: dict[str, list[float]] = {g: [] for g in GRIDS}
+    mod_nc: dict[str, list[float]] = {g: [] for g in GRIDS}
     peak_demand: dict[str, float] = {g: 0.0 for g in GRIDS}
     demands: dict[str, list[float]] = {g: [] for g in GRIDS}
     fuel_mwh: dict[str, dict[str, float]] = {g: {} for g in GRIDS}
@@ -372,6 +383,7 @@ def build_dispatch() -> dict:
             if price is not None and is_market:
                 obs[grid].append(price)
                 mod[grid].append(res["price"])
+                mod_nc[grid].append(clear(stk_nc(grid, hour), gen)["price"])
                 hourly[grid][hour].append((gen, res["price"], price))
 
     calibration = {}
@@ -403,6 +415,38 @@ def build_dispatch() -> dict:
             "note": ("modeled price is flat (demand never leaves the coal block); "
                      "zero variance, correlation undefined"
                      if corr is None else None),
+        }
+
+    # before/after the unit-commitment layer, reported honestly (not tuned). The
+    # committed must-run coal tranche lowers the modeled overnight price; whether it
+    # cuts MAE and lifts correlation is measured, per grid, against the static stack.
+    unit_commitment = {
+        "layer": "must-run committed coal (min stable load "
+                 f"{int(COAL_MIN_LOAD_FRAC * 100)}% of available coal offered at "
+                 f"P{COAL_COMMIT_PHP_KWH:.2f}/kWh, below the P6.00 administered "
+                 "price); cycling coal stays at P6.00",
+        "min_load_frac": COAL_MIN_LOAD_FRAC,
+        "commit_offer_php_kwh": COAL_COMMIT_PHP_KWH,
+        "src_min_load": "https://powerline.net.in/2023/04/04/flexibilisation-roadmap-aiming-for-tpps-to-operate-at-40-per-cent-minimum-technical-load/",
+        "src_offer": "https://www.philstar.com/business/2026/01/05/2498730/wesm-prices-hit-fresh-lows-2025",
+        "note": "The commitment offer is anchored on the observed H1 2025 WESM "
+                "average (P4.14/kWh), not fitted to the overnight trough. Where the "
+                "grid's overnight demand still exceeds the committed tranche the "
+                "modeled price does not move, and that gap stays in the residual.",
+        "per_grid": {},
+    }
+    for g in GRIDS:
+        o, m, mnc = obs[g], mod[g], mod_nc[g]
+        if not o:
+            continue
+        mae = lambda s: round(sum(abs(a - b) for a, b in zip(s, o)) / len(o), 3)  # noqa: E731, B023
+        unit_commitment["per_grid"][g.lower()] = {
+            "mae_before_php_kwh": mae(mnc),
+            "mae_after_php_kwh": mae(m),
+            "correlation_before": _corr(mnc, o),
+            "correlation_after": _corr(m, o),
+            "modeled_mean_before_php_kwh": round(sum(mnc) / len(mnc), 3),
+            "modeled_mean_after_php_kwh": round(sum(m) / len(m), 3),
         }
 
     representative = {}
@@ -571,6 +615,7 @@ def build_dispatch() -> dict:
         },
         "merit_order": merit_order,
         "coupling": coupling,
+        "unit_commitment": unit_commitment,
         "calibration": calibration,
         "representative_day": representative,
         "n1": n1,

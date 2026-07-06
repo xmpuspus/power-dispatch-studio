@@ -114,6 +114,27 @@ FUEL_CO2_T_PER_MWH = {
 MERIT_ORDER = ["solar", "wind", "hydro", "geothermal", "natural_gas",
                "biomass", "coal", "lng", "oil"]
 
+# --- minimal unit commitment (labeled) ----------------------------------------
+# The static cost stack over-prices the overnight trough: it sets the coal block at
+# the full P6.00 administered price, but committed baseload coal offers far below
+# that overnight to avoid a costly shutdown and restart. We split coal into a
+# committed must-run tranche and a marginal tranche:
+#   - COAL_MIN_LOAD_FRAC of available coal is the minimum stable load a committed
+#     unit cannot drop below (~40% for thermal units; the fleet stays online rather
+#     than cycle daily). SOURCED: coal technical minimum load ~40%.
+#     https://powerline.net.in/2023/04/04/flexibilisation-roadmap-aiming-for-tpps-to-operate-at-40-per-cent-minimum-technical-load/
+#     https://www.intechopen.com/chapters/58563
+#   - that tranche offers at COAL_COMMIT_PHP_KWH, the level committed coal bids down
+#     to overnight. Anchored on the observed normal-market clearing level, the H1
+#     2025 WESM average of P4.14/kWh (lowest since 2020, below the P6 administered
+#     ceiling), NOT tuned to the overnight trough.
+#     https://www.philstar.com/business/2026/01/05/2498730/wesm-prices-hit-fresh-lows-2025
+# The marginal (cycling) coal tranche keeps the P6.00 administered price. This lowers
+# the modeled overnight price where demand is light without touching the evening
+# peak (still on the P6 tranche or oil), so the scarcity residual stays honest.
+COAL_MIN_LOAD_FRAC = 0.40
+COAL_COMMIT_PHP_KWH = 4.14
+
 
 def avail_mw(grid: str, fuel: str, hour: int) -> float:
     """Dispatchable MW for a fuel on a grid at a given hour."""
@@ -123,11 +144,14 @@ def avail_mw(grid: str, fuel: str, hour: int) -> float:
     return installed * FUEL_AVAIL.get(fuel, 1.0)
 
 
-def stack(grid: str, hour: int, removed: dict | None = None) -> list[dict]:
+def stack(grid: str, hour: int, removed: dict | None = None,
+          commitment: bool = True) -> list[dict]:
     """Merit-order supply stack for a grid at an hour: blocks sorted by cost.
 
     `removed` optionally subtracts MW from a fuel (an N-1 trip or a de-rate).
-    Each block: {fuel, cost, mw}. mw is dispatchable capacity in that block.
+    `commitment` splits coal into a committed must-run tranche (at the low
+    commitment offer) and a marginal tranche (at the P6 administered price); set
+    False for the static before-commitment comparison. Each block: {fuel, cost, mw}.
     """
     removed = removed or {}
     blocks = []
@@ -135,7 +159,17 @@ def stack(grid: str, hour: int, removed: dict | None = None) -> list[dict]:
         if fuel == "lng":
             continue  # LNG is a scenario lever, not base installed capacity
         mw = avail_mw(grid, fuel, hour) - removed.get(fuel, 0.0)
-        if mw > 0:
+        if mw <= 0:
+            continue
+        if fuel == "coal" and commitment:
+            # committed min-load tranche offers below the administered price; the
+            # rest (cycling coal) stays at P6. Same total MW, same fuel key.
+            must_run = round(mw * COAL_MIN_LOAD_FRAC, 1)
+            blocks.append({"fuel": "coal", "cost": COAL_COMMIT_PHP_KWH,
+                           "mw": must_run})
+            blocks.append({"fuel": "coal", "cost": FUEL_COST_PHP_KWH["coal"],
+                           "mw": round(mw - must_run, 1)})
+        else:
             blocks.append({"fuel": fuel, "cost": FUEL_COST_PHP_KWH[fuel],
                            "mw": round(mw, 1)})
     blocks.sort(key=lambda b: b["cost"])
