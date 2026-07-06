@@ -429,5 +429,42 @@ check("the committed-coal tranche is marginal on Visayas (the commitment layer a
       "light load)", any(b["block"] == "coal (committed)"
                          for b in mfreq["visayas"]["by_block"]))
 
+# --- scenario engine inputs (interactivity, ported to studio/src/studio/engine.ts) -
+mo = disp["merit_order"]
+check("merit_order carries pre-split per-fuel availability for the client engine",
+      all("fuel_avail_mw" in mo[g] and mo[g]["fuel_avail_mw"] for g in mo))
+check("solar availability at the evening reference hour is ~0 (the add-solar caveat)",
+      all(mo[g]["solar_avail_frac_ref"] < 0.05 for g in mo)
+      and all(mo[g]["solar_avail_frac_midday"] > 0.5 for g in mo))
+gold = disp["scenario_golden"]
+check("scenario_golden bakes >=4 parity cases from the real coupled engine",
+      len(gold["cases"]) >= 4)
+_base = next(c for c in gold["cases"] if "baseline" in c["label"])
+check("golden baseline clears all three grids on the coal margin (~P6)",
+      all(abs(_base["expect"]["price"][g] - 6.0) < 0.5
+          for g in ("luzon", "visayas", "mindanao")))
+_bind = next(c for c in gold["cases"] if "binds" in c["label"])
+check("golden added-Visayas-load case saturates the Leyte-Luzon link at a rent",
+      _bind["expect"]["leyte_saturated"]
+      and _bind["expect"]["leyte_rent_php_kwh"] > 0)
+
+# --- reserve market layer (WESM Reserve Market, RTDRS) --------------------------
+res = load("reserve.json")
+check("reserve.json is available with the four reserve products",
+      res["available"] and {c["category"] for c in res["categories"]}
+      == {"regulation_up", "regulation_down", "contingency", "dispatchable"})
+check("reserve prices are in a sane band (0 to the reserve cap)",
+      all(0 <= c["mean_php_kwh"] <= res["reserve_cap_php_kwh"]
+          and c["max_php_kwh"] <= res["reserve_cap_php_kwh"] + 0.1
+          for c in res["categories"]))
+check("regulation is the dearest reserve product (scarcest ancillary service)",
+      res["categories"][0]["category"].startswith("regulation"))
+check("the dearest reserve product clears above the observed energy price "
+      "(the co-optimisation cost the energy-only stack omits)",
+      res["categories"][0]["mean_php_kwh"]
+      > disp["calibration"]["luzon"]["observed_mean_php_kwh"])
+check("reserve prices baked per grid for all three grids",
+      set(res["by_grid"]) == {"luzon", "visayas", "mindanao"})
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)
