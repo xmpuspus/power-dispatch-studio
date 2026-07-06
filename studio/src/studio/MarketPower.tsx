@@ -72,7 +72,7 @@ export function MarketPowerView({ d }: { d: Dispatch }) {
 
       <Panel
         title="Pivotal supplier"
-        subtitle="Is the grid served without its largest generator at the peak?"
+        subtitle="Illustrative: a national capacity share set against the Luzon peak cushion, not a computed interval RSI. Read the two tiles as scale, not a ratio."
       >
         <div className="stat-row">
           <StatTile
