@@ -466,5 +466,20 @@ check("the dearest reserve product clears above the observed energy price "
 check("reserve prices baked per grid for all three grids",
       set(res["by_grid"]) == {"luzon", "visayas", "mindanao"})
 
+# --- contract-cover / bill-impact layer (item 4) --------------------------------
+bill = load("bill.json")
+check("bill.json is available with the Meralco supply mix summing to 100%",
+      bill["available"]
+      and abs(sum(bill["supply_mix_pct"].values()) - 100) < 0.5)
+check("WESM is the minority (residual) slice of the supply mix",
+      bill["supply_mix_pct"]["wesm"]
+      == min(bill["supply_mix_pct"].values()))
+check("the WESM pass-through factor equals the WESM supply share (not full spot)",
+      abs(bill["pass_through_factor"] - bill["wesm_share_pct"] / 100) < 1e-9
+      and bill["pass_through_factor"] < 0.5)
+check("the WESM cost sits inside the total generation charge",
+      bill["wesm_cost_in_gen_charge_php_kwh"] < bill["generation_charge_php_kwh"]
+      < bill["total_rate_php_kwh"])
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

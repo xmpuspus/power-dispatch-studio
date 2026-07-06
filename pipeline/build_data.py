@@ -788,6 +788,11 @@ def main() -> int:
     with open(os.path.join(OUT, "reserve.json"), "w") as fh:
         json.dump(reserve, fh, indent=1)
 
+    from bill import build_bill
+
+    with open(os.path.join(OUT, "bill.json"), "w") as fh:
+        json.dump(build_bill(), fh, indent=1)
+
     for name, obj in [("congestion.json", congestion),
                       ("reliability.json", reliability),
                       ("prices.json", prices),

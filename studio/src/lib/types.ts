@@ -316,6 +316,23 @@ export interface Reserve {
   src_data?: string
 }
 
+export interface Bill {
+  available: boolean
+  period?: string
+  supply_mix_pct?: Record<string, number>
+  wesm_share_pct?: number
+  src_mix?: string
+  total_rate_php_kwh?: number
+  generation_charge_php_kwh?: number
+  wesm_cost_in_gen_charge_php_kwh?: number
+  src_bill?: string
+  household_kwh_month?: number
+  pass_through_factor?: number
+  note: string
+  gwap_lwap_note?: string
+  disclaimer?: string
+}
+
 export interface GeneratorProps {
   name: string
   grid: string
