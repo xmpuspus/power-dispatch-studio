@@ -79,11 +79,33 @@ simulation.
 
 ![The Meralco June 2026 bill as a horizontal bar: the WESM spot cost at 7.03 pesos per kWh is 49 percent, the rest of the generation charge 14 percent, and transmission distribution and taxes 37 percent, with an arrow noting a WESM swing moves only the spot slice and only on the next month's bill](docs/bill-wedge.png)
 
+The price is a shape, not a number. The same data center draws the same power every
+hour, but what it does to the WESM price depends on how busy the grid already is:
+almost nothing when there is room, a jump when the grid is full. This is the Luzon
+grid's own price-vs-load curve, every faint dot a five-minute interval from the
+archive.
+
+![The Luzon price-versus-load curve: a faint cloud of five-minute intervals with a navy average line that stays near 4 pesos per kWh at 9 gigawatts of generation and climbs past 14 pesos as the grid fills toward 14 gigawatts, with a 300 MW data center marker moving along it](docs/price-shape.gif)
+
+![One Luzon day from the archive: dispatched generation meeting demand as a filled band dipping overnight and rising into the evening, with the WESM price line staying low through the day and climbing at the peak](docs/supply-demand-day.gif)
+
 The map never claims data centers set today's prices. Current data-center load is
 small against a roughly 15 GW Luzon peak, and the window's prices are driven by fuel,
 outages, weather, and the market restart. What the map shows is the pricing machinery
-that any new flat 24/7 load plugs into. Daily price series and regime split:
-[`web/data/prices.json`](web/data/prices.json).
+that any new flat 24/7 load plugs into. Daily price series, the regime split, and the
+generation-price join: [`web/data/prices.json`](web/data/prices.json) and
+[`web/data/price_load.json`](web/data/price_load.json).
+
+### The same load, three different islands
+
+Each island grid answers a new load differently. Luzon carries the volume and climbs
+a long way; the smaller grids stay flat until they run tight. And unlike a US market,
+WESM is energy-only, so there is no capacity auction to price, which is why this
+project has no capacity-market chart.
+
+![Three small-multiple panels, one per island grid, each plotting the average WESM price against dispatched generation: Luzon a long climb from 3 to 14 pesos, Visayas rising then easing, Mindanao climbing steeply past 22 pesos](docs/small-multiples.png)
+
+![A table comparing one US ISO or RTO against the Philippine split: IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC regulates, DOE sets policy, and the last row shows the US has capacity markets while WESM has none, energy-only](docs/wesm-roles.png)
 
 ## What this is
 

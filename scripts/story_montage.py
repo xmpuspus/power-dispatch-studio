@@ -30,8 +30,8 @@ NAVY, MUTE, CORAL = "#12335c", "#5b6b75", "#e2664b"
 PANELS = [
     ("constraint-league.gif",
      "1.  The grid names its own choke point. Named 230 kV lines at a limit on most of 90 days."),
-    ("price-spread.gif",
-     "2.  One market, three prices. The islands fan apart the day trading resumes."),
+    ("price-shape.gif",
+     "2.  The price is a shape. The same data center barely moves it with room, jumps it when full."),
     ("sual-margin.gif",
      "3.  One plant trip takes a fifth of the margin with it. Arithmetic, not prophecy."),
     ("bill-wedge.png",

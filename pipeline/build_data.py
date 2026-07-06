@@ -253,6 +253,111 @@ def build_reliability() -> dict:
     return {"dates": days, "series": series, "totals": totals}
 
 
+# --- price vs load (RTDSUM GENERATION joined to LWAPF price) ---------------------
+# The honest load axis is dispatched generation (thousands of MW, grid scale), NOT
+# LOAD_BID (bid-in incremental load, near zero). Joined per 5-minute interval to the
+# load-weighted price. Produces the price-as-a-shape relationship and one
+# representative day's demand-and-price curve, both from the archive.
+
+def build_price_load() -> dict:
+    lwf = dataset_files("LWAPF")
+    rtf = dataset_files("RTDSUM")
+    if not lwf or not rtf:
+        NOTES.append("LWAPF or RTDSUM absent; price-vs-load layer omitted")
+        return {}
+    price_by_day: dict[str, dict[tuple, float]] = {}
+    for path in lwf:
+        day = day_of(path)
+        d = price_by_day.setdefault(day, {})
+        for r in rows_of(path):
+            grid = REGION_MAP.get((r.get("REGION_NAME") or "").strip())
+            ti = (r.get("TIME_INTERVAL") or "").strip()
+            if grid and ti:
+                d[(grid, ti)] = f(r.get("LWAP")) / 1000  # PhP/kWh
+
+    # scatter of (generation MW, price PhP/kWh) per grid, plus a per-day series
+    scatter: dict[str, list] = {g.lower(): [] for g in GRIDS}
+    day_series: dict[str, dict[str, list]] = {}
+    for path in rtf:
+        day = day_of(path)
+        prices = price_by_day.get(day, {})
+        if not prices:
+            continue
+        rows = rows_of(path)
+        for r in rows:
+            if (r.get("COMMODITY_TYPE") or "").strip() != "En":
+                continue
+            grid = REGION_MAP.get((r.get("REGION_NAME") or "").strip())
+            ti = (r.get("TIME_INTERVAL") or "").strip()
+            if not grid:
+                continue
+            price = prices.get((grid, ti))
+            if price is None:
+                continue
+            gen = f(r.get("GENERATION"))
+            if gen <= 0:
+                continue
+            scatter[grid.lower()].append([round(gen), round(price, 3)])
+            ds = day_series.setdefault(day, {g.lower(): [] for g in GRIDS})
+            ds[grid.lower()].append([ti, round(gen), round(price, 3)])
+
+    # binned mean-price curve per grid (the shape): equal-width bins over generation
+    def binned(points, nbins=18):
+        if len(points) < nbins:
+            return []
+        gs = sorted(p[0] for p in points)
+        lo, hi = gs[0], gs[-1]
+        if hi <= lo:
+            return []
+        width = (hi - lo) / nbins
+        buckets: dict[int, list] = defaultdict(list)
+        for gen, price in points:
+            b = min(nbins - 1, int((gen - lo) / width))
+            buckets[b].append(price)
+        out = []
+        for b in range(nbins):
+            vals = buckets.get(b)
+            if vals:
+                out.append({"gen_mw": round(lo + (b + 0.5) * width),
+                            "n": len(vals),
+                            "mean_price": round(sum(vals) / len(vals), 3),
+                            "median_price": round(median(vals), 3)})
+        return out
+
+    curves = {g: binned(scatter[g]) for g in scatter}
+
+    # one representative day for the demand-and-price animation: the day whose
+    # Luzon price swings widest (the clearest evening-peak story), full 288 intervals
+    best_day, best_swing = None, -1.0
+    for day, ds in day_series.items():
+        lz = ds.get("luzon", [])
+        if len(lz) >= 200:
+            ps = [p for _, _, p in lz]
+            swing = max(ps) - min(ps)
+            if swing > best_swing:
+                best_day, best_swing = day, swing
+    rep = None
+    if best_day:
+        ds = day_series[best_day]
+        rep = {"date": best_day,
+               "series": {g: [{"t": t, "gen_mw": gen, "price": pr}
+                              for t, gen, pr in ds[g]] for g in ds if ds[g]}}
+
+    # downsample the scatter so the baked file stays small (charts read the curve;
+    # the scatter is only the faint context cloud)
+    def thin(points, keep=1400):
+        if len(points) <= keep:
+            return points
+        step = len(points) / keep
+        return [points[int(i * step)] for i in range(keep)]
+
+    return {"unit": "generation MW vs load-weighted price PhP/kWh, per 5-min interval",
+            "days": len([d for d in price_by_day if d in day_series]),
+            "curve": curves,
+            "scatter": {g: thin(scatter[g]) for g in scatter},
+            "representative_day": rep}
+
+
 # --- regional prices (LWAPF, PhP/MWh -> PhP/kWh) --------------------------------
 
 def build_prices() -> dict:
@@ -624,6 +729,7 @@ def main() -> int:
     congestion = build_congestion()
     reliability = build_reliability()
     prices = build_prices()
+    price_load = build_price_load()
     hvdc = build_hvdc()
     outages = build_outages()
     premium = build_congestion_premium()
@@ -669,7 +775,8 @@ def main() -> int:
 
     for name, obj in [("congestion.json", congestion),
                       ("reliability.json", reliability),
-                      ("prices.json", prices), ("hvdc.json", hvdc),
+                      ("prices.json", prices),
+                      ("price_load.json", price_load), ("hvdc.json", hvdc),
                       ("outages.json", outages),
                       ("congestion_premium.json", premium),
                       ("demand_anchors.json", DEMAND_ANCHORS),

@@ -119,6 +119,18 @@ sane = [v for g in prices["series"].values() for v in g if v is not None]
 check("prices in sane PhP/kWh band (0-33)", sane and
       all(0 <= v <= 33 for v in sane))
 check("max spread recorded", prices.get("max_spread", {}).get("php") is not None)
+
+# price vs load: dispatched generation (grid-scale, thousands of MW) joined to price
+pl = load("price_load.json")
+lz_curve = pl.get("curve", {}).get("luzon", [])
+check("price-load curve has Luzon bins", len(lz_curve) >= 10)
+check("Luzon load axis is grid-scale (thousands of MW, not bid-in load)",
+      lz_curve and lz_curve[-1]["gen_mw"] > 8000)
+check("price rises with load (the shape)",
+      lz_curve and lz_curve[-1]["mean_price"] > lz_curve[0]["mean_price"])
+rep = pl.get("representative_day", {})
+check("representative day has a full Luzon interval series",
+      len(rep.get("series", {}).get("luzon", [])) >= 200)
 # regime split: WESM was suspended (administered prices) before 2026-05-01, so
 # every mean the site shows must say which regime it covers. The administered
 # window's regional spread is near-zero; the market window's is not.
