@@ -180,5 +180,63 @@ check("forecasts labeled (no bare-fact 1.5 GW)", all(
     a["kind"] in ("forecast", "commitment", "pipeline", "contested")
     for a in demand))
 
+# --- named generators + dispatch model -----------------------------------------
+gens = load("generators.geojson")
+disp = load("dispatch.json")
+
+check("11 named generators", len(gens["features"]) == 11)
+check("every generator has src + fuel + capacity + city precision + marginal cost",
+      all(p.get("src") and p.get("fuel") and p.get("capacity_mw")
+          and p.get("precision") == "city"
+          and p.get("marginal_cost_php_kwh") is not None
+          for p in (f["properties"] for f in gens["features"])))
+gnames = {f["properties"]["name"] for f in gens["features"]}
+check("named movers include Ilijan, Sual, Dinginin, TVI, PEDC",
+      {"Ilijan", "Sual", "GNPower Dinginin", "Therma Visayas (TVI)", "PEDC"}
+      <= gnames)
+
+# fleet reconciliation: the per-grid fuel split is a MODEL allocation, but its
+# columns must sum EXACTLY to the sourced national fuel totals (the honesty pin)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "pipeline"))
+import fleet_ph as fl  # noqa: E402
+for fuel, nat in fl.NATIONAL_FUEL_MW.items():
+    col = sum(fl.GRID_FUEL_MW[g].get(fuel, 0) for g in fl.GRIDS)
+    check(f"fleet {fuel} column reconciles to national {nat} MW", col == nat)
+check("all natural gas is on Luzon (Batangas/Malampaya, sourced)",
+      fl.GRID_FUEL_MW["VISAYAS"]["natural_gas"] == 0
+      and fl.GRID_FUEL_MW["MINDANAO"]["natural_gas"] == 0)
+check("coal marginal cost is the sourced ERC administered P6.00/kWh",
+      math.isclose(fl.FUEL_COST_PHP_KWH["coal"], 6.00))
+check("Malampaya gas cost sourced at P4.80/kWh below coal",
+      math.isclose(fl.FUEL_COST_PHP_KWH["natural_gas"], 4.80)
+      and fl.FUEL_COST_PHP_KWH["natural_gas"] < fl.FUEL_COST_PHP_KWH["coal"])
+
+check("dispatch model available + labeled not-PLEXOS",
+      disp.get("available") and "not PLEXOS" in disp.get("model", ""))
+cal = disp["calibration"]
+check("calibration covers 3 grids", set(cal) == {"luzon", "visayas", "mindanao"})
+check("model under-predicts on average (cost stack < observed LWAP)",
+      all(cal[g]["modeled_mean_php_kwh"] < cal[g]["observed_mean_php_kwh"]
+          for g in cal))
+check("evening-peak residual positive on every grid (one-directional scarcity)",
+      all((cal[g]["evening_peak_residual_php_kwh"] or 0) > 0 for g in cal))
+check("Visayas residual is the largest (the 52-day constrained grid)",
+      cal["visayas"]["evening_peak_residual_php_kwh"]
+      > cal["luzon"]["evening_peak_residual_php_kwh"])
+check("merit_order stack baked for 3 grids with cost-ordered blocks", all(
+    disp["merit_order"][g]["blocks"]
+    and [b["cost"] for b in disp["merit_order"][g]["blocks"]]
+    == sorted(b["cost"] for b in disp["merit_order"][g]["blocks"])
+    for g in ("luzon", "visayas", "mindanao")))
+check("N-1 table covers all 11 named units",
+      len(disp["n1"]) == 11 and all("shortfall_at_peak_mw" in n for n in disp["n1"]))
+check("N-1 orders by peak shortfall; the biggest units shed the most",
+      disp["n1"][0]["shortfall_at_peak_mw"] >= disp["n1"][-1]["shortfall_at_peak_mw"])
+adq = disp["adequacy"]["dict_2028"]
+check("DICT 1.5 GW scenario is a labeled DICT forecast with src",
+      adq["owner"] == "DICT" and adq["added_mw"] == 1500 and adq.get("src"))
+check("adding the DICT wave erodes the Luzon reserve margin",
+      adq["reserve_margin_with_dc_pct"] < adq["reserve_margin_now_pct"])
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

@@ -726,6 +726,8 @@ def geojson(features: list[dict]) -> dict:
 
 def main() -> int:
     os.makedirs(OUT, exist_ok=True)
+    # dispatch imports build_data helpers; import it here to avoid a load-time cycle
+    from dispatch import build_dispatch, generators_features
     congestion = build_congestion()
     reliability = build_reliability()
     prices = build_prices()
@@ -772,6 +774,13 @@ def main() -> int:
             "geometry": {"type": "Point", "coordinates": SUAL["coords"]},
             "properties": {k: v for k, v in SUAL.items() if k != "coords"},
         }]), fh, indent=1)
+
+    # named generators (map layer + N-1 picker) and the dispatch model
+    with open(os.path.join(OUT, "generators.geojson"), "w") as fh:
+        json.dump(geojson(generators_features()), fh, indent=1)
+    dispatch = build_dispatch()
+    with open(os.path.join(OUT, "dispatch.json"), "w") as fh:
+        json.dump(dispatch, fh, indent=1)
 
     for name, obj in [("congestion.json", congestion),
                       ("reliability.json", reliability),

@@ -109,6 +109,87 @@ SUAL = {
     "precision": "city",
 }
 
+# --- Named generators: the units that move price (contingency layer) ----------
+# The plants large enough that a single trip is felt on the grid. Each carries a
+# public source for its capacity; coordinates are CITY-PRECISION anchors on the
+# named municipality, never the exact plant footprint. `fuel` keys into
+# fleet_ph.FUEL_COST_PHP_KWH. These are a labeled subset of the full fleet in
+# fleet_ph.GRID_FUEL_MW (their MW is already inside their grid's fuel total), used
+# for the N-1 contingency picker and the map's generator layer.
+GENERATORS = [
+    # Luzon
+    {"name": "Ilijan", "grid": "LUZON", "fuel": "natural_gas",
+     "capacity_mw": 1200, "units": 2, "city": "Batangas City",
+     "coords": [121.0700, 13.7400], "owner": "SMC Global Power",
+     "note": "2x600 MW combined-cycle on Malampaya gas, the largest gas plant on "
+             "the grid; the May 13 2026 line event took 2,462 MW of Batangas gas "
+             "offline (not this plant's rating alone)",
+     "src": "https://en.wikipedia.org/wiki/Ilijan_Combined-Cycle_Power_Plant",
+     "precision": "city"},
+    {"name": "Sual", "grid": "LUZON", "fuel": "coal",
+     "capacity_mw": 1294, "units": 2, "city": "Sual, Pangasinan",
+     "coords": [120.0970, 16.1170], "owner": "San Miguel (SMC Global Power)",
+     "note": "2x647 MW, the largest single units on the Luzon grid",
+     "src": "https://en.wikipedia.org/wiki/Sual_Power_Station",
+     "precision": "city"},
+    {"name": "GNPower Dinginin", "grid": "LUZON", "fuel": "coal",
+     "capacity_mw": 1336, "units": 2, "city": "Mariveles, Bataan",
+     "coords": [120.4833, 14.4333], "owner": "AC Energy + AboitizPower",
+     "note": "2x668 MW supercritical; Unit 1 grid-connected Feb 2021, Unit 2 2022",
+     "src": "https://www.nsenergybusiness.com/projects/dinginin-coal-fired-power-project/",
+     "precision": "city"},
+    {"name": "Pagbilao", "grid": "LUZON", "fuel": "coal",
+     "capacity_mw": 1155, "units": 3, "city": "Pagbilao, Quezon",
+     "coords": [121.6833, 13.9667], "owner": "TeaM Energy / AboitizPower",
+     "note": "735 MW (Units 1-2) plus a 420 MW Unit 3 (2014)",
+     "src": "https://en.wikipedia.org/wiki/Pagbilao_Power_Station",
+     "precision": "city"},
+    {"name": "Masinloc", "grid": "LUZON", "fuel": "coal",
+     "capacity_mw": 1340, "units": 4, "city": "Masinloc, Zambales",
+     "coords": [119.9333, 15.5333], "owner": "SMC Global Power (MPPCL)",
+     "note": "Units 1-4 operating; about 1,578 MW at full expansion",
+     "src": "https://www.gem.wiki/Masinloc_power_station",
+     "precision": "city"},
+    {"name": "Quezon Power", "grid": "LUZON", "fuel": "coal",
+     "capacity_mw": 511, "units": 1, "city": "Mauban, Quezon",
+     "coords": [121.7270, 14.1910], "owner": "Quezon Power (Philippines)",
+     "note": "Pulverised-coal unit at Cagsiay, Mauban (2000)",
+     "src": "https://www.gem.wiki/Quezon_power_station",
+     "precision": "city"},
+    {"name": "San Buenaventura", "grid": "LUZON", "fuel": "coal",
+     "capacity_mw": 455, "units": 1, "city": "Mauban, Quezon",
+     "coords": [121.7300, 14.1900], "owner": "San Buenaventura Power (MGen)",
+     "note": "Supercritical unit alongside Quezon Power (2019)",
+     "src": "https://www.power-technology.com/projects/san-buenaventura-supercritical-power-project/",
+     "precision": "city"},
+    # Visayas
+    {"name": "Therma Visayas (TVI)", "grid": "VISAYAS", "fuel": "coal",
+     "capacity_mw": 340, "units": 2, "city": "Toledo City, Cebu",
+     "coords": [123.6330, 10.3670], "owner": "AboitizPower",
+     "note": "2x170 MW; a 150 MW Unit 3 is targeted for 2027-2028",
+     "src": "https://www.gem.wiki/Therma_Visayas_Energy_Project",
+     "precision": "city"},
+    {"name": "KSPC (Kepco SPC)", "grid": "VISAYAS", "fuel": "coal",
+     "capacity_mw": 200, "units": 2, "city": "Naga City, Cebu",
+     "coords": [123.7580, 10.2090], "owner": "KEPCO SPC / SPC Power",
+     "note": "2x100 MW circulating fluidised-bed coal",
+     "src": "https://www.kepcospc.com/",
+     "precision": "city"},
+    {"name": "PEDC", "grid": "VISAYAS", "fuel": "coal",
+     "capacity_mw": 314, "units": 3, "city": "Iloilo City",
+     "coords": [122.5850, 10.7200], "owner": "Global Business Power (MGen)",
+     "note": "164 MW plus a 150 MW Unit 3; the return of Unit 3 on Jul 1 2026 "
+             "ended the Visayas 52-day yellow-alert streak",
+     "src": "https://www.meralcopowergen.com.ph/about/facilities/visayas/pedc/",
+     "precision": "city"},
+    {"name": "CEDC", "grid": "VISAYAS", "fuel": "coal",
+     "capacity_mw": 246, "units": 3, "city": "Toledo City, Cebu",
+     "coords": [123.6400, 10.3750], "owner": "Global Business Power (MGen)",
+     "note": "Cebu Energy Development Corp, clean-coal CFB",
+     "src": "https://www.gem.wiki/Cebu_power_station",
+     "precision": "city"},
+]
+
 # --- Data-center sites (public sources only; NOT a complete inventory) --------
 # Cushman & Wakefield counts 24 operational facilities (73 MW) with 22 MW under
 # development and 89 MW in planning (APAC DC Update, 2025):

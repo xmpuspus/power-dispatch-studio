@@ -1,0 +1,258 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.07,
+     13.74
+    ]
+   },
+   "properties": {
+    "name": "Ilijan",
+    "grid": "LUZON",
+    "fuel": "natural_gas",
+    "capacity_mw": 1200,
+    "units": 2,
+    "city": "Batangas City",
+    "owner": "SMC Global Power",
+    "note": "2x600 MW combined-cycle on Malampaya gas, the largest gas plant on the grid; the May 13 2026 line event took 2,462 MW of Batangas gas offline (not this plant's rating alone)",
+    "src": "https://en.wikipedia.org/wiki/Ilijan_Combined-Cycle_Power_Plant",
+    "precision": "city",
+    "marginal_cost_php_kwh": 4.8
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     120.097,
+     16.117
+    ]
+   },
+   "properties": {
+    "name": "Sual",
+    "grid": "LUZON",
+    "fuel": "coal",
+    "capacity_mw": 1294,
+    "units": 2,
+    "city": "Sual, Pangasinan",
+    "owner": "San Miguel (SMC Global Power)",
+    "note": "2x647 MW, the largest single units on the Luzon grid",
+    "src": "https://en.wikipedia.org/wiki/Sual_Power_Station",
+    "precision": "city",
+    "marginal_cost_php_kwh": 6.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     120.4833,
+     14.4333
+    ]
+   },
+   "properties": {
+    "name": "GNPower Dinginin",
+    "grid": "LUZON",
+    "fuel": "coal",
+    "capacity_mw": 1336,
+    "units": 2,
+    "city": "Mariveles, Bataan",
+    "owner": "AC Energy + AboitizPower",
+    "note": "2x668 MW supercritical; Unit 1 grid-connected Feb 2021, Unit 2 2022",
+    "src": "https://www.nsenergybusiness.com/projects/dinginin-coal-fired-power-project/",
+    "precision": "city",
+    "marginal_cost_php_kwh": 6.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.6833,
+     13.9667
+    ]
+   },
+   "properties": {
+    "name": "Pagbilao",
+    "grid": "LUZON",
+    "fuel": "coal",
+    "capacity_mw": 1155,
+    "units": 3,
+    "city": "Pagbilao, Quezon",
+    "owner": "TeaM Energy / AboitizPower",
+    "note": "735 MW (Units 1-2) plus a 420 MW Unit 3 (2014)",
+    "src": "https://en.wikipedia.org/wiki/Pagbilao_Power_Station",
+    "precision": "city",
+    "marginal_cost_php_kwh": 6.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     119.9333,
+     15.5333
+    ]
+   },
+   "properties": {
+    "name": "Masinloc",
+    "grid": "LUZON",
+    "fuel": "coal",
+    "capacity_mw": 1340,
+    "units": 4,
+    "city": "Masinloc, Zambales",
+    "owner": "SMC Global Power (MPPCL)",
+    "note": "Units 1-4 operating; about 1,578 MW at full expansion",
+    "src": "https://www.gem.wiki/Masinloc_power_station",
+    "precision": "city",
+    "marginal_cost_php_kwh": 6.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.727,
+     14.191
+    ]
+   },
+   "properties": {
+    "name": "Quezon Power",
+    "grid": "LUZON",
+    "fuel": "coal",
+    "capacity_mw": 511,
+    "units": 1,
+    "city": "Mauban, Quezon",
+    "owner": "Quezon Power (Philippines)",
+    "note": "Pulverised-coal unit at Cagsiay, Mauban (2000)",
+    "src": "https://www.gem.wiki/Quezon_power_station",
+    "precision": "city",
+    "marginal_cost_php_kwh": 6.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.73,
+     14.19
+    ]
+   },
+   "properties": {
+    "name": "San Buenaventura",
+    "grid": "LUZON",
+    "fuel": "coal",
+    "capacity_mw": 455,
+    "units": 1,
+    "city": "Mauban, Quezon",
+    "owner": "San Buenaventura Power (MGen)",
+    "note": "Supercritical unit alongside Quezon Power (2019)",
+    "src": "https://www.power-technology.com/projects/san-buenaventura-supercritical-power-project/",
+    "precision": "city",
+    "marginal_cost_php_kwh": 6.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     123.633,
+     10.367
+    ]
+   },
+   "properties": {
+    "name": "Therma Visayas (TVI)",
+    "grid": "VISAYAS",
+    "fuel": "coal",
+    "capacity_mw": 340,
+    "units": 2,
+    "city": "Toledo City, Cebu",
+    "owner": "AboitizPower",
+    "note": "2x170 MW; a 150 MW Unit 3 is targeted for 2027-2028",
+    "src": "https://www.gem.wiki/Therma_Visayas_Energy_Project",
+    "precision": "city",
+    "marginal_cost_php_kwh": 6.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     123.758,
+     10.209
+    ]
+   },
+   "properties": {
+    "name": "KSPC (Kepco SPC)",
+    "grid": "VISAYAS",
+    "fuel": "coal",
+    "capacity_mw": 200,
+    "units": 2,
+    "city": "Naga City, Cebu",
+    "owner": "KEPCO SPC / SPC Power",
+    "note": "2x100 MW circulating fluidised-bed coal",
+    "src": "https://www.kepcospc.com/",
+    "precision": "city",
+    "marginal_cost_php_kwh": 6.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     122.585,
+     10.72
+    ]
+   },
+   "properties": {
+    "name": "PEDC",
+    "grid": "VISAYAS",
+    "fuel": "coal",
+    "capacity_mw": 314,
+    "units": 3,
+    "city": "Iloilo City",
+    "owner": "Global Business Power (MGen)",
+    "note": "164 MW plus a 150 MW Unit 3; the return of Unit 3 on Jul 1 2026 ended the Visayas 52-day yellow-alert streak",
+    "src": "https://www.meralcopowergen.com.ph/about/facilities/visayas/pedc/",
+    "precision": "city",
+    "marginal_cost_php_kwh": 6.0
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     123.64,
+     10.375
+    ]
+   },
+   "properties": {
+    "name": "CEDC",
+    "grid": "VISAYAS",
+    "fuel": "coal",
+    "capacity_mw": 246,
+    "units": 3,
+    "city": "Toledo City, Cebu",
+    "owner": "Global Business Power (MGen)",
+    "note": "Cebu Energy Development Corp, clean-coal CFB",
+    "src": "https://www.gem.wiki/Cebu_power_station",
+    "precision": "city",
+    "marginal_cost_php_kwh": 6.0
+   }
+  }
+ ]
+}
