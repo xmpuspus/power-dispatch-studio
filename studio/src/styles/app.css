@@ -1291,3 +1291,40 @@
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+/* ============ Memberships tab ============ */
+.memberships {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.memberships__row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--sp-3);
+  align-items: start;
+  padding: 8px var(--sp-2);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-13);
+}
+.memberships__obj {
+  font-weight: 500;
+}
+.memberships__rels {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.memberships__rel {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+.memberships__rel > span {
+  color: var(--text-muted);
+}
+@media (max-width: 720px) {
+  .memberships__row {
+    grid-template-columns: 1fr;
+  }
+}
