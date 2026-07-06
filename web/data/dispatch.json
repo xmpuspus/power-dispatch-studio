@@ -152,6 +152,105 @@
    ]
   }
  },
+ "coupling": {
+  "model": "inter-island coupled economic dispatch (radial 3-grid path over the two HVDC corridors); still not PLEXOS",
+  "wheeling_cost_php_kwh": 0.02,
+  "calibration_window": {
+   "regime": "market-only",
+   "from": "2026-05-01"
+  },
+  "n_coupled_intervals": 16127,
+  "corridors": [
+   {
+    "id": "leyte_luzon_hvdc",
+    "name": "Leyte-Luzon HVDC",
+    "limit_mw": 250,
+    "limit_kind": "sourced_operating_limit",
+    "nameplate_mw": 440,
+    "src": "https://www.iemop.ph/news/december-2025-power-market-luzon-prices-ease-as-supply-improves-visayas-and-mindanao-experience-tighter-conditions/",
+    "saturated_pct": 0.0,
+    "mean_congestion_rent_php_kwh": 0.0,
+    "mean_abs_flow_mw": 0.1,
+    "peak_abs_flow_mw": 246.2
+   },
+   {
+    "id": "mvip_hvdc",
+    "name": "Mindanao-Visayas HVDC (MVIP)",
+    "limit_mw": 450,
+    "limit_kind": "nameplate_as_operating_limit",
+    "nameplate_mw": 450,
+    "src": "https://powerphilippines.com/wesm-prices-rise-38-5-in-may-as-demand-growth-outpaces-supply/",
+    "saturated_pct": 0.0,
+    "mean_congestion_rent_php_kwh": 0.0,
+    "mean_abs_flow_mw": 1.4,
+    "peak_abs_flow_mw": 140.1
+   }
+  ],
+  "per_grid": {
+   "luzon": {
+    "observed_mean_php_kwh": 7.651,
+    "coupled_modeled_mean_php_kwh": 6.004,
+    "mae_php_kwh": 4.495,
+    "correlation": 0.071
+   },
+   "visayas": {
+    "observed_mean_php_kwh": 12.963,
+    "coupled_modeled_mean_php_kwh": 6.0,
+    "mae_php_kwh": 8.899,
+    "correlation": null
+   },
+   "mindanao": {
+    "observed_mean_php_kwh": 11.519,
+    "coupled_modeled_mean_php_kwh": 6.08,
+    "mae_php_kwh": 7.742,
+    "correlation": 0.15
+   }
+  },
+  "spread_decomposition": {
+   "note": "How much of the observed regional price spread the coupled merit-order model reproduces from corridor limits alone. The rest is scarcity and offer behaviour a cost model cannot price.",
+   "visayas_vs_luzon": {
+    "observed_php_kwh": 5.313,
+    "coupled_model_php_kwh": -0.004,
+    "explained_fraction": -0.001
+   },
+   "mindanao_vs_luzon": {
+    "observed_php_kwh": 3.868,
+    "coupled_model_php_kwh": 0.076,
+    "explained_fraction": 0.02
+   },
+   "uncapped_counterfactual": {
+    "note": "Coupled spread if the corridors were infinite: what remains is pure stack difference, not transmission.",
+    "visayas_vs_luzon_php_kwh": -0.004,
+    "mindanao_vs_luzon_php_kwh": 0.086
+   }
+  },
+  "outage_scenario": {
+   "label": "documented Visayas outage applied (NGCP: ~935 MW unavailable, Jul 1 2026, during the 52-day yellow-alert streak)",
+   "outage_mw": 935.3,
+   "src": "https://www.gmanetwork.com/news/money/economy/993308/ngcp-visayas-grid-on-yellow-alert-on-wednesday-july-1-2026/story/",
+   "window": {
+    "from": "2026-05-11",
+    "to": "2026-07-01"
+   },
+   "n_intervals": 13247,
+   "leyte_luzon_saturated_pct": 35.5,
+   "leyte_luzon_mean_rent_php_kwh": 5.807,
+   "visayas_vs_luzon_observed_php_kwh": 6.2,
+   "visayas_vs_luzon_coupled_php_kwh": 2.212,
+   "explained_fraction": 0.357
+  },
+  "dc_binding_threshold": {
+   "available": true,
+   "reference_hour": 19,
+   "typical_evening_demand_mw": {
+    "luzon": 11945,
+    "visayas": 1822,
+    "mindanao": 2805
+   },
+   "added_visayas_load_to_bind_leyte_mw": 775,
+   "note": "Extra flat Visayas load at a typical evening before the 250 MW Leyte-Luzon corridor saturates and Visayas prices above Luzon. The corridor binds well below the DICT 1.5 GW national forecast."
+  }
+ },
  "calibration": {
   "luzon": {
    "n_intervals": 16127,

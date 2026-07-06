@@ -144,6 +144,35 @@ the N-1 table, and the full model: [`web/data/dispatch.json`](web/data/dispatch.
 and [`web/data/generators.geojson`](web/data/generators.geojson); the engine is
 `pipeline/dispatch.py` on the sourced fleet in `pipeline/fleet_ph.py`.
 
+### Coupling the three grids
+
+The single-grid model clears each island alone. The next step couples them: cheap
+Luzon power flows south over the Leyte-Luzon HVDC (a sourced **250 MW** operating
+limit, below its 440 MW nameplate) and the Mindanao-Visayas HVDC (its 450 MW
+nameplate used as the cap), and the three clearing prices solve together. On a radial
+path the cost-minimizing dispatch equalizes adjacent prices across an open corridor
+and, across a saturated one, prices the downstream island higher by the congestion
+rent. A brute-force optimality test pins the solver. Still not PLEXOS.
+
+Run over the market window, the coupled model reproduces almost **none** of the
+observed **P5.31/kWh** Visayas-Luzon spread (it explains about **0%**, and the
+250 MW corridor binds in **0%** of baseline intervals). That is the finding, not a
+failure: with the static fleet all three islands sit on the ~P6 coal margin most of
+the time, so 250 MW of import slides Visayas back under its own coal ceiling and the
+corridor does not bind. The observed spread is the scarcity and offer premium of the
+52-day yellow-alert streak, which a cost model cannot see.
+
+The mechanism the thesis names does show up under the documented outage. Re-clear the
+streak window with the **935 MW** of Visayas capacity NGCP recorded unavailable on
+July 1 and the 250 MW corridor saturates in **35.5%** of intervals at a mean
+congestion rent of **P5.81/kWh**, and the coupled model now reproduces **35.7%** of
+the observed spread endogenously. That is a labeled scenario, kept out of the
+calibration. And the forward question the map exists to ask: at a typical evening,
+just **775 MW** of added Visayas load binds the corridor, far below the DICT 1.5 GW
+national forecast. The full decomposition is the `coupling` block in
+[`web/data/dispatch.json`](web/data/dispatch.json); the coupled solver is
+`pipeline/coupled_dispatch.py`.
+
 ## What this is
 
 - **A daily archive.** IEMOP's public window is a rolling ~90 days per dataset.

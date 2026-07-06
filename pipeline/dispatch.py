@@ -30,6 +30,7 @@ import re
 
 from build_data import REGION_MAP, dataset_files, day_of, f, rows_of
 from constants_ph import DEMAND_ANCHORS, GENERATORS, MARKET_ANCHORS
+from coupled_dispatch import CORRIDORS, clear_coupled
 from fleet_ph import (
     FUEL_CO2_T_PER_MWH,
     FUEL_COST_PHP_KWH,
@@ -98,6 +99,206 @@ def _fuel_dispatch(blocks: list[dict], demand: float) -> dict[str, float]:
     return out
 
 
+def _mean(xs: list[float]) -> float | None:
+    return sum(xs) / len(xs) if xs else None
+
+
+def build_coupling(intervals: dict, prices: dict) -> dict:
+    """Couple the three grids over the market window and decompose the regional
+    price spread the coupled model reproduces vs the residual it cannot.
+
+    The honest finding, stated up front: with the STATIC fleet all three grids sit
+    on the ~P6 coal margin most of the market window, so 250 MW of Luzon import
+    slides Visayas back under its own coal ceiling and the Leyte-Luzon corridor
+    almost never binds. The coupled model therefore reproduces almost none of the
+    observed Visayas-Luzon spread on baseline demand: that spread is the scarcity /
+    offer premium of the 52-day yellow-alert streak, which a cost model cannot see.
+    What the coupling DOES show, under the documented ~935 MW Visayas outage, is the
+    mechanism itself: the 250 MW corridor saturates and prices the islands apart by
+    the congestion rent. That scenario is reported separately and never folded into
+    the calibration.
+    """
+    resumed = MARKET_ANCHORS.get("wesm_resumed", "2026-05-01")
+    grids = ["luzon", "visayas", "mindanao"]
+    up = {g: g.upper() for g in grids}
+
+    # base coupled clear over every market interval that has all three grids
+    obs = {g: [] for g in grids}
+    cpl = {g: [] for g in grids}
+    unc = {g: [] for g in grids}  # uncapped counterfactual (corridors -> infinite)
+    sat_count = {c["id"]: 0 for c in CORRIDORS}
+    rent_sum = {c["id"]: 0.0 for c in CORRIDORS}
+    flow_abs = {c["id"]: [] for c in CORRIDORS}
+    n_coupled = 0
+    big = {"leyte_luzon_hvdc": 1e6, "mvip_hvdc": 1e6}
+
+    for (day, ti), iv in intervals.items():
+        if not iv["market"] or len(iv["dem"]) < 3:
+            continue
+        pday = prices.get(day, {})
+        op = {g: pday.get((up[g], ti)) for g in grids}
+        if any(op[g] is None for g in grids):
+            continue
+        demand = {up[g]: iv["dem"][up[g]] for g in grids}
+        res = clear_coupled(demand, iv["hour"])
+        unc_res = clear_coupled(demand, iv["hour"], caps=big)
+        n_coupled += 1
+        for g in grids:
+            obs[g].append(op[g])
+            cpl[g].append(res["grids"][g]["price"])
+            unc[g].append(unc_res["grids"][g]["price"])
+        for c, cid in zip(res["corridors"], (x["id"] for x in CORRIDORS)):
+            flow_abs[cid].append(abs(c["flow_mw"]))
+            if c["saturated"]:
+                sat_count[cid] += 1
+                rent_sum[cid] += c["congestion_rent_php_kwh"]
+
+    def spread(series: dict, a: str, b: str) -> float | None:
+        ma, mb = _mean(series[a]), _mean(series[b])
+        return round(ma - mb, 3) if ma is not None and mb is not None else None
+
+    def explained(model_series: dict, hi: str, lo: str) -> dict:
+        s_obs = spread(obs, hi, lo)
+        s_mod = spread(model_series, hi, lo)
+        frac = (round(s_mod / s_obs, 3)
+                if s_obs not in (None, 0) and s_mod is not None else None)
+        return {"observed_php_kwh": s_obs, "coupled_model_php_kwh": s_mod,
+                "explained_fraction": frac}
+
+    per_grid = {}
+    for g in grids:
+        o, m = obs[g], cpl[g]
+        per_grid[g] = {
+            "observed_mean_php_kwh": round(_mean(o), 3) if o else None,
+            "coupled_modeled_mean_php_kwh": round(_mean(m), 3) if m else None,
+            "mae_php_kwh": (round(sum(abs(a - b) for a, b in zip(m, o)) / len(o), 3)
+                            if o else None),
+            "correlation": _corr(m, o),
+        }
+
+    corridor_stats = []
+    for c in CORRIDORS:
+        cid = c["id"]
+        fa = flow_abs[cid]
+        corridor_stats.append({
+            "id": cid, "name": c["name"], "limit_mw": c["limit_mw"],
+            "limit_kind": c["limit_kind"], "nameplate_mw": c["nameplate_mw"],
+            "src": c["src"],
+            "saturated_pct": round(100 * sat_count[cid] / n_coupled, 1)
+            if n_coupled else None,
+            "mean_congestion_rent_php_kwh": round(rent_sum[cid] / sat_count[cid], 3)
+            if sat_count[cid] else 0.0,
+            "mean_abs_flow_mw": round(_mean(fa), 1) if fa else None,
+            "peak_abs_flow_mw": round(max(fa), 1) if fa else None,
+        })
+
+    coupling = {
+        "model": "inter-island coupled economic dispatch (radial 3-grid path over "
+                 "the two HVDC corridors); still not PLEXOS",
+        "wheeling_cost_php_kwh": 0.02,
+        "calibration_window": {"regime": "market-only", "from": resumed},
+        "n_coupled_intervals": n_coupled,
+        "corridors": corridor_stats,
+        "per_grid": per_grid,
+        "spread_decomposition": {
+            "note": "How much of the observed regional price spread the coupled "
+                    "merit-order model reproduces from corridor limits alone. The "
+                    "rest is scarcity and offer behaviour a cost model cannot price.",
+            "visayas_vs_luzon": explained(cpl, "visayas", "luzon"),
+            "mindanao_vs_luzon": explained(cpl, "mindanao", "luzon"),
+            "uncapped_counterfactual": {
+                "note": "Coupled spread if the corridors were infinite: what remains "
+                        "is pure stack difference, not transmission.",
+                "visayas_vs_luzon_php_kwh": spread(unc, "visayas", "luzon"),
+                "mindanao_vs_luzon_php_kwh": spread(unc, "mindanao", "luzon"),
+            },
+        },
+    }
+    coupling["outage_scenario"] = _coupling_outage(intervals, prices)
+    coupling["dc_binding_threshold"] = _coupling_binding_threshold(intervals)
+    return coupling
+
+
+def _coupling_outage(intervals: dict, prices: dict) -> dict:
+    """Labelled scenario: re-clear the streak window with the documented Visayas
+    outage applied. This is where the corridor binds and prices the islands apart
+    endogenously. Kept OUT of the calibration; a scenario, not a fit."""
+    frm = MARKET_ANCHORS.get("visayas_yellow_streak_from", "2026-05-11")
+    to = MARKET_ANCHORS.get("visayas_yellow_streak_to", "2026-07-01")
+    out_mw = MARKET_ANCHORS.get("visayas_unavailable_mw_jul1", 935.3)
+    removed = {"VISAYAS": {"coal": out_mw}}
+    grids = ["luzon", "visayas", "mindanao"]
+    up = {g: g.upper() for g in grids}
+    base_obs = {g: [] for g in grids}
+    out_cpl = {g: [] for g in grids}
+    sat = rent_sum = n = 0
+    for (day, ti), iv in intervals.items():
+        if not (frm <= day <= to) or len(iv["dem"]) < 3:
+            continue
+        pday = prices.get(day, {})
+        op = {g: pday.get((up[g], ti)) for g in grids}
+        if any(op[g] is None for g in grids):
+            continue
+        demand = {up[g]: iv["dem"][up[g]] for g in grids}
+        res = clear_coupled(demand, iv["hour"], removed=removed)
+        n += 1
+        for g in grids:
+            base_obs[g].append(op[g])
+            out_cpl[g].append(res["grids"][g]["price"])
+        leyte = res["corridors"][0]
+        if leyte["saturated"]:
+            sat += 1
+            rent_sum += leyte["congestion_rent_php_kwh"]
+    s_obs = (round(_mean(base_obs["visayas"]) - _mean(base_obs["luzon"]), 3)
+             if n else None)
+    s_mod = (round(_mean(out_cpl["visayas"]) - _mean(out_cpl["luzon"]), 3)
+             if n else None)
+    return {
+        "label": "documented Visayas outage applied (NGCP: ~935 MW unavailable, "
+                 "Jul 1 2026, during the 52-day yellow-alert streak)",
+        "outage_mw": out_mw,
+        "src": MARKET_ANCHORS.get("src_visayas_jul1"),
+        "window": {"from": frm, "to": to},
+        "n_intervals": n,
+        "leyte_luzon_saturated_pct": round(100 * sat / n, 1) if n else None,
+        "leyte_luzon_mean_rent_php_kwh": round(rent_sum / sat, 3) if sat else 0.0,
+        "visayas_vs_luzon_observed_php_kwh": s_obs,
+        "visayas_vs_luzon_coupled_php_kwh": s_mod,
+        "explained_fraction": (round(s_mod / s_obs, 3)
+                               if s_obs not in (None, 0) and s_mod is not None
+                               else None),
+    }
+
+
+def _coupling_binding_threshold(intervals: dict) -> dict:
+    """Forward lever, the DC-wave question the project exists to ask: at a typical
+    evening, how much added flat load on Visayas makes the 250 MW Leyte-Luzon
+    corridor bind (Visayas can no longer be relieved from Luzon)?"""
+    eve = [iv["dem"] for iv in intervals.values()
+           if iv["hour"] == PEAK_HOUR and len(iv["dem"]) >= 3]
+    if not eve:
+        return {"available": False}
+    base = {g: round(sum(d[g] for d in eve) / len(eve)) for g in
+            ("LUZON", "VISAYAS", "MINDANAO")}
+    thr = None
+    for add in range(0, 3001, 25):
+        demand = dict(base)
+        demand["VISAYAS"] = base["VISAYAS"] + add
+        res = clear_coupled(demand, PEAK_HOUR)
+        if res["corridors"][0]["saturated"]:
+            thr = add
+            break
+    return {
+        "available": True,
+        "reference_hour": PEAK_HOUR,
+        "typical_evening_demand_mw": {g.lower(): base[g] for g in base},
+        "added_visayas_load_to_bind_leyte_mw": thr,
+        "note": "Extra flat Visayas load at a typical evening before the 250 MW "
+                "Leyte-Luzon corridor saturates and Visayas prices above Luzon. "
+                "The corridor binds well below the DICT 1.5 GW national forecast.",
+    }
+
+
 def build_dispatch() -> dict:
     prices = _read_prices()
     rtd = dataset_files("RTDSUM")
@@ -125,6 +326,8 @@ def build_dispatch() -> dict:
     hourly: dict[str, dict[int, list]] = {g: {h: [] for h in range(24)}
                                           for g in GRIDS}
     days_seen: set[str] = set()
+    # per-interval simultaneous demand across all three grids, for the coupled model
+    intervals: dict[tuple, dict] = {}
 
     # WESM was suspended (administered prices) through wesm_resumed; the price
     # calibration must be MARKET-window only, or an administered ~P6 evening sits
@@ -153,6 +356,9 @@ def build_dispatch() -> dict:
                 continue
             ti = (r.get("TIME_INTERVAL") or "").strip()
             hour = hour_of(ti)
+            iv = intervals.setdefault((day, ti),
+                                      {"hour": hour, "market": is_market, "dem": {}})
+            iv["dem"][grid] = gen
             blocks = stk(grid, hour)
             res = clear(blocks, gen)
             peak_demand[grid] = max(peak_demand[grid], gen)
@@ -332,6 +538,8 @@ def build_dispatch() -> dict:
                 sum(v["generation_gwh"] for v in per_fuel.values()), 1),
         }
 
+    coupling = build_coupling(intervals, prices)
+
     return {
         "available": True,
         "unit": "PhP/kWh clearing price from a merit-order stack vs observed "
@@ -362,6 +570,7 @@ def build_dispatch() -> dict:
                     "metrics (peak, adequacy, N-1, emissions) use the whole window.",
         },
         "merit_order": merit_order,
+        "coupling": coupling,
         "calibration": calibration,
         "representative_day": representative,
         "n1": n1,

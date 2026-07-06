@@ -243,5 +243,91 @@ check("DICT 1.5 GW scenario is a labeled DICT forecast with src",
 check("adding the DICT wave erodes the Luzon reserve margin",
       adq["reserve_margin_with_dc_pct"] < adq["reserve_margin_now_pct"])
 
+# --- inter-island coupled dispatch (item 1) ------------------------------------
+# The coupled solver's trust gate is optimality (KKT) on a radial path, not the
+# algorithm: across an UNSATURATED corridor adjacent grids clear at the same price
+# (within the wheeling dead-band); across a SATURATED one the exporter is strictly
+# cheaper and the congestion rent equals the price gap. Verify on live cases.
+import coupled_dispatch as cd  # noqa: E402
+
+_KKT_CASES = [
+    # (demand dict, removed) chosen to span: all-coal tie, Visayas outage bind,
+    # everyone on oil.
+    ({"LUZON": 12000, "VISAYAS": 1800, "MINDANAO": 2800}, None),
+    ({"LUZON": 12000, "VISAYAS": 1800, "MINDANAO": 2800}, {"VISAYAS": {"coal": 935}}),
+    ({"LUZON": 12000, "VISAYAS": 2900, "MINDANAO": 2800}, None),
+    ({"LUZON": 15500, "VISAYAS": 2700, "MINDANAO": 3300}, None),
+]
+opt_ok = rent_ok = True
+lim = {c["id"]: c["limit_mw"] for c in cd.CORRIDORS}
+c1, c2 = lim["leyte_luzon_hvdc"], lim["mvip_hvdc"]
+for dem, rem in _KKT_CASES:
+    r = cd.clear_coupled(dem, 19, removed=rem)
+    solved = cd.system_cost(dem, 19, r["flow_lv_mw"], r["flow_vm_mw"], removed=rem)
+    # brute-force the min-cost flow pair on a fine grid; the solver must match it
+    best = min(cd.system_cost(dem, 19, x1, x2, removed=rem)
+               for x1 in range(-int(c1), int(c1) + 1, 5)
+               for x2 in range(-int(c2), int(c2) + 1, 5))
+    if solved > best + 1.0:  # PhP: within a rounding margin of the true minimum
+        opt_ok = False
+    p = {g: r["grids"][g]["price"] for g in r["grids"]}
+    for c in r["corridors"]:
+        # a congestion rent is reported only on a saturated corridor, and equals
+        # the price gap across it (the exporter is the cheaper side)
+        if c["saturated"]:
+            gap = abs(p[c["to"]] - p[c["from"]])
+            if not math.isclose(c["congestion_rent_php_kwh"], gap, abs_tol=1e-6):
+                rent_ok = False
+        elif c["congestion_rent_php_kwh"] != 0:
+            rent_ok = False
+check("coupled solver lands on the min-cost flow (optimality vs brute force)",
+      opt_ok)
+check("congestion rent only on a saturated corridor, and equals the price gap",
+      rent_ok)
+# no phantom flow when all three grids tie on the coal margin
+tie = cd.clear_coupled({"LUZON": 12000, "VISAYAS": 1800, "MINDANAO": 2800}, 19)
+check("no phantom corridor flow when grids tie on coal",
+      abs(tie["flow_lv_mw"]) < 1 and abs(tie["flow_vm_mw"]) < 1
+      and all(not c["saturated"] for c in tie["corridors"]))
+# an unrelieved grid still prices at its top block (oil), never a VOLL adder
+oiled = cd.clear_coupled({"LUZON": 12000, "VISAYAS": 2900, "MINDANAO": 2800}, 19)
+check("no VOLL adder: an oil-margin grid caps at the oil cost P12",
+      oiled["grids"]["visayas"]["price"] <= fl.FUEL_COST_PHP_KWH["oil"] + 1e-6)
+
+cp = disp["coupling"]
+check("coupling section baked + labeled not-PLEXOS",
+      "not PLEXOS" in cp.get("model", "") and cp.get("n_coupled_intervals", 0) > 1000)
+check("coupling couples only all-three-grid market intervals",
+      cp["calibration_window"]["regime"] == "market-only")
+sd = cp["spread_decomposition"]
+# the honest finding: on baseline demand the corridor almost never binds, so the
+# coupled model reproduces almost none of the observed Visayas-Luzon spread
+check("observed Visayas-Luzon spread is real (>3 PhP/kWh)",
+      sd["visayas_vs_luzon"]["observed_php_kwh"] > 3)
+check("baseline coupling explains almost none of the V-L spread (the finding: "
+      "the spread is scarcity, not transmission)",
+      abs(sd["visayas_vs_luzon"]["explained_fraction"]) < 0.1)
+leyte_stat = next(c for c in cp["corridors"] if c["id"] == "leyte_luzon_hvdc")
+check("Leyte-Luzon rarely binds on baseline demand (<5% of intervals)",
+      leyte_stat["saturated_pct"] < 5)
+check("MVIP cap is labeled nameplate-as-operating-limit (distinct from Leyte's "
+      "sourced 250)", leyte_stat["limit_kind"] == "sourced_operating_limit"
+      and next(c for c in cp["corridors"] if c["id"] == "mvip_hvdc")["limit_kind"]
+      == "nameplate_as_operating_limit")
+# the labeled outage scenario is where the mechanism shows: the corridor binds and
+# prices the islands apart endogenously. Kept separate from calibration.
+osc = cp["outage_scenario"]
+check("outage scenario is a labeled, sourced Visayas outage",
+      osc.get("src") and osc["outage_mw"] > 500 and osc["n_intervals"] > 1000)
+check("under the documented outage the Leyte corridor binds and prices a rent",
+      osc["leyte_luzon_saturated_pct"] > 10
+      and osc["leyte_luzon_mean_rent_php_kwh"] > 1)
+check("outage scenario explains materially more of the spread than baseline",
+      osc["explained_fraction"] > 0.1
+      > abs(sd["visayas_vs_luzon"]["explained_fraction"]))
+bt = cp["dc_binding_threshold"]
+check("DC-wave lever: added Visayas load that binds Leyte is below the DICT 1.5 GW",
+      bt["available"] and 0 < bt["added_visayas_load_to_bind_leyte_mw"] < 1500)
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)
