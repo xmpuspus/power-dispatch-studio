@@ -35,7 +35,7 @@ export function MeritView({ d, grid }: { d: Dispatch; grid: GridKey }) {
       </Panel>
       <Panel
         title="Unit commitment (before / after)"
-        subtitle="Committed baseload coal offers below the administered price at light load. Sourced, not tuned to the trough."
+        subtitle="Committed baseload coal offers below the administered price at light load. Not fitted to the trough. The offer is taken from published values."
         right={<Source href={d.unit_commitment.src_offer} label="offer source" />}
       >
         <div className="stat-row">
@@ -178,8 +178,8 @@ export function FlowsView({ d }: { d: Dispatch }) {
         </div>
         <p className="note">
           At baseline the islands sit on the coal margin, so the link barely binds and
-          coupling explains almost none of the spread. The spread is scarcity during the
-          52-day streak, not transmission.
+          coupling explains almost none of the spread. The spread is not a transmission
+          limit but the scarcity of the 52-day streak.
         </p>
       </Panel>
       <Panel

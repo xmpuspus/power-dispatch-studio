@@ -73,7 +73,7 @@ export default function App() {
                     value={php(
                       d.coupling.spread_decomposition.visayas_vs_luzon.observed_php_kwh
                     )}
-                    hint="scarcity, not transmission"
+                    hint="driven by scarcity"
                   />
                 </>
               ) : (

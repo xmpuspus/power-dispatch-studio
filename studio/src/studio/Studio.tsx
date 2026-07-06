@@ -87,7 +87,7 @@ export function Studio({
           </div>
         </div>
         <span className="studio__homage" title="This is an independent, open homage.">
-          Homage, not affiliated with Energy Exemplar. Not PLEXOS.
+          An independent homage. Not affiliated with Energy Exemplar. Not PLEXOS.
         </span>
         <div className="studio__barright">
           {scoped && (
