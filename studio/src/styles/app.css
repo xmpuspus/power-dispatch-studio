@@ -1000,3 +1000,31 @@
 .mixbars__fill--over {
   background: var(--destructive);
 }
+
+/* ============ Compact button group (hydrology, grid pick) ============ */
+.gselrow {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+.gsel {
+  flex: 1;
+  font: inherit;
+  font-size: var(--fs-12);
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.gsel:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+.gsel.on {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 500;
+}

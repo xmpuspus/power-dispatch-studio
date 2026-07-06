@@ -27,6 +27,17 @@
   "coal_commit_php_kwh": 4.14,
   "coal_min_load_frac": 0.4,
   "wheeling_cost_php_kwh": 0.02,
+  "hydrology": {
+   "normal_multiplier": 1.0,
+   "dry_multiplier": 0.344,
+   "wet_multiplier": 1.25,
+   "modeled_normal_hydro_avail_mw": 2109.8,
+   "dry_avail_mw_national": 725.5,
+   "dependable_mw_national": 3472,
+   "dry_label": "El Nino dry season (H1 2024)",
+   "src_dry": "https://newsinfo.inquirer.net/1875625/doe-no-power-shortage-in-2024-despite-el-nino",
+   "note": "Dry reproduces the DOE H1 2024 El Nino figure of 725.5 MW of available hydro nationally (against 3,472 MW dependable), applied uniformly across grids as a labeled simplification. Wet is a labeled upside, not sourced to a specific year. Hydro is a modest share of the evening stack, so the axis moves the tight-evening margin less than a unit trip or the data-center load does."
+  },
   "note": "Coal (P6.00) and Malampaya gas (P4.80) costs are sourced (ERC administered price; Malampaya FOI). Availability derates, the solar profile, the oil peaker cost, and the per-grid fuel split are labeled model assumptions. A competitive cost stack gives a near-flat ~P6 line: it over-prices the overnight trough (units bid below cost to stay committed) and under-prices the evening peak (scarcity and offers). The daily shape and the island spread are commitment, scarcity, and offer behaviour, not data-center load."
  },
  "days": 80,

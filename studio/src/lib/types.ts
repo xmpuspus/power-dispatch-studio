@@ -25,12 +25,25 @@ export interface MeritOrder {
   blocks: Block[]
 }
 
+export interface Hydrology {
+  normal_multiplier: number
+  dry_multiplier: number
+  wet_multiplier: number
+  modeled_normal_hydro_avail_mw: number
+  dry_avail_mw_national: number
+  dependable_mw_national: number
+  dry_label: string
+  src_dry: string
+  note: string
+}
+
 export interface Assumptions {
   fuel_marginal_cost_php_kwh: Record<string, number>
   national_fuel_mw: Record<string, number>
   coal_commit_php_kwh: number
   coal_min_load_frac: number
   wheeling_cost_php_kwh: number
+  hydrology: Hydrology
   note: string
 }
 
