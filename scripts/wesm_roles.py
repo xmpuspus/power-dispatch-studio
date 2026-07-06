@@ -60,7 +60,7 @@ def main():
 
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
-    ax.set_title("One roof in a US market; four bodies in the Philippines",
+    ax.set_title("One roof in a US market, four bodies in the Philippines",
                  fontsize=14, color=vz.NAVY, loc="left", x=0.02)
     vz.caption(fig,
                "The Philippine market splits functions a US ISO bundles, and WESM is "
