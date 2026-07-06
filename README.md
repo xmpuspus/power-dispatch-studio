@@ -108,6 +108,39 @@ capacity-market chart.
 
 ![Who runs the Philippine power market: IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC regulates, DOE sets policy, and the last row notes WESM is energy-only with no capacity auction](docs/wesm-roles.png)
 
+## Simulate the dispatch
+
+The map's fourth mode is a simplified merit-order model of the grid. It is **not
+PLEXOS**: it stacks a sourced generator fleet by marginal cost against the archive's
+own dispatched generation, per grid, and reads off the marginal clearing price. Coal
+marginal cost is the ERC administered price of **P6.00/kWh** and Malampaya gas is
+**P4.80/kWh**, both sourced; the availability derates and the split of the fleet
+across grids are labeled model assumptions, and that split reconciles exactly to the
+DOE national fuel totals (a test pins every column).
+
+The honest result is that a competitive cost stack predicts a nearly flat **~P6/kWh**
+line. On Luzon it averages **P6.01/kWh** against an observed **P7.05/kWh** (mean
+absolute error **P3.47**): it over-prices the overnight trough, because real units
+bid below cost to stay committed, and under-prices the evening peak. That evening gap
+is scarcity and offer behavior, not data-center load. On the Visayas grid, tight
+through the 52-day yellow-alert streak, the evening residual runs **P12.14/kWh** above
+the cost stack. The daily shape and the island spread are commitment, scarcity, and
+offers, not new load.
+
+The adequacy number is the checkable one. At the evening peak Luzon has about
+**15,680 MW** available against a **14,589 MW** peak, a **7.5%** reserve margin. Add
+the DICT forecast of **1,500 MW** of data centers by 2028 (a labeled DICT forecast,
+October 2025) and that margin falls to **-2.5%**: 109 five-minute intervals in the
+window go short, 1,547 MWh unserved.
+
+The panel re-clears the baked stack in the browser. Move the levers (add a data
+center as flat 24/7 load, trip any of the 11 named units for an N-1, add firm
+capacity, relieve a choke point) and the clearing price and any supply shortfall
+update live, on the same stack the Python engine produced. The named-generator layer,
+the N-1 table, and the full model: [`web/data/dispatch.json`](web/data/dispatch.json)
+and [`web/data/generators.geojson`](web/data/generators.geojson); the engine is
+`pipeline/dispatch.py` on the sourced fleet in `pipeline/fleet_ph.py`.
+
 ## What this is
 
 - **A daily archive.** IEMOP's public window is a rolling ~90 days per dataset.
@@ -134,6 +167,10 @@ capacity-market chart.
   prices are driven by fuel, outages, weather, and the market restart.
 - Not a brownout forecast. It shows observed curtailment in dispatch schedules,
   observed reserve shortfalls, and arithmetic on published margins.
+- Not a price forecast. The dispatch model is a simplified merit-order stack (not
+  PLEXOS) calibrated against observed prices; it shows what a competitive cost stack
+  does and does not explain, and is not a predictor. Every plant number is sourced;
+  the fuel-availability and per-grid-split assumptions are labeled as such.
 - Not a complete data-center inventory (Cushman counts 24 operational facilities;
   DataCenterMap lists 44; only publicly-sourced sites are pinned, at city precision).
 - Not route maps: corridor lines are schematic links between named endpoints.
