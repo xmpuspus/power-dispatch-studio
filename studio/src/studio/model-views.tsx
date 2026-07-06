@@ -304,6 +304,87 @@ export function SolvedReliabilityView({ s }: { s: SolvedModel }) {
   )
 }
 
+// PLEXOS-style Memberships: the relations each object belongs to (a Generator to its
+// Region and Fuel; an Interface to its two Regions; a Region and a Fuel to their
+// member Generators). Read-only, derived from the object model.
+export function MembershipsView({
+  cls,
+  objects,
+}: {
+  cls: ClassId
+  objects: Record<ClassId, ObjRow[]>
+}) {
+  const rows: { obj: string; rels: { label: string; value: string }[] }[] = []
+  if (cls === 'generator') {
+    for (const g of objects.generator)
+      rows.push({
+        obj: g.label,
+        rels: [
+          { label: 'Region', value: String(g.props.grid) },
+          { label: 'Fuel', value: fuelLabel(String(g.props.fuel)) },
+        ],
+      })
+  } else if (cls === 'interface') {
+    for (const i of objects.interface)
+      rows.push({
+        obj: i.label,
+        rels: [
+          { label: 'From', value: String(i.props.from) },
+          { label: 'To', value: String(i.props.to) },
+        ],
+      })
+  } else if (cls === 'region') {
+    for (const r of objects.region) {
+      const inRegion = objects.generator.filter((g) => g.grid === r.id)
+      const links = objects.interface.filter(
+        (i) =>
+          String(i.props.from).toLowerCase() === r.id ||
+          String(i.props.to).toLowerCase() === r.id
+      )
+      rows.push({
+        obj: r.label,
+        rels: [
+          {
+            label: `Generators (${inRegion.length})`,
+            value: inRegion.map((g) => g.label).join(', ') || 'none',
+          },
+          { label: 'Interfaces', value: links.map((i) => i.label).join(', ') || 'none' },
+        ],
+      })
+    }
+  } else {
+    for (const f of objects.fuel) {
+      const users = objects.generator.filter((g) => String(g.props.fuel) === f.id)
+      rows.push({
+        obj: f.label,
+        rels: [
+          {
+            label: `Generators (${users.length})`,
+            value: users.map((g) => g.label).join(', ') || 'none named',
+          },
+        ],
+      })
+    }
+  }
+  return (
+    <div className="memberships">
+      {rows.map((r) => (
+        <div className="memberships__row" key={r.obj}>
+          <div className="memberships__obj">{r.obj}</div>
+          <div className="memberships__rels">
+            {r.rels.map((rel) => (
+              <div className="memberships__rel" key={rel.label}>
+                <Chip tone="default">{rel.label}</Chip>
+                <span>{rel.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function ObjectsList({ rows }: { rows: ObjRow[] }) {
   return (
     <div className="objlist">

@@ -17,6 +17,7 @@ import {
   type SolvedModel,
 } from './model'
 import {
+  MembershipsView,
   ObjectsList,
   PropertiesGrid,
   SolvedFlowsView,
@@ -360,32 +361,16 @@ function DataPane({
   onRun: () => void
 }) {
   if (nav.kind === 'class') {
-    const cls = CLASSES.find((c) => c.id === nav.id)!
-    const rows = objects[nav.id]
     return (
-      <div className="datapane">
-        <DataTabs active="properties" />
-        <div className="datapane__hint">
-          Edit a value and it is tagged to the active scenario. Press <b>Run</b> to
-          re-solve. The base value returns with the × on a changed cell.
-          {dirty && (
-            <button className="btn btn--run btn--sm datapane__run" onClick={onRun}>
-              <PlayIcon /> Run
-            </button>
-          )}
-        </div>
-        <PropertiesGrid
-          cls={cls.id}
-          rows={rows}
-          overrides={overrides}
-          onEdit={onEdit}
-          onRevert={onRevert}
-        />
-        <div className="datapane__objects">
-          <h3 className="panel__title">Objects</h3>
-          <ObjectsList rows={rows} />
-        </div>
-      </div>
+      <ClassPane
+        cls={nav.id}
+        objects={objects}
+        overrides={overrides}
+        dirty={dirty}
+        onEdit={onEdit}
+        onRevert={onRevert}
+        onRun={onRun}
+      />
     )
   }
   if (nav.kind === 'quick') return <ScenarioView d={d} grid={grid} />
@@ -503,24 +488,69 @@ function TreeItem({
   )
 }
 
-function DataTabs({ active }: { active: 'objects' | 'memberships' | 'properties' }) {
-  const tabs: { id: typeof active; label: string; on: boolean }[] = [
-    { id: 'objects', label: 'Objects', on: true },
-    { id: 'memberships', label: 'Memberships', on: false },
-    { id: 'properties', label: 'Properties', on: true },
+type DataTab = 'objects' | 'memberships' | 'properties'
+
+function ClassPane({
+  cls,
+  objects,
+  overrides,
+  dirty,
+  onEdit,
+  onRevert,
+  onRun,
+}: {
+  cls: ClassId
+  objects: ReturnType<typeof baseObjects>
+  overrides: Scenario['overrides']
+  dirty: boolean
+  onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
+  onRevert: (cls: ClassId, id: string, prop: string) => void
+  onRun: () => void
+}) {
+  const [tab, setTab] = useState<DataTab>('properties')
+  const rows = objects[cls]
+  const tabs: { id: DataTab; label: string }[] = [
+    { id: 'objects', label: 'Objects' },
+    { id: 'memberships', label: 'Memberships' },
+    { id: 'properties', label: 'Properties' },
   ]
   return (
-    <div className="datatabs" role="tablist">
-      {tabs.map((t) => (
-        <span
-          key={t.id}
-          role="tab"
-          aria-selected={t.id === active}
-          className={`datatabs__tab ${t.id === active ? 'is-active' : ''} ${t.on ? '' : 'is-off'}`}
-        >
-          {t.label}
-        </span>
-      ))}
+    <div className="datapane">
+      <div className="datatabs" role="tablist">
+        {tabs.map((t) => (
+          <button
+            key={t.id}
+            role="tab"
+            aria-selected={t.id === tab}
+            className={`datatabs__tab ${t.id === tab ? 'is-active' : ''}`}
+            onClick={() => setTab(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+      {tab === 'properties' && (
+        <>
+          <div className="datapane__hint">
+            Edit a value and it is tagged to the active scenario. Press <b>Run</b> to
+            re-solve. The base value returns with the × on a changed cell.
+            {dirty && (
+              <button className="btn btn--run btn--sm datapane__run" onClick={onRun}>
+                <PlayIcon /> Run
+              </button>
+            )}
+          </div>
+          <PropertiesGrid
+            cls={cls}
+            rows={rows}
+            overrides={overrides}
+            onEdit={onEdit}
+            onRevert={onRevert}
+          />
+        </>
+      )}
+      {tab === 'memberships' && <MembershipsView cls={cls} objects={objects} />}
+      {tab === 'objects' && <ObjectsList rows={rows} />}
     </div>
   )
 }
