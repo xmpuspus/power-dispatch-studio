@@ -97,6 +97,7 @@ const NO_LEVERS = (grid: GridKey): Levers => ({
   coalPrice: d.assumptions.fuel_marginal_cost_php_kwh.coal,
   reliefMW: 0,
   lngSwitch: false,
+  hydrology: 1,
 })
 
 const UNITS: TrippableUnit[] = [] // trips exercised in a dedicated test below
@@ -149,6 +150,18 @@ describe('lever behavior', () => {
     expect(gasBefore?.cost).toBe(gasCost) // baseline gas at Malampaya price
     // every gas block (base + added firm) is repriced to the LNG cost
     expect(gasAfter.every((b) => b.cost === lngCost)).toBe(true)
+  })
+
+  it('a dry (El Nino) hydrology cuts available supply and never lowers the price', () => {
+    const dry = d.assumptions.hydrology.dry_multiplier
+    expect(dry).toBeLessThan(1) // dry reduces hydro
+    // at a demand high enough to reach the hydro-dependent margin, cutting hydro
+    // cannot make the grid cheaper
+    const load = { ...NO_LEVERS('luzon'), addDC: 3000 }
+    const normal = solveScenario(d, load, UNITS)
+    const dryOut = solveScenario(d, { ...load, hydrology: dry }, UNITS)
+    expect(dryOut.single.avail).toBeLessThan(normal.single.avail)
+    expect(dryOut.single.price).toBeGreaterThanOrEqual(normal.single.price)
   })
 
   it('relieving the feeding corridor lowers a congested downstream price', () => {

@@ -888,6 +888,32 @@ def build_dispatch() -> dict:
     storage = build_storage(hourly_dem)
     scenario_golden = build_scenario_golden(merit_order)
 
+    # hydrology forward axis: a dry (El Nino) / normal / wet multiplier on the baked
+    # hydro availability. The DRY anchor is sourced: the DOE put available hydro at
+    # 725.5 MW nationally against a 3,472 MW dependable capacity in H1 2024 (an ~80%
+    # derate) during the El Nino dry season. The dry multiplier is set to reproduce
+    # that 725.5 MW absolute figure against this model's normal hydro availability, so
+    # it stays correct if the fleet changes. The wet multiplier is a labeled upside.
+    national_hydro_avail = round(
+        sum(merit_order[g.lower()]["fuel_avail_mw"].get("hydro", 0.0) for g in GRIDS), 1)
+    dry_mult = round(725.5 / national_hydro_avail, 3) if national_hydro_avail else 1.0
+    hydrology = {
+        "normal_multiplier": 1.0,
+        "dry_multiplier": dry_mult,
+        "wet_multiplier": 1.25,
+        "modeled_normal_hydro_avail_mw": national_hydro_avail,
+        "dry_avail_mw_national": 725.5,
+        "dependable_mw_national": 3472,
+        "dry_label": "El Nino dry season (H1 2024)",
+        "src_dry": "https://newsinfo.inquirer.net/1875625/doe-no-power-shortage-in-2024-despite-el-nino",
+        "note": "Dry reproduces the DOE H1 2024 El Nino figure of 725.5 MW of "
+                "available hydro nationally (against 3,472 MW dependable), applied "
+                "uniformly across grids as a labeled simplification. Wet is a labeled "
+                "upside, not sourced to a specific year. Hydro is a modest share of "
+                "the evening stack, so the axis moves the tight-evening margin less "
+                "than a unit trip or the data-center load does.",
+    }
+
     # price-duration curve (modeled vs observed overlay) and the marginal-block
     # frequency table (which fuel sets the price how often), per grid, market window
     price_duration = {}
@@ -933,6 +959,7 @@ def build_dispatch() -> dict:
             "coal_commit_php_kwh": COAL_COMMIT_PHP_KWH,
             "coal_min_load_frac": COAL_MIN_LOAD_FRAC,
             "wheeling_cost_php_kwh": coupling["wheeling_cost_php_kwh"],
+            "hydrology": hydrology,
             "note": "Coal (P6.00) and Malampaya gas (P4.80) costs are sourced (ERC "
                     "administered price; Malampaya FOI). Availability derates, the "
                     "solar profile, the oil peaker cost, and the per-grid fuel "

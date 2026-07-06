@@ -19,6 +19,7 @@ function initLevers(d: Dispatch, grid: GridKey): Levers {
     coalPrice: d.assumptions.fuel_marginal_cost_php_kwh.coal,
     reliefMW: 0,
     lngSwitch: false,
+    hydrology: 1,
   }
 }
 
@@ -50,6 +51,13 @@ export function ScenarioView({ d, grid }: { d: Dispatch; grid: GridKey }) {
   const out = useMemo(() => solveScenario(d, lv, units), [d, lv, units])
   const mo = d.merit_order[grid]
   const set = (patch: Partial<Levers>) => setLv((p) => ({ ...p, ...patch }))
+
+  const hy = d.assumptions.hydrology
+  const hydroOpts = [
+    { key: 'dry', label: 'Dry (El Nino)', mult: hy.dry_multiplier },
+    { key: 'normal', label: 'Normal', mult: hy.normal_multiplier },
+    { key: 'wet', label: 'Wet', mult: hy.wet_multiplier },
+  ]
 
   const delta = out.single.price - out.base.price
   const feedName =
@@ -182,6 +190,24 @@ export function ScenarioView({ d, grid }: { d: Dispatch; grid: GridKey }) {
                 </span>
               </span>
             </label>
+            <div className="lever">
+              <span className="lever__label">Hydrology (wet / dry year)</span>
+              <span className="lever__tick">
+                dry reproduces the DOE 2024 El Nino hydro availability (
+                {num(hy.dry_avail_mw_national)} MW nationally)
+              </span>
+              <div className="gselrow">
+                {hydroOpts.map((o) => (
+                  <button
+                    key={o.key}
+                    className={`gsel${Math.abs(lv.hydrology - o.mult) < 1e-6 ? ' on' : ''}`}
+                    onClick={() => set({ hydrology: o.mult })}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             <label className="lever">
               <span className="lever__label">Trip a unit (N-1)</span>
               <select

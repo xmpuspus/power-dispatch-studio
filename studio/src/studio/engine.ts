@@ -28,6 +28,16 @@ export interface Levers {
   coalPrice: number // administered coal price for the marginal coal tranche (PhP/kWh)
   reliefMW: number // extra operating limit on the corridor feeding the selected grid (MW)
   lngSwitch: boolean // reprice gas from Malampaya to imported LNG (the ~2027 cliff)
+  hydrology: number // multiplier on hydro availability (dry El Nino / normal / wet)
+}
+
+/** Scale a grid's hydro availability by the hydrology multiplier (dry/normal/wet). */
+function scaleHydro(
+  fuelAvail: Record<string, number>,
+  hydrology: number
+): Record<string, number> {
+  if (hydrology === 1 || fuelAvail.hydro == null) return fuelAvail
+  return { ...fuelAvail, hydro: round1(fuelAvail.hydro * hydrology) }
 }
 
 export interface TrippableUnit {
@@ -327,11 +337,12 @@ export function solveScenario(
   const stacks: Record<GridKey, Block[]> = {} as Record<GridKey, Block[]>
   for (const g of GRID_KEYS) {
     const sel = g === lv.grid
-    // the LNG switch is a supply-side fuel change (gas sits only on Luzon), so it
-    // reprices every grid's stack, not just the selected one; the coal price is a
-    // per-grid what-if and stays scoped to the selected grid.
+    // the LNG switch and the hydrology multiplier are supply-side, system-wide
+    // changes (gas sits only on Luzon; a dry spell affects all grids), so they apply
+    // to every grid's stack. The coal price and trip are per-grid what-ifs and stay
+    // scoped to the selected grid.
     stacks[g] = buildStack(
-      d.merit_order[g].fuel_avail_mw,
+      scaleHydro(d.merit_order[g].fuel_avail_mw, lv.hydrology),
       sel ? removedSel : {},
       sel ? added : [],
       stackParams(d, sel ? lv.coalPrice : undefined, lv.lngSwitch)

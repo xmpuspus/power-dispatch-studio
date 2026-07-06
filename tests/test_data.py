@@ -447,6 +447,12 @@ _bind = next(c for c in gold["cases"] if "binds" in c["label"])
 check("golden added-Visayas-load case saturates the Leyte-Luzon link at a rent",
       _bind["expect"]["leyte_saturated"]
       and _bind["expect"]["leyte_rent_php_kwh"] > 0)
+hy = disp["assumptions"]["hydrology"]
+check("dry hydrology multiplier cuts hydro (below 1) and wet lifts it (above 1)",
+      hy["dry_multiplier"] < 1 < hy["wet_multiplier"])
+check("dry hydrology reproduces the sourced DOE 2024 El Nino hydro availability",
+      abs(hy["dry_multiplier"] * hy["modeled_normal_hydro_avail_mw"]
+          - hy["dry_avail_mw_national"]) < 2)
 
 # --- reserve market layer (WESM Reserve Market, RTDRS) --------------------------
 res = load("reserve.json")
