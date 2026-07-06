@@ -75,7 +75,7 @@ def main():
         vz.caption(fig,
                    "Sual's two 647 MW units are the largest single contingencies on "
                    "the Luzon grid. This subtracts a unit from IEMOP's published May "
-                   "2026 margin as arithmetic, not a dispatch simulation; the margin "
+                   "2026 margin as arithmetic, not a dispatch simulation. The margin "
                    "itself moves daily. Source: IEMOP May 2026 report.", y=-0.03)
         fig.tight_layout()
         fig.savefig(os.path.join(FRAMES, f"f{fi:03d}.png"), dpi=110,

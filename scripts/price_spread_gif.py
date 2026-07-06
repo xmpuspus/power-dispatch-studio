@@ -71,7 +71,7 @@ def main():
         vz.caption(fig,
                    "Each line is one island grid's daily average of IEMOP's "
                    "load-weighted five-minute prices. Under administered pricing the "
-                   "grids move together; once the market reopens the links between "
+                   "grids move together. Once the market reopens the links between "
                    "them separate the prices. Source: IEMOP LWAPF, archived.",
                    y=-0.04)
         fig.tight_layout()

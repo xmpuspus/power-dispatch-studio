@@ -59,7 +59,7 @@ def main():
     vz.caption(fig,
                "Each panel is one island grid: the average WESM price at each level "
                "of dispatched generation, over the archive window. Luzon carries the "
-               "volume and a long climb; the smaller grids stay flat until they run "
+               "volume and a long climb. The smaller grids stay flat until they run "
                "tight. Source: IEMOP RTDSUM generation joined to LWAPF price, archived.",
                y=-0.06)
     fig.tight_layout()

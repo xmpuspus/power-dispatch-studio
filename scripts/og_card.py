@@ -63,8 +63,8 @@ def render(path, w_in, h_in, dpi):
     ax.set_xlim(0, len(dates) + 12)
     ax.set_ylabel("PhP / kWh", fontsize=10)
     ax.set_xticks([])
-    ax.set_title(f'{C["distinct_equipment"]} named lines hit a limit in 90 days; '
-                 "the market prices the geography daily",
+    ax.set_title(f'{C["distinct_equipment"]} named lines hit a limit in 90 days, '
+                 "and the market prices the geography daily",
                  fontsize=12, color=vz.NAVY, loc="left")
     vz.tufte(ax, grid="y")
 

@@ -88,7 +88,7 @@ def main():
         ax2.spines["top"].set_visible(False)
         vz.caption(fig,
                    "One Luzon day from the archive. The band is generation meeting "
-                   "demand through the day; the coral line is the price. The price "
+                   "demand through the day. The coral line is the price. The price "
                    "stays low while there is room and climbs into the evening peak. "
                    "Source: IEMOP RTDSUM generation and LWAPF price, archived.",
                    y=-0.05)

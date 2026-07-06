@@ -79,7 +79,7 @@ def main():
                      fontsize=13.5, color=vz.NAVY, loc="left")
         vz.tufte(ax, grid="y")
         vz.caption(fig,
-                   "Each faint dot is one five-minute interval on the Luzon grid; the "
+                   "Each faint dot is one five-minute interval on the Luzon grid. The "
                    "line is the average price at each load. A data center adds the "
                    "same megawatts every hour, but when the grid has room the price "
                    f"hardly notices and when it is full the same {DC_MW} MW shoves it "

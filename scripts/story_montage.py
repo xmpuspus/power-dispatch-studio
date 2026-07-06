@@ -95,7 +95,7 @@ def main():
                font=tf, fill=NAVY)
         d.text((PAD + 4, 60),
                "Built from the market operator's own public files. The choke points "
-               "already bind daily; the market prices them.",
+               "already bind daily, and the market prices them.",
                font=sf, fill=MUTE)
         for i, (seq, (_, label)) in enumerate(zip(seqs, PANELS)):
             r, c = divmod(i, COLS)
