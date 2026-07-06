@@ -119,13 +119,14 @@ across grids are labeled model assumptions, and that split reconciles exactly to
 DOE national fuel totals (a test pins every column).
 
 The honest result is that a competitive cost stack predicts a nearly flat **~P6/kWh**
-line. On Luzon it averages **P6.01/kWh** against an observed **P7.05/kWh** (mean
-absolute error **P3.47**): it over-prices the overnight trough, because real units
-bid below cost to stay committed, and under-prices the evening peak. That evening gap
-is scarcity and offer behavior, not data-center load. On the Visayas grid, tight
-through the 52-day yellow-alert streak, the evening residual runs **P12.14/kWh** above
-the cost stack. The daily shape and the island spread are commitment, scarcity, and
-offers, not new load.
+line. Calibrated on the market-priced window only (the 56 days after WESM resumed on
+May 1; the suspension's administered prices are excluded), Luzon averages
+**P6.01/kWh** against an observed **P7.65/kWh** (mean absolute error **P4.49**): it
+over-prices the overnight trough, because real units bid below cost to stay committed,
+and under-prices the evening peak. That evening gap is scarcity and offer behavior,
+not data-center load. On the Visayas grid, tight through the 52-day yellow-alert
+streak, the evening residual runs **P16.84/kWh** above the cost stack. The daily shape
+and the island spread are commitment, scarcity, and offers, not new load.
 
 The adequacy number is the checkable one. At the evening peak Luzon has about
 **15,680 MW** available against a **14,589 MW** peak, a **7.5%** reserve margin. Add

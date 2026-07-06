@@ -695,7 +695,8 @@ function sideSimulate(){
     <label>Relieve a choke point (extra inter-island import): <b id="sim-impv">${fmt(SIM.imp)}</b> MW
       <input type="range" id="sim-imp" min="0" max="${impMax}" step="25" value="${SIM.imp}"></label>
   </div>
-  <div class="note" id="sim-cal">Over ${fmt(cal.n_intervals)} five-minute intervals,
+  <div class="note" id="sim-cal">Over ${fmt(cal.n_intervals)} five-minute intervals
+  in the market-priced window (after WESM resumed ${esc((disp.calibration_window||{}).from)}),
   the cost stack averaged P${fmt(cal.modeled_mean_php_kwh,2)}/kWh against an observed
   P${fmt(cal.observed_mean_php_kwh,2)}/kWh (MAE P${fmt(cal.mae_php_kwh,2)}). It
   over-prices the overnight trough and under-prices the evening peak; the evening

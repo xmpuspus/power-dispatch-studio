@@ -29,7 +29,7 @@ import math
 import re
 
 from build_data import REGION_MAP, dataset_files, day_of, f, rows_of
-from constants_ph import DEMAND_ANCHORS, GENERATORS
+from constants_ph import DEMAND_ANCHORS, GENERATORS, MARKET_ANCHORS
 from fleet_ph import (
     FUEL_CO2_T_PER_MWH,
     FUEL_COST_PHP_KWH,
@@ -126,12 +126,22 @@ def build_dispatch() -> dict:
                                           for g in GRIDS}
     days_seen: set[str] = set()
 
+    # WESM was suspended (administered prices) through wesm_resumed; the price
+    # calibration must be MARKET-window only, or an administered ~P6 evening sits
+    # on the modeled coal line and flatters the fit. Demand-based metrics (peak,
+    # adequacy, N-1, emissions) are physical and use the whole window.
+    resumed = MARKET_ANCHORS.get("wesm_resumed", "2026-05-01")
+    market_days: set[str] = set()
+
     for path in rtd:
         day = day_of(path)
         pday = prices.get(day, {})
         if not pday:
             continue
         days_seen.add(day)
+        is_market = day >= resumed
+        if is_market:
+            market_days.add(day)
         for r in rows_of(path):
             if (r.get("COMMODITY_TYPE") or "").strip() != "En":
                 continue
@@ -153,7 +163,7 @@ def build_dispatch() -> dict:
             for fuel, mw in _fuel_dispatch(blocks, res["served_mw"]).items():
                 fuel_mwh[grid][fuel] = fuel_mwh[grid].get(fuel, 0.0) + mw * 5 / 60
             price = pday.get((grid, ti))
-            if price is not None:
+            if price is not None and is_market:
                 obs[grid].append(price)
                 mod[grid].append(res["price"])
                 hourly[grid][hour].append((gen, res["price"], price))
@@ -342,6 +352,15 @@ def build_dispatch() -> dict:
                     "offer behaviour, not data-center load.",
         },
         "days": len(days_seen),
+        "calibration_window": {
+            "regime": "market-only",
+            "from": resumed,
+            "days": len(market_days),
+            "note": "Calibration, representative day, and the panel baseline use only "
+                    "the market-priced window (WESM resumed " + resumed + "); the "
+                    "suspension's administered prices are excluded. Demand-based "
+                    "metrics (peak, adequacy, N-1, emissions) use the whole window.",
+        },
         "merit_order": merit_order,
         "calibration": calibration,
         "representative_day": representative,

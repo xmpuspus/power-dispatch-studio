@@ -27,12 +27,18 @@
   "note": "Coal (P6.00) and Malampaya gas (P4.80) costs are sourced (ERC administered price; Malampaya FOI). Availability derates, the solar profile, the oil peaker cost, and the per-grid fuel split are labeled model assumptions. A competitive cost stack gives a near-flat ~P6 line: it over-prices the overnight trough (units bid below cost to stay committed) and under-prices the evening peak (scarcity and offers). The daily shape and the island spread are commitment, scarcity, and offer behaviour, not data-center load."
  },
  "days": 80,
+ "calibration_window": {
+  "regime": "market-only",
+  "from": "2026-05-01",
+  "days": 56,
+  "note": "Calibration, representative day, and the panel baseline use only the market-priced window (WESM resumed 2026-05-01); the suspension's administered prices are excluded. Demand-based metrics (peak, adequacy, N-1, emissions) use the whole window."
+ },
  "merit_order": {
   "luzon": {
    "reference_hour": 19,
    "installed_mw": 21073,
    "avail_mw": 15680.1,
-   "typical_evening_demand_mw": 11945,
+   "typical_evening_demand_mw": 12031,
    "peak_demand_mw": 14589,
    "blocks": [
     {
@@ -76,7 +82,7 @@
    "reference_hour": 19,
    "installed_mw": 3962,
    "avail_mw": 2788.6,
-   "typical_evening_demand_mw": 1822,
+   "typical_evening_demand_mw": 1812,
    "peak_demand_mw": 2559,
    "blocks": [
     {
@@ -115,7 +121,7 @@
    "reference_hour": 19,
    "installed_mw": 4818,
    "avail_mw": 3528.6,
-   "typical_evening_demand_mw": 2805,
+   "typical_evening_demand_mw": 2795,
    "peak_demand_mw": 3227,
    "blocks": [
     {
@@ -148,33 +154,33 @@
  },
  "calibration": {
   "luzon": {
-   "n_intervals": 23039,
-   "observed_mean_php_kwh": 7.047,
-   "modeled_mean_php_kwh": 6.006,
-   "mae_php_kwh": 3.469,
-   "bias_php_kwh": -1.041,
-   "evening_peak_residual_php_kwh": 5.617,
-   "correlation": 0.105,
+   "n_intervals": 16127,
+   "observed_mean_php_kwh": 7.651,
+   "modeled_mean_php_kwh": 6.008,
+   "mae_php_kwh": 4.491,
+   "bias_php_kwh": -1.643,
+   "evening_peak_residual_php_kwh": 7.525,
+   "correlation": 0.104,
    "note": null
   },
   "visayas": {
-   "n_intervals": 23039,
-   "observed_mean_php_kwh": 10.766,
+   "n_intervals": 16127,
+   "observed_mean_php_kwh": 12.963,
    "modeled_mean_php_kwh": 6.0,
-   "mae_php_kwh": 6.557,
-   "bias_php_kwh": -4.766,
-   "evening_peak_residual_php_kwh": 12.142,
+   "mae_php_kwh": 8.899,
+   "bias_php_kwh": -6.963,
+   "evening_peak_residual_php_kwh": 16.841,
    "correlation": null,
    "note": "modeled price is flat (demand never leaves the coal block); zero variance, correlation undefined"
   },
   "mindanao": {
-   "n_intervals": 23039,
-   "observed_mean_php_kwh": 9.755,
-   "modeled_mean_php_kwh": 6.177,
-   "mae_php_kwh": 5.693,
-   "bias_php_kwh": -3.578,
-   "evening_peak_residual_php_kwh": 8.579,
-   "correlation": 0.191,
+   "n_intervals": 16127,
+   "observed_mean_php_kwh": 11.519,
+   "modeled_mean_php_kwh": 6.17,
+   "mae_php_kwh": 7.664,
+   "bias_php_kwh": -5.349,
+   "evening_peak_residual_php_kwh": 12.081,
+   "correlation": 0.223,
    "note": null
   }
  },
@@ -182,439 +188,439 @@
   "luzon": [
    {
     "hour": 0,
-    "demand_mw": 10761,
+    "demand_mw": 10955,
     "modeled_price": 6.0,
-    "observed_price": 6.6
+    "observed_price": 7.138
    },
    {
     "hour": 1,
-    "demand_mw": 10412,
+    "demand_mw": 10594,
     "modeled_price": 6.0,
-    "observed_price": 5.532
+    "observed_price": 5.679
    },
    {
     "hour": 2,
-    "demand_mw": 10083,
+    "demand_mw": 10270,
     "modeled_price": 6.0,
-    "observed_price": 4.796
+    "observed_price": 4.643
    },
    {
     "hour": 3,
-    "demand_mw": 9852,
+    "demand_mw": 10066,
     "modeled_price": 6.0,
-    "observed_price": 4.611
+    "observed_price": 4.4
    },
    {
     "hour": 4,
-    "demand_mw": 9741,
+    "demand_mw": 9970,
     "modeled_price": 6.0,
-    "observed_price": 4.839
+    "observed_price": 4.676
    },
    {
     "hour": 5,
-    "demand_mw": 9710,
+    "demand_mw": 9925,
     "modeled_price": 6.0,
-    "observed_price": 4.813
+    "observed_price": 4.538
    },
    {
     "hour": 6,
-    "demand_mw": 9609,
+    "demand_mw": 9793,
     "modeled_price": 6.0,
-    "observed_price": 3.281
+    "observed_price": 2.517
    },
    {
     "hour": 7,
-    "demand_mw": 9976,
+    "demand_mw": 10173,
     "modeled_price": 6.0,
-    "observed_price": 3.343
+    "observed_price": 2.836
    },
    {
     "hour": 8,
-    "demand_mw": 10808,
+    "demand_mw": 11001,
     "modeled_price": 6.0,
-    "observed_price": 4.111
+    "observed_price": 3.848
    },
    {
     "hour": 9,
-    "demand_mw": 11471,
+    "demand_mw": 11646,
     "modeled_price": 6.0,
-    "observed_price": 3.756
+    "observed_price": 3.471
    },
    {
     "hour": 10,
-    "demand_mw": 12006,
+    "demand_mw": 12163,
     "modeled_price": 6.0,
-    "observed_price": 5.117
+    "observed_price": 5.307
    },
    {
     "hour": 11,
-    "demand_mw": 12257,
+    "demand_mw": 12388,
     "modeled_price": 6.0,
-    "observed_price": 4.745
+    "observed_price": 4.874
    },
    {
     "hour": 12,
-    "demand_mw": 12192,
+    "demand_mw": 12325,
     "modeled_price": 6.0,
-    "observed_price": 3.968
+    "observed_price": 3.867
    },
    {
     "hour": 13,
-    "demand_mw": 12552,
+    "demand_mw": 12677,
     "modeled_price": 6.0,
-    "observed_price": 6.613
+    "observed_price": 7.199
    },
    {
     "hour": 14,
-    "demand_mw": 12752,
+    "demand_mw": 12852,
     "modeled_price": 6.0,
-    "observed_price": 7.192
+    "observed_price": 7.829
    },
    {
     "hour": 15,
-    "demand_mw": 12676,
-    "modeled_price": 6.056,
-    "observed_price": 8.806
+    "demand_mw": 12758,
+    "modeled_price": 6.08,
+    "observed_price": 9.805
    },
    {
     "hour": 16,
-    "demand_mw": 12369,
-    "modeled_price": 6.081,
-    "observed_price": 10.201
+    "demand_mw": 12431,
+    "modeled_price": 6.116,
+    "observed_price": 11.606
    },
    {
     "hour": 17,
-    "demand_mw": 11855,
+    "demand_mw": 11919,
     "modeled_price": 6.0,
-    "observed_price": 9.942
+    "observed_price": 11.242
    },
    {
     "hour": 18,
-    "demand_mw": 11922,
+    "demand_mw": 11972,
     "modeled_price": 6.0,
-    "observed_price": 11.763
+    "observed_price": 13.05
    },
    {
     "hour": 19,
-    "demand_mw": 11945,
+    "demand_mw": 12031,
     "modeled_price": 6.0,
-    "observed_price": 11.304
+    "observed_price": 13.13
    },
    {
     "hour": 20,
-    "demand_mw": 12009,
+    "demand_mw": 12135,
     "modeled_price": 6.0,
-    "observed_price": 13.119
+    "observed_price": 15.911
    },
    {
     "hour": 21,
-    "demand_mw": 11898,
+    "demand_mw": 12045,
     "modeled_price": 6.0,
-    "observed_price": 11.982
+    "observed_price": 14.325
    },
    {
     "hour": 22,
-    "demand_mw": 11626,
+    "demand_mw": 11811,
     "modeled_price": 6.0,
-    "observed_price": 10.302
+    "observed_price": 12.173
    },
    {
     "hour": 23,
-    "demand_mw": 11233,
+    "demand_mw": 11425,
     "modeled_price": 6.0,
-    "observed_price": 7.998
+    "observed_price": 9.065
    }
   ],
   "visayas": [
    {
     "hour": 0,
-    "demand_mw": 1572,
+    "demand_mw": 1525,
     "modeled_price": 6.0,
-    "observed_price": 7.629
+    "observed_price": 8.612
    },
    {
     "hour": 1,
-    "demand_mw": 1543,
+    "demand_mw": 1494,
     "modeled_price": 6.0,
-    "observed_price": 5.943
+    "observed_price": 6.269
    },
    {
     "hour": 2,
-    "demand_mw": 1497,
+    "demand_mw": 1452,
     "modeled_price": 6.0,
-    "observed_price": 4.933
+    "observed_price": 4.842
    },
    {
     "hour": 3,
-    "demand_mw": 1468,
+    "demand_mw": 1424,
     "modeled_price": 6.0,
-    "observed_price": 4.607
+    "observed_price": 4.399
    },
    {
     "hour": 4,
-    "demand_mw": 1456,
+    "demand_mw": 1412,
     "modeled_price": 6.0,
-    "observed_price": 4.801
+    "observed_price": 4.626
    },
    {
     "hour": 5,
-    "demand_mw": 1460,
+    "demand_mw": 1419,
     "modeled_price": 6.0,
     "observed_price": 5.45
    },
    {
     "hour": 6,
-    "demand_mw": 1458,
+    "demand_mw": 1433,
     "modeled_price": 6.0,
-    "observed_price": 3.542
+    "observed_price": 2.891
    },
    {
     "hour": 7,
-    "demand_mw": 1576,
+    "demand_mw": 1564,
     "modeled_price": 6.0,
-    "observed_price": 3.674
+    "observed_price": 3.313
    },
    {
     "hour": 8,
-    "demand_mw": 1787,
+    "demand_mw": 1767,
     "modeled_price": 6.0,
-    "observed_price": 6.101
+    "observed_price": 6.692
    },
    {
     "hour": 9,
-    "demand_mw": 1941,
+    "demand_mw": 1923,
     "modeled_price": 6.0,
-    "observed_price": 7.906
+    "observed_price": 9.399
    },
    {
     "hour": 10,
-    "demand_mw": 2055,
+    "demand_mw": 2033,
     "modeled_price": 6.0,
-    "observed_price": 9.261
+    "observed_price": 11.228
    },
    {
     "hour": 11,
-    "demand_mw": 2108,
+    "demand_mw": 2085,
     "modeled_price": 6.0,
-    "observed_price": 9.665
+    "observed_price": 11.902
    },
    {
     "hour": 12,
-    "demand_mw": 2095,
+    "demand_mw": 2077,
     "modeled_price": 6.0,
-    "observed_price": 8.162
+    "observed_price": 9.858
    },
    {
     "hour": 13,
-    "demand_mw": 2136,
+    "demand_mw": 2111,
     "modeled_price": 6.0,
-    "observed_price": 13.709
+    "observed_price": 17.336
    },
    {
     "hour": 14,
-    "demand_mw": 2115,
+    "demand_mw": 2089,
     "modeled_price": 6.0,
-    "observed_price": 15.187
+    "observed_price": 19.249
    },
    {
     "hour": 15,
-    "demand_mw": 2049,
+    "demand_mw": 2020,
     "modeled_price": 6.0,
-    "observed_price": 16.157
+    "observed_price": 20.302
    },
    {
     "hour": 16,
-    "demand_mw": 1940,
+    "demand_mw": 1915,
     "modeled_price": 6.0,
-    "observed_price": 17.472
+    "observed_price": 21.986
    },
    {
     "hour": 17,
-    "demand_mw": 1828,
+    "demand_mw": 1815,
     "modeled_price": 6.0,
-    "observed_price": 17.327
+    "observed_price": 21.781
    },
    {
     "hour": 18,
-    "demand_mw": 1868,
+    "demand_mw": 1860,
     "modeled_price": 6.0,
-    "observed_price": 21.834
+    "observed_price": 27.428
    },
    {
     "hour": 19,
-    "demand_mw": 1822,
+    "demand_mw": 1812,
     "modeled_price": 6.0,
-    "observed_price": 18.38
+    "observed_price": 23.234
    },
    {
     "hour": 20,
-    "demand_mw": 1812,
+    "demand_mw": 1804,
     "modeled_price": 6.0,
-    "observed_price": 17.949
+    "observed_price": 22.807
    },
    {
     "hour": 21,
-    "demand_mw": 1768,
+    "demand_mw": 1754,
     "modeled_price": 6.0,
-    "observed_price": 15.2
+    "observed_price": 18.92
    },
    {
     "hour": 22,
-    "demand_mw": 1706,
+    "demand_mw": 1669,
     "modeled_price": 6.0,
-    "observed_price": 12.908
+    "observed_price": 15.898
    },
    {
     "hour": 23,
-    "demand_mw": 1634,
+    "demand_mw": 1593,
     "modeled_price": 6.0,
-    "observed_price": 9.691
+    "observed_price": 11.486
    }
   ],
   "mindanao": [
    {
     "hour": 0,
-    "demand_mw": 2426,
+    "demand_mw": 2408,
     "modeled_price": 6.0,
-    "observed_price": 6.841
+    "observed_price": 7.482
    },
    {
     "hour": 1,
-    "demand_mw": 2352,
+    "demand_mw": 2334,
     "modeled_price": 6.0,
-    "observed_price": 5.378
+    "observed_price": 5.459
    },
    {
     "hour": 2,
-    "demand_mw": 2283,
+    "demand_mw": 2265,
     "modeled_price": 6.0,
-    "observed_price": 4.462
+    "observed_price": 4.166
    },
    {
     "hour": 3,
-    "demand_mw": 2237,
+    "demand_mw": 2218,
     "modeled_price": 6.0,
-    "observed_price": 4.266
+    "observed_price": 3.908
    },
    {
     "hour": 4,
-    "demand_mw": 2229,
+    "demand_mw": 2210,
     "modeled_price": 6.0,
-    "observed_price": 4.541
+    "observed_price": 4.251
    },
    {
     "hour": 5,
-    "demand_mw": 2254,
+    "demand_mw": 2242,
     "modeled_price": 6.0,
-    "observed_price": 5.051
+    "observed_price": 4.879
    },
    {
     "hour": 6,
-    "demand_mw": 2186,
+    "demand_mw": 2154,
     "modeled_price": 6.0,
-    "observed_price": 3.49
+    "observed_price": 2.816
    },
    {
     "hour": 7,
-    "demand_mw": 2187,
+    "demand_mw": 2147,
     "modeled_price": 6.0,
-    "observed_price": 3.675
+    "observed_price": 3.312
    },
    {
     "hour": 8,
-    "demand_mw": 2358,
+    "demand_mw": 2346,
     "modeled_price": 6.0,
-    "observed_price": 6.083
+    "observed_price": 6.665
    },
    {
     "hour": 9,
-    "demand_mw": 2479,
+    "demand_mw": 2494,
     "modeled_price": 6.0,
-    "observed_price": 8.029
+    "observed_price": 9.574
    },
    {
     "hour": 10,
-    "demand_mw": 2578,
+    "demand_mw": 2603,
     "modeled_price": 6.0,
-    "observed_price": 9.422
+    "observed_price": 11.457
    },
    {
     "hour": 11,
-    "demand_mw": 2629,
+    "demand_mw": 2653,
     "modeled_price": 6.0,
-    "observed_price": 9.938
+    "observed_price": 12.29
    },
    {
     "hour": 12,
-    "demand_mw": 2622,
+    "demand_mw": 2645,
     "modeled_price": 6.0,
-    "observed_price": 8.511
+    "observed_price": 10.354
    },
    {
     "hour": 13,
-    "demand_mw": 2745,
-    "modeled_price": 6.025,
-    "observed_price": 13.834
+    "demand_mw": 2776,
+    "modeled_price": 6.036,
+    "observed_price": 17.512
    },
    {
     "hour": 14,
-    "demand_mw": 2811,
-    "modeled_price": 6.075,
-    "observed_price": 14.976
+    "demand_mw": 2838,
+    "modeled_price": 6.107,
+    "observed_price": 18.946
    },
    {
     "hour": 15,
-    "demand_mw": 2840,
-    "modeled_price": 6.306,
-    "observed_price": 14.918
+    "demand_mw": 2847,
+    "modeled_price": 6.33,
+    "observed_price": 18.532
    },
    {
     "hour": 16,
-    "demand_mw": 2822,
-    "modeled_price": 6.45,
-    "observed_price": 14.363
+    "demand_mw": 2815,
+    "modeled_price": 6.42,
+    "observed_price": 17.545
    },
    {
     "hour": 17,
-    "demand_mw": 2779,
-    "modeled_price": 6.175,
-    "observed_price": 13.83
+    "demand_mw": 2774,
+    "modeled_price": 6.179,
+    "observed_price": 16.79
    },
    {
     "hour": 18,
-    "demand_mw": 2886,
-    "modeled_price": 8.037,
-    "observed_price": 18.737
+    "demand_mw": 2874,
+    "modeled_price": 7.839,
+    "observed_price": 23.007
    },
    {
     "hour": 19,
-    "demand_mw": 2805,
-    "modeled_price": 6.802,
-    "observed_price": 14.679
+    "demand_mw": 2795,
+    "modeled_price": 6.783,
+    "observed_price": 17.947
    },
    {
     "hour": 20,
-    "demand_mw": 2794,
-    "modeled_price": 6.281,
-    "observed_price": 15.631
+    "demand_mw": 2783,
+    "modeled_price": 6.268,
+    "observed_price": 19.498
    },
    {
     "hour": 21,
-    "demand_mw": 2736,
-    "modeled_price": 6.037,
-    "observed_price": 13.408
+    "demand_mw": 2723,
+    "modeled_price": 6.054,
+    "observed_price": 16.361
    },
    {
     "hour": 22,
-    "demand_mw": 2644,
+    "demand_mw": 2626,
     "modeled_price": 6.0,
-    "observed_price": 11.081
+    "observed_price": 13.285
    },
    {
     "hour": 23,
-    "demand_mw": 2540,
+    "demand_mw": 2519,
     "modeled_price": 6.0,
-    "observed_price": 8.333
+    "observed_price": 9.544
    }
   ]
  },

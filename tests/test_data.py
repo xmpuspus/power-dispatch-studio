@@ -213,6 +213,11 @@ check("Malampaya gas cost sourced at P4.80/kWh below coal",
 
 check("dispatch model available + labeled not-PLEXOS",
       disp.get("available") and "not PLEXOS" in disp.get("model", ""))
+# the price calibration must be market-window only (regime separation, like prices.json)
+cw = disp.get("calibration_window", {})
+check("calibration is market-window only (WESM resumed 2026-05-01)",
+      cw.get("regime") == "market-only"
+      and cw.get("from") == anchors["wesm_resumed"] and cw.get("days", 0) >= 40)
 cal = disp["calibration"]
 check("calibration covers 3 grids", set(cal) == {"luzon", "visayas", "mindanao"})
 check("model under-predicts on average (cost stack < observed LWAP)",
