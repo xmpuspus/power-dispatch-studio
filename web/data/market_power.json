@@ -1,0 +1,50 @@
+{
+ "available": true,
+ "as_of": "2024 (ERC report, 17 March 2025)",
+ "national_cap_mw_2025": 27096.04,
+ "companies": [
+  {
+   "name": "San Miguel Corporation",
+   "mw": 6079.6,
+   "share_pct": 22.44
+  },
+  {
+   "name": "Aboitiz Equity Ventures",
+   "mw": 5894.5,
+   "share_pct": 21.75
+  },
+  {
+   "name": "First Gen Corporation",
+   "mw": 3582.9,
+   "share_pct": 13.22
+  },
+  {
+   "name": "Manila Electric Co. (Meralco)",
+   "mw": 1467.3,
+   "share_pct": 5.42
+  },
+  {
+   "name": "Ayala Corporation",
+   "mw": 1431.3,
+   "share_pct": 5.28
+  }
+ ],
+ "others_share_pct": 31.89,
+ "hhi_floor": 1208.6,
+ "hhi_ceiling": 2225.6,
+ "hhi_band": "at least moderately concentrated once the unlisted firms are counted",
+ "top2_combined_pct": 44.19,
+ "largest": {
+  "name": "San Miguel Corporation",
+  "mw": 6079.6,
+  "share_pct": 22.44
+ },
+ "cap_installed_pct": 30,
+ "cap_demand_pct": 25,
+ "pivotal_supplier_note": "A generator is a pivotal supplier when the system cannot meet demand without it: its residual-supply index, (total supply minus that supplier) over demand, falls below 1. The largest generator holds 22.4% of national capacity, far more than the thin peak reserve margin, so at the peak the grid is not served without it. That is the market power the merit-order price cannot show.",
+ "rsi_note": "HHI, price-setting frequency, pivotal-supplier and the residual-supply index are the WESM's own published structural indices (PEMC and ERC market-assessment reports). This view reconstructs the concentration picture from the ERC's capacity shares; it does not recompute the interval-level RSI.",
+ "note": "These are national installed-CAPACITY shares from the ERC, not per-grid shares and not energy-weighted generation. Capacity share sets the ceiling on market power; actual price-setting depends on who is on the margin hour to hour.",
+ "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations.",
+ "src": "https://bworldonline.com/corporate/2025/03/18/659948/smc-leads-power-generation-with-22-44-market-share-erc/",
+ "src_cap": "https://www.doe.gov.ph/sites/default/files/pdf/issuances/ra-9136.pdf"
+}

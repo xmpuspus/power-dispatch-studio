@@ -51,6 +51,12 @@ AI_JARGON = [
     "crucial", "comprehensive",
 ]
 
+# Domain terms of art that contain an otherwise-banned jargon word. "Pivotal
+# supplier" is a published WESM/ERC structural index (the Pivotal Supplier Test,
+# alongside HHI and the residual-supply index), not filler; it is scrubbed before
+# the jargon scan so the bare-filler ban on "pivotal" still holds elsewhere.
+DOMAIN_TERMS = ["pivotal supplier", "pivotal-supplier", "pivotal_supplier"]
+
 OVERWROUGHT = [
     ("dramatic number-verb (skyrocket/plummet/spiral/unleash/shatter)",
      r"\b(skyrocket|plummet|spiral|unleash|shatter)(ed|ing|s)?\b"),
@@ -80,8 +86,11 @@ def scan(path, text):
         if m:
             fails.append(f"{base}: US-market framing '{m.group(0)}' "
                          "(map stands on PH terms only)")
+    scrubbed = low
+    for t in DOMAIN_TERMS:
+        scrubbed = scrubbed.replace(t, "")
     for j in AI_JARGON:
-        if j in low:
+        if j in scrubbed:
             fails.append(f"{base}: AI-jargon '{j}'")
     for label, rx in OVERWROUGHT:
         if re.search(rx, text, re.I):

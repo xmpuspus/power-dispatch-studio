@@ -333,6 +333,27 @@ export interface Bill {
   disclaimer?: string
 }
 
+export interface MarketPower {
+  available: boolean
+  as_of?: string
+  national_cap_mw_2025?: number
+  companies?: { name: string; mw: number; share_pct: number }[]
+  others_share_pct?: number
+  hhi_floor?: number
+  hhi_ceiling?: number
+  hhi_band?: string
+  top2_combined_pct?: number
+  largest?: { name: string; mw: number; share_pct: number }
+  cap_installed_pct?: number
+  cap_demand_pct?: number
+  pivotal_supplier_note?: string
+  rsi_note?: string
+  note: string
+  disclaimer?: string
+  src?: string
+  src_cap?: string
+}
+
 export interface GeneratorProps {
   name: string
   grid: string

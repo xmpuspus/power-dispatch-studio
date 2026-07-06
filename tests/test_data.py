@@ -481,5 +481,21 @@ check("the WESM cost sits inside the total generation charge",
       bill["wesm_cost_in_gen_charge_php_kwh"] < bill["generation_charge_php_kwh"]
       < bill["total_rate_php_kwh"])
 
+# --- market-power / concentration layer (item 5) --------------------------------
+mp = load("market_power.json")
+check("market_power.json is available with the ERC capacity shares",
+      mp["available"] and len(mp["companies"]) >= 5)
+check("named shares plus others sum to 100%",
+      abs(sum(c["share_pct"] for c in mp["companies"]) + mp["others_share_pct"] - 100)
+      < 0.5)
+check("HHI floor <= ceiling and the floor is the sum of squared named shares",
+      mp["hhi_floor"] <= mp["hhi_ceiling"]
+      and abs(mp["hhi_floor"]
+              - sum(c["share_pct"] ** 2 for c in mp["companies"])) < 0.5)
+check("the largest firm stays under the EPIRA market-share cap",
+      mp["largest"]["share_pct"] < mp["cap_demand_pct"])
+check("the two largest firms are close to half of national capacity",
+      40 < mp["top2_combined_pct"] < 50)
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

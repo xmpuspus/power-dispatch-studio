@@ -996,3 +996,7 @@
   accent-color: var(--primary);
   flex: none;
 }
+
+.mixbars__fill--over {
+  background: var(--destructive);
+}

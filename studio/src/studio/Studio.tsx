@@ -16,6 +16,7 @@ import {
 } from './views'
 import { ScenarioView } from './Scenario'
 import { BillView } from './Bill'
+import { MarketPowerView } from './MarketPower'
 
 type ViewId =
   | 'scenario'
@@ -26,6 +27,7 @@ type ViewId =
   | 'reserve'
   | 'reliability'
   | 'bill'
+  | 'market'
   | 'generators'
   | 'interfaces'
   | 'regions'
@@ -64,6 +66,7 @@ const TREE: {
       { id: 'reserve', label: 'Reserve market' },
       { id: 'reliability', label: 'Reliability' },
       { id: 'bill', label: 'Bill impact' },
+      { id: 'market', label: 'Market power' },
       { id: 'marginal', label: 'Marginal units' },
     ],
   },
@@ -78,6 +81,7 @@ const TITLE: Record<ViewId, string> = {
   reserve: 'Reserve market',
   reliability: 'Reliability',
   bill: 'Bill impact',
+  market: 'Market power',
   generators: 'Generators',
   interfaces: 'Interfaces',
   regions: 'Regions',
@@ -183,6 +187,7 @@ export function Studio({
             {view === 'reserve' && <ReserveView d={d} grid={grid} />}
             {view === 'reliability' && <ReliabilityView d={d} />}
             {view === 'bill' && <BillView />}
+            {view === 'market' && <MarketPowerView d={d} />}
             {view === 'generators' && <N1View d={d} grid={grid} />}
             {view === 'interfaces' && <InterfacesView d={d} />}
             {view === 'regions' && <RegionsView d={d} />}

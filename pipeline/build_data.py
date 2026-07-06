@@ -793,6 +793,11 @@ def main() -> int:
     with open(os.path.join(OUT, "bill.json"), "w") as fh:
         json.dump(build_bill(), fh, indent=1)
 
+    from market_power import build_market_power
+
+    with open(os.path.join(OUT, "market_power.json"), "w") as fh:
+        json.dump(build_market_power(), fh, indent=1)
+
     for name, obj in [("congestion.json", congestion),
                       ("reliability.json", reliability),
                       ("prices.json", prices),
