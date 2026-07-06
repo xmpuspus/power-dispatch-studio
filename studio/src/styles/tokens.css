@@ -1,0 +1,109 @@
+/* Design tokens for PLEXOS Studio.
+   Data-Dense Dashboard system: blue data + amber highlight on a cool light surface,
+   mono numerals for every figure. Dark theme is a tonal remap, not an inversion. */
+
+:root {
+  /* brand + semantic color */
+  --primary: #1e40af;
+  --primary-hover: #1b3aa0;
+  --on-primary: #ffffff;
+  --secondary: #3b82f6;
+  --accent: #b45309; /* amber, darkened to clear 4.5:1 on light surfaces */
+  --accent-soft: #fef3c7;
+  --destructive: #b91c1c;
+  --positive: #15803d;
+  --ring: #1e40af;
+
+  /* surfaces + text (light) */
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --surface-3: #eef2f7;
+  --border: #d8e0ec;
+  --border-strong: #b8c4d6;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-faint: #94a3b8;
+
+  /* data-series colors, shared with the map so figures read the same everywhere */
+  --series-modeled: #334155;
+  --series-observed: #b3261e;
+  --series-flow: #0e7490;
+  --series-storage: #7c3aed;
+  --fuel-coal: #64748b;
+  --fuel-oil: #b3261e;
+  --fuel-gas: #2563eb;
+  --fuel-hydro: #0e7490;
+  --fuel-geothermal: #7c3aed;
+  --fuel-solar: #d97706;
+
+  /* type */
+  --font-ui: 'Fira Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Fira Code', ui-monospace, 'SF Mono', Menlo, monospace;
+  --fs-11: 0.6875rem;
+  --fs-12: 0.75rem;
+  --fs-13: 0.8125rem;
+  --fs-14: 0.875rem;
+  --fs-16: 1rem;
+  --fs-18: 1.125rem;
+  --fs-22: 1.375rem;
+  --fs-28: 1.75rem;
+  --lh-tight: 1.25;
+  --lh-body: 1.55;
+
+  /* spacing (4pt), radius, elevation */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --e-1: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+  --e-2: 0 2px 6px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --e-3: 0 8px 24px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(15, 23, 42, 0.08);
+
+  --z-panel: 10;
+  --z-toolbar: 20;
+  --z-overlay: 100;
+  --z-tooltip: 1000;
+}
+
+:root[data-theme='dark'] {
+  --primary: #60a5fa;
+  --primary-hover: #7cb0fb;
+  --on-primary: #07142e;
+  --secondary: #93c5fd;
+  --accent: #fbbf24;
+  --accent-soft: #3a2f12;
+  --destructive: #f87171;
+  --positive: #4ade80;
+  --ring: #60a5fa;
+
+  --bg: #0b1220;
+  --surface: #111a2b;
+  --surface-2: #0e1626;
+  --surface-3: #16223a;
+  --border: #24314c;
+  --border-strong: #35476b;
+  --text: #e6edf7;
+  --text-muted: #9fb0c9;
+  --text-faint: #64748b;
+
+  --series-modeled: #94a3b8;
+  --series-observed: #f87171;
+  --series-flow: #22d3ee;
+  --series-storage: #c4b5fd;
+  --fuel-coal: #94a3b8;
+  --fuel-oil: #f87171;
+  --fuel-gas: #60a5fa;
+  --fuel-hydro: #22d3ee;
+  --fuel-geothermal: #c4b5fd;
+  --fuel-solar: #fbbf24;
+
+  --e-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --e-2: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --e-3: 0 10px 30px rgba(0, 0, 0, 0.55);
+}

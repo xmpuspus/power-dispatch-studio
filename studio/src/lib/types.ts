@@ -1,0 +1,248 @@
+// Types for the baked dispatch model (web/data/dispatch.json). Only the fields the
+// Studio reads are typed; the pipeline (pipeline/dispatch.py) is the source of truth.
+
+export type GridKey = 'luzon' | 'visayas' | 'mindanao'
+export const GRIDS: GridKey[] = ['luzon', 'visayas', 'mindanao']
+
+export interface Block {
+  fuel: string
+  cost: number
+  mw: number
+}
+
+export interface MeritOrder {
+  reference_hour: number
+  installed_mw: number
+  avail_mw: number
+  typical_evening_demand_mw: number
+  peak_demand_mw: number
+  blocks: Block[]
+}
+
+export interface Calibration {
+  n_intervals: number
+  observed_mean_php_kwh: number
+  modeled_mean_php_kwh: number
+  mae_php_kwh: number
+  bias_php_kwh: number
+  evening_peak_residual_php_kwh: number | null
+  correlation: number | null
+  note: string | null
+}
+
+export interface N1Row {
+  unit: string
+  grid: string
+  fuel: string
+  capacity_mw: number
+  tight_evening_demand_mw: number
+  base_price_php_kwh: number
+  tripped_price_php_kwh: number
+  delta_price_php_kwh: number
+  peak_demand_mw: number
+  shortfall_at_peak_mw: number
+}
+
+export interface CorridorStat {
+  id: string
+  name: string
+  limit_mw: number
+  limit_kind: string
+  nameplate_mw: number
+  src: string
+  saturated_pct: number | null
+  mean_congestion_rent_php_kwh: number
+  mean_abs_flow_mw: number | null
+  peak_abs_flow_mw: number | null
+}
+
+export interface SpreadPair {
+  observed_php_kwh: number | null
+  coupled_model_php_kwh: number | null
+  explained_fraction: number | null
+}
+
+export interface Coupling {
+  model: string
+  wheeling_cost_php_kwh: number
+  n_coupled_intervals: number
+  corridors: CorridorStat[]
+  per_grid: Record<
+    GridKey,
+    {
+      observed_mean_php_kwh: number | null
+      coupled_modeled_mean_php_kwh: number | null
+      mae_php_kwh: number | null
+      correlation: number | null
+    }
+  >
+  spread_decomposition: {
+    note: string
+    visayas_vs_luzon: SpreadPair
+    mindanao_vs_luzon: SpreadPair
+    uncapped_counterfactual: {
+      note: string
+      visayas_vs_luzon_php_kwh: number | null
+      mindanao_vs_luzon_php_kwh: number | null
+    }
+  }
+  outage_scenario: {
+    label: string
+    outage_mw: number
+    src: string
+    window: { from: string; to: string }
+    n_intervals: number
+    leyte_luzon_saturated_pct: number | null
+    leyte_luzon_mean_rent_php_kwh: number
+    visayas_vs_luzon_observed_php_kwh: number | null
+    visayas_vs_luzon_coupled_php_kwh: number | null
+    explained_fraction: number | null
+  }
+  dc_binding_threshold: {
+    available: boolean
+    reference_hour: number
+    typical_evening_demand_mw: Record<GridKey, number>
+    added_visayas_load_to_bind_leyte_mw: number | null
+    note: string
+  }
+}
+
+export interface UnitCommitment {
+  layer: string
+  min_load_frac: number
+  commit_offer_php_kwh: number
+  src_min_load: string
+  src_offer: string
+  note: string
+  per_grid: Record<
+    GridKey,
+    {
+      mae_before_php_kwh: number
+      mae_after_php_kwh: number
+      correlation_before: number | null
+      correlation_after: number | null
+      modeled_mean_before_php_kwh: number
+      modeled_mean_after_php_kwh: number
+    }
+  >
+}
+
+export interface McDist {
+  lolp_pct: number
+  expected_shortfall_mw: number
+  shortfall_mw_p50: number
+  shortfall_mw_p90: number
+  shortfall_mw_p99: number
+  shortfall_mw_max: number
+  eue_mwh_evening_window: number
+}
+
+export interface ReliabilityMc {
+  method: string
+  draws: number
+  seed: number
+  load_hours: string
+  forced_outage_rates: Record<string, number>
+  src_for: string
+  note: string
+  per_grid: Record<GridKey, McDist>
+  dict_2028_luzon: {
+    added_mw: number
+    owner: string
+    date: string
+    src: string
+    distribution: McDist
+  }
+}
+
+export interface Storage {
+  assets: Record<'luzon', { bess_mw: number; pumped_hydro_mw: number; total_mw: number }>
+  round_trip_eff: number
+  discharge_offer_php_kwh: number
+  src_bess: string
+  src_pumped_hydro: string
+  note: string
+  dict_wave_peak_price: {
+    reference: string
+    demand_mw: number
+    without_storage_php_kwh: number
+    with_storage_php_kwh: number
+    without_storage_marginal_fuel: string
+    with_storage_marginal_fuel: string
+    shortfall_without_mw: number
+    shortfall_with_mw: number
+  }
+  reliability_buyback: {
+    luzon_baseline: { lolp_without_pct: number; lolp_with_pct: number }
+    luzon_dict_2028: { without: McDist; with_storage: McDist }
+  }
+}
+
+export interface DurationPoint {
+  pct: number
+  price: number
+}
+
+export interface PriceDuration {
+  modeled: DurationPoint[]
+  observed: DurationPoint[]
+  observed_min_php_kwh: number
+  observed_max_php_kwh: number
+  note: string
+  src: string
+}
+
+export interface MarginalFrequency {
+  n_intervals: number
+  by_block: { block: string; share_pct: number }[]
+}
+
+export interface Adequacy {
+  installed_mw: number
+  avail_at_peak_mw: number
+  peak_demand_mw: number
+  reserve_margin_pct: number | null
+}
+
+export interface Dispatch {
+  available: boolean
+  model: string
+  days: number
+  calibration_window: { regime: string; from: string; days: number; note: string }
+  merit_order: Record<GridKey, MeritOrder>
+  coupling: Coupling
+  unit_commitment: UnitCommitment
+  price_duration: Record<GridKey, PriceDuration>
+  marginal_frequency: Record<GridKey, MarginalFrequency>
+  calibration: Record<GridKey, Calibration>
+  n1: N1Row[]
+  adequacy: Record<GridKey, Adequacy> & {
+    dict_2028: {
+      added_mw: number
+      reserve_margin_now_pct: number | null
+      reserve_margin_with_dc_pct: number | null
+      shortfall_intervals_with_dc: number
+      eue_mwh_with_dc: number
+      src: string | null
+    }
+  }
+  reliability_mc: ReliabilityMc
+  storage: Storage
+}
+
+export interface GeneratorProps {
+  name: string
+  grid: string
+  fuel: string
+  capacity_mw: number
+  city: string
+  owner: string
+  note: string
+  src: string
+  marginal_cost_php_kwh: number | null
+}
+
+export interface Meta {
+  built_utc?: string
+  [k: string]: unknown
+}
