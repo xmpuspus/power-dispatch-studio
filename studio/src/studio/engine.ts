@@ -50,6 +50,9 @@ export interface TrippableUnit {
 export interface CoupledResult {
   price: Record<GridKey, number>
   gen: Record<GridKey, number>
+  // unrounded gen, for marginal-fuel and dispatch-split reads that must match
+  // the Python reference exactly (rounding first can flip a block boundary)
+  genRaw: Record<GridKey, number>
   shortfall: Record<GridKey, number>
   flowLV: number
   flowVM: number
@@ -230,6 +233,7 @@ export function clearCoupled(
       visayas: round1(gen.visayas),
       mindanao: round1(gen.mindanao),
     },
+    genRaw: gen,
     shortfall,
     flowLV: round1(f1),
     flowVM: round1(f2),

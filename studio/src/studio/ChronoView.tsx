@@ -71,7 +71,13 @@ export function ChronologyView({
     [d, profiles, windowDates, opts]
   )
   const hours: ChronoHour[] = useMemo(() => runs.flatMap((r) => r.hours), [runs])
-  if (!hours.length) return null
+  if (!hours.length)
+    return (
+      <div className="basecase-banner">
+        That day is no longer in the archive window. Pick an observed day from the list;
+        the default is the widest-swing market day.
+      </div>
+    )
 
   const marks =
     runs.length > 1

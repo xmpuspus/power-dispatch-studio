@@ -65,6 +65,11 @@ function round1(x: number): number {
 function round3(x: number): number {
   return Math.round(x * 1000) / 1000
 }
+// storage schedule values round DOWN so a cycle can never discharge more than
+// it stored or charge past the energy cap (Math.round could round up past both)
+function floor1(x: number): number {
+  return Math.floor(x * 10) / 10
+}
 function fuelDispatch(blocks: Block[], served: number): Record<string, number> {
   const out: Record<string, number> = {}
   let remaining = served
@@ -196,10 +201,10 @@ export function runChronology(
     const socSeries = HOURS.map(() => 0)
     for (const h of HOURS) {
       if (chargeSet.has(h) && soc < energy - EPS_SOC) {
-        charge[h] = round1(Math.min(power, (energy - soc) / eff))
+        charge[h] = floor1(Math.min(power, (energy - soc) / eff))
         soc += charge[h] * eff
       } else if (disSet.has(h) && soc > EPS_SOC) {
-        discharge[h] = round1(Math.min(power, soc))
+        discharge[h] = floor1(Math.min(power, soc))
         soc -= discharge[h]
       }
       socSeries[h] = round1(soc)
@@ -229,10 +234,10 @@ export function runChronology(
     const fuelGen = {} as Record<GridKey, Record<string, number>>
     for (const g of GRID_KEYS) {
       const avail = stacks[g].reduce((s, b) => s + b.mw, 0)
-      fuelGen[g] = fuelDispatch(stacks[g], Math.min(res.gen[g], avail))
+      fuelGen[g] = fuelDispatch(stacks[g], Math.min(res.genRaw[g], avail))
     }
     const marg = {} as Record<GridKey, string | null>
-    for (const g of GRID_KEYS) marg[g] = marginal(stacks[g], res.gen[g]).fuel
+    for (const g of GRID_KEYS) marg[g] = marginal(stacks[g], res.genRaw[g]).fuel
     return {
       hour: h,
       price: res.price,

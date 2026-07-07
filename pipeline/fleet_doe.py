@@ -135,6 +135,12 @@ def parse_grid(grid: str) -> dict:
         line_tokens: dict[str, float] = {}
         for m in NUM_RE.finditer(line):
             c = col_of(m.end())
+            if c == "units":
+                # unit counts are small whole numbers; a right-aligned street
+                # number from the location column must not claim the slot
+                v = _num(m.group(0))
+                if v != int(v) or not 1 <= v <= 99:
+                    continue
             if c and c not in line_tokens:
                 line_tokens[c] = _num(m.group(0))
         if line_tokens:
