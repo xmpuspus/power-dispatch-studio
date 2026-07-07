@@ -105,3 +105,31 @@ Full swap, not a solver toggle: keeping both engines user-selectable doubles
 the parity surface forever and splits the backcast into two accuracy
 statements. Gate the whole pass on Phase A's backcast table, so the first
 deliverable is evidence about whether the solver earns its 3 MB.
+
+
+## Outcome (shipped 2026-07-07, same day)
+
+Phase A's gate table, the old coordinate-descent clear versus the LP on the
+same 56-day backcast window:
+
+| Grid | MAE old | MAE new | Bias old | Bias new | Corr old | Corr new |
+| --- | --- | --- | --- | --- | --- | --- |
+| Luzon | 4.294 | 4.317 | -1.664 | -1.649 | 0.197 | 0.157 |
+| Visayas | 8.603 | 8.645 | -6.983 | -6.935 | 0.244 | 0.182 |
+| Mindanao | 7.519 | 7.566 | -5.415 | -5.494 | 0.145 | 0.132 |
+
+Verdict: pass. Mean error unchanged (under P0.05 on every grid); the small
+correlation drop is the LP completing overnight corridor arbitrage the old
+bisection left half-done on flat plateaus, so the old clear's slightly better
+shape was solver noise. Reported in the backcast note, not tuned away.
+
+What the risk section predicted, resolved: the degeneracy plan's first line
+(deterministic epsilon tie-breaks) was enough. Both solver builds reproduce
+the golden fixtures exactly through the byte-identical LP text (sha256-pinned
+per fixture); the finite-difference dual fallback was never needed. Two
+semantic upgrades surfaced by the swap and kept, both documented: prices are
+now true locational marginals (an importing grid can price at its neighbour's
+block plus the wheel instead of its own top block), and storage cycles only
+when the spread pays (the heuristic used to cycle at a loss on flat days).
+Unserved load keeps the no-VoLL stance; the sourced P32/kWh offer cap stays
+on file as a separate product decision.
