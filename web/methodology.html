@@ -228,6 +228,78 @@ approximation of the co-optimised energy-and-reserve market, not the
 co-optimisation itself.</li>
 </ul>
 
+<h2>The planning layers (July 2026 pass)</h2>
+<p>Five layers added in the PLEXOS-carry-over pass. Each is either computed from
+the archive or a sourced list; none runs an optimizer.</p>
+<ul>
+<li><b>Load sweep</b>: the snapshot solve repeated over steps of added flat
+24/7 load on one grid (the data-center shape), on top of the ran scenario. Each
+step is the same coupled clear the Run button executes; the view marks the step
+where the importing corridor saturates, where the marginal fuel flips, and
+where unserved load begins. Reference-hour arithmetic, not a forecast.</li>
+<li><b>Window band</b>: the ran scenario replayed over every full-coverage
+market day in the archive, reported as per-hour price percentiles (10th to
+90th) and the distribution of daily means. The sample is the archive's own
+observed days; nothing synthetic is drawn.</li>
+<li><b>What set the price</b> (Chronology): each hour is classified as unserved
+load, a saturated corridor on the grid's importing side, or the marginal fuel
+block. This is a reading of the solve's own outputs, named per hour.</li>
+<li><b>LT Plan</b> (<code>projects.json</code>): the DOE's committed and
+indicative private-sector power project lists ("As of 31 December 2025",
+Internet Archive captures of
+<a href="https://prod-cms.doe.gov.ph/documents/d/guest/01-luzon-committed-8-pdf">the
+DOE's own PDFs</a>), parsed with the same reconciliation gate as the fleet:
+every fuel section must sum to its printed subtotal, and every grid to the
+DOE's LVM summary (committed 13,839.48 MW; indicative 119,226.39 MW). Rows
+carry grid, fuel, MW, and the proponent's target date, and deliberately no
+project name (names wrap unpredictably in the PDF layout; a wrong name on a
+right number is still a defect). ESS is tracked separately, as the DOE's own
+summaries do. Transmission candidates come from the
+<a href="https://www.ngcp.ph/Attachment-Uploads/TDP%202025-2050%20REPORT-2025-03-11-10-38-56.pdf">NGCP
+TDP 2025-2050</a> (plus the September 2025 revision for MVIP Stage 2): only
+figures the TDP itself states as transfer capacity carry MW (Luzon-Visayas
+HVDC bipolar +440 MW, MVIP Stage 2 +450 MW); conductor thermal ratings are not
+transfer limits and are not imputed. Apply writes ordinary scenario edits.</li>
+<li><b>PASA</b> (<code>pasa.json</code>): the operator's own outage schedules
+used in real-time dispatch (OUTRTD), one row per resource out per day. The
+files carry resource codes and no MW, so codes map to DOE-fleet plants through
+a hand-maintained alias table verified against fleet.json at bake time;
+unmatched codes are listed with no MW, making the matched MW a floor. Grid per
+code comes from the WESM numeric area prefix (01-03 Luzon, 04-08 Visayas,
+09-14 Mindanao), an inferred mapping spot-checked against named plants. The
+view re-runs the live reliability Monte Carlo with the day's matched MW off
+the stack first; the out MW stops drawing its forced-outage rate while the
+same plant's in-service units keep theirs.</li>
+<li><b>Emissions</b> (<code>emissions.json</code>): operational CO2 factors per
+technology. Coal 0.874 and gas 0.337 tCO2/MWh are the
+<a href="https://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/2_Volume2/V2_2_Ch2_Stationary_Combustion.pdf">IPCC
+2006 fuel-combustion defaults</a> converted at the
+<a href="https://emb.gov.ph/wp-content/uploads/2019/11/3.-Add-information-for-solar-PV-systems_Philippines_final.pdf">EMB's
+published Philippine average heat efficiencies</a> (39% coal, 60% CCGT); oil
+0.533 is the EMB's own diesel figure; geothermal carries the midpoint of the
+IPCC 6-79 gCO2/kWh range; hydro, solar, wind, and storage discharge are zero
+operational (their lifecycle emissions are real and out of scope); biomass is
+excluded rather than assigned a contested factor. The
+<a href="https://doe.gov.ph/site/epimb/articles/group/statistics?category=National+Grid+Emission+Factor+(NGEF)&amp;display_type=Card">DOE
+National Grid Emission Factor</a> (0.7181 Luzon-Visayas, 0.8173 Mindanao,
+2019-2021) is baked as a cross-check anchor, never an input.</li>
+<li><b>Bill mix history</b>: Meralco's published supply mix moved WESM 6%, 7%,
+10% across April, May, June 2026 (PSA 74/73/69, First Gas and IPP 20/20/21)
+while the generation charge climbed P8.3864 to P8.7942 to P9.0704/kWh; each
+month cites the Meralco advisory and an independent news report. Only the June
+per-source movement is public in clean form and only that is shown.</li>
+<li><b>Run report</b>: a saved run exports as one self-contained HTML file
+(scenario edits, daily summaries, the per-hour binding tally, CO2, and this
+page's provenance statement), so a shared result carries its own caveats.</li>
+</ul>
+<p>Not carried over, and why: monthly energy-limited hydro needs a citable
+hydro-generation figure for every replayed month, and IEMOP's June 2026
+generation mix is not yet published (the dry/wet hydrology lever, with its
+sourced multipliers, remains the honest instrument); security-constrained unit
+commitment, ramp rates, and minimum up/down times would require per-unit data
+the Philippine sources do not publish, so modeling them would be fabricated
+fidelity.</p>
+
 <h2>What this map does NOT claim</h2>
 <ul>
 <li>It does not claim data centers raised Philippine electricity prices. Current
