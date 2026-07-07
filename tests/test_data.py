@@ -202,6 +202,13 @@ import fleet_ph as fl  # noqa: E402
 for fuel, nat in fl.NATIONAL_FUEL_MW.items():
     col = sum(fl.GRID_FUEL_MW[g].get(fuel, 0) for g in fl.GRIDS)
     check(f"fleet {fuel} column reconciles to national {nat} MW", col == nat)
+# rows may sit under their published grid total (storage excluded from the
+# fuel columns) but never over it: a modeled grid cannot carry more installed
+# MW than the DOE's published total for that grid
+for g in fl.GRIDS:
+    row = sum(fl.GRID_FUEL_MW[g].values())
+    check(f"fleet {g} row {row} MW stays at or under the published "
+          f"{fl.GRID_TOTAL_MW[g]} MW grid total", row <= fl.GRID_TOTAL_MW[g])
 check("all natural gas is on Luzon (Batangas/Malampaya, sourced)",
       fl.GRID_FUEL_MW["VISAYAS"]["natural_gas"] == 0
       and fl.GRID_FUEL_MW["MINDANAO"]["natural_gas"] == 0)

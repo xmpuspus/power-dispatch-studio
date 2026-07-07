@@ -15,11 +15,20 @@ here and they are kept apart on purpose:
     - the named price-mover units come from constants_ph.GENERATORS (each sourced)
 
   MODEL ASSUMPTION (labeled, not asserted as data):
-    - the split of coal / oil / hydro / solar / wind / biomass ACROSS grids. Only
-      grid TOTALS and national FUEL totals are published; GRID_FUEL_MW reconciles
-      to both exactly (column sums == national fuel totals) while honouring the
-      sourced anchors (all gas on Luzon; geothermal split published). It is not a
-      claim about which unnamed plant sits on which grid.
+    - the split of coal / oil / solar / wind / biomass ACROSS grids. Only grid
+      TOTALS and national FUEL totals are published as aggregates; GRID_FUEL_MW
+      reconciles to both exactly (column sums == national fuel totals) while
+      honouring the sourced anchors (all gas on Luzon; geothermal split
+      published; hydro derived from the DOE plant lists, see below). It is not
+      a claim about which unnamed plant sits on which grid.
+    - EXCEPTION, hydro: the DOE existing-plants lists (fleet_doe.py) name every
+      grid-connected hydro plant per grid, so the hydro row is DERIVED from
+      that fleet, not allocated. Installed shares Luzon 66.7% / Visayas 1.4% /
+      Mindanao 31.8% (fleet total 3,840.6 MW, within 0.2% of the national
+      anchor), prorated onto the 3,836 MW anchor so the column pin still holds.
+      Recalibrated 2026-07-07 after observed WESM hydro dispatch (DIPCEF, see
+      fuelmix.py) contradicted the old allocation: Visayas hydro cleared up to
+      377 MWh/day against a modeled 5.5 MW of available capacity.
     - fuel availability derates and the solar time-of-day profile
     - the oil / peaker marginal cost (sets the scarcity price; the calibration
       residual, not this number, carries the scarcity premium honestly)
@@ -57,17 +66,24 @@ GRID_TOTAL_MW = {"LUZON": 21742, "VISAYAS": 4267, "MINDANAO": 4878}
 # --- installed capacity by grid AND fuel (MW) ---------------------------------
 # MODEL ALLOCATION. Column sums equal NATIONAL_FUEL_MW exactly. Anchored on sourced
 # facts: all natural gas on Luzon (Batangas/Malampaya complex); geothermal split
-# Luzon 865 / Visayas 975 / Mindanao 112 (DOE). The remaining fuels are distributed
-# to match each grid's published total and each fuel's national total, with coal
-# concentrated where the named units (constants_ph.GENERATORS) actually sit. This is
-# a reconciled modelling assumption, not a per-grid DOE table (DOE does not publish
-# fuel-by-grid). A test asserts the column reconciliation holds.
+# Luzon 865 / Visayas 975 / Mindanao 112 (DOE); hydro DERIVED from the DOE
+# grid-connected plant lists (fleet_doe.py installed shares 66.7 / 1.4 / 31.8%,
+# prorated onto the 3,836 MW national anchor; recalibrated 2026-07-07 against
+# observed DIPCEF hydro dispatch, never against prices). The remaining fuels are
+# distributed to match each grid's published total and each fuel's national total,
+# with coal concentrated where the named units (constants_ph.GENERATORS) actually
+# sit. Rows may sit UNDER their published grid total (storage and vintage gaps
+# are excluded from the fuel columns) but never over it: a grid cannot carry
+# more installed MW than the DOE says it has. Tests assert both the column
+# reconciliation and the row ceiling. The hydro correction is absorbed in the
+# oil proxy (the only fuel with no per-grid anchor: no named Mindanao units,
+# no published split), keeping Mindanao exactly at its published total.
 GRID_FUEL_MW = {
-    "LUZON":    {"coal": 8850, "natural_gas": 3732, "oil": 2300, "hydro": 2826,
+    "LUZON":    {"coal": 8850, "natural_gas": 3732, "oil": 2461, "hydro": 2560,
                  "geothermal": 865, "solar": 1800, "wind": 350, "biomass": 350},
-    "VISAYAS":  {"coal": 1550, "natural_gas": 0, "oil": 500, "hydro": 10,
+    "VISAYAS":  {"coal": 1550, "natural_gas": 0, "oil": 500, "hydro": 55,
                  "geothermal": 975, "solar": 700, "wind": 77, "biomass": 150},
-    "MINDANAO": {"coal": 2606, "natural_gas": 0, "oil": 648, "hydro": 1000,
+    "MINDANAO": {"coal": 2606, "natural_gas": 0, "oil": 487, "hydro": 1221,
                  "geothermal": 112, "solar": 357, "wind": 0, "biomass": 95},
 }
 
