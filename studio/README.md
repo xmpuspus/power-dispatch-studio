@@ -24,7 +24,7 @@ the fidelity and none of the setup cost. The honest mapping:
 | --- | --- | --- |
 | Objects and classes | System tree: Generators, Fuels, Interfaces, Regions, Storage | Generators are the DOE List of Existing Power Plants at unit level (355 units, 2025 editions); Interfaces are the two HVDC corridors (Leyte-Luzon, MVIP) |
 | Properties grid, scenario tagging | Same interaction: edit a cell, the edit is tagged to the active scenario, revert per cell | Base values return with the x on a changed cell |
-| Execute | Run | A coordinate-descent coupled clear of the three grids; under a second in the browser, so the Run gate is authentic without the queue |
+| Execute | Run | One HiGHS linear program clearing the three grids together (the browser runs the same wasm solver build commercial tools embed); milliseconds per solve, so the Run gate is authentic without the queue |
 | ST Schedule | Chronology | Hour-by-hour replay of an observed market day (or the week ending on it) from the IEMOP archive, on your edited model |
 | LT Plan | LT Plan view | The DOE's committed and indicative project lists (reconciled to the DOE's own subtotals) as build candidates on a horizon slider; Apply writes them into the scenario as ordinary edits. No expansion optimizer runs |
 | PASA | PASA view | The operator's own outage schedules (OUTRTD), sized against the DOE fleet, with the reliability Monte Carlo re-run on the day's scheduled-out MW |
@@ -37,31 +37,36 @@ the fidelity and none of the setup cost. The honest mapping:
 | Datafiles | Baked JSON artifacts | Produced by the Python pipeline from archived IEMOP files; the frontend never computes a number the pipeline cannot reproduce |
 | Model validation | Backcast view | Every full-coverage market day replayed against observed hourly LWAP, error stated per grid, nothing tuned |
 
-What it is not: there is no MILP, no security-constrained unit commitment, no
-nodal network, and no expansion optimizer (the LT Plan view applies the DOE's
-own lists; it does not choose builds). The scope section below states exactly
-what solves.
+What it is not: an LP, not a MILP: no unit commitment, no security
+constraints, no nodal network, and no expansion optimizer (the LT Plan view
+applies the DOE's own lists; it does not choose builds). The scope section
+below states exactly what solves.
 
 ## The model, honestly scoped
 
 Three zonal regions (Luzon, Visayas, Mindanao) with per-fuel merit-order
-blocks, cleared together over the two HVDC corridors by coordinate descent
-with a small wheeling cost; a saturated corridor prices the downstream grid
-above the upstream one by the congestion rent. Coal splits into a committed
-must-run tranche (offered at the observed commitment level) and a marginal
-tranche at the administered price. Chronology replays observed days: demand is
-the archive's dispatched generation per hour, solar follows a stated 24-hour
-shape, storage cycles on a labeled charge-cheap, discharge-dear heuristic with
-daily state-of-charge reset, and an optional reserve co-clear prices each hour
-at demand plus the scheduled reserve requirement.
+blocks, cleared together over the two HVDC corridors as one HiGHS linear
+program with a small wheeling cost. Prices are the balance duals, real
+locational marginal prices: a saturated corridor prices the downstream grid
+above the upstream one by the congestion rent, and an unsaturated corridor
+holds neighbours within the wheeling cost, so an importing grid can price at
+its neighbour's marginal block instead of its own. Coal splits into a
+committed must-run tranche (offered at the observed commitment level) and a
+marginal tranche at the administered price. Chronology solves each observed
+day as a single 24-hour LP: demand is the archive's dispatched generation per
+hour, solar follows a stated 24-hour shape, storage is optimised across the
+hours (it cycles only when the price spread beats the round-trip loss, and
+idles on a flat day) with daily state-of-charge reset, and the reserve toggle
+withholds the scheduled requirement from the dispatchable stack instead of
+inflating demand.
 
 | Included | Excluded (by design) |
 | --- | --- |
 | Coupled zonal dispatch with congestion rent | Nodal LMPs (the public PH LMP congestion component is structurally zero) |
 | Per-unit fleet from the DOE list, unit-level N-1 | Security-constrained unit commitment, ramp rates, min up/down times |
 | Chronological replay of observed days | Load or price forecasting |
-| Storage cycling (heuristic) | Inter-temporal optimisation, inter-day storage carryover |
-| Reserve co-clear approximation | Full energy-reserve co-optimisation |
+| Storage optimised over the day's hours (HiGHS LP) | Inter-day storage carryover |
+| Reserve as a withheld-capacity constraint | Reserve PRICES (the co-optimised reserve products stay a market layer this model does not clear) |
 | Monte Carlo adequacy on forced-outage rates, with the day's scheduled outages removable (PASA lite) | Maintenance-schedule optimisation |
 | DOE build pipeline as sourced candidates on a horizon (LT Plan lite) | Expansion optimisation, build-cost economics |
 | Load sweep, window band, per-hour binding classification, operational CO2 | Monthly energy-limited hydro (IEMOP's per-month generation mix is not yet citable for every replayed month; the sourced dry/wet hydrology multiplier stands in) |
@@ -79,9 +84,15 @@ against the observed hourly LWAP. At the July 2026 bake (window 2026-05-01 to
 
 | Grid | Observed mean | Modeled mean | MAE | Bias | Correlation |
 | --- | --- | --- | --- | --- | --- |
-| Luzon | P7.63/kWh | P5.97/kWh | P4.29 | -P1.66 | 0.20 |
-| Visayas | P12.91/kWh | P5.93/kWh | P8.60 | -P6.98 | 0.24 |
-| Mindanao | P11.48/kWh | P6.07/kWh | P7.52 | -P5.42 | 0.15 |
+| Luzon | P7.63/kWh | P5.98/kWh | P4.32 | -P1.65 | 0.16 |
+| Visayas | P12.91/kWh | P5.98/kWh | P8.65 | -P6.94 | 0.18 |
+| Mindanao | P11.48/kWh | P5.99/kWh | P7.57 | -P5.49 | 0.13 |
+
+Against the previous coordinate-descent clear, the LP completes the overnight
+corridor arbitrage the old solver left half-done: mean error is unchanged
+(MAE moves under P0.05 on every grid) and the already-low shape correlation
+drops a few hundredths. Reported, not tuned; the old clear's slightly better
+correlation was solver noise, not signal.
 
 Read that table before trusting any scenario: the model explains the cost
 floor and the congestion geometry, and it under-prices scarcity everywhere,
@@ -89,11 +100,16 @@ most of all in the Visayas. The high-hour hit rate reports n/a when the flat
 cost model cannot rank hours, instead of a fake 100%. The live view recomputes
 these numbers from the current archive window.
 
-Engine correctness is pinned by a golden parity harness: the Python pipeline
-is the source of truth, and it bakes input/output fixtures (five snapshot
-cases, six chronological day-runs) that the browser engines must reproduce to
-P0.02/kWh and 1 MW, including exact marginal-block labels. Any change to one
-engine that does not land in the other fails the suite.
+Engine correctness is pinned by a two-layer parity harness. Both engines
+build the SAME linear program as the same text, byte for byte (every
+coefficient serialized from integer micro-units), and the fixtures pin its
+sha256: a model-construction drift on either side fails the hash before any
+solver runs. On top of that, the Python solve (highspy) bakes input/output
+fixtures (five snapshot cases, six chronological day-runs) that the browser
+solve (the HiGHS wasm build) must reproduce to P0.02/kWh and 1 MW, including
+exact price-setter labels. Any change to one engine that does not land in the
+other fails the suite, and the retired coordinate-descent clear stays in the
+pipeline test suite as a cost cross-oracle.
 
 ## Three workflows to try
 
@@ -170,9 +186,12 @@ src/
   map/       MapView.tsx (MapLibre network view)
   studio/    Studio.tsx (shell: explorer, ribbon, Run gate, share-link hydration)
              model.ts (object model + scenario overrides + solveModel)
-             engine.ts (coupled snapshot clear), engine.test.ts + model.test.ts
-             chrono.ts (hour-by-hour replay engine), chrono.test.ts (parity vs
-             pipeline/chrono.py golden fixtures)
+             lpText.ts (canonical LP text, byte-mirror of pipeline/lp_model.py)
+             solver.ts (the HiGHS wasm build, loaded once)
+             engine.ts (snapshot clear on the single-hour LP), engine.test.ts +
+             model.test.ts
+             chrono.ts (day replay as one 24-hour LP), chrono.test.ts (parity
+             vs pipeline/lp_dispatch.py goldens + LP text hashes)
              ChronoView.tsx (Chronology), BackcastView.tsx (model vs the tape)
              insights.ts (binding classification, percentile bands, horizon
              math, CO2), insights.test.ts
@@ -186,9 +205,12 @@ src/
   styles/    tokens.css (design tokens, light + dark), base.css, app.css
 ```
 
-The Python counterparts live in `../pipeline/`: `chrono.py` (reference
-chronological engine + backcast), `profiles.py` (observed-day bake),
-`fleet_doe.py` (DOE list parser with the reconciliation gate).
+The Python counterparts live in `../pipeline/`: `lp_model.py` (the canonical
+LP text) and `lp_dispatch.py` (the highspy reference solve + backcast bake),
+`chrono.py` (assembly helpers + the retired clear kept as a cross-oracle),
+`profiles.py` (observed-day bake), `fleet_doe.py` (DOE list parser with the
+reconciliation gate). The pipeline needs `highspy` (pip); the studio's wasm
+solver installs with npm.
 
 ## Record the demo
 
@@ -226,10 +248,13 @@ done
 - Zonal, not nodal; three regions, two corridors. Intra-region congestion does
   not exist in this model.
 - The snapshot solve prices one reference hour; Chronology prices 24 (or 168),
-  with no inter-temporal coupling beyond the storage state of charge.
+  with the storage state of charge as the only inter-temporal coupling.
 - Editing a unit shifts its fuel's available capacity by the delta: a labeled
-  approximation, not unit commitment.
-- Storage dispatch is a stated heuristic, not an optimisation, and resets daily.
+  approximation, not unit commitment (the LP dispatches blocks, not units).
+- Storage optimisation resets daily: no inter-day carryover, and cycling that
+  does not pay within the day does not happen, honestly reported as idle.
+- Unserved load prices at the dearest block (the documented no-VoLL stance),
+  so the model still does not price the scarcity tail.
 - Observed-day replay is not a forecast. Forward cases (the LNG switch, dry
   hydrology, added load) are what-ifs on observed days.
 - The backcast table above is the accuracy statement. If your use case needs

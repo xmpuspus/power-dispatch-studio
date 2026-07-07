@@ -190,9 +190,19 @@ multiplying by 5/60.</li>
 series, not a settlement quantity).</li>
 </ul>
 
-<h2>The chronological engine and the studio (branch build)</h2>
-<p>The studio's Chronology and Backcast views replay observed days hour by hour.
-The inputs and the checks:</p>
+<h2>The chronological engine and the studio</h2>
+<p>The studio's engines solve the dispatch as linear programs through HiGHS (the
+July 2026 solver pass): the snapshot views as a single-hour LP, Chronology and
+the Backcast as one LP over the 24 coupled hours. Prices are the balance-row
+duals, real locational marginal prices: an importing grid can price at its
+neighbour's marginal block plus the small wheeling cost, an exporter at the
+importer's minus it, and the price-setter label says so (import, export,
+storage, or the named fuel). Unserved load prices one tenth-centavo above the
+dearest block, the model's documented no-VoLL stance, so shedding never beats
+available capacity and short hours still display at the top block. Tiny
+deterministic epsilons (at most fractions of a centavo, largest on the last
+enumerated block) make the optimum unique on the model's flat cost plateaus so
+both solver builds land on the same answer. The inputs and the checks:</p>
 <ul>
 <li><b>Observed day profiles</b> (<code>profiles.json</code>): per-grid hourly
 demand is the hourly mean of dispatched generation from the RTD regional
@@ -202,14 +212,19 @@ full 24-hour demand coverage on all three grids are dropped, not filled.</li>
 <li><b>Solar shape</b>: the 24-hour availability profile is the model's labeled
 clear-sky-ish assumption (fleet_ph.SOLAR_PROFILE), not measured irradiance.
 Other fuels hold their derated availability across the day.</li>
-<li><b>Storage</b>: the chronological run cycles the sourced storage fleet
-(DOE 634 MW BESS; Kalayaan 685 MW pumped storage) with a labeled
-charge-cheap / discharge-dear heuristic ranked by (price, demand, hour);
-energy durations are stated assumptions because the sources publish MW, not
-MWh. The snapshot views keep storage out of the energy stack, as before.</li>
-<li><b>Parity</b>: the browser engine must reproduce golden day-run fixtures
-computed by the Python reference (pipeline/chrono.py); the studio test suite
-asserts it, the same harness as the snapshot engine.</li>
+<li><b>Storage</b>: the day LP optimises the sourced storage fleet (DOE 634 MW
+BESS; Kalayaan 685 MW pumped storage) across the hours: it cycles only when
+the price spread beats the round-trip loss and idles on a flat day, which the
+retired heuristic never admitted. Energy durations are stated assumptions
+because the sources publish MW, not MWh. The snapshot views keep storage out
+of the energy stack, as before.</li>
+<li><b>Parity</b>: both engines build the SAME linear program as the same
+text, byte for byte (coefficients serialized from integer micro-units), and
+the golden fixtures pin the text's sha256 plus the solved outputs to
+P0.02/kWh and 1 MW: the Python reference is highspy, the browser runs the
+HiGHS wasm build, and a drift in either the model construction or the solve
+fails the suite. The retired coordinate-descent clear stays in the pipeline
+tests as a cost cross-oracle (the LP may never cost more).</li>
 <li><b>Backcast</b>: every full-coverage market day is replayed with the base
 model against the observed hourly LWAP and the error is stated per grid (MAE,
 bias, correlation). The high-hour hit rate reports n/a when the flat cost
@@ -222,10 +237,12 @@ March 2025), parsed per unit from the DOE's own PDFs (Internet Archive
 captures, since doe.gov.ph refuses non-PH requests). Every fuel section must
 reconcile to the PDF's own subtotal before the artifact is written. Dependable
 capacity is the DOE figure, not a model derate.</li>
-<li><b>Reserve co-clear</b>: an optional toggle prices each hour at demand plus
-the mean scheduled reserve requirement per grid (RTD reserve rows), a labeled
-approximation of the co-optimised energy-and-reserve market, not the
-co-optimisation itself.</li>
+<li><b>Reserve</b>: an optional toggle withholds the mean scheduled requirement
+per grid (RTD reserve rows) from the reserve-capable stack (coal, gas, oil,
+geothermal, hydro, biomass, storage discharge), so tight hours price the
+withheld capacity. Closer to the co-optimised market than the old
+demand-inflation approximation, but still not a reserve PRICE: the reserve
+products stay a market layer this model does not clear.</li>
 </ul>
 
 <h2>The planning layers (July 2026 pass)</h2>

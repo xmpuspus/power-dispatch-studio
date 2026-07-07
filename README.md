@@ -236,10 +236,12 @@ layers: the DOE's committed and indicative build pipeline on a horizon slider (L
 Plan), the operator's own scheduled outages re-priced as adequacy (PASA), a load
 sweep that walks the announced wave in MW steps, a window band that replays a
 scenario across every archived market day, per-hour binding-constraint naming,
-operational CO2 accounting, and a self-contained HTML run report. Every layer is
-computed from the archive or a sourced list; nothing runs an optimizer. The honest
-mapping to PLEXOS concepts, the model's scope, and its accuracy statement live in
-[studio/README.md](studio/README.md).
+operational CO2 accounting, and a self-contained HTML run report. Every planning layer is
+computed from the archive or a sourced list, with no optimizer choosing builds; the
+dispatch itself solves as a HiGHS linear program in the browser (the July 2026
+solver pass), with storage optimised across the day's hours and prices taken from
+the duals. The honest mapping to PLEXOS concepts, the model's scope, and its
+accuracy statement live in [studio/README.md](studio/README.md).
 
 ## What this is
 
