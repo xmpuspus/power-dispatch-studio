@@ -12,7 +12,7 @@ async def shot(page, name, theme, vw, vh):
     await page.goto(BASE, wait_until="networkidle")
     # force theme
     await page.evaluate(f"document.documentElement.dataset.theme = '{theme}'")
-    await page.get_by_role("button", name="Open PLEXOS Studio").click()
+    await page.get_by_role("button", name="Open Power Dispatch Studio").click()
     await page.wait_for_selector('[data-testid="scenario"]', timeout=8000)
     await page.wait_for_timeout(700)
     p = OUT / f"{name}.png"

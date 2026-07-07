@@ -36,7 +36,7 @@ export default function App() {
         <div className="app__baractions">
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
           <button className="btn btn--primary" onClick={() => setStudio(true)}>
-            Open PLEXOS Studio
+            Open Power Dispatch Studio
           </button>
         </div>
       </header>

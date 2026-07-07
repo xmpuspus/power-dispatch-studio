@@ -227,7 +227,7 @@ export function Studio({
   const copySummary = () => {
     const g = (k: GridKey) =>
       `${k[0].toUpperCase() + k.slice(1)} ${php(solved.coupled.price[k])}/kWh, margin ${pct(solved.reserveMarginPct[k] / 100, 1)}, LOLP ${pct(solved.reliability[k].lolp_pct / 100, 2)}`
-    const text = `gridbill-ph studio, scenario "${active.name}"\n${GRIDS.map(g).join('\n')}`
+    const text = `Power Dispatch Studio, scenario "${active.name}"\n${GRIDS.map(g).join('\n')}`
     void navigator.clipboard?.writeText(text)
   }
 
@@ -238,9 +238,9 @@ export function Studio({
           <BrandMark />
           <div>
             <div className="studio__name">
-              PLEXOS<span className="studio__from">from Temu</span>
+              Power Dispatch<span className="studio__from">Studio</span>
             </div>
-            <div className="studio__tag">open dispatch studio</div>
+            <div className="studio__tag">Philippine WESM</div>
           </div>
         </div>
         <span className="studio__homage" title="An independent, open homage.">
