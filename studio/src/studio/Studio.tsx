@@ -10,6 +10,11 @@ import { MarketPowerView } from './MarketPower'
 import { ChronologyView } from './ChronoView'
 import { BackcastView } from './BackcastView'
 import { RunsView } from './RunsView'
+import { SweepView } from './SweepView'
+import { DistributionView } from './DistributionView'
+import { LTPlanView } from './LTPlanView'
+import { PasaView } from './PasaView'
+import { EmissionsView } from './EmissionsView'
 import { decodeShare, loadRuns, type SavedRun } from './runs'
 import {
   CLASSES,
@@ -36,13 +41,16 @@ import {
 type SolId =
   | 'merit'
   | 'chrono'
+  | 'sweep'
+  | 'distribution'
   | 'flows'
   | 'n1'
   | 'regions'
   | 'duration'
   | 'marginal'
   | 'reliability'
-type AnalysisId = 'reserve' | 'bill' | 'market' | 'backcast'
+type AnalysisId = 'reserve' | 'bill' | 'market' | 'backcast' | 'emissions'
+type PhaseId = 'lt' | 'pasa'
 type Nav =
   | { kind: 'class'; id: ClassId }
   | { kind: 'quick' }
@@ -50,10 +58,13 @@ type Nav =
   | { kind: 'runs' }
   | { kind: 'sol'; id: SolId }
   | { kind: 'analysis'; id: AnalysisId }
+  | { kind: 'phase'; id: PhaseId }
 
 const SOL_LABEL: Record<SolId, string> = {
   merit: 'Merit order',
   chrono: 'Chronology',
+  sweep: 'Load sweep',
+  distribution: 'Window band',
   flows: 'Coupled flows',
   n1: 'N-1 contingency',
   regions: 'Regions',
@@ -66,19 +77,33 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   reserve: 'Reserve market',
   bill: 'Bill impact',
   market: 'Market power',
+  emissions: 'Emissions',
+}
+const PHASE_LABEL: Record<PhaseId, string> = {
+  lt: 'LT Plan',
+  pasa: 'PASA',
 }
 // views that recompute from the current model (the rest read the calibrated base case)
 const LIVE_SOL = new Set<SolId>([
   'merit',
   'chrono',
+  'sweep',
+  'distribution',
   'flows',
   'n1',
   'regions',
   'reliability',
 ])
 // navs that pick a grid
-const GRID_SOL = new Set<SolId>(['merit', 'chrono', 'n1', 'duration', 'marginal'])
-const PHASES = ['LT Plan', 'PASA', 'MT Schedule', 'ST Schedule']
+const GRID_SOL = new Set<SolId>([
+  'merit',
+  'chrono',
+  'sweep',
+  'distribution',
+  'n1',
+  'duration',
+  'marginal',
+])
 
 export function Studio({
   d,
@@ -524,16 +549,26 @@ function Explorer({
       ) : (
         <>
           <TreeGroup label="Phases">
-            {PHASES.map((p) => (
-              <div
-                key={p}
-                className={`tree__phase ${p === 'ST Schedule' ? 'is-active' : 'is-off'}`}
-              >
-                <NodeIcon group="Solution" />
-                {p}
-                {p === 'ST Schedule' && <span className="tree__live">active</span>}
-              </div>
+            {(Object.keys(PHASE_LABEL) as PhaseId[]).map((id) => (
+              <TreeItem
+                key={id}
+                label={PHASE_LABEL[id]}
+                icon="sol"
+                active={isActive({ kind: 'phase', id })}
+                onClick={() => setNav({ kind: 'phase', id })}
+              />
             ))}
+            <div className="tree__phase is-off">
+              <NodeIcon group="Solution" />
+              MT Schedule
+            </div>
+            <TreeItem
+              label="ST Schedule"
+              icon="sol"
+              live
+              active={isActive({ kind: 'sol', id: 'chrono' })}
+              onClick={() => setNav({ kind: 'sol', id: 'chrono' })}
+            />
           </TreeGroup>
           <TreeGroup label="Solution">
             {(Object.keys(SOL_LABEL) as SolId[]).map((id) => (
@@ -640,11 +675,22 @@ function DataPane({
     )
   }
   if (nav.kind === 'quick') return <ScenarioView d={d} grid={grid} />
+  if (nav.kind === 'phase') {
+    if (nav.id === 'lt') return <LTPlanView objects={objects} onEdit={onEdit} />
+    return <PasaView d={d} objects={objects} overrides={ranOv} />
+  }
   if (nav.kind === 'analysis') {
     if (nav.id === 'backcast') {
       if (!profiles)
         return <div className="basecase-banner">Loading the observed day profiles.</div>
       return <BackcastView d={d} profiles={profiles} grid={grid} />
+    }
+    if (nav.id === 'emissions') {
+      if (!profiles)
+        return <div className="basecase-banner">Loading the observed day profiles.</div>
+      return (
+        <EmissionsView d={d} profiles={profiles} objects={objects} overrides={ranOv} />
+      )
     }
     if (nav.id === 'reserve') return <ReserveView d={d} grid={grid} />
     if (nav.id === 'bill') return <BillView />
@@ -669,6 +715,21 @@ function DataPane({
         onDate={onChronoDate}
         onSpan={onChronoSpan}
         onSaved={onRunsChange}
+      />
+    )
+  }
+  if (sol === 'sweep')
+    return <SweepView d={d} objects={objects} overrides={ranOv} grid={grid} />
+  if (sol === 'distribution') {
+    if (!profiles)
+      return <div className="basecase-banner">Loading the observed day profiles.</div>
+    return (
+      <DistributionView
+        d={d}
+        profiles={profiles}
+        objects={objects}
+        overrides={ranOv}
+        grid={grid}
       />
     )
   }
@@ -727,6 +788,9 @@ function Crumbs({
   } else if (nav.kind === 'sol') {
     root = 'Solution'
     leaf = SOL_LABEL[nav.id]
+  } else if (nav.kind === 'phase') {
+    root = 'Simulation'
+    leaf = PHASE_LABEL[nav.id]
   } else {
     root = 'Analysis'
     leaf = ANALYSIS_LABEL[nav.id]
