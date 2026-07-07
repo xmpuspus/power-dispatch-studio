@@ -90,9 +90,11 @@ describe('window distribution over real replayed days', () => {
     .filter((x) => x.market)
     .slice(0, 5)
     .map((x) => x.date)
-  const runs = dates.map((dt) => runChronology(d, profiles, dt, {}))
+  // lazy: the wasm solver loads in beforeAll, after describe collection
+  let cache: ReturnType<typeof runChronology>[] | null = null
+  const getRuns = () => (cache ??= dates.map((dt) => runChronology(d, profiles, dt, {})))
   it('band is ordered p10 <= p50 <= p90 for every hour', () => {
-    const band = hourlyBand(runs, 'luzon')
+    const band = hourlyBand(getRuns(), 'luzon')
     expect(band).toHaveLength(24)
     for (const b of band) {
       expect(b.p10).toBeLessThanOrEqual(b.p50 + 1e-9)
@@ -100,14 +102,14 @@ describe('window distribution over real replayed days', () => {
     }
   })
   it('window stats bracket the daily means and name the dearest day', () => {
-    const s = windowStats(runs, 'luzon')
+    const s = windowStats(getRuns(), 'luzon')
     expect(s.days).toBe(dates.length)
     expect(s.p10).toBeLessThanOrEqual(s.p50)
     expect(s.p50).toBeLessThanOrEqual(s.p90)
     expect(dates).toContain(s.maxDate)
   })
   it('pooled duration is monotone dear to cheap over all hours', () => {
-    const dur = pooledDuration(runs, 'luzon')
+    const dur = pooledDuration(getRuns(), 'luzon')
     expect(dur).toHaveLength(24 * dates.length)
     for (let i = 1; i < dur.length; i++)
       expect(dur[i].price).toBeLessThanOrEqual(dur[i - 1].price + 1e-9)

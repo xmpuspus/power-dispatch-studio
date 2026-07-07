@@ -13,3 +13,11 @@ await mkdir(dest, { recursive: true })
 const files = (await readdir(src)).filter((f) => f.endsWith('.json') || f.endsWith('.geojson'))
 await Promise.all(files.map((f) => copyFile(join(src, f), join(dest, f))))
 console.log(`copied ${files.length} baked artifacts -> public/data`)
+
+// the HiGHS wasm binary ships as a static asset; solver.ts locateFile()
+// resolves it from the app base at runtime
+await copyFile(
+  join(here, '..', 'node_modules', 'highs', 'build', 'highs.wasm'),
+  join(here, '..', 'public', 'highs.wasm')
+)
+console.log('copied highs.wasm -> public/')

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
@@ -7,6 +8,7 @@ import {
   buildStack,
   clearCoupled,
   clearGrid,
+  snapshotLpText,
   solveScenario,
   type Levers,
   type TrippableUnit,
@@ -64,6 +66,21 @@ describe('golden parity vs the Python coupled_dispatch engine', () => {
       expect(Math.abs(res.mvip.rent - c.expect.mvip_rent_php_kwh)).toBeLessThanOrEqual(
         tolP
       )
+    })
+
+    it(`builds the byte-identical LP the Python engine hashed: ${c.label}`, () => {
+      if (!c.lp_sha256) return
+      const stacks = {} as Record<GridKey, ReturnType<typeof buildStack>>
+      for (const gk of GRID_KEYS) {
+        stacks[gk] = buildStack(
+          d.merit_order[gk].fuel_avail_mw,
+          c.input.removed[gk] ?? {},
+          [],
+          stackParams()
+        )
+      }
+      const text = snapshotLpText(c.input.demand, stacks, c.input.caps, wheel)
+      expect(createHash('sha256').update(text).digest('hex')).toBe(c.lp_sha256)
     })
   }
 })

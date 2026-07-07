@@ -1,13 +1,14 @@
-// Client scenario engine: a typed transcription of the pipeline's economic dispatch
-// (pipeline/fleet_ph.stack + pipeline/coupled_dispatch.clear_coupled). NOT PLEXOS.
-//
-// It rebuilds each grid's merit-order stack from the baked per-fuel availability
-// (merit_order[g].fuel_avail_mw), applies the scenario levers, and re-clears the
-// three coupled grids the same way the Python engine does. The pipeline stays the
-// source of truth: dispatch.scenario_golden carries input/output pairs from the real
-// Python solve, and engine.test.ts asserts this reproduces them (parity harness).
+// Client scenario engine. Stacks are rebuilt from the baked per-fuel
+// availability (merit_order[g].fuel_avail_mw) exactly as before; the coupled
+// clear is a single-hour HiGHS LP (the same canonical model as the
+// chronological engine, one hour deep), so snapshot prices are locational
+// marginal prices from the balance duals. The pipeline stays the source of
+// truth: dispatch.scenario_golden carries input/output pairs plus the LP text
+// hash from the Python solve, and engine.test.ts asserts this reproduces both.
 
 import type { Block, Dispatch, GridKey } from '../lib/types'
+import { buildDayLp } from './lpText'
+import { solveLp } from './solver'
 
 export const GRID_KEYS: GridKey[] = ['luzon', 'visayas', 'mindanao']
 
@@ -53,6 +54,9 @@ export interface CoupledResult {
   // unrounded gen, for marginal-fuel and dispatch-split reads that must match
   // the Python reference exactly (rounding first can flip a block boundary)
   genRaw: Record<GridKey, number>
+  // what sets each grid's price: the own-stack fuel when it explains the
+  // dual, else import/export (the price arrived over a corridor)
+  marginalLabel: Record<GridKey, string | null>
   shortfall: Record<GridKey, number>
   flowLV: number
   flowVM: number
@@ -129,43 +133,49 @@ export function clearGrid(
   }
 }
 
-// ---- coupled radial solve (mirror of coupled_dispatch.clear_coupled) --------
+// ---- coupled radial solve: a single-hour HiGHS LP ---------------------------
 
 const OIL_FALLBACK = 12.0
+const LABEL_EPS = 0.025
+const FLOW_SAT_EPS = 0.5
 
-function rootDecr(
-  phi: (x: number) => number,
-  lo: number,
-  hi: number,
-  target: number
-): number {
-  for (let i = 0; i < 40 && hi - lo > 0.25; i++) {
-    const m = (lo + hi) / 2
-    if (phi(m) > target) lo = m
-    else hi = m
-  }
-  return (lo + hi) / 2
+/** Name what sets a snapshot price (no storage at the reference hour). */
+function snapshotLabel(price: number, ownCost: number, ownFuel: string | null) {
+  if (Math.abs(ownCost - price) <= LABEL_EPS) return ownFuel
+  return price > ownCost ? 'export' : 'import'
 }
 
-function optFlow(
-  phi: (x: number) => number,
-  lo: number,
-  hi: number,
+/** The canonical single-hour LP text for a snapshot clear; the parity test
+ * hashes this against dispatch.scenario_golden. */
+export function snapshotLpText(
+  demand: Record<GridKey, number>,
+  stacks: Record<GridKey, Block[]>,
+  caps: { leyte: number; mvip: number },
   wheel: number
-): number {
-  if (hi <= lo) return lo
-  const zero = Math.min(Math.max(0, lo), hi)
-  const p0 = phi(zero)
-  if (p0 > wheel) return phi(hi) >= wheel ? hi : rootDecr(phi, zero, hi, wheel)
-  if (p0 < -wheel) return phi(lo) <= -wheel ? lo : rootDecr(phi, lo, zero, -wheel)
-  return zero
+): string {
+  const hstacks = {
+    luzon: [stacks.luzon],
+    visayas: [stacks.visayas],
+    mindanao: [stacks.mindanao],
+  }
+  const hdemand = {
+    luzon: [demand.luzon],
+    visayas: [demand.visayas],
+    mindanao: [demand.mindanao],
+  }
+  let dearest = 12
+  for (const g of GRID_KEYS)
+    for (const b of stacks[g]) if (b.cost > dearest) dearest = b.cost
+  return buildDayLp(hstacks, hdemand, caps, wheel, [], null, dearest + 0.001)
 }
 
 /**
- * Couple the three grids and clear them together over the two HVDC corridors.
- * demand/stacks keyed by grid; caps {leyte, mvip} in MW. Signed flows point south
- * (toward `to`); a saturated corridor prices the downstream grid above the upstream
- * one by the congestion rent. Same coordinate-descent solve as the Python engine.
+ * Couple the three grids and clear them together over the two HVDC corridors:
+ * the canonical LP, one hour deep, solved by HiGHS. Signed flows point south
+ * (toward `to`); prices are the balance-row duals, so a saturated corridor
+ * prices the downstream grid above the upstream one by the congestion rent and
+ * an UNSATURATED corridor holds neighbours within the wheeling cost. Mirrors
+ * pipeline/lp_dispatch.solve_snapshot_lp.
  */
 export function clearCoupled(
   demand: Record<GridKey, number>,
@@ -173,59 +183,27 @@ export function clearCoupled(
   caps: { leyte: number; mvip: number },
   wheel: number
 ): CoupledResult {
-  const dL = demand.luzon
-  const dV = demand.visayas
-  const dM = demand.mindanao
-  const bL = stacks.luzon
-  const bV = stacks.visayas
-  const bM = stacks.mindanao
-  const c1 = caps.leyte
-  const c2 = caps.mvip
-  const mcL = (f1: number) => marginal(bL, dL + f1).cost
-  const mcV = (f1: number, f2: number) => marginal(bV, dV + f2 - f1).cost
-  const mcM = (f2: number) => marginal(bM, dM - f2).cost
-
-  let f1 = 0
-  let f2 = 0
-  for (let i = 0; i < 60; i++) {
-    const lo = Math.max(-c1, -dL)
-    const hi = Math.min(c1, dV + f2)
-    const nf1 = optFlow((x) => mcV(x, f2) - mcL(x), lo, hi, wheel)
-    const lo2 = Math.max(-c2, nf1 - dV)
-    const hi2 = Math.min(c2, dM)
-    const nf2 = optFlow((x) => mcM(x) - mcV(nf1, x), lo2, hi2, wheel)
-    if (Math.abs(nf1 - f1) + Math.abs(nf2 - f2) < 0.25) {
-      f1 = nf1
-      f2 = nf2
-      break
-    }
-    f1 = nf1
-    f2 = nf2
-  }
+  const sol = solveLp(snapshotLpText(demand, stacks, caps, wheel))
+  const f1 = sol.col('f1p_0') - sol.col('f1n_0')
+  const f2 = sol.col('f2p_0') - sol.col('f2n_0')
 
   const gen: Record<GridKey, number> = {
-    luzon: dL + f1,
-    visayas: dV + f2 - f1,
-    mindanao: dM - f2,
+    luzon: demand.luzon + f1,
+    visayas: demand.visayas + f2 - f1,
+    mindanao: demand.mindanao - f2,
   }
-  const avail: Record<GridKey, number> = {
-    luzon: bL.reduce((s, b) => s + b.mw, 0),
-    visayas: bV.reduce((s, b) => s + b.mw, 0),
-    mindanao: bM.reduce((s, b) => s + b.mw, 0),
+  const S: Record<GridKey, string> = { luzon: 'l', visayas: 'v', mindanao: 'm' }
+  const price = {} as Record<GridKey, number>
+  const shortfall = {} as Record<GridKey, number>
+  const marginalLabel = {} as Record<GridKey, string | null>
+  for (const g of GRID_KEYS) {
+    price[g] = round3(sol.dual(`bal_${S[g]}_0`))
+    shortfall[g] = Math.max(0, round1(sol.col(`u_${S[g]}_0`)))
+    const m = marginal(stacks[g], gen[g])
+    marginalLabel[g] = snapshotLabel(price[g], m.cost, m.fuel)
   }
-  const price: Record<GridKey, number> = {
-    luzon: round3(marginal(bL, gen.luzon).cost),
-    visayas: round3(marginal(bV, gen.visayas).cost),
-    mindanao: round3(marginal(bM, gen.mindanao).cost),
-  }
-  const shortfall: Record<GridKey, number> = {
-    luzon: Math.max(0, round1(gen.luzon - avail.luzon)),
-    visayas: Math.max(0, round1(gen.visayas - avail.visayas)),
-    mindanao: Math.max(0, round1(gen.mindanao - avail.mindanao)),
-  }
-  const eps = 0.5
-  const sat1 = Math.abs(f1) >= c1 - eps
-  const sat2 = Math.abs(f2) >= c2 - eps
+  const sat1 = Math.abs(f1) >= caps.leyte - FLOW_SAT_EPS
+  const sat2 = Math.abs(f2) >= caps.mvip - FLOW_SAT_EPS
   return {
     price,
     gen: {
@@ -234,6 +212,7 @@ export function clearCoupled(
       mindanao: round1(gen.mindanao),
     },
     genRaw: gen,
+    marginalLabel,
     shortfall,
     flowLV: round1(f1),
     flowVM: round1(f2),
