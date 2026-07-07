@@ -1747,6 +1747,53 @@
    },
    "n_out": 10,
    "n_unmatched": 3
+  },
+  {
+   "date": "2026-07-06",
+   "out": [
+    "01SMC_G01",
+    "01SROQUE_U03",
+    "03SLPGC_G01",
+    "03SLPGC_G02",
+    "03SNGAB_G01",
+    "10AGUS5_U01",
+    "11FDC_U01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 821.8,
+    "visayas": 0.0,
+    "mindanao": 163.5
+   },
+   "n_out": 10,
+   "n_unmatched": 3
+  },
+  {
+   "date": "2026-07-07",
+   "out": [
+    "01SMC_G01",
+    "01SROQUE_U03",
+    "03SLPGC_G01",
+    "03SLPGC_G02",
+    "03SNGAB_G01",
+    "05EAUC_U02",
+    "05EAUC_U03",
+    "05EAUC_U04",
+    "10AGUS5_U01",
+    "11FDC_U01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 821.8,
+    "visayas": 34.2,
+    "mindanao": 163.5
+   },
+   "n_out": 13,
+   "n_unmatched": 3
   }
  ],
  "resources": [
