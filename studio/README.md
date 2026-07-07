@@ -1,6 +1,6 @@
 # Power Dispatch Studio
 
-Power Dispatch Studio is the modeling workspace of the gridbill-ph project: an
+Power Dispatch Studio is an
 open, browser-based dispatch studio for the Philippine wholesale electricity
 market (WESM). It carries the working shape of a commercial production-cost
 tool: an object model you edit in a properties grid, scenarios as tagged
@@ -193,6 +193,6 @@ gifsicle -O3 --lossy=60 /tmp/raw.gif -o docs/demo.gif
 ## License and attribution
 
 Code MIT; baked data products CC-BY-4.0. Attribution when redistributing:
-gridbill-ph (2026), IEMOP public market data archive, DOE List of Existing
+Power Dispatch Studio (2026), IEMOP public market data archive, DOE List of Existing
 Power Plants. The interface is an original work; PLEXOS is a trademark of
 Energy Exemplar, used here only to describe the homage.

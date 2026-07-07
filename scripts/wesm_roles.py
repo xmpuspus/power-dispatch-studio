@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Who runs the Philippine power market. Five bodies split the functions of the
 electricity market between them, and WESM runs an energy-only market with no
-centralized capacity auction. This figure is why gridbill-ph has no capacity-market
+centralized capacity auction. This figure is why Power Dispatch Studio has no capacity-market
 chart: there is no capacity market to chart.
 
 Static explainer, no archive data. Output docs/wesm-roles.png.

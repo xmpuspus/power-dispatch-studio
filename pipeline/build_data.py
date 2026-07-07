@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bake gridbill-ph web/data/ from the IEMOP archive + verified constants.
+"""Bake power-dispatch-studio web/data/ from the IEMOP archive + verified constants.
 
 Compute before narrate: every number the site shows is either computed here from
 archived IEMOP files (data/raw/) or a labeled constant with a primary source in

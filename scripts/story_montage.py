@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """One attachable view for LinkedIn: tile the figure panels into a single GIF with
-plain-English labels, so the whole gridbill-ph story reads in one frame.
+plain-English labels, so the whole Power Dispatch Studio story reads in one frame.
 
 Thesis: the choke points already bind daily and the market prices them; the announced
 data-center wave is the size of the margin; and a WESM swing is only a lagged slice of
@@ -21,8 +21,8 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
-SRC = "/tmp/gridbill_montage_src"
-FRAMES = "/tmp/gridbill_montage_frames"
+SRC = "/tmp/pds_montage_src"
+FRAMES = "/tmp/pds_montage_frames"
 OUT = os.path.join(DOCS, "story-montage.gif")
 
 NAVY, MUTE, CORAL = "#12335c", "#5b6b75", "#e2664b"
@@ -106,7 +106,7 @@ def main():
             canvas.paste(fit(frame, CELL_W, CELL_H), (x, y + LABEL_H))
         canvas.save(os.path.join(FRAMES, f"m{t:03d}.png"))
 
-    pal = "/tmp/gridbill_montage_pal.png"
+    pal = "/tmp/pds_montage_pal.png"
     vf = "fps=8,scale=1200:-1:flags=lanczos"
     subprocess.run(["ffmpeg", "-y", "-i", os.path.join(FRAMES, "m%03d.png"),
                     "-vf", vf + ",palettegen=stats_mode=diff", pal], check=True,

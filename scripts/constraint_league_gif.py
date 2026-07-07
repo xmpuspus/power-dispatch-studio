@@ -21,7 +21,7 @@ vz.apply()
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
-FRAMES = "/tmp/gridbill_league_frames"
+FRAMES = "/tmp/pds_league_frames"
 DATA = os.path.join(ROOT, "web", "data", "congestion.json")
 
 # The Leyte-Cebu corridor lines: highlight in coral, everything else steel.
@@ -75,7 +75,7 @@ def main():
         plt.close(fig)
 
     out = os.path.join(DOCS, "constraint-league.gif")
-    pal = "/tmp/gridbill_league_pal.png"
+    pal = "/tmp/pds_league_pal.png"
     vf = "fps=12,scale=880:-1:flags=lanczos"
     subprocess.run(["ffmpeg", "-y", "-i", os.path.join(FRAMES, "f%03d.png"),
                     "-vf", vf + ",palettegen=stats_mode=diff", pal], check=True,

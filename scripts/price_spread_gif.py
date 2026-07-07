@@ -22,7 +22,7 @@ vz.apply()
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
-FRAMES = "/tmp/gridbill_spread_frames"
+FRAMES = "/tmp/pds_spread_frames"
 DATA = os.path.join(ROOT, "web", "data", "prices.json")
 
 
@@ -80,7 +80,7 @@ def main():
         plt.close(fig)
 
     out = os.path.join(DOCS, "price-spread.gif")
-    pal = "/tmp/gridbill_spread_pal.png"
+    pal = "/tmp/pds_spread_pal.png"
     vf = "fps=10,scale=860:-1:flags=lanczos"
     subprocess.run(["ffmpeg", "-y", "-i", os.path.join(FRAMES, "f%03d.png"),
                     "-vf", vf + ",palettegen=stats_mode=diff", pal], check=True,

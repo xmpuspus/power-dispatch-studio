@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared Tufte + MBB visual style for every gridbill-ph chart.
+"""Shared Tufte + MBB visual style for every Power Dispatch Studio chart.
 
 Tufte: maximize data-ink, drop chartjunk (no top/right spines, faint y-grid only, no
 heavy borders), direct labels over legends, standalone with a sourced caption.

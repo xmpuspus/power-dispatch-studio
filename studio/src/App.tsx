@@ -27,7 +27,7 @@ export default function App() {
       <header className="app__bar">
         <div className="app__brand">
           <span className="app__logo">
-            gridbill<span className="app__logo-ph">·ph</span>
+            Power Dispatch<span className="app__logo-ph"> Studio</span>
           </span>
           <span className="app__brandsub">
             Philippine grid, priced from the operator's own files

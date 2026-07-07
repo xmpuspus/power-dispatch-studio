@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Static file server with HTTP Range support, for local dev.
 
-gridbill-ph serves plain GeoJSON/JSON, but the Range handler is kept so any large
+power-dispatch-studio serves plain GeoJSON/JSON, but the Range handler is kept so any large
 binary asset added later streams with 206 Partial Content instead of the stdlib
 SimpleHTTPRequestHandler's whole-file 200. Production hosts support ranges
 natively; this only matters for `python3 serve.py` during dev.

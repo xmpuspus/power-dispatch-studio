@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>gridbill-ph - can the Philippine grid host the data-center wave?</title>
+<title>Power Dispatch Studio - can the Philippine grid host the data-center wave?</title>
 <meta name="description" content="A Philippine grid map built on the market operator's own public files: where transmission already binds, where the announced data-center megawatts land, and what the spot market and the Meralco bill are doing. Public IEMOP, NGCP, and Meralco data." />
-<meta property="og:title" content="gridbill-ph" />
+<meta property="og:title" content="Power Dispatch Studio" />
 <meta property="og:description" content="Can the Philippine grid host the data-center wave? The choke points already bind daily; the market prices them. Built on IEMOP's own public files." />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://gridbill-ph.vercel.app/" />
-<meta property="og:image" content="https://gridbill-ph.vercel.app/og.png" />
+<meta property="og:url" content="https://power-dispatch-studio.vercel.app/" />
+<meta property="og:image" content="https://power-dispatch-studio.vercel.app/og.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://gridbill-ph.vercel.app/og.png" />
+<meta name="twitter:image" content="https://power-dispatch-studio.vercel.app/og.png" />
 <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet"
   integrity="sha384-MinO0mNliZ3vwppuPOUnGa+iq619pfMhLVUXfC4LHwSCvF9H+6P/KO4Q7qBOYV5V" crossorigin="anonymous" />
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"
@@ -146,7 +146,7 @@
 <div id="map" aria-label="Map of the Philippines with grid choke points and data-center sites"></div>
 
 <div id="head" class="panel">
-  <h1>gridbill-ph</h1>
+  <h1>Power Dispatch Studio</h1>
   <p>Can the Philippine grid host the announced data-center wave? Built on the market
   operator's own public files: where transmission already binds, where the announced
   megawatts land, and what the spot market and the bill are doing.</p>
@@ -225,7 +225,7 @@ async function loadAll(){
   const failed = FILES.filter((f, i) => rs[i].status !== "fulfilled" || rs[i].value == null);
   if (failed.length){
     window.__diag.fetchFailures = failed;
-    console.warn("gridbill-ph: data files failed to load:", failed.join(", "));
+    console.warn("power-dispatch-studio: data files failed to load:", failed.join(", "));
     const b = $("banner");
     b.textContent = "Some data files failed to load (" + failed.join(", ") +
       "); parts of the map may be empty.";

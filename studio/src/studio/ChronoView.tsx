@@ -143,7 +143,7 @@ export function ChronologyView({
   }
   const exportCsv = () => {
     downloadCsv(
-      `gridbill-${date}${span === 'week' ? '-week' : ''}.csv`,
+      `power-dispatch-${date}${span === 'week' ? '-week' : ''}.csv`,
       runCsv(hours, windowDates)
     )
   }

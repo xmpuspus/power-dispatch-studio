@@ -22,7 +22,7 @@ vz.apply()
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
-FRAMES = "/tmp/gridbill_shape_frames"
+FRAMES = "/tmp/pds_shape_frames"
 DATA = os.path.join(ROOT, "web", "data", "price_load.json")
 
 DC_MW = 300   # one large campus, e.g. the announced Narra Technology Park (3 x 100 MW)
@@ -90,7 +90,7 @@ def main():
         plt.close(fig)
 
     out = os.path.join(DOCS, "price-shape.gif")
-    pal = "/tmp/gridbill_shape_pal.png"
+    pal = "/tmp/pds_shape_pal.png"
     vf = "fps=12,scale=860:-1:flags=lanczos"
     subprocess.run(["ffmpeg", "-y", "-i", os.path.join(FRAMES, "f%03d.png"),
                     "-vf", vf + ",palettegen=stats_mode=diff", pal], check=True,

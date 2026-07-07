@@ -21,7 +21,7 @@ vz.apply()
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
-FRAMES = "/tmp/gridbill_sual_frames"
+FRAMES = "/tmp/pds_sual_frames"
 WEB = os.path.join(ROOT, "web", "data")
 
 
@@ -83,7 +83,7 @@ def main():
         plt.close(fig)
 
     out = os.path.join(DOCS, "sual-margin.gif")
-    pal = "/tmp/gridbill_sual_pal.png"
+    pal = "/tmp/pds_sual_pal.png"
     vf = "fps=12,scale=840:-1:flags=lanczos"
     subprocess.run(["ffmpeg", "-y", "-i", os.path.join(FRAMES, "f%03d.png"),
                     "-vf", vf + ",palettegen=stats_mode=diff", pal], check=True,

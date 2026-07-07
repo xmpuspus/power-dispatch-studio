@@ -20,7 +20,7 @@ export interface SavedRun {
   summaries: ChronoSummary[]
 }
 
-const KEY = 'gridbill-studio-runs-v1'
+const KEY = 'power-dispatch-studio-runs-v1'
 export const MAX_RUNS = 12
 
 export function loadRuns(): SavedRun[] {

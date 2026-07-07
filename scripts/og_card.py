@@ -37,7 +37,7 @@ def render(path, w_in, h_in, dpi):
 
     axt = fig.add_subplot(gs[0])
     axt.axis("off")
-    axt.text(0, 0.72, "gridbill-ph", fontsize=30, fontweight="bold",
+    axt.text(0, 0.72, "Power Dispatch Studio", fontsize=30, fontweight="bold",
              color=vz.NAVY, transform=axt.transAxes)
     axt.text(0, 0.30,
              "Can the Philippine grid host the announced data-center wave?",
@@ -70,7 +70,7 @@ def render(path, w_in, h_in, dpi):
 
     fig.text(0.055, 0.035,
              "Daily average of load-weighted five-minute prices per island grid. "
-             "Source: IEMOP, archived. github.com/xmpuspus/gridbill-ph",
+             "Source: IEMOP, archived. github.com/xmpuspus/power-dispatch-studio",
              fontsize=8.5, color=vz.MUTE)
     fig.savefig(path, dpi=dpi, facecolor="white")
     plt.close(fig)

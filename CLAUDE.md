@@ -1,4 +1,4 @@
-# gridbill-ph - working notes
+# power-dispatch-studio (formerly gridbill-ph) - working notes
 
 PH civic map: can the Philippine grid host the announced data-center wave, where do
 choke points force siting, and what does that do to WESM and retail prices. Sibling

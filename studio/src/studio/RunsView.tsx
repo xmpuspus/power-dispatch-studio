@@ -131,7 +131,7 @@ export function RunsView({
                       }
                       onClick={() =>
                         downloadCsv(
-                          `gridbill-run-${r.name.replace(/\W+/g, '-')}.csv`,
+                          `power-dispatch-run-${r.name.replace(/\W+/g, '-')}.csv`,
                           runCsv(
                             r.hours,
                             r.summaries.map((s) => s.date)

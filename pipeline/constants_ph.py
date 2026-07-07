@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verified constants for gridbill-ph. Every value carries its primary source in
+"""Verified constants for Power Dispatch Studio. Every value carries its primary source in
 a comment or a `src` field. Nothing here is estimated by us; contested figures
 appear as labeled ranges with both sources. Coordinates for corridors and data
 centers are SCHEMATIC / CITY-PRECISION anchors for map display, never asserted
