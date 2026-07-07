@@ -5,15 +5,17 @@ from playwright.async_api import async_playwright
 BASE = "http://localhost:5173/"
 OUT = Path("/tmp/studio-rec")
 OUT.mkdir(exist_ok=True)
-W, H = 1280, 760
+W, H = 1400, 840
 
 
-async def click_text(page, selector, text, pause=0.4):
-    el = page.locator(selector, has_text=text).first
+async def tap(page, locator, pause_before=0.35, pause_after=1.4):
+    """Hover then click a locator, with pauses so the GIF reads."""
+    el = locator.first
     await el.scroll_into_view_if_needed()
     await el.hover()
-    await asyncio.sleep(pause)
+    await asyncio.sleep(pause_before)
     await el.click()
+    await asyncio.sleep(pause_after)
 
 
 async def main():
@@ -27,29 +29,55 @@ async def main():
         )
         page = await ctx.new_page()
         await page.goto(BASE, wait_until="networkidle")
-        await asyncio.sleep(3.5)  # landing hero + map settle
+        await asyncio.sleep(3.2)  # landing hero + stat tiles settle
 
-        await click_text(page, ".btn--primary", "Open PLEXOS Studio")
-        await asyncio.sleep(4)  # coupled flows (default view)
+        # into the studio, which opens on the editable Generators property grid
+        await tap(page, page.get_by_role("button", name="Open PLEXOS Studio"),
+                  pause_after=2.6)
 
-        await click_text(page, ".tree__item", "Price duration")
-        await asyncio.sleep(3)
-        # switch the grid to Visayas on a grid-scoped view
-        await click_text(page, ".segmented__item", "Visayas")
-        await asyncio.sleep(2.5)
+        # edit a named unit in the Properties grid: cut Sual from 1294 to 600 MW
+        sual = page.locator('input[aria-label="Sual Max capacity"]')
+        await sual.scroll_into_view_if_needed()
+        await sual.hover()
+        await asyncio.sleep(0.4)
+        await sual.fill("600")
+        await asyncio.sleep(1.8)  # edited cell highlights, status goes Unsolved
 
-        await click_text(page, ".tree__item", "Reliability")
-        await asyncio.sleep(3.5)
+        # show the Memberships tab (object relations), then back to Properties
+        await tap(page, page.get_by_role("tab", name="Memberships"), pause_after=2.4)
+        await tap(page, page.get_by_role("tab", name="Properties"), pause_after=1.2)
 
-        await click_text(page, ".tree__item", "Merit order")
-        await asyncio.sleep(3)
+        # Run: the model re-solves, the status flips to Solved
+        await tap(page, page.get_by_role("button", name="Run the simulation"),
+                  pause_after=1.8)
 
-        # toggle dark theme from the studio bar
+        # browse the Solution: merit order (reserve margin has moved), coupled flows
+        await tap(page, page.get_by_role("tab", name="Simulation"), pause_after=0.8)
+        await tap(page, page.get_by_role("button", name="Merit order"), pause_after=2.8)
+        await tap(page, page.get_by_role("button", name="Coupled flows"), pause_after=2.6)
+        await tap(page, page.get_by_role("button", name="Reliability"), pause_after=3.0)
+
+        # a second scenario: add it, edit a region load, compare side by side
+        await tap(page, page.get_by_role("button", name="+ New"), pause_after=1.0)
+        await tap(page, page.get_by_role("tab", name="System"), pause_after=0.6)
+        await tap(page, page.get_by_role("button", name="Regions"), pause_after=1.0)
+        load = page.locator('input[aria-label="Luzon Load (evening)"]')
+        await load.scroll_into_view_if_needed()
+        await load.hover()
+        await asyncio.sleep(0.4)
+        await load.fill("16031")
+        await asyncio.sleep(1.4)
+        await tap(page, page.get_by_role("tab", name="Simulation"), pause_after=0.6)
+        await tap(page, page.get_by_role("button", name="Compare scenarios"),
+                  pause_after=3.2)
+
+        # an Analysis view with no base-PLEXOS equal: the market-power lens
+        await tap(page, page.get_by_role("button", name="Market power"), pause_after=3.0)
+
+        # flip to the dark theme, then close
         await page.locator(".studio__barright .btn--icon").first.click()
-        await asyncio.sleep(3.5)
-
-        await click_text(page, ".btn--ghost", "Close studio")
-        await asyncio.sleep(1.5)
+        await asyncio.sleep(3.0)
+        await tap(page, page.get_by_role("button", name="Close studio"), pause_after=1.4)
 
         await ctx.close()
         vid = await page.video.path()

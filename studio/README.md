@@ -46,11 +46,13 @@ approximation, not plant-level unit commitment).
 
 ## Walkthrough
 
-![Screen recording of the app walking from the landing page into the PLEXOS Studio and through its result views.](docs/demo.gif)
+![Screen recording of the app walking from the landing page into the PLEXOS Studio, editing a generator in the Properties grid, running the model, and browsing the solved views.](docs/demo.gif)
 
-Note: this GIF predates the interactive views (it walks the read-only result tabs). It
-is re-recorded at the publish gate, where real recordings are the rule; the prose above
-describes the current studio.
+The walkthrough goes end to end: open the studio, edit Sual down to 600 MW in the
+Generators property grid, look at the Memberships tab, Run so the status flips to Solved,
+browse the solved Merit order and Coupled flows, watch the live Monte Carlo Reliability
+move with the edit, add a second scenario and Compare it against the base, open the
+Market power lens, and flip to the dark theme before closing.
 
 The recording is a real capture of the running app, made with Playwright (see Record the
 demo). The basemap tiles stay blank in the headless recorder because it has no tile
