@@ -71,10 +71,10 @@ export function MeritStack({ blocks, demand }: { blocks: Block[]; demand: number
 /** Price-duration overlay: modeled (flat plateau) vs observed (fat tails). */
 export function DurationCurve({
   modeled,
-  observed,
+  observed = [],
 }: {
   modeled: DurationPoint[]
-  observed: DurationPoint[]
+  observed?: DurationPoint[]
 }) {
   const W = 640
   const H = 240
@@ -115,12 +115,14 @@ export function DurationCurve({
           </text>
         </g>
       ))}
-      <polyline
-        points={path(observed)}
-        fill="none"
-        stroke="var(--series-observed)"
-        strokeWidth={2}
-      />
+      {observed.length > 0 && (
+        <polyline
+          points={path(observed)}
+          fill="none"
+          stroke="var(--series-observed)"
+          strokeWidth={2}
+        />
+      )}
       <polyline
         points={path(modeled)}
         fill="none"
@@ -233,6 +235,292 @@ export function FlowDiagram({
           </text>
         </g>
       ))}
+    </svg>
+  )
+}
+
+// ---- chronological run charts -------------------------------------------------
+
+export interface LineSeries {
+  label: string
+  color: string
+  pts: (number | null)[]
+  dash?: string
+}
+
+/** Multi-series line chart over run hours, directly labeled at the line ends. */
+export function HourLines({
+  series,
+  marks = [],
+  height = 220,
+}: {
+  series: LineSeries[]
+  marks?: { x: number; label: string }[]
+  height?: number
+}) {
+  const W = 640
+  const H = height
+  const padL = 40
+  const padR = 76
+  const padT = 12
+  const padB = 24
+  const n = Math.max(...series.map((s) => s.pts.length), 2)
+  const vals = series.flatMap((s) => s.pts.filter((v): v is number => v != null))
+  if (!vals.length) return null
+  const ymin = Math.min(...vals, 0)
+  const ymax = Math.max(...vals)
+  const span = ymax - ymin || 1
+  const X = (i: number) => padL + ((W - padL - padR) * i) / (n - 1)
+  const Y = (v: number) => padT + (H - padT - padB) * (1 - (v - ymin) / span)
+  const path = (pts: (number | null)[]) =>
+    pts
+      .map((v, i) => (v == null ? null : `${X(i).toFixed(1)},${Y(v).toFixed(1)}`))
+      .filter(Boolean)
+      .join(' ')
+  const ticks = [ymax, (ymax + ymin) / 2, ymin]
+  const lastIdx = (pts: (number | null)[]) => {
+    for (let i = pts.length - 1; i >= 0; i--) if (pts[i] != null) return i
+    return 0
+  }
+  // direct end labels, nudged apart when converging lines would overprint them
+  const labels = series
+    .map((s, si) => ({
+      si,
+      x: X(lastIdx(s.pts)) + 5,
+      y: Y(s.pts[lastIdx(s.pts)] ?? ymin) + 3,
+    }))
+    .sort((a, b) => a.y - b.y)
+  for (let i = 1; i < labels.length; i++)
+    if (labels[i].y - labels[i - 1].y < 11) labels[i].y = labels[i - 1].y + 11
+  const labelAt = new Map(labels.map((l) => [l.si, l]))
+  return (
+    <svg
+      className="chart"
+      viewBox={`0 0 ${W} ${H}`}
+      role="img"
+      aria-label="Hourly series over the run window"
+    >
+      {ticks.map((v, i) => (
+        <g key={i}>
+          <line
+            x1={padL}
+            y1={Y(v)}
+            x2={W - padR}
+            y2={Y(v)}
+            stroke="var(--border)"
+            strokeWidth={0.75}
+          />
+          <text x={padL - 6} y={Y(v) + 3} textAnchor="end" className="chart__ax">
+            {v >= 100 ? Math.round(v).toLocaleString() : v.toFixed(1)}
+          </text>
+        </g>
+      ))}
+      {marks.map((m, i) => (
+        <g key={`m${i}`}>
+          <line
+            x1={X(m.x)}
+            y1={padT}
+            x2={X(m.x)}
+            y2={H - padB}
+            stroke="var(--border-strong)"
+            strokeWidth={0.75}
+            strokeDasharray="2 3"
+          />
+          <text x={X(m.x) + 3} y={H - padB + 12} className="chart__ax">
+            {m.label}
+          </text>
+        </g>
+      ))}
+      {series.map((s, si) => (
+        <g key={s.label}>
+          <polyline
+            points={path(s.pts)}
+            fill="none"
+            stroke={s.color}
+            strokeWidth={1.8}
+            strokeDasharray={s.dash}
+          />
+          <text
+            x={labelAt.get(si)?.x ?? 0}
+            y={labelAt.get(si)?.y ?? 0}
+            className="chart__lbl"
+            fill={s.color}
+          >
+            {s.label}
+          </text>
+        </g>
+      ))}
+    </svg>
+  )
+}
+
+const AREA_ORDER = [
+  'solar',
+  'wind',
+  'hydro',
+  'geothermal',
+  'natural_gas',
+  'biomass',
+  'coal',
+  'storage',
+  'oil',
+]
+
+/** Stacked dispatch-by-fuel area over run hours, demand cursor line on top. */
+export function DispatchArea({
+  fuelGen,
+  demand,
+  marks = [],
+}: {
+  fuelGen: Record<string, number>[]
+  demand: number[]
+  marks?: { x: number; label: string }[]
+}) {
+  const W = 640
+  const H = 220
+  const padL = 46
+  const padR = 12
+  const padT = 12
+  const padB = 24
+  const n = fuelGen.length
+  if (!n) return null
+  const totals = fuelGen.map((fg) => Object.values(fg).reduce((s, v) => s + v, 0))
+  const ymax = Math.max(...totals, ...demand) * 1.04 || 1
+  const X = (i: number) => padL + ((W - padL - padR) * i) / (n - 1)
+  const Y = (v: number) => padT + (H - padT - padB) * (1 - v / ymax)
+  const fuels = AREA_ORDER.filter((f) => fuelGen.some((fg) => (fg[f] ?? 0) > 0))
+  const cum = fuelGen.map(() => 0)
+  const bands = fuels.map((f) => {
+    const lower = [...cum]
+    for (let i = 0; i < n; i++) cum[i] += fuelGen[i][f] ?? 0
+    const upper = [...cum]
+    const fwd = upper.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`)
+    const back = lower.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).reverse()
+    return { fuel: f, d: `${fwd.join(' ')} ${back.join(' ')}` }
+  })
+  const yticks = [ymax / 1.04, ymax / 2]
+  return (
+    <svg
+      className="chart"
+      viewBox={`0 0 ${W} ${H}`}
+      role="img"
+      aria-label="Dispatch by fuel over the run window"
+    >
+      {bands.map((b) => (
+        <polygon key={b.fuel} points={b.d} fill={fuelColor(b.fuel)} opacity={0.88}>
+          <title>{fuelLabel(b.fuel)}</title>
+        </polygon>
+      ))}
+      <polyline
+        points={demand.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ')}
+        fill="none"
+        stroke="var(--text)"
+        strokeWidth={1.4}
+        strokeDasharray="3 2"
+      />
+      {yticks.map((v, i) => (
+        <text key={i} x={padL - 6} y={Y(v) + 3} textAnchor="end" className="chart__ax">
+          {Math.round(v / 1000).toLocaleString()}k
+        </text>
+      ))}
+      {marks.map((m, i) => (
+        <line
+          key={`m${i}`}
+          x1={X(m.x)}
+          y1={padT}
+          x2={X(m.x)}
+          y2={H - padB}
+          stroke="var(--surface)"
+          strokeWidth={1}
+        />
+      ))}
+      <text x={W - padR} y={H - 8} textAnchor="end" className="chart__ax">
+        MW dispatched, demand dashed
+      </text>
+    </svg>
+  )
+}
+
+/** Storage state of charge with the charge (down) / discharge (up) schedule. */
+export function SocChart({
+  soc,
+  charge,
+  discharge,
+  energyMwh,
+}: {
+  soc: number[]
+  charge: number[]
+  discharge: number[]
+  energyMwh: number
+}) {
+  const W = 640
+  const H = 180
+  const padL = 46
+  const padR = 12
+  const padT = 10
+  const padB = 40
+  const n = soc.length
+  const ymax = Math.max(energyMwh, ...soc, 1)
+  const X = (i: number) => padL + ((W - padL - padR) * i) / (n - 1)
+  const Y = (v: number) => padT + (H - padT - padB) * (1 - v / ymax)
+  const pmax = Math.max(...charge, ...discharge, 1)
+  const barH = 22
+  const base = H - padB + barH / 2 + 6
+  const area =
+    soc.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ') +
+    ` ${X(n - 1).toFixed(1)},${Y(0).toFixed(1)} ${X(0).toFixed(1)},${Y(0).toFixed(1)}`
+  return (
+    <svg
+      className="chart"
+      viewBox={`0 0 ${W} ${H}`}
+      role="img"
+      aria-label="Storage state of charge and cycle schedule"
+    >
+      <polygon points={area} fill="var(--series-storage)" opacity={0.25} />
+      <polyline
+        points={soc.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ')}
+        fill="none"
+        stroke="var(--series-storage)"
+        strokeWidth={2}
+      />
+      <line
+        x1={padL}
+        y1={Y(energyMwh)}
+        x2={W - padR}
+        y2={Y(energyMwh)}
+        stroke="var(--border-strong)"
+        strokeWidth={0.75}
+        strokeDasharray="2 3"
+      />
+      <text x={padL - 6} y={Y(energyMwh) + 3} textAnchor="end" className="chart__ax">
+        {Math.round(energyMwh).toLocaleString()}
+      </text>
+      <text x={padL - 6} y={Y(0) + 3} textAnchor="end" className="chart__ax">
+        0
+      </text>
+      {soc.map((_, i) => {
+        const c = charge[i]
+        const dch = discharge[i]
+        if (!c && !dch) return null
+        const h = ((c || dch) / pmax) * (barH / 2)
+        return (
+          <rect
+            key={i}
+            x={X(i) - 3}
+            y={c ? base : base - h}
+            width={6}
+            height={Math.max(1, h)}
+            fill={c ? 'var(--series-flow)' : 'var(--accent)'}
+          >
+            <title>
+              h{i}: {c ? `charge ${Math.round(c)} MW` : `discharge ${Math.round(dch)} MW`}
+            </title>
+          </rect>
+        )
+      })}
+      <text x={padL} y={H - 2} className="chart__ax">
+        state of charge MWh; charge down, discharge up
+      </text>
     </svg>
   )
 }

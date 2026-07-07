@@ -1422,3 +1422,19 @@
   font-weight: 600;
   background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
+
+/* ============ Chronology view ============ */
+.chrono__controls {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+  flex-wrap: wrap;
+}
+.chrono__ctl {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}

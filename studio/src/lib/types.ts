@@ -368,6 +368,92 @@ export interface MarketPower {
   src_cap?: string
 }
 
+export interface DayProfile {
+  date: string
+  market: boolean
+  demand: Record<GridKey, number[]>
+  lwap: Partial<Record<GridKey | 'system', (number | null)[]>>
+}
+
+export interface StorageDefault {
+  id: string
+  label: string
+  grid: GridKey
+  power_mw: number
+  energy_mwh: number
+  src_power: string
+  energy_note: string
+}
+
+export interface ChronoGoldenCase {
+  label: string
+  input: {
+    date: string
+    demand_delta?: Partial<Record<GridKey, number>>
+    solar_delta_mw?: Partial<Record<GridKey, number>>
+    fuel_avail_delta?: Partial<Record<GridKey, Record<string, number>>>
+    fuel_cost?: Record<string, number>
+    hydrology?: number
+    storage?: { grid: GridKey; power_mw: number; energy_mwh: number }[]
+  }
+  expect: {
+    price: Record<GridKey, number[]>
+    flow_lv: number[]
+    flow_vm: number[]
+    soc_mwh: number[]
+    shortfall_luzon: number[]
+    summary: {
+      mean_price: Record<GridKey, number>
+      peak_price: Record<GridKey, number>
+      unserved_mwh: Record<GridKey, number>
+      leyte_rent_m_php: number
+      mvip_rent_m_php: number
+    }
+  }
+}
+
+export interface BackcastGrid {
+  n_hours: number
+  observed_mean_php_kwh: number
+  modeled_mean_php_kwh: number
+  mae_php_kwh: number
+  bias_php_kwh: number
+  correlation: number | null
+  high_hour_hit_rate_pct: number | null
+}
+
+export interface Profiles {
+  unit: string
+  note: string
+  resumed: string
+  days: DayProfile[]
+  default_day: string | null
+  stress_day: string | null
+  solar_profile: number[]
+  solar_profile_note: string
+  storage_defaults: StorageDefault[]
+  storage_round_trip_eff: number
+  storage_note: string
+  reserve_req_mean_mw: Record<GridKey, Record<string, number>>
+  reserve_req_note: string
+  chrono_golden: {
+    available: boolean
+    date?: string
+    tolerance_php_kwh?: number
+    tolerance_mw?: number
+    note?: string
+    cases?: ChronoGoldenCase[]
+  }
+  backcast: {
+    available: boolean
+    days: number
+    window: { from: string; to: string } | null
+    per_grid: Partial<Record<GridKey, BackcastGrid>>
+    high_hour_note: string
+    note: string
+  }
+}
+
 export interface GeneratorProps {
   name: string
   grid: string

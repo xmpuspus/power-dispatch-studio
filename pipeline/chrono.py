@@ -1,0 +1,477 @@
+#!/usr/bin/env python3
+"""Chronological dispatch reference engine (the Python side of the parity pair).
+
+The studio's chronological run (studio/src/studio/chrono.ts) replays an observed
+day hour by hour: rebuild each grid's stack for the hour (solar follows the 24-hour
+shape, everything else holds its derated availability), clear the three grids
+coupled over the HVDC corridors, and cycle storage with a labeled charge-cheap /
+discharge-dear heuristic. This module is the SAME loop in Python, consuming the
+same baked inputs, and build_chrono_golden() emits input/output pairs the studio
+test must reproduce (the parity harness, exactly like dispatch.scenario_golden).
+
+Still NOT PLEXOS: block dispatch per hour, no inter-temporal optimisation. The
+storage policy is a two-pass heuristic (quartile thresholds from a first pass
+without storage), stated as such wherever it surfaces.
+
+build_backcast() replays every market day with the BASE model (no storage cycling,
+no levers) against the observed hourly LWAP and reports MAE / bias / correlation /
+high-hour hit rate. No tuning: the residual is the finding.
+"""
+from __future__ import annotations
+
+import math
+
+OIL_FALLBACK = 12.0
+GRID_KEYS = ["luzon", "visayas", "mindanao"]
+# outputs and epsilons mirror studio/src/studio/chrono.ts exactly; a change on
+# either side must land on both, or the parity test fails (that is the point)
+EPS_SOC = 1e-9
+
+
+def _round(x: float, n: int) -> float:
+    # JS Math.round semantics (half toward +infinity), not banker's rounding
+    p = 10.0 ** n
+    return math.floor(x * p + 0.5) / p
+
+
+def round1(x: float) -> float:
+    return _round(x, 1)
+
+
+def round3(x: float) -> float:
+    return _round(x, 3)
+
+
+# ---- stack + coupled clear over given stacks (mirrors engine.ts) --------------
+
+def build_stack(fuel_avail: dict, removed: dict, added: list[dict],
+                p: dict) -> list[dict]:
+    blocks: list[dict] = []
+    for fuel, avail in fuel_avail.items():
+        mw = (avail or 0.0) - (removed.get(fuel) or 0.0)
+        if mw <= 0:
+            continue
+        if fuel == "coal":
+            must_run = round1(mw * p["coal_min_frac"])
+            blocks.append({"fuel": "coal", "cost": p["coal_commit"],
+                           "mw": must_run})
+            blocks.append({"fuel": "coal", "cost": p["coal_price"],
+                           "mw": round1(mw - must_run)})
+        else:
+            blocks.append({"fuel": fuel, "cost": p["costs"].get(fuel, 0.0),
+                           "mw": round1(mw)})
+    for b in added:
+        if b["mw"] > 0:
+            blocks.append(dict(b))
+    blocks.sort(key=lambda b: b["cost"])
+    return blocks
+
+
+def marginal(blocks: list[dict], g: float) -> tuple[float, str | None]:
+    if not blocks:
+        return OIL_FALLBACK, None
+    if g <= 0:
+        return blocks[0]["cost"], blocks[0]["fuel"]
+    cum = 0.0
+    for b in blocks:
+        cum += b["mw"]
+        if cum >= g:
+            return b["cost"], b["fuel"]
+    return blocks[-1]["cost"], blocks[-1]["fuel"]
+
+
+def _root_decr(phi, lo: float, hi: float, target: float) -> float:
+    i = 0
+    while i < 40 and hi - lo > 0.25:
+        mid = (lo + hi) / 2
+        if phi(mid) > target:
+            lo = mid
+        else:
+            hi = mid
+        i += 1
+    return (lo + hi) / 2
+
+
+def _opt_flow(phi, lo: float, hi: float, wheel: float) -> float:
+    if hi <= lo:
+        return lo
+    zero = min(max(0.0, lo), hi)
+    p0 = phi(zero)
+    if p0 > wheel:
+        return hi if phi(hi) >= wheel else _root_decr(phi, zero, hi, wheel)
+    if p0 < -wheel:
+        return lo if phi(lo) <= -wheel else _root_decr(phi, lo, zero, -wheel)
+    return zero
+
+
+def clear_coupled_stacks(demand: dict, stacks: dict, caps: dict,
+                         wheel: float) -> dict:
+    dL, dV, dM = demand["luzon"], demand["visayas"], demand["mindanao"]
+    bL, bV, bM = stacks["luzon"], stacks["visayas"], stacks["mindanao"]
+    c1, c2 = caps["leyte"], caps["mvip"]
+
+    def mcL(f1):
+        return marginal(bL, dL + f1)[0]
+
+    def mcV(f1, f2):
+        return marginal(bV, dV + f2 - f1)[0]
+
+    def mcM(f2):
+        return marginal(bM, dM - f2)[0]
+
+    f1 = f2 = 0.0
+    for _ in range(60):
+        lo = max(-c1, -dL)
+        hi = min(c1, dV + f2)
+        nf1 = _opt_flow(lambda x, f2=f2: mcV(x, f2) - mcL(x), lo, hi, wheel)
+        lo2 = max(-c2, nf1 - dV)
+        hi2 = min(c2, dM)
+        nf2 = _opt_flow(lambda x, nf1=nf1: mcM(x) - mcV(nf1, x), lo2, hi2,
+                        wheel)
+        if abs(nf1 - f1) + abs(nf2 - f2) < 0.25:
+            f1, f2 = nf1, nf2
+            break
+        f1, f2 = nf1, nf2
+
+    gen = {"luzon": dL + f1, "visayas": dV + f2 - f1, "mindanao": dM - f2}
+    avail = {g: sum(b["mw"] for b in stacks[g]) for g in GRID_KEYS}
+    price = {g: round3(marginal(stacks[g], gen[g])[0]) for g in GRID_KEYS}
+    marg = {g: marginal(stacks[g], gen[g])[1] for g in GRID_KEYS}
+    shortfall = {g: max(0.0, round1(gen[g] - avail[g])) for g in GRID_KEYS}
+    eps = 0.5
+    sat1 = abs(f1) >= c1 - eps
+    sat2 = abs(f2) >= c2 - eps
+    rent1 = (round3(price["visayas"] - price["luzon"] if f1 > 0
+                    else price["luzon"] - price["visayas"]) if sat1 else 0.0)
+    rent2 = (round3(price["mindanao"] - price["visayas"] if f2 > 0
+                    else price["visayas"] - price["mindanao"]) if sat2 else 0.0)
+    return {"price": price, "marginal": marg, "shortfall": shortfall,
+            "gen": gen, "flow_lv": round1(f1), "flow_vm": round1(f2),
+            "leyte": {"sat": sat1, "rent": rent1},
+            "mvip": {"sat": sat2, "rent": rent2}}
+
+
+def _pctl_low(sorted_vals: list[float], q: float) -> float:
+    if not sorted_vals:
+        return 0.0
+    return sorted_vals[math.floor(q * (len(sorted_vals) - 1))]
+
+
+def _fuel_dispatch(blocks: list[dict], served: float) -> dict:
+    out: dict[str, float] = {}
+    remaining = served
+    for b in blocks:  # already cost-sorted
+        if remaining <= 0:
+            break
+        take = min(b["mw"], remaining)
+        out[b["fuel"]] = round1(out.get(b["fuel"], 0.0) + take)
+        remaining -= take
+    return out
+
+
+# ---- the chronological run -----------------------------------------------------
+
+def run_chronology(dispatch: dict, profiles: dict, date: str,
+                   opts: dict | None = None) -> dict:
+    """Replay one observed day, hour by hour, on the (optionally edited) model.
+
+    opts (all optional, defaults = the base model):
+      demand_delta:     {grid: MW} flat 24/7 load added per grid
+      solar_delta_mw:   {grid: MW} installed solar added (follows the 24h shape)
+      fuel_avail_delta: {grid: {fuel: MW}} availability change (a trip is negative)
+      fuel_cost:        {fuel: PhP/kWh} cost overrides (LNG switch, coal price)
+      hydrology:        multiplier on hydro availability
+      caps:             {leyte, mvip} corridor limits (MW)
+      storage:          [{grid, power_mw, energy_mwh}] cycled by the heuristic
+      reserve_deduction: True prices each hour at demand + scheduled reserve
+    """
+    opts = opts or {}
+    day = next(d for d in profiles["days"] if d["date"] == date)
+    a = dispatch["assumptions"]
+    wheel = a["wheeling_cost_php_kwh"]
+    costs = dict(a["fuel_marginal_cost_php_kwh"])
+    costs.update(opts.get("fuel_cost") or {})
+    params = {"coal_commit": a["coal_commit_php_kwh"],
+              "coal_min_frac": a["coal_min_load_frac"],
+              "coal_price": costs["coal"], "costs": costs}
+    hyd = opts.get("hydrology", 1.0)
+    solar_profile = profiles["solar_profile"]
+    caps = {"leyte": 250.0, "mvip": 450.0}
+    for c in dispatch["coupling"]["corridors"]:
+        key = "leyte" if c["id"] == "leyte_luzon_hvdc" else "mvip"
+        caps[key] = c["limit_mw"]
+    caps.update(opts.get("caps") or {})
+
+    fuel_base: dict[str, dict[str, float]] = {}
+    solar_inst: dict[str, float] = {}
+    for g in GRID_KEYS:
+        mo = dispatch["merit_order"][g]
+        fa = dict(mo["fuel_avail_mw"])
+        if hyd != 1.0 and fa.get("hydro") is not None:
+            fa["hydro"] = round1(fa["hydro"] * hyd)
+        for fuel, delta in ((opts.get("fuel_avail_delta") or {})
+                            .get(g) or {}).items():
+            fa[fuel] = max(0.0, round1((fa.get(fuel) or 0.0) + delta))
+        fuel_base[g] = fa
+        solar_inst[g] = (mo["solar_installed_mw"]
+                         + ((opts.get("solar_delta_mw") or {}).get(g) or 0.0))
+
+    reserve_add = {g: 0.0 for g in GRID_KEYS}
+    if opts.get("reserve_deduction"):
+        req = profiles.get("reserve_req_mean_mw") or {}
+        for g in GRID_KEYS:
+            reserve_add[g] = round1(sum((req.get(g) or {}).values()))
+
+    def fuel_avail_at(g: str, h: int) -> dict:
+        fa = dict(fuel_base[g])
+        solar = round1(max(0.0, solar_inst[g]) * solar_profile[h])
+        fa["solar"] = solar
+        return fa
+
+    def demand_at(h: int) -> dict:
+        return {g: (day["demand"][g][h]
+                    + ((opts.get("demand_delta") or {}).get(g) or 0.0)
+                    + reserve_add[g])
+                for g in GRID_KEYS}
+
+    hours = list(range(24))
+
+    def clear_hour(h: int, extra_demand: dict | None = None,
+                   added: dict | None = None) -> dict:
+        dem = demand_at(h)
+        if extra_demand:
+            for g, v in extra_demand.items():
+                dem[g] = dem[g] + v
+        stacks = {g: build_stack(fuel_avail_at(g, h), {},
+                                 (added or {}).get(g) or [], params)
+                  for g in GRID_KEYS}
+        res = clear_coupled_stacks(dem, stacks, caps, wheel)
+        res["stacks"] = stacks
+        res["demand"] = dem
+        return res
+
+    # pass 1: no storage, gives the price shape the heuristic reads
+    pass1 = [clear_hour(h) for h in hours]
+
+    # storage policy: rank the day's hours by (pass-1 price, demand, hour) on the
+    # store's grid; charge in the cheapest hours, discharge in the dearest, walked
+    # chronologically through the SoC state. Demand breaks the ties a flat cost
+    # plateau leaves (charging lands overnight, discharge at the evening peak).
+    # A labeled heuristic, not an optimisation.
+    stores = []
+    eff = profiles.get("storage_round_trip_eff", 0.8)
+    offer = dispatch["storage"]["discharge_offer_php_kwh"]
+    for s in opts.get("storage") or []:
+        g = s["grid"]
+        power, energy = s["power_mw"], s["energy_mwh"]
+        if power <= 0 or energy <= 0:
+            continue
+        order = sorted(hours, key=lambda h, g=g: (
+            pass1[h]["price"][g], pass1[h]["demand"][g], h))
+        n_charge = min(24, math.ceil(energy / (power * eff)))
+        n_dis = min(24 - n_charge, math.ceil(energy / power))
+        charge_set = set(order[:n_charge])
+        dis_set = set(order[len(order) - n_dis:]) - charge_set
+        soc = 0.0
+        charge = [0.0] * 24
+        discharge = [0.0] * 24
+        soc_series = [0.0] * 24
+        for h in hours:
+            if h in charge_set and soc < energy - EPS_SOC:
+                charge[h] = round1(min(power, (energy - soc) / eff))
+                soc += charge[h] * eff
+            elif h in dis_set and soc > EPS_SOC:
+                discharge[h] = round1(min(power, soc))
+                soc -= discharge[h]
+            soc_series[h] = round1(soc)
+        stores.append({"grid": g, "charge": charge, "discharge": discharge,
+                       "soc": soc_series})
+
+    # pass 2: charge as extra demand, discharge as a storage block
+    out_hours = []
+    for h in hours:
+        if stores:
+            extra = {g: 0.0 for g in GRID_KEYS}
+            added: dict[str, list[dict]] = {g: [] for g in GRID_KEYS}
+            for s in stores:
+                extra[s["grid"]] += s["charge"][h]
+                if s["discharge"][h] > 0:
+                    added[s["grid"]].append({"fuel": "storage", "cost": offer,
+                                             "mw": s["discharge"][h]})
+            res = clear_hour(h, extra, added)
+        else:
+            res = pass1[h]
+        out_hours.append({
+            "hour": h,
+            "price": res["price"],
+            "marginal": res["marginal"],
+            "demand": {g: round1(res["demand"][g]) for g in GRID_KEYS},
+            "shortfall": res["shortfall"],
+            "flow_lv": res["flow_lv"],
+            "flow_vm": res["flow_vm"],
+            "leyte": res["leyte"],
+            "mvip": res["mvip"],
+            "fuel_gen": {g: _fuel_dispatch(
+                res["stacks"][g],
+                min(res["gen"][g], sum(b["mw"] for b in res["stacks"][g])))
+                for g in GRID_KEYS},
+            "soc_mwh": round1(sum(s["soc"][h] for s in stores)),
+            "charge_mw": round1(sum(s["charge"][h] for s in stores)),
+            "discharge_mw": round1(sum(s["discharge"][h] for s in stores)),
+        })
+
+    def rent_m_php(key: str, flow_key: str) -> float:
+        total = 0.0
+        for o in out_hours:
+            if o[key]["sat"]:
+                total += abs(o[flow_key]) * o[key]["rent"] / 1000.0
+        return round3(total)
+
+    summary = {
+        "date": date,
+        "mean_price": {g: round3(sum(o["price"][g] for o in out_hours) / 24)
+                       for g in GRID_KEYS},
+        "peak_price": {g: max(o["price"][g] for o in out_hours)
+                       for g in GRID_KEYS},
+        "unserved_mwh": {g: round1(sum(o["shortfall"][g] for o in out_hours))
+                         for g in GRID_KEYS},
+        "leyte_rent_m_php": rent_m_php("leyte", "flow_lv"),
+        "mvip_rent_m_php": rent_m_php("mvip", "flow_vm"),
+    }
+    return {"hours": out_hours, "summary": summary}
+
+
+# ---- golden fixtures (the parity harness) ---------------------------------------
+
+def build_chrono_golden(dispatch: dict, profiles: dict) -> dict:
+    date = profiles.get("default_day")
+    if not date:
+        return {"available": False,
+                "note": "no full-coverage market day in the archive window"}
+    stor = profiles["storage_defaults"]
+    default_storage = [{"grid": s["grid"], "power_mw": s["power_mw"],
+                        "energy_mwh": s["energy_mwh"]} for s in stor]
+    lng = dispatch["assumptions"]["fuel_marginal_cost_php_kwh"].get("lng")
+    dry = dispatch["assumptions"]["hydrology"]["dry_multiplier"]
+    cases = [
+        {"label": "base day, no storage", "opts": {}},
+        {"label": "DICT 1.5 GW flat load on Luzon",
+         "opts": {"demand_delta": {"luzon": 1500}}},
+        {"label": "2 GW solar + 1 GW / 2 GWh storage on Luzon",
+         "opts": {"solar_delta_mw": {"luzon": 2000},
+                  "storage": [{"grid": "luzon", "power_mw": 1000,
+                               "energy_mwh": 2000}]}},
+        {"label": "LNG switch + El Nino dry hydro",
+         "opts": {"fuel_cost": {"natural_gas": lng}, "hydrology": dry}},
+        {"label": "both Sual units out all day",
+         "opts": {"fuel_avail_delta": {"luzon": {"coal": -1294}}}},
+        {"label": "default storage fleet cycling",
+         "opts": {"storage": default_storage}},
+    ]
+    out = []
+    for c in cases:
+        res = run_chronology(dispatch, profiles, date, c["opts"])
+        out.append({
+            "label": c["label"],
+            "input": {"date": date, **c["opts"]},
+            "expect": {
+                "price": {g: [o["price"][g] for o in res["hours"]]
+                          for g in GRID_KEYS},
+                "flow_lv": [o["flow_lv"] for o in res["hours"]],
+                "flow_vm": [o["flow_vm"] for o in res["hours"]],
+                "soc_mwh": [o["soc_mwh"] for o in res["hours"]],
+                "shortfall_luzon": [o["shortfall"]["luzon"]
+                                    for o in res["hours"]],
+                "summary": res["summary"],
+            },
+        })
+    return {
+        "available": True,
+        "date": date,
+        "tolerance_php_kwh": 0.02,
+        "tolerance_mw": 1.0,
+        "note": "Input/output pairs from the Python chronological engine on the "
+                "default observed day. The studio's chrono.ts must reproduce "
+                "these; the studio test asserts it.",
+        "cases": out,
+    }
+
+
+# ---- backcast: base model vs observed hourly LWAP, market window -----------------
+
+def _corr(xs: list[float], ys: list[float]) -> float | None:
+    n = len(xs)
+    if n < 3:
+        return None
+    mx, my = sum(xs) / n, sum(ys) / n
+    sxy = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
+    sxx = sum((x - mx) ** 2 for x in xs)
+    syy = sum((y - my) ** 2 for y in ys)
+    if sxx <= 0 or syy <= 0:
+        return None
+    return round(sxy / math.sqrt(sxx * syy), 3)
+
+
+def build_backcast(dispatch: dict, profiles: dict) -> dict:
+    """Replay every full-coverage market day with the BASE model and score it
+    against the observed hourly LWAP. No storage cycling, no levers, no tuning:
+    the residual is the finding, exactly as in the snapshot calibration."""
+    pairs: dict[str, list[tuple[float, float]]] = {g: [] for g in GRID_KEYS}
+    days_used = []
+    for day in profiles["days"]:
+        if not day["market"]:
+            continue
+        lw = day.get("lwap") or {}
+        if not all(len(lw.get(g) or []) == 24
+                   and all(v is not None for v in lw[g]) for g in GRID_KEYS):
+            continue
+        res = run_chronology(dispatch, profiles, day["date"])
+        days_used.append(day["date"])
+        for g in GRID_KEYS:
+            for h in range(24):
+                pairs[g].append((res["hours"][h]["price"][g], lw[g][h]))
+    per_grid = {}
+    for g in GRID_KEYS:
+        pts = pairs[g]
+        if not pts:
+            continue
+        mod = [m for m, _ in pts]
+        obs = [o for _, o in pts]
+        n = len(pts)
+        mae = round(sum(abs(m - o) for m, o in pts) / n, 3)
+        bias = round(sum(m - o for m, o in pts) / n, 3)
+        obs_thr = _pctl_low(sorted(obs), 0.9)
+        mod_sorted = sorted(mod)
+        mod_thr = _pctl_low(mod_sorted, 0.9)
+        mod_med = _pctl_low(mod_sorted, 0.5)
+        # a flat model prices its median at its top decile; ranking is then
+        # meaningless and the hit rate is reported as null, not a fake 100%
+        rankable = mod_thr > mod_med
+        high = [(m, o) for m, o in pts if o >= obs_thr]
+        hit = sum(1 for m, _ in high if m >= mod_thr)
+        hit_rate = (round(100 * hit / len(high), 1)
+                    if high and rankable else None)
+        per_grid[g] = {
+            "n_hours": n,
+            "observed_mean_php_kwh": round(sum(obs) / n, 3),
+            "modeled_mean_php_kwh": round(sum(mod) / n, 3),
+            "mae_php_kwh": mae,
+            "bias_php_kwh": bias,
+            "correlation": _corr(mod, obs),
+            "high_hour_hit_rate_pct": hit_rate,
+        }
+    return {
+        "available": bool(days_used),
+        "days": len(days_used),
+        "window": ({"from": days_used[0], "to": days_used[-1]}
+                   if days_used else None),
+        "per_grid": per_grid,
+        "high_hour_note": "High hours are the top decile of observed hourly "
+                          "LWAP in the window; the hit rate is how often the "
+                          "model also ranks that hour in its own top decile. "
+                          "Rank agreement, not level agreement.",
+        "note": "Hourly replay of every full-coverage market day with the base "
+                "model: no storage cycling, no levers, no tuning. The gap to "
+                "observed prices (scarcity, offers, caps, outages the model "
+                "cannot see) stays in the residual, it is the finding.",
+    }

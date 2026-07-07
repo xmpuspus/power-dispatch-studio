@@ -10,6 +10,7 @@
 // No fabricated per-plant fleet.
 
 import type { Block, Dispatch, GridKey } from '../lib/types'
+import type { ChronoOpts } from './chrono'
 import {
   GRID_KEYS,
   buildStack,
@@ -18,7 +19,7 @@ import {
   type CoupledResult,
 } from './engine'
 
-export type ClassId = 'fuel' | 'generator' | 'interface' | 'region'
+export type ClassId = 'fuel' | 'generator' | 'interface' | 'region' | 'storage'
 
 export interface PropSpec {
   key: string
@@ -89,6 +90,15 @@ export const CLASSES: SystemClass[] = [
       { key: 'peak_mw', label: 'Peak load', unit: 'MW', editable: false, dp: 0 },
     ],
   },
+  {
+    id: 'storage',
+    label: 'Storage',
+    props: [
+      { key: 'grid', label: 'Region', editable: false },
+      { key: 'power_mw', label: 'Power', unit: 'MW', editable: true, dp: 0 },
+      { key: 'energy_mwh', label: 'Energy', unit: 'MWh', editable: true, dp: 0 },
+    ],
+  },
 ]
 
 const MERIT_FUELS = [
@@ -102,10 +112,19 @@ const MERIT_FUELS = [
   'oil',
 ]
 
-/** Base objects (no overrides) derived from the baked model + named generators. */
+/** Base objects (no overrides) derived from the baked model + named generators.
+ * Storage rows cycle only in the chronological run; the snapshot solve keeps
+ * storage out of the energy stack, matching the pipeline model. */
 export function baseObjects(
   d: Dispatch,
-  gens: { name: string; grid: string; fuel: string; capacity_mw: number }[]
+  gens: { name: string; grid: string; fuel: string; capacity_mw: number }[],
+  storageDefaults: {
+    id: string
+    label: string
+    grid: GridKey
+    power_mw: number
+    energy_mwh: number
+  }[] = []
 ): Record<ClassId, ObjRow[]> {
   const costs = d.assumptions.fuel_marginal_cost_php_kwh
   const generators: ObjRow[] = gens.map((g) => ({
@@ -152,7 +171,103 @@ export function baseObjects(
       peak_mw: d.merit_order[g].peak_demand_mw,
     },
   }))
-  return { generator: generators, fuel: fuels, interface: interfaces, region: regions }
+  const storage: ObjRow[] = storageDefaults.map((s) => ({
+    id: s.id,
+    cls: 'storage',
+    label: s.label,
+    grid: s.grid,
+    props: {
+      grid: cap(s.grid),
+      power_mw: s.power_mw,
+      energy_mwh: s.energy_mwh,
+    },
+  }))
+  return {
+    generator: generators,
+    fuel: fuels,
+    interface: interfaces,
+    region: regions,
+    storage,
+  }
+}
+
+/**
+ * Chronological run options from the edited object model, expressed as deltas
+ * against the baked base. Fuel-grid solar edits count as INSTALLED solar and
+ * follow the 24-hour shape (the snapshot solve reads the same edit as
+ * evening-hour MW, where the shape is ~0); every other fuel edit shifts that
+ * fuel's availability flat across the day. Region load edits shift demand as
+ * flat 24/7 load, the data-center shape.
+ */
+export function chronoOptsFrom(
+  objects: Record<ClassId, ObjRow[]>,
+  ov: Overrides
+): ChronoOpts {
+  const opts: ChronoOpts = {}
+  const demandDelta: Partial<Record<GridKey, number>> = {}
+  for (const r of objects.region) {
+    const base = r.props.demand_mw as number
+    const delta = effNum(ov, 'region', r.id, 'demand_mw', base) - base
+    if (delta !== 0) demandDelta[r.id as GridKey] = delta
+  }
+  if (Object.keys(demandDelta).length) opts.demand_delta = demandDelta
+
+  const fuelCost: Record<string, number> = {}
+  const availDelta: Partial<Record<GridKey, Record<string, number>>> = {}
+  const solarDelta: Partial<Record<GridKey, number>> = {}
+  const addAvail = (g: GridKey, fuel: string, delta: number) => {
+    if (delta === 0) return
+    if (fuel === 'solar') solarDelta[g] = (solarDelta[g] ?? 0) + delta
+    else {
+      const per = (availDelta[g] ??= {})
+      per[fuel] = (per[fuel] ?? 0) + delta
+    }
+  }
+  for (const f of objects.fuel) {
+    const baseCost = f.props.cost as number
+    const cost = effNum(ov, 'fuel', f.id, 'cost', baseCost)
+    if (cost !== baseCost) fuelCost[f.id] = cost
+    for (const g of GRID_KEYS) {
+      const key = `${g}_mw`
+      const base = f.props[key] as number
+      addAvail(g, f.id, effNum(ov, 'fuel', f.id, key, base) - base)
+    }
+  }
+  for (const g of objects.generator) {
+    const base = g.props.capacity_mw as number
+    const delta = effNum(ov, 'generator', g.id, 'capacity_mw', base) - base
+    if (delta !== 0 && g.grid && g.props.fuel)
+      addAvail(g.grid, g.props.fuel as string, delta)
+  }
+  if (Object.keys(fuelCost).length) opts.fuel_cost = fuelCost
+  if (Object.keys(availDelta).length) opts.fuel_avail_delta = availDelta
+  if (Object.keys(solarDelta).length) opts.solar_delta_mw = solarDelta
+
+  const leyte = effNum(
+    ov,
+    'interface',
+    'leyte_luzon_hvdc',
+    'limit_mw',
+    ifaceLimit(objects.interface, 'leyte_luzon_hvdc')
+  )
+  const mvip = effNum(
+    ov,
+    'interface',
+    'mvip_hvdc',
+    'limit_mw',
+    ifaceLimit(objects.interface, 'mvip_hvdc')
+  )
+  opts.caps = { leyte, mvip }
+
+  const storage = objects.storage
+    .map((s) => ({
+      grid: s.grid as GridKey,
+      power_mw: effNum(ov, 'storage', s.id, 'power_mw', s.props.power_mw as number),
+      energy_mwh: effNum(ov, 'storage', s.id, 'energy_mwh', s.props.energy_mwh as number),
+    }))
+    .filter((s) => s.power_mw > 0 && s.energy_mwh > 0)
+  if (storage.length) opts.storage = storage
+  return opts
 }
 
 export function overrideKey(cls: ClassId, id: string, prop: string): string {
