@@ -1,19 +1,30 @@
-// Chronological dispatch engine: replay an observed day hour by hour on the
-// (optionally edited) model. NOT PLEXOS: block dispatch per hour, no
-// inter-temporal optimisation; storage cycles on a labeled two-pass heuristic.
+// Chronological dispatch engine: replay an observed day on the (optionally
+// edited) model, solved as ONE linear program over the 24 coupled hours by
+// HiGHS (the same solver build PLEXOS-class tools embed, compiled to wasm).
+// Storage is true inter-temporal optimisation (it cycles only when the price
+// spread beats the round-trip loss), the reserve toggle is a real
+// withheld-capacity constraint, and prices are the balance duals: locational
+// marginal prices, wheel-shading included.
 //
-// This file is the TypeScript side of a parity pair with pipeline/chrono.py.
-// profiles.chrono_golden carries input/output pairs computed by the Python
-// engine; chrono.test.ts asserts this file reproduces them. Any change here
-// must land in chrono.py too, or the parity test fails (that is the point).
+// This file is the TypeScript side of a parity pair with
+// pipeline/lp_dispatch.py. Both sides build the byte-identical LP text
+// (lpText.ts / lp_model.py; profiles.chrono_golden pins its sha256) and must
+// reproduce the same outputs. Any change here must land there too, or the
+// parity test fails (that is the point).
 
 import type { Block, Dispatch, GridKey } from '../lib/types'
 import type { Profiles } from '../lib/types'
-import { GRID_KEYS, buildStack, clearCoupled, marginal } from './engine'
+import { GRID_KEYS, buildStack, marginal } from './engine'
+import { buildDayLp, type LpStorage } from './lpText'
+import { solveLp } from './solver'
 
 // bump when the run outputs change meaning; saved runs from an older engine
-// are flagged stale in the Runs view
-export const ENGINE_VERSION = 1
+// are flagged stale in the Runs view. v2: the HiGHS LP engine.
+export const ENGINE_VERSION = 2
+
+export const LABEL_EPS = 0.025
+const STORE_EPS = 1e-3
+const FLOW_SAT_EPS = 0.5
 
 export interface ChronoOpts {
   demand_delta?: Partial<Record<GridKey, number>>
@@ -56,7 +67,6 @@ export interface ChronoResult {
   summary: ChronoSummary
 }
 
-const EPS_SOC = 1e-9
 const HOURS = Array.from({ length: 24 }, (_, h) => h)
 
 function round1(x: number): number {
@@ -65,30 +75,40 @@ function round1(x: number): number {
 function round3(x: number): number {
   return Math.round(x * 1000) / 1000
 }
-// storage schedule values round DOWN so a cycle can never discharge more than
-// it stored or charge past the energy cap (Math.round could round up past both)
-function floor1(x: number): number {
-  return Math.floor(x * 10) / 10
-}
-function fuelDispatch(blocks: Block[], served: number): Record<string, number> {
-  const out: Record<string, number> = {}
-  let remaining = served
-  for (const b of blocks) {
-    if (remaining <= 0) break
-    const take = Math.min(b.mw, remaining)
-    out[b.fuel] = round1((out[b.fuel] ?? 0) + take)
-    remaining -= take
-  }
-  return out
+
+/** Name what sets an LMP; mirror of lp_dispatch.price_label, pinned by the
+ * goldens. On an importing grid the dual can sit at the exporter's cost plus
+ * the wheel, on an exporter the importer's cost minus it, and with storage
+ * strictly between its bounds at the arbitrage value. */
+export function priceLabel(
+  price: number,
+  ownCost: number,
+  ownFuel: string | null,
+  storageMarginal: boolean
+): string | null {
+  if (Math.abs(ownCost - price) <= LABEL_EPS) return ownFuel
+  if (storageMarginal) return 'storage'
+  return price > ownCost ? 'export' : 'import'
 }
 
-/** Replay one observed day, hour by hour. Mirrors pipeline/chrono.run_chronology. */
-export function runChronology(
+interface Assembled {
+  stacks: Record<GridKey, Block[][]>
+  demand: Record<GridKey, number[]>
+  caps: { leyte: number; mvip: number }
+  wheel: number
+  storage: LpStorage[]
+  reserveReq: Record<GridKey, number> | null
+  voll: number
+}
+
+/** Input assembly, shared by the run and the parity hash test. Mirrors
+ * lp_dispatch._assemble exactly. */
+export function assembleDay(
   d: Dispatch,
   profiles: Profiles,
   date: string,
   opts: ChronoOpts = {}
-): ChronoResult {
+): Assembled {
   const day = profiles.days.find((x) => x.date === date)
   if (!day) throw new Error(`no profile day ${date}`)
   const a = d.assumptions
@@ -125,137 +145,147 @@ export function runChronology(
     solarInst[g] = mo.solar_installed_mw + (opts.solar_delta_mw?.[g] ?? 0)
   }
 
-  const reserveAdd = { luzon: 0, visayas: 0, mindanao: 0 } as Record<GridKey, number>
+  const stacks = { luzon: [], visayas: [], mindanao: [] } as Record<GridKey, Block[][]>
+  const demand = { luzon: [], visayas: [], mindanao: [] } as Record<GridKey, number[]>
+  for (const h of HOURS) {
+    for (const g of GRID_KEYS) {
+      const fa = { ...fuelBase[g] }
+      fa.solar = round1(Math.max(0, solarInst[g]) * solarProfile[h])
+      stacks[g].push(buildStack(fa, {}, [], params))
+      demand[g].push(day.demand[g][h] + (opts.demand_delta?.[g] ?? 0))
+    }
+  }
+
+  const eff = profiles.storage_round_trip_eff
+  const storage: LpStorage[] = (opts.storage ?? [])
+    .filter((s) => s.power_mw > 0 && s.energy_mwh > 0)
+    .map((s) => ({
+      grid: s.grid,
+      power_mw: s.power_mw,
+      energy_mwh: s.energy_mwh,
+      eff,
+    }))
+
+  let reserveReq: Record<GridKey, number> | null = null
   if (opts.reserve_deduction) {
+    reserveReq = { luzon: 0, visayas: 0, mindanao: 0 }
     for (const g of GRID_KEYS) {
       const req = profiles.reserve_req_mean_mw[g] ?? {}
-      reserveAdd[g] = round1(Object.values(req).reduce((s, v) => s + v, 0))
+      reserveReq[g] = round1(Object.values(req).reduce((s, v) => s + v, 0))
     }
   }
 
-  const fuelAvailAt = (g: GridKey, h: number): Record<string, number> => {
-    const fa = { ...fuelBase[g] }
-    fa.solar = round1(Math.max(0, solarInst[g]) * solarProfile[h])
-    return fa
-  }
-  const demandAt = (h: number): Record<GridKey, number> => ({
-    luzon: day.demand.luzon[h] + (opts.demand_delta?.luzon ?? 0) + reserveAdd.luzon,
-    visayas:
-      day.demand.visayas[h] + (opts.demand_delta?.visayas ?? 0) + reserveAdd.visayas,
-    mindanao:
-      day.demand.mindanao[h] + (opts.demand_delta?.mindanao ?? 0) + reserveAdd.mindanao,
-  })
+  // unserved load prices at the dearest block (the documented no-VoLL
+  // stance); the +0.001 makes shedding strictly worse than serving
+  let dearest = 12
+  for (const g of GRID_KEYS)
+    for (const hb of stacks[g]) for (const b of hb) if (b.cost > dearest) dearest = b.cost
+  const voll = dearest + 0.001
 
-  interface HourClear {
-    res: ReturnType<typeof clearCoupled>
-    dem: Record<GridKey, number>
-    stacks: Record<GridKey, Block[]>
-  }
-  const clearHour = (
-    h: number,
-    extraDemand?: Partial<Record<GridKey, number>>,
-    added?: Partial<Record<GridKey, Block[]>>
-  ): HourClear => {
-    const dem = demandAt(h)
-    if (extraDemand) for (const g of GRID_KEYS) dem[g] = dem[g] + (extraDemand[g] ?? 0)
-    const stacks = {} as Record<GridKey, Block[]>
-    for (const g of GRID_KEYS)
-      stacks[g] = buildStack(fuelAvailAt(g, h), {}, added?.[g] ?? [], params)
-    return { res: clearCoupled(dem, stacks, caps, wheel), dem, stacks }
-  }
+  return { stacks, demand, caps, wheel, storage, reserveReq, voll }
+}
 
-  // pass 1: no storage, gives the price shape the heuristic reads
-  const pass1 = HOURS.map((h) => clearHour(h))
+/** The canonical LP text for a day run; the parity test hashes this. */
+export function buildChronoLpText(
+  d: Dispatch,
+  profiles: Profiles,
+  date: string,
+  opts: ChronoOpts = {}
+): string {
+  const m = assembleDay(d, profiles, date, opts)
+  return buildDayLp(m.stacks, m.demand, m.caps, m.wheel, m.storage, m.reserveReq, m.voll)
+}
 
-  // storage policy: rank the day's hours by (pass-1 price, demand, hour) on the
-  // store's grid; charge in the cheapest hours, discharge in the dearest, walked
-  // chronologically through the SoC state. Demand breaks the ties a flat cost
-  // plateau leaves. A labeled heuristic, not an optimisation.
-  const eff = profiles.storage_round_trip_eff
-  const offer = d.storage.discharge_offer_php_kwh
-  interface Store {
-    grid: GridKey
-    charge: number[]
-    discharge: number[]
-    soc: number[]
-  }
-  const stores: Store[] = []
-  for (const s of opts.storage ?? []) {
-    const { grid: g, power_mw: power, energy_mwh: energy } = s
-    if (power <= 0 || energy <= 0) continue
-    const order = [...HOURS].sort(
-      (x, y) =>
-        pass1[x].res.price[g] - pass1[y].res.price[g] ||
-        pass1[x].dem[g] - pass1[y].dem[g] ||
-        x - y
-    )
-    const nCharge = Math.min(24, Math.ceil(energy / (power * eff)))
-    const nDis = Math.min(24 - nCharge, Math.ceil(energy / power))
-    const chargeSet = new Set(order.slice(0, nCharge))
-    const disSet = new Set(
-      order.slice(order.length - nDis).filter((h) => !chargeSet.has(h))
-    )
-    let soc = 0
-    const charge = HOURS.map(() => 0)
-    const discharge = HOURS.map(() => 0)
-    const socSeries = HOURS.map(() => 0)
-    for (const h of HOURS) {
-      if (chargeSet.has(h) && soc < energy - EPS_SOC) {
-        charge[h] = floor1(Math.min(power, (energy - soc) / eff))
-        soc += charge[h] * eff
-      } else if (disSet.has(h) && soc > EPS_SOC) {
-        discharge[h] = floor1(Math.min(power, soc))
-        soc -= discharge[h]
-      }
-      socSeries[h] = round1(soc)
-    }
-    stores.push({ grid: g, charge, discharge, soc: socSeries })
-  }
+/** Replay one observed day on the LP. Mirrors lp_dispatch.run_chronology_lp. */
+export function runChronology(
+  d: Dispatch,
+  profiles: Profiles,
+  date: string,
+  opts: ChronoOpts = {}
+): ChronoResult {
+  const m = assembleDay(d, profiles, date, opts)
+  const sol = solveLp(
+    buildDayLp(m.stacks, m.demand, m.caps, m.wheel, m.storage, m.reserveReq, m.voll)
+  )
+  const S: Record<GridKey, string> = { luzon: 'l', visayas: 'v', mindanao: 'm' }
 
-  // pass 2: charge as extra demand, discharge as a storage block
   const hours: ChronoHour[] = HOURS.map((h) => {
-    let hc = pass1[h]
-    if (stores.length) {
-      const extra: Partial<Record<GridKey, number>> = {}
-      const added: Partial<Record<GridKey, Block[]>> = {}
-      for (const s of stores) {
-        extra[s.grid] = (extra[s.grid] ?? 0) + s.charge[h]
-        if (s.discharge[h] > 0) {
-          ;(added[s.grid] ??= []).push({
-            fuel: 'storage',
-            cost: offer,
-            mw: s.discharge[h],
-          })
-        }
-      }
-      hc = clearHour(h, extra, added)
-    }
-    const { res, dem, stacks } = hc
+    const f1 = sol.col(`f1p_${h}`) - sol.col(`f1n_${h}`)
+    const f2 = sol.col(`f2p_${h}`) - sol.col(`f2n_${h}`)
+    const price = {} as Record<GridKey, number>
+    const shed = {} as Record<GridKey, number>
     const fuelGen = {} as Record<GridKey, Record<string, number>>
     for (const g of GRID_KEYS) {
-      const avail = stacks[g].reduce((s, b) => s + b.mw, 0)
-      fuelGen[g] = fuelDispatch(stacks[g], Math.min(res.genRaw[g], avail))
+      price[g] = round3(sol.dual(`bal_${S[g]}_${h}`))
+      shed[g] = Math.max(0, round1(sol.col(`u_${S[g]}_${h}`)))
+      const per: Record<string, number> = {}
+      m.stacks[g][h].forEach((b, i) => {
+        const x = sol.col(`x_${S[g]}_${h}_${i}`)
+        if (x > 1e-6) per[b.fuel] = (per[b.fuel] ?? 0) + x
+      })
+      fuelGen[g] = Object.fromEntries(Object.entries(per).map(([f, v]) => [f, round1(v)]))
+    }
+    const charge = { luzon: 0, visayas: 0, mindanao: 0 } as Record<GridKey, number>
+    const dis = { luzon: 0, visayas: 0, mindanao: 0 } as Record<GridKey, number>
+    let socTotal = 0
+    const storeMarg = { luzon: false, visayas: false, mindanao: false } as Record<
+      GridKey,
+      boolean
+    >
+    m.storage.forEach((st, k) => {
+      const dk = sol.col(`dis_${k}_${h}`)
+      charge[st.grid] += sol.col(`ch_${k}_${h}`)
+      dis[st.grid] += dk
+      socTotal += sol.col(`soc_${k}_${h}`)
+      if (dk > STORE_EPS && dk < st.power_mw - STORE_EPS) storeMarg[st.grid] = true
+    })
+    for (const g of GRID_KEYS)
+      if (dis[g] > 1e-6) fuelGen[g].storage = round1((fuelGen[g].storage ?? 0) + dis[g])
+
+    const dem = {} as Record<GridKey, number>
+    for (const g of GRID_KEYS) dem[g] = m.demand[g][h] + charge[g]
+    const gen: Record<GridKey, number> = {
+      luzon: dem.luzon + f1 - shed.luzon,
+      visayas: dem.visayas + f2 - f1 - shed.visayas,
+      mindanao: dem.mindanao - f2 - shed.mindanao,
     }
     const marg = {} as Record<GridKey, string | null>
-    for (const g of GRID_KEYS) marg[g] = marginal(stacks[g], res.genRaw[g]).fuel
+    for (const g of GRID_KEYS) {
+      const mres = marginal(m.stacks[g][h], gen[g])
+      marg[g] = priceLabel(price[g], mres.cost, mres.fuel, storeMarg[g])
+    }
+    const sat1 = Math.abs(f1) >= m.caps.leyte - FLOW_SAT_EPS
+    const sat2 = Math.abs(f2) >= m.caps.mvip - FLOW_SAT_EPS
     return {
       hour: h,
-      price: res.price,
+      price,
       marginal: marg,
       demand: {
         luzon: round1(dem.luzon),
         visayas: round1(dem.visayas),
         mindanao: round1(dem.mindanao),
       },
-      shortfall: res.shortfall,
-      flowLV: res.flowLV,
-      flowVM: res.flowVM,
-      leyte: { sat: res.leyte.sat, rent: res.leyte.rent },
-      mvip: { sat: res.mvip.sat, rent: res.mvip.rent },
+      shortfall: shed,
+      flowLV: round1(f1),
+      flowVM: round1(f2),
+      leyte: {
+        sat: sat1,
+        rent: sat1
+          ? round3(f1 > 0 ? price.visayas - price.luzon : price.luzon - price.visayas)
+          : 0,
+      },
+      mvip: {
+        sat: sat2,
+        rent: sat2
+          ? round3(
+              f2 > 0 ? price.mindanao - price.visayas : price.visayas - price.mindanao
+            )
+          : 0,
+      },
       fuelGen,
-      socMwh: round1(stores.reduce((s, st) => s + st.soc[h], 0)),
-      chargeMw: round1(stores.reduce((s, st) => s + st.charge[h], 0)),
-      dischargeMw: round1(stores.reduce((s, st) => s + st.discharge[h], 0)),
+      socMwh: round1(socTotal),
+      chargeMw: round1(Object.values(charge).reduce((s, v) => s + v, 0)),
+      dischargeMw: round1(Object.values(dis).reduce((s, v) => s + v, 0)),
     }
   })
 

@@ -541,11 +541,9 @@ function assemble(
     visayas: sum(stacks.visayas),
     mindanao: sum(stacks.mindanao),
   }
-  const marginalFuel: Record<GridKey, string | null> = {
-    luzon: marginalOf(stacks.luzon, demand.luzon),
-    visayas: marginalOf(stacks.visayas, demand.visayas),
-    mindanao: marginalOf(stacks.mindanao, demand.mindanao),
-  }
+  // what sets the price under the coupled solve: the own-stack fuel when it
+  // explains the dual, else import/export (the price arrived over a corridor)
+  const marginalFuel = coupled.marginalLabel
   return { coupled, stacks, demand, avail, marginalFuel, fuelAvail, sp }
 }
 
@@ -737,15 +735,6 @@ function sum(blocks: Block[]): number {
 }
 function margin(avail: number, peak: number): number {
   return peak > 0 ? Math.round(((avail - peak) / peak) * 1000) / 10 : 0
-}
-function marginalOf(blocks: Block[], demand: number): string | null {
-  const sorted = [...blocks].sort((x, y) => x.cost - y.cost)
-  let cum = 0
-  for (const b of sorted) {
-    cum += b.mw
-    if (cum >= demand) return b.fuel
-  }
-  return sorted.length ? sorted[sorted.length - 1].fuel : null
 }
 function forcedOutagePct(fuel: string): number {
   const rate: Record<string, number> = {

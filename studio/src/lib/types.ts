@@ -49,6 +49,7 @@ export interface Assumptions {
 
 export interface GoldenCase {
   label: string
+  lp_sha256?: string
   input: {
     demand: Record<GridKey, number>
     removed: Partial<Record<GridKey, Record<string, number>>>
@@ -507,6 +508,7 @@ export interface StorageDefault {
 
 export interface ChronoGoldenCase {
   label: string
+  lp_sha256?: string
   input: {
     date: string
     demand_delta?: Partial<Record<GridKey, number>>

@@ -1,9 +1,10 @@
+import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { GRID_KEYS } from './engine'
-import { runChronology, runDuration, type ChronoOpts } from './chrono'
+import { buildChronoLpText, runChronology, runDuration, type ChronoOpts } from './chrono'
 
 const read = (rel: string) =>
   JSON.parse(readFileSync(fileURLToPath(new URL(rel, import.meta.url)), 'utf8'))
@@ -120,14 +121,63 @@ describe('chronological behavior', () => {
     expect(discharged).toBeLessThanOrEqual(stored + 1e-9)
   })
 
-  it('the reserve deduction prices at demand plus the scheduled requirement', () => {
+  it('the reserve toggle withholds capacity instead of inflating demand', () => {
+    // v2 semantics: the requirement is a constraint on reserve-capable
+    // capacity, not extra load (the v1 approximation). Demand stays observed,
+    // prices can only rise, and on a tight evening the withheld MW must bind.
     const base = runChronology(d, profiles, date)
     const withRes = runChronology(d, profiles, date, { reserve_deduction: true })
     for (let h = 0; h < 24; h++) {
-      expect(withRes.hours[h].demand.luzon).toBeGreaterThan(base.hours[h].demand.luzon)
+      expect(withRes.hours[h].demand.luzon).toBe(base.hours[h].demand.luzon)
       expect(withRes.hours[h].price.luzon).toBeGreaterThanOrEqual(
-        base.hours[h].price.luzon
+        base.hours[h].price.luzon - 1e-9
       )
+    }
+    // deep into the stack the withheld MW must bind: capacity held back for
+    // reserve cannot serve the evening, so energy goes unserved that the
+    // unconstrained case still covers
+    const tight = runChronology(d, profiles, date, {
+      demand_delta: { luzon: 3000 },
+    })
+    const tightRes = runChronology(d, profiles, date, {
+      demand_delta: { luzon: 3000 },
+      reserve_deduction: true,
+    })
+    expect(tightRes.summary.unservedMwh.luzon).toBeGreaterThan(
+      tight.summary.unservedMwh.luzon
+    )
+    const sum = (r: typeof tight) => r.hours.reduce((s, h) => s + h.price.luzon, 0)
+    expect(sum(tightRes)).toBeGreaterThanOrEqual(sum(tight))
+  })
+
+  it('a reserve requirement beyond capable capacity clamps instead of going infeasible', () => {
+    // the adversarial review's repro: gut a grid's dispatchable fuels, then
+    // ask for its full reserve requirement; the row must clamp, the day must
+    // solve, and the grid sheds
+    const kill = {
+      coal: -1e6,
+      oil: -1e6,
+      hydro: -1e6,
+      geothermal: -1e6,
+      natural_gas: -1e6,
+      biomass: -1e6,
+    }
+    const res = runChronology(d, profiles, date, {
+      reserve_deduction: true,
+      fuel_avail_delta: { mindanao: kill },
+    })
+    for (const h of res.hours)
+      for (const gk of GRID_KEYS) expect(Number.isFinite(h.price[gk])).toBe(true)
+    expect(res.summary.unservedMwh.mindanao).toBeGreaterThan(0)
+  })
+
+  it('builds the byte-identical LP the Python engine hashed (parity of the model text)', () => {
+    for (const c of profiles.chrono_golden.cases ?? []) {
+      if (!c.lp_sha256) continue
+      const { date: dt, ...opts } = c.input
+      const text = buildChronoLpText(d, profiles, dt, opts as ChronoOpts)
+      const hash = createHash('sha256').update(text).digest('hex')
+      expect(hash, c.label).toBe(c.lp_sha256)
     }
   })
 

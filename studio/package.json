@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "predev": "node scripts/copy-data.mjs",
+    "pretest": "node scripts/copy-data.mjs",
     "prebuild": "node scripts/copy-data.mjs",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
@@ -19,6 +20,7 @@
   "dependencies": {
     "@fontsource/fira-code": "^5.2.7",
     "@fontsource/fira-sans": "^5.2.7",
+    "highs": "^1.14.2",
     "maplibre-gl": "^5.24.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
