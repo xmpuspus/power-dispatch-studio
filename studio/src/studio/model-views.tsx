@@ -354,6 +354,18 @@ export function MembershipsView({
         ],
       })
     }
+  } else if (cls === 'storage') {
+    for (const s of objects.storage)
+      rows.push({
+        obj: s.label,
+        rels: [
+          { label: 'Region', value: String(s.props.grid) },
+          {
+            label: 'Participates in',
+            value: 'Chronology runs (cycled by the heuristic)',
+          },
+        ],
+      })
   } else {
     for (const f of objects.fuel) {
       const users = objects.generator.filter((g) => String(g.props.fuel) === f.id)

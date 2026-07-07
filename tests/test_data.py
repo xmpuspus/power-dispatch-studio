@@ -503,5 +503,57 @@ check("the largest firm stays under the EPIRA market-share cap",
 check("the two largest firms are close to half of national capacity",
       40 < mp["top2_combined_pct"] < 50)
 
+# --- observed day profiles + chronological engine (studio maturation, phase 1) ---
+prof = load("profiles.json")
+check("profiles carries at least 60 replayable observed days",
+      len(prof["days"]) >= 60)
+check("every profile day has full 24-hour demand on all three grids", all(
+    all(len(d["demand"][g]) == 24 and all(v is not None for v in d["demand"][g])
+        for g in ("luzon", "visayas", "mindanao"))
+    for d in prof["days"]))
+dates = {d["date"] for d in prof["days"]}
+check("default and stress days exist and are market days",
+      prof["default_day"] in dates and prof["stress_day"] in dates
+      and all(next(d for d in prof["days"] if d["date"] == x)["market"]
+              for x in (prof["default_day"], prof["stress_day"])))
+check("solar profile is a 24-hour shape peaking midday under 1.0",
+      len(prof["solar_profile"]) == 24
+      and 0 < max(prof["solar_profile"]) < 1
+      and prof["solar_profile"][12] > prof["solar_profile"][19])
+check("storage defaults pin the sourced powers (BESS 634, Kalayaan 685)",
+      {s["id"]: s["power_mw"] for s in prof["storage_defaults"]}
+      == {"bess_luzon": 634, "kalayaan": 685})
+check("storage energies are labeled assumptions", all(
+    "ASSUMPTION" in s["energy_note"] for s in prof["storage_defaults"]))
+check("reserve requirement means are positive per grid", all(
+    v > 0 for g in prof["reserve_req_mean_mw"].values() for v in g.values()))
+
+cg = prof["chrono_golden"]
+check("chrono golden has 6 cases of 24 hourly prices per grid",
+      cg["available"] and len(cg["cases"]) == 6 and all(
+          len(c["expect"]["price"][g]) == 24
+          for c in cg["cases"] for g in ("luzon", "visayas", "mindanao")))
+base_mean = cg["cases"][0]["expect"]["summary"]["mean_price"]["luzon"]
+dc_mean = cg["cases"][1]["expect"]["summary"]["mean_price"]["luzon"]
+check("flat DC load never lowers the mean Luzon price (monotonicity)",
+      dc_mean >= base_mean)
+check("the default storage fleet actually cycles in its golden case",
+      max(cg["cases"][5]["expect"]["soc_mwh"]) > 0
+      and abs(cg["cases"][5]["expect"]["soc_mwh"][23]) < 1e-9)
+check("golden tolerances are the parity contract",
+      math.isclose(cg["tolerance_php_kwh"], 0.02)
+      and math.isclose(cg["tolerance_mw"], 1.0))
+
+bc = prof["backcast"]
+check("backcast replays at least 30 market days",
+      bc["available"] and bc["days"] >= 30)
+check("backcast hours = days x 24 per grid", all(
+    v["n_hours"] == bc["days"] * 24 for v in bc["per_grid"].values()))
+check("backcast is honest: model under-prices the observed mean (negative bias)",
+      all(v["bias_php_kwh"] < 0 for v in bc["per_grid"].values()))
+check("backcast never fakes a hit rate from a flat model", all(
+    v["high_hour_hit_rate_pct"] is None or 0 <= v["high_hour_hit_rate_pct"] <= 100
+    for v in bc["per_grid"].values()))
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

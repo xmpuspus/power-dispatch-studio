@@ -798,6 +798,16 @@ def main() -> int:
     with open(os.path.join(OUT, "market_power.json"), "w") as fh:
         json.dump(build_market_power(), fh, indent=1)
 
+    # observed day profiles + the chronological parity fixtures + the backcast
+    from chrono import build_backcast, build_chrono_golden
+    from profiles import build_profiles
+
+    profiles = build_profiles()
+    profiles["chrono_golden"] = build_chrono_golden(dispatch, profiles)
+    profiles["backcast"] = build_backcast(dispatch, profiles)
+    with open(os.path.join(OUT, "profiles.json"), "w") as fh:
+        json.dump(profiles, fh, indent=1)
+
     for name, obj in [("congestion.json", congestion),
                       ("reliability.json", reliability),
                       ("prices.json", prices),

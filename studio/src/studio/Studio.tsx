@@ -1,18 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { Dispatch, GridKey } from '../lib/types'
+import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { GRIDS } from '../lib/types'
-import { php, pct, useGenerators } from '../lib/data'
+import { php, pct, useGenerators, useProfiles } from '../lib/data'
 import { Segmented, ThemeToggle } from '../ui/kit'
 import { DurationView, MarginalView, ReliabilityView, ReserveView } from './views'
 import { ScenarioView } from './Scenario'
 import { BillView } from './Bill'
 import { MarketPowerView } from './MarketPower'
+import { ChronologyView } from './ChronoView'
 import {
   CLASSES,
   baseObjects,
   overrideKey,
   solveModel,
   type ClassId,
+  type Overrides,
   type Scenario,
   type SolvedModel,
 } from './model'
@@ -29,7 +31,14 @@ import {
 } from './model-views'
 
 type SolId =
-  'merit' | 'flows' | 'n1' | 'regions' | 'duration' | 'marginal' | 'reliability'
+  | 'merit'
+  | 'chrono'
+  | 'flows'
+  | 'n1'
+  | 'regions'
+  | 'duration'
+  | 'marginal'
+  | 'reliability'
 type AnalysisId = 'reserve' | 'bill' | 'market'
 type Nav =
   | { kind: 'class'; id: ClassId }
@@ -40,6 +49,7 @@ type Nav =
 
 const SOL_LABEL: Record<SolId, string> = {
   merit: 'Merit order',
+  chrono: 'Chronology',
   flows: 'Coupled flows',
   n1: 'N-1 contingency',
   regions: 'Regions',
@@ -53,9 +63,16 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   market: 'Market power',
 }
 // views that recompute from the current model (the rest read the calibrated base case)
-const LIVE_SOL = new Set<SolId>(['merit', 'flows', 'n1', 'regions', 'reliability'])
+const LIVE_SOL = new Set<SolId>([
+  'merit',
+  'chrono',
+  'flows',
+  'n1',
+  'regions',
+  'reliability',
+])
 // navs that pick a grid
-const GRID_SOL = new Set<SolId>(['merit', 'n1', 'duration', 'marginal'])
+const GRID_SOL = new Set<SolId>(['merit', 'chrono', 'n1', 'duration', 'marginal'])
 const PHASES = ['LT Plan', 'PASA', 'MT Schedule', 'ST Schedule']
 
 export function Studio({
@@ -70,11 +87,15 @@ export function Studio({
   onToggleTheme: () => void
 }) {
   const gens = useGenerators()
+  const profiles = useProfiles()
   const genRows = useMemo(
     () => (gens.data?.features ?? []).map((f) => f.properties),
     [gens.data]
   )
-  const objects = useMemo(() => baseObjects(d, genRows), [d, genRows])
+  const objects = useMemo(
+    () => baseObjects(d, genRows, profiles.data?.storage_defaults ?? []),
+    [d, genRows, profiles.data]
+  )
 
   const [scenarios, setScenarios] = useState<Scenario[]>([
     { name: 'Base Case', overrides: {} },
@@ -84,16 +105,23 @@ export function Studio({
   const [nav, setNav] = useState<Nav>({ kind: 'class', id: 'generator' })
   const [grid, setGrid] = useState<GridKey>('luzon')
   const [solved, setSolved] = useState<SolvedModel>(() => solveModel(d, objects, {}))
+  // overrides snapshot at the last Run: the chronological view re-runs from this,
+  // so it moves with Run exactly like the other live solution views
+  const [ranOv, setRanOv] = useState<Overrides>({})
   const [dirty, setDirty] = useState(false)
 
   // re-solve the base when the generator list arrives, as long as nothing is pending
   useEffect(() => {
-    if (!dirty) setSolved(solveModel(d, objects, active.overrides))
+    if (!dirty) {
+      setSolved(solveModel(d, objects, active.overrides))
+      setRanOv(active.overrides)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [objects])
 
   const run = () => {
     setSolved(solveModel(d, objects, active.overrides))
+    setRanOv(active.overrides)
     setDirty(false)
   }
   const edit = (cls: ClassId, id: string, prop: string, value: number) => {
@@ -195,12 +223,14 @@ export function Studio({
           <div className="studio__scroll">
             <DataPane
               d={d}
+              profiles={profiles.data}
               nav={nav}
               grid={grid}
               solved={solved}
               objects={objects}
               scenarios={scenarios}
               overrides={active.overrides}
+              ranOv={ranOv}
               dirty={dirty}
               onEdit={edit}
               onRevert={revert}
@@ -478,24 +508,28 @@ function Explorer({
 
 function DataPane({
   d,
+  profiles,
   nav,
   grid,
   solved,
   objects,
   scenarios,
   overrides,
+  ranOv,
   dirty,
   onEdit,
   onRevert,
   onRun,
 }: {
   d: Dispatch
+  profiles: Profiles | null
   nav: Nav
   grid: GridKey
   solved: SolvedModel
   objects: ReturnType<typeof baseObjects>
   scenarios: Scenario[]
   overrides: Scenario['overrides']
+  ranOv: Overrides
   dirty: boolean
   onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
   onRevert: (cls: ClassId, id: string, prop: string) => void
@@ -525,6 +559,19 @@ function DataPane({
   // solution views
   const sol = nav.id
   if (sol === 'merit') return <SolvedMeritView s={solved} grid={grid} />
+  if (sol === 'chrono') {
+    if (!profiles)
+      return <div className="basecase-banner">Loading the observed day profiles.</div>
+    return (
+      <ChronologyView
+        d={d}
+        profiles={profiles}
+        objects={objects}
+        overrides={ranOv}
+        grid={grid}
+      />
+    )
+  }
   if (sol === 'flows') return <SolvedFlowsView s={solved} />
   if (sol === 'n1') return <SolvedN1View s={solved} grid={grid} />
   if (sol === 'regions') return <SolvedRegionsView s={solved} />
