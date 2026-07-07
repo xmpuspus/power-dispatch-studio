@@ -3,8 +3,10 @@
 A single-page app that presents the gridbill-ph dispatch model as an open, modern
 power-system modeling studio. It reads the same baked artifacts the map ships
 (`../web/data/*.json`, produced by `../pipeline`) and renders them as a network map
-plus a full "PLEXOS Studio" workspace with a model tree, result views, charts, and an
-interactive scenario builder that re-solves the dispatch in the browser as you drag.
+plus a full "PLEXOS Studio" workspace with a model tree, result views, charts, an
+interactive scenario builder that re-solves the dispatch in the browser as you drag,
+and an hour-by-hour chronology that replays the archive's observed days on the model
+you edited.
 
 This is an independent, open homage. Not affiliated with Energy Exemplar. Not PLEXOS.
 
@@ -30,19 +32,31 @@ carries golden input/output pairs from the real Python solve that the tests asse
 browser engine and the model reproduce.
 
 The Solution views recompute from the solved model (Merit order, Coupled flows, N-1,
-Regions, and a live 4,000-draw Monte Carlo Reliability that trips the named units at
-their edited forced-outage rate) and carry a LIVE badge. Compare scenarios solves every
-scenario and tables the headline metrics with the changes highlighted. Price duration
-and Marginal units read the calibrated base case behind a labeled banner (they need the
-full observed window); the richer 20,000-draw pipeline distribution and the storage
-buy-back sit below the live reliability as base-case reference. The Analysis group keeps
-the WESM Reserve Market prices, the contract-cover Bill impact, and the Market power
-lens. A slider-driven Quick scenario stays under System as a fast what-if.
+Regions, and a live 4,000-draw Monte Carlo Reliability that trips the fleet's units at
+their edited forced-outage rate) and carry a LIVE badge. Chronology replays an observed
+day (or the week ending on it) hour by hour on the edited model: hourly prices with the
+observed LWAP overlay, dispatch by fuel, the storage state of charge, and a duration
+curve computed from the run, with a reserve co-clear toggle that prices each hour at
+demand plus the scheduled reserve requirement. Compare scenarios solves every scenario
+and tables the headline metrics with the changes highlighted; Saved runs freezes
+chronological solves (scenario snapshot, window, engine version, hourly results) for
+side-by-side deltas, CSV export, and restore, and a scenario plus its window also
+encodes into the URL hash, so a link is the model. Price duration and Marginal units
+read the calibrated base case behind a labeled banner (they need the full observed
+window); the richer 20,000-draw pipeline distribution and the storage buy-back sit
+below the live reliability as base-case reference. The Analysis group opens with the
+Backcast (every full-coverage market day replayed with the base model against the
+observed hourly LWAP, MAE/bias/correlation stated, nothing tuned) and keeps the WESM
+Reserve Market prices, the contract-cover Bill impact, and the Market power lens. A
+slider-driven Quick scenario stays under System as a fast what-if.
 
-Honest block-dispatch stance, no fabricated per-plant fleet: the Fuels class sets the
-aggregate merit-order stack; the Generators class names the 11 sourced units and drives
+Honest block-dispatch stance, nothing per-plant fabricated: the Fuels class sets the
+aggregate merit-order stack; the Generators class carries the DOE List of Existing
+Power Plants at unit level (2025 editions, parsed and reconciled to the DOE's own
+subtotals in `fleet.json`; DOE dependable capacity is the editable value) and drives
 N-1 (editing a unit shifts its fuel's available capacity by the change, a labeled
-approximation, not plant-level unit commitment).
+approximation, not plant-level unit commitment). The Storage class cycles only in
+Chronology runs, on a labeled heuristic; energy durations are stated assumptions.
 
 ## Walkthrough
 
@@ -96,6 +110,10 @@ src/
   studio/    Studio.tsx (PLEXOS shell: explorer, ribbon, Run gate)
              model.ts (editable objects + scenario overrides + solveModel)
              engine.ts (typed dispatch re-solve), engine.test.ts + model.test.ts
+             chrono.ts (hour-by-hour replay engine), chrono.test.ts (parity vs
+             pipeline/chrono.py golden fixtures)
+             ChronoView.tsx (Chronology), BackcastView.tsx (model vs the tape)
+             runs.ts + RunsView.tsx (frozen runs, compare, CSV, share links)
              model-views.tsx (editable Properties grid + solved Solution views)
              views.tsx (base-case reference views), charts.tsx (SVG)
              Scenario.tsx (Quick scenario sliders), Bill.tsx, MarketPower.tsx
@@ -123,7 +141,11 @@ gifsicle -O3 --lossy=60 /tmp/raw.gif -o docs/demo.gif
 - The Studio reads coupling, unit-commitment, reliability (Monte Carlo), storage,
   price-duration, marginal-frequency, and the scenario-engine inputs (per-fuel
   availability, golden parity cases) from `dispatch.json`, plus `reserve.json`,
-  `bill.json`, and `market_power.json`.
+  `bill.json`, `market_power.json`, `profiles.json` (observed hourly days, solar
+  shape, storage fleet, reserve requirements, chronological golden fixtures, the
+  backcast), and `fleet.json` (the DOE per-plant list).
+- The demo GIF still shows the pre-chronology studio; it gets re-recorded at the
+  publish gate (real recording only).
 - Every added number is sourced (URL in the same commit) and labeled NOT PLEXOS.
   Reserve product-code mapping and the market-power HHI carry their own caveats in
   the baked notes.

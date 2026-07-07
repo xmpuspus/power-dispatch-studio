@@ -190,6 +190,44 @@ multiplying by 5/60.</li>
 series, not a settlement quantity).</li>
 </ul>
 
+<h2>The chronological engine and the studio (branch build)</h2>
+<p>The studio's Chronology and Backcast views replay observed days hour by hour.
+The inputs and the checks:</p>
+<ul>
+<li><b>Observed day profiles</b> (<code>profiles.json</code>): per-grid hourly
+demand is the hourly mean of dispatched generation from the RTD regional
+summaries (the same load axis the dispatch model calibrates against), and the
+observed hourly price is the mean of that hour's 5-minute LWAP. Days without
+full 24-hour demand coverage on all three grids are dropped, not filled.</li>
+<li><b>Solar shape</b>: the 24-hour availability profile is the model's labeled
+clear-sky-ish assumption (fleet_ph.SOLAR_PROFILE), not measured irradiance.
+Other fuels hold their derated availability across the day.</li>
+<li><b>Storage</b>: the chronological run cycles the sourced storage fleet
+(DOE 634 MW BESS; Kalayaan 685 MW pumped storage) with a labeled
+charge-cheap / discharge-dear heuristic ranked by (price, demand, hour);
+energy durations are stated assumptions because the sources publish MW, not
+MWh. The snapshot views keep storage out of the energy stack, as before.</li>
+<li><b>Parity</b>: the browser engine must reproduce golden day-run fixtures
+computed by the Python reference (pipeline/chrono.py); the studio test suite
+asserts it, the same harness as the snapshot engine.</li>
+<li><b>Backcast</b>: every full-coverage market day is replayed with the base
+model against the observed hourly LWAP and the error is stated per grid (MAE,
+bias, correlation). The high-hour hit rate reports n/a when the flat cost
+model cannot rank hours, instead of a fake 100%. Nothing is tuned to fit; the
+evening residual is the scarcity and offer premium the cost model cannot see,
+and it stays the finding.</li>
+<li><b>Per-plant fleet</b> (<code>fleet.json</code>): the DOE List of Existing
+Power Plants (grid-connected; Luzon and Mindanao as of April 2025, Visayas
+March 2025), parsed per unit from the DOE's own PDFs (Internet Archive
+captures, since doe.gov.ph refuses non-PH requests). Every fuel section must
+reconcile to the PDF's own subtotal before the artifact is written. Dependable
+capacity is the DOE figure, not a model derate.</li>
+<li><b>Reserve co-clear</b>: an optional toggle prices each hour at demand plus
+the mean scheduled reserve requirement per grid (RTD reserve rows), a labeled
+approximation of the co-optimised energy-and-reserve market, not the
+co-optimisation itself.</li>
+</ul>
+
 <h2>What this map does NOT claim</h2>
 <ul>
 <li>It does not claim data centers raised Philippine electricity prices. Current
