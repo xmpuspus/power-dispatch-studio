@@ -16,17 +16,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - name: Solver (the LP engine's only dependency)
+        run: python3 -m pip install highspy
       - name: Fetch everything newer than the archive
         id: fetch
         # continue so a partial IEMOP failure still commits what DID arrive;
         # the explicit red steps at the end keep the failure visible.
         continue-on-error: true
         run: python3 pipeline/archive_iemop.py --daily
-      - name: Commit raw files first (the archive is the irreplaceable asset)
+      - name: Derive DIPCEF dailies (per-resource energy; zips too heavy to keep)
+        id: derive
+        continue-on-error: true
+        run: python3 pipeline/fuelmix.py --derive --limit 3
+      - name: Commit raw + derived files first (the archive is the irreplaceable asset)
         run: |
           git config user.name "archive-bot"
           git config user.email "archive@localhost"
-          git add data/raw
+          git add data/raw data/derived
           git diff --cached --quiet && echo "no new raw files" || {
             git commit -m "archive: $(date -u +%Y-%m-%d)"
             git push
@@ -36,6 +42,7 @@ jobs:
       - name: Data pins + banned-framing gate
         run: |
           python3 tests/test_data.py
+          python3 tests/test_lp_parity.py
           python3 tests/qa_gate.py
       - name: Commit rebaked web data
         run: |

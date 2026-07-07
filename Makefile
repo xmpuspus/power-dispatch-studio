@@ -9,6 +9,7 @@ backfill:
 # Daily incremental fetch (what .github/workflows/archive.yml runs).
 archive:
 	$(PY) pipeline/archive_iemop.py --daily
+	$(PY) pipeline/fuelmix.py --derive --limit 3
 
 # Bake the static data from the archive + verified constants into web/data/.
 data:
