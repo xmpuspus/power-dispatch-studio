@@ -1,10 +1,10 @@
 {
  "DAPCV": {
-  "bytes": 3887462,
-  "files": 90,
-  "newest": "20260705",
+  "bytes": 3977160,
+  "files": 92,
+  "newest": "20260707",
   "oldest": "20260407",
-  "page_min_date": "04/07/2026",
+  "page_min_date": "04/08/2026",
   "post_id": "239058",
   "slug": "congestions-manifesting-in-dap"
  },
@@ -13,16 +13,16 @@
   "files": 25,
   "newest": "20260626",
   "oldest": "20260625",
-  "page_min_date": "04/07/2026",
+  "page_min_date": "04/08/2026",
   "post_id": "226576",
   "slug": "dipc-energy-results-final"
  },
  "HVDCRTD": {
-  "bytes": 7650,
-  "files": 90,
-  "newest": "20260705",
+  "bytes": 7820,
+  "files": 92,
+  "newest": "20260707",
   "oldest": "20260407",
-  "page_min_date": "04/07/2026",
+  "page_min_date": "04/08/2026",
   "post_id": "5752",
   "slug": "hvdc-limits-imposed-in-rtd"
  },
@@ -31,25 +31,25 @@
   "files": 80,
   "newest": "20260625",
   "oldest": "20260407",
-  "page_min_date": "04/07/2026",
+  "page_min_date": "04/08/2026",
   "post_id": "276300",
   "slug": "load-weighted-average-prices-final"
  },
  "OUTRTD": {
-  "bytes": 15217235,
-  "files": 90,
-  "newest": "20260705",
+  "bytes": 15730934,
+  "files": 92,
+  "newest": "20260707",
   "oldest": "20260407",
-  "page_min_date": "04/07/2026",
+  "page_min_date": "04/08/2026",
   "post_id": "5764",
   "slug": "outage-schedules-used-in-rtd"
  },
  "RTDCV": {
-  "bytes": 842746,
-  "files": 90,
-  "newest": "20260705",
+  "bytes": 862146,
+  "files": 92,
+  "newest": "20260707",
   "oldest": "20260407",
-  "page_min_date": "04/07/2026",
+  "page_min_date": "04/08/2026",
   "post_id": "5782",
   "slug": "congestions-manifesting-in-rtd"
  },
@@ -58,18 +58,18 @@
   "files": 2,
   "newest": "20260705",
   "oldest": "20260703",
-  "page_min_date": "04/07/2026",
+  "page_min_date": "04/08/2026",
   "post_id": "261204",
   "slug": "rtd-reserve-schedule"
  },
  "RTDSUM": {
-  "bytes": 30272357,
-  "files": 90,
-  "newest": "20260705",
+  "bytes": 30933513,
+  "files": 92,
+  "newest": "20260707",
   "oldest": "20260407",
-  "page_min_date": "04/07/2026",
+  "page_min_date": "04/08/2026",
   "post_id": "5760",
   "slug": "rtd-regional-summaries"
  },
- "fetched_at_utc": "2026-07-06T15:55:41+00:00"
+ "fetched_at_utc": "2026-07-07T23:37:22+00:00"
 }
