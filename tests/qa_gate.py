@@ -16,7 +16,8 @@ ROOT = os.path.join(os.path.dirname(__file__), "..")
 TARGETS = (glob.glob(os.path.join(ROOT, "web", "*.html"))
            + glob.glob(os.path.join(ROOT, "web", "data", "*.json"))
            + glob.glob(os.path.join(ROOT, "docs", "*.md"))
-           + [os.path.join(ROOT, "README.md")])
+           + [os.path.join(ROOT, "README.md"),
+              os.path.join(ROOT, "studio", "README.md")])
 
 fails = []
 

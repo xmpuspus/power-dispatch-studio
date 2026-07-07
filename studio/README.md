@@ -86,19 +86,27 @@ against the observed hourly LWAP. At the July 2026 bake (window 2026-05-01 to
 | Grid | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- | --- |
 | Luzon | P7.63/kWh | P6.31/kWh | P4.18 | -P1.33 | 0.35 | 42% |
-| Visayas | P12.91/kWh | P5.99/kWh | P8.65 | -P6.92 | 0.09 | n/a |
-| Mindanao | P11.48/kWh | P6.01/kWh | P7.57 | -P5.48 | 0.05 | 16% |
+| Visayas | P12.91/kWh | P5.99/kWh | P8.66 | -P6.92 | 0.62 | n/a |
+| Mindanao | P11.48/kWh | P6.00/kWh | P7.58 | -P5.48 | 0.06 | 7% |
 
-Two engine steps sit inside these numbers, both reported rather than tuned.
+Three engine steps sit inside these numbers, all reported rather than tuned.
 The LP swap completed the overnight corridor arbitrage the old
 coordinate-descent clear left half-done (mean error unchanged, a few
 hundredths of correlation traded away as solver noise). The water budgets
 then gave Luzon a real daily shape: hydro limited to each day's observed
 energy gets spent in the dear hours, correlation more than doubles to 0.35,
 and the high-hour hit rate goes from unrankable (a flat model) to 42 percent.
-Visayas and Mindanao correlations fall to near zero: their budgets reshape
-modeled hours that observed prices do not follow, and that mismatch stays
-visible instead of being tuned away.
+The third step recalibrated the per-grid hydro capacity split against the
+DOE plant lists after the observed schedules contradicted it: the old
+allocation gave the Visayas 10 MW of hydro while DIPCEF showed its plants
+clearing up to 377 MWh a day. With the fleet-derived split (Luzon 2,560 /
+Visayas 55 / Mindanao 1,221 MW installed) the Visayas water budget finally
+binds and its correlation goes from 0.09 to 0.62, while the level bias is
+untouched: the model still under-prices the Visayas by P6.92/kWh, and that
+stays visible. Mindanao moves the other way, high-hour hit falling from 16
+to 7 percent: the extra fleet-sourced hydro suppresses modeled scarcity
+hours that observed prices keep. Its price formation is dominated by things
+this model does not carry, and the number says so.
 
 Read that table before trusting any scenario: the model explains the cost
 floor and the congestion geometry, and it under-prices scarcity everywhere,

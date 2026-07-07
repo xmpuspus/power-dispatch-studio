@@ -218,6 +218,15 @@ full 24-hour demand coverage on all three grids are dropped, not filled.</li>
 <li><b>Solar shape</b>: the 24-hour availability profile is the model's labeled
 clear-sky-ish assumption (fleet_ph.SOLAR_PROFILE), not measured irradiance.
 Other fuels hold their derated availability across the day.</li>
+<li><b>Per-grid hydro capacity</b>: recalibrated July 2026 from the DOE
+plant lists after the observed schedules contradicted the old allocation
+(the model gave the Visayas 10 MW of hydro; DIPCEF showed its plants
+clearing up to 377 MWh a day). The split now follows the fleet's installed
+shares (Luzon 66.7 / Visayas 1.4 / Mindanao 31.8 percent), prorated onto
+the sourced 3,836 MW national hydro total. Calibrated against capacity and
+observed dispatch, never against prices. Mindanao's wettest observed days
+still exceed the derated modeled capacity by about 3 percent; the bake
+reports that residual instead of hiding it.</li>
 <li><b>Storage</b>: the day LP optimises the sourced storage fleet (DOE 634 MW
 BESS; Kalayaan 685 MW pumped storage) across the hours: it cycles only when
 the price spread beats the round-trip loss and idles on a flat day, which the

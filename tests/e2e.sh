@@ -142,9 +142,11 @@ if command -v agent-browser >/dev/null 2>&1; then
     const d=document.getElementById("sim-dc"); d.value=3000; d.dispatchEvent(new Event("input"))' >/dev/null 2>&1
   sleep 1
   SB=$(agent-browser eval '(window.__diag.simulate||{}).price' 2>/dev/null | strip)
-  agent-browser eval 'const s=document.getElementById("sim-stor"); s.value=1500; s.dispatchEvent(new Event("input"))' >/dev/null 2>&1
+  # 2000 MW (slider max): the +3000 DC oil gap is ~1,613 MW after the 2026-07-07
+  # hydro recalibration; 1500 sat inside the oil block and shaved nothing.
+  agent-browser eval 'const s=document.getElementById("sim-stor"); s.value=2000; s.dispatchEvent(new Event("input"))' >/dev/null 2>&1
   sleep 1
-  SA=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.stor===1500, d.price<'"$SB"'].join("|")' 2>/dev/null | strip)
+  SA=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.stor===2000, d.price<'"$SB"'].join("|")' 2>/dev/null | strip)
   CH=$(agent-browser eval '[!!window.__diag.priceDuration, !!document.querySelector("#sim-duration svg"), !!document.getElementById("sim-margfreq")].join("|")' 2>/dev/null | strip)
   echo "storage: before=$SB after=$SA charts=$CH"
   [[ "$SA" == true\|true && "$CH" == true\|true\|true ]] && ok "storage lever shaves peak + item-5 charts render" || bad "storage/charts ($SA / $CH)"

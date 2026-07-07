@@ -16484,12 +16484,8 @@
   },
   "suspects_mwh": {},
   "budget_exceeds_modeled_capacity": {
-   "visayas": {
-    "modeled_hydro_mw": 5.5,
-    "max_observed_budget_mwh": 377.3
-   },
    "mindanao": {
-    "modeled_hydro_mw": 550.0,
+    "modeled_hydro_mw": 671.6,
     "max_observed_budget_mwh": 16550.9
    }
   },
@@ -16509,7 +16505,7 @@
     "input": {
      "date": "2026-06-20"
     },
-    "lp_sha256": "d6f4e1b92099ff62439025745d32d2561be7ea2f550e1277d534d482f7bdfab1",
+    "lp_sha256": "e7778fa9f474d201d9e8a69427394434269d0f766004127e8e6fa882044f4c5b",
     "expect": {
      "price": {
       "luzon": [
@@ -16618,19 +16614,19 @@
       0.0
      ],
      "flow_vm": [
-      90.1,
-      107.1,
-      125.5,
+      84.6,
+      101.6,
+      122.6,
       208.6,
-      304.1,
-      264.1,
-      251.1,
-      234.1,
-      150.1,
-      93.1,
-      73.1,
-      49.1,
-      48.1,
+      298.6,
+      258.6,
+      245.6,
+      228.6,
+      144.6,
+      87.6,
+      67.6,
+      43.6,
+      42.6,
       0.0,
       0.0,
       0.0,
@@ -16751,7 +16747,7 @@
       "luzon": 1500
      }
     },
-    "lp_sha256": "714a04aa4184ac8ed9e07a7a7bc9abeee064e88ff11c094e5af0f621e85eb983",
+    "lp_sha256": "c00a6dd7fa56b600205555720baebd8367a3c368f1c8ce82c5e8cda566c859da",
     "expect": {
      "price": {
       "luzon": [
@@ -16863,12 +16859,12 @@
       0.0,
       0.0,
       0.0,
-      154.3,
-      304.1,
+      151.4,
+      298.6,
       258.6,
-      251.1,
-      234.1,
-      150.1,
+      245.6,
+      228.6,
+      144.6,
       0.0,
       0.0,
       0.0,
@@ -17000,7 +16996,7 @@
       }
      ]
     },
-    "lp_sha256": "93a8ee13377b8bb78c07c003baeb423f1606a78eae16de6847bda2cd40bd922e",
+    "lp_sha256": "1d1de9e1a88d15c190e9d00dd641040c50ed153c566602133820e447d854d843",
     "expect": {
      "price": {
       "luzon": [
@@ -17109,19 +17105,19 @@
       0.0
      ],
      "flow_vm": [
-      90.1,
-      107.1,
-      125.5,
-      214.1,
-      304.1,
+      84.6,
+      101.6,
+      122.6,
+      208.6,
+      298.6,
       258.6,
-      251.1,
-      234.1,
-      150.1,
-      93.1,
-      73.1,
-      49.1,
-      48.1,
+      245.6,
+      228.6,
+      144.6,
+      87.6,
+      67.6,
+      43.6,
+      42.6,
       0.0,
       0.0,
       0.0,
@@ -17243,7 +17239,7 @@
      },
      "hydrology": 0.344
     },
-    "lp_sha256": "3b7927fbc8510047f4da7454b69fb24201c7c7152579c78ff6c2fca593e4f2af",
+    "lp_sha256": "82015594f51ac5efe5ea839a7f7468c0c04251ea8066e2487321d30baf61ad76",
     "expect": {
      "price": {
       "luzon": [
@@ -17314,7 +17310,7 @@
        6.0,
        6.0,
        6.0,
-       6.02,
+       6.0,
        6.02,
        6.02,
        10.3,
@@ -17344,7 +17340,7 @@
       -250.0,
       -250.0,
       -250.0,
-      -198.7,
+      -249.0,
       -250.0,
       -250.0,
       -250.0,
@@ -17356,7 +17352,7 @@
       0.0,
       0.0,
       0.0,
-      49.6,
+      48.6,
       8.6,
       0.0,
       0.0,
@@ -17367,14 +17363,14 @@
       0.0,
       0.0,
       0.0,
-      24.8,
-      95.0,
-      145.4,
-      302.3,
-      239.4,
-      239.4,
-      193.4,
-      86.4,
+      0.0,
+      53.2,
+      103.6,
+      260.5,
+      197.6,
+      197.6,
+      151.6,
+      44.6,
       0.0
      ],
      "soc_mwh": [
@@ -17460,7 +17456,7 @@
       "mean_price": {
        "luzon": 10.3,
        "visayas": 6.177,
-       "mindanao": 6.185
+       "mindanao": 6.184
       },
       "peak_price": {
        "luzon": 10.301,
@@ -17487,7 +17483,7 @@
       }
      }
     },
-    "lp_sha256": "51e0f22f4033b53a30f4f3c3ed81167914c3e434ab57f0c3674728bd6ae8ecef",
+    "lp_sha256": "db969d8264bb91030366c82a22b50d31167783a77e43478b2103ba4bbce4dbe7",
     "expect": {
      "price": {
       "luzon": [
@@ -17598,14 +17594,14 @@
      "flow_vm": [
       0.0,
       0.0,
-      71.3,
-      214.1,
-      304.1,
+      68.4,
+      208.6,
+      298.6,
       258.6,
-      251.1,
-      234.1,
-      150.1,
-      93.1,
+      245.6,
+      228.6,
+      144.6,
+      87.6,
       0.0,
       0.0,
       0.0,
@@ -17693,9 +17689,9 @@
       "hydro",
       "hydro",
       "export",
-      "hydro",
       "oil",
-      "export",
+      "oil",
+      "oil",
       "export",
       "hydro"
      ],
@@ -17741,7 +17737,7 @@
       }
      ]
     },
-    "lp_sha256": "7fdea0bdb0a7b3adca889a355835ea5d4624d3d3232843afee665e9cb00bff9f",
+    "lp_sha256": "69f421980c4ba9bb0ce310f0f488bb79ae79758d772badf245c74a9b640bbbcd",
     "expect": {
      "price": {
       "luzon": [
@@ -17777,7 +17773,7 @@
        6.0,
        5.98,
        5.98,
-       5.98,
+       6.0,
        6.0,
        6.0,
        6.0,
@@ -17854,9 +17850,9 @@
       0.0,
       0.0,
       0.0,
-      51.5,
+      48.6,
       8.6,
-      1.1,
+      0.0,
       0.0,
       0.0,
       0.0,
@@ -17970,7 +17966,7 @@
        "visayas": 0.0,
        "mindanao": 0.0
       },
-      "leyte_rent_m_php": 31.815,
+      "leyte_rent_m_php": 31.81,
       "mvip_rent_m_php": 0.0
      }
     }
@@ -17997,20 +17993,20 @@
    "visayas": {
     "n_hours": 1344,
     "observed_mean_php_kwh": 12.913,
-    "modeled_mean_php_kwh": 5.995,
-    "mae_php_kwh": 8.651,
-    "bias_php_kwh": -6.917,
-    "correlation": 0.088,
+    "modeled_mean_php_kwh": 5.991,
+    "mae_php_kwh": 8.655,
+    "bias_php_kwh": -6.922,
+    "correlation": 0.618,
     "high_hour_hit_rate_pct": null
    },
    "mindanao": {
     "n_hours": 1344,
     "observed_mean_php_kwh": 11.483,
-    "modeled_mean_php_kwh": 6.005,
-    "mae_php_kwh": 7.574,
-    "bias_php_kwh": -5.478,
-    "correlation": 0.054,
-    "high_hour_hit_rate_pct": 16.2
+    "modeled_mean_php_kwh": 6.0,
+    "mae_php_kwh": 7.579,
+    "bias_php_kwh": -5.482,
+    "correlation": 0.06,
+    "high_hour_hit_rate_pct": 7.4
    }
   },
   "high_hour_note": "High hours are the top decile of observed hourly LWAP in the window; the hit rate is how often the model also ranks that hour in its own top decile. Rank agreement, not level agreement.",
