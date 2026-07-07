@@ -26,14 +26,21 @@ the fidelity and none of the setup cost. The honest mapping:
 | Properties grid, scenario tagging | Same interaction: edit a cell, the edit is tagged to the active scenario, revert per cell | Base values return with the x on a changed cell |
 | Execute | Run | A coordinate-descent coupled clear of the three grids; under a second in the browser, so the Run gate is authentic without the queue |
 | ST Schedule | Chronology | Hour-by-hour replay of an observed market day (or the week ending on it) from the IEMOP archive, on your edited model |
-| Solution browser | Solution views | Merit order, Chronology, Coupled flows, N-1, Regions, a seeded Monte Carlo reliability, plus scenario compare |
-| Solution files | Saved runs | Frozen solves (scenario snapshot, window, engine version, hourly results): diff two runs, export hourly CSV, restore as a scenario |
+| LT Plan | LT Plan view | The DOE's committed and indicative project lists (reconciled to the DOE's own subtotals) as build candidates on a horizon slider; Apply writes them into the scenario as ordinary edits. No expansion optimizer runs |
+| PASA | PASA view | The operator's own outage schedules (OUTRTD), sized against the DOE fleet, with the reliability Monte Carlo re-run on the day's scheduled-out MW |
+| Execute a model list | Load sweep | The snapshot solve stepped over added flat load on one grid: where the corridor binds, where the marginal fuel flips, where unserved load begins |
+| Stochastic samples | Window band | The scenario replayed across every full-coverage market day in the archive; per-hour price percentiles and the daily-mean distribution. The sample is the observed days, nothing synthetic |
+| Binding-constraint reporting | What set the price | Every Chronology hour classified: marginal fuel block, saturated corridor on the importing side, or unserved load |
+| Solution browser | Solution views | Merit order, Chronology, Load sweep, Window band, Coupled flows, N-1, Regions, a seeded Monte Carlo reliability, plus scenario compare |
+| Solution files | Saved runs | Frozen solves (scenario snapshot, window, engine version, hourly results): diff two runs, export hourly CSV or a self-contained HTML report, restore as a scenario |
+| Emissions accounting | Emissions view | Dispatched energy priced in operational tCO2 with sourced per-technology factors; biomass reported uncounted rather than assigned a contested factor |
 | Datafiles | Baked JSON artifacts | Produced by the Python pipeline from archived IEMOP files; the frontend never computes a number the pipeline cannot reproduce |
 | Model validation | Backcast view | Every full-coverage market day replayed against observed hourly LWAP, error stated per grid, nothing tuned |
 
 What it is not: there is no MILP, no security-constrained unit commitment, no
-nodal network, and no capacity expansion. The scope section below states
-exactly what solves.
+nodal network, and no expansion optimizer (the LT Plan view applies the DOE's
+own lists; it does not choose builds). The scope section below states exactly
+what solves.
 
 ## The model, honestly scoped
 
@@ -55,7 +62,9 @@ at demand plus the scheduled reserve requirement.
 | Chronological replay of observed days | Load or price forecasting |
 | Storage cycling (heuristic) | Inter-temporal optimisation, inter-day storage carryover |
 | Reserve co-clear approximation | Full energy-reserve co-optimisation |
-| Monte Carlo adequacy on forced-outage rates | Capacity expansion (LT Plan), maintenance scheduling (PASA) |
+| Monte Carlo adequacy on forced-outage rates, with the day's scheduled outages removable (PASA lite) | Maintenance-schedule optimisation |
+| DOE build pipeline as sourced candidates on a horizon (LT Plan lite) | Expansion optimisation, build-cost economics |
+| Load sweep, window band, per-hour binding classification, operational CO2 | Monthly energy-limited hydro (IEMOP's per-month generation mix is not yet citable for every replayed month; the sourced dry/wet hydrology multiplier stands in) |
 
 The model's honesty gate is calibration against the observed load-weighted
 average price (LWAP). A competitive cost stack under-prices tight hours; that
@@ -93,15 +102,23 @@ build's MW (flat, the data-center shape), Run. Chronology on the demand-peak
 day shows which hours flip from coal to oil; Save run, revert the edit, save
 the base, and Compare two runs gives the price and congestion-rent delta.
 
+![Recorded studio walkthrough of pricing a data-center build: on the demand-peak day the base evening clears on coal at P6.00/kWh; raising Luzon load by 1,500 MW (the DICT 2028 build) flips the evening to oil, mean P6.00 to P9.00 and peak P12.00, and saturates the Leyte-Luzon HVDC; Compare two runs reads +P3.00/kWh and +P15M congestion rent.](docs/workflow-1-datacenter.gif)
+
 **Stress the single contingency.** System > Generators, set SPI U1 and SPI U2
 (the two 647 MW Sual units) to zero, Run. N-1 and Reliability show the
 adequacy hit; Chronology on the stress day shows whether the evening clears on
-oil or sheds load. The Leyte-Luzon corridor's rent responds in Coupled flows.
+oil or sheds load, and its congestion-rent tile prices the corridors binding in
+the peak hours.
+
+![Recorded studio walkthrough of the single contingency: zeroing both 647 MW Sual units lifts Luzon loss-of-load probability from 1.8% to 12.5% (expected shed 9 to 71 MW), leaves the rest of the fleet tripping P6 to P12 in N-1, and clears the observed stress evening on oil, mean P6.00 to P8.75 with P13.5M congestion rent.](docs/workflow-2-contingency.gif)
 
 **Test the Malampaya cliff.** System > Fuels, reprice natural gas from the
 Malampaya cost (P4.80/kWh) to the imported-LNG cost (P10.30/kWh), Run, and
-read the Chronology price shape; add the dry-hydrology case from the Quick
-scenario for the compounding view. Share the exact scenario with Copy link.
+read the Chronology price shape; then in the Quick scenario, stack the announced
+build and a dry year on the LNG switch for the compounding view. Share the exact
+scenario with Copy link.
+
+![Recorded studio walkthrough of the Malampaya cliff: repricing gas from the Malampaya cost P4.80 to the imported-LNG cost P10.30 lifts the whole Luzon price shape to the gas cost, mean P6.00 to P10.30 with congestion rent P0.75M to P24.73M; then in the Quick scenario, stacking imported LNG, the announced 1,500 MW build, and a dry year tips the evening to oil at P12.00, +P6.00/kWh.](docs/workflow-3-malampaya.gif)
 
 ## Data
 
@@ -113,6 +130,11 @@ scenario for the compounding view. Share the exact scenario with Copy link.
 | Fuel costs | ERC administered coal price, Malampaya FOI, imported-LNG estimate | Sourced constants |
 | Reserve requirements and prices | IEMOP RTD reserve schedules (sample days; product-code mapping labeled INFERRED) | Sample top-ups |
 | Storage fleet | DOE (634 MW BESS), CBK Power (Kalayaan 685 MW); energy durations are stated assumptions because the sources publish MW, not MWh | Sourced constants |
+| Build pipeline (LT Plan) | DOE committed and indicative project lists, As of 31 December 2025 (Internet Archive captures); every fuel section reconciles to the DOE's printed subtotal and every grid to the DOE's LVM summary | Per DOE edition |
+| Transmission candidates | NGCP TDP 2025-2050 (March 2025 + September 2025 revision); MW only where the TDP states transfer capacity | Per TDP edition |
+| Scheduled outages (PASA) | IEMOP outage schedules used in RTD, sized against the DOE fleet through a hand-verified alias table; unmatched codes carry no MW | Daily cron |
+| Emission factors | IPCC 2006 fuel defaults at the EMB's published Philippine heat efficiencies; EMB diesel figure; DOE grid factor as cross-check | Sourced constants |
+| Supply-mix history | Meralco advisories April to June 2026 (WESM 6/7/10%), each month cross-checked in an independent news report | Monthly advisory |
 
 Every number in the interface is either computed by the pipeline from archived
 files or a labeled constant with its primary source; `../web/methodology.html`
@@ -152,7 +174,13 @@ src/
              chrono.ts (hour-by-hour replay engine), chrono.test.ts (parity vs
              pipeline/chrono.py golden fixtures)
              ChronoView.tsx (Chronology), BackcastView.tsx (model vs the tape)
+             insights.ts (binding classification, percentile bands, horizon
+             math, CO2), insights.test.ts
+             SweepView.tsx (load sweep), DistributionView.tsx (window band)
+             LTPlanView.tsx (DOE build pipeline), PasaView.tsx (outage-day
+             adequacy), EmissionsView.tsx
              runs.ts + RunsView.tsx (frozen runs, compare, CSV, share links)
+             report.ts (self-contained HTML run report), report.test.ts
              model-views.tsx (properties grid + solved views), views.tsx,
              charts.tsx (SVG), Scenario.tsx, Bill.tsx, MarketPower.tsx
   styles/    tokens.css (design tokens, light + dark), base.css, app.css
@@ -174,6 +202,23 @@ ffmpeg -y -i <video>.webm -i /tmp/pal.png -lavfi \
   "fps=9,scale=1000:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3" \
   /tmp/raw.gif
 gifsicle -O3 --lossy=60 /tmp/raw.gif -o docs/demo.gif
+```
+
+The three captioned workflow GIFs under "Three workflows to try" come from a
+second script that drives one clip per workflow. Every number a caption states
+is read live from the running studio, so a caption cannot drift from the model:
+
+```bash
+python3 scripts/record-workflows.py all   # wf1|wf2|wf3 webms to /tmp/studio-rec
+names="wf1:workflow-1-datacenter wf2:workflow-2-contingency wf3:workflow-3-malampaya"
+for pair in $names; do
+  k=${pair%%:*}; out=${pair##*:}
+  ffmpeg -y -ss 2 -i /tmp/studio-rec/$k.webm \
+    -vf "fps=9,scale=1180:-1:flags=lanczos,palettegen=stats_mode=diff" /tmp/pal.png
+  ffmpeg -y -ss 2 -i /tmp/studio-rec/$k.webm -i /tmp/pal.png -lavfi \
+    "fps=9,scale=1180:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3" /tmp/raw.gif
+  gifsicle -O3 --lossy=60 /tmp/raw.gif -o docs/$out.gif
+done
 ```
 
 ## Limitations to keep in view

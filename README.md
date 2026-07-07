@@ -1,22 +1,22 @@
-# gridbill-ph
+# Power Dispatch Studio
 
-Can the Philippine grid host the announced data-center wave? An interactive map and
-a daily archive built on the market operator's own public files: where transmission
-already binds (named equipment, five-minute receipts), where the announced
-data-center megawatts land, and what the spot market and the Meralco bill are doing.
-Inputs, method, and every number are open and reproducible from a clean clone.
+Can the Philippine grid host the announced data-center wave? An interactive map, a
+browser dispatch studio, and a daily archive built on the market operator's own
+public files: where transmission already binds (named equipment, five-minute
+receipts), where the announced data-center megawatts land, and what the spot market
+and the Meralco bill are doing. Inputs, method, and every number are open and
+reproducible from a clean clone. Formerly gridbill-ph.
 
-[![CI](https://github.com/xmpuspus/gridbill-ph/actions/workflows/ci.yml/badge.svg)](https://github.com/xmpuspus/gridbill-ph/actions/workflows/ci.yml)
+[![CI](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml)
 [![License: MIT (code) / CC-BY-4.0 (data)](https://img.shields.io/badge/license-MIT%20%2F%20CC--BY--4.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
-[![Status](https://img.shields.io/badge/status-alpha-orange.svg)](README.md)
 
-<!-- LIVE_URL and the hero recording land at deploy (gated on the maintainer). Until
-     then the hero links to the in-repo methodology page; swap both at deploy. -->
-[<img width="820" alt="A walkthrough of the gridbill-ph map: the three questions across the top (supply, choke points, prices), the constraint league showing named 230 kV equipment at its limit on most of a 90-day window led by the Tabango-Daanbantayan corridor, the Leyte-Cebu line hovered to show its archive receipts, a Sual-unit toggle subtracting 647 MW from the system margin, and the regional price sparkline fanning apart after the market reopened" src="docs/hero.gif">](web/methodology.html)
+[<img width="820" alt="A walkthrough of the map: the three questions across the top (supply, choke points, prices), the constraint league showing named 230 kV equipment at its limit on most of a 90-day window led by the Tabango-Daanbantayan corridor, the Leyte-Cebu line hovered to show its archive receipts, a Sual-unit toggle subtracting 647 MW from the system margin, and the regional price sparkline fanning apart after the market reopened" src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
 
-Live map: deploying alongside the July Meralco and June WESM prints. For now, open
-`web/index.html` after `make data`, or read [every number and source](web/methodology.html).
+Live: [the map](https://power-dispatch-studio.vercel.app) and
+[the studio](https://power-dispatch-studio.vercel.app/studio/), or open
+`web/index.html` after `make data` and read
+[every number and source](web/methodology.html).
 
 ## The grid names its own choke point
 
@@ -224,6 +224,23 @@ national forecast. The full decomposition is the `coupling` block in
 [`web/data/dispatch.json`](web/data/dispatch.json); the coupled solver is
 `pipeline/coupled_dispatch.py`.
 
+## The studio
+
+The full authoring surface lives at
+[/studio/](https://power-dispatch-studio.vercel.app/studio/): a browser dispatch
+studio in the working shape of a commercial production-cost tool (an object model
+in a properties grid, scenarios as tagged overrides, a Run gate, a solution
+browser, chronological replay of observed days, and a backcast that scores the
+model against the actual price tape). The July 2026 pass added the planning
+layers: the DOE's committed and indicative build pipeline on a horizon slider (LT
+Plan), the operator's own scheduled outages re-priced as adequacy (PASA), a load
+sweep that walks the announced wave in MW steps, a window band that replays a
+scenario across every archived market day, per-hour binding-constraint naming,
+operational CO2 accounting, and a self-contained HTML run report. Every layer is
+computed from the archive or a sourced list; nothing runs an optimizer. The honest
+mapping to PLEXOS concepts, the model's scope, and its accuracy statement live in
+[studio/README.md](studio/README.md).
+
 ## What this is
 
 - **A daily archive.** IEMOP's public window is a rolling ~90 days per dataset.
@@ -300,8 +317,8 @@ Every number on the map traces back to one of these.
 Requires Python 3.11+ and curl. No accounts, no keys.
 
 ```bash
-git clone https://github.com/xmpuspus/gridbill-ph
-cd gridbill-ph
+git clone https://github.com/xmpuspus/power-dispatch-studio
+cd power-dispatch-studio
 make backfill    # pull the full public window from iemop.ph (~15 min, ~50 MB)
 make data        # bake web/data/ from the archive + sourced constants
 make qa          # data-integrity pins + banned-framing gate
@@ -344,8 +361,8 @@ Code: MIT. Baked data products: CC-BY-4.0. See [`LICENSE`](LICENSE) and
 (IEMOP, NGCP, Meralco); this repository mirrors public files as-is for research with
 attribution, and will honor any takedown request from the publisher.
 
-Attribution when redistributing the baked data: *gridbill-ph (2026), IEMOP public
-market data archive, https://github.com/xmpuspus/gridbill-ph*.
+Attribution when redistributing the baked data: *Power Dispatch Studio (2026), IEMOP
+public market data archive, https://github.com/xmpuspus/power-dispatch-studio*.
 
 ## Public-record disclaimer
 
