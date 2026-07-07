@@ -6,3 +6,5 @@ tmp/
 .DS_Store
 *.pyc
 .planning/
+.vercel_out/
+.vercel/
