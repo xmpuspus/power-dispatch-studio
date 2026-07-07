@@ -239,8 +239,9 @@ scenario across every archived market day, per-hour binding-constraint naming,
 operational CO2 accounting, and a self-contained HTML run report. Every planning layer is
 computed from the archive or a sourced list, with no optimizer choosing builds; the
 dispatch itself solves as a HiGHS linear program in the browser (the July 2026
-solver pass), with storage optimised across the day's hours and prices taken from
-the duals. The honest mapping to PLEXOS concepts, the model's scope, and its
+solver pass), with storage optimised across the day's hours, hydro energy-limited
+to each day's observed water where the archive carries the operator's
+per-resource schedules, and prices taken from the duals. The honest mapping to PLEXOS concepts, the model's scope, and its
 accuracy statement live in [studio/README.md](studio/README.md).
 
 ## What this is

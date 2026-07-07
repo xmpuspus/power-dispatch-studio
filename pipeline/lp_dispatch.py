@@ -36,16 +36,20 @@ STORE_EPS = 1e-3
 
 
 def price_label(price: float, own_cost: float, own_fuel: str | None,
-                storage_marginal: bool) -> str | None:
+                storage_marginal: bool,
+                hydro_marginal: bool = False) -> str | None:
     """Name what sets an LMP. The dual can sit away from the grid's own stack:
     on an importing grid it is the exporter's cost plus the wheel, on an
-    exporting grid the importer's cost minus the wheel, and with storage
-    strictly between its bounds it is the arbitrage value. Shared verbatim by
-    both engines; the goldens pin it."""
+    exporting grid the importer's cost minus the wheel, with storage strictly
+    between its bounds at the arbitrage value, and with the day's water
+    binding at hydro's opportunity value. Shared verbatim by both engines;
+    the goldens pin it."""
     if abs(own_cost - price) <= LABEL_EPS:
         return own_fuel
     if storage_marginal:
         return "storage"
+    if hydro_marginal:
+        return "hydro"
     return "export" if price > own_cost else "import"
 
 
@@ -133,6 +137,23 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
         reserve_req = {g: round1(sum((req.get(g) or {}).values()))
                        for g in GRID_KEYS}
 
+    # the day's observed hydro energy, scaled with hydro capacity so the
+    # hydrology lever and capacity edits stay coherent (half the water at
+    # half the plant; more plant, proportionally more energy)
+    hydro_budget = None
+    day_budget = day.get("hydro_budget_mwh")
+    if day_budget:
+        hydro_budget = {}
+        for g in GRID_KEYS:
+            base_hydro = dispatch["merit_order"][g]["fuel_avail_mw"].get(
+                "hydro") or 0.0
+            eff_hydro = fuel_base[g].get("hydro") or 0.0
+            budget = day_budget.get(g)
+            if budget is None or base_hydro <= 0:
+                hydro_budget[g] = None
+            else:
+                hydro_budget[g] = budget * (eff_hydro / base_hydro)
+
     # unserved load prices at the dearest block (the model's documented
     # no-VoLL stance); the +0.001 makes shedding strictly worse than serving
     dearest = max((b["cost"] for g in GRID_KEYS
@@ -140,7 +161,8 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
     voll = max(12.0, dearest) + 0.001
 
     return {"stacks": stacks, "demand": demand, "caps": caps, "wheel": wheel,
-            "storage": storage, "reserve_req": reserve_req, "voll": voll}
+            "storage": storage, "reserve_req": reserve_req, "voll": voll,
+            "hydro_budget": hydro_budget}
 
 
 def run_chronology_lp(dispatch: dict, profiles: dict, date: str,
@@ -150,7 +172,8 @@ def run_chronology_lp(dispatch: dict, profiles: dict, date: str,
     opts = opts or {}
     m = _assemble(dispatch, profiles, date, opts)
     text = build_day_lp(m["stacks"], m["demand"], m["caps"], m["wheel"],
-                        m["storage"], m["reserve_req"], m["voll"])
+                        m["storage"], m["reserve_req"], m["voll"],
+                        m["hydro_budget"])
     sol = _highs_solve(text)
     cols, duals = sol["cols"], sol["duals"]
 
@@ -196,8 +219,20 @@ def run_chronology_lp(dispatch: dict, profiles: dict, date: str,
                 store_marg[st["grid"]] = True
         marg = {}
         for g in GRID_KEYS:
+            s_g = G_SHORT[g]
+            # the day's water binding leaves hydro strictly interior while
+            # the budget row carries a shadow price: hydro sets the LMP
+            hyd_marg = False
+            if abs(duals.get(f"hyd_{s_g}", 0.0)) > 1e-6:
+                for i, b in enumerate(m["stacks"][g][h]):
+                    if b["fuel"] == "hydro":
+                        x = cols.get(f"x_{s_g}_{h}_{i}", 0.0)
+                        if STORE_EPS < x < b["mw"] - STORE_EPS:
+                            hyd_marg = True
+                            break
             cost, fuel = marginal(m["stacks"][g][h], gen[g])
-            marg[g] = price_label(price[g], cost, fuel, store_marg[g])
+            marg[g] = price_label(price[g], cost, fuel, store_marg[g],
+                                  hyd_marg)
         sat1 = abs(f1) >= m["caps"]["leyte"] - FLOW_SAT_EPS
         sat2 = abs(f2) >= m["caps"]["mvip"] - FLOW_SAT_EPS
         rent1 = (round3(price["visayas"] - price["luzon"] if f1 > 0

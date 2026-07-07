@@ -171,6 +171,21 @@ describe('chronological behavior', () => {
     expect(res.summary.unservedMwh.mindanao).toBeGreaterThan(0)
   })
 
+  it('hydro cannot exceed the day water budget, and the lever scales it', () => {
+    const budgeted = profiles.days.find(
+      (x) => x.market && x.hydro_budget_mwh?.luzon && x.hydro_budget_mwh.luzon > 100
+    )
+    expect(budgeted, 'a budgeted day must exist in the baked window').toBeTruthy()
+    const dt = budgeted!.date
+    const budget = budgeted!.hydro_budget_mwh!.luzon!
+    const hydroSum = (r: ReturnType<typeof runChronology>) =>
+      r.hours.reduce((s, h) => s + (h.fuelGen.luzon.hydro ?? 0), 0)
+    const res = runChronology(d, profiles, dt, {})
+    expect(hydroSum(res)).toBeLessThanOrEqual(budget + 0.5)
+    const dry = runChronology(d, profiles, dt, { hydrology: 0.5 })
+    expect(hydroSum(dry)).toBeLessThanOrEqual(budget * 0.5 + 1.0)
+  })
+
   it('builds the byte-identical LP the Python engine hashed (parity of the model text)', () => {
     for (const c of profiles.chrono_golden.cases ?? []) {
       if (!c.lp_sha256) continue

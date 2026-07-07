@@ -19,8 +19,8 @@ import { buildDayLp, type LpStorage } from './lpText'
 import { solveLp } from './solver'
 
 // bump when the run outputs change meaning; saved runs from an older engine
-// are flagged stale in the Runs view. v2: the HiGHS LP engine.
-export const ENGINE_VERSION = 2
+// are flagged stale in the Runs view. v3: energy-limited hydro.
+export const ENGINE_VERSION = 3
 
 export const LABEL_EPS = 0.025
 const STORE_EPS = 1e-3
@@ -84,10 +84,12 @@ export function priceLabel(
   price: number,
   ownCost: number,
   ownFuel: string | null,
-  storageMarginal: boolean
+  storageMarginal: boolean,
+  hydroMarginal = false
 ): string | null {
   if (Math.abs(ownCost - price) <= LABEL_EPS) return ownFuel
   if (storageMarginal) return 'storage'
+  if (hydroMarginal) return 'hydro'
   return price > ownCost ? 'export' : 'import'
 }
 
@@ -99,6 +101,7 @@ interface Assembled {
   storage: LpStorage[]
   reserveReq: Record<GridKey, number> | null
   voll: number
+  hydroBudget: Partial<Record<GridKey, number | null>> | null
 }
 
 /** Input assembly, shared by the run and the parity hash test. Mirrors
@@ -175,6 +178,22 @@ export function assembleDay(
     }
   }
 
+  // the day's observed hydro energy, scaled with hydro capacity so the
+  // hydrology lever and capacity edits stay coherent (half the water at
+  // half the plant; more plant, proportionally more energy)
+  let hydroBudget: Partial<Record<GridKey, number | null>> | null = null
+  const dayBudget = day.hydro_budget_mwh
+  if (dayBudget) {
+    hydroBudget = {}
+    for (const g of GRID_KEYS) {
+      const baseHydro = d.merit_order[g].fuel_avail_mw.hydro ?? 0
+      const effHydro = fuelBase[g].hydro ?? 0
+      const budget = dayBudget[g]
+      hydroBudget[g] =
+        budget == null || baseHydro <= 0 ? null : budget * (effHydro / baseHydro)
+    }
+  }
+
   // unserved load prices at the dearest block (the documented no-VoLL
   // stance); the +0.001 makes shedding strictly worse than serving
   let dearest = 12
@@ -182,7 +201,7 @@ export function assembleDay(
     for (const hb of stacks[g]) for (const b of hb) if (b.cost > dearest) dearest = b.cost
   const voll = dearest + 0.001
 
-  return { stacks, demand, caps, wheel, storage, reserveReq, voll }
+  return { stacks, demand, caps, wheel, storage, reserveReq, voll, hydroBudget }
 }
 
 /** The canonical LP text for a day run; the parity test hashes this. */
@@ -193,7 +212,16 @@ export function buildChronoLpText(
   opts: ChronoOpts = {}
 ): string {
   const m = assembleDay(d, profiles, date, opts)
-  return buildDayLp(m.stacks, m.demand, m.caps, m.wheel, m.storage, m.reserveReq, m.voll)
+  return buildDayLp(
+    m.stacks,
+    m.demand,
+    m.caps,
+    m.wheel,
+    m.storage,
+    m.reserveReq,
+    m.voll,
+    m.hydroBudget
+  )
 }
 
 /** Replay one observed day on the LP. Mirrors lp_dispatch.run_chronology_lp. */
@@ -205,7 +233,16 @@ export function runChronology(
 ): ChronoResult {
   const m = assembleDay(d, profiles, date, opts)
   const sol = solveLp(
-    buildDayLp(m.stacks, m.demand, m.caps, m.wheel, m.storage, m.reserveReq, m.voll)
+    buildDayLp(
+      m.stacks,
+      m.demand,
+      m.caps,
+      m.wheel,
+      m.storage,
+      m.reserveReq,
+      m.voll,
+      m.hydroBudget
+    )
   )
   const S: Record<GridKey, string> = { luzon: 'l', visayas: 'v', mindanao: 'm' }
 
@@ -251,8 +288,19 @@ export function runChronology(
     }
     const marg = {} as Record<GridKey, string | null>
     for (const g of GRID_KEYS) {
+      // the day's water binding leaves hydro strictly interior while the
+      // budget row carries a shadow price: hydro sets the LMP
+      let hydMarg = false
+      if (Math.abs(sol.dual(`hyd_${S[g]}`)) > 1e-6) {
+        m.stacks[g][h].forEach((b, i) => {
+          if (b.fuel === 'hydro') {
+            const x = sol.col(`x_${S[g]}_${h}_${i}`)
+            if (x > STORE_EPS && x < b.mw - STORE_EPS) hydMarg = true
+          }
+        })
+      }
       const mres = marginal(m.stacks[g][h], gen[g])
-      marg[g] = priceLabel(price[g], mres.cost, mres.fuel, storeMarg[g])
+      marg[g] = priceLabel(price[g], mres.cost, mres.fuel, storeMarg[g], hydMarg)
     }
     const sat1 = Math.abs(f1) >= m.caps.leyte - FLOW_SAT_EPS
     const sat2 = Math.abs(f2) >= m.caps.mvip - FLOW_SAT_EPS

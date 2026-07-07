@@ -216,7 +216,7 @@ export function SweepView({
 
       <Panel
         title="Every step"
-        subtitle="Snapshot solve at the evening reference hour per step. Chronology prices a whole day; this prices the tightest hour."
+        subtitle="Snapshot solve at the evening reference hour per step, with no daily water budget (a single hour carries none), so hydro offers at capacity here. Chronology prices whole days and is where the budget binds."
       >
         <DataGrid columns={cols} rows={steps} getKey={(r) => String(r.addMw)} />
         <p className="note">
