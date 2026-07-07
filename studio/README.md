@@ -1,6 +1,7 @@
-# gridbill-ph Studio
+# Power Dispatch Studio
 
-An open, browser-based dispatch studio for the Philippine wholesale electricity
+Power Dispatch Studio is the modeling workspace of the gridbill-ph project: an
+open, browser-based dispatch studio for the Philippine wholesale electricity
 market (WESM). It carries the working shape of a commercial production-cost
 tool: an object model you edit in a properties grid, scenarios as tagged
 overrides, a Run gate, a solution browser, chronological simulation over

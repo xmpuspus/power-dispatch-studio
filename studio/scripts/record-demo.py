@@ -33,7 +33,7 @@ async def main():
         await asyncio.sleep(3.0)  # landing hero + stat tiles settle
 
         # into the studio: the Generators grid is the DOE per-plant fleet
-        await tap(page, page.get_by_role("button", name="Open PLEXOS Studio"),
+        await tap(page, page.get_by_role("button", name="Open Power Dispatch Studio"),
                   pause_after=2.8)
 
         # trip a Sual unit in the Properties grid: SPI U1 from 647 to 0 MW
