@@ -216,9 +216,10 @@
  },
  "scenario_golden": {
   "reference_hour": 19,
+  "engine": "highs_lp_v2",
   "tolerance_php_kwh": 0.02,
   "tolerance_mw": 1.0,
-  "note": "Input/output pairs from coupled_dispatch.clear_coupled at the evening reference hour. The browser scenario engine must reproduce these; the studio test asserts it.",
+  "note": "Input/output pairs from the HiGHS LP snapshot engine at the evening reference hour. The browser engine must build the byte-identical LP (pinned by lp_sha256) and reproduce these; the studio test asserts both.",
   "cases": [
    {
     "label": "baseline typical evening",
@@ -234,6 +235,7 @@
       "mvip": 450
      }
     },
+    "lp_sha256": "ed2fa9e173946d754229d57f0cd41d07f7b703d224ef48f36096549a8849d1fb",
     "expect": {
      "price": {
       "luzon": 6.0,
@@ -272,6 +274,7 @@
       "mvip": 450
      }
     },
+    "lp_sha256": "1694031b913ad35157e3b872afb100dcdad08663a834835e66b920adf39bb5e1",
     "expect": {
      "price": {
       "luzon": 6.0,
@@ -310,26 +313,27 @@
       "mvip": 450
      }
     },
+    "lp_sha256": "fe53f45fd3c838fd2df6993fefe1c8f7a8cc21d82d278f80f5c9cf369f421bb4",
     "expect": {
      "price": {
       "luzon": 6.0,
-      "visayas": 12.0,
+      "visayas": 6.02,
       "mindanao": 6.0
      },
      "gen_mw": {
-      "luzon": 12280.9,
+      "luzon": 12281.0,
       "visayas": 2328.6,
-      "mindanao": 2928.5
+      "mindanao": 2928.4
      },
      "shortfall_mw": {
       "luzon": 0.0,
       "visayas": 0.0,
       "mindanao": 0.0
      },
-     "flow_lv_mw": 249.9,
-     "flow_vm_mw": -133.5,
+     "flow_lv_mw": 250.0,
+     "flow_vm_mw": -133.4,
      "leyte_saturated": true,
-     "leyte_rent_php_kwh": 6.0,
+     "leyte_rent_php_kwh": 0.02,
      "mvip_saturated": false,
      "mvip_rent_php_kwh": 0.0
     }
@@ -352,14 +356,15 @@
       "mvip": 450
      }
     },
+    "lp_sha256": "7112af3ea2cab89c7d3029255efe097c5549f32b01e7a4ae9ab9a9b58953382d",
     "expect": {
      "price": {
       "luzon": 6.0,
       "visayas": 12.0,
-      "mindanao": 12.0
+      "mindanao": 11.98
      },
      "gen_mw": {
-      "luzon": 12281,
+      "luzon": 12281.0,
       "visayas": 1424.6,
       "mindanao": 2932.4
      },
@@ -368,7 +373,7 @@
       "visayas": 0.0,
       "mindanao": 0.0
      },
-     "flow_lv_mw": 250,
+     "flow_lv_mw": 250.0,
      "flow_vm_mw": -137.4,
      "leyte_saturated": true,
      "leyte_rent_php_kwh": 6.0,
@@ -390,10 +395,11 @@
       "mvip": 450
      }
     },
+    "lp_sha256": "6b4e82f76498ddd87059bb8df6dad2dc080ef42540c0417540f365d90964d499",
     "expect": {
      "price": {
       "luzon": 6.0,
-      "visayas": 6.0,
+      "visayas": 6.02,
       "mindanao": 6.0
      },
      "gen_mw": {

@@ -27,6 +27,7 @@ e2e:
 # QA gate: data integrity pins + banned-framing + em-dash + AI-jargon sweep.
 qa:
 	$(PY) tests/test_data.py
+	$(PY) tests/test_lp_parity.py
 	$(PY) tests/qa_gate.py
 
 clean:

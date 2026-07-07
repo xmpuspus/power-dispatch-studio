@@ -363,7 +363,8 @@ def build_chrono_golden(dispatch: dict, profiles: dict) -> dict:
         {"label": "base day, no storage", "opts": {}},
         {"label": "DICT 1.5 GW flat load on Luzon",
          "opts": {"demand_delta": {"luzon": 1500}}},
-        {"label": "2 GW solar + 1 GW / 2 GWh storage on Luzon",
+        {"label": "storage idles when the day is flat (2 GW solar + 1 GW / "
+                  "2 GWh on Luzon)",
          "opts": {"solar_delta_mw": {"luzon": 2000},
                   "storage": [{"grid": "luzon", "power_mw": 1000,
                                "energy_mwh": 2000}]}},
@@ -371,15 +372,19 @@ def build_chrono_golden(dispatch: dict, profiles: dict) -> dict:
          "opts": {"fuel_cost": {"natural_gas": lng}, "hydrology": dry}},
         {"label": "both Sual units out all day",
          "opts": {"fuel_avail_delta": {"luzon": {"coal": -1294}}}},
-        {"label": "default storage fleet cycling",
-         "opts": {"storage": default_storage}},
+        {"label": "default storage cycles against the DICT wave",
+         "opts": {"demand_delta": {"luzon": 1500},
+                  "storage": default_storage}},
     ]
+    from lp_dispatch import run_chronology_lp
+
     out = []
     for c in cases:
-        res = run_chronology(dispatch, profiles, date, c["opts"])
+        res = run_chronology_lp(dispatch, profiles, date, c["opts"])
         out.append({
             "label": c["label"],
             "input": {"date": date, **c["opts"]},
+            "lp_sha256": res["lp_sha256"],
             "expect": {
                 "price": {g: [o["price"][g] for o in res["hours"]]
                           for g in GRID_KEYS},
@@ -398,11 +403,13 @@ def build_chrono_golden(dispatch: dict, profiles: dict) -> dict:
     return {
         "available": True,
         "date": date,
+        "engine": "highs_lp_v2",
         "tolerance_php_kwh": 0.02,
         "tolerance_mw": 1.0,
-        "note": "Input/output pairs from the Python chronological engine on the "
-                "default observed day. The studio's chrono.ts must reproduce "
-                "these; the studio test asserts it.",
+        "note": "Input/output pairs from the Python HiGHS LP engine on the "
+                "default observed day. The studio must build the byte-identical "
+                "LP (pinned by lp_sha256) and reproduce these outputs; the "
+                "studio test asserts both.",
         "cases": out,
     }
 
@@ -426,6 +433,8 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
     """Replay every full-coverage market day with the BASE model and score it
     against the observed hourly LWAP. No storage cycling, no levers, no tuning:
     the residual is the finding, exactly as in the snapshot calibration."""
+    from lp_dispatch import run_chronology_lp
+
     pairs: dict[str, list[tuple[float, float]]] = {g: [] for g in GRID_KEYS}
     days_used = []
     for day in profiles["days"]:
@@ -435,7 +444,7 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
         if not all(len(lw.get(g) or []) == 24
                    and all(v is not None for v in lw[g]) for g in GRID_KEYS):
             continue
-        res = run_chronology(dispatch, profiles, day["date"])
+        res = run_chronology_lp(dispatch, profiles, day["date"])
         days_used.append(day["date"])
         for g in GRID_KEYS:
             for h in range(24):
@@ -481,7 +490,12 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
                           "model also ranks that hour in its own top decile. "
                           "Rank agreement, not level agreement.",
         "note": "Hourly replay of every full-coverage market day with the base "
-                "model: no storage cycling, no levers, no tuning. The gap to "
-                "observed prices (scarcity, offers, caps, outages the model "
-                "cannot see) stays in the residual, it is the finding.",
+                "model on the HiGHS LP engine: no storage cycling, no levers, "
+                "no tuning. The gap to observed prices (scarcity, offers, "
+                "caps, outages the model cannot see) stays in the residual, "
+                "it is the finding. Against the previous clear, the LP "
+                "completes the overnight corridor arbitrage the old solver "
+                "left half-done: mean error is unchanged and the already-low "
+                "shape correlation drops a few hundredths; reported, not "
+                "tuned.",
     }

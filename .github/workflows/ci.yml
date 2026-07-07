@@ -13,11 +13,14 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       - name: Lint
         run: pipx run ruff check .
+      - name: Solver (the LP engine's only dependency)
+        run: python3 -m pip install highspy
       - name: Bake from the committed archive
         run: python3 pipeline/build_data.py
       - name: Data pins + banned-framing gate
         run: |
           python3 tests/test_data.py
+          python3 tests/test_lp_parity.py
           python3 tests/qa_gate.py
       - name: Behavioral checks against a local server
         run: |
@@ -25,3 +28,24 @@ jobs:
           (cd web && python3 serve.py 8789 &)
           sleep 2
           zsh tests/e2e.sh http://localhost:8789
+
+  studio:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: studio
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - name: Install (the HiGHS wasm build ships via npm)
+        run: npm ci
+      - name: Baked data + wasm into public/
+        run: node scripts/copy-data.mjs
+      - name: Types, lint, format
+        run: |
+          npm run typecheck
+          npm run lint
+          npm run format:check
+      - name: Parity suite (LP text hashes + golden outputs through the wasm solver)
+        run: npm test -- --run
+      - name: Production build
+        run: npm run build -- --base=/studio/

@@ -31,7 +31,7 @@ import re
 
 from build_data import REGION_MAP, dataset_files, day_of, f, rows_of
 from constants_ph import DEMAND_ANCHORS, GENERATORS, MARKET_ANCHORS
-from coupled_dispatch import CORRIDORS, clear_coupled
+from coupled_dispatch import CORRIDORS, WHEEL, clear_coupled
 from fleet_ph import (
     COAL_COMMIT_PHP_KWH,
     COAL_MIN_LOAD_FRAC,
@@ -300,14 +300,18 @@ def _coupling_outage(intervals: dict, prices: dict) -> dict:
 
 
 def build_scenario_golden(merit_order: dict) -> dict:
-    """Golden input/output pairs computed by the real coupled_dispatch engine.
+    """Golden input/output pairs computed by the HiGHS LP snapshot engine.
 
-    The client scenario engine (studio/src/studio/engine.ts) is a transcription of
-    the same solve. These pairs are the parity harness: the TS test rebuilds each
-    stack from merit_order[g].fuel_avail_mw, runs its own clear, and must reproduce
-    the prices/flows/rents below to the rounding. That ties the browser engine to
-    the Python source of truth instead of trusting the transcription.
+    The browser snapshot engine solves the same single-hour LP through the
+    HiGHS wasm build. These pairs are the parity harness: the TS test rebuilds
+    each stack from merit_order[g].fuel_avail_mw, constructs the byte-identical
+    LP (pinned by lp_sha256), solves it, and must reproduce the prices, flows,
+    and rents below to the rounding. The old coordinate-descent clear stays in
+    this pipeline as the analytics engine and a cross-check oracle.
     """
+    from fleet_ph import stack
+    from lp_dispatch import solve_snapshot_lp
+
     base = {g: merit_order[g.lower()]["typical_evening_demand_mw"] for g in GRIDS}
     c1 = CORRIDORS[0]["limit_mw"]
     c2 = CORRIDORS[1]["limit_mw"]
@@ -328,38 +332,42 @@ def build_scenario_golden(merit_order: dict) -> dict:
     ]
     out = []
     for c in cases:
-        res = clear_coupled(c["demand"], PEAK_HOUR,
-                            removed=c["removed"] or None, caps=c["caps"] or None)
+        stacks = {g.lower(): stack(g, PEAK_HOUR, (c["removed"] or {}).get(g))
+                  for g in ("LUZON", "VISAYAS", "MINDANAO")}
+        demand = {g.lower(): c["demand"][g]
+                  for g in ("LUZON", "VISAYAS", "MINDANAO")}
+        caps = {"leyte": c["caps"].get("leyte_luzon_hvdc", c1),
+                "mvip": c["caps"].get("mvip_hvdc", c2)}
+        res = solve_snapshot_lp(stacks, demand, caps, WHEEL)
         out.append({
             "label": c["label"],
             "input": {
-                "demand": {k.lower(): v for k, v in c["demand"].items()},
+                "demand": dict(demand),
                 "removed": {k.lower(): v for k, v in c["removed"].items()},
-                "caps": {"leyte": c["caps"].get("leyte_luzon_hvdc", c1),
-                         "mvip": c["caps"].get("mvip_hvdc", c2)},
+                "caps": caps,
             },
+            "lp_sha256": res["lp_sha256"],
             "expect": {
-                "price": {g: res["grids"][g]["price"] for g in
-                          ("luzon", "visayas", "mindanao")},
-                "gen_mw": {g: res["grids"][g]["gen_mw"] for g in
-                           ("luzon", "visayas", "mindanao")},
-                "shortfall_mw": {g: res["grids"][g]["shortfall_mw"] for g in
-                                 ("luzon", "visayas", "mindanao")},
-                "flow_lv_mw": res["flow_lv_mw"],
-                "flow_vm_mw": res["flow_vm_mw"],
-                "leyte_saturated": res["corridors"][0]["saturated"],
-                "leyte_rent_php_kwh": res["corridors"][0]["congestion_rent_php_kwh"],
-                "mvip_saturated": res["corridors"][1]["saturated"],
-                "mvip_rent_php_kwh": res["corridors"][1]["congestion_rent_php_kwh"],
+                "price": res["price"],
+                "gen_mw": res["gen"],
+                "shortfall_mw": res["shortfall"],
+                "flow_lv_mw": res["flow_lv"],
+                "flow_vm_mw": res["flow_vm"],
+                "leyte_saturated": res["leyte"]["sat"],
+                "leyte_rent_php_kwh": res["leyte"]["rent"],
+                "mvip_saturated": res["mvip"]["sat"],
+                "mvip_rent_php_kwh": res["mvip"]["rent"],
             },
         })
     return {
         "reference_hour": PEAK_HOUR,
+        "engine": "highs_lp_v2",
         "tolerance_php_kwh": 0.02,
         "tolerance_mw": 1.0,
-        "note": "Input/output pairs from coupled_dispatch.clear_coupled at the "
-                "evening reference hour. The browser scenario engine must reproduce "
-                "these; the studio test asserts it.",
+        "note": "Input/output pairs from the HiGHS LP snapshot engine at the "
+                "evening reference hour. The browser engine must build the "
+                "byte-identical LP (pinned by lp_sha256) and reproduce these; "
+                "the studio test asserts both.",
         "cases": out,
     }
 
