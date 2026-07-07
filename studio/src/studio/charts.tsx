@@ -1,20 +1,5 @@
 import type { Block, DurationPoint } from '../lib/types'
-import { fuelLabel } from '../lib/data'
-
-const FUEL_VAR: Record<string, string> = {
-  coal: 'var(--fuel-coal)',
-  oil: 'var(--fuel-oil)',
-  natural_gas: 'var(--fuel-gas)',
-  hydro: 'var(--fuel-hydro)',
-  geothermal: 'var(--fuel-geothermal)',
-  solar: 'var(--fuel-solar)',
-  wind: 'var(--series-flow)',
-  biomass: 'var(--positive)',
-  storage: 'var(--series-storage)',
-  firm: 'var(--primary)',
-  import: 'var(--series-flow)',
-}
-const fuelColor = (f: string) => FUEL_VAR[f] ?? 'var(--text-faint)'
+import { fuelColor, fuelLabel } from '../lib/data'
 
 /** Merit-order supply stack: blocks by marginal cost, with the demand cursor. */
 export function MeritStack({ blocks, demand }: { blocks: Block[]; demand: number }) {
@@ -520,6 +505,156 @@ export function SocChart({
       })}
       <text x={padL} y={H - 2} className="chart__ax">
         state of charge MWh; charge down, discharge up
+      </text>
+    </svg>
+  )
+}
+
+/** Hourly percentile band (p10 to p90 shaded, median line) with an optional
+ * dashed comparison series, e.g. the base model's median. */
+export function BandChart({
+  band,
+  compare,
+  compareLabel = 'base median',
+}: {
+  band: { p10: number; p50: number; p90: number }[]
+  compare?: number[]
+  compareLabel?: string
+}) {
+  const W = 640
+  const H = 220
+  const padL = 40
+  const padR = 76
+  const padT = 12
+  const padB = 24
+  const n = band.length
+  if (!n) return null
+  const vals = band.flatMap((b) => [b.p10, b.p90]).concat(compare ?? [])
+  const ymin = Math.min(...vals)
+  const ymax = Math.max(...vals)
+  const span = ymax - ymin || 1
+  const X = (i: number) => padL + ((W - padL - padR) * i) / (n - 1)
+  const Y = (v: number) => padT + (H - padT - padB) * (1 - (v - ymin) / span)
+  const line = (pts: number[]) =>
+    pts.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ')
+  const area =
+    band.map((b, i) => `${X(i).toFixed(1)},${Y(b.p90).toFixed(1)}`).join(' ') +
+    ' ' +
+    band
+      .map((b, i) => `${X(i).toFixed(1)},${Y(b.p10).toFixed(1)}`)
+      .reverse()
+      .join(' ')
+  const ticks = [ymax, (ymax + ymin) / 2, ymin]
+  return (
+    <svg
+      className="chart"
+      viewBox={`0 0 ${W} ${H}`}
+      role="img"
+      aria-label="Hourly price percentile band across replayed days"
+    >
+      {ticks.map((v, i) => (
+        <g key={i}>
+          <line
+            x1={padL}
+            y1={Y(v)}
+            x2={W - padR}
+            y2={Y(v)}
+            stroke="var(--border)"
+            strokeWidth={0.75}
+          />
+          <text x={padL - 6} y={Y(v) + 3} textAnchor="end" className="chart__ax">
+            {v.toFixed(1)}
+          </text>
+        </g>
+      ))}
+      <polygon points={area} fill="var(--series-modeled)" opacity={0.16} />
+      <polyline
+        points={line(band.map((b) => b.p50))}
+        fill="none"
+        stroke="var(--series-modeled)"
+        strokeWidth={2}
+      />
+      {compare && compare.length === n && (
+        <polyline
+          points={line(compare)}
+          fill="none"
+          stroke="var(--series-observed)"
+          strokeWidth={1.6}
+          strokeDasharray="4 3"
+        />
+      )}
+      <text
+        x={X(n - 1) + 5}
+        y={Y(band[n - 1].p50) + 3}
+        className="chart__lbl"
+        fill="var(--series-modeled)"
+      >
+        median
+      </text>
+      {compare && compare.length === n && (
+        <text
+          x={X(n - 1) + 5}
+          y={Y(compare[n - 1]) + 14}
+          className="chart__lbl"
+          fill="var(--series-observed)"
+        >
+          {compareLabel}
+        </text>
+      )}
+      <text x={padL} y={H - 8} className="chart__ax">
+        h0
+      </text>
+      <text x={W - padR} y={H - 8} textAnchor="end" className="chart__ax">
+        h23; band = 10th to 90th percentile across days
+      </text>
+    </svg>
+  )
+}
+
+/** One cell per hour, colored by what set the price: the binding-constraint strip. */
+export function BindingStrip({
+  cells,
+}: {
+  cells: { cause: 'unserved' | 'corridor' | 'fuel'; detail: string }[]
+}) {
+  const n = cells.length
+  if (!n) return null
+  const W = 640
+  const H = 46
+  const gap = n > 48 ? 0.5 : 1.5
+  const w = (W - gap * (n - 1)) / n
+  const fill = (c: { cause: string; detail: string }) =>
+    c.cause === 'unserved'
+      ? 'var(--destructive)'
+      : c.cause === 'corridor'
+        ? 'var(--accent)'
+        : fuelColor(c.detail)
+  return (
+    <svg
+      className="chart"
+      viewBox={`0 0 ${W} ${H}`}
+      role="img"
+      aria-label="What set the price each hour"
+    >
+      {cells.map((c, i) => (
+        <rect
+          key={i}
+          x={i * (w + gap)}
+          y={6}
+          width={w}
+          height={26}
+          rx={1.5}
+          fill={fill(c)}
+          opacity={0.92}
+        >
+          <title>
+            h{i % 24}:{' '}
+            {c.cause === 'fuel' ? `${fuelLabel(c.detail)} on the margin` : c.detail}
+          </title>
+        </rect>
+      ))}
+      <text x={0} y={H - 3} className="chart__ax">
+        one cell per hour
       </text>
     </svg>
   )

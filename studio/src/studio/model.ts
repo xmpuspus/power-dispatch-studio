@@ -400,12 +400,41 @@ function reliabilityMC(
   }
 }
 
-/** Apply base + overrides, rebuild the stacks, and solve the coupled dispatch. */
-export function solveModel(
+/** The cheap subset of a solve: stacks and the coupled clear, no N-1, no Monte
+ * Carlo. What a parameter sweep pays per step. */
+export interface SnapshotModel {
+  coupled: CoupledResult
+  stacks: Record<GridKey, Block[]>
+  demand: Record<GridKey, number>
+  avail: Record<GridKey, number>
+  marginalFuel: Record<GridKey, string | null>
+}
+
+interface Assembled extends SnapshotModel {
+  fuelAvail: Record<GridKey, Record<string, number>>
+  sp: {
+    coalCommit: number
+    coalMinFrac: number
+    coalPrice: number
+    costs: Record<string, number>
+  }
+}
+
+/** Apply base + overrides and run the coupled clear only. */
+export function solveSnapshot(
   d: Dispatch,
   objects: Record<ClassId, ObjRow[]>,
   ov: Overrides
-): SolvedModel {
+): SnapshotModel {
+  const { coupled, stacks, demand, avail, marginalFuel } = assemble(d, objects, ov)
+  return { coupled, stacks, demand, avail, marginalFuel }
+}
+
+function assemble(
+  d: Dispatch,
+  objects: Record<ClassId, ObjRow[]>,
+  ov: Overrides
+): Assembled {
   const a = d.assumptions
   const wheel = a.wheeling_cost_php_kwh
 
@@ -512,6 +541,25 @@ export function solveModel(
     visayas: sum(stacks.visayas),
     mindanao: sum(stacks.mindanao),
   }
+  const marginalFuel: Record<GridKey, string | null> = {
+    luzon: marginalOf(stacks.luzon, demand.luzon),
+    visayas: marginalOf(stacks.visayas, demand.visayas),
+    mindanao: marginalOf(stacks.mindanao, demand.mindanao),
+  }
+  return { coupled, stacks, demand, avail, marginalFuel, fuelAvail, sp }
+}
+
+/** Apply base + overrides, rebuild the stacks, and solve the coupled dispatch. */
+export function solveModel(
+  d: Dispatch,
+  objects: Record<ClassId, ObjRow[]>,
+  ov: Overrides
+): SolvedModel {
+  const { coupled, stacks, demand, avail, marginalFuel, fuelAvail, sp } = assemble(
+    d,
+    objects,
+    ov
+  )
   const reserveMarginPct: Record<GridKey, number> = {
     luzon: margin(avail.luzon, objForId(objects.region, 'luzon').props.peak_mw as number),
     visayas: margin(
@@ -522,11 +570,6 @@ export function solveModel(
       avail.mindanao,
       objForId(objects.region, 'mindanao').props.peak_mw as number
     ),
-  }
-  const marginalFuel: Record<GridKey, string | null> = {
-    luzon: marginalOf(stacks.luzon, demand.luzon),
-    visayas: marginalOf(stacks.visayas, demand.visayas),
-    mindanao: marginalOf(stacks.mindanao, demand.mindanao),
   }
 
   // N-1: trip each named unit at its grid's demand, read the price move + shortfall
@@ -602,6 +645,84 @@ export function solveModel(
     marginalFuel,
     reliability,
   }
+}
+
+export interface ScheduledOut {
+  grid: GridKey
+  fuel: string
+  mw: number
+  plant?: string | null
+}
+
+export interface AdequacyWithOutages {
+  reliability: Record<GridKey, McResult>
+  outMw: Record<GridKey, number>
+  availAfter: Record<GridKey, number>
+  marginAfterPct: Record<GridKey, number>
+}
+
+/** The PASA read: reliability with a day's scheduled outages removed before the
+ * draws. Matched outage MW leaves its fuel's availability, and the SAME MW stops
+ * drawing its forced-outage rate; units of the same plant still in service keep
+ * theirs (dropping the whole plant would understate the risk). Unmatched
+ * resources carry no MW and are reported by the caller, not guessed here. */
+export function solveAdequacyWithOutages(
+  d: Dispatch,
+  objects: Record<ClassId, ObjRow[]>,
+  ov: Overrides,
+  outs: ScheduledOut[]
+): AdequacyWithOutages {
+  const { fuelAvail, demand } = assemble(d, objects, ov)
+  const reduced: Record<GridKey, Record<string, number>> = {
+    luzon: { ...fuelAvail.luzon },
+    visayas: { ...fuelAvail.visayas },
+    mindanao: { ...fuelAvail.mindanao },
+  }
+  const outMw: Record<GridKey, number> = { luzon: 0, visayas: 0, mindanao: 0 }
+  const outMwByPlant = new Map<string, number>()
+  for (const o of outs) {
+    if (o.mw <= 0) continue
+    reduced[o.grid][o.fuel] = Math.max(0, (reduced[o.grid][o.fuel] ?? 0) - o.mw)
+    outMw[o.grid] += o.mw
+    if (o.plant) {
+      const k = o.plant.toLowerCase()
+      outMwByPlant.set(k, (outMwByPlant.get(k) ?? 0) + o.mw)
+    }
+  }
+  const loadDist = d.reliability_mc.load_dist
+  const gensBy = (grid: GridKey) =>
+    objects.generator
+      .filter((g) => g.grid === grid)
+      .map((g) => {
+        const cap = effNum(
+          ov,
+          'generator',
+          g.id,
+          'capacity_mw',
+          g.props.capacity_mw as number
+        )
+        const out = outMwByPlant.get(g.label.toLowerCase()) ?? 0
+        return {
+          fuel: g.props.fuel as string,
+          cap: Math.max(0, cap - out),
+          forFrac:
+            effNum(ov, 'generator', g.id, 'for_pct', g.props.for_pct as number) / 100,
+        }
+      })
+      .filter((g) => g.cap > 0)
+  const reliability = {} as Record<GridKey, McResult>
+  const availAfter = {} as Record<GridKey, number>
+  const marginAfterPct = {} as Record<GridKey, number>
+  for (const g of GRID_KEYS) {
+    reliability[g] = reliabilityMC(g, reduced[g], gensBy(g), demand[g], loadDist[g].std)
+    availAfter[g] =
+      Math.round(Object.values(reduced[g]).reduce((s, v) => s + v, 0) * 10) / 10
+    marginAfterPct[g] = margin(
+      availAfter[g],
+      objForId(objects.region, g).props.peak_mw as number
+    )
+  }
+  return { reliability, outMw, availAfter, marginAfterPct }
 }
 
 function objForId(rows: ObjRow[], id: string): ObjRow {

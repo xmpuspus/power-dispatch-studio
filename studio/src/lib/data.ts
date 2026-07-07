@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 import type {
   Bill,
   Dispatch,
+  Emissions,
   Fleet,
   GeneratorProps,
   MarketPower,
+  Pasa,
   Profiles,
+  Projects,
   Reserve,
 } from './types'
 
@@ -57,6 +60,9 @@ export const useBill = () => useJson<Bill>('bill.json')
 export const useMarketPower = () => useJson<MarketPower>('market_power.json')
 export const useProfiles = () => useJson<Profiles>('profiles.json')
 export const useFleet = () => useJson<Fleet>('fleet.json')
+export const usePasa = () => useJson<Pasa>('pasa.json')
+export const useProjects = () => useJson<Projects>('projects.json')
+export const useEmissions = () => useJson<Emissions>('emissions.json')
 
 export interface FeatureCollection<P> {
   type: 'FeatureCollection'
@@ -86,3 +92,19 @@ export const pct = (frac: number | null | undefined, dp = 0): string =>
   frac == null || Number.isNaN(frac) ? '-' : `${nf(dp, dp).format(frac * 100)}%`
 
 export const fuelLabel = (f: string): string => f.replace(/_/g, ' ')
+
+// fuel -> design-token color, shared by the charts and their legends
+const FUEL_VAR: Record<string, string> = {
+  coal: 'var(--fuel-coal)',
+  oil: 'var(--fuel-oil)',
+  natural_gas: 'var(--fuel-gas)',
+  hydro: 'var(--fuel-hydro)',
+  geothermal: 'var(--fuel-geothermal)',
+  solar: 'var(--fuel-solar)',
+  wind: 'var(--series-flow)',
+  biomass: 'var(--positive)',
+  storage: 'var(--series-storage)',
+  firm: 'var(--primary)',
+  import: 'var(--series-flow)',
+}
+export const fuelColor = (f: string): string => FUEL_VAR[f] ?? 'var(--text-faint)'
