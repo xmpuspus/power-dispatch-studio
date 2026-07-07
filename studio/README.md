@@ -69,7 +69,8 @@ inflating demand.
 | Reserve as a withheld-capacity constraint | Reserve PRICES (the co-optimised reserve products stay a market layer this model does not clear) |
 | Monte Carlo adequacy on forced-outage rates, with the day's scheduled outages removable (PASA lite) | Maintenance-schedule optimisation |
 | DOE build pipeline as sourced candidates on a horizon (LT Plan lite) | Expansion optimisation, build-cost economics |
-| Load sweep, window band, per-hour binding classification, operational CO2 | Monthly energy-limited hydro (IEMOP's per-month generation mix is not yet citable for every replayed month; the sourced dry/wet hydrology multiplier stands in) |
+| Load sweep, window band, per-hour binding classification, operational CO2 | Build-cost economics, reserve prices |
+| Energy-limited hydro: the day LP caps hydro at the day's OBSERVED water (DIPCEF per-resource schedules, derived daily; scaled with edits and the hydrology lever) | Inter-day water management (each day's budget stands alone) |
 
 The model's honesty gate is calibration against the observed load-weighted
 average price (LWAP). A competitive cost stack under-prices tight hours; that
@@ -82,17 +83,22 @@ The Backcast view replays every full-coverage market day with the base model
 against the observed hourly LWAP. At the July 2026 bake (window 2026-05-01 to
 2026-06-25, 56 market days, 24 hourly points each per grid):
 
-| Grid | Observed mean | Modeled mean | MAE | Bias | Correlation |
-| --- | --- | --- | --- | --- | --- |
-| Luzon | P7.63/kWh | P5.98/kWh | P4.32 | -P1.65 | 0.16 |
-| Visayas | P12.91/kWh | P5.98/kWh | P8.65 | -P6.94 | 0.18 |
-| Mindanao | P11.48/kWh | P5.99/kWh | P7.57 | -P5.49 | 0.13 |
+| Grid | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
+| --- | --- | --- | --- | --- | --- | --- |
+| Luzon | P7.63/kWh | P6.31/kWh | P4.18 | -P1.33 | 0.35 | 42% |
+| Visayas | P12.91/kWh | P5.99/kWh | P8.65 | -P6.92 | 0.09 | n/a |
+| Mindanao | P11.48/kWh | P6.01/kWh | P7.57 | -P5.48 | 0.05 | 16% |
 
-Against the previous coordinate-descent clear, the LP completes the overnight
-corridor arbitrage the old solver left half-done: mean error is unchanged
-(MAE moves under P0.05 on every grid) and the already-low shape correlation
-drops a few hundredths. Reported, not tuned; the old clear's slightly better
-correlation was solver noise, not signal.
+Two engine steps sit inside these numbers, both reported rather than tuned.
+The LP swap completed the overnight corridor arbitrage the old
+coordinate-descent clear left half-done (mean error unchanged, a few
+hundredths of correlation traded away as solver noise). The water budgets
+then gave Luzon a real daily shape: hydro limited to each day's observed
+energy gets spent in the dear hours, correlation more than doubles to 0.35,
+and the high-hour hit rate goes from unrankable (a flat model) to 42 percent.
+Visayas and Mindanao correlations fall to near zero: their budgets reshape
+modeled hours that observed prices do not follow, and that mismatch stays
+visible instead of being tuned away.
 
 Read that table before trusting any scenario: the model explains the cost
 floor and the congestion geometry, and it under-prices scarcity everywhere,
@@ -145,6 +151,7 @@ scenario with Copy link.
 | Corridor limits | IEMOP monthly reports (Leyte-Luzon 250 MW operating limit) and the MVIP nameplate | Sourced constants |
 | Fuel costs | ERC administered coal price, Malampaya FOI, imported-LNG estimate | Sourced constants |
 | Reserve requirements and prices | IEMOP RTD reserve schedules (sample days; product-code mapping labeled INFERRED) | Sample top-ups |
+| Hydro water budgets | Per-resource daily energy derived from DIPCEF schedules (data/derived/dipcef_daily/, reconciled to RTDSUM within 2 percent per day); grid-connected WESM hydro matched to the DOE fleet, pumped storage excluded | Daily cron |
 | Storage fleet | DOE (634 MW BESS), CBK Power (Kalayaan 685 MW); energy durations are stated assumptions because the sources publish MW, not MWh | Sourced constants |
 | Build pipeline (LT Plan) | DOE committed and indicative project lists, As of 31 December 2025 (Internet Archive captures); every fuel section reconciles to the DOE's printed subtotal and every grid to the DOE's LVM summary | Per DOE edition |
 | Transmission candidates | NGCP TDP 2025-2050 (March 2025 + September 2025 revision); MW only where the TDP states transfer capacity | Per TDP edition |
@@ -208,8 +215,9 @@ src/
 The Python counterparts live in `../pipeline/`: `lp_model.py` (the canonical
 LP text) and `lp_dispatch.py` (the highspy reference solve + backcast bake),
 `chrono.py` (assembly helpers + the retired clear kept as a cross-oracle),
-`profiles.py` (observed-day bake), `fleet_doe.py` (DOE list parser with the
-reconciliation gate). The pipeline needs `highspy` (pip); the studio's wasm
+`profiles.py` (observed-day bake incl. hydro water budgets), `fuelmix.py`
+(DIPCEF daily deriver + hydro classification), `fleet_doe.py` (DOE list
+parser with the reconciliation gate). The pipeline needs `highspy` (pip); the studio's wasm
 solver installs with npm.
 
 ## Record the demo

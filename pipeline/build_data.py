@@ -827,7 +827,9 @@ def main() -> int:
     from chrono import build_backcast, build_chrono_golden
     from profiles import build_profiles
 
-    profiles = build_profiles()
+    merit_hydro = {g: dispatch["merit_order"][g]["fuel_avail_mw"].get("hydro")
+                   for g in ("luzon", "visayas", "mindanao")}
+    profiles = build_profiles(fleet, merit_hydro)
     profiles["chrono_golden"] = build_chrono_golden(dispatch, profiles)
     profiles["backcast"] = build_backcast(dispatch, profiles)
     with open(os.path.join(OUT, "profiles.json"), "w") as fh:

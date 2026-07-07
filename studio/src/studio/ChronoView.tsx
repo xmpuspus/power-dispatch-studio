@@ -59,6 +59,10 @@ export function ChronologyView({
     )
   )
 
+  const day = days.find((x) => x.date === date)
+  const hb = day?.hydro_budget_mwh
+  const hbTotal = hb ? (hb.luzon ?? 0) + (hb.visayas ?? 0) + (hb.mindanao ?? 0) : 0
+
   const windowDates = useMemo(() => {
     const idx = days.findIndex((x) => x.date === date)
     if (idx < 0) return []
@@ -195,6 +199,14 @@ export function ChronologyView({
           />
           Reserve co-clear ({num(reserveMw)} MW withheld)
         </label>
+        {hb && (
+          <span
+            className="chrono__reserve"
+            title="Observed daily hydro energy from the operator's per-resource schedules (DIPCEF); the day LP cannot dispatch more hydro than the day's water, scaled with your hydro edits and the hydrology lever."
+          >
+            hydro water: {num(hbTotal)} MWh observed
+          </span>
+        )}
         <div className="chrono__actions">
           <button className="btn btn--ghost btn--sm" onClick={save}>
             Save run
@@ -297,13 +309,16 @@ export function ChronologyView({
       <p className="note">
         Replays the archive's observed days: demand is dispatched generation per hour
         (IEMOP RTD regional summaries), replayed against the edited model. Region load
-        edits shift demand flat across all 24 hours, the data-center shape. The reserve
-        toggle withholds the mean scheduled requirement (IEMOP RTD reserve rows) from the
-        dispatchable stack, so tight hours price the withheld capacity instead of paying a
-        synthetic demand. The whole day solves as one linear program (HiGHS): storage
-        couples the hours, prices are the balance duals (locational marginal prices, so an
-        importing hour can price at the exporter plus the wheeling cost), and shedding
-        never beats available capacity. Still not PLEXOS: blocks, not units.
+        edits shift demand flat across all 24 hours, the data-center shape. On days the
+        archive carries per-resource schedules, hydro is energy-limited to the day's
+        observed water (scaled with hydro capacity edits and the hydrology lever), so the
+        solver spends it in the dearest hours. The reserve toggle withholds the mean
+        scheduled requirement (IEMOP RTD reserve rows) from the dispatchable stack, so
+        tight hours price the withheld capacity instead of paying a synthetic demand. The
+        whole day solves as one linear program (HiGHS): storage couples the hours, prices
+        are the balance duals (locational marginal prices, so an importing hour can price
+        at the exporter plus the wheeling cost), and shedding never beats available
+        capacity. Still not PLEXOS: blocks, not units.
       </p>
     </div>
   )

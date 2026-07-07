@@ -100,10 +100,16 @@ def dispatch_cost(res) -> float:
     return total
 
 
+# like-for-like only: the water budget makes budgeted days a MORE
+# constrained problem than the old clear ever solved, so the dominance
+# oracle runs on a day without a budget
+free_day = next((d["date"] for d in profiles["days"]
+                 if not d.get("hydro_budget_mwh")), None)
+check("an unbudgeted day exists for the cost oracle", free_day is not None)
 for label, opts in (("base", {}), ("dict wave",
                                    {"demand_delta": {"luzon": 1500}})):
-    old = run_chronology(dispatch, profiles, date, opts)
-    new = run_chronology_lp(dispatch, profiles, date, opts)
+    old = run_chronology(dispatch, profiles, free_day, opts)
+    new = run_chronology_lp(dispatch, profiles, free_day, opts)
     check(f"{label}: LP dispatch cost <= heuristic clear cost",
           dispatch_cost(new) <= dispatch_cost(old) + 1.0)
     # both engines agree on unserved energy for the base model
@@ -122,6 +128,17 @@ check("reserve requirement beyond capable capacity still solves", all(
     0 < o["price"][g] < 100 for o in res["hours"] for g in GRID_KEYS))
 check("the gutted grid sheds instead of going infeasible",
       res["summary"]["unserved_mwh"]["mindanao"] > 0)
+
+# hydro cannot exceed the day's observed water budget where one exists
+budgeted = next((d for d in profiles["days"]
+                 if d.get("hydro_budget_mwh")
+                 and (d["hydro_budget_mwh"].get("luzon") or 0) > 100), None)
+check("a budgeted day exists in the baked window", budgeted is not None)
+if budgeted:
+    res = run_chronology_lp(dispatch, profiles, budgeted["date"], {})
+    got = sum(o["fuel_gen"]["luzon"].get("hydro", 0.0) for o in res["hours"])
+    check("hydro dispatch respects the day water budget",
+          got <= budgeted["hydro_budget_mwh"]["luzon"] + 0.5)
 
 # the baked goldens must be reproducible from the current pipeline
 golden = profiles["chrono_golden"]

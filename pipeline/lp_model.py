@@ -54,7 +54,7 @@ def mtext(k: int) -> str:
 
 def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
                  storage: list[dict], reserve_req: dict | None,
-                 voll: float) -> str:
+                 voll: float, hydro_budget: dict | None = None) -> str:
     """The canonical LP text.
 
     stacks:  {grid: [blocks per hour]} with blocks [{fuel, cost, mw}, ...]
@@ -64,6 +64,8 @@ def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
     storage: [{grid, power_mw, energy_mwh, eff}]
     reserve_req: {grid: MW} or None (the co-optimisation toggle)
     voll:    unserved-load penalty, PhP/kWh
+    hydro_budget: {grid: MWh or None}; a day-level energy cap on the hydro
+                  blocks (observed water, already scaled by the caller)
     """
     H = len(demand["luzon"])
     wheel_m = micro(wheel)
@@ -168,6 +170,24 @@ def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
                 rhs = max(0, cap_m - micro(req))
                 rows.append(f" res_{s}_{h}:" + "".join(terms)
                             + f" <= {mtext(rhs)}")
+
+    # hydro is energy-limited by the day's observed water: the sum of hydro
+    # dispatch across the hours may not exceed the budget
+    if hydro_budget:
+        for g in GRID_KEYS:
+            budget = hydro_budget.get(g)
+            if budget is None:
+                continue
+            s = G_SHORT[g]
+            terms = []
+            for h in range(H):
+                for i, b in enumerate(stacks[g][h]):
+                    if b["fuel"] == "hydro":
+                        terms.append(f" + x_{s}_{h}_{i}")
+            if not terms:
+                continue
+            rows.append(f" hyd_{s}:" + "".join(terms)
+                        + f" <= {mtext(micro(budget))}")
 
     return ("\\ power-dispatch-studio day LP v1\n"
             "minimize\n obj:" + "".join(obj) + "\n"

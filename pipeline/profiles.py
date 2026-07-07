@@ -34,7 +34,8 @@ def _hourly_mean(acc: dict[int, list[float]], dp: int) -> list[float | None]:
     return out
 
 
-def build_profiles() -> dict:
+def build_profiles(fleet: dict | None = None,
+                   merit_hydro_mw: dict | None = None) -> dict:
     lw_files = {day_of(p): p for p in dataset_files("LWAPF")}
     resumed = MARKET_ANCHORS.get("wesm_resumed", "2026-05-01")
 
@@ -86,6 +87,19 @@ def build_profiles() -> dict:
             "lwap": lwap,
         })
     days.sort(key=lambda d: d["date"])
+
+    # observed daily hydro energy per grid (DIPCEF-derived), the water the
+    # chronological LP may not exceed on that day
+    hydro_note = None
+    if fleet:
+        from fuelmix import build_hydro_budgets
+        hb = build_hydro_budgets(fleet, merit_hydro_mw)
+        for d in days:
+            d["hydro_budget_mwh"] = hb["days"].get(d["date"])
+        hydro_note = {k: hb[k] for k in
+                      ("n_days", "matched_cores", "suspects_mwh",
+                       "budget_exceeds_modeled_capacity",
+                       "excluded_note", "note")}
 
     def full_lwap(d: dict) -> bool:
         lz = d["lwap"].get("luzon") or []
@@ -149,4 +163,5 @@ def build_profiles() -> dict:
                             "commodity over the archive window (RTDSUM MKT_REQT; "
                             "Ru/Rd regulation, Dr dispatchable, Fr contingency "
                             "mapping INFERRED as in reserve.json).",
+        "hydro_budget": hydro_note,
     }

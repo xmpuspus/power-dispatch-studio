@@ -50,7 +50,8 @@ export function buildDayLp(
   wheel: number,
   storage: LpStorage[],
   reserveReq: Record<GridKey, number> | null,
-  voll: number
+  voll: number,
+  hydroBudget: Partial<Record<GridKey, number | null>> | null = null
 ): string {
   const H = demand.luzon.length
   const wheelM = micro(wheel)
@@ -178,6 +179,24 @@ export function buildDayLp(
         const rhs = Math.max(0, capM - micro(req))
         rows.push(` res_${s}_${h}:` + terms.join('') + ` <= ${mtext(rhs)}`)
       }
+    }
+  }
+
+  // hydro is energy-limited by the day's observed water: the sum of hydro
+  // dispatch across the hours may not exceed the budget
+  if (hydroBudget) {
+    for (const g of LP_GRID_KEYS) {
+      const budget = hydroBudget[g]
+      if (budget == null) continue
+      const s = G_SHORT[g]
+      const terms: string[] = []
+      for (let h = 0; h < H; h++) {
+        stacks[g][h].forEach((b, i) => {
+          if (b.fuel === 'hydro') terms.push(` + x_${s}_${h}_${i}`)
+        })
+      }
+      if (!terms.length) continue
+      rows.push(` hyd_${s}:` + terms.join('') + ` <= ${mtext(micro(budget))}`)
     }
   }
 

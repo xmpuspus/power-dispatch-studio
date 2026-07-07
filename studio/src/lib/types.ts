@@ -494,6 +494,9 @@ export interface DayProfile {
   market: boolean
   demand: Record<GridKey, number[]>
   lwap: Partial<Record<GridKey | 'system', (number | null)[]>>
+  // observed daily hydro energy (DIPCEF-derived); null when the day is not
+  // covered by the derived window
+  hydro_budget_mwh?: Partial<Record<GridKey, number>> | null
 }
 
 export interface StorageDefault {
@@ -559,6 +562,13 @@ export interface Profiles {
   storage_note: string
   reserve_req_mean_mw: Record<GridKey, Record<string, number>>
   reserve_req_note: string
+  hydro_budget?: {
+    n_days: number
+    matched_cores: Record<string, string>
+    suspects_mwh: Record<string, number>
+    excluded_note: string
+    note: string
+  } | null
   chrono_golden: {
     available: boolean
     date?: string
