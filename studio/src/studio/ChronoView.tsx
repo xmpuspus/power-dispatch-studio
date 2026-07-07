@@ -7,8 +7,9 @@ import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { num, php, fuelLabel } from '../lib/data'
 import { Panel, Segmented, StatTile } from '../ui/kit'
 import { DurationCurve, DispatchArea, HourLines, SocChart } from './charts'
-import { runChronology, runDuration, type ChronoHour } from './chrono'
+import { ENGINE_VERSION, runChronology, runDuration, type ChronoHour } from './chrono'
 import { chronoOptsFrom, type ClassId, type ObjRow, type Overrides } from './model'
+import { downloadCsv, encodeShare, runCsv, saveRun, type SavedRun } from './runs'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 const GRID_COLOR: Record<GridKey, string> = {
@@ -23,18 +24,27 @@ export function ChronologyView({
   objects,
   overrides,
   grid,
+  scenarioName,
+  date,
+  span,
+  onDate,
+  onSpan,
+  onSaved,
 }: {
   d: Dispatch
   profiles: Profiles
   objects: Record<ClassId, ObjRow[]>
   overrides: Overrides
   grid: GridKey
+  scenarioName: string
+  date: string
+  span: 'day' | 'week'
+  onDate: (d: string) => void
+  onSpan: (s: 'day' | 'week') => void
+  onSaved: (runs: SavedRun[]) => void
 }) {
   const days = profiles.days
-  const [date, setDate] = useState(
-    () => profiles.default_day ?? days[days.length - 1]?.date
-  )
-  const [span, setSpan] = useState<'day' | 'week'>('day')
+  const [flash, setFlash] = useState<string | null>(null)
   const opts = useMemo(() => chronoOptsFrom(objects, overrides), [objects, overrides])
 
   const windowDates = useMemo(() => {
@@ -91,6 +101,44 @@ export function ChronologyView({
   const storageEnergy = (opts.storage ?? []).reduce((s, x) => s + x.energy_mwh, 0)
   const marginalNow = hours[19]?.marginal[grid]
 
+  const note = (msg: string) => {
+    setFlash(msg)
+    window.setTimeout(() => setFlash(null), 1800)
+  }
+  const save = () => {
+    onSaved(
+      saveRun({
+        id: crypto.randomUUID(),
+        name: `${scenarioName} (${Object.keys(overrides).length} edits), ${date}${
+          span === 'week' ? ' week' : ''
+        }`,
+        savedAt: new Date().toISOString(),
+        scenarioName,
+        overrides,
+        date,
+        span,
+        engineVersion: ENGINE_VERSION,
+        hours,
+        summaries: runs.map((r) => r.summary),
+      })
+    )
+    note('Run saved')
+  }
+  const exportCsv = () => {
+    downloadCsv(
+      `gridbill-${date}${span === 'week' ? '-week' : ''}.csv`,
+      runCsv(hours, windowDates)
+    )
+  }
+  const copyLink = () => {
+    const hash = encodeShare({ overrides, scenarioName, date, span })
+    window.history.replaceState(null, '', hash)
+    void navigator.clipboard?.writeText(
+      `${window.location.origin}${window.location.pathname}${hash}`
+    )
+    note('Link copied')
+  }
+
   return (
     <div className="view">
       <div className="chrono__controls">
@@ -99,7 +147,7 @@ export function ChronologyView({
           <select
             className="ribbon__select"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => onDate(e.target.value)}
             aria-label="Observed day to replay"
           >
             {days.map((x) => (
@@ -115,12 +163,24 @@ export function ChronologyView({
         <Segmented
           ariaLabel="Run window"
           value={span}
-          onChange={(v) => setSpan(v as 'day' | 'week')}
+          onChange={(v) => onSpan(v as 'day' | 'week')}
           options={[
             { value: 'day', label: 'Day' },
             { value: 'week', label: 'Week ending' },
           ]}
         />
+        <div className="chrono__actions">
+          <button className="btn btn--ghost btn--sm" onClick={save}>
+            Save run
+          </button>
+          <button className="btn btn--ghost btn--sm" onClick={exportCsv}>
+            Export CSV
+          </button>
+          <button className="btn btn--ghost btn--sm" onClick={copyLink}>
+            Copy link
+          </button>
+          {flash && <span className="chrono__flash">{flash}</span>}
+        </div>
       </div>
 
       <div className="stat-row">

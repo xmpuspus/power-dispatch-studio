@@ -1438,3 +1438,18 @@
   font-size: var(--fs-12);
   color: var(--text-muted);
 }
+.chrono__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-left: auto;
+}
+.chrono__flash {
+  font-size: var(--fs-12);
+  color: var(--positive);
+}
+.runs__actions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}

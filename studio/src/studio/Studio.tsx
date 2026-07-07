@@ -8,6 +8,8 @@ import { ScenarioView } from './Scenario'
 import { BillView } from './Bill'
 import { MarketPowerView } from './MarketPower'
 import { ChronologyView } from './ChronoView'
+import { RunsView } from './RunsView'
+import { decodeShare, loadRuns, type SavedRun } from './runs'
 import {
   CLASSES,
   baseObjects,
@@ -44,6 +46,7 @@ type Nav =
   | { kind: 'class'; id: ClassId }
   | { kind: 'quick' }
   | { kind: 'compare' }
+  | { kind: 'runs' }
   | { kind: 'sol'; id: SolId }
   | { kind: 'analysis'; id: AnalysisId }
 
@@ -97,18 +100,57 @@ export function Studio({
     [d, genRows, profiles.data]
   )
 
-  const [scenarios, setScenarios] = useState<Scenario[]>([
-    { name: 'Base Case', overrides: {} },
-  ])
-  const [ai, setAi] = useState(0)
+  // a share link carries a scenario (and a chronology window) in the URL hash
+  const shared = useMemo(() => decodeShare(window.location.hash), [])
+  const [scenarios, setScenarios] = useState<Scenario[]>(() =>
+    shared
+      ? [
+          { name: 'Base Case', overrides: {} },
+          { name: `${shared.scenarioName} (shared)`, overrides: shared.overrides },
+        ]
+      : [{ name: 'Base Case', overrides: {} }]
+  )
+  const [ai, setAi] = useState(shared ? 1 : 0)
   const active = scenarios[ai]
-  const [nav, setNav] = useState<Nav>({ kind: 'class', id: 'generator' })
+  const [nav, setNav] = useState<Nav>(
+    shared ? { kind: 'sol', id: 'chrono' } : { kind: 'class', id: 'generator' }
+  )
   const [grid, setGrid] = useState<GridKey>('luzon')
-  const [solved, setSolved] = useState<SolvedModel>(() => solveModel(d, objects, {}))
+  const [chronoDate, setChronoDate] = useState<string | null>(shared?.date ?? null)
+  const [chronoSpan, setChronoSpan] = useState<'day' | 'week'>(shared?.span ?? 'day')
+  const [runsList, setRunsList] = useState<SavedRun[]>(() => loadRuns())
+  const [solved, setSolved] = useState<SolvedModel>(() =>
+    solveModel(d, objects, shared?.overrides ?? {})
+  )
   // overrides snapshot at the last Run: the chronological view re-runs from this,
   // so it moves with Run exactly like the other live solution views
-  const [ranOv, setRanOv] = useState<Overrides>({})
+  const [ranOv, setRanOv] = useState<Overrides>(shared?.overrides ?? {})
   const [dirty, setDirty] = useState(false)
+
+  // the chronology window defaults to the baked widest-swing day once profiles land
+  useEffect(() => {
+    const p = profiles.data
+    if (!p) return
+    setChronoDate((cur) =>
+      cur && p.days.some((x) => x.date === cur)
+        ? cur
+        : (p.default_day ?? p.days[p.days.length - 1]?.date ?? null)
+    )
+  }, [profiles.data])
+
+  const restoreRun = (run: SavedRun) => {
+    setScenarios((prev) => [
+      ...prev,
+      { name: `${run.scenarioName} (restored)`, overrides: { ...run.overrides } },
+    ])
+    setAi(scenarios.length)
+    setChronoDate(run.date)
+    setChronoSpan(run.span)
+    setSolved(solveModel(d, objects, run.overrides))
+    setRanOv(run.overrides)
+    setDirty(false)
+    setNav({ kind: 'sol', id: 'chrono' })
+  }
 
   // re-solve the base when the generator list arrives, as long as nothing is pending
   useEffect(() => {
@@ -231,6 +273,14 @@ export function Studio({
               scenarios={scenarios}
               overrides={active.overrides}
               ranOv={ranOv}
+              scenarioName={active.name}
+              chronoDate={chronoDate}
+              chronoSpan={chronoSpan}
+              onChronoDate={setChronoDate}
+              onChronoSpan={setChronoSpan}
+              runsList={runsList}
+              onRunsChange={setRunsList}
+              onRestore={restoreRun}
               dirty={dirty}
               onEdit={edit}
               onRevert={revert}
@@ -488,6 +538,12 @@ function Explorer({
               active={isActive({ kind: 'compare' })}
               onClick={() => setNav({ kind: 'compare' })}
             />
+            <TreeItem
+              label="Saved runs"
+              icon="sol"
+              active={isActive({ kind: 'runs' })}
+              onClick={() => setNav({ kind: 'runs' })}
+            />
           </TreeGroup>
           <TreeGroup label="Analysis">
             {(Object.keys(ANALYSIS_LABEL) as AnalysisId[]).map((id) => (
@@ -516,6 +572,14 @@ function DataPane({
   scenarios,
   overrides,
   ranOv,
+  scenarioName,
+  chronoDate,
+  chronoSpan,
+  onChronoDate,
+  onChronoSpan,
+  runsList,
+  onRunsChange,
+  onRestore,
   dirty,
   onEdit,
   onRevert,
@@ -530,6 +594,14 @@ function DataPane({
   scenarios: Scenario[]
   overrides: Scenario['overrides']
   ranOv: Overrides
+  scenarioName: string
+  chronoDate: string | null
+  chronoSpan: 'day' | 'week'
+  onChronoDate: (v: string) => void
+  onChronoSpan: (v: 'day' | 'week') => void
+  runsList: SavedRun[]
+  onRunsChange: (runs: SavedRun[]) => void
+  onRestore: (run: SavedRun) => void
   dirty: boolean
   onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
   onRevert: (cls: ClassId, id: string, prop: string) => void
@@ -537,6 +609,8 @@ function DataPane({
 }) {
   if (nav.kind === 'compare')
     return <CompareView d={d} objects={objects} scenarios={scenarios} />
+  if (nav.kind === 'runs')
+    return <RunsView runs={runsList} onRunsChange={onRunsChange} onRestore={onRestore} />
   if (nav.kind === 'class') {
     return (
       <ClassPane
@@ -560,7 +634,7 @@ function DataPane({
   const sol = nav.id
   if (sol === 'merit') return <SolvedMeritView s={solved} grid={grid} />
   if (sol === 'chrono') {
-    if (!profiles)
+    if (!profiles || !chronoDate)
       return <div className="basecase-banner">Loading the observed day profiles.</div>
     return (
       <ChronologyView
@@ -569,6 +643,12 @@ function DataPane({
         objects={objects}
         overrides={ranOv}
         grid={grid}
+        scenarioName={scenarioName}
+        date={chronoDate}
+        span={chronoSpan}
+        onDate={onChronoDate}
+        onSpan={onChronoSpan}
+        onSaved={onRunsChange}
       />
     )
   }
@@ -621,6 +701,9 @@ function Crumbs({
   } else if (nav.kind === 'compare') {
     root = 'Solution'
     leaf = 'Compare scenarios'
+  } else if (nav.kind === 'runs') {
+    root = 'Solution'
+    leaf = 'Saved runs'
   } else if (nav.kind === 'sol') {
     root = 'Solution'
     leaf = SOL_LABEL[nav.id]
