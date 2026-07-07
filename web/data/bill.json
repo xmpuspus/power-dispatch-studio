@@ -1,6 +1,45 @@
 {
  "available": true,
  "period": "2026-06",
+ "mix_history": [
+  {
+   "period": "2026-04",
+   "wesm_pct": 6,
+   "psa_pct": 74,
+   "ipp_pct": 20,
+   "generation_charge_php_kwh": 8.3864,
+   "total_rate_php_kwh": 14.3496,
+   "src": "https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-april-2026",
+   "src_news": "https://www.gmanetwork.com/news/money/economy/983342/meralco-hikes-power-rate-by-53-cents-this-april/story/"
+  },
+  {
+   "period": "2026-05",
+   "wesm_pct": 7,
+   "psa_pct": 73,
+   "ipp_pct": 20,
+   "generation_charge_php_kwh": 8.7942,
+   "total_rate_php_kwh": 14.3345,
+   "src": "https://company.meralco.com.ph/news-and-advisories/lower-residential-rates-may-2026",
+   "src_news": "https://www.bworldonline.com/top-stories/2026/05/14/749484/meralco-cuts-power-rates-slightly-after-3-mo-hikes/"
+  },
+  {
+   "period": "2026-06",
+   "wesm_pct": 10,
+   "psa_pct": 69,
+   "ipp_pct": 21,
+   "generation_charge_php_kwh": 9.0704,
+   "total_rate_php_kwh": 14.4833,
+   "src": "https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-june-2026",
+   "src_news": "https://www.bworldonline.com/top-stories/2026/06/12/756242/meralco-rates-climb-p0-15-kwh-in-june/"
+  }
+ ],
+ "june_moves": {
+  "psa_delta_php_kwh": 0.0941,
+  "ipp_delta_php_kwh": -0.1569,
+  "src_psa": "https://www.bworldonline.com/top-stories/2026/06/12/756242/meralco-rates-climb-p0-15-kwh-in-june/",
+  "src_ipp": "https://www.manilatimes.net/2026/06/11/business/meralco-raises-june-electricity-rates-on-higher-generation-charge-peso-weakness/2363337"
+ },
+ "mix_history_note": "The spot-exposed residual moved 6% to 7% to 10% across April, May, June 2026 while the generation charge climbed P8.39 to P9.07: the utility leaned harder on WESM exactly as the grid tightened. The pass-through slider below uses the latest month; contract shares are the utility's own published mix, and the residual varies month to month.",
  "supply_mix_pct": {
   "psa": 69,
   "ipp_first_gas_prime_coregen": 21,

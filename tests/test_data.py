@@ -579,5 +579,96 @@ check("every plant has a known fuel and positive installed MW", all(
 check("plant ids are unique per grid", len({(p["grid"], p["name"])
                                             for p in plants}) == len(plants))
 
+# --- LT Plan: DOE project lists + TDP corridors (PLEXOS carry-over pass) ---------
+pj = load("projects.json")
+check("projects available with the 2025-12-31 edition",
+      pj["available"] and pj["as_of"] == "2025-12-31")
+check("projects reconcile to the DOE LVM summary totals",
+      math.isclose(pj["totals"]["committed"]["lvm_gen_mw"], 13839.48,
+                   abs_tol=0.05)
+      and math.isclose(pj["totals"]["indicative"]["lvm_gen_mw"], 119226.39,
+                       abs_tol=0.05))
+check("committed per-grid totals pin to the DOE summary",
+      math.isclose(pj["totals"]["committed"]["luzon"]["gen_mw"], 11875.89,
+                   abs_tol=0.02)
+      and math.isclose(pj["totals"]["committed"]["visayas"]["gen_mw"], 1443.75,
+                       abs_tol=0.02)
+      and math.isclose(pj["totals"]["committed"]["mindanao"]["gen_mw"], 519.85,
+                       abs_tol=0.02))
+check("every project row carries grid, status, fuel, positive MW", all(
+    r["grid"] in ("luzon", "visayas", "mindanao")
+    and r["status"] in ("committed", "indicative")
+    and r["fuel"] and r["mw"] >= 0 for r in pj["rows"]))
+check("reconciled sections' rows sum to their printed subtotals", all(
+    s["rows_reconciled"] is False or math.isclose(
+        sum(r["mw"] for r in pj["rows"]
+            if (r["grid"], r["status"], r["fuel"]) ==
+               (s["grid"], s["status"], s["fuel"])),
+        s["subtotal_mw"], abs_tol=0.01)
+    for s in pj["sections"]))
+check("every edition carries a Wayback capture of the DOE URL", all(
+    "web.archive.org" in e["src"] and "doe.gov.ph" in e["original_url"]
+    for st in pj["editions"].values() for e in st.values()))
+check("TDP corridors: MW only where the TDP states transfer capacity", all(
+    (c["adds_mw"] is None) or (c["iface"] in ("leyte_luzon_hvdc", "mvip_hvdc"))
+    for c in pj["corridors"]))
+check("TDP corridor MW pins: LV HVDC +440, MVIP +450",
+      [c["adds_mw"] for c in pj["corridors"] if c["iface"]] == [440, 450])
+check("every corridor has a source", all(c["src"] for c in pj["corridors"]))
+
+# --- PASA: scheduled outages sized against the fleet ------------------------------
+pasa = load("pasa.json")
+check("pasa covers the whole OUTRTD archive",
+      pasa["available"] and len(pasa["days"]) == meta["datasets"]["OUTRTD"])
+check("pasa resources partition into verified/unmatched/storage",
+      pasa["n_verified"] + pasa["n_unmatched"] + pasa["n_storage"]
+      == pasa["n_resources"])
+check("every verified pasa resource carries plant, grid, fuel, MW", all(
+    r["plant"] and r["grid"] and r["fuel"] and (r["unit_mw"] or 0) > 0
+    for r in pasa["resources"] if r["match"] == "verified"))
+check("unmatched pasa resources carry no MW (a floor, never a guess)", all(
+    r["unit_mw"] is None for r in pasa["resources"]
+    if r["match"] != "verified"))
+pasa_by_name = {r["resource"]: r for r in pasa["resources"]}
+check("pasa day MW equals its verified resources", all(
+    math.isclose(
+        sum(day["matched_mw"].values()),
+        sum(pasa_by_name[name]["unit_mw"] or 0 for name in day["out"]
+            if pasa_by_name[name]["match"] == "verified"),
+        abs_tol=0.5)
+    for day in pasa["days"]))
+check("pasa states its coverage and the inferred grid mapping",
+      "floor" in pasa["coverage_note"] and "INFERRED" in pasa["grid_mapping_note"])
+
+# --- emissions factors: sourced constants ------------------------------------------
+em = load("emissions.json")
+check("emissions factors all carry a basis and a source", all(
+    f["basis"] and f["src"] for f in em["factors"]))
+check("emissions fossil factors pinned to the sourced derivations",
+      math.isclose(em["factor_map"]["coal"], 0.874)
+      and math.isclose(em["factor_map"]["natural_gas"], 0.337)
+      and math.isclose(em["factor_map"]["oil"], 0.533))
+check("emissions: renewables and storage zero operational, biomass excluded",
+      em["factor_map"]["hydro"] == 0 and em["factor_map"]["solar"] == 0
+      and em["factor_map"]["storage"] == 0
+      and "biomass" not in em["factor_map"])
+check("emissions NGEF anchor present with source",
+      math.isclose(em["ngef"]["luzon_visayas_tco2_per_mwh"], 0.7181)
+      and "doe.gov.ph" in em["ngef"]["src"])
+
+# --- bill: the residual moves month to month ---------------------------------------
+bill = load("bill.json")
+hist = bill.get("mix_history", [])
+check("bill mix history carries Apr-Jun 2026 in order",
+      [m["period"] for m in hist] == ["2026-04", "2026-05", "2026-06"])
+check("bill mix shares sum to 100 per month", all(
+    m["wesm_pct"] + m["psa_pct"] + m["ipp_pct"] == 100 for m in hist))
+check("bill June row matches the standing anchors",
+      bool(hist) and hist[-1]["wesm_pct"] == 10
+      and math.isclose(hist[-1]["generation_charge_php_kwh"], 9.0704)
+      and math.isclose(hist[-1]["total_rate_php_kwh"], 14.4833))
+check("bill history rows each carry advisory + news sources", all(
+    m["src"] and m["src_news"] for m in hist))
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

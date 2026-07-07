@@ -801,8 +801,27 @@ def main() -> int:
     # DOE per-plant fleet (grid-connected list, reconciled to its own subtotals)
     from fleet_doe import build_fleet
 
+    fleet = build_fleet()
     with open(os.path.join(OUT, "fleet.json"), "w") as fh:
-        json.dump(build_fleet(), fh, indent=1)
+        json.dump(fleet, fh, indent=1)
+
+    # LT Plan layer: DOE committed/indicative project lists + TDP corridors
+    from projects import build_projects
+
+    with open(os.path.join(OUT, "projects.json"), "w") as fh:
+        json.dump(build_projects(), fh, indent=1)
+
+    # PASA layer: scheduled outages from OUTRTD, mapped to fleet MW
+    from pasa import build_pasa
+
+    with open(os.path.join(OUT, "pasa.json"), "w") as fh:
+        json.dump(build_pasa(fleet), fh, indent=1)
+
+    # emission factors (sourced constants)
+    from emissions import build_emissions
+
+    with open(os.path.join(OUT, "emissions.json"), "w") as fh:
+        json.dump(build_emissions(), fh, indent=1)
 
     # observed day profiles + the chronological parity fixtures + the backcast
     from chrono import build_backcast, build_chrono_golden

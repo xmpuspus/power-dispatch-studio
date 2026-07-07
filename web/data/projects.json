@@ -1,0 +1,7018 @@
+{
+ "available": true,
+ "as_of": "2025-12-31",
+ "editions": {
+  "committed": {
+   "luzon": {
+    "src": "https://web.archive.org/web/20260330220811id_/https://prod-cms.doe.gov.ph/documents/d/guest/01-luzon-committed-8-pdf",
+    "original_url": "https://prod-cms.doe.gov.ph/documents/d/guest/01-luzon-committed-8-pdf"
+   },
+   "visayas": {
+    "src": "https://web.archive.org/web/20260330221412id_/https://prod-cms.doe.gov.ph/documents/d/guest/02-visayas-committed-9-pdf",
+    "original_url": "https://prod-cms.doe.gov.ph/documents/d/guest/02-visayas-committed-9-pdf"
+   },
+   "mindanao": {
+    "src": "https://web.archive.org/web/20260330222524id_/https://prod-cms.doe.gov.ph/documents/d/guest/03-mindanao-committed-9-pdf",
+    "original_url": "https://prod-cms.doe.gov.ph/documents/d/guest/03-mindanao-committed-9-pdf"
+   }
+  },
+  "indicative": {
+   "luzon": {
+    "src": "https://web.archive.org/web/20260330222356id_/https://prod-cms.doe.gov.ph/documents/d/guest/06-luzon-indicative-9-pdf",
+    "original_url": "https://prod-cms.doe.gov.ph/documents/d/guest/06-luzon-indicative-9-pdf"
+   },
+   "visayas": {
+    "src": "https://web.archive.org/web/20260330222820id_/https://prod-cms.doe.gov.ph/documents/d/guest/07-visayas-indicative-9-pdf",
+    "original_url": "https://prod-cms.doe.gov.ph/documents/d/guest/07-visayas-indicative-9-pdf"
+   },
+   "mindanao": {
+    "src": "https://web.archive.org/web/20260330223944id_/https://prod-cms.doe.gov.ph/documents/d/guest/08-mindanao-indicative-9-pdf",
+    "original_url": "https://prod-cms.doe.gov.ph/documents/d/guest/08-mindanao-indicative-9-pdf"
+   }
+  }
+ },
+ "totals": {
+  "committed": {
+   "luzon": {
+    "gen_mw": 11875.89,
+    "ess_mw": 2142.16
+   },
+   "visayas": {
+    "gen_mw": 1443.74,
+    "ess_mw": 349.9
+   },
+   "mindanao": {
+    "gen_mw": 519.85,
+    "ess_mw": 228.0
+   },
+   "lvm_gen_mw": 13839.48
+  },
+  "indicative": {
+   "luzon": {
+    "gen_mw": 87236.98,
+    "ess_mw": 1451.48
+   },
+   "visayas": {
+    "gen_mw": 28932.43,
+    "ess_mw": 1312.0
+   },
+   "mindanao": {
+    "gen_mw": 3056.98,
+    "ess_mw": 134.28
+   },
+   "lvm_gen_mw": 119226.39
+  }
+ },
+ "sections": [
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "coal",
+   "subtotal_mw": 2500.0,
+   "n_rows": 6,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "oil",
+   "subtotal_mw": 11.04,
+   "n_rows": 1,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "natural_gas",
+   "subtotal_mw": 1090.0,
+   "n_rows": 2,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "geothermal",
+   "subtotal_mw": 0.0,
+   "n_rows": 0,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "subtotal_mw": 712.49,
+   "n_rows": 14,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "biomass",
+   "subtotal_mw": 6.282,
+   "n_rows": 3,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "subtotal_mw": 5942.39,
+   "n_rows": 100,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "subtotal_mw": 1613.684,
+   "n_rows": 14,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "subtotal_mw": 2142.163,
+   "n_rows": 41,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "coal",
+   "subtotal_mw": 135.0,
+   "n_rows": 1,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "oil",
+   "subtotal_mw": 8.5,
+   "n_rows": 3,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "geothermal",
+   "subtotal_mw": 5.645,
+   "n_rows": 1,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "hydro",
+   "subtotal_mw": 19.97,
+   "n_rows": 4,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "biomass",
+   "subtotal_mw": 44.0,
+   "n_rows": 4,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "subtotal_mw": 611.07,
+   "n_rows": 14,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "wind",
+   "subtotal_mw": 619.56,
+   "n_rows": 4,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "subtotal_mw": 349.9,
+   "n_rows": 14,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "coal",
+   "subtotal_mw": 270.0,
+   "n_rows": 2,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "oil",
+   "subtotal_mw": 56.0,
+   "n_rows": 2,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "geothermal",
+   "subtotal_mw": 0.0,
+   "n_rows": 0,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "hydro",
+   "subtotal_mw": 85.48,
+   "n_rows": 9,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "biomass",
+   "subtotal_mw": 0.0,
+   "n_rows": 0,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "solar",
+   "subtotal_mw": 108.365,
+   "n_rows": 5,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "storage",
+   "subtotal_mw": 228.0,
+   "n_rows": 8,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "coal",
+   "subtotal_mw": 1400.0,
+   "n_rows": 4,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "oil",
+   "subtotal_mw": 60.0,
+   "n_rows": 1,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "natural_gas",
+   "subtotal_mw": 7038.0,
+   "n_rows": 6,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "geothermal",
+   "subtotal_mw": 315.0,
+   "n_rows": 5,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "subtotal_mw": 7398.058,
+   "n_rows": 57,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "biomass",
+   "subtotal_mw": 112.0,
+   "n_rows": 2,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "subtotal_mw": 15012.154,
+   "n_rows": 121,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "subtotal_mw": 55901.77,
+   "n_rows": 148,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "subtotal_mw": 1451.48,
+   "n_rows": 30,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "coal",
+   "subtotal_mw": 251.0,
+   "n_rows": 2,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "oil",
+   "subtotal_mw": 0.0,
+   "n_rows": 0,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "geothermal",
+   "subtotal_mw": 50.0,
+   "n_rows": 2,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "hydro",
+   "subtotal_mw": 436.2,
+   "n_rows": 10,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "biomass",
+   "subtotal_mw": 15.0,
+   "n_rows": 1,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "subtotal_mw": 4014.281,
+   "n_rows": 33,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "subtotal_mw": 24165.949,
+   "n_rows": 62,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "subtotal_mw": 1312.0,
+   "n_rows": 35,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "coal",
+   "subtotal_mw": 120.0,
+   "n_rows": 1,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "natural_gas",
+   "subtotal_mw": 0.0,
+   "n_rows": 0,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "geothermal",
+   "subtotal_mw": 119.0,
+   "n_rows": 1,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "subtotal_mw": 677.46,
+   "n_rows": 12,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "biomass",
+   "subtotal_mw": 50.0,
+   "n_rows": 1,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "subtotal_mw": 1058.52,
+   "n_rows": 14,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "wind",
+   "subtotal_mw": 1032.0,
+   "n_rows": 7,
+   "rows_reconciled": true
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "storage",
+   "subtotal_mw": 134.28,
+   "n_rows": 4,
+   "rows_reconciled": true
+  }
+ ],
+ "rows": [
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "coal",
+   "mw": 350.0,
+   "target": "May-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "coal",
+   "mw": 350.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "coal",
+   "mw": 300.0,
+   "target": "Jun-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "coal",
+   "mw": 300.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "coal",
+   "mw": 600.0,
+   "target": "Feb-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "coal",
+   "mw": 600.0,
+   "target": "Feb-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "oil",
+   "mw": 11.04,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "natural_gas",
+   "mw": 440.0,
+   "target": "Feb-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "natural_gas",
+   "mw": 650.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 4.0,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 0.56,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 4.15,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 4.68,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 0.8,
+   "target": "Apr-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 11.3,
+   "target": "May-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 60.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 7.6,
+   "target": "Oct-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 5.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 3.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 1.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 9.8,
+   "target": "2029",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 600.0,
+   "target": "Oct-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 0.6,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "biomass",
+   "mw": 1.2,
+   "target": "Apr-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "biomass",
+   "mw": 1.68,
+   "target": "Oct-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "biomass",
+   "mw": 3.402,
+   "target": "Mar-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.28,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 20.622,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 87.594,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.14,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.9,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.06,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.15,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.15,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.09,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.13,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.13,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.13,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.13,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.13,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.14,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.18,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.18,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.1,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.18,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.1,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.05,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.18,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.2,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.2,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.2,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.18,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.23,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.2,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.23,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.24,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.13,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.14,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.15,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.13,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 75.0,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 2.4,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 172.2,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 70.5,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 27.0,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 49.4,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 450.0,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 400.0,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 467.857,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 467.857,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 3.652,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 80.1,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 50.0,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 530.4,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 49.0,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 237.6,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 90.0,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 50.1,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 69.9,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 17.185,
+   "target": "Apr-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 22.048,
+   "target": "Apr-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 90.0,
+   "target": "Apr-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 30.0,
+   "target": "May-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 18.56,
+   "target": "May-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 28.0,
+   "target": "May-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 49.0,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 2.8,
+   "target": "Jul-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 120.0,
+   "target": "Oct-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 99.98,
+   "target": "Oct-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.09,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.45,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 50.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 274.735,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.2,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 70.14,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 90.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.06,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.15,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.18,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 40.4,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.09,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.09,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.1,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 79.04,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 246.604,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.28,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.168,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.042,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.08,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.15,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.12,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.13,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.14,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.12,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.14,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.23,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.1,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.09,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 6.9,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 149.95,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 28.6,
+   "target": "Jan-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 158.4,
+   "target": "Feb-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 714.286,
+   "target": "Feb-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 8.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 87.5,
+   "target": "Jan-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.12,
+   "target": "Jan-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 62.4,
+   "target": "2026",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 30.0,
+   "target": "2026",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 128.0,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 218.75,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 70.0,
+   "target": "Jul-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 80.0,
+   "target": "Jul-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 160.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 239.985,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 93.75,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 49.999,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 100.8,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 230.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 300.007,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 92.052,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 92.052,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 92.052,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 16.0,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "Jul-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 50.0,
+   "target": "Jul-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 300.0,
+   "target": "Feb-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 60.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "coal",
+   "mw": 135.0,
+   "target": "Dec-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "oil",
+   "mw": 5.5,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "oil",
+   "mw": 2.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "oil",
+   "mw": 1.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "geothermal",
+   "mw": 5.645,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 8.1,
+   "target": "2026",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 2.0,
+   "target": "2026",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 4.57,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 5.3,
+   "target": "2026",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "biomass",
+   "mw": 8.0,
+   "target": "May-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "biomass",
+   "mw": 30.0,
+   "target": "May-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "biomass",
+   "mw": 3.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "biomass",
+   "mw": 3.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 17.5,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 50.1,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 1.05,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 1.05,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 112.0,
+   "target": "Apr-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 117.12,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 96.0,
+   "target": "Aug-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 112.0,
+   "target": "Oct-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 14.0,
+   "target": "Nov-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.12,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.13,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 40.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 30.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 20.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 13.56,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 304.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 152.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "wind",
+   "mw": 150.0,
+   "target": "Aug-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 49.9,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 30.0,
+   "target": "Jul-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "Feb-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 30.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "coal",
+   "mw": 135.0,
+   "target": "Mar-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "coal",
+   "mw": 135.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "oil",
+   "mw": 28.0,
+   "target": "Apr-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "oil",
+   "mw": 28.0,
+   "target": "Apr-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 12.0,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 15.0,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 8.4,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 3.6,
+   "target": "Aug-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 3.7,
+   "target": "Nov-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 2.23,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 3.7,
+   "target": "Jan-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 4.85,
+   "target": "May-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "hydro",
+   "mw": 32.0,
+   "target": "Oct-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 17.185,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 11.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.07,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 0.11,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "solar",
+   "mw": 80.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 60.0,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 48.0,
+   "target": "Apr-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "May-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "mindanao",
+   "status": "committed",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "coal",
+   "mw": 350.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "coal",
+   "mw": 350.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "coal",
+   "mw": 350.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "coal",
+   "mw": 350.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "oil",
+   "mw": 60.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "natural_gas",
+   "mw": 1200.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "natural_gas",
+   "mw": 1128.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "natural_gas",
+   "mw": 1200.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "natural_gas",
+   "mw": 1800.0,
+   "target": "Jul-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "natural_gas",
+   "mw": 450.0,
+   "target": "Dec-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "natural_gas",
+   "mw": 1260.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "geothermal",
+   "mw": 20.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "geothermal",
+   "mw": 20.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "geothermal",
+   "mw": 50.0,
+   "target": "Dec-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "geothermal",
+   "mw": 105.0,
+   "target": "Dec-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "geothermal",
+   "mw": 120.0,
+   "target": "Dec-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 0.9,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 0.75,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 0.5,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 0.67,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 1.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 7.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 1.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 60.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 30.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 52.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 9.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 3.5,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 58.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 52.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 40.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 6.8,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 3.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 2.1,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 3.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 2.4,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 9.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 7.4,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 15.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 7.9,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 10.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 20.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 26.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 15.684,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 9.754,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 4.5,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 5.15,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 7.4,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 8.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 22.5,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 3.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 6.5,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 5.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 1.9,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 6.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 2.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 2.75,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 15.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 40.0,
+   "target": "2029",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 45.0,
+   "target": "2029",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 120.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 250.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 150.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 500.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 150.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 250.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 500.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 1400.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 49.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 2000.0,
+   "target": "2031",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 400.0,
+   "target": "2032",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 600.0,
+   "target": "2032",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 400.0,
+   "target": "2032",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "biomass",
+   "mw": 12.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "biomass",
+   "mw": 100.0,
+   "target": "Apr-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 180.54,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 24.599,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 38.4,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 225.0,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 56.25,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 6.08,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 54.08,
+   "target": "May-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 53.12,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 71.68,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 0.36,
+   "target": "Jul-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 3.25,
+   "target": "Jul-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 206.5,
+   "target": "Jul-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 140.42,
+   "target": "Aug-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 39.375,
+   "target": "Aug-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 48.825,
+   "target": "Aug-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 49.5,
+   "target": "Aug-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 336.826,
+   "target": "Sep-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 178.724,
+   "target": "Sep-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 17.16,
+   "target": "Sep-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 240.0,
+   "target": "Sep-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 5.12,
+   "target": "Nov-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 105.6,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 105.6,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 105.6,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 105.6,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 105.6,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 105.6,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 105.6,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 15.2,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 82.5,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 59.84,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 100.265,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 11.942,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 110.2,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 168.8,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 98.7,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 217.391,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 105.6,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 105.6,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 57.2,
+   "target": "Feb-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 30.03,
+   "target": "Feb-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 7.65,
+   "target": "Feb-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 140.8,
+   "target": "Mar-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 44.0,
+   "target": "Mar-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 240.0,
+   "target": "Mar-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 210.0,
+   "target": "Apr-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 140.917,
+   "target": "Apr-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 104.85,
+   "target": "Apr-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 210.0,
+   "target": "May-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 147.791,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 261.043,
+   "target": "Jul-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 136.5,
+   "target": "Jul-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 9.0,
+   "target": "Jul-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 9.0,
+   "target": "Jul-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 125.0,
+   "target": "Sep-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 125.0,
+   "target": "Sep-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 50.1,
+   "target": "Oct-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 50.0,
+   "target": "Oct-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 113.652,
+   "target": "Oct-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 156.354,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 231.132,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 32.8,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 185.898,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 22.398,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 104.85,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 317.883,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 268.086,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 147.4,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 152.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 13.36,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 95.0,
+   "target": "Jan-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 91.553,
+   "target": "Jan-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 75.173,
+   "target": "Feb-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 209.7,
+   "target": "Feb-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 99.8,
+   "target": "Feb-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 139.7,
+   "target": "Feb-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 443.373,
+   "target": "Mar-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 47.347,
+   "target": "Apr-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 333.389,
+   "target": "Apr-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 41.4,
+   "target": "Apr-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 49.9,
+   "target": "May-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 48.118,
+   "target": "May-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 0.12,
+   "target": "May-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 244.2,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 4.18,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 112.5,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 47.5,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 215.95,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 161.0,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 96.0,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 51.0,
+   "target": "Aug-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 128.0,
+   "target": "Aug-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 336.0,
+   "target": "Aug-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 140.0,
+   "target": "Aug-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 59.65,
+   "target": "Oct-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 422.4,
+   "target": "Oct-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 244.2,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 463.995,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 495.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 149.6,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 52.8,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 41.28,
+   "target": "Jan-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 179.2,
+   "target": "Jan-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 38.85,
+   "target": "Jan-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 217.184,
+   "target": "Jan-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 121.0,
+   "target": "Feb-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 191.25,
+   "target": "Feb-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 151.68,
+   "target": "Mar-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 9.856,
+   "target": "Apr-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 364.32,
+   "target": "May-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 343.68,
+   "target": "Jun-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 185.6,
+   "target": "Jun-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 120.295,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 43.75,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 4.05,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 120.6,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 3.8,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 6.24,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 35.2,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 96.9,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 3.13,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 187.2,
+   "target": "May-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 400.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 150.0,
+   "target": "Jan-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 600.0,
+   "target": "Jan-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 500.0,
+   "target": "Mar-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Mar-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 250.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 99.0,
+   "target": "Sep-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Oct-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 500.0,
+   "target": "Oct-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Oct-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 600.0,
+   "target": "Oct-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 64.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 150.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 49.99,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Jan-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 30.0,
+   "target": "Jan-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 60.0,
+   "target": "Jan-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 40.0,
+   "target": "Jan-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Jan-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Mar-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 99.0,
+   "target": "May-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 303.8,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 88.0,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 500.0,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 80.0,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 350.0,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1000.0,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 0.9,
+   "target": "Aug-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Sep-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 900.0,
+   "target": "Oct-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 120.0,
+   "target": "Nov-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 84.5,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 150.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Jan-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 210.8,
+   "target": "Jan-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 104.0,
+   "target": "Mar-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 90.0,
+   "target": "Mar-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 96.0,
+   "target": "Mar-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 475.0,
+   "target": "Jun-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 86.4,
+   "target": "Jun-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 400.0,
+   "target": "Aug-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 500.0,
+   "target": "Sep-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 450.0,
+   "target": "Oct-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 8.0,
+   "target": "Oct-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 132.0,
+   "target": "Oct-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Nov-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 86.63,
+   "target": "Nov-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 62.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 112.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1024.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 144.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1248.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 90.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 275.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 250.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1830.0,
+   "target": "Jan-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Jan-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Jan-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Feb-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Feb-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Mar-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 112.0,
+   "target": "Apr-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1500.0,
+   "target": "Jun-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Jun-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Jun-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Jun-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 260.0,
+   "target": "Jun-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 260.0,
+   "target": "Jun-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 279.0,
+   "target": "Jun-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Aug-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Aug-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Aug-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 2000.0,
+   "target": "Dec-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Dec-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 2000.0,
+   "target": "Dec-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Jan-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Feb-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 250.0,
+   "target": "Mar-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Mar-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Jun-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 990.0,
+   "target": "Jul-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 480.0,
+   "target": "Aug-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 500.0,
+   "target": "Sep-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 994.0,
+   "target": "Oct-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1200.0,
+   "target": "Oct-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 3038.0,
+   "target": "Oct-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 800.0,
+   "target": "Oct-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 187.2,
+   "target": "Nov-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 237.6,
+   "target": "Nov-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 900.0,
+   "target": "Nov-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 540.0,
+   "target": "Dec-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 375.0,
+   "target": "Dec-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 500.0,
+   "target": "Dec-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 330.0,
+   "target": "Feb-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 304.0,
+   "target": "Mar-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 80.0,
+   "target": "Mar-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Mar-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1600.0,
+   "target": "Apr-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 247.0,
+   "target": "Aug-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1000.0,
+   "target": "Sep-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Sep-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Oct-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 420.0,
+   "target": "Nov-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 600.0,
+   "target": "Dec-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1024.0,
+   "target": "Dec-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 132.5,
+   "target": "Jan-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 85.5,
+   "target": "Feb-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 750.0,
+   "target": "Feb-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Feb-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 600.0,
+   "target": "Mar-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Mar-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 400.0,
+   "target": "May-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 555.0,
+   "target": "May-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 512.0,
+   "target": "Jun-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Jun-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 500.0,
+   "target": "Jun-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1246.0,
+   "target": "Jun-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 112.0,
+   "target": "Jul-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 3100.0,
+   "target": "Aug-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 370.0,
+   "target": "Aug-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 120.0,
+   "target": "Sep-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 312.5,
+   "target": "Sep-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 156.25,
+   "target": "Nov-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Dec-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 190.0,
+   "target": "Dec-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Dec-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 500.0,
+   "target": "Dec-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 84.0,
+   "target": "Apr-34",
+   "target_year": 2034
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Apr-34",
+   "target_year": 2034
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Jun-34",
+   "target_year": 2034
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 550.0,
+   "target": "Oct-34",
+   "target_year": 2034
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Aug-35",
+   "target_year": 2035
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 104.0,
+   "target": "Oct-35",
+   "target_year": 2035
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 150.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 90.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 144.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "2026",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "2026",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 107.32,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 100.0,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 82.56,
+   "target": "Aug-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 50.0,
+   "target": "Mar-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 50.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 150.0,
+   "target": "Jul-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Sep-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.6,
+   "target": "Sep-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Sep-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 50.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 91.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 100.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 30.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "luzon",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "coal",
+   "mw": 169.0,
+   "target": "Aug-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "coal",
+   "mw": 82.0,
+   "target": "Apr-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "geothermal",
+   "mw": 5.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "geothermal",
+   "mw": 45.0,
+   "target": "2037",
+   "target_year": 2037
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 9.6,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 10.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 15.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 10.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 21.6,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 20.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 4.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 6.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 40.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 300.0,
+   "target": "2035",
+   "target_year": 2035
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "biomass",
+   "mw": 15.0,
+   "target": "Aug-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 35.95,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 5.0,
+   "target": "Jan-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 125.0,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 101.2,
+   "target": "Sep-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 5.0,
+   "target": "Oct-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 17.5,
+   "target": "Oct-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 23.68,
+   "target": "Nov-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 120.295,
+   "target": "Nov-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 85.925,
+   "target": "Nov-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 40.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 137.48,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 36.4,
+   "target": "Feb-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 175.287,
+   "target": "Mar-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 10.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 31.25,
+   "target": "Aug-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 37.884,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 22.0,
+   "target": "Jan-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 49.35,
+   "target": "Feb-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 171.11,
+   "target": "Mar-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 154.4,
+   "target": "Apr-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 50.1,
+   "target": "May-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 297.0,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 245.0,
+   "target": "Jul-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 200.4,
+   "target": "Sep-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 138.6,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 150.0,
+   "target": "Feb-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 266.88,
+   "target": "Apr-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 68.85,
+   "target": "May-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 149.14,
+   "target": "May-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 303.6,
+   "target": "Jun-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 660.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 80.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Feb-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 75.6,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 45.0,
+   "target": "Jan-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Oct-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 80.6,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Mar-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Mar-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 103.5,
+   "target": "Sep-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Oct-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 500.0,
+   "target": "Oct-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Nov-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 150.0,
+   "target": "Nov-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 967.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 650.0,
+   "target": "Dec-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Jan-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Apr-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Jul-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 160.0,
+   "target": "Jul-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 192.0,
+   "target": "Jul-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Sep-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Nov-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 150.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 50.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 582.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 600.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1000.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 600.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 500.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 49.999,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Jan-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Feb-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Feb-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Mar-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 150.0,
+   "target": "Aug-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 600.0,
+   "target": "Dec-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Dec-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 1215.0,
+   "target": "Mar-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 510.0,
+   "target": "Jun-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Aug-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 593.0,
+   "target": "Sep-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 500.0,
+   "target": "Sep-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 910.0,
+   "target": "Oct-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 62.0,
+   "target": "Oct-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 574.0,
+   "target": "Oct-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 990.0,
+   "target": "Jan-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 3400.0,
+   "target": "Jan-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 300.0,
+   "target": "Mar-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 728.0,
+   "target": "Jun-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Jul-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 922.0,
+   "target": "Nov-32",
+   "target_year": 2032
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Mar-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 2000.0,
+   "target": "Jun-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Jul-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 150.0,
+   "target": "Nov-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Nov-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "May-34",
+   "target_year": 2034
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 206.25,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "Mar-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 30.0,
+   "target": "May-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 55.0,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 28.0,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 15.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 200.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "2026",
+   "target_year": 2026
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 50.0,
+   "target": "Jan-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 50.0,
+   "target": "Apr-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 30.0,
+   "target": "May-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 30.0,
+   "target": "May-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 50.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 28.0,
+   "target": "Jun-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "Dec-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 114.0,
+   "target": "Jun-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 15.0,
+   "target": "Dec-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 7.5,
+   "target": "2027",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "2027",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "2027",
+   "target_year": 2027
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 7.5,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 30.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 42.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 30.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 30.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "visayas",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 30.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "coal",
+   "mw": 120.0,
+   "target": "Mar-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "geothermal",
+   "mw": 119.0,
+   "target": "Dec-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 225.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 32.5,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 34.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 29.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 10.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 18.0,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 9.5,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 15.7,
+   "target": "2028",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 39.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 250.0,
+   "target": "2030",
+   "target_year": 2030
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 8.62,
+   "target": "2031",
+   "target_year": 2031
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "hydro",
+   "mw": 6.14,
+   "target": "2031",
+   "target_year": 2031
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "biomass",
+   "mw": 50.0,
+   "target": "Jun-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 58.0,
+   "target": "Sep-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 99.0,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 16.8,
+   "target": "Aug-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 180.0,
+   "target": "Nov-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 5.1,
+   "target": "Jan-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 74.8,
+   "target": "Apr-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 150.0,
+   "target": "Apr-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 35.2,
+   "target": "Jul-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 42.3,
+   "target": "Jul-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 150.72,
+   "target": "Sep-28",
+   "target_year": 2028
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 45.9,
+   "target": "Aug-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 1.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 49.7,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "solar",
+   "mw": 150.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 216.0,
+   "target": "Sep-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 80.0,
+   "target": "Jun-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Dec-29",
+   "target_year": 2029
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 136.0,
+   "target": "Jul-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 200.0,
+   "target": "Jul-30",
+   "target_year": 2030
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Aug-31",
+   "target_year": 2031
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "wind",
+   "mw": 100.0,
+   "target": "Jul-33",
+   "target_year": 2033
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 24.28,
+   "target": "Dec-26",
+   "target_year": 2026
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 50.0,
+   "target": "Jul-27",
+   "target_year": 2027
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 40.0,
+   "target": "TBD",
+   "target_year": null
+  },
+  {
+   "grid": "mindanao",
+   "status": "indicative",
+   "fuel": "storage",
+   "mw": 20.0,
+   "target": "TBD",
+   "target_year": null
+  }
+ ],
+ "n_rows": 811,
+ "n_sections_aggregate_only": 0,
+ "corridors": [
+  {
+   "name": "Luzon-Visayas HVDC bipolar upgrade",
+   "iface": "leyte_luzon_hvdc",
+   "adds_mw": 440,
+   "target": "Stage 1 Mar 2028, Stage 2 Dec 2030",
+   "target_year": 2028,
+   "cost_mphp": 22463,
+   "detail": "Upgrades the existing 350 kV Leyte-Luzon link to bipolar MMC-VSC operation, adding 440 MW of Luzon-Visayas transfer. Awaiting ERC approval; the date assumes the regulator's final determination lands on NGCP's planning schedule.",
+   "src": "https://www.ngcp.ph/Attachment-Uploads/TDP%202025-2050%20REPORT-2025-03-11-10-38-56.pdf"
+  },
+  {
+   "name": "MVIP Stage 2",
+   "iface": "mvip_hvdc",
+   "adds_mw": 450,
+   "target": "2025-2030 window, no month stated",
+   "target_year": 2030,
+   "cost_mphp": null,
+   "detail": "Raises the Mindanao-Visayas link from 450 MW to its 900 MW design transfer capacity. Itemized in the September 2025 TDP revision.",
+   "src": "https://www.ngcp.ph/Attachment-Uploads/TDP%202025-2050%20REPORT-2025-09-25-09-29-14.pdf"
+  },
+  {
+   "name": "Batangas-Mindoro interconnection (BMIBP) Stage 1",
+   "iface": null,
+   "adds_mw": null,
+   "target": "TDP says Sep 2027; Mar 2026 press says Jan 2028 for the subsea segment",
+   "target_year": 2028,
+   "cost_mphp": 90656,
+   "detail": "Luzon to Mindoro, 28.5 km submarine cable (2x600 MW cable rating, initially energized 230 kV). ERC approved the P90.66B project in late 2025. Mindoro is outside this model's three-grid topology, so it displays here and applies nowhere.",
+   "src": "https://www.bworldonline.com/corporate/2026/03/18/737000/"
+  },
+  {
+   "name": "Cebu-Leyte 230 kV lines 3 and 4",
+   "iface": null,
+   "adds_mw": null,
+   "target": "Stage 1 Dec 2028, Stage 2 Dec 2031",
+   "target_year": 2028,
+   "cost_mphp": null,
+   "detail": "Parallels the existing Cebu-Leyte corridor (the Visayas leg of the Luzon-Visayas path). The TDP states no MW transfer figure, so no number is imputed.",
+   "src": "https://www.ngcp.ph/Attachment-Uploads/TDP%202025-2050%20REPORT-2025-03-11-10-38-56.pdf"
+  },
+  {
+   "name": "Northern Luzon 500 kV extension",
+   "iface": null,
+   "adds_mw": null,
+   "target": "Bolo-Balaoan Oct 2030; Balaoan-Laoag Aug 2031",
+   "target_year": 2030,
+   "cost_mphp": 40195,
+   "detail": "219 km of 500 kV lines toward the Ilocos wind belt, ERC-approved. Intra-Luzon: outside the model's two-corridor topology. The 2x4,234 MW figure in the TDP is a conductor thermal rating, not a transfer limit.",
+   "src": "https://www.ngcp.ph/Attachment-Uploads/TDP%202025-2050%20REPORT-2025-03-11-10-38-56.pdf"
+  },
+  {
+   "name": "Bataan-Cavite 500 kV line",
+   "iface": null,
+   "adds_mw": null,
+   "target": "feasibility to be assessed; windowed 2031-2040",
+   "target_year": null,
+   "cost_mphp": null,
+   "detail": "Would close the western Manila Bay loop. Still planning-stage as of 2026; no capacity stated.",
+   "src": "https://www.ngcp.ph/Attachment-Uploads/TDP%202025-2050%20REPORT-2025-03-11-10-38-56.pdf"
+  }
+ ],
+ "src_tdp": "https://www.ngcp.ph/Attachment-Uploads/TDP%202025-2050%20REPORT-2025-03-11-10-38-56.pdf",
+ "note": "The DOE's own committed and indicative private-sector power project lists (As of 31 December 2025), parsed with the same reconciliation gate as the existing-plants fleet: every fuel section must sum to the DOE's printed subtotal, and every grid to the DOE's own LVM summary. Committed means permitted and financed on the DOE's tracking; indicative is earlier-stage and far larger. Target dates are the proponents' declarations, not forecasts by this site. Rows carry no project names: names wrap unpredictably in the PDF layout and a wrong name on a right number would be worse than no name.",
+ "ess_note": "Energy storage projects are tracked separately from generation, exactly as the DOE's summaries do; the LT Plan apply step adds only generation MW.",
+ "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+}

@@ -1,0 +1,2315 @@
+{
+ "available": true,
+ "days": [
+  {
+   "date": "2026-04-07",
+   "out": [
+    "01CASECN_U01",
+    "01CASECN_U02",
+    "09WMPC_U01",
+    "10AGUS1_U02",
+    "11MANFOR_G02",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 150.0,
+    "visayas": 0.0,
+    "mindanao": 85.1
+   },
+   "n_out": 8,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-08",
+   "out": [
+    "01CASECN_U01",
+    "01CASECN_U02",
+    "01MSINLO_G02",
+    "10AGUS1_U02",
+    "11MANFOR_G02",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 494.0,
+    "visayas": 0.0,
+    "mindanao": 74.9
+   },
+   "n_out": 8,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-09",
+   "out": [
+    "01CASECN_U01",
+    "01CASECN_U02",
+    "01MSINLO_G02",
+    "10AGUS1_U02",
+    "11MANFOR_G02",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 494.0,
+    "visayas": 0.0,
+    "mindanao": 74.9
+   },
+   "n_out": 8,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-10",
+   "out": [
+    "01CASECN_U01",
+    "01CASECN_U02",
+    "01MSINLO_G02",
+    "10AGUS6_U01",
+    "11MANFOR_G02",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 494.0,
+    "visayas": 0.0,
+    "mindanao": 74.9
+   },
+   "n_out": 8,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-11",
+   "out": [
+    "01CASECN_U01",
+    "01CASECN_U02",
+    "01MSINLO_G02",
+    "10AGUS6_U01",
+    "11MANFOR_G02",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 494.0,
+    "visayas": 0.0,
+    "mindanao": 74.9
+   },
+   "n_out": 8,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-12",
+   "out": [
+    "01CASECN_U01",
+    "01CASECN_U02",
+    "01MSINLO_G02",
+    "10AGUS6_U01",
+    "11MANFOR_G02",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "13MACO_BAT",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 494.0,
+    "visayas": 0.0,
+    "mindanao": 74.9
+   },
+   "n_out": 9,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-13",
+   "out": [
+    "01CASECN_U01",
+    "01CASECN_U02",
+    "01MSINLO_G02",
+    "10AGUS6_U01",
+    "11MANFOR_G02",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 494.0,
+    "visayas": 0.0,
+    "mindanao": 74.9
+   },
+   "n_out": 8,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-14",
+   "out": [
+    "01CASECN_U01",
+    "01CASECN_U02",
+    "01MSINLO_G02",
+    "10AGUS6_U01",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 494.0,
+    "visayas": 0.0,
+    "mindanao": 49.5
+   },
+   "n_out": 7,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-15",
+   "out": [
+    "01CASECN_U01",
+    "01CASECN_U02",
+    "01MSINLO_G02",
+    "01PNTBNG_U01",
+    "01PNTBNG_U02",
+    "08TIMBA_G01",
+    "10AGUS6_U01",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 614.0,
+    "visayas": 6.3,
+    "mindanao": 49.5
+   },
+   "n_out": 10,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-16",
+   "out": [
+    "01CASECN_U01",
+    "01CASECN_U02",
+    "01MSINLO_G02",
+    "08STBPB1_U01",
+    "08STBPB1_U02",
+    "08STBPB1_U03",
+    "08STBPB1_U04",
+    "10AGUS6_U01",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 494.0,
+    "visayas": 0.0,
+    "mindanao": 49.5
+   },
+   "n_out": 11,
+   "n_unmatched": 6
+  },
+  {
+   "date": "2026-04-17",
+   "out": [
+    "01CASECN_U01",
+    "01CASECN_U02",
+    "01PNTBNG_U01",
+    "01PNTBNG_U02",
+    "10AGUS6_U01",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 270.0,
+    "visayas": 0.0,
+    "mindanao": 49.5
+   },
+   "n_out": 8,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-18",
+   "out": [
+    "10AGUS6_U01",
+    "10AGUS6_U02",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 84.5
+   },
+   "n_out": 5,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-19",
+   "out": [
+    "01PNTBNG_U01",
+    "01PNTBNG_U02",
+    "10AGUS6_U01",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 120.0,
+    "visayas": 0.0,
+    "mindanao": 49.5
+   },
+   "n_out": 6,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-20",
+   "out": [
+    "10AGUS6_U01",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 49.5
+   },
+   "n_out": 4,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-21",
+   "out": [
+    "10AGUS6_U01",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 49.5
+   },
+   "n_out": 4,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-22",
+   "out": [
+    "10AGUS6_U01",
+    "11MINBU_G01",
+    "11PULA4_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 124.5
+   },
+   "n_out": 5,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-23",
+   "out": [
+    "10AGUS6_U01",
+    "11MINBU_G01",
+    "11PULA4_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 124.5
+   },
+   "n_out": 5,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-24",
+   "out": [
+    "06HELIOS_G01",
+    "10AGUS6_U01",
+    "11MINBU_G01",
+    "11PULA4_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 108.1,
+    "mindanao": 124.5
+   },
+   "n_out": 6,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-25",
+   "out": [
+    "10AGUS6_U01",
+    "10AGUS6_U05",
+    "11MINBU_G01",
+    "11PULA4_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 159.5
+   },
+   "n_out": 6,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-26",
+   "out": [
+    "10AGUS6_U01",
+    "11MANFOR_G01",
+    "11MINBU_G01",
+    "11PULA4_U01",
+    "11PULA4_U02",
+    "11PULA4_U03",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 317.9
+   },
+   "n_out": 8,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-27",
+   "out": [
+    "10AGUS6_U01",
+    "11MANFOR_G01",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 92.9
+   },
+   "n_out": 5,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-28",
+   "out": [
+    "10AGUS6_U01",
+    "11MANFOR_G01",
+    "11MINBU_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 92.9
+   },
+   "n_out": 5,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-29",
+   "out": [
+    "05TPC_G02",
+    "10AGUS6_U01",
+    "11MANFOR_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 92.9
+   },
+   "n_out": 5,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-04-30",
+   "out": [
+    "05TPC_G02",
+    "10AGUS6_U01",
+    "11MANFOR_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 92.9
+   },
+   "n_out": 5,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-05-01",
+   "out": [
+    "05TPC_G02",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "11MANFOR_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 127.9
+   },
+   "n_out": 6,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-05-02",
+   "out": [
+    "05TPC_G02",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "11MANFOR_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 127.9
+   },
+   "n_out": 6,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-05-03",
+   "out": [
+    "05THVI_U01",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "11MANFOR_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 150.0,
+    "mindanao": 127.9
+   },
+   "n_out": 6,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-04",
+   "out": [
+    "03SNGAB_G01",
+    "05THVI_U01",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "11MANFOR_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 420.1,
+    "visayas": 150.0,
+    "mindanao": 127.9
+   },
+   "n_out": 7,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-05",
+   "out": [
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 84.5
+   },
+   "n_out": 4,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-06",
+   "out": [
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 84.5
+   },
+   "n_out": 4,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-07",
+   "out": [
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 84.5
+   },
+   "n_out": 4,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-08",
+   "out": [
+    "01AMBUK_U01",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 35.0,
+    "visayas": 0.0,
+    "mindanao": 84.5
+   },
+   "n_out": 5,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-09",
+   "out": [
+    "01AMBUK_U01",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 35.0,
+    "visayas": 0.0,
+    "mindanao": 110.5
+   },
+   "n_out": 6,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-10",
+   "out": [
+    "01AMBUK_U01",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 35.0,
+    "visayas": 0.0,
+    "mindanao": 110.5
+   },
+   "n_out": 6,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-11",
+   "out": [
+    "01AMBUK_U01",
+    "01MAGAT_BAT",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 35.0,
+    "visayas": 0.0,
+    "mindanao": 110.5
+   },
+   "n_out": 7,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-12",
+   "out": [
+    "01AMBUK_U01",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 35.0,
+    "visayas": 0.0,
+    "mindanao": 110.5
+   },
+   "n_out": 6,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-13",
+   "out": [
+    "01AMBUK_U01",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 35.0,
+    "visayas": 0.0,
+    "mindanao": 110.5
+   },
+   "n_out": 6,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-14",
+   "out": [
+    "01AMBUK_U01",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 35.0,
+    "visayas": 0.0,
+    "mindanao": 110.5
+   },
+   "n_out": 6,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-15",
+   "out": [
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 110.5
+   },
+   "n_out": 5,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-16",
+   "out": [
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 110.5
+   },
+   "n_out": 5,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-17",
+   "out": [
+    "03SNGAB_G01",
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 420.1,
+    "visayas": 0.0,
+    "mindanao": 110.5
+   },
+   "n_out": 6,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-18",
+   "out": [
+    "10AGUS1_U01",
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 110.5
+   },
+   "n_out": 5,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-19",
+   "out": [
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 75.5
+   },
+   "n_out": 4,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-20",
+   "out": [
+    "10AGUS6_U01",
+    "10AGUS6_U02",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 110.5
+   },
+   "n_out": 5,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-21",
+   "out": [
+    "10AGUS6_U01",
+    "10AGUS7_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 75.5
+   },
+   "n_out": 4,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-22",
+   "out": [
+    "01AMBUK_U03",
+    "10AGUS7_U01",
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 35.0,
+    "visayas": 0.0,
+    "mindanao": 66.5
+   },
+   "n_out": 5,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-23",
+   "out": [
+    "01AMBUK_U03",
+    "10AGUS5_U02",
+    "10AGUS7_U01",
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SARANG_U02",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 35.0,
+    "visayas": 0.0,
+    "mindanao": 197.5
+   },
+   "n_out": 7,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-24",
+   "out": [
+    "01AMBUK_U03",
+    "06KABAN_BAT",
+    "10AGUS5_U02",
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SARANG_U02",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 35.0,
+    "visayas": 0.0,
+    "mindanao": 171.5
+   },
+   "n_out": 7,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-25",
+   "out": [
+    "01AMBUK_U03",
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 35.0,
+    "visayas": 0.0,
+    "mindanao": 40.5
+   },
+   "n_out": 4,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-26",
+   "out": [
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 40.5
+   },
+   "n_out": 3,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-27",
+   "out": [
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 40.5
+   },
+   "n_out": 3,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-28",
+   "out": [
+    "07BDPP_U04",
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 4.0,
+    "mindanao": 40.5
+   },
+   "n_out": 4,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-29",
+   "out": [
+    "05CARMEN_BAT",
+    "06CENPRI_U01",
+    "06CENPRI_U02",
+    "06CENPRI_U03",
+    "06CENPRI_U04",
+    "06CENPRI_U05",
+    "07BDPP_U04",
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 4.0,
+    "mindanao": 40.5
+   },
+   "n_out": 10,
+   "n_unmatched": 6
+  },
+  {
+   "date": "2026-05-30",
+   "out": [
+    "07BDPP_U04",
+    "10AGUS2_U01",
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 4.0,
+    "mindanao": 80.5
+   },
+   "n_out": 5,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-05-31",
+   "out": [
+    "07BDPP_U04",
+    "10AGUS2_U01",
+    "10AGUS6_U04",
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 4.0,
+    "mindanao": 115.5
+   },
+   "n_out": 6,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-01",
+   "out": [
+    "10AGUS2_U01",
+    "10AGUS6_U04",
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 115.5
+   },
+   "n_out": 5,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-02",
+   "out": [
+    "10AGUS2_U01",
+    "10AGUS6_U04",
+    "10AGUS7_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 115.5
+   },
+   "n_out": 5,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-03",
+   "out": [
+    "10AGUS2_U01",
+    "10AGUS6_U04",
+    "10AGUS7_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 123.4
+   },
+   "n_out": 6,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-04",
+   "out": [
+    "01AMBUK_U01",
+    "01AMBUK_U03",
+    "10AGUS2_U01",
+    "10AGUS6_U04",
+    "10AGUS7_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 70.0,
+    "visayas": 0.0,
+    "mindanao": 123.4
+   },
+   "n_out": 8,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-05",
+   "out": [
+    "01AMBUK_U01",
+    "01AMBUK_U03",
+    "10AGUS2_U01",
+    "10AGUS6_U04",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 70.0,
+    "visayas": 0.0,
+    "mindanao": 97.4
+   },
+   "n_out": 7,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-06",
+   "out": [
+    "01AMBUK_U01",
+    "01AMBUK_U02",
+    "01AMBUK_U03",
+    "10AGUS2_U01",
+    "10AGUS2_U03",
+    "10AGUS6_U04",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 105.0,
+    "visayas": 0.0,
+    "mindanao": 137.4
+   },
+   "n_out": 9,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-07",
+   "out": [
+    "01AMBUK_U01",
+    "01AMBUK_U02",
+    "01AMBUK_U03",
+    "03CALACA_G01",
+    "03SLPGC_G01",
+    "03SLPGC_G02",
+    "03SNGAB_G01",
+    "10AGUS2_U01",
+    "10AGUS6_U04",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1032.1,
+    "visayas": 0.0,
+    "mindanao": 97.4
+   },
+   "n_out": 12,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-08",
+   "out": [
+    "03CALACA_G01",
+    "03SLPGC_G01",
+    "10AGUS2_U01",
+    "10AGUS6_U04",
+    "11PULA4_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 373.5,
+    "visayas": 0.0,
+    "mindanao": 172.4
+   },
+   "n_out": 8,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-09",
+   "out": [
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "03SLPGC_G01",
+    "10AGUS2_U01",
+    "10AGUS6_U04",
+    "11PULA4_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 777.6,
+    "visayas": 0.0,
+    "mindanao": 172.4
+   },
+   "n_out": 11,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-10",
+   "out": [
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "03SLPGC_G01",
+    "07BDPP_U01",
+    "07BDPP_U02",
+    "10AGUS2_U01",
+    "10AGUS6_U04",
+    "11PULA4_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 777.6,
+    "visayas": 8.0,
+    "mindanao": 172.4
+   },
+   "n_out": 13,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-11",
+   "out": [
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "03SLPGC_G01",
+    "10AGUS2_U01",
+    "10AGUS5_U01",
+    "10AGUS6_U04",
+    "11PULA4_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 777.6,
+    "visayas": 0.0,
+    "mindanao": 198.4
+   },
+   "n_out": 12,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-12",
+   "out": [
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "03SLPGC_G01",
+    "10AGUS2_U01",
+    "10AGUS5_U01",
+    "10AGUS6_U04",
+    "11PULA4_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 777.6,
+    "visayas": 0.0,
+    "mindanao": 198.4
+   },
+   "n_out": 12,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-13",
+   "out": [
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "10AGUS2_U01",
+    "10AGUS5_U01",
+    "10AGUS6_U04",
+    "11PULA4_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 644.1,
+    "visayas": 0.0,
+    "mindanao": 198.4
+   },
+   "n_out": 11,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-14",
+   "out": [
+    "01PNTBNG_U01",
+    "01PNTBNG_U02",
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "10AGUS2_U01",
+    "10AGUS5_U01",
+    "10AGUS6_U04",
+    "11PULA4_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 764.1,
+    "visayas": 0.0,
+    "mindanao": 198.4
+   },
+   "n_out": 13,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-15",
+   "out": [
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "03SNGAB_G01",
+    "10AGUS2_U01",
+    "10AGUS5_U01",
+    "10AGUS6_U04",
+    "11PULA4_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1064.2,
+    "visayas": 0.0,
+    "mindanao": 198.4
+   },
+   "n_out": 12,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-16",
+   "out": [
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "03SNGAB_G01",
+    "10AGUS2_U01",
+    "10AGUS5_U01",
+    "11PULA4_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1064.2,
+    "visayas": 0.0,
+    "mindanao": 163.4
+   },
+   "n_out": 11,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-17",
+   "out": [
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "03SNGAB_G01",
+    "10AGUS2_U01",
+    "10AGUS5_U01",
+    "11PULA4_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1064.2,
+    "visayas": 0.0,
+    "mindanao": 163.4
+   },
+   "n_out": 11,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-18",
+   "out": [
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "03SNGAB_G01",
+    "10AGUS2_U01",
+    "10AGUS5_U01",
+    "11PULA4_U02",
+    "12ASIGA_G01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1064.2,
+    "visayas": 0.0,
+    "mindanao": 163.4
+   },
+   "n_out": 11,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-19",
+   "out": [
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "03SNGAB_G01",
+    "10AGUS2_U01",
+    "10AGUS5_U01",
+    "11PULA4_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1064.2,
+    "visayas": 0.0,
+    "mindanao": 155.5
+   },
+   "n_out": 10,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-20",
+   "out": [
+    "01SROQUE_U01",
+    "01SROQUE_U02",
+    "01SROQUE_U03",
+    "03CALACA_G01",
+    "03SNGAB_G01",
+    "08PEDC_U03",
+    "10AGUS2_U01",
+    "10AGUS5_U01",
+    "11PULA4_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1064.2,
+    "visayas": 150.0,
+    "mindanao": 155.5
+   },
+   "n_out": 11,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-21",
+   "out": [
+    "01MARVEL_G01",
+    "01SROQUE_U03",
+    "03KAL_G03",
+    "03SNGAB_G01",
+    "08PEDC_U03",
+    "10AGUS2_U01",
+    "10AGUS5_U01",
+    "11PULA4_U01",
+    "11PULA4_U02",
+    "11PULA4_U03",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1050.8,
+    "visayas": 150.0,
+    "mindanao": 305.5
+   },
+   "n_out": 12,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-22",
+   "out": [
+    "01MARVEL_G01",
+    "01SROQUE_U03",
+    "03KAL_G03",
+    "03SNGAB_G01",
+    "10AGUS1_U02",
+    "10AGUS5_U01",
+    "11PULA4_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1050.8,
+    "visayas": 0.0,
+    "mindanao": 150.5
+   },
+   "n_out": 9,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-23",
+   "out": [
+    "01MARVEL_G01",
+    "01SROQUE_U03",
+    "03KAL_G03",
+    "03SNGAB_G01",
+    "10AGUS5_U01",
+    "11PULA4_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1050.8,
+    "visayas": 0.0,
+    "mindanao": 115.5
+   },
+   "n_out": 8,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-24",
+   "out": [
+    "01MARVEL_G01",
+    "01SROQUE_U03",
+    "03SNGAB_G01",
+    "10AGUS5_U01",
+    "11PULA4_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 870.8,
+    "visayas": 0.0,
+    "mindanao": 115.5
+   },
+   "n_out": 7,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-25",
+   "out": [
+    "01GIFT_G01",
+    "01MARVEL_G01",
+    "01SROQUE_U03",
+    "03SNGAB_G01",
+    "08PEDC_U03",
+    "10AGUS5_U01",
+    "11PULA4_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 881.6,
+    "visayas": 150.0,
+    "mindanao": 115.5
+   },
+   "n_out": 9,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-26",
+   "out": [
+    "01GIFT_G01",
+    "01MARVEL_G01",
+    "01SROQUE_U03",
+    "03SNGAB_G01",
+    "08PEDC_U03",
+    "10AGUS5_U01",
+    "11PULA4_U02",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 881.6,
+    "visayas": 150.0,
+    "mindanao": 115.5
+   },
+   "n_out": 9,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-27",
+   "out": [
+    "01MARVEL_G01",
+    "01SROQUE_U03",
+    "03SNGAB_G01",
+    "10AGUS5_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 870.8,
+    "visayas": 0.0,
+    "mindanao": 40.5
+   },
+   "n_out": 6,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-28",
+   "out": [
+    "01SROQUE_U03",
+    "03SNGAB_G01",
+    "10AGUS5_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 554.8,
+    "visayas": 0.0,
+    "mindanao": 40.5
+   },
+   "n_out": 5,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-29",
+   "out": [
+    "01SROQUE_U03",
+    "03SNGAB_G01",
+    "10AGUS5_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 554.8,
+    "visayas": 0.0,
+    "mindanao": 40.5
+   },
+   "n_out": 5,
+   "n_unmatched": 1
+  },
+  {
+   "date": "2026-06-30",
+   "out": [
+    "01AMBUK_U01",
+    "01SROQUE_U03",
+    "03BACMAN_BAT",
+    "03SNGAB_G01",
+    "10AGUS5_U01",
+    "11FDC_U01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 589.8,
+    "visayas": 0.0,
+    "mindanao": 163.5
+   },
+   "n_out": 9,
+   "n_unmatched": 2
+  },
+  {
+   "date": "2026-07-01",
+   "out": [
+    "01AMBUK_U01",
+    "01SMC_G01",
+    "01SROQUE_U03",
+    "03BACMAN_BAT",
+    "03SLPGC_G01",
+    "03SNGAB_G01",
+    "10AGUS5_U01",
+    "11FDC_U01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 723.3,
+    "visayas": 0.0,
+    "mindanao": 163.5
+   },
+   "n_out": 11,
+   "n_unmatched": 3
+  },
+  {
+   "date": "2026-07-02",
+   "out": [
+    "01AMBUK_U01",
+    "01AMBUK_U02",
+    "01AMBUK_U03",
+    "01SMC_G01",
+    "01SROQUE_U03",
+    "03BACMAN_BAT",
+    "03SLPGC_G01",
+    "03SLPGC_G02",
+    "03SNGAB_G01",
+    "10AGUS5_U01",
+    "11FDC_U01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 926.8,
+    "visayas": 0.0,
+    "mindanao": 163.5
+   },
+   "n_out": 14,
+   "n_unmatched": 3
+  },
+  {
+   "date": "2026-07-03",
+   "out": [
+    "01AMBUK_U03",
+    "01SMC_G01",
+    "01SROQUE_U03",
+    "03BACMAN_BAT",
+    "03SLPGC_G01",
+    "03SLPGC_G02",
+    "03SNGAB_G01",
+    "10AGUS5_U01",
+    "11FDC_U01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 856.8,
+    "visayas": 0.0,
+    "mindanao": 163.5
+   },
+   "n_out": 12,
+   "n_unmatched": 3
+  },
+  {
+   "date": "2026-07-04",
+   "out": [
+    "01SMC_G01",
+    "01SROQUE_U03",
+    "03SLPGC_G01",
+    "03SLPGC_G02",
+    "03SNGAB_G01",
+    "05CARMEN_BAT",
+    "05EAUC_U02",
+    "05EAUC_U03",
+    "05EAUC_U04",
+    "10AGUS5_U01",
+    "11FDC_U01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 821.8,
+    "visayas": 34.2,
+    "mindanao": 163.5
+   },
+   "n_out": 14,
+   "n_unmatched": 3
+  },
+  {
+   "date": "2026-07-05",
+   "out": [
+    "01SMC_G01",
+    "01SROQUE_U03",
+    "03SLPGC_G01",
+    "03SLPGC_G02",
+    "03SNGAB_G01",
+    "10AGUS5_U01",
+    "11FDC_U01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 821.8,
+    "visayas": 0.0,
+    "mindanao": 163.5
+   },
+   "n_out": 10,
+   "n_unmatched": 3
+  }
+ ],
+ "resources": [
+  {
+   "resource": "01AMBUK_U01",
+   "grid": "luzon",
+   "plant": "AMBUKLAO",
+   "fuel": "hydro",
+   "unit_mw": 35.0,
+   "match": "verified"
+  },
+  {
+   "resource": "01AMBUK_U02",
+   "grid": "luzon",
+   "plant": "AMBUKLAO",
+   "fuel": "hydro",
+   "unit_mw": 35.0,
+   "match": "verified"
+  },
+  {
+   "resource": "01AMBUK_U03",
+   "grid": "luzon",
+   "plant": "AMBUKLAO",
+   "fuel": "hydro",
+   "unit_mw": 35.0,
+   "match": "verified"
+  },
+  {
+   "resource": "01CASECN_U01",
+   "grid": "luzon",
+   "plant": "CASECNAN (NIA)",
+   "fuel": "hydro",
+   "unit_mw": 75.0,
+   "match": "verified"
+  },
+  {
+   "resource": "01CASECN_U02",
+   "grid": "luzon",
+   "plant": "CASECNAN (NIA)",
+   "fuel": "hydro",
+   "unit_mw": 75.0,
+   "match": "verified"
+  },
+  {
+   "resource": "01GIFT_G01",
+   "grid": "luzon",
+   "plant": "GIFT",
+   "fuel": "biomass",
+   "unit_mw": 10.8,
+   "match": "verified"
+  },
+  {
+   "resource": "01MAGAT_BAT",
+   "grid": "luzon",
+   "plant": null,
+   "fuel": "storage",
+   "unit_mw": null,
+   "match": "storage"
+  },
+  {
+   "resource": "01MARVEL_G01",
+   "grid": "luzon",
+   "plant": "MARIVELES U1",
+   "fuel": "coal",
+   "unit_mw": 316.0,
+   "match": "verified"
+  },
+  {
+   "resource": "01MSINLO_G02",
+   "grid": "luzon",
+   "plant": "MASINLOC U2",
+   "fuel": "coal",
+   "unit_mw": 344.0,
+   "match": "verified"
+  },
+  {
+   "resource": "01PNTBNG_U01",
+   "grid": "luzon",
+   "plant": "PANTABANGAN",
+   "fuel": "hydro",
+   "unit_mw": 60.0,
+   "match": "verified"
+  },
+  {
+   "resource": "01PNTBNG_U02",
+   "grid": "luzon",
+   "plant": "PANTABANGAN",
+   "fuel": "hydro",
+   "unit_mw": 60.0,
+   "match": "verified"
+  },
+  {
+   "resource": "01SMC_G01",
+   "grid": "luzon",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "01SROQUE_U01",
+   "grid": "luzon",
+   "plant": "SAN ROQUE",
+   "fuel": "hydro",
+   "unit_mw": 134.7,
+   "match": "verified"
+  },
+  {
+   "resource": "01SROQUE_U02",
+   "grid": "luzon",
+   "plant": "SAN ROQUE",
+   "fuel": "hydro",
+   "unit_mw": 134.7,
+   "match": "verified"
+  },
+  {
+   "resource": "01SROQUE_U03",
+   "grid": "luzon",
+   "plant": "SAN ROQUE",
+   "fuel": "hydro",
+   "unit_mw": 134.7,
+   "match": "verified"
+  },
+  {
+   "resource": "03BACMAN_BAT",
+   "grid": "luzon",
+   "plant": null,
+   "fuel": "storage",
+   "unit_mw": null,
+   "match": "storage"
+  },
+  {
+   "resource": "03CALACA_G01",
+   "grid": "luzon",
+   "plant": "CALACA U1",
+   "fuel": "coal",
+   "unit_mw": 240.0,
+   "match": "verified"
+  },
+  {
+   "resource": "03KAL_G03",
+   "grid": "luzon",
+   "plant": "KALAYAAN PSPP",
+   "fuel": "hydro",
+   "unit_mw": 180.0,
+   "match": "verified"
+  },
+  {
+   "resource": "03SLPGC_G01",
+   "grid": "luzon",
+   "plant": "SLPGC U1",
+   "fuel": "coal",
+   "unit_mw": 133.5,
+   "match": "verified"
+  },
+  {
+   "resource": "03SLPGC_G02",
+   "grid": "luzon",
+   "plant": "SLPGC U2",
+   "fuel": "coal",
+   "unit_mw": 133.5,
+   "match": "verified"
+  },
+  {
+   "resource": "03SNGAB_G01",
+   "grid": "luzon",
+   "plant": "SAN GABRIEL",
+   "fuel": "natural_gas",
+   "unit_mw": 420.1,
+   "match": "verified"
+  },
+  {
+   "resource": "05CARMEN_BAT",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": "storage",
+   "unit_mw": null,
+   "match": "storage"
+  },
+  {
+   "resource": "05EAUC_U02",
+   "grid": "visayas",
+   "plant": "EAST ASIA UTILITIES (MEPZA)",
+   "fuel": "oil",
+   "unit_mw": 11.4,
+   "match": "verified"
+  },
+  {
+   "resource": "05EAUC_U03",
+   "grid": "visayas",
+   "plant": "EAST ASIA UTILITIES (MEPZA)",
+   "fuel": "oil",
+   "unit_mw": 11.4,
+   "match": "verified"
+  },
+  {
+   "resource": "05EAUC_U04",
+   "grid": "visayas",
+   "plant": "EAST ASIA UTILITIES (MEPZA)",
+   "fuel": "oil",
+   "unit_mw": 11.4,
+   "match": "verified"
+  },
+  {
+   "resource": "05THVI_U01",
+   "grid": "visayas",
+   "plant": "TVI U1",
+   "fuel": "coal",
+   "unit_mw": 150.0,
+   "match": "verified"
+  },
+  {
+   "resource": "05TPC_G02",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "06CENPRI_U01",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "06CENPRI_U02",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "06CENPRI_U03",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "06CENPRI_U04",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "06CENPRI_U05",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "06HELIOS_G01",
+   "grid": "visayas",
+   "plant": "HELIOS",
+   "fuel": "solar",
+   "unit_mw": 108.1,
+   "match": "verified"
+  },
+  {
+   "resource": "06KABAN_BAT",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": "storage",
+   "unit_mw": null,
+   "match": "storage"
+  },
+  {
+   "resource": "07BDPP_U01",
+   "grid": "visayas",
+   "plant": "BOHOL DPP",
+   "fuel": "oil",
+   "unit_mw": 4.0,
+   "match": "verified"
+  },
+  {
+   "resource": "07BDPP_U02",
+   "grid": "visayas",
+   "plant": "BOHOL DPP",
+   "fuel": "oil",
+   "unit_mw": 4.0,
+   "match": "verified"
+  },
+  {
+   "resource": "07BDPP_U04",
+   "grid": "visayas",
+   "plant": "BOHOL DPP",
+   "fuel": "oil",
+   "unit_mw": 4.0,
+   "match": "verified"
+  },
+  {
+   "resource": "08PEDC_U03",
+   "grid": "visayas",
+   "plant": "PEDC U3",
+   "fuel": "coal",
+   "unit_mw": 150.0,
+   "match": "verified"
+  },
+  {
+   "resource": "08STBPB1_U01",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "08STBPB1_U02",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "08STBPB1_U03",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "08STBPB1_U04",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "08TIMBA_G01",
+   "grid": "visayas",
+   "plant": "TIMBABAN HEPP",
+   "fuel": "hydro",
+   "unit_mw": 6.3,
+   "match": "verified"
+  },
+  {
+   "resource": "09WMPC_U01",
+   "grid": "mindanao",
+   "plant": "WMPC",
+   "fuel": "oil",
+   "unit_mw": 10.2,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS1_U01",
+   "grid": "mindanao",
+   "plant": "AGUS 1",
+   "fuel": "hydro",
+   "unit_mw": 35.0,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS1_U02",
+   "grid": "mindanao",
+   "plant": "AGUS 1",
+   "fuel": "hydro",
+   "unit_mw": 35.0,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS2_U01",
+   "grid": "mindanao",
+   "plant": "AGUS 2",
+   "fuel": "hydro",
+   "unit_mw": 40.0,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS2_U03",
+   "grid": "mindanao",
+   "plant": "AGUS 2",
+   "fuel": "hydro",
+   "unit_mw": 40.0,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS5_U01",
+   "grid": "mindanao",
+   "plant": "AGUS 5",
+   "fuel": "hydro",
+   "unit_mw": 26.0,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS5_U02",
+   "grid": "mindanao",
+   "plant": "AGUS 5",
+   "fuel": "hydro",
+   "unit_mw": 26.0,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS6_U01",
+   "grid": "mindanao",
+   "plant": "AGUS 6",
+   "fuel": "hydro",
+   "unit_mw": 35.0,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS6_U02",
+   "grid": "mindanao",
+   "plant": "AGUS 6",
+   "fuel": "hydro",
+   "unit_mw": 35.0,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS6_U04",
+   "grid": "mindanao",
+   "plant": "AGUS 6",
+   "fuel": "hydro",
+   "unit_mw": 35.0,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS6_U05",
+   "grid": "mindanao",
+   "plant": "AGUS 6",
+   "fuel": "hydro",
+   "unit_mw": 35.0,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS7_U01",
+   "grid": "mindanao",
+   "plant": "AGUS 7",
+   "fuel": "hydro",
+   "unit_mw": 26.0,
+   "match": "verified"
+  },
+  {
+   "resource": "10AGUS7_U02",
+   "grid": "mindanao",
+   "plant": "AGUS 7",
+   "fuel": "hydro",
+   "unit_mw": 26.0,
+   "match": "verified"
+  },
+  {
+   "resource": "11FDC_U01",
+   "grid": "mindanao",
+   "plant": "FDC MISAMIS U1",
+   "fuel": "coal",
+   "unit_mw": 123.0,
+   "match": "verified"
+  },
+  {
+   "resource": "11MANFOR_G01",
+   "grid": "mindanao",
+   "plant": "MANOLO FORTICH U1",
+   "fuel": "hydro",
+   "unit_mw": 43.4,
+   "match": "verified"
+  },
+  {
+   "resource": "11MANFOR_G02",
+   "grid": "mindanao",
+   "plant": "MANOLO FORTICH U2",
+   "fuel": "hydro",
+   "unit_mw": 25.4,
+   "match": "verified"
+  },
+  {
+   "resource": "11MINBU_G01",
+   "grid": "mindanao",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "11PULA4_U01",
+   "grid": "mindanao",
+   "plant": "PULANGI 4",
+   "fuel": "hydro",
+   "unit_mw": 75.0,
+   "match": "verified"
+  },
+  {
+   "resource": "11PULA4_U02",
+   "grid": "mindanao",
+   "plant": "PULANGI 4",
+   "fuel": "hydro",
+   "unit_mw": 75.0,
+   "match": "verified"
+  },
+  {
+   "resource": "11PULA4_U03",
+   "grid": "mindanao",
+   "plant": "PULANGI 4",
+   "fuel": "hydro",
+   "unit_mw": 75.0,
+   "match": "verified"
+  },
+  {
+   "resource": "11STEAG_U01",
+   "grid": "mindanao",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "12ASIGA_G01",
+   "grid": "mindanao",
+   "plant": "ASIGA",
+   "fuel": "hydro",
+   "unit_mw": 7.9,
+   "match": "verified"
+  },
+  {
+   "resource": "12KEGGIN_G01",
+   "grid": "mindanao",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "13MACO_BAT",
+   "grid": "mindanao",
+   "plant": null,
+   "fuel": "storage",
+   "unit_mw": null,
+   "match": "storage"
+  },
+  {
+   "resource": "14SARANG_U02",
+   "grid": "mindanao",
+   "plant": "SEC U2",
+   "fuel": "coal",
+   "unit_mw": 105.0,
+   "match": "verified"
+  },
+  {
+   "resource": "14SIGHYDRO_G01",
+   "grid": "mindanao",
+   "plant": "SIGUIL HEPP",
+   "fuel": "hydro",
+   "unit_mw": 14.5,
+   "match": "verified"
+  }
+ ],
+ "n_resources": 69,
+ "n_verified": 50,
+ "n_unmatched": 14,
+ "n_storage": 5,
+ "grid_mapping_note": "Grid per resource comes from the WESM code's numeric area prefix (01-03 Luzon, 04-08 Visayas, 09-14 Mindanao), an INFERRED mapping spot-checked against named plants; IEMOP does not publish a code key on this dataset.",
+ "coverage_note": "50 of 69 outage codes in this window map to a DOE-fleet plant with a dependable MW; 14 stay unmatched and carry no MW (their outage is listed, not sized), and 5 are grid batteries outside the generation list. Matched MW is therefore a floor on the true scheduled-outage MW.",
+ "note": "The operator's own outage schedules used in real-time dispatch (IEMOP OUTRTD), one row per resource out per day. This is the observed maintenance-plus-forced outage state, not a forecast.",
+ "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/",
+ "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+}

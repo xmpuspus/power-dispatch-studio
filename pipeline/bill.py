@@ -44,12 +44,51 @@ SRC_BILL = "https://www.bworldonline.com/top-stories/2026/06/12/756242/meralco-r
 # Meralco quotes rate impact for a typical residential household at 200 kWh/month.
 HOUSEHOLD_KWH_MONTH = 200
 
+# The residual is not a constant: Meralco's own advisories put the WESM slice at
+# 6% in April, 7% in May, 10% in June 2026. Shares and charges only; per-source
+# peso costs beyond the June WESM figure are not published cleanly and are not
+# estimated here. Advisory URLs are the canonical source (the Meralco site
+# refuses non-PH requests; figures cross-checked in the cited news reports).
+MIX_HISTORY = [
+    {"period": "2026-04", "wesm_pct": 6, "psa_pct": 74, "ipp_pct": 20,
+     "generation_charge_php_kwh": 8.3864, "total_rate_php_kwh": 14.3496,
+     "src": "https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-april-2026",
+     "src_news": "https://www.gmanetwork.com/news/money/economy/983342/meralco-hikes-power-rate-by-53-cents-this-april/story/"},
+    {"period": "2026-05", "wesm_pct": 7, "psa_pct": 73, "ipp_pct": 20,
+     "generation_charge_php_kwh": 8.7942, "total_rate_php_kwh": 14.3345,
+     "src": "https://company.meralco.com.ph/news-and-advisories/lower-residential-rates-may-2026",
+     "src_news": "https://www.bworldonline.com/top-stories/2026/05/14/749484/meralco-cuts-power-rates-slightly-after-3-mo-hikes/"},
+    {"period": "2026-06", "wesm_pct": 10, "psa_pct": 69, "ipp_pct": 21,
+     "generation_charge_php_kwh": 9.0704, "total_rate_php_kwh": 14.4833,
+     "src": SRC_MIX,
+     "src_news": SRC_BILL},
+]
+
+# June 2026 per-source movement, the one month with a clean public breakdown:
+# PSA +P0.0941/kWh (54% dollar-denominated; coal and LNG prices), First Gas
+# -P0.1569/kWh (better dispatch at Sta. Rita and San Lorenzo), WESM at P7.0281.
+JUNE_MOVES = {
+    "psa_delta_php_kwh": 0.0941,
+    "ipp_delta_php_kwh": -0.1569,
+    "src_psa": "https://www.bworldonline.com/top-stories/2026/06/12/756242/meralco-rates-climb-p0-15-kwh-in-june/",
+    "src_ipp": "https://www.manilatimes.net/2026/06/11/business/meralco-raises-june-electricity-rates-on-higher-generation-charge-peso-weakness/2363337",
+}
+
 
 def build_bill() -> dict:
     wesm_share = SUPPLY_MIX_PCT["wesm"] / 100.0
     return {
         "available": True,
         "period": MIX_PERIOD,
+        "mix_history": MIX_HISTORY,
+        "june_moves": JUNE_MOVES,
+        "mix_history_note": (
+            "The spot-exposed residual moved 6% to 7% to 10% across April, "
+            "May, June 2026 while the generation charge climbed P8.39 to "
+            "P9.07: the utility leaned harder on WESM exactly as the grid "
+            "tightened. The pass-through slider below uses the latest month; "
+            "contract shares are the utility's own published mix, and the "
+            "residual varies month to month."),
         "supply_mix_pct": SUPPLY_MIX_PCT,
         "wesm_share_pct": SUPPLY_MIX_PCT["wesm"],
         "src_mix": SRC_MIX,
