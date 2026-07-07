@@ -45,6 +45,10 @@ describe('chronological golden parity vs the Python chrono engine', () => {
           Math.abs(res.hours[h].shortfall.luzon - c.expect.shortfall_luzon[h]),
           `shortfall h${h}`
         ).toBeLessThanOrEqual(tolMW)
+        // exact label parity: a rounded-gen read flips blocks at boundaries
+        expect(res.hours[h].marginal.luzon, `marginal h${h}`).toBe(
+          c.expect.marginal_luzon[h]
+        )
       }
       for (const gk of GRID_KEYS) {
         expect(
@@ -97,6 +101,23 @@ describe('chronological behavior', () => {
     }
     expect(res.hours[23].socMwh).toBe(0)
     expect(Math.abs(soc)).toBeLessThanOrEqual(0.5)
+  })
+
+  it('a hostile storage config cannot create energy from rounding', () => {
+    // tiny energy against huge power: round-half-up used to discharge more
+    // MWh than were ever stored (floor rounding pins the invariant)
+    const res = runChronology(d, profiles, date, {
+      storage: [{ grid: 'luzon', power_mw: 1000, energy_mwh: 0.1 }],
+    })
+    let stored = 0
+    let discharged = 0
+    for (const h of res.hours) {
+      stored += h.chargeMw * profiles.storage_round_trip_eff
+      discharged += h.dischargeMw
+      expect(h.socMwh).toBeGreaterThanOrEqual(0)
+      expect(h.socMwh).toBeLessThanOrEqual(0.1 + 1e-9)
+    }
+    expect(discharged).toBeLessThanOrEqual(stored + 1e-9)
   })
 
   it('the reserve deduction prices at demand plus the scheduled requirement', () => {

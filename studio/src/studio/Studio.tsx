@@ -153,7 +153,13 @@ export function Studio({
       { name: `${run.scenarioName} (restored)`, overrides: { ...run.overrides } },
     ])
     setAi(scenarios.length)
-    setChronoDate(run.date)
+    // the IEMOP window rolls; a saved run's day can age out of the archive
+    const p = profiles.data
+    setChronoDate(
+      p && p.days.some((x) => x.date === run.date)
+        ? run.date
+        : (p?.default_day ?? run.date)
+    )
     setChronoSpan(run.span)
     setSolved(solveModel(d, objects, run.overrides))
     setRanOv(run.overrides)

@@ -402,6 +402,7 @@ export interface ChronoGoldenCase {
     flow_vm: number[]
     soc_mwh: number[]
     shortfall_luzon: number[]
+    marginal_luzon: (string | null)[]
     summary: {
       mean_price: Record<GridKey, number>
       peak_price: Record<GridKey, number>

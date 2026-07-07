@@ -42,6 +42,12 @@ def round3(x: float) -> float:
     return _round(x, 3)
 
 
+def floor1(x: float) -> float:
+    # storage schedule values round DOWN so a cycle can never discharge more
+    # than it stored or charge past the energy cap (round-half-up could do both)
+    return math.floor(x * 10) / 10
+
+
 # ---- stack + coupled clear over given stacks (mirrors engine.ts) --------------
 
 def build_stack(fuel_avail: dict, removed: dict, added: list[dict],
@@ -278,10 +284,10 @@ def run_chronology(dispatch: dict, profiles: dict, date: str,
         soc_series = [0.0] * 24
         for h in hours:
             if h in charge_set and soc < energy - EPS_SOC:
-                charge[h] = round1(min(power, (energy - soc) / eff))
+                charge[h] = floor1(min(power, (energy - soc) / eff))
                 soc += charge[h] * eff
             elif h in dis_set and soc > EPS_SOC:
-                discharge[h] = round1(min(power, soc))
+                discharge[h] = floor1(min(power, soc))
                 soc -= discharge[h]
             soc_series[h] = round1(soc)
         stores.append({"grid": g, "charge": charge, "discharge": discharge,
@@ -382,6 +388,10 @@ def build_chrono_golden(dispatch: dict, profiles: dict) -> dict:
                 "soc_mwh": [o["soc_mwh"] for o in res["hours"]],
                 "shortfall_luzon": [o["shortfall"]["luzon"]
                                     for o in res["hours"]],
+                # exact label parity: a rounded-gen read can flip the marginal
+                # block at a boundary, which prices never reveal
+                "marginal_luzon": [o["marginal"]["luzon"]
+                                   for o in res["hours"]],
                 "summary": res["summary"],
             },
         })
