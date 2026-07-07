@@ -97,8 +97,8 @@ export default function App() {
             PCIJ). Patterns may have legitimate explanations.
           </span>
           <span className="app__footnote">
-            PLEXOS Studio is an independent open homage. Not affiliated with Energy
-            Exemplar. Not PLEXOS.
+            Power Dispatch Studio is an independent open homage to the PLEXOS workflow.
+            Not affiliated with Energy Exemplar. Not PLEXOS.
           </span>
         </footer>
       </main>
