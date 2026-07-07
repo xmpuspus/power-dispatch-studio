@@ -45,7 +45,18 @@ export function ChronologyView({
 }) {
   const days = profiles.days
   const [flash, setFlash] = useState<string | null>(null)
-  const opts = useMemo(() => chronoOptsFrom(objects, overrides), [objects, overrides])
+  const [reserveDeduction, setReserveDeduction] = useState(false)
+  const opts = useMemo(() => {
+    const o = chronoOptsFrom(objects, overrides)
+    if (reserveDeduction) o.reserve_deduction = true
+    return o
+  }, [objects, overrides, reserveDeduction])
+  const reserveMw = Math.round(
+    Object.values(profiles.reserve_req_mean_mw).reduce(
+      (s, per) => s + Object.values(per).reduce((a, v) => a + v, 0),
+      0
+    )
+  )
 
   const windowDates = useMemo(() => {
     const idx = days.findIndex((x) => x.date === date)
@@ -169,6 +180,14 @@ export function ChronologyView({
             { value: 'week', label: 'Week ending' },
           ]}
         />
+        <label className="chrono__reserve">
+          <input
+            type="checkbox"
+            checked={reserveDeduction}
+            onChange={(e) => setReserveDeduction(e.target.checked)}
+          />
+          Reserve co-clear ({num(reserveMw)} MW withheld)
+        </label>
         <div className="chrono__actions">
           <button className="btn btn--ghost btn--sm" onClick={save}>
             Save run
@@ -247,8 +266,10 @@ export function ChronologyView({
       <p className="note">
         Replays the archive's observed days: demand is dispatched generation per hour
         (IEMOP RTD regional summaries), replayed against the edited model. Region load
-        edits shift demand flat across all 24 hours, the data-center shape. Block dispatch
-        per hour with no inter-temporal optimisation. Not PLEXOS.
+        edits shift demand flat across all 24 hours, the data-center shape. Reserve
+        co-clear prices each hour at demand plus the mean scheduled reserve requirement
+        (IEMOP RTD reserve rows), a labeled approximation of the co-optimised market.
+        Block dispatch per hour with no inter-temporal optimisation. Not PLEXOS.
       </p>
     </div>
   )

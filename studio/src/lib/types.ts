@@ -454,6 +454,33 @@ export interface Profiles {
   }
 }
 
+export interface FleetPlant {
+  name: string
+  grid: GridKey
+  fuel: string
+  connection: 'grid' | 'embedded'
+  installed_mw: number
+  dependable_mw: number
+  units: number
+}
+
+export interface Fleet {
+  available: boolean
+  note: string
+  editions: Record<
+    GridKey,
+    {
+      as_of: string
+      src: string
+      original_url: string
+      sections_total_mw: number
+      doe_total_mw: number | null
+    }
+  >
+  n_plants: number
+  plants: FleetPlant[]
+}
+
 export interface GeneratorProps {
   name: string
   grid: string

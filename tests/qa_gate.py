@@ -81,8 +81,12 @@ def scan(path, text):
     for label, rx in BANNED:
         if re.search(rx, text, re.I):
             fails.append(f"{base}: BANNED framing {label}")
+    # The DOE plant list names dozens of solar plants "<NAME> SPP" (solar power
+    # plant) and Kalayaan "PSPP" (pumped storage). Scrub SPP only when it follows
+    # an ALL-CAPS plant name, so the ban still catches prose about the US ISO.
+    us_text = re.sub(r"([A-Z0-9][A-Z0-9'()./-]*\s+)P?SPP\b", r"\1", text)
     for rx in US_FRAMING:
-        m = re.search(rx, text)
+        m = re.search(rx, us_text)
         if m:
             fails.append(f"{base}: US-market framing '{m.group(0)}' "
                          "(map stands on PH terms only)")

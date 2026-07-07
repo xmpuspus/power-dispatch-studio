@@ -4,12 +4,13 @@
 // the coupled dispatch through engine.ts (which is golden-parity to the Python).
 //
 // Honest block-dispatch stance: the model clears aggregate per-fuel blocks. The Fuels
-// class sets the stack (cost + available MW per grid). The Generators class names the
-// real units; editing a unit shifts its fuel's available capacity on its grid by the
-// change (an approximation, not plant-level unit commitment) and defines the N-1 set.
-// No fabricated per-plant fleet.
+// class sets the stack (cost + available MW per grid). The Generators class carries
+// the DOE list of existing power plants (real units, DOE dependable capacities);
+// editing a unit shifts its fuel's available capacity on its grid by the change (an
+// approximation, not plant-level unit commitment) and defines the N-1 set. Nothing
+// per-plant is fabricated: every row traces to the DOE document in fleet.json.
 
-import type { Block, Dispatch, GridKey } from '../lib/types'
+import type { Block, Dispatch, FleetPlant, GridKey } from '../lib/types'
 import type { ChronoOpts } from './chrono'
 import {
   GRID_KEYS,
@@ -58,7 +59,8 @@ export const CLASSES: SystemClass[] = [
     props: [
       { key: 'grid', label: 'Region', editable: false },
       { key: 'fuel', label: 'Fuel', editable: false },
-      { key: 'capacity_mw', label: 'Max capacity', unit: 'MW', editable: true, dp: 0 },
+      { key: 'capacity_mw', label: 'Dependable', unit: 'MW', editable: true, dp: 0 },
+      { key: 'installed_mw', label: 'Installed', unit: 'MW', editable: false, dp: 0 },
       { key: 'marginal_cost', label: 'Fuel price', unit: '₱/kWh', editable: true, dp: 2 },
       { key: 'for_pct', label: 'Forced outage', unit: '%', editable: true, dp: 0 },
     ],
@@ -112,9 +114,16 @@ const MERIT_FUELS = [
   'oil',
 ]
 
+// plants below this dependable capacity stay in fleet.json but out of the
+// object grid: the editing surface is for units that can move the solve
+export const FLEET_MIN_DEPENDABLE_MW = 20
+
 /** Base objects (no overrides) derived from the baked model + named generators.
- * Storage rows cycle only in the chronological run; the snapshot solve keeps
- * storage out of the energy stack, matching the pipeline model. */
+ * When the DOE per-plant fleet is loaded, the Generators class carries the real
+ * unit-level list (dependable capacity as the editable value); otherwise it
+ * falls back to the named price-mover set. Storage rows cycle only in the
+ * chronological run; the snapshot solve keeps storage out of the energy stack,
+ * matching the pipeline model. */
 export function baseObjects(
   d: Dispatch,
   gens: { name: string; grid: string; fuel: string; capacity_mw: number }[],
@@ -124,22 +133,40 @@ export function baseObjects(
     grid: GridKey
     power_mw: number
     energy_mwh: number
-  }[] = []
+  }[] = [],
+  fleet: FleetPlant[] = []
 ): Record<ClassId, ObjRow[]> {
   const costs = d.assumptions.fuel_marginal_cost_php_kwh
-  const generators: ObjRow[] = gens.map((g) => ({
-    id: g.name,
-    cls: 'generator',
-    label: g.name,
-    grid: g.grid.toLowerCase() as GridKey,
-    props: {
-      grid: cap(g.grid),
-      fuel: g.fuel,
-      capacity_mw: g.capacity_mw,
-      marginal_cost: costs[g.fuel] ?? 0,
-      for_pct: forcedOutagePct(g.fuel),
-    },
-  }))
+  const fleetRows = fleet.filter((p) => p.dependable_mw >= FLEET_MIN_DEPENDABLE_MW)
+  const generators: ObjRow[] = fleetRows.length
+    ? fleetRows.map((p) => ({
+        id: `${p.grid}:${p.name}`,
+        cls: 'generator' as const,
+        label: p.name,
+        grid: p.grid,
+        props: {
+          grid: cap(p.grid),
+          fuel: p.fuel,
+          capacity_mw: p.dependable_mw,
+          installed_mw: p.installed_mw,
+          marginal_cost: costs[p.fuel] ?? 0,
+          for_pct: forcedOutagePct(p.fuel),
+        },
+      }))
+    : gens.map((g) => ({
+        id: g.name,
+        cls: 'generator' as const,
+        label: g.name,
+        grid: g.grid.toLowerCase() as GridKey,
+        props: {
+          grid: cap(g.grid),
+          fuel: g.fuel,
+          capacity_mw: g.capacity_mw,
+          installed_mw: g.capacity_mw,
+          marginal_cost: costs[g.fuel] ?? 0,
+          for_pct: forcedOutagePct(g.fuel),
+        },
+      }))
   const fuels: ObjRow[] = MERIT_FUELS.map((f) => ({
     id: f,
     cls: 'fuel',
@@ -521,7 +548,7 @@ export function solveModel(
     const trippedStack = buildStack(trippedAvail, {}, [], sp)
     const tripped = clearGrid(trippedStack, demand[grid])
     return {
-      unit: g.id,
+      unit: g.label,
       grid,
       capacity_mw: eff,
       base_price: base.price,

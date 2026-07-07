@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type {
   Bill,
   Dispatch,
+  Fleet,
   GeneratorProps,
   MarketPower,
   Profiles,
@@ -55,6 +56,7 @@ export const useReserve = () => useJson<Reserve>('reserve.json')
 export const useBill = () => useJson<Bill>('bill.json')
 export const useMarketPower = () => useJson<MarketPower>('market_power.json')
 export const useProfiles = () => useJson<Profiles>('profiles.json')
+export const useFleet = () => useJson<Fleet>('fleet.json')
 
 export interface FeatureCollection<P> {
   type: 'FeatureCollection'

@@ -1,0 +1,3346 @@
+{
+ "available": true,
+ "note": "DOE List of Existing Power Plants (grid-connected), parsed per unit from the DOE's own per-grid PDFs (Internet Archive captures of legacy.doe.gov.ph, which refuses non-PH requests). Every fuel section reconciles to the PDF's own subtotal before this file is written. Dependable capacity is the DOE's figure, not a model derate. ESS rows are carried by the storage layer, not here.",
+ "editions": {
+  "luzon": {
+   "as_of": "2025-04-30",
+   "src": "https://web.archive.org/web/20251104021000/https://legacy.doe.gov.ph/sites/default/files/pdf/electric_power/01_Luzon%20Grid_2.pdf",
+   "original_url": "https://legacy.doe.gov.ph/sites/default/files/pdf/electric_power/01_Luzon%20Grid_2.pdf",
+   "sections_total_mw": 22445.0,
+   "doe_total_mw": 22445.0,
+   "reconciliation": {
+    "coal": {
+     "subtotal_mw": 9392.2,
+     "parsed_mw": 9392.1,
+     "ok": true
+    },
+    "oil": {
+     "subtotal_mw": 2054.0,
+     "parsed_mw": 2054.0,
+     "ok": true
+    },
+    "natural_gas": {
+     "subtotal_mw": 4610.5,
+     "parsed_mw": 4610.6,
+     "ok": true
+    },
+    "biomass": {
+     "subtotal_mw": 174.6,
+     "parsed_mw": 174.6,
+     "ok": true
+    },
+    "geothermal": {
+     "subtotal_mw": 900.2,
+     "parsed_mw": 900.2,
+     "ok": true
+    },
+    "solar": {
+     "subtotal_mw": 2414.0,
+     "parsed_mw": 2413.8,
+     "ok": true
+    },
+    "hydro": {
+     "subtotal_mw": 2562.6,
+     "parsed_mw": 2562.6,
+     "ok": true
+    },
+    "wind": {
+     "subtotal_mw": 336.9,
+     "parsed_mw": 336.9,
+     "ok": true
+    }
+   }
+  },
+  "visayas": {
+   "as_of": "2025-03-31",
+   "src": "https://web.archive.org/web/20250515115334/https://legacy.doe.gov.ph/sites/default/files/pdf/electric_power/02_%20Visayas%20Grid.pdf",
+   "original_url": "https://legacy.doe.gov.ph/sites/default/files/pdf/electric_power/02_%20Visayas%20Grid.pdf",
+   "sections_total_mw": 3859.8,
+   "doe_total_mw": 3859.7,
+   "reconciliation": {
+    "coal": {
+     "subtotal_mw": 1346.2,
+     "parsed_mw": 1346.2,
+     "ok": true
+    },
+    "oil": {
+     "subtotal_mw": 561.3,
+     "parsed_mw": 561.3,
+     "ok": true
+    },
+    "natural_gas": {
+     "subtotal_mw": 1.0,
+     "parsed_mw": 1.0,
+     "ok": true
+    },
+    "biomass": {
+     "subtotal_mw": 325.6,
+     "parsed_mw": 325.6,
+     "ok": true
+    },
+    "geothermal": {
+     "subtotal_mw": 975.1,
+     "parsed_mw": 975.1,
+     "ok": true
+    },
+    "solar": {
+     "subtotal_mw": 505.3,
+     "parsed_mw": 505.5,
+     "ok": true
+    },
+    "hydro": {
+     "subtotal_mw": 55.3,
+     "parsed_mw": 55.3,
+     "ok": true
+    },
+    "wind": {
+     "subtotal_mw": 90.0,
+     "parsed_mw": 90.0,
+     "ok": true
+    }
+   }
+  },
+  "mindanao": {
+   "as_of": "2025-04-30",
+   "src": "https://web.archive.org/web/20250712234701/https://legacy.doe.gov.ph/sites/default/files/pdf/electric_power/03_Mindanao%20Grid_2.pdf",
+   "original_url": "https://legacy.doe.gov.ph/sites/default/files/pdf/electric_power/03_Mindanao%20Grid_2.pdf",
+   "sections_total_mw": 4614.5,
+   "doe_total_mw": 4614.5,
+   "reconciliation": {
+    "coal": {
+     "subtotal_mw": 2268.0,
+     "parsed_mw": 2268.0,
+     "ok": true
+    },
+    "oil": {
+     "subtotal_mw": 833.0,
+     "parsed_mw": 832.8,
+     "ok": true
+    },
+    "biomass": {
+     "subtotal_mw": 94.9,
+     "parsed_mw": 94.9,
+     "ok": true
+    },
+    "geothermal": {
+     "subtotal_mw": 112.1,
+     "parsed_mw": 112.2,
+     "ok": true
+    },
+    "solar": {
+     "subtotal_mw": 83.8,
+     "parsed_mw": 83.8,
+     "ok": true
+    },
+    "hydro": {
+     "subtotal_mw": 1222.7,
+     "parsed_mw": 1222.7,
+     "ok": true
+    },
+    "wind": {
+     "subtotal_mw": 0.0,
+     "parsed_mw": 0,
+     "ok": true
+    }
+   }
+  }
+ },
+ "n_plants": 355,
+ "plants": [
+  {
+   "name": "ANDA",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 83.7,
+   "dependable_mw": 72.0,
+   "units": 1
+  },
+  {
+   "name": "APEC",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 52.0,
+   "dependable_mw": 40.0,
+   "units": 1
+  },
+  {
+   "name": "CALACA U1",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 300.0,
+   "dependable_mw": 240.0,
+   "units": 1
+  },
+  {
+   "name": "CALACA U2",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 300.0,
+   "dependable_mw": 180.0,
+   "units": 1
+  },
+  {
+   "name": "DINGININ U1",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 725.0,
+   "dependable_mw": 668.0,
+   "units": 1
+  },
+  {
+   "name": "DINGININ U2",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 725.0,
+   "dependable_mw": 668.0,
+   "units": 1
+  },
+  {
+   "name": "MARIVELES U1",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 325.8,
+   "dependable_mw": 316.0,
+   "units": 1
+  },
+  {
+   "name": "MARIVELES U2",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 325.8,
+   "dependable_mw": 316.0,
+   "units": 1
+  },
+  {
+   "name": "MASINLOC U1",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 330.1,
+   "dependable_mw": 315.0,
+   "units": 1
+  },
+  {
+   "name": "MASINLOC U2",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 344.0,
+   "dependable_mw": 344.0,
+   "units": 1
+  },
+  {
+   "name": "MASINLOC U3",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 351.8,
+   "dependable_mw": 335.0,
+   "units": 1
+  },
+  {
+   "name": "PAGBILAO U1",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 382.0,
+   "dependable_mw": 382.0,
+   "units": 1
+  },
+  {
+   "name": "PAGBILAO U2",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 382.0,
+   "dependable_mw": 382.0,
+   "units": 1
+  },
+  {
+   "name": "PAGBILAO U3",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 420.0,
+   "dependable_mw": 420.0,
+   "units": 1
+  },
+  {
+   "name": "QUEZON POWER PLANT",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 538.4,
+   "dependable_mw": 460.0,
+   "units": 1
+  },
+  {
+   "name": "SBPL",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 528.1,
+   "dependable_mw": 455.0,
+   "units": 1
+  },
+  {
+   "name": "LPI U1 (SMC LIMAY U1)",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 134.0,
+   "units": 1
+  },
+  {
+   "name": "LPI U2 (SMC LIMAY U2)",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 134.0,
+   "units": 1
+  },
+  {
+   "name": "LPI U3 (SMC LIMAY U3)",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 134.0,
+   "units": 1
+  },
+  {
+   "name": "LPI U4 (SMC LIMAY U4)",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 134.0,
+   "units": 1
+  },
+  {
+   "name": "SLPGC U1",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 133.5,
+   "units": 1
+  },
+  {
+   "name": "SLPGC U2",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 133.5,
+   "units": 1
+  },
+  {
+   "name": "SLTEC PUTING BATO U1",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 135.0,
+   "dependable_mw": 122.9,
+   "units": 1
+  },
+  {
+   "name": "SLTEC PUTING BATO U2",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 135.0,
+   "dependable_mw": 123.8,
+   "units": 1
+  },
+  {
+   "name": "SPI U1",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 647.0,
+   "dependable_mw": 647.0,
+   "units": 1
+  },
+  {
+   "name": "SPI U2",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 647.0,
+   "dependable_mw": 647.0,
+   "units": 1
+  },
+  {
+   "name": "UPPC",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 30.0,
+   "dependable_mw": 24.0,
+   "units": 1
+  },
+  {
+   "name": "PETRON RSFFB",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "embedded",
+   "installed_mw": 140.0,
+   "dependable_mw": 100.0,
+   "units": 4
+  },
+  {
+   "name": "PETRON RSFFB PH 3",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "embedded",
+   "installed_mw": 44.4,
+   "dependable_mw": 0.0,
+   "units": 2
+  },
+  {
+   "name": "MPGC U1",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 132.0,
+   "units": 1
+  },
+  {
+   "name": "MPGC U2",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 132.0,
+   "units": 1
+  },
+  {
+   "name": "MPGC U3",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 132.0,
+   "units": 1
+  },
+  {
+   "name": "MPGC U4",
+   "grid": "luzon",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 132.0,
+   "units": 1
+  },
+  {
+   "name": "BAUANG DPP",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 235.2,
+   "dependable_mw": 210.0,
+   "units": 21
+  },
+  {
+   "name": "CIP II",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 21.3,
+   "dependable_mw": 20.0,
+   "units": 1
+  },
+  {
+   "name": "RCBMI",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 12.4,
+   "dependable_mw": 11.0,
+   "units": 2
+  },
+  {
+   "name": "SUBIC DPP",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 120.0,
+   "dependable_mw": 110.0,
+   "units": 8
+  },
+  {
+   "name": "BPGC",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 54.6,
+   "dependable_mw": 48.0,
+   "units": 1
+  },
+  {
+   "name": "INGRID",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 179.8,
+   "dependable_mw": 150.0,
+   "units": 6
+  },
+  {
+   "name": "CALIBU DPP",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 30.6,
+   "dependable_mw": 27.3,
+   "units": 5
+  },
+  {
+   "name": "FCVC DPP",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 25.6,
+   "dependable_mw": 24.0,
+   "units": 4
+  },
+  {
+   "name": "TARLAC POWER",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 18.6,
+   "dependable_mw": 14.8,
+   "units": 3
+  },
+  {
+   "name": "TMO",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 239.2,
+   "dependable_mw": 106.0,
+   "units": 4
+  },
+  {
+   "name": "MALAYA (Unit 2)",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 350.0,
+   "dependable_mw": 305.0,
+   "units": 1
+  },
+  {
+   "name": "LIMAY CCGT",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 666.7,
+   "dependable_mw": 540.0,
+   "units": 8
+  },
+  {
+   "name": "MILLENNIUM GTPP",
+   "grid": "luzon",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 100.0,
+   "dependable_mw": 0.0,
+   "units": 1
+  },
+  {
+   "name": "AVION",
+   "grid": "luzon",
+   "fuel": "natural_gas",
+   "connection": "grid",
+   "installed_mw": 130.8,
+   "dependable_mw": 88.7,
+   "units": 2
+  },
+  {
+   "name": "ILIJAN",
+   "grid": "luzon",
+   "fuel": "natural_gas",
+   "connection": "grid",
+   "installed_mw": 1436.5,
+   "dependable_mw": 1200.0,
+   "units": 6
+  },
+  {
+   "name": "SAN GABRIEL",
+   "grid": "luzon",
+   "fuel": "natural_gas",
+   "connection": "grid",
+   "installed_mw": 442.9,
+   "dependable_mw": 420.1,
+   "units": 1
+  },
+  {
+   "name": "SAN LORENZO",
+   "grid": "luzon",
+   "fuel": "natural_gas",
+   "connection": "grid",
+   "installed_mw": 586.5,
+   "dependable_mw": 530.0,
+   "units": 2
+  },
+  {
+   "name": "SANTA RITA",
+   "grid": "luzon",
+   "fuel": "natural_gas",
+   "connection": "grid",
+   "installed_mw": 1133.9,
+   "dependable_mw": 1042.5,
+   "units": 4
+  },
+  {
+   "name": "EERI (Unit 1)",
+   "grid": "luzon",
+   "fuel": "natural_gas",
+   "connection": "grid",
+   "installed_mw": 440.0,
+   "dependable_mw": 420.6,
+   "units": 3
+  },
+  {
+   "name": "EERI (Unit 2)",
+   "grid": "luzon",
+   "fuel": "natural_gas",
+   "connection": "grid",
+   "installed_mw": 440.0,
+   "dependable_mw": 421.9,
+   "units": 3
+  },
+  {
+   "name": "ACNC",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 3.0,
+   "dependable_mw": 1.7,
+   "units": 1
+  },
+  {
+   "name": "BATAAN 2020",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 12.5,
+   "dependable_mw": 11.0,
+   "units": 1
+  },
+  {
+   "name": "BBEC",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 5.0,
+   "dependable_mw": 4.4,
+   "units": 1
+  },
+  {
+   "name": "CBEC",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 15.0,
+   "dependable_mw": 13.5,
+   "units": 1
+  },
+  {
+   "name": "G2REC",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 12.0,
+   "dependable_mw": 10.8,
+   "units": 1
+  },
+  {
+   "name": "GIFT",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 12.0,
+   "dependable_mw": 10.8,
+   "units": 1
+  },
+  {
+   "name": "GIFT II",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 6.0,
+   "dependable_mw": 5.4,
+   "units": 1
+  },
+  {
+   "name": "GREEN FUTURE",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 19.8,
+   "dependable_mw": 14.0,
+   "units": 4
+  },
+  {
+   "name": "IBEC",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 20.0,
+   "dependable_mw": 18.0,
+   "units": 1
+  },
+  {
+   "name": "SJC IPOWER Phase I",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 12.0,
+   "dependable_mw": 10.8,
+   "units": 1
+  },
+  {
+   "name": "SJC IPOWER Phase II",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 12.0,
+   "dependable_mw": 10.8,
+   "units": 1
+  },
+  {
+   "name": "VSGPC",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 6.0,
+   "dependable_mw": 5.4,
+   "units": 1
+  },
+  {
+   "name": "CEC",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 12.0,
+   "dependable_mw": 7.7,
+   "units": 1
+  },
+  {
+   "name": "HGEC",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 12.0,
+   "dependable_mw": 10.0,
+   "units": 1
+  },
+  {
+   "name": "LASUERTE",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "embedded",
+   "installed_mw": 5.0,
+   "dependable_mw": 5.0,
+   "units": 1
+  },
+  {
+   "name": "MONTALBAN LFG",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "embedded",
+   "installed_mw": 6.4,
+   "dependable_mw": 2.2,
+   "units": 9
+  },
+  {
+   "name": "PANGEA",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "embedded",
+   "installed_mw": 1.5,
+   "dependable_mw": 1.2,
+   "units": 5
+  },
+  {
+   "name": "FEAC",
+   "grid": "luzon",
+   "fuel": "biomass",
+   "connection": "embedded",
+   "installed_mw": 2.4,
+   "dependable_mw": 2.4,
+   "units": 4
+  },
+  {
+   "name": "BACMAN",
+   "grid": "luzon",
+   "fuel": "geothermal",
+   "connection": "grid",
+   "installed_mw": 140.0,
+   "dependable_mw": 133.0,
+   "units": 3
+  },
+  {
+   "name": "MAKBAN",
+   "grid": "luzon",
+   "fuel": "geothermal",
+   "connection": "grid",
+   "installed_mw": 442.8,
+   "dependable_mw": 319.6,
+   "units": 10
+  },
+  {
+   "name": "MAKBAN-BINARY",
+   "grid": "luzon",
+   "fuel": "geothermal",
+   "connection": "grid",
+   "installed_mw": 15.7,
+   "dependable_mw": 5.8,
+   "units": 5
+  },
+  {
+   "name": "TIWI",
+   "grid": "luzon",
+   "fuel": "geothermal",
+   "connection": "grid",
+   "installed_mw": 234.0,
+   "dependable_mw": 223.9,
+   "units": 4
+  },
+  {
+   "name": "MAIBARARA 1",
+   "grid": "luzon",
+   "fuel": "geothermal",
+   "connection": "embedded",
+   "installed_mw": 20.0,
+   "dependable_mw": 20.0,
+   "units": 1
+  },
+  {
+   "name": "MAIBARARA 2",
+   "grid": "luzon",
+   "fuel": "geothermal",
+   "connection": "embedded",
+   "installed_mw": 12.0,
+   "dependable_mw": 12.0,
+   "units": 1
+  },
+  {
+   "name": "PALAYAN",
+   "grid": "luzon",
+   "fuel": "geothermal",
+   "connection": "grid",
+   "installed_mw": 35.7,
+   "dependable_mw": 28.0,
+   "units": 1
+  },
+  {
+   "name": "CALATAGAN SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 63.3,
+   "dependable_mw": 49.68,
+   "units": 1
+  },
+  {
+   "name": "CLARK SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 22.3,
+   "dependable_mw": 16.52,
+   "units": 1
+  },
+  {
+   "name": "CONCEPCION 1 SOLAR - Phase 1",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 23.1,
+   "dependable_mw": 16.0,
+   "units": 1
+  },
+  {
+   "name": "CONCEPCION 1 SOLAR - Phase 2",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 76.9,
+   "dependable_mw": 62.0,
+   "units": 1
+  },
+  {
+   "name": "CURRIMAO SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 20.0,
+   "dependable_mw": 16.3,
+   "units": 1
+  },
+  {
+   "name": "MARIVELES SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 18.0,
+   "dependable_mw": 16.0,
+   "units": 1
+  },
+  {
+   "name": "PETROSOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 50.07,
+   "dependable_mw": 45.54,
+   "units": 1
+  },
+  {
+   "name": "PETROSOLAR 2",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 20.0,
+   "dependable_mw": 16.7,
+   "units": 1
+  },
+  {
+   "name": "STA. RITA SOLAR (Phase I, II and 3A)",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 62.4,
+   "dependable_mw": 56.6,
+   "units": 1
+  },
+  {
+   "name": "STA.RITA SOLAR (Phase 3B)",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 38.1,
+   "dependable_mw": 34.4,
+   "units": 1
+  },
+  {
+   "name": "YH GREEN",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 14.5,
+   "dependable_mw": 13.4,
+   "units": 1
+  },
+  {
+   "name": "PFBSI",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 80.9,
+   "dependable_mw": 56.3,
+   "units": 1
+  },
+  {
+   "name": "TAGALAG SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 16.0,
+   "dependable_mw": 14.7,
+   "units": 189
+  },
+  {
+   "name": "GIGASOL3 SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 63.0,
+   "dependable_mw": 55.0,
+   "units": 1
+  },
+  {
+   "name": "ALAMINOS SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 120.3,
+   "dependable_mw": 89.4,
+   "units": 1
+  },
+  {
+   "name": "STA.ROSA SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 60.1,
+   "dependable_mw": 40.1,
+   "units": 1
+  },
+  {
+   "name": "BATAAN SOLAR ENERGY PROJECT",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 4.4,
+   "dependable_mw": 3.7,
+   "units": 1
+  },
+  {
+   "name": "ARAYAT-MEXICO SOLAR POWER PLANT",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 72.0,
+   "dependable_mw": 51.6,
+   "units": 1
+  },
+  {
+   "name": "ARAYAT-MEXICO SOLAR POWER PLANT PHASE 2",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 43.7,
+   "dependable_mw": 30.8,
+   "units": 1
+  },
+  {
+   "name": "ARMENIA SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 8.8,
+   "dependable_mw": 7.1,
+   "units": 1
+  },
+  {
+   "name": "BULACAN III SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 15.0,
+   "dependable_mw": 11.3,
+   "units": 1
+  },
+  {
+   "name": "BURGOS SOLAR PH 1",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 4.1,
+   "dependable_mw": 3.7,
+   "units": 1
+  },
+  {
+   "name": "BURGOS SOLAR PH 2",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 2.7,
+   "dependable_mw": 2.3,
+   "units": 1
+  },
+  {
+   "name": "CABANATUAN SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 10.3,
+   "dependable_mw": 9.1,
+   "units": 1
+  },
+  {
+   "name": "DALAYAP SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 7.5,
+   "dependable_mw": 5.9,
+   "units": 1
+  },
+  {
+   "name": "ECOPARK ISLA SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 4.7,
+   "dependable_mw": 4.0,
+   "units": 156
+  },
+  {
+   "name": "LIAN SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 2.0,
+   "dependable_mw": 1.6,
+   "units": 1
+  },
+  {
+   "name": "MAJESTIC",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 41.3,
+   "dependable_mw": 40.0,
+   "units": 1
+  },
+  {
+   "name": "MORONG SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 5.0,
+   "dependable_mw": 4.0,
+   "units": 1
+  },
+  {
+   "name": "PALAUIG SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 5.0,
+   "dependable_mw": 4.0,
+   "units": 1
+  },
+  {
+   "name": "RASLAG SOLAR PH 1",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 10.0,
+   "dependable_mw": 8.5,
+   "units": 1
+  },
+  {
+   "name": "RASLAG SOLAR PH 2",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 13.1,
+   "dependable_mw": 10.5,
+   "units": 1
+  },
+  {
+   "name": "SAN RAFAEL SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 3.8,
+   "dependable_mw": 3.7,
+   "units": 1
+  },
+  {
+   "name": "SARRAT SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 1.0,
+   "dependable_mw": 0.9,
+   "units": 1
+  },
+  {
+   "name": "SPCRPI SM NORTH EDSA",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 1.5,
+   "dependable_mw": 1.2,
+   "units": 1
+  },
+  {
+   "name": "CENTRAL MALL BI\u00d1AN SOLAR POWER PROJECT",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 0.7,
+   "dependable_mw": 0.7,
+   "units": 1
+  },
+  {
+   "name": "VALENZUELA SOLAR",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 8.5,
+   "dependable_mw": 6.7,
+   "units": 198
+  },
+  {
+   "name": "SIAEP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 0.5,
+   "dependable_mw": 0.4,
+   "units": 1
+  },
+  {
+   "name": "RASLAG III",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 18.0,
+   "dependable_mw": 13.4,
+   "units": 1
+  },
+  {
+   "name": "STA. BARBARA PH1",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 10.0,
+   "dependable_mw": 7.8,
+   "units": 1
+  },
+  {
+   "name": "STA. BARBARA PH2",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 10.0,
+   "dependable_mw": 7.5,
+   "units": 1
+  },
+  {
+   "name": "ASIAN TRANSMISSION CORPORATION",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 1.8,
+   "dependable_mw": 1.4,
+   "units": 1
+  },
+  {
+   "name": "CURRIMAO 2 SPP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 83.3,
+   "dependable_mw": 68.7,
+   "units": 1
+  },
+  {
+   "name": "TRUST SPP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 20.9,
+   "dependable_mw": 15.4,
+   "units": 1
+  },
+  {
+   "name": "PINUGAY SPP PH 1 & 2",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 113.8,
+   "dependable_mw": 80.1,
+   "units": 1
+  },
+  {
+   "name": "CAYANGA-BUGALLON SPP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 94.7,
+   "dependable_mw": 73.9,
+   "units": 1
+  },
+  {
+   "name": "SAN MARCELINO PH 1 & 2",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 384.8,
+   "dependable_mw": 303.6,
+   "units": 1
+  },
+  {
+   "name": "CALABANGA SPP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 74.1,
+   "dependable_mw": 54.4,
+   "units": 1
+  },
+  {
+   "name": "CAGAYAN NORTH SPP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 133.5,
+   "dependable_mw": 100.0,
+   "units": 1
+  },
+  {
+   "name": "ORION SPP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 20.4,
+   "dependable_mw": 16.2,
+   "units": 1
+  },
+  {
+   "name": "LAOAG SPP PH 1 & 2",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 159.0,
+   "dependable_mw": 130.2,
+   "units": 1
+  },
+  {
+   "name": "TANAUAN SPP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 64.1,
+   "dependable_mw": 48.1,
+   "units": 1
+  },
+  {
+   "name": "MARAGONDON SPP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 64.6,
+   "dependable_mw": 48.1,
+   "units": 1
+  },
+  {
+   "name": "BONGABON SPP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 42.9,
+   "dependable_mw": 30.9,
+   "units": 1
+  },
+  {
+   "name": "GAMU SPP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 56.6,
+   "dependable_mw": 41.2,
+   "units": 1
+  },
+  {
+   "name": "ARMENIA SPP",
+   "grid": "luzon",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 46.7,
+   "dependable_mw": 37.5,
+   "units": 1
+  },
+  {
+   "name": "AMBUKLAO",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 105.0,
+   "dependable_mw": 105.0,
+   "units": 3
+  },
+  {
+   "name": "ANGAT MAIN",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 200.0,
+   "dependable_mw": 150.0,
+   "units": 4
+  },
+  {
+   "name": "ANGAT AUX",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 18.0,
+   "dependable_mw": 18.0,
+   "units": 3
+  },
+  {
+   "name": "BAKUN AC",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 74.8,
+   "dependable_mw": 59.4,
+   "units": 2
+  },
+  {
+   "name": "BINGA",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 140.0,
+   "dependable_mw": 138.0,
+   "units": 4
+  },
+  {
+   "name": "CALIRAYA",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 39.1,
+   "dependable_mw": 35.0,
+   "units": 2
+  },
+  {
+   "name": "CASECNAN (NIA)",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 168.0,
+   "dependable_mw": 150.0,
+   "units": 2
+  },
+  {
+   "name": "KALAYAAN PSPP",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 736.0,
+   "dependable_mw": 720.0,
+   "units": 4
+  },
+  {
+   "name": "MAGAT",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 360.0,
+   "dependable_mw": 345.6,
+   "units": 4
+  },
+  {
+   "name": "PANTABANGAN",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 120.8,
+   "dependable_mw": 120.0,
+   "units": 2
+  },
+  {
+   "name": "MASIWAY",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 12.0,
+   "dependable_mw": 12.0,
+   "units": 1
+  },
+  {
+   "name": "SAN ROQUE",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 435.0,
+   "dependable_mw": 404.0,
+   "units": 3
+  },
+  {
+   "name": "AMPOHAW",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 8.0,
+   "dependable_mw": 7.5,
+   "units": 3
+  },
+  {
+   "name": "FLS",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 6.4,
+   "dependable_mw": 6.0,
+   "units": 4
+  },
+  {
+   "name": "LA TRINIDAD",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 20.4,
+   "dependable_mw": 8.5,
+   "units": 2
+  },
+  {
+   "name": "MARIS MAIN CANAL 1",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 8.5,
+   "dependable_mw": 8.0,
+   "units": 2
+  },
+  {
+   "name": "NIA-BALIGATAN",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 6.0,
+   "dependable_mw": 6.0,
+   "units": 1
+  },
+  {
+   "name": "SABANGAN",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 15.0,
+   "dependable_mw": 15.0,
+   "units": 1
+  },
+  {
+   "name": "BOTOCAN",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 22.8,
+   "dependable_mw": 22.0,
+   "units": 3
+  },
+  {
+   "name": "MATUNO",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 8.7,
+   "dependable_mw": 8.7,
+   "units": 3
+  },
+  {
+   "name": "BINENG 3",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 5.6,
+   "dependable_mw": 3.6,
+   "units": 1
+  },
+  {
+   "name": "IRISAN 1",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 3.8,
+   "dependable_mw": 3.3,
+   "units": 1
+  },
+  {
+   "name": "IRISAN 3",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 1.2,
+   "dependable_mw": 1.1,
+   "units": 3
+  },
+  {
+   "name": "LON-OY",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 3.6,
+   "dependable_mw": 3.3,
+   "units": 4
+  },
+  {
+   "name": "LOWER LABAY",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 2.4,
+   "dependable_mw": 2.3,
+   "units": 4
+  },
+  {
+   "name": "MAJAYJAY",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 2.3,
+   "dependable_mw": 1.0,
+   "units": 2
+  },
+  {
+   "name": "SAL-ANGAN",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 2.4,
+   "dependable_mw": 1.8,
+   "units": 4
+  },
+  {
+   "name": "LABAYAT (UPPER CASCADE)",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 3.5,
+   "dependable_mw": 3.5,
+   "units": 1
+  },
+  {
+   "name": "AGUA-GRANDE",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 2.0,
+   "dependable_mw": 2.0,
+   "units": 2
+  },
+  {
+   "name": "BALUGBOG",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 1.1,
+   "dependable_mw": 0.5,
+   "units": 3
+  },
+  {
+   "name": "BARIT 1",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 1.8,
+   "dependable_mw": 1.8,
+   "units": 1
+  },
+  {
+   "name": "BULANAO",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 1.0,
+   "dependable_mw": 1.0,
+   "units": 2
+  },
+  {
+   "name": "COMMUNAL-UDDIAWAN",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 1.8,
+   "dependable_mw": 1.8,
+   "units": 2
+  },
+  {
+   "name": "MAGAT A&B",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 2.5,
+   "dependable_mw": 0.6,
+   "units": 7
+  },
+  {
+   "name": "PALAKPAKIN",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 1.5,
+   "dependable_mw": 0.3,
+   "units": 1
+  },
+  {
+   "name": "PRISMC",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 1.0,
+   "dependable_mw": 1.0,
+   "units": 2
+  },
+  {
+   "name": "Butao Irrigation Drop",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 1.4,
+   "dependable_mw": 1.2,
+   "units": 1
+  },
+  {
+   "name": "MAN-ASOK",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 3.2,
+   "dependable_mw": 3.2,
+   "units": 3
+  },
+  {
+   "name": "TIBAG",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 5.8,
+   "dependable_mw": 5.8,
+   "units": 2
+  },
+  {
+   "name": "LOWER LABAYAT",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 1.4,
+   "dependable_mw": 1.4,
+   "units": 2
+  },
+  {
+   "name": "IBULAO HPP",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 4.5,
+   "dependable_mw": 4.5,
+   "units": 3
+  },
+  {
+   "name": "AMBANGAL",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.2,
+   "dependable_mw": 0.0,
+   "units": 1
+  },
+  {
+   "name": "CALIBATO",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.3,
+   "dependable_mw": 0.1,
+   "units": 1
+  },
+  {
+   "name": "UPPER CAWAYAN (CAWAYAN 1)",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.6,
+   "dependable_mw": 0.4,
+   "units": 2
+  },
+  {
+   "name": "INARIHAN",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 1.6,
+   "dependable_mw": 1.6,
+   "units": 3
+  },
+  {
+   "name": "LIKUD",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.8,
+   "dependable_mw": 0.0,
+   "units": 2
+  },
+  {
+   "name": "SAN LUIS",
+   "grid": "luzon",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.8,
+   "dependable_mw": 0.6,
+   "units": 2
+  },
+  {
+   "name": "BANGUI WIND POWER Ph1 and Ph2",
+   "grid": "luzon",
+   "fuel": "wind",
+   "connection": "grid",
+   "installed_mw": 33.0,
+   "dependable_mw": 33.0,
+   "units": 1
+  },
+  {
+   "name": "BANGUI WIND POWER Ph3",
+   "grid": "luzon",
+   "fuel": "wind",
+   "connection": "grid",
+   "installed_mw": 18.9,
+   "dependable_mw": 18.9,
+   "units": 1
+  },
+  {
+   "name": "BURGOS WIND",
+   "grid": "luzon",
+   "fuel": "wind",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 150.0,
+   "units": 1
+  },
+  {
+   "name": "CAPARISPISAN WIND",
+   "grid": "luzon",
+   "fuel": "wind",
+   "connection": "grid",
+   "installed_mw": 81.0,
+   "dependable_mw": 81.0,
+   "units": 1
+  },
+  {
+   "name": "PILILLA WIND",
+   "grid": "luzon",
+   "fuel": "wind",
+   "connection": "embedded",
+   "installed_mw": 54.0,
+   "dependable_mw": 54.0,
+   "units": 1
+  },
+  {
+   "name": "CEDC U1",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 83.7,
+   "dependable_mw": 82.0,
+   "units": 1
+  },
+  {
+   "name": "CEDC U2",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 83.7,
+   "dependable_mw": 82.0,
+   "units": 1
+  },
+  {
+   "name": "CEDC U3",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 83.7,
+   "dependable_mw": 82.0,
+   "units": 1
+  },
+  {
+   "name": "KSPC U1",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 110.5,
+   "dependable_mw": 93.3,
+   "units": 1
+  },
+  {
+   "name": "KSPC U2",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 110.5,
+   "dependable_mw": 93.3,
+   "units": 1
+  },
+  {
+   "name": "PEDC U1",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 83.7,
+   "dependable_mw": 73.7,
+   "units": 1
+  },
+  {
+   "name": "PEDC U2",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 83.7,
+   "dependable_mw": 73.7,
+   "units": 1
+  },
+  {
+   "name": "PEDC U3",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 150.0,
+   "units": 1
+  },
+  {
+   "name": "PCPC U1",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 135.0,
+   "dependable_mw": 121.5,
+   "units": 1
+  },
+  {
+   "name": "TPC 1A Expansion",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 83.7,
+   "dependable_mw": 82.0,
+   "units": 1
+  },
+  {
+   "name": "TVI U1",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 169.0,
+   "dependable_mw": 150.0,
+   "units": 1
+  },
+  {
+   "name": "TVI U2",
+   "grid": "visayas",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 169.0,
+   "dependable_mw": 150.0,
+   "units": 1
+  },
+  {
+   "name": "AVON-NABAS",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 7.5,
+   "dependable_mw": 6.4,
+   "units": 2
+  },
+  {
+   "name": "AVON-NEW WASHINGTON",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 5.0,
+   "dependable_mw": 4.2,
+   "units": 1
+  },
+  {
+   "name": "BOHOL DPP",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 22.1,
+   "dependable_mw": 16.0,
+   "units": 4
+  },
+  {
+   "name": "CALUMANGAN DPP",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 31.0,
+   "dependable_mw": 25.9,
+   "units": 5
+  },
+  {
+   "name": "PANAY DPP I",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 22.3,
+   "dependable_mw": 15.0,
+   "units": 3
+  },
+  {
+   "name": "PANAY DPP III",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 58.3,
+   "dependable_mw": 50.0,
+   "units": 5
+  },
+  {
+   "name": "PB 101",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 32.0,
+   "dependable_mw": 24.0,
+   "units": 4
+  },
+  {
+   "name": "PB 103",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 32.0,
+   "dependable_mw": 0.0,
+   "units": 4
+  },
+  {
+   "name": "PB 104",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 32.0,
+   "dependable_mw": 29.0,
+   "units": 4
+  },
+  {
+   "name": "TPC (Carmen Station)",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 45.8,
+   "dependable_mw": 40.0,
+   "units": 4
+  },
+  {
+   "name": "TPVI DPP",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 44.6,
+   "dependable_mw": 40.6,
+   "units": 6
+  },
+  {
+   "name": "Isabel Modular Diesel Ancillary Service Power Plant",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 86.3,
+   "dependable_mw": 70.7,
+   "units": 80
+  },
+  {
+   "name": "EAST ASIA UTILITIES (MEPZA)",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 49.6,
+   "dependable_mw": 45.5,
+   "units": 4
+  },
+  {
+   "name": "ENERVANTAGE DPP",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 11.0,
+   "dependable_mw": 8.0,
+   "units": 2
+  },
+  {
+   "name": "CEBU PRIVATE POWER",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 70.6,
+   "dependable_mw": 64.0,
+   "units": 10
+  },
+  {
+   "name": "CALBAYOG BCFDPP",
+   "grid": "visayas",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 11.2,
+   "dependable_mw": 10.6,
+   "units": 2
+  },
+  {
+   "name": "DESCO NATURAL GAS",
+   "grid": "visayas",
+   "fuel": "natural_gas",
+   "connection": "embedded",
+   "installed_mw": 1.0,
+   "dependable_mw": 0.0,
+   "units": 1
+  },
+  {
+   "name": "CAB",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 25.0,
+   "dependable_mw": 12.0,
+   "units": 2
+  },
+  {
+   "name": "CASA",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 15.0,
+   "dependable_mw": 12.0,
+   "units": 1
+  },
+  {
+   "name": "FIRST FARMERS",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 21.8,
+   "dependable_mw": 11.4,
+   "units": 1
+  },
+  {
+   "name": "HPCo",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 28.0,
+   "dependable_mw": 17.7,
+   "units": 1
+  },
+  {
+   "name": "SAN CARLOS BIOENERGY (SCBI)",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 8.3,
+   "dependable_mw": 4.4,
+   "units": 1
+  },
+  {
+   "name": "SAN CARLOS BIOPOWER (SCBP)",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 20.0,
+   "dependable_mw": 18.0,
+   "units": 1
+  },
+  {
+   "name": "SOUTH NEGROS BIOPOWER",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 25.0,
+   "dependable_mw": 22.4,
+   "units": 1
+  },
+  {
+   "name": "NORTH NEGROS BIOPOWER",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 25.0,
+   "dependable_mw": 22.4,
+   "units": 1
+  },
+  {
+   "name": "URC",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 46.0,
+   "dependable_mw": 20.0,
+   "units": 2
+  },
+  {
+   "name": "VMC",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 23.0,
+   "dependable_mw": 2.5,
+   "units": 4
+  },
+  {
+   "name": "VMC EXPANSION",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 40.0,
+   "dependable_mw": 40.0,
+   "units": 1
+  },
+  {
+   "name": "BISCOM",
+   "grid": "visayas",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 48.5,
+   "dependable_mw": 12.3,
+   "units": 4
+  },
+  {
+   "name": "TONGONAN I GPP",
+   "grid": "visayas",
+   "fuel": "geothermal",
+   "connection": "grid",
+   "installed_mw": 123.0,
+   "dependable_mw": 115.4,
+   "units": 3
+  },
+  {
+   "name": "NASULO GPP",
+   "grid": "visayas",
+   "fuel": "geothermal",
+   "connection": "grid",
+   "installed_mw": 49.4,
+   "dependable_mw": 48.3,
+   "units": 1
+  },
+  {
+   "name": "PALINPINON GPP",
+   "grid": "visayas",
+   "fuel": "geothermal",
+   "connection": "grid",
+   "installed_mw": 192.5,
+   "dependable_mw": 172.5,
+   "units": 6
+  },
+  {
+   "name": "UNIFIED LEYTE",
+   "grid": "visayas",
+   "fuel": "geothermal",
+   "connection": "grid",
+   "installed_mw": 610.2,
+   "dependable_mw": 551.4,
+   "units": 18
+  },
+  {
+   "name": "COSMO SOLAR",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 5.7,
+   "dependable_mw": 0.0,
+   "units": 1
+  },
+  {
+   "name": "FIRST TOLEDO SOLAR",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 60.0,
+   "dependable_mw": 49.0,
+   "units": 1
+  },
+  {
+   "name": "HELIOS",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 132.5,
+   "dependable_mw": 108.1,
+   "units": 1
+  },
+  {
+   "name": "ISLASOL II",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 32.0,
+   "dependable_mw": 27.2,
+   "units": 1
+  },
+  {
+   "name": "ISLASOL III",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 48.1,
+   "dependable_mw": 40.5,
+   "units": 1
+  },
+  {
+   "name": "MONTESOL",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 18.0,
+   "dependable_mw": 14.4,
+   "units": 1
+  },
+  {
+   "name": "SACASOL I - A",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 13.0,
+   "dependable_mw": 11.7,
+   "units": 1
+  },
+  {
+   "name": "SACASOL I - B",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 9.0,
+   "dependable_mw": 8.1,
+   "units": 1
+  },
+  {
+   "name": "SACASOL I - C & D",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 23.0,
+   "dependable_mw": 17.1,
+   "units": 1
+  },
+  {
+   "name": "SACASUN",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 59.0,
+   "dependable_mw": 46.8,
+   "units": 1
+  },
+  {
+   "name": "SEPALCO",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 49.8,
+   "dependable_mw": 42.0,
+   "units": 1
+  },
+  {
+   "name": "SILAY SOLAR",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 25.0,
+   "dependable_mw": 22.0,
+   "units": 1
+  },
+  {
+   "name": "SOLEQ",
+   "grid": "visayas",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 30.4,
+   "dependable_mw": 24.5,
+   "units": 1
+  },
+  {
+   "name": "JANOPOL HEPP",
+   "grid": "visayas",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 5.0,
+   "dependable_mw": 0.0,
+   "units": 2
+  },
+  {
+   "name": "VILLASIGA HEPP",
+   "grid": "visayas",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 8.1,
+   "dependable_mw": 6.3,
+   "units": 3
+  },
+  {
+   "name": "TUBIG HEPP",
+   "grid": "visayas",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 15.9,
+   "dependable_mw": 15.9,
+   "units": 3
+  },
+  {
+   "name": "TIMBABAN HEPP",
+   "grid": "visayas",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 18.9,
+   "dependable_mw": 18.9,
+   "units": 3
+  },
+  {
+   "name": "LOBOC HEPP",
+   "grid": "visayas",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 1.2,
+   "dependable_mw": 1.2,
+   "units": 3
+  },
+  {
+   "name": "LOBOC HEPP 2",
+   "grid": "visayas",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 1.2,
+   "dependable_mw": 0.0,
+   "units": 1
+  },
+  {
+   "name": "SEVILLA HEPP",
+   "grid": "visayas",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 2.5,
+   "dependable_mw": 0.0,
+   "units": 2
+  },
+  {
+   "name": "AMLAN HEPP",
+   "grid": "visayas",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 0.8,
+   "dependable_mw": 0.8,
+   "units": 3
+  },
+  {
+   "name": "BASAK",
+   "grid": "visayas",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.5,
+   "dependable_mw": 0.5,
+   "units": 2
+  },
+  {
+   "name": "MANTAYUPAN",
+   "grid": "visayas",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.5,
+   "dependable_mw": 0.5,
+   "units": 2
+  },
+  {
+   "name": "MATUTINAO",
+   "grid": "visayas",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.7,
+   "dependable_mw": 0.0,
+   "units": 3
+  },
+  {
+   "name": "NABAS WIND Ph1",
+   "grid": "visayas",
+   "fuel": "wind",
+   "connection": "grid",
+   "installed_mw": 36.0,
+   "dependable_mw": 21.0,
+   "units": 1
+  },
+  {
+   "name": "TAREC",
+   "grid": "visayas",
+   "fuel": "wind",
+   "connection": "grid",
+   "installed_mw": 54.0,
+   "dependable_mw": 54.0,
+   "units": 1
+  },
+  {
+   "name": "FDC MISAMIS U1",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 135.0,
+   "dependable_mw": 123.0,
+   "units": 1
+  },
+  {
+   "name": "FDC MISAMIS U2",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 135.0,
+   "dependable_mw": 123.0,
+   "units": 1
+  },
+  {
+   "name": "FDC MISAMIS U3",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 135.0,
+   "dependable_mw": 123.0,
+   "units": 1
+  },
+  {
+   "name": "MINDANAO COAL U1",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 116.0,
+   "dependable_mw": 105.0,
+   "units": 1
+  },
+  {
+   "name": "MINDANAO COAL U2",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 116.0,
+   "dependable_mw": 105.0,
+   "units": 1
+  },
+  {
+   "name": "SEC U1",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "embedded",
+   "installed_mw": 118.5,
+   "dependable_mw": 105.0,
+   "units": 1
+  },
+  {
+   "name": "SEC U2",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 118.5,
+   "dependable_mw": 105.0,
+   "units": 1
+  },
+  {
+   "name": "MPI U1",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 135.0,
+   "units": 1
+  },
+  {
+   "name": "MPI U2",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 135.0,
+   "units": 1
+  },
+  {
+   "name": "THERMA SOUTH U1",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 130.0,
+   "units": 1
+  },
+  {
+   "name": "THERMA SOUTH U2",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 150.0,
+   "dependable_mw": 130.0,
+   "units": 1
+  },
+  {
+   "name": "GNPOWER KAUSAWAGAN U1",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 151.0,
+   "dependable_mw": 138.0,
+   "units": 1
+  },
+  {
+   "name": "GNPOWER KAUSAWAGAN U2",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 151.0,
+   "dependable_mw": 138.0,
+   "units": 1
+  },
+  {
+   "name": "GNPOWER KAUSAWAGAN U3",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 151.0,
+   "dependable_mw": 138.0,
+   "units": 1
+  },
+  {
+   "name": "GNPOWER KAUSAWAGAN U4",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "grid",
+   "installed_mw": 151.0,
+   "dependable_mw": 138.0,
+   "units": 1
+  },
+  {
+   "name": "MPC Balingasag Power Station U1",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "embedded",
+   "installed_mw": 55.0,
+   "dependable_mw": 50.0,
+   "units": 1
+  },
+  {
+   "name": "MPC Balingasag Power Station U2",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "embedded",
+   "installed_mw": 55.0,
+   "dependable_mw": 50.0,
+   "units": 1
+  },
+  {
+   "name": "MPC Balingasag Power Station U3",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "embedded",
+   "installed_mw": 55.0,
+   "dependable_mw": 50.0,
+   "units": 1
+  },
+  {
+   "name": "PSPE",
+   "grid": "mindanao",
+   "fuel": "coal",
+   "connection": "embedded",
+   "installed_mw": 25.0,
+   "dependable_mw": 20.0,
+   "units": 1
+  },
+  {
+   "name": "SEDI DIESEL",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 15.0,
+   "dependable_mw": 12.0,
+   "units": 3
+  },
+  {
+   "name": "KEGI - JIMENEZ",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 16.2,
+   "dependable_mw": 15.5,
+   "units": 1
+  },
+  {
+   "name": "KEGI - PANAON",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 15.7,
+   "dependable_mw": 15.0,
+   "units": 2
+  },
+  {
+   "name": "KEGI - TANDAG",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 7.8,
+   "dependable_mw": 7.5,
+   "units": 1
+  },
+  {
+   "name": "MPC - Iligan DPP",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 114.4,
+   "dependable_mw": 41.9,
+   "units": 18
+  },
+  {
+   "name": "SPPC",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 61.7,
+   "dependable_mw": 55.0,
+   "units": 6
+  },
+  {
+   "name": "TMI 1",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 100.0,
+   "dependable_mw": 96.0,
+   "units": 2
+  },
+  {
+   "name": "TMI 2",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 100.0,
+   "dependable_mw": 96.0,
+   "units": 2
+  },
+  {
+   "name": "WMPC",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 112.0,
+   "dependable_mw": 101.7,
+   "units": 10
+  },
+  {
+   "name": "MATI BUNKER-C*",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "grid",
+   "installed_mw": 11.0,
+   "dependable_mw": 11.0,
+   "units": 3
+  },
+  {
+   "name": "BPC DPP",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 7.3,
+   "dependable_mw": 6.4,
+   "units": 3
+  },
+  {
+   "name": "COTABATO LIGHT",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 9.6,
+   "dependable_mw": 4.3,
+   "units": 6
+  },
+  {
+   "name": "KEGI - BUKIDNON",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 3.2,
+   "dependable_mw": 3.0,
+   "units": 1
+  },
+  {
+   "name": "KEGI - CAMIGUIN",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 4.1,
+   "dependable_mw": 4.0,
+   "units": 2
+  },
+  {
+   "name": "KEGI - MARAMAG",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 7.8,
+   "dependable_mw": 7.5,
+   "units": 1
+  },
+  {
+   "name": "KEGI - MISAMIS OR.",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 10.6,
+   "dependable_mw": 10.0,
+   "units": 2
+  },
+  {
+   "name": "MEGC",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 15.0,
+   "dependable_mw": 12.8,
+   "units": 2
+  },
+  {
+   "name": "MINERGY DPP 1",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 18.9,
+   "dependable_mw": 18.0,
+   "units": 1
+  },
+  {
+   "name": "MINERGY DPP 2",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 27.4,
+   "dependable_mw": 26.0,
+   "units": 2
+  },
+  {
+   "name": "MPI-DIGOS",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 17.1,
+   "dependable_mw": 17.1,
+   "units": 16
+  },
+  {
+   "name": "NAC DPP",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 10.9,
+   "dependable_mw": 8.2,
+   "units": 1
+  },
+  {
+   "name": "NBPC DPP",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 6.2,
+   "dependable_mw": 5.0,
+   "units": 2
+  },
+  {
+   "name": "PACERM-1",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 10.5,
+   "dependable_mw": 10.5,
+   "units": 1
+  },
+  {
+   "name": "PBI",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 10.4,
+   "dependable_mw": 10.2,
+   "units": 1
+  },
+  {
+   "name": "PSC",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 34.9,
+   "dependable_mw": 32.7,
+   "units": 7
+  },
+  {
+   "name": "PSFI",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 5.2,
+   "dependable_mw": 5.0,
+   "units": 1
+  },
+  {
+   "name": "PSFI 2",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 5.2,
+   "dependable_mw": 5.0,
+   "units": 1
+  },
+  {
+   "name": "PSI",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 20.9,
+   "dependable_mw": 19.6,
+   "units": 3
+  },
+  {
+   "name": "PSI 2",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 13.9,
+   "dependable_mw": 13.9,
+   "units": 2
+  },
+  {
+   "name": "SPC - KORONADAL",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 11.9,
+   "dependable_mw": 11.9,
+   "units": 1
+  },
+  {
+   "name": "TPI DPP",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 4.4,
+   "dependable_mw": 3.0,
+   "units": 1
+  },
+  {
+   "name": "ZAMCELCO DPP",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 16.0,
+   "dependable_mw": 16.0,
+   "units": 1
+  },
+  {
+   "name": "IGACOS MODULAR DPPs",
+   "grid": "mindanao",
+   "fuel": "oil",
+   "connection": "embedded",
+   "installed_mw": 7.6,
+   "dependable_mw": 6.7,
+   "units": 8
+  },
+  {
+   "name": "LAMSAN POWER CORPORATION",
+   "grid": "mindanao",
+   "fuel": "biomass",
+   "connection": "grid",
+   "installed_mw": 15.0,
+   "dependable_mw": 13.5,
+   "units": 1
+  },
+  {
+   "name": "GEEC",
+   "grid": "mindanao",
+   "fuel": "biomass",
+   "connection": "embedded",
+   "installed_mw": 3.5,
+   "dependable_mw": 0.0,
+   "units": 4
+  },
+  {
+   "name": "BFI (Biomass)",
+   "grid": "mindanao",
+   "fuel": "biomass",
+   "connection": "embedded",
+   "installed_mw": 5.96,
+   "dependable_mw": 3.5,
+   "units": 1
+  },
+  {
+   "name": "BFI (Biogas)",
+   "grid": "mindanao",
+   "fuel": "biomass",
+   "connection": "embedded",
+   "installed_mw": 12.39,
+   "dependable_mw": 6.4,
+   "units": 10
+  },
+  {
+   "name": "CSCI",
+   "grid": "mindanao",
+   "fuel": "biomass",
+   "connection": "embedded",
+   "installed_mw": 35.9,
+   "dependable_mw": 0.0,
+   "units": 4
+  },
+  {
+   "name": "SPGI",
+   "grid": "mindanao",
+   "fuel": "biomass",
+   "connection": "embedded",
+   "installed_mw": 6.23,
+   "dependable_mw": 5.3,
+   "units": 1
+  },
+  {
+   "name": "LPEC",
+   "grid": "mindanao",
+   "fuel": "biomass",
+   "connection": "embedded",
+   "installed_mw": 6.0,
+   "dependable_mw": 5.3,
+   "units": 1
+  },
+  {
+   "name": "CSCCI COGEN PLANT",
+   "grid": "mindanao",
+   "fuel": "biomass",
+   "connection": "embedded",
+   "installed_mw": 9.9,
+   "dependable_mw": 3.4,
+   "units": 1
+  },
+  {
+   "name": "MT APO - EDC GPP",
+   "grid": "mindanao",
+   "fuel": "geothermal",
+   "connection": "grid",
+   "installed_mw": 108.5,
+   "dependable_mw": 103.3,
+   "units": 2
+  },
+  {
+   "name": "Mindanao 3 (M3) Binary Geothermal Plant",
+   "grid": "mindanao",
+   "fuel": "geothermal",
+   "connection": "grid",
+   "installed_mw": 3.7,
+   "dependable_mw": 3.0,
+   "units": 1
+  },
+  {
+   "name": "DIGOS",
+   "grid": "mindanao",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 28.6,
+   "dependable_mw": 24.8,
+   "units": 1
+  },
+  {
+   "name": "KIBAWE",
+   "grid": "mindanao",
+   "fuel": "solar",
+   "connection": "grid",
+   "installed_mw": 10.5,
+   "dependable_mw": 8.2,
+   "units": 1
+  },
+  {
+   "name": "CENTRALLA",
+   "grid": "mindanao",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 6.2,
+   "dependable_mw": 5.0,
+   "units": 1
+  },
+  {
+   "name": "CEPALCO",
+   "grid": "mindanao",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 1.0,
+   "dependable_mw": 0.2,
+   "units": 1
+  },
+  {
+   "name": "KIRAHON",
+   "grid": "mindanao",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 12.5,
+   "dependable_mw": 10.0,
+   "units": 1
+  },
+  {
+   "name": "ADGI",
+   "grid": "mindanao",
+   "fuel": "solar",
+   "connection": "embedded",
+   "installed_mw": 25.0,
+   "dependable_mw": 20.0,
+   "units": 1
+  },
+  {
+   "name": "AGUS 1",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 80.5,
+   "dependable_mw": 70.0,
+   "units": 2
+  },
+  {
+   "name": "AGUS 2",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 180.0,
+   "dependable_mw": 120.0,
+   "units": 3
+  },
+  {
+   "name": "AGUS 4",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 158.1,
+   "dependable_mw": 150.0,
+   "units": 3
+  },
+  {
+   "name": "AGUS 5",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 55.0,
+   "dependable_mw": 52.0,
+   "units": 2
+  },
+  {
+   "name": "AGUS 6",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 219.0,
+   "dependable_mw": 175.0,
+   "units": 5
+  },
+  {
+   "name": "AGUS 7",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 54.0,
+   "dependable_mw": 52.0,
+   "units": 2
+  },
+  {
+   "name": "PULANGI 4",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 255.0,
+   "dependable_mw": 225.0,
+   "units": 3
+  },
+  {
+   "name": "MANOLO FORTICH U1",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 45.9,
+   "dependable_mw": 43.4,
+   "units": 4
+  },
+  {
+   "name": "MANOLO FORTICH U2",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 27.4,
+   "dependable_mw": 25.4,
+   "units": 4
+  },
+  {
+   "name": "SIBULAN A",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 16.3,
+   "dependable_mw": 16.3,
+   "units": 1
+  },
+  {
+   "name": "SIBULAN B",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 26.3,
+   "dependable_mw": 26.3,
+   "units": 1
+  },
+  {
+   "name": "TUDAYA 2",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "grid",
+   "installed_mw": 8.1,
+   "dependable_mw": 8.0,
+   "units": 2
+  },
+  {
+   "name": "BUBUNAWAN",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 6.6,
+   "dependable_mw": 6.5,
+   "units": 1
+  },
+  {
+   "name": "CABULIG HEP",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 9.2,
+   "dependable_mw": 8.3,
+   "units": 1
+  },
+  {
+   "name": "TUDAYA 1",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 6.6,
+   "dependable_mw": 6.6,
+   "units": 1
+  },
+  {
+   "name": "ASIGA",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 8.0,
+   "dependable_mw": 7.9,
+   "units": 1
+  },
+  {
+   "name": "LAKE MAINIT",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 24.9,
+   "dependable_mw": 24.9,
+   "units": 3
+  },
+  {
+   "name": "ALAMADA HEP",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 3.0,
+   "dependable_mw": 3.0,
+   "units": 3
+  },
+  {
+   "name": "SIGUIL HEPP",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 14.5,
+   "dependable_mw": 14.5,
+   "units": 1
+  },
+  {
+   "name": "LIANGAN HEPP",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 12.0,
+   "dependable_mw": 12.0,
+   "units": 2
+  },
+  {
+   "name": "AGUSAN",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 1.6,
+   "dependable_mw": 1.6,
+   "units": 2
+  },
+  {
+   "name": "TALOMO 1",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 1.0,
+   "dependable_mw": 1.0,
+   "units": 1
+  },
+  {
+   "name": "TALOMO 2",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.6,
+   "dependable_mw": 0.6,
+   "units": 1
+  },
+  {
+   "name": "TALOMO 2A",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.7,
+   "dependable_mw": 0.7,
+   "units": 1
+  },
+  {
+   "name": "TALOMO 2B",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.3,
+   "dependable_mw": 0.3,
+   "units": 1
+  },
+  {
+   "name": "TALOMO 3",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 1.9,
+   "dependable_mw": 1.9,
+   "units": 1
+  },
+  {
+   "name": "PANOON",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.2,
+   "dependable_mw": 0.2,
+   "units": 1
+  },
+  {
+   "name": "NEW BATAAN HEPP",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 3.2,
+   "dependable_mw": 3.0,
+   "units": 1
+  },
+  {
+   "name": "MARBEL 1 HPP",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 0.8,
+   "dependable_mw": 0.8,
+   "units": 1
+  },
+  {
+   "name": "MARAMAG HEPP",
+   "grid": "mindanao",
+   "fuel": "hydro",
+   "connection": "embedded",
+   "installed_mw": 2.0,
+   "dependable_mw": 2.0,
+   "units": 2
+  }
+ ]
+}

@@ -798,6 +798,12 @@ def main() -> int:
     with open(os.path.join(OUT, "market_power.json"), "w") as fh:
         json.dump(build_market_power(), fh, indent=1)
 
+    # DOE per-plant fleet (grid-connected list, reconciled to its own subtotals)
+    from fleet_doe import build_fleet
+
+    with open(os.path.join(OUT, "fleet.json"), "w") as fh:
+        json.dump(build_fleet(), fh, indent=1)
+
     # observed day profiles + the chronological parity fixtures + the backcast
     from chrono import build_backcast, build_chrono_golden
     from profiles import build_profiles

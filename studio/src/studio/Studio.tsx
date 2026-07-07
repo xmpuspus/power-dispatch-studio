@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { GRIDS } from '../lib/types'
-import { php, pct, useGenerators, useProfiles } from '../lib/data'
+import { php, pct, useFleet, useGenerators, useProfiles } from '../lib/data'
 import { Segmented, ThemeToggle } from '../ui/kit'
 import { DurationView, MarginalView, ReliabilityView, ReserveView } from './views'
 import { ScenarioView } from './Scenario'
@@ -93,13 +93,20 @@ export function Studio({
 }) {
   const gens = useGenerators()
   const profiles = useProfiles()
+  const fleet = useFleet()
   const genRows = useMemo(
     () => (gens.data?.features ?? []).map((f) => f.properties),
     [gens.data]
   )
   const objects = useMemo(
-    () => baseObjects(d, genRows, profiles.data?.storage_defaults ?? []),
-    [d, genRows, profiles.data]
+    () =>
+      baseObjects(
+        d,
+        genRows,
+        profiles.data?.storage_defaults ?? [],
+        fleet.data?.available ? fleet.data.plants : []
+      ),
+    [d, genRows, profiles.data, fleet.data]
   )
 
   // a share link carries a scenario (and a chronology window) in the URL hash
@@ -817,6 +824,14 @@ function ClassPane({
           <div className="datapane__hint">
             Edit a value and it is tagged to the active scenario. Press <b>Run</b> to
             re-solve. The base value returns with the × on a changed cell.
+            {cls === 'generator' && rows.length > 40 && (
+              <span>
+                {' '}
+                Units and dependable capacities are the DOE list of existing power plants
+                (2025 editions); units under 20 MW dependable stay in the data but out of
+                this grid.
+              </span>
+            )}
             {dirty && (
               <button className="btn btn--run btn--sm datapane__run" onClick={onRun}>
                 <PlayIcon /> Run

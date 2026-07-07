@@ -555,5 +555,29 @@ check("backcast never fakes a hit rate from a flat model", all(
     v["high_hour_hit_rate_pct"] is None or 0 <= v["high_hour_hit_rate_pct"] <= 100
     for v in bc["per_grid"].values()))
 
+# --- DOE per-plant fleet (studio maturation, phase 4) ----------------------------
+fleet = load("fleet.json")
+check("fleet parses all three grids and reconciles to the DOE subtotals",
+      fleet["available"] and all(
+          v["ok"] for g in fleet["editions"].values()
+          for v in g["reconciliation"].values()))
+check("fleet editions are the 2025 DOE lists with Wayback capture URLs", all(
+    e["as_of"] >= "2025-03-31" and "web.archive.org" in e["src"]
+    and "doe.gov.ph" in e["original_url"]
+    for e in fleet["editions"].values()))
+check("fleet section sums equal the DOE grand total per grid", all(
+    abs(e["sections_total_mw"] - e["doe_total_mw"]) <= 1.0
+    for e in fleet["editions"].values()))
+plants = fleet["plants"]
+check("both Sual units are in the fleet at 647 MW each",
+      [p["installed_mw"] for p in plants if p["name"] in ("SPI U1", "SPI U2")]
+      == [647.0, 647.0])
+check("every plant has a known fuel and positive installed MW", all(
+    p["fuel"] in ("coal", "oil", "natural_gas", "biomass", "geothermal",
+                  "solar", "hydro", "wind") and p["installed_mw"] > 0
+    for p in plants))
+check("plant ids are unique per grid", len({(p["grid"], p["name"])
+                                            for p in plants}) == len(plants))
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)
