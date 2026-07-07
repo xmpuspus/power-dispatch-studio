@@ -3,9 +3,10 @@
 
 import { useState } from 'react'
 import type { GridKey } from '../lib/types'
-import { num, php } from '../lib/data'
+import { num, php, useEmissions } from '../lib/data'
 import { Chip, EmptyNote, Panel } from '../ui/kit'
 import { HourLines } from './charts'
+import { buildRunReport, downloadReport } from './report'
 import { deleteRun, downloadCsv, isStale, runCsv, type SavedRun } from './runs'
 
 const GRIDS: GridKey[] = ['luzon', 'visayas', 'mindanao']
@@ -41,6 +42,18 @@ export function RunsView({
   const [bId, setBId] = useState<string>('')
   const a = runs.find((r) => r.id === aId) ?? runs[0]
   const b = runs.find((r) => r.id === bId) ?? runs[1]
+  const emissions = useEmissions()
+
+  const exportReport = (r: SavedRun) => {
+    downloadReport(
+      `power-dispatch-report-${r.name.replace(/\W+/g, '-')}.html`,
+      buildRunReport(r, {
+        emissionsFactors: emissions.data?.factor_map ?? null,
+        emissionsSrc: 'emission factors and sources in the methodology page',
+        appUrl: `${window.location.origin}${window.location.pathname}`,
+      })
+    )
+  }
 
   if (!runs.length)
     return (
@@ -140,6 +153,13 @@ export function RunsView({
                       }
                     >
                       CSV
+                    </button>
+                    <button
+                      className="btn btn--ghost btn--sm"
+                      title="Self-contained HTML report of this run"
+                      onClick={() => exportReport(r)}
+                    >
+                      Report
                     </button>
                     <button
                       className="btn btn--ghost btn--sm"

@@ -86,6 +86,54 @@ export function BillView() {
           </p>
         </Panel>
 
+        {(d.mix_history?.length ?? 0) > 0 && (
+          <Panel
+            title="The residual moves month to month"
+            subtitle="Meralco's own published mix and generation charge, last three advisories."
+          >
+            <div className="propgrid-wrap">
+              <table className="propgrid">
+                <thead>
+                  <tr>
+                    <th className="propgrid__obj">Month</th>
+                    <th className="propgrid__num">WESM</th>
+                    <th className="propgrid__num">PSA</th>
+                    <th className="propgrid__num">IPP</th>
+                    <th className="propgrid__num">Gen charge</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {d.mix_history!.map((m) => (
+                    <tr key={m.period}>
+                      <td className="propgrid__obj mono">{m.period}</td>
+                      <td className="propgrid__num mono">{m.wesm_pct}%</td>
+                      <td className="propgrid__num mono">{m.psa_pct}%</td>
+                      <td className="propgrid__num mono">{m.ipp_pct}%</td>
+                      <td className="propgrid__num mono">
+                        {php(m.generation_charge_php_kwh)}
+                      </td>
+                      <td>
+                        <Source href={m.src_news} label="source" />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="note">{d.mix_history_note}</p>
+            {d.june_moves && (
+              <p className="note">
+                June per-source moves, the one month with a clean public breakdown: PSA +
+                {php(d.june_moves.psa_delta_php_kwh)} (54% dollar-denominated, coal and
+                LNG prices), First Gas {php(d.june_moves.ipp_delta_php_kwh)} (better
+                dispatch at Sta. Rita and San Lorenzo).{' '}
+                <Source href={d.june_moves.src_psa} label="source" />
+              </p>
+            )}
+          </Panel>
+        )}
+
         <div className="scn__results">
           <Panel
             title="Bill impact of the WESM move"

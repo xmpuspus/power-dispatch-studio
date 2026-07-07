@@ -4,10 +4,11 @@
 
 import { useMemo, useState } from 'react'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
-import { num, php, fuelLabel } from '../lib/data'
+import { num, php, fuelColor, fuelLabel } from '../lib/data'
 import { Panel, Segmented, StatTile } from '../ui/kit'
-import { DurationCurve, DispatchArea, HourLines, SocChart } from './charts'
+import { BindingStrip, DurationCurve, DispatchArea, HourLines, SocChart } from './charts'
 import { ENGINE_VERSION, runChronology, runDuration, type ChronoHour } from './chrono'
+import { bindingCounts, classifyHour } from './insights'
 import { chronoOptsFrom, type ClassId, type ObjRow, type Overrides } from './model'
 import { downloadCsv, encodeShare, runCsv, saveRun, type SavedRun } from './runs'
 
@@ -246,6 +247,30 @@ export function ChronologyView({
           demand={hours.map((h) => h.demand[grid])}
           marks={marks}
         />
+      </Panel>
+
+      <Panel
+        title={`What set the price, ${cap(grid)}`}
+        subtitle="Per hour: the marginal fuel block, a saturated corridor on the importing side, or unserved load. The binding constraint, named."
+      >
+        <BindingStrip cells={hours.map((h) => classifyHour(h, grid))} />
+        <div className="legend">
+          {bindingCounts(hours, grid).map((b) => (
+            <span className="legend__item" key={b.key}>
+              <i
+                style={{
+                  background:
+                    b.cause === 'unserved'
+                      ? 'var(--destructive)'
+                      : b.cause === 'corridor'
+                        ? 'var(--accent)'
+                        : fuelColor(b.key),
+                }}
+              />
+              {b.label}: {b.hours}h ({num(b.share_pct, 1)}%)
+            </span>
+          ))}
+        </div>
       </Panel>
 
       {hasStorage && (
