@@ -8,6 +8,7 @@ import { ScenarioView } from './Scenario'
 import { BillView } from './Bill'
 import { MarketPowerView } from './MarketPower'
 import { ChronologyView } from './ChronoView'
+import { BackcastView } from './BackcastView'
 import { RunsView } from './RunsView'
 import { decodeShare, loadRuns, type SavedRun } from './runs'
 import {
@@ -41,7 +42,7 @@ type SolId =
   | 'duration'
   | 'marginal'
   | 'reliability'
-type AnalysisId = 'reserve' | 'bill' | 'market'
+type AnalysisId = 'reserve' | 'bill' | 'market' | 'backcast'
 type Nav =
   | { kind: 'class'; id: ClassId }
   | { kind: 'quick' }
@@ -61,6 +62,7 @@ const SOL_LABEL: Record<SolId, string> = {
   reliability: 'Reliability',
 }
 const ANALYSIS_LABEL: Record<AnalysisId, string> = {
+  backcast: 'Backcast',
   reserve: 'Reserve market',
   bill: 'Bill impact',
   market: 'Market power',
@@ -203,7 +205,7 @@ export function Studio({
   const editCount = Object.keys(active.overrides).length
   const gridScoped =
     (nav.kind === 'sol' && GRID_SOL.has(nav.id)) ||
-    (nav.kind === 'analysis' && nav.id === 'reserve')
+    (nav.kind === 'analysis' && (nav.id === 'reserve' || nav.id === 'backcast'))
 
   const revertAll = () => {
     setScenarios((prev) => prev.map((s, i) => (i === ai ? { ...s, overrides: {} } : s)))
@@ -626,6 +628,11 @@ function DataPane({
   }
   if (nav.kind === 'quick') return <ScenarioView d={d} grid={grid} />
   if (nav.kind === 'analysis') {
+    if (nav.id === 'backcast') {
+      if (!profiles)
+        return <div className="basecase-banner">Loading the observed day profiles.</div>
+      return <BackcastView d={d} profiles={profiles} grid={grid} />
+    }
     if (nav.id === 'reserve') return <ReserveView d={d} grid={grid} />
     if (nav.id === 'bill') return <BillView />
     return <MarketPowerView d={d} />
