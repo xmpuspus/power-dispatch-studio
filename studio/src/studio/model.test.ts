@@ -2,7 +2,14 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import type { Dispatch, GridKey } from '../lib/types'
-import { baseObjects, overrideKey, solveModel, type Overrides } from './model'
+import {
+  baseObjects,
+  overrideKey,
+  solveAdequacyWithOutages,
+  solveModel,
+  solveSnapshot,
+  type Overrides,
+} from './model'
 
 const d: Dispatch = JSON.parse(
   readFileSync(
@@ -107,6 +114,55 @@ describe('property edits move the solution the right way', () => {
     expect(s.n1.length).toBe(OBJ.generator.length)
     for (const row of s.n1)
       expect(row.tripped_price).toBeGreaterThanOrEqual(row.base_price - 1e-9)
+  })
+
+  it('solveSnapshot reproduces the full solve at a fraction of the work', () => {
+    const ov: Overrides = {
+      [overrideKey('region', 'luzon', 'demand_mw')]:
+        (OBJ.region.find((r) => r.id === 'luzon')!.props.demand_mw as number) + 1000,
+    }
+    const full = solveModel(d, OBJ, ov)
+    const snap = solveSnapshot(d, OBJ, ov)
+    for (const g of GRIDS) {
+      expect(snap.coupled.price[g]).toBe(full.coupled.price[g])
+      expect(snap.avail[g]).toBe(full.avail[g])
+      expect(snap.marginalFuel[g]).toBe(full.marginalFuel[g])
+    }
+    expect(snap.coupled.flowLV).toBe(full.coupled.flowLV)
+  })
+
+  it('scheduled outages erode the margin and never improve reliability', () => {
+    const base = solveModel(d, OBJ, {})
+    const out = solveAdequacyWithOutages(d, OBJ, {}, [
+      { grid: 'luzon', fuel: 'coal', mw: 600, plant: null },
+      { grid: 'visayas', fuel: 'coal', mw: 150, plant: null },
+    ])
+    expect(out.outMw.luzon).toBe(600)
+    expect(out.availAfter.luzon).toBeLessThan(base.avail.luzon)
+    expect(out.marginAfterPct.luzon).toBeLessThan(base.reserveMarginPct.luzon)
+    for (const g of GRIDS)
+      expect(out.reliability[g].lolp_pct).toBeGreaterThanOrEqual(
+        base.reliability[g].lolp_pct - 1e-9
+      )
+    // the out MW stops drawing its forced-outage rate, but a partial outage
+    // leaves the plant's remaining MW exposed: naming the plant must not read
+    // safer than leaving the same MW anonymous
+    const multi = OBJ.generator.find(
+      (g) => g.grid === 'luzon' && (g.props.capacity_mw as number) > 300
+    )
+    if (multi) {
+      const half = (multi.props.capacity_mw as number) / 2
+      const named = solveAdequacyWithOutages(d, OBJ, {}, [
+        { grid: 'luzon', fuel: multi.props.fuel as string, mw: half, plant: multi.label },
+      ])
+      const anon = solveAdequacyWithOutages(d, OBJ, {}, [
+        { grid: 'luzon', fuel: multi.props.fuel as string, mw: half, plant: null },
+      ])
+      expect(named.reliability.luzon.lolp_pct).toBeLessThanOrEqual(
+        anon.reliability.luzon.lolp_pct + 1e-9
+      )
+      expect(named.reliability.luzon.draws).toBeGreaterThan(0)
+    }
   })
 
   it('the client Monte Carlo is deterministic and rises with load', () => {

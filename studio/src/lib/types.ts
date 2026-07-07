@@ -330,6 +330,17 @@ export interface Reserve {
   src_data?: string
 }
 
+export interface MixMonth {
+  period: string
+  wesm_pct: number
+  psa_pct: number
+  ipp_pct: number
+  generation_charge_php_kwh: number
+  total_rate_php_kwh: number
+  src: string
+  src_news: string
+}
+
 export interface Bill {
   available: boolean
   period?: string
@@ -342,8 +353,117 @@ export interface Bill {
   src_bill?: string
   household_kwh_month?: number
   pass_through_factor?: number
+  mix_history?: MixMonth[]
+  mix_history_note?: string
+  june_moves?: {
+    psa_delta_php_kwh: number
+    ipp_delta_php_kwh: number
+    src_psa: string
+    src_ipp: string
+  }
   note: string
   gwap_lwap_note?: string
+  disclaimer?: string
+}
+
+export interface EmissionFactor {
+  fuel: string
+  tco2_per_mwh: number | null
+  basis: string
+  src: string
+  src2?: string
+}
+
+export interface Emissions {
+  available: boolean
+  unit?: string
+  factors?: EmissionFactor[]
+  factor_map?: Record<string, number>
+  ngef?: {
+    luzon_visayas_tco2_per_mwh: number
+    mindanao_tco2_per_mwh: number
+    vintage: string
+    src: string
+    note: string
+  }
+  note: string
+  disclaimer?: string
+}
+
+export interface PasaResource {
+  resource: string
+  grid: GridKey | null
+  plant: string | null
+  fuel: string | null
+  unit_mw: number | null
+  match: 'verified' | 'unmatched' | 'storage'
+}
+
+export interface PasaDay {
+  date: string
+  out: string[]
+  matched_mw: Record<GridKey, number>
+  n_out: number
+  n_unmatched: number
+}
+
+export interface Pasa {
+  available: boolean
+  days?: PasaDay[]
+  resources?: PasaResource[]
+  n_resources?: number
+  n_verified?: number
+  n_unmatched?: number
+  n_storage?: number
+  grid_mapping_note?: string
+  coverage_note?: string
+  note: string
+  src?: string
+  disclaimer?: string
+}
+
+export interface ProjectRow {
+  grid: GridKey
+  status: 'committed' | 'indicative'
+  fuel: string
+  mw: number
+  target: string | null
+  target_year: number | null
+}
+
+export interface ProjectSection {
+  grid: GridKey
+  status: 'committed' | 'indicative'
+  fuel: string
+  subtotal_mw: number
+  n_rows: number
+  rows_reconciled: boolean
+}
+
+export interface TdpCorridor {
+  name: string
+  iface: string | null
+  adds_mw: number | null
+  target: string
+  target_year: number | null
+  cost_mphp: number | null
+  detail: string
+  src: string
+}
+
+export interface Projects {
+  available: boolean
+  as_of?: string
+  editions?: Record<string, Record<string, { src: string; original_url: string }>>
+  totals?: Record<string, Record<string, { gen_mw: number; ess_mw: number } | number>>
+  sections?: ProjectSection[]
+  rows?: ProjectRow[]
+  n_rows?: number
+  n_sections_aggregate_only?: number
+  corridors?: TdpCorridor[]
+  src_tdp?: string
+  note: string
+  ess_note?: string
   disclaimer?: string
 }
 
