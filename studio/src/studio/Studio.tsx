@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { Component, useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { GRIDS } from '../lib/types'
 import { php, pct, useFleet, useGenerators, useProfiles } from '../lib/data'
@@ -303,29 +303,31 @@ export function Studio({
         <main className="studio__main">
           <Crumbs nav={nav} grid={grid} gridScoped={gridScoped} dirty={dirty} />
           <div className="studio__scroll">
-            <DataPane
-              d={d}
-              profiles={profiles.data}
-              nav={nav}
-              grid={grid}
-              solved={solved}
-              objects={objects}
-              scenarios={scenarios}
-              overrides={active.overrides}
-              ranOv={ranOv}
-              scenarioName={active.name}
-              chronoDate={chronoDate}
-              chronoSpan={chronoSpan}
-              onChronoDate={setChronoDate}
-              onChronoSpan={setChronoSpan}
-              runsList={runsList}
-              onRunsChange={setRunsList}
-              onRestore={restoreRun}
-              dirty={dirty}
-              onEdit={edit}
-              onRevert={revert}
-              onRun={run}
-            />
+            <SolveBoundary key={`${JSON.stringify(nav)}:${editCount}:${dirty}:${grid}`}>
+              <DataPane
+                d={d}
+                profiles={profiles.data}
+                nav={nav}
+                grid={grid}
+                solved={solved}
+                objects={objects}
+                scenarios={scenarios}
+                overrides={active.overrides}
+                ranOv={ranOv}
+                scenarioName={active.name}
+                chronoDate={chronoDate}
+                chronoSpan={chronoSpan}
+                onChronoDate={setChronoDate}
+                onChronoSpan={setChronoSpan}
+                runsList={runsList}
+                onRunsChange={setRunsList}
+                onRestore={restoreRun}
+                dirty={dirty}
+                onEdit={edit}
+                onRevert={revert}
+                onRun={run}
+              />
+            </SolveBoundary>
           </div>
         </main>
       </div>
@@ -341,7 +343,7 @@ export function Studio({
           Luzon reserve margin <b>{pct(solved.reserveMarginPct.luzon / 100, 1)}</b>
         </span>
         <span className="studio__statspace" />
-        <span>simplified merit-order model, calibrated against observed prices</span>
+        <span>merit-order LP solved by HiGHS, calibrated against observed prices</span>
       </footer>
     </div>
   )
@@ -476,6 +478,30 @@ function Ribbon({
       </div>
     </div>
   )
+}
+
+// a scenario that breaks the solve must degrade to a message inside the pane,
+// with the shell (ribbon, explorer, revert controls) still alive to fix it.
+// The key remounts the boundary on any edit or navigation, so recovery is one
+// revert away.
+class SolveBoundary extends Component<{ children: ReactNode }, { err: string | null }> {
+  state = { err: null }
+  static getDerivedStateFromError(e: Error) {
+    return { err: e.message }
+  }
+  render() {
+    if (this.state.err)
+      return (
+        <div className="view">
+          <div className="basecase-banner">
+            This scenario broke the solve: {this.state.err}. Revert the last edit (System
+            tab, the x on a changed cell, or Revert all in the Model ribbon) and it
+            recovers.
+          </div>
+        </div>
+      )
+    return this.props.children
+  }
 }
 
 function RibbonGroup({ label, children }: { label: string; children: React.ReactNode }) {

@@ -276,7 +276,7 @@ export function ChronologyView({
       {hasStorage && (
         <Panel
           title="Storage state of charge"
-          subtitle="Charge-cheap, discharge-dear heuristic walked through the day; the state resets each day. A labeled heuristic, not an optimisation."
+          subtitle="Optimised by the day LP: storage cycles only when the price spread beats the round-trip loss, and idles on a flat day. The state resets each day."
         >
           <SocChart
             soc={hours.map((h) => h.socMwh)}
@@ -297,10 +297,13 @@ export function ChronologyView({
       <p className="note">
         Replays the archive's observed days: demand is dispatched generation per hour
         (IEMOP RTD regional summaries), replayed against the edited model. Region load
-        edits shift demand flat across all 24 hours, the data-center shape. Reserve
-        co-clear prices each hour at demand plus the mean scheduled reserve requirement
-        (IEMOP RTD reserve rows), a labeled approximation of the co-optimised market.
-        Block dispatch per hour with no inter-temporal optimisation. Not PLEXOS.
+        edits shift demand flat across all 24 hours, the data-center shape. The reserve
+        toggle withholds the mean scheduled requirement (IEMOP RTD reserve rows) from the
+        dispatchable stack, so tight hours price the withheld capacity instead of paying a
+        synthetic demand. The whole day solves as one linear program (HiGHS): storage
+        couples the hours, prices are the balance duals (locational marginal prices, so an
+        importing hour can price at the exporter plus the wheeling cost), and shedding
+        never beats available capacity. Still not PLEXOS: blocks, not units.
       </p>
     </div>
   )

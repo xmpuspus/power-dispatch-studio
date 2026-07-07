@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
 import { useDispatch, pct, php } from './lib/data'
+import { initSolver, solverReady } from './studio/solver'
 import { StatTile, ThemeToggle } from './ui/kit'
 
 const MapView = lazy(() => import('./map/MapView').then((m) => ({ default: m.MapView })))
@@ -20,7 +21,20 @@ function useTheme(): [Theme, () => void] {
 export default function App() {
   const { data: d, loading, error } = useDispatch()
   const [studio, setStudio] = useState(false)
+  const [solverOk, setSolverOk] = useState(() => solverReady())
+  const [solverErr, setSolverErr] = useState<string | null>(null)
   const [theme, toggleTheme] = useTheme()
+
+  // the wasm solver (~2.5 MB) loads once; hovering Open starts the fetch early
+  const warmSolver = () => {
+    initSolver().then(
+      () => setSolverOk(true),
+      (e: Error) => setSolverErr(e.message)
+    )
+  }
+  useEffect(() => {
+    if (studio) warmSolver()
+  }, [studio])
 
   return (
     <div className="app">
@@ -35,7 +49,12 @@ export default function App() {
         </div>
         <div className="app__baractions">
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          <button className="btn btn--primary" onClick={() => setStudio(true)}>
+          <button
+            className="btn btn--primary"
+            onMouseEnter={warmSolver}
+            onFocus={warmSolver}
+            onClick={() => setStudio(true)}
+          >
             Open Power Dispatch Studio
           </button>
         </div>
@@ -103,7 +122,7 @@ export default function App() {
         </footer>
       </main>
 
-      {studio && d && (
+      {studio && d && solverOk && (
         <Suspense
           fallback={<div className="studio studio--loading">Loading the studio.</div>}
         >
@@ -115,9 +134,15 @@ export default function App() {
           />
         </Suspense>
       )}
-      {studio && !d && (
+      {studio && !(d && solverOk) && (
         <div className="studio studio--loading">
-          <p>{loading ? 'Loading the model.' : `Data error: ${error}`}</p>
+          <p>
+            {error || solverErr
+              ? `Data error: ${error ?? solverErr}`
+              : !d && loading
+                ? 'Loading the model.'
+                : 'Loading the HiGHS solver.'}
+          </p>
           <button className="btn btn--ghost" onClick={() => setStudio(false)}>
             Close
           </button>

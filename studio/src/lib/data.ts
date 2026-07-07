@@ -106,5 +106,6 @@ const FUEL_VAR: Record<string, string> = {
   storage: 'var(--series-storage)',
   firm: 'var(--primary)',
   import: 'var(--series-flow)',
+  export: 'var(--series-flow)',
 }
 export const fuelColor = (f: string): string => FUEL_VAR[f] ?? 'var(--text-faint)'

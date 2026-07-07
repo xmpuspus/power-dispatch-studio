@@ -158,14 +158,13 @@ ${
 }
 
 <h2>Provenance</h2>
-<p class="note">Chronological replay of observed IEMOP market days on a simplified
-merit-order model, three zonal grids coupled over two HVDC corridors. Demand is the
-archive's dispatched generation per hour; block dispatch per hour with no
-inter-temporal optimisation. Not PLEXOS, and not a forecast. Model scope, data
-provenance, and the backcast accuracy statement live in the methodology page of the
-site that produced this report${
-    extras.appUrl ? `: <code>${esc(extras.appUrl)}</code>` : '.'
-  }</p>
+<p class="note">Chronological replay of observed IEMOP market days on a merit-order
+model, three zonal grids coupled over two HVDC corridors, solved as one linear
+program per day by HiGHS (storage inter-temporal, reserves as withheld capacity,
+prices from the balance duals). Demand is the archive's dispatched generation per
+hour. Not PLEXOS, and not a forecast. Model scope, data provenance, and the backcast
+accuracy statement live in the methodology page of the site that produced this
+report${extras.appUrl ? `: <code>${esc(extras.appUrl)}</code>` : '.'}</p>
 <p class="note">Statistical indicators derived from public data. Patterns may have
 legitimate explanations.</p>
 </body></html>`

@@ -92,11 +92,11 @@ export function ScenarioView({ d, grid }: { d: Dispatch; grid: GridKey }) {
   return (
     <div className="view" data-testid="scenario">
       <p className="scn__lede">
-        A simplified merit-order model, <b>not PLEXOS</b>: it stacks the sourced fleet by
-        marginal cost against demand and reads the clearing price. Move the levers and the
-        price re-clears here in your browser, on the same stack the pipeline baked and
-        against the same coupled solve its Python engine runs. It is calibrated against
-        observed prices, not a predictor of them.
+        A merit-order model, <b>not PLEXOS</b>: it stacks the sourced fleet by marginal
+        cost against demand and clears the three grids as one HiGHS linear program, here
+        in your browser, on the same stack the pipeline baked and against the same LP its
+        Python engine solves. Prices are locational marginals from the solve. It is
+        calibrated against observed prices, not a predictor of them.
       </p>
 
       <div className="scn">

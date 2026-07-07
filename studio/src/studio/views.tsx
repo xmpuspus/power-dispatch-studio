@@ -173,7 +173,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
     <div className="view">
       <Panel
         title="WESM Reserve Market"
-        subtitle={`Live since ${res.commercial_since}. Real-time dispatch co-optimises energy and reserves; the studio's merit order clears energy only. Sample of ${num(res.n_intervals)} intervals over ${res.sample_days?.join(', ')}.`}
+        subtitle={`Live since ${res.commercial_since}. Real-time dispatch co-optimises energy and reserves; the studio prices energy, and its Chronology toggle withholds the scheduled requirement from the stack rather than co-optimising reserve prices. Sample of ${num(res.n_intervals)} intervals over ${res.sample_days?.join(', ')}.`}
         right={<Source href={res.src_market} label="market source" />}
       >
         <div className="stat-row">

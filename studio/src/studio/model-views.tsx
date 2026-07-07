@@ -362,7 +362,7 @@ export function MembershipsView({
           { label: 'Region', value: String(s.props.grid) },
           {
             label: 'Participates in',
-            value: 'Chronology runs (cycled by the heuristic)',
+            value: 'Chronology runs (optimised by the LP; cycles when the spread pays)',
           },
         ],
       })

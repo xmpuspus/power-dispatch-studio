@@ -311,7 +311,7 @@ export function HourLines({
             strokeWidth={0.75}
             strokeDasharray="2 3"
           />
-          <text x={X(m.x) + 3} y={H - padB + 12} className="chart__ax">
+          <text x={X(m.x) + 3} y={H - padB + 12 + (i % 2) * 11} className="chart__ax">
             {m.label}
           </text>
         </g>
