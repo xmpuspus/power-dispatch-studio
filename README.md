@@ -239,6 +239,16 @@ differentials). That is the finding, not a failure: cost stacks price the three
 islands nearly identically, and the observed spread is the scarcity and offer
 premium of the 52-day yellow-alert streak, which a cost model cannot see.
 
+The offer books close most of the rest. IEMOP publishes every resource's
+actual offer curve (and the self-scheduled capacity that submits none), and
+replaying the same days with those books instead of the cost proxy moves the
+corridors like the real grid: **99%** direction agreement on Visayas-Mindanao
+against a 375 MW mean observed flow, the Visayas settlement bias collapsing
+from **-P6.91** to **-P0.67/kWh**, Mindanao clearing-price correlation
+**0.87**. The gap between the cost-mode and offer-mode tables is the offer
+premium, measured per hour instead of asserted; both sets are published in
+the [studio's validation tables](studio/README.md).
+
 The mechanism the thesis names takes over under the documented outage. Re-clear the
 streak window with the **935 MW** of Visayas capacity NGCP recorded unavailable on
 July 1 and the 250 MW corridor saturates in **93.2%** of intervals at a mean

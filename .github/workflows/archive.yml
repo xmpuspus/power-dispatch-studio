@@ -28,6 +28,10 @@ jobs:
         id: derive
         continue-on-error: true
         run: python3 pipeline/fuelmix.py --derive --limit 3
+      - name: Derive offer-stack dailies (RTDOE + RTDNE; hourly files too heavy to keep)
+        id: derive_offers
+        continue-on-error: true
+        run: python3 pipeline/offers.py --derive --limit 3
       - name: Commit raw + derived files first (the archive is the irreplaceable asset)
         run: |
           git config user.name "archive-bot"
