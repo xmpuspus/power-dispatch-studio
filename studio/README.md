@@ -115,6 +115,26 @@ net market imports and exports in the same files):
 | Luzon to Visayas | 46 MW | -2 MW | 92 MW | 8% |
 | Visayas to Mindanao | -373 MW | -4 MW | 369 MW | 3% |
 
+The fourth set replays the same days with the operator's own OFFER BOOKS
+(every resource's priced curve from the real-time generation offers, plus
+self-scheduled capacity as price-takers) instead of the cost proxy: no
+storage, reserve, or water layers, because the books already embody unit
+behavior. 55 derived days:
+
+| Grid | Target | MAE | Bias | Correlation | High-hour hit |
+| --- | --- | --- | --- | --- | --- |
+| Luzon | LWAP | P2.94 | +P1.44 | 0.73 | 54% |
+| Visayas | LWAP | P5.17 | -P0.67 | 0.67 | 52% |
+| Mindanao | LWAP | P4.33 | -P1.09 | 0.73 | 46% |
+| Luzon | MCP | P2.79 | +P1.93 | 0.78 | 69% |
+| Visayas | MCP | P6.31 | -P5.42 | 0.73 | 48% |
+| Mindanao | MCP | P3.09 | -P2.48 | 0.87 | 70% |
+
+| Corridor (offer mode) | Observed mean | Modeled mean | MAE | Direction agreement |
+| --- | --- | --- | --- | --- |
+| Luzon to Visayas | 45 MW | 110 MW | 104 MW | 88% |
+| Visayas to Mindanao | -375 MW | -337 MW | 58 MW | 99% |
+
 Five engine steps sit inside these numbers, all reported rather than tuned:
 the LP swap, the observed water budgets, the fleet-derived hydro split, the
 observed layers (curtailment in demand, scheduled-outage deviations, the
@@ -128,7 +148,19 @@ to 1.6 percent at peak, which is what a grid living through a 52-day
 yellow-alert streak should look like. The same change CUT the Visayas MCP
 agreement (correlation 0.65 to 0.33, hit 93 to 30 percent): the old
 self-balanced demand had flattered the sparse-coverage MCP subset, and
-that flattery is gone. The level bias barely moves: the
+that flattery is gone.
+
+The offer-mode set is the sixth step and the payoff. With the market's own
+bids, the corridors move like the real grid (99 percent direction
+agreement on Visayas-Mindanao, 58 MW MAE against a 375 MW mean flow), the
+Visayas settlement bias collapses from -P6.91 to -P0.67, and Mindanao's
+clearing-price correlation reaches 0.87. Subtract the two modes and the
+offer premium stops being a residual and becomes a measured series. What
+remains: Luzon OVER-prices settlement by P1.44 (the ex-ante book clears
+above what substitution-shaved settlement pays, the same wedge the LWAP
+vs MCP tables show), and the sparse Visayas MCP subset keeps a -P5.42
+bias with its coverage stated. The cost-mode tables stay published: the
+gap between the two modes is the point. The level bias barely moves: the
 model still under-prices the Visayas by P6.91/kWh, and that stays the
 scarcity and offer premium. And the flows table is deliberately damning:
 the observed corridors carry a mean 373 MW of Mindanao exports north while

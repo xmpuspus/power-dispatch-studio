@@ -34022,5 +34022,92 @@
   "mcp_note": "per_grid_mcp scores the same replays against the observed regional marginal price (the RTD ex-ante clearing price, IEMOP MCP files): the target commensurate with a dispatch dual. LWAP additionally carries nodal spread and settlement substitution, so part of the LWAP gap is definitional, and this pair of tables shows how much.",
   "high_hour_note": "High hours are the top decile of observed hourly LWAP in the window; the hit rate is how often the model also ranks that hour in its own top decile. Rank agreement, not level agreement.",
   "note": "Hourly replay of every full-coverage market day with the base model on the HiGHS LP engine: no storage cycling, no levers, no tuning. The gap to observed prices (scarcity, offers, caps, outages the model cannot see) stays in the residual, it is the finding. Against the previous clear, the LP completes the overnight corridor arbitrage the old solver left half-done: mean error is unchanged and the already-low shape correlation drops a few hundredths; reported, not tuned."
+ },
+ "offer_backcast": {
+  "available": true,
+  "days": 55,
+  "window": {
+   "from": "2026-05-01",
+   "to": "2026-06-25"
+  },
+  "per_grid": {
+   "luzon": {
+    "n_hours": 1320,
+    "observed_mean_php_kwh": 7.63,
+    "modeled_mean_php_kwh": 9.073,
+    "mae_php_kwh": 2.936,
+    "bias_php_kwh": 1.443,
+    "correlation": 0.725,
+    "high_hour_hit_rate_pct": 54.1
+   },
+   "visayas": {
+    "n_hours": 1320,
+    "observed_mean_php_kwh": 12.805,
+    "modeled_mean_php_kwh": 12.135,
+    "mae_php_kwh": 5.171,
+    "bias_php_kwh": -0.67,
+    "correlation": 0.674,
+    "high_hour_hit_rate_pct": 51.9
+   },
+   "mindanao": {
+    "n_hours": 1320,
+    "observed_mean_php_kwh": 11.306,
+    "modeled_mean_php_kwh": 10.215,
+    "mae_php_kwh": 4.333,
+    "bias_php_kwh": -1.091,
+    "correlation": 0.726,
+    "high_hour_hit_rate_pct": 45.9
+   }
+  },
+  "per_grid_mcp": {
+   "luzon": {
+    "n_hours": 1286,
+    "observed_mean_php_kwh": 7.048,
+    "modeled_mean_php_kwh": 8.977,
+    "mae_php_kwh": 2.795,
+    "bias_php_kwh": 1.929,
+    "correlation": 0.779,
+    "high_hour_hit_rate_pct": 68.5
+   },
+   "visayas": {
+    "n_hours": 764,
+    "observed_mean_php_kwh": 14.762,
+    "modeled_mean_php_kwh": 9.347,
+    "mae_php_kwh": 6.307,
+    "bias_php_kwh": -5.415,
+    "correlation": 0.726,
+    "high_hour_hit_rate_pct": 47.9
+   },
+   "mindanao": {
+    "n_hours": 1182,
+    "observed_mean_php_kwh": 11.505,
+    "modeled_mean_php_kwh": 9.024,
+    "mae_php_kwh": 3.09,
+    "bias_php_kwh": -2.481,
+    "correlation": 0.872,
+    "high_hour_hit_rate_pct": 70.0
+   }
+  },
+  "flows": {
+   "lv": {
+    "corridor": "Luzon to Visayas",
+    "n_hours": 1320,
+    "observed_mean_mw": 45.2,
+    "modeled_mean_mw": 109.9,
+    "mae_mw": 103.7,
+    "direction_agreement_pct": 88.0,
+    "n_decisive_hours": 1214
+   },
+   "vm": {
+    "corridor": "Visayas to Mindanao",
+    "n_hours": 1320,
+    "observed_mean_mw": -374.5,
+    "modeled_mean_mw": -337.0,
+    "mae_mw": 58.1,
+    "direction_agreement_pct": 99.2,
+    "n_decisive_hours": 1320
+   }
+  },
+  "note": "The same replays with the operator's own OFFER BOOKS (RTDOE + self-scheduled nominations) instead of the cost proxy: native-load demand, corridor caps, no storage or reserve or water layers (the books already embody unit behavior). Where the cost-mode tables show what a competitive cost stack would do, these show what the market as bid actually prices; the gap between the two IS the offer premium, measured instead of asserted."
  }
 }

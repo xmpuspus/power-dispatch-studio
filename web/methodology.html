@@ -142,6 +142,20 @@ maximum capacity)</td>
 <td>Archived as the authoritative resource-code-to-MW-and-participant key;
 next in line to replace the hand-maintained alias table's MW where codes
 match.</td></tr>
+<tr><td>RTD Generation Offers + Self-Scheduled Nominations (hourly CSVs;
+every resource's priced offer curve, and the price-taking capacity that
+submits none)</td>
+<td><a href="https://www.iemop.ph/market-data/rtd-generation-offers/">offers</a>,
+<a href="https://www.iemop.ph/market-data/rtd-self-scheduled-nominations/">self-scheduled</a></td>
+<td>The observed supply curve itself. The hourly files are too heavy to
+commit raw, so pipeline/offers.py fetches a day transiently and commits a
+compact daily (data/derived/offer_daily/): each hour's book at its first
+5-minute interval, all segments pooled per grid and compacted to at most
+48 price blocks, self-scheduled MW folded in at the offer floor. Gate:
+each grid-hour's book must cover that hour's dispatched generation or the
+day is refused (that gate is how the self-scheduled fold-in was found to
+be mandatory, not optional). These stacks feed the offer-mode backcast:
+the same day LP with the market's own bids instead of the cost proxy.</td></tr>
 </table>
 <p class="muted">Courtesy: fetches are sequential with a 250 ms sleep and abort
 after 5 consecutive errors. IEMOP data is republished here as-is for public

@@ -833,6 +833,9 @@ def main() -> int:
     profiles = build_profiles(fleet, merit_hydro, pasa)
     profiles["chrono_golden"] = build_chrono_golden(dispatch, profiles)
     profiles["backcast"] = build_backcast(dispatch, profiles)
+    from chrono import build_offer_backcast
+
+    profiles["offer_backcast"] = build_offer_backcast(profiles)
     with open(os.path.join(OUT, "profiles.json"), "w") as fh:
         json.dump(profiles, fh, indent=1)
 

@@ -19,7 +19,9 @@ high-hour hit rate. No tuning: the residual is the finding.
 """
 from __future__ import annotations
 
+import json
 import math
+import os
 
 from fleet_ph import WESM_OFFER_CAP_PHP_KWH
 
@@ -476,6 +478,120 @@ def _score_pairs(pts: list[tuple[float, float]]) -> dict | None:
         "bias_php_kwh": bias,
         "correlation": _corr(mod, obs),
         "high_hour_hit_rate_pct": hit_rate,
+    }
+
+
+def build_offer_backcast(profiles: dict) -> dict:
+    """Replay every market day covered by the derived offer stacks
+    (data/derived/offer_daily) with the OBSERVED offer books instead of the
+    cost proxy: native-load demand, corridor caps, no storage, reserve, or
+    water budgets (the books already embody unit behavior). Scored against
+    the same three targets as the cost-mode backcast, so the two sit side
+    by side and the offer premium stops being a residual."""
+    import glob as _glob
+
+    from lp_dispatch import OFFER_CAP, _highs_solve
+    from lp_model import build_day_lp
+
+    here = os.path.dirname(os.path.abspath(__file__))
+    files = {os.path.basename(p)[7:15]: p for p in _glob.glob(
+        os.path.join(here, "..", "data", "derived", "offer_daily",
+                     "OFFERD_*.json"))}
+    if not files:
+        return {"available": False,
+                "note": "no derived offer days; run pipeline/offers.py"}
+    s_of = {"luzon": "l", "visayas": "v", "mindanao": "m"}
+    pairs: dict[str, list[tuple[float, float]]] = {g: [] for g in GRID_KEYS}
+    pairs_mcp: dict[str, list[tuple[float, float]]] = {
+        g: [] for g in GRID_KEYS}
+    flow_pairs: dict[str, list[tuple[float, float]]] = {"lv": [], "vm": []}
+    days_used = []
+    for day in profiles["days"]:
+        if not day["market"]:
+            continue
+        stamp = day["date"].replace("-", "")
+        path = files.get(stamp)
+        lw = day.get("lwap") or {}
+        if not path or not all(
+                len(lw.get(g) or []) == 24
+                and all(v is not None for v in lw[g]) for g in GRID_KEYS):
+            continue
+        with open(path) as fh:
+            off = json.load(fh)
+        stacks = {g: [] for g in GRID_KEYS}
+        demand = {g: [] for g in GRID_KEYS}
+        ok = True
+        for h in range(24):
+            for g in GRID_KEYS:
+                blocks = [{"fuel": "offer", "cost": p, "mw": m}
+                          for p, m in (off["hours"][g][h] or [])]
+                if not blocks:
+                    ok = False
+                stacks[g].append(sorted(blocks, key=lambda b: b["cost"]))
+                demand[g].append(day["demand"][g][h])
+        if not ok:
+            continue
+        dearest = max(b["cost"] for g in GRID_KEYS
+                      for hb in stacks[g] for b in hb)
+        text = build_day_lp(stacks, demand, {"leyte": 250.0, "mvip": 450.0},
+                            0.02, [], None, max(OFFER_CAP, dearest + 0.001))
+        sol = _highs_solve(text)
+        cols, duals = sol["cols"], sol["duals"]
+        days_used.append(day["date"])
+        mc = day.get("mcp") or {}
+        nf = day.get("net_flow") or {}
+        for h in range(24):
+            f1 = cols.get(f"f1p_{h}", 0.0) - cols.get(f"f1n_{h}", 0.0)
+            f2 = cols.get(f"f2p_{h}", 0.0) - cols.get(f"f2n_{h}", 0.0)
+            for g in GRID_KEYS:
+                price = round3(duals.get(f"bal_{s_of[g]}_{h}", 0.0))
+                pairs[g].append((price, lw[g][h]))
+                mcg = mc.get(g) or []
+                if h < len(mcg) and mcg[h] is not None:
+                    pairs_mcp[g].append((price, mcg[h]))
+            for key, val in (("lv", f1), ("vm", f2)):
+                obs_series = nf.get(key) or []
+                if h < len(obs_series) and obs_series[h] is not None:
+                    flow_pairs[key].append((val, obs_series[h]))
+    per_grid = {g: _score_pairs(pairs[g]) for g in GRID_KEYS
+                if _score_pairs(pairs[g])}
+    per_grid_mcp = {g: _score_pairs(pairs_mcp[g]) for g in GRID_KEYS
+                    if _score_pairs(pairs_mcp[g])}
+    flows = {}
+    for key, label in (("lv", "Luzon to Visayas"),
+                       ("vm", "Visayas to Mindanao")):
+        pts = flow_pairs[key]
+        if not pts:
+            continue
+        n = len(pts)
+        decisive = [(m, o) for m, o in pts if abs(o) >= 10.0]
+        agree = sum(1 for m, o in decisive if m * o > 0)
+        flows[key] = {
+            "corridor": label,
+            "n_hours": n,
+            "observed_mean_mw": round(sum(o for _, o in pts) / n, 1),
+            "modeled_mean_mw": round(sum(m for m, _ in pts) / n, 1),
+            "mae_mw": round(sum(abs(m - o) for m, o in pts) / n, 1),
+            "direction_agreement_pct": (round(100 * agree / len(decisive), 1)
+                                        if decisive else None),
+            "n_decisive_hours": len(decisive),
+        }
+    return {
+        "available": bool(days_used),
+        "days": len(days_used),
+        "window": ({"from": days_used[0], "to": days_used[-1]}
+                   if days_used else None),
+        "per_grid": per_grid,
+        "per_grid_mcp": per_grid_mcp or None,
+        "flows": flows or None,
+        "note": ("The same replays with the operator's own OFFER BOOKS "
+                 "(RTDOE + self-scheduled nominations) instead of the cost "
+                 "proxy: native-load demand, corridor caps, no storage or "
+                 "reserve or water layers (the books already embody unit "
+                 "behavior). Where the cost-mode tables show what a "
+                 "competitive cost stack would do, these show what the "
+                 "market as bid actually prices; the gap between the two "
+                 "IS the offer premium, measured instead of asserted."),
     }
 
 

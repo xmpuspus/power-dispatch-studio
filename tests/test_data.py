@@ -730,6 +730,21 @@ bc = prof["backcast"]
 check("backcast scores both targets (LWAP and MCP)",
       bc["per_grid"] and bc.get("per_grid_mcp")
       and set(bc["per_grid_mcp"]) == {"luzon", "visayas", "mindanao"})
+check("backcast scores the corridors (flows table)",
+      bc.get("flows") and set(bc["flows"]) == {"lv", "vm"} and all(
+          v["n_hours"] > 0 and "direction_agreement_pct" in v
+          for v in bc["flows"].values()))
+ob = prof.get("offer_backcast") or {}
+check("offer-mode backcast baked from the derived offer days",
+      ob.get("available") and ob["days"] >= 30
+      and set(ob["per_grid"]) == {"luzon", "visayas", "mindanao"}
+      and ob.get("flows"))
+check("offer mode carries the no-extra-layers statement",
+      "no storage" in (ob.get("note") or ""))
+check("offer mode beats the cost proxy on corridor direction (the point)",
+      (ob.get("flows") or {}).get("vm", {}).get(
+          "direction_agreement_pct", 0)
+      > (bc["flows"]["vm"]["direction_agreement_pct"] or 0))
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)
