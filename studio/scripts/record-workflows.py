@@ -165,6 +165,29 @@ async def scroll_top(page: Page):
     await asyncio.sleep(0.9)
 
 
+async def tile(page: Page, label: str) -> str:
+    """A StatTile's value, read live off the screen: captions interpolate
+    these so a caption cannot drift from the model (the July 2026 escape:
+    hardcoded caption numbers outlived two engine changes)."""
+    loc = page.locator(".stat", has=page.locator(".stat__label", has_text=label))
+    v = await loc.first.locator(".stat__value").inner_text()
+    return " ".join(v.split())
+
+
+async def compare_delta(page: Page, row_label: str) -> str:
+    """The B-A cell of a Compare-two-runs row, read live."""
+    row = page.locator("tr", has=page.locator("td", has_text=row_label)).first
+    cells = row.locator("td")
+    n = await cells.count()
+    v = await cells.nth(n - 1).inner_text()
+    return " ".join(v.split())
+
+
+async def input_value(page: Page, aria_label: str) -> float:
+    v = await page.locator(f'input[aria-label="{aria_label}"]').first.input_value()
+    return float(v.replace(",", ""))
+
+
 # ---- workflow 1: price a data-center build -----------------------------------------
 
 
@@ -179,20 +202,23 @@ async def wf1(page: Page):
     await sim(page)
     await view(page, "Chronology")
     await pick_day(page, "demand peak")
+    wf1_base_mean = await tile(page, "Mean price, Luzon")
     await r.cap(
         "Base case, the demand-peak day",
-        "The evening clears on coal at ₱6.00/kWh. No corridor congestion yet.",
+        f"The Luzon day clears at a {wf1_base_mean} mean on the coal margin.",
     )
     await scroll_top(page)
     await asyncio.sleep(2.6)
 
     await sysm(page)
     await view(page, "Regions")
+    wf1_load = await input_value(page, "Luzon Load (evening)")
+    wf1_target = int(wf1_load + 1500)
     await r.cap(
         "Price the DICT-2028 build: +1,500 MW flat",
-        "Region load edits shift demand 24/7, the data-center shape. Luzon 12,031 to 13,531 MW.",
+        f"Region load edits shift demand 24/7, the data-center shape. Luzon {int(wf1_load):,} to {wf1_target:,} MW.",
     )
-    await edit_cell(page, "Luzon Load (evening)", "13531", hold=1.6)
+    await edit_cell(page, "Luzon Load (evening)", str(wf1_target), hold=1.6)
 
     await r.cap("Run the coupled clear", "A coordinate-descent solve of the three grids, sub-second.")
     await run(page)
@@ -201,9 +227,12 @@ async def wf1(page: Page):
     await sim(page)
     await view(page, "Chronology")
     await pick_day(page, "demand peak")
+    wf1_mean2 = await tile(page, "Mean price, Luzon")
+    wf1_peak2 = await tile(page, "Window peak")
+    wf1_rent2 = await tile(page, "Congestion rent")
     await r.cap(
         "The evening flips coal to oil",
-        "Mean ₱6.00 to ₱9.00, peak ₱12.00. The build saturates the Leyte-Luzon HVDC, congestion rent ₱0 to ₱15M.",
+        f"Mean {wf1_base_mean} to {wf1_mean2}, peak {wf1_peak2}. The build saturates the Leyte-Luzon HVDC, congestion rent {wf1_rent2}.",
     )
     await scroll_top(page)
     await asyncio.sleep(3.0)
@@ -226,11 +255,13 @@ async def wf1(page: Page):
     await asyncio.sleep(1.2)
 
     await view(page, "Saved runs")
+    await scroll_to(page, "table", block="center")
+    d_mean = await compare_delta(page, "Mean price, Luzon")
+    d_rent = await compare_delta(page, "Congestion rent")
     await r.cap(
         "Compare two runs: the price of the build",
-        "The build costs +₱3.00/kWh on the Luzon evening and +₱15M in congestion rent.",
+        f"The build costs {d_mean}/kWh on the Luzon day and {d_rent}M in congestion rent.",
     )
-    await scroll_to(page, "table.compare", block="center")
     await asyncio.sleep(4.2)
     await r.clear()
     await asyncio.sleep(0.6)
@@ -271,9 +302,11 @@ async def wf2(page: Page):
 
     await sim(page)
     await view(page, "Reliability")
+    wf2_lolp = await tile(page, "LOLP Luzon")
+    wf2_base_lolp = await tile(page, "LOLP today")
     await r.cap(
-        "Loss-of-load probability jumps 1.8% to 12.5%",
-        "Expected shed 9 to 71 MW: removing 1,294 MW of coal thins the Luzon evening cushion.",
+        f"Loss-of-load probability jumps to {wf2_lolp}",
+        f"Base case {wf2_base_lolp}: removing 1,294 MW of coal thins the Luzon evening cushion.",
     )
     await scroll_top(page)
     await asyncio.sleep(3.4)
@@ -282,15 +315,17 @@ async def wf2(page: Page):
     await scroll_to(page, "table")
     await r.cap(
         "N-1 insecurity: the rest of the fleet is now exposed",
-        "With Sual gone, the next big-unit trip spikes Luzon ₱6 to ₱12 (coal to oil) across the fleet.",
+        "With Sual gone, the next big-unit trip prices the Luzon evening coal to oil across the fleet (the table's tripped column).",
     )
     await asyncio.sleep(4.0)
 
     await view(page, "Chronology")
     await pick_day(page, "demand peak")
+    wf2_mean = await tile(page, "Mean price, Luzon")
+    wf2_rent = await tile(page, "Congestion rent")
     await r.cap(
-        "The observed stress evening clears on oil",
-        "Mean ₱6.00 to ₱8.75, congestion rent ₱13.5M as the corridors bind in the peak hours.",
+        "The observed stress evening prices the outage",
+        f"Luzon mean {wf2_mean}, congestion rent {wf2_rent} as the corridors bind in the peak hours.",
     )
     await scroll_top(page)
     await asyncio.sleep(3.2)
@@ -314,9 +349,10 @@ async def wf3(page: Page):
     await sim(page)
     await view(page, "Chronology")
     await pick_day(page, "widest swing")
+    wf3_base_mean = await tile(page, "Mean price, Luzon")
     await r.cap(
         "Base case: gas at the Malampaya cost ₱4.80",
-        "The evening clears on coal at ₱6.00/kWh.",
+        f"The Luzon day clears at a {wf3_base_mean} mean on the coal margin.",
     )
     await scroll_top(page)
     await asyncio.sleep(2.6)
@@ -336,9 +372,11 @@ async def wf3(page: Page):
     await sim(page)
     await view(page, "Chronology")
     await pick_day(page, "widest swing")
+    wf3_mean2 = await tile(page, "Mean price, Luzon")
+    wf3_rent2 = await tile(page, "Congestion rent")
     await r.cap(
         "The whole price shape lifts to the gas cost",
-        "Mean ₱6.00 to ₱10.30, margin coal to natural gas. Congestion rent ₱0.75M to ₱24.73M.",
+        f"Mean {wf3_base_mean} to {wf3_mean2}, margin coal to natural gas. Congestion rent {wf3_rent2}.",
     )
     await scroll_top(page)
     await asyncio.sleep(2.8)
@@ -360,9 +398,11 @@ async def wf3(page: Page):
     await page.get_by_text("Switch gas to imported LNG").click()
     await asyncio.sleep(0.4)
     await scroll_top(page)  # keep the Clearing price / vs-base tiles in frame
+    wf3_cp1 = await tile(page, "Clearing price")
+    wf3_vs1 = await tile(page, "vs base case")
     await r.cap(
         "Stack the stresses: switch to imported LNG",
-        "In the Quick scenario, each lever re-clears live. LNG alone: ₱10.30, +₱4.30/kWh over base.",
+        f"In the Quick scenario, each lever re-clears live. LNG alone: {wf3_cp1}, {wf3_vs1} over base.",
     )
     await asyncio.sleep(3.0)
 
@@ -371,18 +411,21 @@ async def wf3(page: Page):
         await dc.fill(v)
         await asyncio.sleep(0.35)
     await scroll_top(page)
+    wf3_cp2 = await tile(page, "Clearing price")
     await r.cap(
         "Add the announced 1,500 MW build",
-        "Gas still has headroom, the evening holds at ₱10.30.",
+        f"The evening clears at {wf3_cp2} with the build on top of LNG pricing.",
     )
     await asyncio.sleep(3.0)
 
     await page.get_by_role("button", name="Dry (El Nino)").click()
     await asyncio.sleep(0.4)
     await scroll_top(page)
+    wf3_cp3 = await tile(page, "Clearing price")
+    wf3_vs3 = await tile(page, "vs base case")
     await r.cap(
         "A dry year pulls the hydro cushion, the evening tips to oil",
-        "Clearing price ₱12.00, +₱6.00/kWh. Each stress alone stops short of oil; together they cross it.",
+        f"Clearing price {wf3_cp3}, {wf3_vs3}/kWh vs base. Each stress alone stops short of oil; together they cross it.",
     )
     await asyncio.sleep(3.6)
     await r.clear()

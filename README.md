@@ -4,8 +4,11 @@ Can the Philippine grid host the announced data-center wave? An interactive map,
 browser dispatch studio, and a daily archive built on the market operator's own
 public files: where transmission already binds (named equipment, five-minute
 receipts), where the announced data-center megawatts land, and what the spot market
-and the Meralco bill are doing. Inputs, method, and every number are open and
-reproducible from a clean clone. Formerly gridbill-ph.
+and the Meralco bill are doing. The studio replays market days two ways, on a
+calibrated cost stack and on the operator's own published offer books, so the
+offer premium in the wholesale price is a measured series, not a guess. Inputs,
+method, and every number are open and reproducible from a clean clone. Formerly
+gridbill-ph.
 
 [![CI](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml)
 [![License: MIT (code) / CC-BY-4.0 (data)](https://img.shields.io/badge/license-MIT%20%2F%20CC--BY--4.0-blue.svg)](LICENSE)

@@ -203,7 +203,7 @@ build's MW (flat, the data-center shape), Run. Chronology on the demand-peak
 day shows which hours flip from coal to oil; Save run, revert the edit, save
 the base, and Compare two runs gives the price and congestion-rent delta.
 
-![Recorded studio walkthrough of pricing a data-center build: on the demand-peak day the base evening clears on coal at P6.00/kWh; raising Luzon load by 1,500 MW (the DICT 2028 build) flips the evening to oil, mean P6.00 to P9.00 and peak P12.00, and saturates the Leyte-Luzon HVDC; Compare two runs reads +P3.00/kWh and +P15M congestion rent.](docs/workflow-1-datacenter.gif)
+![Recorded studio walkthrough of pricing a data-center build: on the demand-peak day the base Luzon mean is P6.01 on the coal margin; raising Luzon load by 1,500 MW (the DICT 2028 build) lifts the mean to P11.60 and the peak to P12.00 and saturates the Leyte-Luzon HVDC; Compare two runs reads +P5.59/kWh and +P33.15M congestion rent.](docs/workflow-1-datacenter.gif)
 
 **Stress the single contingency.** System > Generators, set SPI U1 and SPI U2
 (the two 647 MW Sual units) to zero, Run. N-1 and Reliability show the
@@ -211,7 +211,7 @@ adequacy hit; Chronology on the stress day shows whether the evening clears on
 oil or sheds load, and its congestion-rent tile prices the corridors binding in
 the peak hours.
 
-![Recorded studio walkthrough of the single contingency: zeroing both 647 MW Sual units lifts Luzon loss-of-load probability from 1.8% to 12.5% (expected shed 9 to 71 MW), leaves the rest of the fleet tripping P6 to P12 in N-1, and clears the observed stress evening on oil, mean P6.00 to P8.75 with P13.5M congestion rent.](docs/workflow-2-contingency.gif)
+![Recorded studio walkthrough of the single contingency: zeroing both 647 MW Sual units lifts Luzon loss-of-load probability from a 0.15% base to 10.60% (1-in-100 shed 1,234 MW), leaves the rest of the fleet pricing coal to oil in N-1, and clears the observed stress evening at a P11.40 Luzon mean with P31.95M congestion rent.](docs/workflow-2-contingency.gif)
 
 **Test the Malampaya cliff.** System > Fuels, reprice natural gas from the
 Malampaya cost (P4.80/kWh) to the imported-LNG cost (P10.30/kWh), Run, and
@@ -219,7 +219,7 @@ read the Chronology price shape; then in the Quick scenario, stack the announced
 build and a dry year on the LNG switch for the compounding view. Share the exact
 scenario with Copy link.
 
-![Recorded studio walkthrough of the Malampaya cliff: repricing gas from the Malampaya cost P4.80 to the imported-LNG cost P10.30 lifts the whole Luzon price shape to the gas cost, mean P6.00 to P10.30 with congestion rent P0.75M to P24.73M; then in the Quick scenario, stacking imported LNG, the announced 1,500 MW build, and a dry year tips the evening to oil at P12.00, +P6.00/kWh.](docs/workflow-3-malampaya.gif)
+![Recorded studio walkthrough of the Malampaya cliff: repricing gas from the Malampaya cost P4.80 to the imported-LNG cost P10.30 lifts the whole Luzon price shape to the gas cost, mean P6.00 to P10.30 with congestion rent P25.39M; then in the Quick scenario, stacking imported LNG, the announced 1,500 MW build, and a dry year tips the evening to oil at P12.00, +P6.00/kWh.](docs/workflow-3-malampaya.gif)
 
 ## Data
 
