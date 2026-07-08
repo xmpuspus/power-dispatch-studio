@@ -235,6 +235,79 @@ def build_reserve_prices() -> dict:
 
 _HVDC_RE = re.compile(r"hvdc", re.I)
 _ALERT_RE = re.compile(r"\b(yellow|red)\s+alert\b", re.I)
+_BLOCK_RE = re.compile(r"(de-?blocked|blocked)", re.I)
+_ORMOC_RE = re.compile(r"ormoc|naga", re.I)
+_ADV_TS_RE = re.compile(r"(\d{2}/\d{2}/\d{4}) (\d{2}:\d{2})")
+_AT_RE = re.compile(r"at (\d{3,4})H")
+
+
+def hvdc_unblocked_fractions() -> dict[str, list[float]]:
+    """{date: [24 unblocked fractions]} for the Leyte-Luzon (Ormoc-Naga)
+    corridor, parsed from the raw NSO advisory stream (MPI). The operator
+    announces every blocking and de-blocking with a timestamp; pairing them
+    gives outage windows, and each hour's corridor cap scales by the time
+    it was actually available. INFERRED from advisory text (labeled where
+    consumed); the same event is announced on both grid streams, so
+    same-kind events within 5 minutes dedupe to one. The MVIP corridor has
+    single-digit mentions in the window and stays unscaled."""
+    from datetime import datetime, timedelta
+
+    events: list[tuple[datetime, str]] = []
+    for path in dataset_files("MPI"):
+        with open(path, newline="", encoding="utf-8", errors="replace") as fh:
+            import csv as _csv
+            for r in _csv.DictReader(fh):
+                msg = (r.get("ADV_TEXT_MESSAGE") or "").strip()
+                mk = _BLOCK_RE.search(msg)
+                if not mk or not _ORMOC_RE.search(msg):
+                    continue
+                kind = ("deblock" if "de" in mk.group(1).lower()
+                        else "block")
+                md = _ADV_TS_RE.search(msg)
+                if not md:
+                    continue
+                day = datetime.strptime(md.group(1), "%m/%d/%Y")
+                mt = _AT_RE.search(msg)
+                if mt:
+                    hhmm = mt.group(1).zfill(4)
+                    ts = day.replace(hour=int(hhmm[:2]) % 24,
+                                     minute=int(hhmm[2:]))
+                else:
+                    hh, mm = md.group(2).split(":")
+                    ts = day.replace(hour=int(hh), minute=int(mm))
+                events.append((ts, kind))
+    events.sort()
+    dedup: list[tuple[datetime, str]] = []
+    for ts, kind in events:
+        if (dedup and dedup[-1][1] == kind
+                and (ts - dedup[-1][0]).total_seconds() <= 300):
+            continue
+        dedup.append((ts, kind))
+    windows: list[tuple[datetime, datetime]] = []
+    open_ts: datetime | None = None
+    for ts, kind in dedup:
+        if kind == "block":
+            if open_ts is None:
+                open_ts = ts
+        elif open_ts is not None:
+            windows.append((open_ts, ts))
+            open_ts = None
+    if open_ts is not None:
+        # an unclosed block at the archive edge: hold it for one hour, the
+        # median short-block scale, rather than severing the corridor to
+        # the end of time
+        windows.append((open_ts, open_ts + timedelta(hours=1)))
+    blocked: dict[str, list[float]] = {}
+    for s, e in windows:
+        cur = s
+        while cur < e:
+            hour_end = cur.replace(minute=0) + timedelta(hours=1)
+            seg = (min(e, hour_end) - cur).total_seconds() / 3600
+            key = cur.date().isoformat()
+            blocked.setdefault(key, [0.0] * 24)[cur.hour] += seg
+            cur = hour_end
+    return {d: [round(max(0.0, 1.0 - min(1.0, b)), 3) for b in hrs]
+            for d, hrs in blocked.items()}
 
 
 def build_advisories() -> dict:

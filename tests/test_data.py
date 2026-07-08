@@ -748,6 +748,14 @@ check("offer mode beats the cost proxy on corridor direction (the point)",
       (ob.get("flows") or {}).get("vm", {}).get(
           "direction_agreement_pct", 0)
       > (bc["flows"]["vm"]["direction_agreement_pct"] or 0))
+# observed HVDC blocks: days carry per-hour corridor availability fractions
+capped_days = [d for d in prof["days"] if d.get("corridor_caps")]
+check("days with observed HVDC blocks carry corridor availability fractions",
+      len(capped_days) >= 20 and all(
+          len(d["corridor_caps"]["leyte"]) == 24
+          and all(0.0 <= f <= 1.0 for f in d["corridor_caps"]["leyte"])
+          and any(f < 1.0 for f in d["corridor_caps"]["leyte"])
+          for d in capped_days))
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

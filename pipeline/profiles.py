@@ -138,6 +138,16 @@ def build_profiles(fleet: dict | None = None,
     for d in days:
         d["mcp"] = mcp.get(d["date"])
 
+    # the day's Leyte-Luzon corridor availability, inferred from the NSO
+    # advisory stream: each hour's cap scales by the fraction of the hour
+    # the link was unblocked (present only on days with a recorded block)
+    from market_obs import hvdc_unblocked_fractions
+    hvdc = hvdc_unblocked_fractions()
+    for d in days:
+        frac = hvdc.get(d["date"])
+        if frac and any(f < 1.0 for f in frac):
+            d["corridor_caps"] = {"leyte": frac}
+
     # each day's scheduled-outage DEVIATION from the MARKET-window mean, per
     # grid and fuel (PASA layer, matched MW only). The static derates carry
     # the average outage state; the engines subtract only this deviation,

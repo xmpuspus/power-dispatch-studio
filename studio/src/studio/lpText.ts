@@ -56,7 +56,7 @@ export function mtext(k: number): string {
 export function buildDayLp(
   stacks: Record<GridKey, Block[][]>,
   demand: Record<GridKey, number[]>,
-  caps: { leyte: number; mvip: number },
+  caps: { leyte: number | number[]; mvip: number | number[] },
   wheel: number,
   storage: LpStorage[],
   reserveReq: Record<GridKey, number> | null,
@@ -84,15 +84,19 @@ export function buildDayLp(
     }
   }
 
-  // corridor flows, split by direction, wheeling cost on each
+  // corridor flows, split by direction, wheeling cost on each. A cap may
+  // be one number for the day or a per-hour list (observed HVDC blocks
+  // scale the hour's limit); a constant list emits the same text as the
+  // scalar, so unaffected days pin unchanged. Mirror of lp_model.py.
   for (let h = 0; h < H; h++) {
     for (const [f, cap] of [
       ['f1', caps.leyte],
       ['f2', caps.mvip],
     ] as const) {
+      const capH = Array.isArray(cap) ? cap[h] : cap
       for (const d of ['p', 'n'] as const) {
         obj.push(` + ${mtext(wheelM)} ${f}${d}_${h}`)
-        bounds.push(` 0 <= ${f}${d}_${h} <= ${mtext(micro(cap))}`)
+        bounds.push(` 0 <= ${f}${d}_${h} <= ${mtext(micro(capH))}`)
       }
     }
   }

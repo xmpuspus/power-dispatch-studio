@@ -91,7 +91,7 @@ Against the settlement-side LWAP (1,344 hours per grid):
 | Grid | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- | --- |
 | Luzon | P7.63/kWh | P6.00/kWh | P4.33 | -P1.63 | 0.38 | 43% |
-| Visayas | P12.91/kWh | P6.00/kWh | P8.66 | -P6.91 | 0.47 | 45% |
+| Visayas | P12.91/kWh | P6.00/kWh | P8.66 | -P6.91 | 0.46 | 45% |
 | Mindanao | P11.48/kWh | P6.00/kWh | P7.58 | -P5.48 | 0.07 | 7% |
 
 Against the observed regional clearing price (MCP, the ex-ante series
@@ -103,8 +103,8 @@ are subset statistics:
 
 | Grid | Coverage | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Luzon | 1,310 of 1,344 h | P7.03/kWh | P6.00/kWh | P4.01 | -P1.03 | 0.38 | 43% |
-| Visayas | 777 of 1,344 h | P14.78/kWh | P6.00/kWh | P10.91 | -P8.78 | 0.33 | 30% |
+| Luzon | 1,310 of 1,344 h | P7.03/kWh | P6.00/kWh | P4.01 | -P1.02 | 0.38 | 43% |
+| Visayas | 777 of 1,344 h | P14.78/kWh | P6.00/kWh | P10.91 | -P8.78 | 0.32 | 30% |
 | Mindanao | 1,196 of 1,344 h | P11.58/kWh | P6.00/kWh | P8.21 | -P5.58 | 0.06 | 15% |
 
 And the corridors themselves, the third table (modeled flow vs the observed
@@ -112,8 +112,8 @@ net market imports and exports in the same files):
 
 | Corridor | Observed mean | Modeled mean | MAE | Direction agreement |
 | --- | --- | --- | --- | --- |
-| Luzon to Visayas | 46 MW | -2 MW | 92 MW | 8% |
-| Visayas to Mindanao | -373 MW | -4 MW | 369 MW | 3% |
+| Luzon to Visayas | 46 MW | -2 MW | 92 MW | 7% |
+| Visayas to Mindanao | -373 MW | -4 MW | 369 MW | 4% |
 
 The fourth set replays the same days with the operator's own OFFER BOOKS
 (every resource's priced curve from the real-time generation offers, plus
@@ -130,17 +130,17 @@ so the load-bearing flow statistic is the MAE, not the direction column.
 
 | Grid | Target | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- |
-| Luzon | LWAP | P2.94 | +P1.44 | 0.73 | 54% |
-| Visayas | LWAP | P5.17 | -P0.67 | 0.67 | 52% |
-| Mindanao | LWAP | P4.33 | -P1.09 | 0.73 | 46% |
-| Luzon | MCP | P2.79 | +P1.93 | 0.78 | 69% |
-| Visayas | MCP | P6.31 | -P5.42 | 0.73 | 48% |
-| Mindanao | MCP | P3.09 | -P2.48 | 0.87 | 70% |
+| Luzon | LWAP | P2.94 | +P1.45 | 0.73 | 54% |
+| Visayas | LWAP | P5.15 | -P0.64 | 0.68 | 53% |
+| Mindanao | LWAP | P4.34 | -P1.09 | 0.73 | 46% |
+| Luzon | MCP | P2.80 | +P1.94 | 0.78 | 69% |
+| Visayas | MCP | P6.23 | -P5.36 | 0.73 | 49% |
+| Mindanao | MCP | P3.08 | -P2.48 | 0.87 | 70% |
 
 | Corridor (offer mode) | Observed mean | Modeled mean | MAE | Direction agreement |
 | --- | --- | --- | --- | --- |
-| Luzon to Visayas | 45 MW | 110 MW | 104 MW | 88% |
-| Visayas to Mindanao | -375 MW | -337 MW | 58 MW | 99% |
+| Luzon to Visayas | 45 MW | 111 MW | 101 MW | 88% |
+| Visayas to Mindanao | -375 MW | -337 MW | 57 MW | 99% |
 
 Five engine steps sit inside these numbers, all reported rather than tuned:
 the LP swap, the observed water budgets, the fleet-derived hydro split, the
@@ -159,7 +159,7 @@ that flattery is gone.
 
 The offer-mode set is the sixth step and the payoff. With the market's own
 bids, the corridors move like the real grid (99 percent direction
-agreement on Visayas-Mindanao, 58 MW MAE against a 375 MW mean flow), the
+agreement on Visayas-Mindanao, 57 MW MAE against a 375 MW mean flow), the
 Visayas settlement bias collapses from -P6.91 to -P0.67, and Mindanao's
 clearing-price correlation reaches 0.87. Subtract the two modes and the
 offer premium stops being a residual and becomes a measured series. What

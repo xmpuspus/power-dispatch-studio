@@ -111,7 +111,7 @@ export function priceLabel(
 interface Assembled {
   stacks: Record<GridKey, Block[][]>
   demand: Record<GridKey, number[]>
-  caps: { leyte: number; mvip: number }
+  caps: { leyte: number | number[]; mvip: number | number[] }
   wheel: number
   storage: LpStorage[]
   reserveReq: Record<GridKey, number> | null
@@ -150,6 +150,16 @@ export function assembleDay(
   }
   if (opts.caps?.leyte != null) caps.leyte = opts.caps.leyte
   if (opts.caps?.mvip != null) caps.mvip = opts.caps.mvip
+  // observed HVDC blocks (NSO advisories, inferred): the hour's corridor
+  // limit scales by the fraction of the hour the link was unblocked;
+  // levers apply to the base limit first. Mirror of lp_dispatch._assemble.
+  const scaledCaps: { leyte: number | number[]; mvip: number | number[] } = {
+    ...caps,
+  }
+  for (const key of ['leyte', 'mvip'] as const) {
+    const frac = day.corridor_caps?.[key]
+    if (frac) scaledCaps[key] = HOURS.map((h) => round1(caps[key] * frac[h]))
+  }
 
   // OFFER MODE: the book replaces the cost proxy; only the demand lever
   // stays. Mirror of lp_dispatch._assemble's offer branch.
@@ -187,7 +197,7 @@ export function assembleDay(
     return {
       stacks: oStacks,
       demand: oDemand,
-      caps,
+      caps: scaledCaps,
       wheel,
       storage: [],
       reserveReq: oReserve,
@@ -275,7 +285,16 @@ export function assembleDay(
     for (const hb of stacks[g]) for (const b of hb) if (b.cost > dearest) dearest = b.cost
   const voll = Math.max(OFFER_CAP, dearest + 0.001)
 
-  return { stacks, demand, caps, wheel, storage, reserveReq, voll, hydroBudget }
+  return {
+    stacks,
+    demand,
+    caps: scaledCaps,
+    wheel,
+    storage,
+    reserveReq,
+    voll,
+    hydroBudget,
+  }
 }
 
 /** The canonical LP text for a day run; the parity test hashes this. */
@@ -386,8 +405,10 @@ export function runChronology(
         shed[g] > STORE_EPS
       )
     }
-    const sat1 = Math.abs(f1) >= m.caps.leyte - FLOW_SAT_EPS
-    const sat2 = Math.abs(f2) >= m.caps.mvip - FLOW_SAT_EPS
+    const cap1 = Array.isArray(m.caps.leyte) ? m.caps.leyte[h] : m.caps.leyte
+    const cap2 = Array.isArray(m.caps.mvip) ? m.caps.mvip[h] : m.caps.mvip
+    const sat1 = Math.abs(f1) >= cap1 - FLOW_SAT_EPS
+    const sat2 = Math.abs(f2) >= cap2 - FLOW_SAT_EPS
     return {
       hour: h,
       price,
