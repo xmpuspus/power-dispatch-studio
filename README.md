@@ -239,6 +239,17 @@ differentials). That is the finding, not a failure: cost stacks price the three
 islands nearly identically, and the observed spread is the scarcity and offer
 premium of the 52-day yellow-alert streak, which a cost model cannot see.
 
+One number to carry into every what-if below: the scenario deltas on this
+page come from the COST model, and the offer books say the true answer is
+bigger. On the widest-swing market day in the window, the same DICT
+1.5 GW wave raises the Luzon daily mean by **+P4.75/kWh** on the cost
+stack but **+P9.08/kWh** replayed on the market's own bids, and the
+as-bid shock reaches the Visayas (**+P6.31**) and Mindanao (**+P3.12**)
+where the cost stack shows no change at all (both engines' runs are
+pinned in the baked golden cases; flip the studio's Chronology engine to
+"Observed offers" to reproduce them). Read every cost-mode delta as a
+floor.
+
 The offer books close most of the rest. IEMOP publishes every resource's
 actual offer curve (and the self-scheduled capacity that submits none), and
 replaying the same days with those books instead of the cost proxy moves the

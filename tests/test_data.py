@@ -748,6 +748,24 @@ check("offer mode beats the cost proxy on corridor direction (the point)",
       (ob.get("flows") or {}).get("vm", {}).get(
           "direction_agreement_pct", 0)
       > (bc["flows"]["vm"]["direction_agreement_pct"] or 0))
+# the mode gap the README quotes: on the golden day, the DICT wave must
+# cost MORE on the observed bids than on the cost stack (the cost-mode
+# delta is a floor), and the shock must reach the other grids in offer mode
+gold = {c["label"]: c for c in cg["cases"]}
+def _mp(label, g):
+    return gold[label]["expect"]["summary"]["mean_price"][g]
+cost_delta = (_mp("DICT 1.5 GW flat load on Luzon", "luzon")
+              - _mp("base day, no storage", "luzon"))
+offer_delta = (_mp("DICT 1.5 GW on the observed offer book", "luzon")
+               - _mp("observed offer book, no levers", "luzon"))
+check("the DICT-wave delta is larger on the observed bids than the cost "
+      "stack (cost-mode scenario deltas are floors)",
+      offer_delta > cost_delta > 0)
+check("the as-bid shock reaches the other grids", all(
+    (_mp("DICT 1.5 GW on the observed offer book", g)
+     - _mp("observed offer book, no levers", g)) > 0.5
+    for g in ("visayas", "mindanao")))
+
 # observed HVDC blocks: days carry per-hour corridor availability fractions
 capped_days = [d for d in prof["days"] if d.get("corridor_caps")]
 check("days with observed HVDC blocks carry corridor availability fractions",

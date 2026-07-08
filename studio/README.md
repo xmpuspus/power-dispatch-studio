@@ -159,30 +159,31 @@ that flattery is gone.
 
 The offer-mode set is the sixth step and the payoff. With the market's own
 bids, the corridors move like the real grid (99 percent direction
-agreement on Visayas-Mindanao, 57 MW MAE against a 375 MW mean flow), the
-Visayas settlement bias collapses from -P6.91 to -P0.67, and Mindanao's
+agreement on Visayas-Mindanao, 57 MW MAE against a 375 MW mean flow,
+where the cost proxy's three near-identical stacks agree with the
+observed direction in under 10 percent of decisive hours), the Visayas
+settlement bias collapses from -P6.91 to -P0.64, and Mindanao's
 clearing-price correlation reaches 0.87. Subtract the two modes and the
 offer premium stops being a residual and becomes a measured series. What
-remains: Luzon OVER-prices settlement by P1.44 (the ex-ante book clears
+remains: Luzon OVER-prices settlement by P1.45 (the ex-ante book clears
 above what substitution-shaved settlement pays, the same wedge the LWAP
-vs MCP tables show), and the sparse Visayas MCP subset keeps a -P5.42
-bias with its coverage stated. The cost-mode tables stay published: the
-gap between the two modes is the point. The level bias barely moves: the
-model still under-prices the Visayas by P6.91/kWh, and that stays the
-scarcity and offer premium. And the flows table is deliberately damning:
-the observed corridors carry a mean 373 MW of Mindanao exports north while
-the cost model, whose three stacks price nearly identically, moves almost
-nothing and agrees with the observed direction in under 10 percent of
-decisive hours. The corridors move on OFFER differentials a cost proxy
-cannot see. That number is the standing case for the next step, dispatch
-against the operator's published offer stacks, and it stays on the table
-until that step ships.
+vs MCP tables show), and the sparse Visayas MCP subset keeps a -P5.36
+bias with its coverage stated.
 
-Read that table before trusting any scenario: the model explains the cost
-floor and the congestion geometry, and it under-prices scarcity everywhere,
-most of all in the Visayas. The high-hour hit rate reports n/a when the flat
-cost model cannot rank hours, instead of a fake 100%. The live view recomputes
-these numbers from the current archive window.
+The two engines also disagree about the marquee what-if, and that
+disagreement is a published number, not a footnote: on the widest-swing
+market day, the DICT 1.5 GW wave costs +P4.75/kWh on the cost stack but
++P9.08/kWh on the observed bids, with +P6.31 reaching the Visayas and
++P3.12 Mindanao where the cost stack moves nothing (both runs are pinned
+in the golden cases; the Chronology engine toggle reproduces them). Read
+every cost-mode scenario delta as a floor.
+
+Read these tables before trusting any scenario: the cost model explains
+the cost floor and the congestion geometry and under-prices scarcity; the
+offer mode prices what the market as bid would do, one observed quarter
+deep. The high-hour hit rate reports n/a when a flat model cannot rank
+hours, instead of a fake 100%. The live view recomputes these numbers
+from the current archive window.
 
 Engine correctness is pinned by a two-layer parity harness. Both engines
 build the SAME linear program as the same text, byte for byte (every
