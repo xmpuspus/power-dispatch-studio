@@ -717,6 +717,12 @@ check("drivers rows carry the observed columns", all(
     for r in drv["days"][:5]))
 check("every market_ops section carries the analytics disclaimer", all(
     "disclaimer" in s for s in (ps, rp, adv, ol)) and "disclaimer" in drv)
+no = mo["not_offered"]
+check("the not-offered screen is baked, bounded, and self-disclaiming",
+      no["available"] and len(no["days"]) >= 30
+      and all(0 <= r[g]["not_offered_mw"] <= r[g]["registered_mw"]
+              for r in no["days"] for g in r if g != "date")
+      and "legitimate explanations" in no["note"])
 
 # profiles carry the engine-facing observed layers per day
 prof = load("profiles.json")
