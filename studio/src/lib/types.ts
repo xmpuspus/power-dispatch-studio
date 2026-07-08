@@ -543,6 +543,12 @@ export interface DayProfile {
   // observed hourly regional clearing price (MCP, PhP/kWh); the backcast's
   // second target; null when the MCP archive does not cover the date
   mcp?: Partial<Record<GridKey, (number | null)[]>> | null
+  // observed corridor flows (MW; lv = Luzon->Visayas southbound positive,
+  // vm = Visayas->Mindanao southbound positive), from the RTDSUM net
+  // market imports/exports
+  net_flow?: { lv: (number | null)[]; vm: (number | null)[] } | null
+  // the day's scheduled reserve requirement per grid and commodity (MW)
+  reserve_req_mw?: Partial<Record<GridKey, Record<string, number>>> | null
 }
 
 export interface StorageDefault {
@@ -633,6 +639,21 @@ export interface Profiles {
     // is absent
     per_grid_mcp?: Partial<Record<GridKey, BackcastGrid>> | null
     mcp_note?: string
+    // modeled corridor flows scored against the observed net market
+    // imports/exports (the third validation table)
+    flows?: Record<
+      string,
+      {
+        corridor: string
+        n_hours: number
+        observed_mean_mw: number
+        modeled_mean_mw: number
+        mae_mw: number
+        direction_agreement_pct: number | null
+        n_decisive_hours: number
+      }
+    > | null
+    flows_note?: string
     high_hour_note: string
     note: string
   }

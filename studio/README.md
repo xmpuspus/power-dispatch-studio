@@ -86,43 +86,58 @@ The Backcast view replays every full-coverage market day with the base model
 against the observed hourly LWAP. At the July 2026 bake (window 2026-05-01 to
 2026-06-25, 56 market days, 24 hourly points each per grid):
 
-Against the settlement-side LWAP:
+Against the settlement-side LWAP (1,344 hours per grid):
 
 | Grid | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- | --- |
-| Luzon | P7.63/kWh | P6.09/kWh | P4.26 | -P1.54 | 0.21 | 52% |
-| Visayas | P12.91/kWh | P5.99/kWh | P8.65 | -P6.92 | 0.61 | n/a |
-| Mindanao | P11.48/kWh | P6.00/kWh | P7.58 | -P5.48 | 0.06 | 7% |
+| Luzon | P7.63/kWh | P6.00/kWh | P4.33 | -P1.63 | 0.38 | 43% |
+| Visayas | P12.91/kWh | P6.00/kWh | P8.66 | -P6.91 | 0.47 | 45% |
+| Mindanao | P11.48/kWh | P6.00/kWh | P7.58 | -P5.48 | 0.07 | 7% |
 
 Against the observed regional clearing price (MCP, the ex-ante series
-commensurate with a dispatch dual; hours the MCP archive covers, with tied
-intervals averaged per interval before the hourly mean):
+commensurate with a dispatch dual; tied intervals averaged per interval
+before the hourly mean). Coverage is stated because it is uneven: the MCP
+files name a price in fewer Visayas intervals than Luzon ones, and if the
+missing intervals skew toward substituted extremes the observed means here
+are subset statistics:
 
-| Grid | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
-| --- | --- | --- | --- | --- | --- | --- |
-| Luzon | P7.03/kWh | P6.09/kWh | P3.93 | -P0.94 | 0.35 | 46% |
-| Visayas | P14.78/kWh | P5.99/kWh | P10.91 | -P8.79 | 0.65 | 93% |
-| Mindanao | P11.58/kWh | P6.00/kWh | P8.21 | -P5.58 | 0.05 | 15% |
+| Grid | Coverage | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Luzon | 1,310 of 1,344 h | P7.03/kWh | P6.00/kWh | P4.01 | -P1.03 | 0.38 | 43% |
+| Visayas | 777 of 1,344 h | P14.78/kWh | P6.00/kWh | P10.91 | -P8.78 | 0.33 | 30% |
+| Mindanao | 1,196 of 1,344 h | P11.58/kWh | P6.00/kWh | P8.21 | -P5.58 | 0.06 | 15% |
 
-Four engine steps sit inside these numbers, all reported rather than tuned.
-The LP swap completed the overnight corridor arbitrage the old
-coordinate-descent clear left half-done. The water budgets gave the model a
-real daily shape. The fleet-derived hydro split made the Visayas budget
-bind (its old allocation was 10 MW against plants observably clearing 377
-MWh a day). The fourth step put the observed layers into every replayed
-day: demand now includes recorded curtailment, each day subtracts its
-scheduled-outage deviation from the market-window mean (OUTRTD via the PASA
-mapping; the deviations sum to zero over the scored window), and a short
-hour prices at the P32/kWh offer cap. Two honest movements came with it.
-Luzon's LWAP correlation FELL from 0.35 to 0.21 while its high-hour hit
-rate rose from 42 to 52 percent: outage-aware days sharpen tight-hour
-ranking, but LWAP's settlement smoothing does not follow the added
-day-to-day variation. And the MCP table shows where the LWAP gap was
-definitional: against the clearing price itself, Luzon's bias shrinks from
--P1.54 to -P0.94, and the Visayas ranks 93 percent of its dear hours
-correctly while still missing their LEVEL by P8.79/kWh. That level miss is
-the scarcity and offer premium a cost stack cannot see, and it stays on the
-table instead of being tuned away.
+And the corridors themselves, the third table (modeled flow vs the observed
+net market imports and exports in the same files):
+
+| Corridor | Observed mean | Modeled mean | MAE | Direction agreement |
+| --- | --- | --- | --- | --- |
+| Luzon to Visayas | 46 MW | -2 MW | 92 MW | 8% |
+| Visayas to Mindanao | -373 MW | -4 MW | 369 MW | 3% |
+
+Five engine steps sit inside these numbers, all reported rather than tuned:
+the LP swap, the observed water budgets, the fleet-derived hydro split, the
+observed layers (curtailment in demand, scheduled-outage deviations, the
+P32/kWh offer cap on short hours), and now NATIVE-LOAD demand: generation
+plus net market imports, so each grid carries the load it actually served
+rather than a series that self-balances by construction. That last step
+moved three things at once, in different directions, and the tables say so.
+The Visayas finally has a rankable settlement-price shape (correlation
+0.47, hit rate 45 percent, from unrankable) and its adequacy margin drops
+to 1.6 percent at peak, which is what a grid living through a 52-day
+yellow-alert streak should look like. The same change CUT the Visayas MCP
+agreement (correlation 0.65 to 0.33, hit 93 to 30 percent): the old
+self-balanced demand had flattered the sparse-coverage MCP subset, and
+that flattery is gone. The level bias barely moves: the
+model still under-prices the Visayas by P6.91/kWh, and that stays the
+scarcity and offer premium. And the flows table is deliberately damning:
+the observed corridors carry a mean 373 MW of Mindanao exports north while
+the cost model, whose three stacks price nearly identically, moves almost
+nothing and agrees with the observed direction in under 10 percent of
+decisive hours. The corridors move on OFFER differentials a cost proxy
+cannot see. That number is the standing case for the next step, dispatch
+against the operator's published offer stacks, and it stays on the table
+until that step ships.
 
 Read that table before trusting any scenario: the model explains the cost
 floor and the congestion geometry, and it under-prices scarcity everywhere,

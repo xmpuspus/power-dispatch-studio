@@ -256,14 +256,18 @@ enumerated block) make the optimum unique on the model's flat cost plateaus so
 both solver builds land on the same answer. The inputs and the checks:</p>
 <ul>
 <li><b>Observed day profiles</b> (<code>profiles.json</code>): per-grid hourly
-demand is the hourly mean of dispatched generation PLUS recorded curtailment
-from the RTD regional summaries: the load that was there to serve, so the
-backcast can reproduce the scarcity it is scored against instead of seeing a
-demand series already trimmed to what was met. The observed hourly price is
-the mean of that hour's 5-minute LWAP, and, where the archive carries it, the
-hourly regional clearing price (MCP) rides alongside as the second target.
-Days without full 24-hour demand coverage on all three grids are dropped, not
-filled.</li>
+demand is NATIVE LOAD: dispatched generation plus net market imports plus
+recorded curtailment, all from the same RTD regional summary rows.
+Generation alone would self-balance every grid by construction and erase
+the observed inter-island flows (the Visayas net-imports roughly a quarter
+of its own generation across the window; the flow identity between the
+three grids' import and export columns closes exactly), so a
+generation-based replay would never need the corridors this product is
+about. The observed hourly price is the mean of that hour's 5-minute LWAP,
+and, where the archive carries it, the hourly regional clearing price (MCP)
+rides alongside as the second target; the observed corridor flows ride as
+the third. Days without full 24-hour demand coverage on all three grids
+are dropped, not filled.</li>
 <li><b>Daily scheduled outages</b>: each replayed day subtracts the DEVIATION
 of the operator's matched scheduled-out MW from the MARKET-window mean, per
 grid and fuel (the PASA layer's OUTRTD mapping). Deviation, not the raw MW:
@@ -402,6 +406,32 @@ bullet above). Still not carried, and why: security-constrained unit
 commitment, ramp rates, and minimum up/down times would require per-unit data
 the Philippine sources do not publish, so modeling them would be fabricated
 fidelity.</p>
+
+<h2>Boundaries, each with its missing dataset</h2>
+<ul>
+<li><b>Reserve co-optimisation</b>: WESM co-optimises energy and reserves,
+but IEMOP publishes only the regional reserve prices (RSVPR) and
+requirements (RTDSUM), not per-participant reserve offers, so the model
+withholds the requirement and shows the official reserve price beside it
+rather than clearing a reserve market it cannot see.</li>
+<li><b>Sub-zonal topology</b> (a Leyte-Cebu split): WESM expresses
+inter-island congestion as one price per island grid, so a split region has
+no published price series to validate against; only sample-day DIPCEF nodal
+LMPs could check it, which makes the layer diagnostic, not scorable.</li>
+<li><b>The exact secondary-cap trigger</b>: the 72-hour rolling GWAP the cap
+runs on is an operator settlement quantity not published as a dataset; the
+caps are stated as rules, and actual impositions announce themselves in the
+archived advisory stream.</li>
+<li><b>Offer-based dispatch is NOT a boundary</b>: IEMOP publishes the
+real-time generation offers and the regional merit-order tables in the same
+public window (verified July 2026), and dispatching against them is the
+roadmap's next step. Until it ships, the flows table above stays the
+quantified evidence of what the cost proxy misses: the observed corridors
+run on offer differentials, about 2 percent of market-window hourly
+clearing prices are NEGATIVE (below any cost floor; the share reaches half
+of all hours inside the suspension's administered weeks, which the
+backcast excludes), and the model reproduces neither.</li>
+</ul>
 
 <h2>What this map does NOT claim</h2>
 <ul>
