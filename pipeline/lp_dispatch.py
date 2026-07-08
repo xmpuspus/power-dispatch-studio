@@ -108,6 +108,14 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
         key = "leyte" if c["id"] == "leyte_luzon_hvdc" else "mvip"
         caps[key] = c["limit_mw"]
     caps.update(opts.get("caps") or {})
+    # observed HVDC blocks (NSO advisories, inferred): the hour's corridor
+    # limit scales by the fraction of the hour the link was unblocked;
+    # levers apply to the base limit first, so relief composes
+    cc = day.get("corridor_caps") or {}
+    for key in ("leyte", "mvip"):
+        frac = cc.get(key)
+        if frac:
+            caps[key] = [round1(caps[key] * frac[h]) for h in range(24)]
 
     # OFFER MODE: replay the day against the operator's own offer book
     # instead of the cost proxy. The book already embodies unit behavior,
@@ -294,8 +302,11 @@ def run_chronology_lp(dispatch: dict, profiles: dict, date: str,
             cost, fuel = marginal(m["stacks"][g][h], round1(gen[g]))
             marg[g] = price_label(price[g], cost, fuel, store_marg[g],
                                   hyd_marg, shed[g] > STORE_EPS)
-        sat1 = abs(f1) >= m["caps"]["leyte"] - FLOW_SAT_EPS
-        sat2 = abs(f2) >= m["caps"]["mvip"] - FLOW_SAT_EPS
+        cap1, cap2 = m["caps"]["leyte"], m["caps"]["mvip"]
+        cap1_h = cap1[h] if isinstance(cap1, list) else cap1
+        cap2_h = cap2[h] if isinstance(cap2, list) else cap2
+        sat1 = abs(f1) >= cap1_h - FLOW_SAT_EPS
+        sat2 = abs(f2) >= cap2_h - FLOW_SAT_EPS
         rent1 = (round3(price["visayas"] - price["luzon"] if f1 > 0
                         else price["luzon"] - price["visayas"])
                  if sat1 else 0.0)

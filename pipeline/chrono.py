@@ -215,6 +215,14 @@ def run_chronology(dispatch: dict, profiles: dict, date: str,
         key = "leyte" if c["id"] == "leyte_luzon_hvdc" else "mvip"
         caps[key] = c["limit_mw"]
     caps.update(opts.get("caps") or {})
+    # observed HVDC blocks scale the hour's limit, exactly as in
+    # lp_dispatch._assemble: the retired clear must keep solving the SAME
+    # problem to stay a valid cross-oracle
+    cc = day.get("corridor_caps") or {}
+    for key in ("leyte", "mvip"):
+        frac = cc.get(key)
+        if frac:
+            caps[key] = [round1(caps[key] * frac[h]) for h in range(24)]
 
     fuel_base: dict[str, dict[str, float]] = {}
     solar_inst: dict[str, float] = {}
@@ -268,7 +276,9 @@ def run_chronology(dispatch: dict, profiles: dict, date: str,
         stacks = {g: build_stack(fuel_avail_at(g, h), {},
                                  (added or {}).get(g) or [], params)
                   for g in GRID_KEYS}
-        res = clear_coupled_stacks(dem, stacks, caps, wheel)
+        caps_h = {k: (v[h] if isinstance(v, list) else v)
+                  for k, v in caps.items()}
+        res = clear_coupled_stacks(dem, stacks, caps_h, wheel)
         res["stacks"] = stacks
         res["demand"] = dem
         return res
@@ -554,7 +564,15 @@ def build_offer_backcast(profiles: dict) -> dict:
             continue
         dearest = max(b["cost"] for g in GRID_KEYS
                       for hb in stacks[g] for b in hb)
-        text = build_day_lp(stacks, demand, {"leyte": 250.0, "mvip": 450.0},
+        # the day's observed HVDC blocks scale the hour's corridor limit,
+        # same as every other replay path
+        o_caps: dict = {"leyte": 250.0, "mvip": 450.0}
+        for key in ("leyte", "mvip"):
+            frac = (day.get("corridor_caps") or {}).get(key)
+            if frac:
+                o_caps[key] = [round1(o_caps[key] * frac[h])
+                               for h in range(24)]
+        text = build_day_lp(stacks, demand, o_caps,
                             0.02, [], None, max(OFFER_CAP, dearest + 0.001))
         sol = _highs_solve(text)
         cols, duals = sol["cols"], sol["duals"]

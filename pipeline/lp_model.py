@@ -88,12 +88,16 @@ def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
                 obj.append(f" + {mtext(micro(b['cost']) + eps)} x_{s}_{h}_{i}")
                 bounds.append(f" 0 <= x_{s}_{h}_{i} <= {mtext(micro(b['mw']))}")
 
-    # corridor flows, split by direction, wheeling cost on each
+    # corridor flows, split by direction, wheeling cost on each. A cap may
+    # be one number for the day or a per-hour list (observed HVDC blocks
+    # scale the hour's limit); a constant list emits the same text as the
+    # scalar, so unaffected days pin unchanged.
     for h in range(H):
         for f, cap in (("f1", caps["leyte"]), ("f2", caps["mvip"])):
+            cap_h = cap[h] if isinstance(cap, (list, tuple)) else cap
             for d in ("p", "n"):
                 obj.append(f" + {mtext(wheel_m)} {f}{d}_{h}")
-                bounds.append(f" 0 <= {f}{d}_{h} <= {mtext(micro(cap))}")
+                bounds.append(f" 0 <= {f}{d}_{h} <= {mtext(micro(cap_h))}")
 
     # storage: charge (with a per-hour epsilon so ties resolve to the earliest
     # hour), discharge, state of charge

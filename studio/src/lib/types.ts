@@ -543,6 +543,10 @@ export interface DayProfile {
   // observed hourly regional clearing price (MCP, PhP/kWh); the backcast's
   // second target; null when the MCP archive does not cover the date
   mcp?: Partial<Record<GridKey, (number | null)[]>> | null
+  // per-hour corridor availability fractions (0..1) inferred from the NSO
+  // advisory stream's block/de-block events; present only on days with a
+  // recorded block, leyte only (MVIP has no observed events in the window)
+  corridor_caps?: { leyte?: number[]; mvip?: number[] } | null
   // observed corridor flows (MW; lv = Luzon->Visayas southbound positive,
   // vm = Visayas->Mindanao southbound positive), from the RTDSUM net
   // market imports/exports

@@ -292,6 +292,16 @@ scored window. Hydro is excluded here because its daily variation is
 already the observed water budget; unmatched codes carry no MW, so the
 adjustment is a floor. Snapshot views keep the static fleet (one reference
 hour has no day to deviate from).</li>
+<li><b>Observed corridor availability</b>: the Leyte-Luzon HVDC's per-hour
+limit scales by the fraction of the hour the link was actually unblocked,
+INFERRED from the operator's own advisory stream (every blocking and
+de-blocking is announced with a timestamp; the archive carries 95 paired
+block windows in the window, median 10 minutes, touching about 7 percent
+of replay hours). The dedicated HVDC-limits dataset would be the direct
+source, but all its archived files are header-only, so the advisory text
+is the only observed record; the inference is labeled here and the levers
+compose on the base limit. MVIP has no observed block events in the
+window and stays at its nameplate cap.</li>
 <li><b>Solar shape</b>: the 24-hour availability profile is the model's labeled
 clear-sky-ish assumption (fleet_ph.SOLAR_PROFILE), not measured irradiance.
 Other fuels hold their derated availability across the day.</li>
