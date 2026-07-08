@@ -836,6 +836,20 @@ def main() -> int:
     from chrono import build_offer_backcast
 
     profiles["offer_backcast"] = build_offer_backcast(profiles)
+
+    # the derived offer books ship as per-day artifacts the studio's offer
+    # mode lazy-fetches (web/data/offers/OFFERD_YYYYMMDD.json)
+    import shutil
+
+    offers_src = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              "..", "data", "derived", "offer_daily")
+    offers_out = os.path.join(OUT, "offers")
+    if os.path.isdir(offers_src):
+        os.makedirs(offers_out, exist_ok=True)
+        for name in sorted(os.listdir(offers_src)):
+            if name.endswith(".json"):
+                shutil.copyfile(os.path.join(offers_src, name),
+                                os.path.join(offers_out, name))
     with open(os.path.join(OUT, "profiles.json"), "w") as fh:
         json.dump(profiles, fh, indent=1)
 

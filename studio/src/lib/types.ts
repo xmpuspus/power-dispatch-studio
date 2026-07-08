@@ -572,6 +572,10 @@ export interface ChronoGoldenCase {
     fuel_cost?: Record<string, number>
     hydrology?: number
     storage?: { grid: GridKey; power_mw: number; energy_mwh: number }[]
+    reserve_deduction?: boolean
+    // marker only: the replaying engine loads the same per-day offer book
+    // artifact (web/data/offers/) the Python bake used
+    offer_mode?: boolean
   }
   expect: {
     price: Record<GridKey, number[]>

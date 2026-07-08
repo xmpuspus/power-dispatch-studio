@@ -58,6 +58,12 @@ function useJson<T>(file: string): Async<T> {
 export const useDispatch = () => useJson<Dispatch>('dispatch.json')
 export const useReserve = () => useJson<Reserve>('reserve.json')
 export const useMarketOps = () => useJson<MarketOps>('market_ops.json')
+// per-day observed offer book (chronology's offer mode); 404 = no book
+// derived for that date, surfaced as the hook's error state
+export const useOfferDay = (date: string | null) =>
+  useJson<import('../studio/chrono').OfferDay>(
+    date ? `offers/OFFERD_${date.replace(/-/g, '')}.json` : 'offers/none.json'
+  )
 export const useBill = () => useJson<Bill>('bill.json')
 export const useMarketPower = () => useJson<MarketPower>('market_power.json')
 export const useProfiles = () => useJson<Profiles>('profiles.json')

@@ -32,9 +32,12 @@ import math
 GRID_KEYS = ["luzon", "visayas", "mindanao"]
 G_SHORT = {"luzon": "l", "visayas": "v", "mindanao": "m"}
 
-# reserve is held by capacity that can actually follow dispatch instructions
+# reserve is held by capacity that can actually follow dispatch instructions.
+# 'offer' is the observed-book fuel: the book cannot say which MW are
+# reserve-capable, so offer-mode withholding applies to the whole book, a
+# stated approximation (never reached by cost-mode stacks)
 RESERVE_FUELS = ("coal", "natural_gas", "oil", "geothermal", "hydro",
-                 "biomass")
+                 "biomass", "offer")
 
 
 def micro(x: float) -> int:

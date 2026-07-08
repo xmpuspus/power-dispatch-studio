@@ -4,7 +4,7 @@
 
 import { useMemo, useState } from 'react'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
-import { num, php, fuelColor, fuelLabel } from '../lib/data'
+import { num, php, fuelColor, fuelLabel, useOfferDay } from '../lib/data'
 import { Panel, Segmented, StatTile } from '../ui/kit'
 import { BindingStrip, DurationCurve, DispatchArea, HourLines, SocChart } from './charts'
 import { ENGINE_VERSION, runChronology, runDuration, type ChronoHour } from './chrono'
@@ -47,11 +47,21 @@ export function ChronologyView({
   const days = profiles.days
   const [flash, setFlash] = useState<string | null>(null)
   const [reserveDeduction, setReserveDeduction] = useState(false)
+  // engine: the calibrated cost model, or the day's OBSERVED offer book
+  // (every layer the book already embodies is off; demand lever stays)
+  const [engine, setEngine] = useState<'cost' | 'offers'>('cost')
+  const offer = useOfferDay(engine === 'offers' ? date : null)
   const opts = useMemo(() => {
     const o = chronoOptsFrom(objects, overrides)
+    if (engine === 'offers') {
+      const only: typeof o = { demand_delta: o.demand_delta }
+      if (reserveDeduction) only.reserve_deduction = true
+      if (offer.data) only.offer_day = offer.data
+      return only
+    }
     if (reserveDeduction) o.reserve_deduction = true
     return o
-  }, [objects, overrides, reserveDeduction])
+  }, [objects, overrides, reserveDeduction, engine, offer.data])
   const reserveMw = Math.round(
     Object.values(profiles.reserve_req_mean_mw).reduce(
       (s, per) => s + Object.values(per).reduce((a, v) => a + v, 0),
@@ -66,16 +76,27 @@ export function ChronologyView({
   const windowDates = useMemo(() => {
     const idx = days.findIndex((x) => x.date === date)
     if (idx < 0) return []
-    return span === 'day'
+    // the offer book is per day; the week window stays a cost-model view
+    return span === 'day' || engine === 'offers'
       ? [days[idx].date]
       : days.slice(Math.max(0, idx - 6), idx + 1).map((x) => x.date)
-  }, [days, date, span])
+  }, [days, date, span, engine])
 
+  const offerPending = engine === 'offers' && !opts.offer_day
   const runs = useMemo(
-    () => windowDates.map((dt) => runChronology(d, profiles, dt, opts)),
-    [d, profiles, windowDates, opts]
+    () =>
+      offerPending ? [] : windowDates.map((dt) => runChronology(d, profiles, dt, opts)),
+    [d, profiles, windowDates, opts, offerPending]
   )
   const hours: ChronoHour[] = useMemo(() => runs.flatMap((r) => r.hours), [runs])
+  if (offerPending)
+    return (
+      <div className="basecase-banner">
+        {offer.loading
+          ? 'Loading the day’s offer book.'
+          : 'No derived offer book for this day. Books cover the market window with a few days’ publication lag; pick an earlier day or stay on the cost model.'}
+      </div>
+    )
   if (!hours.length)
     return (
       <div className="basecase-banner">
@@ -191,6 +212,15 @@ export function ChronologyView({
             { value: 'week', label: 'Week ending' },
           ]}
         />
+        <Segmented
+          ariaLabel="Dispatch engine"
+          value={engine}
+          onChange={(v) => setEngine(v as 'cost' | 'offers')}
+          options={[
+            { value: 'cost', label: 'Cost model' },
+            { value: 'offers', label: 'Observed offers' },
+          ]}
+        />
         <label className="chrono__reserve">
           <input
             type="checkbox"
@@ -199,12 +229,24 @@ export function ChronologyView({
           />
           Reserve co-clear ({num(reserveMw)} MW withheld)
         </label>
-        {hb && (
+        {engine === 'cost' && hb && (
           <span
             className="chrono__reserve"
             title="Observed daily hydro energy from the operator's per-resource schedules (DIPCEF); the day LP cannot dispatch more hydro than the day's water, scaled with your hydro edits and the hydrology lever."
           >
             hydro water: {num(hbTotal)} MWh observed
+          </span>
+        )}
+        {engine === 'offers' && (
+          <span
+            className="chrono__reserve"
+            title="The day's actual offer book (every resource's priced curve plus self-scheduled capacity as price-takers). The book already embodies unit behavior, so storage, reserve, water, and fleet edits are off; the added-load lever still applies."
+          >
+            {offer.loading
+              ? 'loading the offer book'
+              : offer.data
+                ? "the day's book, as bid"
+                : 'no derived book for this day'}
           </span>
         )}
         <div className="chrono__actions">

@@ -16,7 +16,10 @@ export const LP_GRID_KEYS: GridKey[] = ['luzon', 'visayas', 'mindanao']
 export const OFFER_CAP = 32
 const G_SHORT: Record<GridKey, string> = { luzon: 'l', visayas: 'v', mindanao: 'm' }
 
-// reserve is held by capacity that can actually follow dispatch instructions
+// reserve is held by capacity that can actually follow dispatch instructions.
+// 'offer' is the observed-book fuel: the book cannot say which MW are
+// reserve-capable, so offer-mode withholding applies to the whole book, a
+// stated approximation (never reached by cost-mode stacks)
 const RESERVE_FUELS = new Set([
   'coal',
   'natural_gas',
@@ -24,6 +27,7 @@ const RESERVE_FUELS = new Set([
   'geothermal',
   'hydro',
   'biomass',
+  'offer',
 ])
 
 export interface LpStorage {

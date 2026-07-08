@@ -397,11 +397,32 @@ def build_chrono_golden(dispatch: dict, profiles: dict) -> dict:
         {"label": "reserve withheld at the day's scheduled requirement",
          "opts": {"reserve_deduction": True}},
     ]
+    # pin the OFFER-MODE replay when the default day has a derived book:
+    # the stored input carries only the marker; both engines load the same
+    # per-day artifact (web/data/offers/) and must build identical text
+    here = os.path.dirname(os.path.abspath(__file__))
+    offer_path = os.path.join(here, "..", "data", "derived", "offer_daily",
+                              f"OFFERD_{date.replace('-', '')}.json")
+    offer_day = None
+    if os.path.isfile(offer_path):
+        with open(offer_path) as fh:
+            offer_day = json.load(fh)
+        cases.append({"label": "observed offer book, no levers",
+                      "opts": {"offer_mode": True}})
+        cases.append({"label": "DICT 1.5 GW on the observed offer book",
+                      "opts": {"offer_mode": True,
+                               "demand_delta": {"luzon": 1500}}})
+        cases.append({"label": "reserve withheld from the observed book",
+                      "opts": {"offer_mode": True,
+                               "reserve_deduction": True}})
     from lp_dispatch import run_chronology_lp
 
     out = []
     for c in cases:
-        res = run_chronology_lp(dispatch, profiles, date, c["opts"])
+        run_opts = dict(c["opts"])
+        if run_opts.pop("offer_mode", False):
+            run_opts["offer_day"] = offer_day
+        res = run_chronology_lp(dispatch, profiles, date, run_opts)
         out.append({
             "label": c["label"],
             "input": {"date": date, **c["opts"]},

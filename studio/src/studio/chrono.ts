@@ -35,6 +35,17 @@ export interface ChronoOpts {
   caps?: { leyte?: number; mvip?: number }
   storage?: { grid: GridKey; power_mw: number; energy_mwh: number }[]
   reserve_deduction?: boolean
+  // OFFER MODE: the day's derived offer book (web/data/offers/); replaces
+  // the cost-proxy stacks, disables every layer the book already embodies
+  // (storage, reserve, water, outage deviations, fleet levers); only the
+  // demand lever stays. Mirror of lp_dispatch._assemble.
+  offer_day?: OfferDay
+}
+
+export interface OfferDay {
+  date: string
+  // per grid, 24 entries of [cost PhP/kWh, mw] block lists (or null)
+  hours: Record<GridKey, ([number, number][] | null)[]>
 }
 
 export interface ChronoHour {
@@ -139,6 +150,51 @@ export function assembleDay(
   }
   if (opts.caps?.leyte != null) caps.leyte = opts.caps.leyte
   if (opts.caps?.mvip != null) caps.mvip = opts.caps.mvip
+
+  // OFFER MODE: the book replaces the cost proxy; only the demand lever
+  // stays. Mirror of lp_dispatch._assemble's offer branch.
+  if (opts.offer_day) {
+    const oStacks = { luzon: [], visayas: [], mindanao: [] } as Record<GridKey, Block[][]>
+    const oDemand = { luzon: [], visayas: [], mindanao: [] } as Record<GridKey, number[]>
+    let dearest = 12
+    for (const h of HOURS) {
+      for (const g of GRID_KEYS) {
+        const blocks = (opts.offer_day.hours[g][h] ?? []).map(([p, mw]) => ({
+          fuel: 'offer',
+          cost: p,
+          mw,
+        }))
+        blocks.sort((a, b) => a.cost - b.cost)
+        for (const b of blocks) if (b.cost > dearest) dearest = b.cost
+        oStacks[g].push(blocks)
+        oDemand[g].push(day.demand[g][h] + (opts.demand_delta?.[g] ?? 0))
+      }
+    }
+    // the reserve toggle stays available on the book (withheld from the
+    // whole book, a stated approximation); mirror of the Python branch
+    let oReserve: Record<GridKey, number> | null = null
+    if (opts.reserve_deduction) {
+      oReserve = { luzon: 0, visayas: 0, mindanao: 0 }
+      for (const g of GRID_KEYS) {
+        const dayReq = day.reserve_req_mw?.[g]
+        const req =
+          dayReq && Object.keys(dayReq).length > 0
+            ? dayReq
+            : (profiles.reserve_req_mean_mw[g] ?? {})
+        oReserve[g] = round1(Object.values(req).reduce((s, v) => s + v, 0))
+      }
+    }
+    return {
+      stacks: oStacks,
+      demand: oDemand,
+      caps,
+      wheel,
+      storage: [],
+      reserveReq: oReserve,
+      voll: Math.max(OFFER_CAP, dearest + 0.001),
+      hydroBudget: null,
+    }
+  }
 
   const fuelBase = {} as Record<GridKey, Record<string, number>>
   const solarInst = {} as Record<GridKey, number>
@@ -317,7 +373,10 @@ export function runChronology(
           }
         })
       }
-      const mres = marginal(m.stacks[g][h], gen[g])
+      // snap the own-stack read to 0.1 MW: the two solver builds can
+      // disagree by 1e-9 at a block boundary, and offer books pack blocks
+      // tightly enough for that to flip the label; mirror of lp_dispatch
+      const mres = marginal(m.stacks[g][h], round1(gen[g]))
       marg[g] = priceLabel(
         price[g],
         mres.cost,

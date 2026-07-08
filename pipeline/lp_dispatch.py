@@ -109,6 +109,42 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
         caps[key] = c["limit_mw"]
     caps.update(opts.get("caps") or {})
 
+    # OFFER MODE: replay the day against the operator's own offer book
+    # instead of the cost proxy. The book already embodies unit behavior,
+    # so storage, reserve, water budgets, outage deviations, and fleet
+    # levers are all off; the demand lever stays (a what-if load on the
+    # real book is a legitimate question). Mirrored in chrono.ts.
+    offer_day = opts.get("offer_day")
+    if offer_day:
+        o_stacks = {g: [] for g in GRID_KEYS}
+        o_demand = {g: [] for g in GRID_KEYS}
+        for h in range(24):
+            for g in GRID_KEYS:
+                blocks = [{"fuel": "offer", "cost": p, "mw": mw}
+                          for p, mw in (offer_day["hours"][g][h] or [])]
+                o_stacks[g].append(sorted(blocks, key=lambda b: b["cost"]))
+                o_demand[g].append(day["demand"][g][h]
+                                   + ((opts.get("demand_delta") or {})
+                                      .get(g) or 0.0))
+        dearest = max((b["cost"] for g in GRID_KEYS
+                       for hb in o_stacks[g] for b in hb), default=12.0)
+        # the reserve toggle stays available on the book: capacity holding
+        # reserve cannot also sell energy. The book cannot say which MW are
+        # reserve-capable, so the requirement is withheld from the whole
+        # book (a stated approximation), at the day's scheduled level
+        o_reserve = None
+        if opts.get("reserve_deduction"):
+            day_req = day.get("reserve_req_mw") or {}
+            mean_req = profiles.get("reserve_req_mean_mw") or {}
+            o_reserve = {
+                g: round1(sum(
+                    (day_req.get(g) or mean_req.get(g) or {}).values()))
+                for g in GRID_KEYS}
+        return {"stacks": o_stacks, "demand": o_demand, "caps": caps,
+                "wheel": wheel, "storage": [], "reserve_req": o_reserve,
+                "voll": max(OFFER_CAP, dearest + 0.001),
+                "hydro_budget": None}
+
     fuel_base: dict[str, dict[str, float]] = {}
     solar_inst: dict[str, float] = {}
     out_dev = day.get("out_dev_mw") or {}
@@ -252,7 +288,10 @@ def run_chronology_lp(dispatch: dict, profiles: dict, date: str,
                         if STORE_EPS < x < b["mw"] - STORE_EPS:
                             hyd_marg = True
                             break
-            cost, fuel = marginal(m["stacks"][g][h], gen[g])
+            # snap the own-stack read to 0.1 MW: the two solver builds can
+            # disagree by 1e-9 at a block boundary, and offer books pack
+            # blocks tightly enough for that to flip the label
+            cost, fuel = marginal(m["stacks"][g][h], round1(gen[g]))
             marg[g] = price_label(price[g], cost, fuel, store_marg[g],
                                   hyd_marg, shed[g] > STORE_EPS)
         sat1 = abs(f1) >= m["caps"]["leyte"] - FLOW_SAT_EPS

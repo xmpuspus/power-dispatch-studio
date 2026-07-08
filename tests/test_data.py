@@ -541,10 +541,13 @@ check("reserve requirement means are positive per grid", all(
     v > 0 for g in prof["reserve_req_mean_mw"].values() for v in g.values()))
 
 cg = prof["chrono_golden"]
-check("chrono golden has 7 cases of 24 hourly prices per grid",
-      cg["available"] and len(cg["cases"]) == 7 and all(
+check("chrono golden has 10 cases (7 cost-mode + 3 offer-mode) of 24 hourly "
+      "prices per grid",
+      cg["available"] and len(cg["cases"]) == 10 and all(
           len(c["expect"]["price"][g]) == 24
           for c in cg["cases"] for g in ("luzon", "visayas", "mindanao")))
+check("the offer-mode goldens carry the marker both engines resolve",
+      sum(1 for c in cg["cases"] if c["input"].get("offer_mode")) == 3)
 base_mean = cg["cases"][0]["expect"]["summary"]["mean_price"]["luzon"]
 dc_mean = cg["cases"][1]["expect"]["summary"]["mean_price"]["luzon"]
 check("flat DC load never lowers the mean Luzon price (monotonicity)",

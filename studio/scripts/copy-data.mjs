@@ -14,6 +14,19 @@ const files = (await readdir(src)).filter((f) => f.endsWith('.json') || f.endsWi
 await Promise.all(files.map((f) => copyFile(join(src, f), join(dest, f))))
 console.log(`copied ${files.length} baked artifacts -> public/data`)
 
+// per-day observed offer books (lazy-fetched by the chronology's offer mode)
+const offersSrc = join(src, 'offers')
+try {
+  const offerFiles = (await readdir(offersSrc)).filter((f) => f.endsWith('.json'))
+  await mkdir(join(dest, 'offers'), { recursive: true })
+  await Promise.all(
+    offerFiles.map((f) => copyFile(join(offersSrc, f), join(dest, 'offers', f)))
+  )
+  console.log(`copied ${offerFiles.length} offer days -> public/data/offers`)
+} catch {
+  console.log('no offer days baked (web/data/offers absent)')
+}
+
 // the HiGHS wasm binary ships as a static asset; solver.ts locateFile()
 // resolves it from the app base at runtime
 await copyFile(

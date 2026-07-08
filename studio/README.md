@@ -118,8 +118,15 @@ net market imports and exports in the same files):
 The fourth set replays the same days with the operator's own OFFER BOOKS
 (every resource's priced curve from the real-time generation offers, plus
 self-scheduled capacity as price-takers) instead of the cost proxy: no
-storage, reserve, or water layers, because the books already embody unit
-behavior. 55 derived days:
+storage or water layers, because the books already embody unit behavior
+(reserve withholding stays available as a stated whole-book
+approximation). 55 derived days; the 56th, 2026-06-09, was refused by the
+coverage gate and is named rather than hidden. Two framing caveats travel
+with the set: the whole window sits inside the post-suspension restart
+regime, so this validates one market quarter, not a climatology; and the
+corridor DIRECTION agreement partly follows from native-load demand
+construction (a net exporter's load sits below its book by construction),
+so the load-bearing flow statistic is the MAE, not the direction column.
 
 | Grid | Target | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- |

@@ -12,6 +12,17 @@ const read = (rel: string) =>
 const d: Dispatch = read('../../public/data/dispatch.json')
 const profiles: Profiles = read('../../public/data/profiles.json')
 
+// golden inputs carry only the offer_mode marker; both engines load the
+// same per-day book artifact and must build identical LP text from it
+const resolveOpts = (date: string, opts: Record<string, unknown>): ChronoOpts => {
+  const { offer_mode, ...rest } = opts
+  if (offer_mode)
+    (rest as ChronoOpts).offer_day = read(
+      `../../public/data/offers/OFFERD_${date.replace(/-/g, '')}.json`
+    )
+  return rest as ChronoOpts
+}
+
 describe('chronological golden parity vs the Python chrono engine', () => {
   const g = profiles.chrono_golden
   it('golden fixtures are baked', () => {
@@ -24,7 +35,7 @@ describe('chronological golden parity vs the Python chrono engine', () => {
   for (const c of g.cases ?? []) {
     it(`reproduces: ${c.label}`, () => {
       const { date, ...opts } = c.input
-      const res = runChronology(d, profiles, date, opts as ChronoOpts)
+      const res = runChronology(d, profiles, date, resolveOpts(date, opts))
       for (let h = 0; h < 24; h++) {
         for (const gk of GRID_KEYS)
           expect(
@@ -191,7 +202,7 @@ describe('chronological behavior', () => {
     for (const c of profiles.chrono_golden.cases ?? []) {
       if (!c.lp_sha256) continue
       const { date: dt, ...opts } = c.input
-      const text = buildChronoLpText(d, profiles, dt, opts as ChronoOpts)
+      const text = buildChronoLpText(d, profiles, dt, resolveOpts(dt, opts))
       const hash = createHash('sha256').update(text).digest('hex')
       expect(hash, c.label).toBe(c.lp_sha256)
     }
