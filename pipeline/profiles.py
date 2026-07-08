@@ -55,7 +55,11 @@ def build_profiles(fleet: dict | None = None,
         day = day_of(path)
         dem: dict[str, dict[int, list[float]]] = {
             g.lower(): {} for g in GRIDS}
+        net_imp: dict[str, dict[int, list[float]]] = {
+            g.lower(): {} for g in GRIDS}
         cur_mwh: dict[str, float] = {g.lower(): 0.0 for g in GRIDS}
+        day_req: dict[str, dict[str, list[float]]] = {
+            g.lower(): {} for g in GRIDS}
         for r in rows_of(path):
             grid = REGION_MAP.get((r.get("REGION_NAME") or "").strip())
             if not grid:
@@ -64,16 +68,25 @@ def build_profiles(fleet: dict | None = None,
             h = hour_of((r.get("TIME_INTERVAL") or "").strip())
             if com == "En":
                 gen = f(r.get("GENERATION"))
+                imp = f(r.get("MKT_IMPORT"))
+                exp = f(r.get("MKT_EXPORT"))
                 cur = max(0.0, f(r.get("LOAD_CURTAILED")))
                 if gen > 0:
-                    # demand = served generation + recorded curtailment: the
-                    # load that was there, not just the load that was met
-                    dem[grid.lower()].setdefault(h, []).append(gen + cur)
+                    # demand = NATIVE LOAD: generation plus net market
+                    # imports plus recorded curtailment. Generation alone
+                    # self-balances every grid by construction and erases
+                    # the observed inter-island flows (Visayas net-imports
+                    # about a quarter of its own generation); the archived
+                    # MKT_IMPORT/MKT_EXPORT columns carry the real geometry
+                    dem[grid.lower()].setdefault(h, []).append(
+                        gen + imp - exp + cur)
+                    net_imp[grid.lower()].setdefault(h, []).append(imp - exp)
                     cur_mwh[grid.lower()] += cur * 5 / 60
             elif com in RESERVE_COMMODITIES:
                 req = f(r.get("MKT_REQT"))
                 if req > 0:
                     reserve_req[grid.lower()].setdefault(com, []).append(req)
+                    day_req[grid.lower()].setdefault(com, []).append(req)
         # a replayable day needs the full 24 demand hours on every grid
         if not all(len(dem[g.lower()]) == 24 for g in GRIDS):
             continue
@@ -92,14 +105,28 @@ def build_profiles(fleet: dict | None = None,
                     f(r.get("LWAP")) / 1000)
             for key, by_h in acc.items():
                 lwap[key] = _hourly_mean(by_h, 3)
+        # observed corridor flows on the radial path, from the same rows:
+        # f1 (Luzon->Visayas, positive south) is Luzon's net export, f2
+        # (Visayas->Mindanao, positive south) is Mindanao's net import
+        lz = _hourly_mean(net_imp["luzon"], 1)
+        mi = _hourly_mean(net_imp["mindanao"], 1)
         days.append({
             "date": day,
             "market": day >= resumed,
             "demand": {g.lower(): [round(v) for v in
                                    _hourly_mean(dem[g.lower()], 1)]
                        for g in GRIDS},
+            "net_flow": {
+                "lv": [None if v is None else round(-v, 1) for v in lz],
+                "vm": [None if v is None else round(v, 1) for v in mi],
+            },
             "curtailed_mwh": {g: round(v, 1) for g, v in cur_mwh.items()
                               if v > 0} or None,
+            "reserve_req_mw": {
+                g: {com: round(sum(vals) / len(vals), 1)
+                    for com, vals in day_req[g].items() if vals}
+                for g in ("luzon", "visayas", "mindanao")
+                if day_req[g]} or None,
             "lwap": lwap,
         })
     days.sort(key=lambda d: d["date"])
@@ -180,18 +207,23 @@ def build_profiles(fleet: dict | None = None,
             market, key=lambda d: max(d["demand"]["luzon"]))["date"]
 
     return {
-        "unit": "hourly mean per grid: demand MW (dispatched generation plus "
-                "recorded curtailment, RTDSUM En rows), observed LWAP PhP/kWh "
-                "(LWAPF), and observed regional clearing price PhP/kWh (MCP) "
-                "where archived",
+        "unit": "hourly mean per grid: demand MW (NATIVE LOAD: dispatched "
+                "generation plus net market imports plus recorded "
+                "curtailment, RTDSUM En rows), observed corridor flows MW "
+                "(net_flow), observed LWAP PhP/kWh (LWAPF), and observed "
+                "regional clearing price PhP/kWh (MCP) where archived",
         "note": "Observed days replayed as-is, no synthetic profiles. Demand "
-                "is dispatched generation PLUS recorded curtailment: the load "
-                "that was there to serve, so a backcast can reproduce the "
-                "scarcity it is scored against. Days without full 24-hour "
-                "demand coverage on all three grids are dropped, not filled. "
-                "Each day also carries its scheduled-outage deviation from "
-                "the market-window mean (out_dev_mw; hydro rides its water "
-                "budget instead) and, where archived, the hourly MCP.",
+                "is native load (generation + MKT_IMPORT - MKT_EXPORT + "
+                "recorded curtailment): generation alone self-balances every "
+                "grid and erases the observed inter-island flows, so the "
+                "replay would never need the corridors the product is about. "
+                "Days without full 24-hour demand coverage on all three "
+                "grids are dropped, not filled. Each day also carries the "
+                "observed corridor flows (net_flow), its scheduled-outage "
+                "deviation from the market-window mean (out_dev_mw; hydro "
+                "rides its water budget instead), its scheduled reserve "
+                "requirement (reserve_req_mw), and, where archived, the "
+                "hourly MCP.",
         "resumed": resumed,
         "days": days,
         "default_day": default_day,

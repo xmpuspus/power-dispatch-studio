@@ -237,9 +237,11 @@ def run_chronology(dispatch: dict, profiles: dict, date: str,
 
     reserve_add = {g: 0.0 for g in GRID_KEYS}
     if opts.get("reserve_deduction"):
-        req = profiles.get("reserve_req_mean_mw") or {}
+        day_req = day.get("reserve_req_mw") or {}
+        mean_req = profiles.get("reserve_req_mean_mw") or {}
         for g in GRID_KEYS:
-            reserve_add[g] = round1(sum((req.get(g) or {}).values()))
+            reserve_add[g] = round1(sum(
+                (day_req.get(g) or mean_req.get(g) or {}).values()))
 
     def fuel_avail_at(g: str, h: int) -> dict:
         fa = dict(fuel_base[g])
@@ -388,6 +390,10 @@ def build_chrono_golden(dispatch: dict, profiles: dict) -> dict:
         {"label": "default storage cycles against the DICT wave",
          "opts": {"demand_delta": {"luzon": 1500},
                   "storage": default_storage}},
+        # pins the day-level reserve requirement path (and its per-grid
+        # fallback semantics) across both engines
+        {"label": "reserve withheld at the day's scheduled requirement",
+         "opts": {"reserve_deduction": True}},
     ]
     from lp_dispatch import run_chronology_lp
 
@@ -484,6 +490,7 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
 
     pairs: dict[str, list[tuple[float, float]]] = {g: [] for g in GRID_KEYS}
     pairs_mcp: dict[str, list[tuple[float, float]]] = {g: [] for g in GRID_KEYS}
+    flow_pairs: dict[str, list[tuple[float, float]]] = {"lv": [], "vm": []}
     days_used = []
     for day in profiles["days"]:
         if not day["market"]:
@@ -495,12 +502,19 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
         res = run_chronology_lp(dispatch, profiles, day["date"])
         days_used.append(day["date"])
         mc = day.get("mcp") or {}
+        nf = day.get("net_flow") or {}
         for g in GRID_KEYS:
             mcg = mc.get(g) or []
             for h in range(24):
                 pairs[g].append((res["hours"][h]["price"][g], lw[g][h]))
                 if h < len(mcg) and mcg[h] is not None:
                     pairs_mcp[g].append((res["hours"][h]["price"][g], mcg[h]))
+        for key, mod_key in (("lv", "flow_lv"), ("vm", "flow_vm")):
+            obs_series = nf.get(key) or []
+            for h in range(24):
+                if h < len(obs_series) and obs_series[h] is not None:
+                    flow_pairs[key].append(
+                        (res["hours"][h][mod_key], obs_series[h]))
     per_grid = {}
     per_grid_mcp = {}
     for g in GRID_KEYS:
@@ -510,6 +524,27 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
         scored_mcp = _score_pairs(pairs_mcp[g])
         if scored_mcp:
             per_grid_mcp[g] = scored_mcp
+    flows = {}
+    for key, label in (("lv", "Luzon to Visayas"),
+                       ("vm", "Visayas to Mindanao")):
+        pts = flow_pairs[key]
+        if not pts:
+            continue
+        n = len(pts)
+        # direction agreement counts only hours where the observed flow is
+        # decisively nonzero; a near-zero flow has no direction to agree on
+        decisive = [(m, o) for m, o in pts if abs(o) >= 10.0]
+        agree = sum(1 for m, o in decisive if m * o > 0)
+        flows[key] = {
+            "corridor": label,
+            "n_hours": n,
+            "observed_mean_mw": round(sum(o for _, o in pts) / n, 1),
+            "modeled_mean_mw": round(sum(m for m, _ in pts) / n, 1),
+            "mae_mw": round(sum(abs(m - o) for m, o in pts) / n, 1),
+            "direction_agreement_pct": (round(100 * agree / len(decisive), 1)
+                                        if decisive else None),
+            "n_decisive_hours": len(decisive),
+        }
     return {
         "available": bool(days_used),
         "days": len(days_used),
@@ -517,6 +552,14 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
                    if days_used else None),
         "per_grid": per_grid,
         "per_grid_mcp": per_grid_mcp or None,
+        "flows": flows or None,
+        "flows_note": ("Modeled corridor flows scored against the observed "
+                       "net market imports and exports in the RTD regional "
+                       "summaries (f1 is Luzon's net export southbound, f2 "
+                       "is Mindanao's net import). Demand is native load, "
+                       "so the replay must move real MW over the corridors "
+                       "to serve it; direction agreement counts hours where "
+                       "the observed flow is at least 10 MW."),
         "mcp_note": ("per_grid_mcp scores the same replays against the "
                      "observed regional marginal price (the RTD ex-ante "
                      "clearing price, IEMOP MCP files): the target "

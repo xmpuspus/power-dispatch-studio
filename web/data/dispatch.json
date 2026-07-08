@@ -52,8 +52,8 @@
    "reference_hour": 19,
    "installed_mw": 20968,
    "avail_mw": 15681.9,
-   "typical_evening_demand_mw": 12031,
-   "peak_demand_mw": 14589,
+   "typical_evening_demand_mw": 11943,
+   "peak_demand_mw": 14539,
    "fuel_avail_mw": {
     "coal": 7522.5,
     "natural_gas": 3358.8,
@@ -113,8 +113,8 @@
    "reference_hour": 19,
    "installed_mw": 4007,
    "avail_mw": 2813.4,
-   "typical_evening_demand_mw": 1812,
-   "peak_demand_mw": 2559,
+   "typical_evening_demand_mw": 2346,
+   "peak_demand_mw": 2769,
    "fuel_avail_mw": {
     "coal": 1317.5,
     "oil": 460.0,
@@ -168,8 +168,8 @@
    "reference_hour": 19,
    "installed_mw": 4878,
    "avail_mw": 3502.0,
-   "typical_evening_demand_mw": 2795,
-   "peak_demand_mw": 3227,
+   "typical_evening_demand_mw": 2350,
+   "peak_demand_mw": 2822,
    "fuel_avail_mw": {
     "coal": 2215.1,
     "oil": 448.0,
@@ -225,9 +225,9 @@
     "label": "baseline typical evening",
     "input": {
      "demand": {
-      "luzon": 12031,
-      "visayas": 1812,
-      "mindanao": 2795
+      "luzon": 11943,
+      "visayas": 2346,
+      "mindanao": 2350
      },
      "removed": {},
      "caps": {
@@ -235,7 +235,7 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "7ea4fe8901199367da570b721a918637e24774f5294436556930af87694ca395",
+    "lp_sha256": "b69b2a16b3f79f58af606aeabadb79516319347029ef1d0ebdaaeec7024568e3",
     "expect": {
      "price": {
       "luzon": 6.0,
@@ -243,9 +243,9 @@
       "mindanao": 6.0
      },
      "gen_mw": {
-      "luzon": 12031.0,
-      "visayas": 1812.0,
-      "mindanao": 2795.0
+      "luzon": 11943.0,
+      "visayas": 2346.0,
+      "mindanao": 2350.0
      },
      "shortfall_mw": {
       "luzon": 0.0,
@@ -264,9 +264,9 @@
     "label": "DICT 1.5 GW data centre on Luzon",
     "input": {
      "demand": {
-      "luzon": 13531,
-      "visayas": 1812,
-      "mindanao": 2795
+      "luzon": 13443,
+      "visayas": 2346,
+      "mindanao": 2350
      },
      "removed": {},
      "caps": {
@@ -274,25 +274,25 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "fd26135d54d9cdec7a6ccf15d00345491470401363da4ad60bc22c74f244614c",
+    "lp_sha256": "d193d59039be0bdf56e74c90792e71aba1f5334a4d6eadda6684b0f31ce71f8c",
     "expect": {
      "price": {
-      "luzon": 6.02,
-      "visayas": 6.0,
+      "luzon": 6.04,
+      "visayas": 6.02,
       "mindanao": 6.0
      },
      "gen_mw": {
       "luzon": 13417.8,
-      "visayas": 1925.2,
-      "mindanao": 2795.0
+      "visayas": 2353.4,
+      "mindanao": 2367.8
      },
      "shortfall_mw": {
       "luzon": 0.0,
       "visayas": 0.0,
       "mindanao": 0.0
      },
-     "flow_lv_mw": -113.2,
-     "flow_vm_mw": 0.0,
+     "flow_lv_mw": -25.2,
+     "flow_vm_mw": -17.8,
      "leyte_saturated": false,
      "leyte_rent_php_kwh": 0.0,
      "mvip_saturated": false,
@@ -303,9 +303,9 @@
     "label": "added Visayas load binds the Leyte-Luzon link",
     "input": {
      "demand": {
-      "luzon": 12031,
-      "visayas": 2712,
-      "mindanao": 2795
+      "luzon": 11943,
+      "visayas": 3246,
+      "mindanao": 2350
      },
      "removed": {},
      "caps": {
@@ -313,17 +313,17 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "79b0636ce45879e88c3aeaf3be8b49c80f52a10c553962d79eaf9600682e99e7",
+    "lp_sha256": "11446c0e6aa51a4d5f81e32726308e6793c38366c93a491d90fb091efbed05ae",
     "expect": {
      "price": {
       "luzon": 6.0,
-      "visayas": 6.02,
+      "visayas": 12.0,
       "mindanao": 6.0
      },
      "gen_mw": {
-      "luzon": 12281.0,
-      "visayas": 2353.4,
-      "mindanao": 2903.6
+      "luzon": 12193.0,
+      "visayas": 2546.0,
+      "mindanao": 2800.0
      },
      "shortfall_mw": {
       "luzon": 0.0,
@@ -331,20 +331,20 @@
       "mindanao": 0.0
      },
      "flow_lv_mw": 250.0,
-     "flow_vm_mw": -108.6,
+     "flow_vm_mw": -450.0,
      "leyte_saturated": true,
-     "leyte_rent_php_kwh": 0.02,
-     "mvip_saturated": false,
-     "mvip_rent_php_kwh": 0.0
+     "leyte_rent_php_kwh": 6.0,
+     "mvip_saturated": true,
+     "mvip_rent_php_kwh": 6.0
     }
    },
    {
     "label": "documented 935 MW Visayas coal outage",
     "input": {
      "demand": {
-      "luzon": 12031,
-      "visayas": 1812,
-      "mindanao": 2795
+      "luzon": 11943,
+      "visayas": 2346,
+      "mindanao": 2350
      },
      "removed": {
       "visayas": {
@@ -356,17 +356,17 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "b30a55af237a2e527dc58c5352ebedaf5b634175da709ba46db5dfd80ff1964c",
+    "lp_sha256": "4c6add36e5211148e78429781a7b0041c0b4a121283f383c1833208c25d822ba",
     "expect": {
      "price": {
       "luzon": 6.0,
-      "visayas": 6.02,
+      "visayas": 12.0,
       "mindanao": 6.0
      },
      "gen_mw": {
-      "luzon": 12281.0,
-      "visayas": 1418.4,
-      "mindanao": 2938.6
+      "luzon": 12193.0,
+      "visayas": 1646.0,
+      "mindanao": 2800.0
      },
      "shortfall_mw": {
       "luzon": 0.0,
@@ -374,20 +374,20 @@
       "mindanao": 0.0
      },
      "flow_lv_mw": 250.0,
-     "flow_vm_mw": -143.6,
+     "flow_vm_mw": -450.0,
      "leyte_saturated": true,
-     "leyte_rent_php_kwh": 0.02,
-     "mvip_saturated": false,
-     "mvip_rent_php_kwh": 0.0
+     "leyte_rent_php_kwh": 6.0,
+     "mvip_saturated": true,
+     "mvip_rent_php_kwh": 6.0
     }
    },
    {
     "label": "relieve the Leyte-Luzon corridor by 250 MW under the bind",
     "input": {
      "demand": {
-      "luzon": 12031,
-      "visayas": 2712,
-      "mindanao": 2795
+      "luzon": 11943,
+      "visayas": 3246,
+      "mindanao": 2350
      },
      "removed": {},
      "caps": {
@@ -395,7 +395,7 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "afa3f73944853b791cb99e82cc2c9f9ab9bb4d4b538d8b3b2418ed75ba319dfa",
+    "lp_sha256": "6e58bdd7eedb846f3f82019c9ff163f3803a28df2d0b33799641aadaf67606a4",
     "expect": {
      "price": {
       "luzon": 6.0,
@@ -403,19 +403,19 @@
       "mindanao": 6.0
      },
      "gen_mw": {
-      "luzon": 12389.6,
+      "luzon": 12443.0,
       "visayas": 2353.4,
-      "mindanao": 2795.0
+      "mindanao": 2742.6
      },
      "shortfall_mw": {
       "luzon": 0.0,
       "visayas": 0.0,
       "mindanao": 0.0
      },
-     "flow_lv_mw": 358.6,
-     "flow_vm_mw": 0.0,
-     "leyte_saturated": false,
-     "leyte_rent_php_kwh": 0.0,
+     "flow_lv_mw": 500.0,
+     "flow_vm_mw": -392.6,
+     "leyte_saturated": true,
+     "leyte_rent_php_kwh": 0.02,
      "mvip_saturated": false,
      "mvip_rent_php_kwh": 0.0
     }
@@ -438,9 +438,9 @@
     "limit_kind": "sourced_operating_limit",
     "nameplate_mw": 440,
     "src": "https://www.iemop.ph/news/december-2025-power-market-luzon-prices-ease-as-supply-improves-visayas-and-mindanao-experience-tighter-conditions/",
-    "saturated_pct": 4.9,
-    "mean_congestion_rent_php_kwh": 0.947,
-    "mean_abs_flow_mw": 62.9,
+    "saturated_pct": 0.0,
+    "mean_congestion_rent_php_kwh": 0.867,
+    "mean_abs_flow_mw": 8.9,
     "peak_abs_flow_mw": 250
    },
    {
@@ -452,46 +452,46 @@
     "src": "https://powerphilippines.com/wesm-prices-rise-38-5-in-may-as-demand-growth-outpaces-supply/",
     "saturated_pct": 0.0,
     "mean_congestion_rent_php_kwh": 0.0,
-    "mean_abs_flow_mw": 6.0,
-    "peak_abs_flow_mw": 446.6
+    "mean_abs_flow_mw": 2.1,
+    "peak_abs_flow_mw": 366.4
    }
   ],
   "per_grid": {
    "luzon": {
     "observed_mean_php_kwh": 7.651,
-    "coupled_modeled_mean_php_kwh": 5.983,
-    "mae_php_kwh": 4.466,
-    "correlation": 0.167
+    "coupled_modeled_mean_php_kwh": 5.991,
+    "mae_php_kwh": 4.47,
+    "correlation": 0.161
    },
    "visayas": {
     "observed_mean_php_kwh": 12.963,
-    "coupled_modeled_mean_php_kwh": 5.906,
-    "mae_php_kwh": 8.83,
-    "correlation": 0.26
+    "coupled_modeled_mean_php_kwh": 6.002,
+    "mae_php_kwh": 8.847,
+    "correlation": 0.146
    },
    "mindanao": {
     "observed_mean_php_kwh": 11.519,
-    "coupled_modeled_mean_php_kwh": 5.992,
-    "mae_php_kwh": 7.801,
-    "correlation": 0.088
+    "coupled_modeled_mean_php_kwh": 5.952,
+    "mae_php_kwh": 7.767,
+    "correlation": 0.174
    }
   },
   "spread_decomposition": {
    "note": "How much of the observed regional price spread the coupled merit-order model reproduces from corridor limits alone. The rest is scarcity and offer behaviour a cost model cannot price.",
    "visayas_vs_luzon": {
     "observed_php_kwh": 5.313,
-    "coupled_model_php_kwh": -0.077,
-    "explained_fraction": -0.014
+    "coupled_model_php_kwh": 0.011,
+    "explained_fraction": 0.002
    },
    "mindanao_vs_luzon": {
     "observed_php_kwh": 3.868,
-    "coupled_model_php_kwh": 0.009,
-    "explained_fraction": 0.002
+    "coupled_model_php_kwh": -0.038,
+    "explained_fraction": -0.01
    },
    "uncapped_counterfactual": {
     "note": "Coupled spread if the corridors were infinite: what remains is pure stack difference, not transmission.",
-    "visayas_vs_luzon_php_kwh": -0.046,
-    "mindanao_vs_luzon_php_kwh": 0.012
+    "visayas_vs_luzon_php_kwh": -0.007,
+    "mindanao_vs_luzon_php_kwh": -0.038
    }
   },
   "outage_scenario": {
@@ -503,21 +503,21 @@
     "to": "2026-07-01"
    },
    "n_intervals": 13247,
-   "leyte_luzon_saturated_pct": 31.7,
-   "leyte_luzon_mean_rent_php_kwh": 5.645,
+   "leyte_luzon_saturated_pct": 93.2,
+   "leyte_luzon_mean_rent_php_kwh": 5.742,
    "visayas_vs_luzon_observed_php_kwh": 6.2,
-   "visayas_vs_luzon_coupled_php_kwh": 1.943,
-   "explained_fraction": 0.313
+   "visayas_vs_luzon_coupled_php_kwh": 5.444,
+   "explained_fraction": 0.878
   },
   "dc_binding_threshold": {
    "available": true,
    "reference_hour": 19,
    "typical_evening_demand_mw": {
-    "luzon": 11945,
-    "visayas": 1822,
-    "mindanao": 2805
+    "luzon": 11878,
+    "visayas": 2329,
+    "mindanao": 2366
    },
-   "added_visayas_load_to_bind_leyte_mw": 800,
+   "added_visayas_load_to_bind_leyte_mw": 275,
    "note": "Extra flat Visayas load at a typical evening before the 250 MW Leyte-Luzon corridor saturates and Visayas prices above Luzon. The corridor binds well below the DICT 1.5 GW national forecast."
   }
  },
@@ -530,28 +530,28 @@
   "note": "The commitment offer is anchored on the observed H1 2025 WESM average (P4.14/kWh), not fitted to the overnight trough. Where the grid's overnight demand still exceeds the committed tranche the modeled price does not move, and that gap stays in the residual.",
   "per_grid": {
    "luzon": {
-    "mae_before_php_kwh": 4.486,
-    "mae_after_php_kwh": 4.465,
-    "correlation_before": 0.11,
-    "correlation_after": 0.162,
-    "modeled_mean_before_php_kwh": 6.016,
-    "modeled_mean_after_php_kwh": 5.993
+    "mae_before_php_kwh": 4.487,
+    "mae_after_php_kwh": 4.466,
+    "correlation_before": 0.111,
+    "correlation_after": 0.165,
+    "modeled_mean_before_php_kwh": 6.012,
+    "modeled_mean_after_php_kwh": 5.99
    },
    "visayas": {
-    "mae_before_php_kwh": 8.899,
-    "mae_after_php_kwh": 8.606,
-    "correlation_before": null,
-    "correlation_after": 0.612,
-    "modeled_mean_before_php_kwh": 6.0,
-    "modeled_mean_after_php_kwh": 5.239
+    "mae_before_php_kwh": 8.456,
+    "mae_after_php_kwh": 8.416,
+    "correlation_before": 0.337,
+    "correlation_after": 0.356,
+    "modeled_mean_before_php_kwh": 6.506,
+    "modeled_mean_after_php_kwh": 6.463
    },
    "mindanao": {
-    "mae_before_php_kwh": 7.807,
-    "mae_after_php_kwh": 7.803,
-    "correlation_before": 0.047,
-    "correlation_after": 0.065,
-    "modeled_mean_before_php_kwh": 6.005,
-    "modeled_mean_after_php_kwh": 5.999
+    "mae_before_php_kwh": 7.812,
+    "mae_after_php_kwh": 7.751,
+    "correlation_before": null,
+    "correlation_after": 0.182,
+    "modeled_mean_before_php_kwh": 6.0,
+    "modeled_mean_after_php_kwh": 5.932
    }
   }
  },
@@ -978,23 +978,23 @@
    "modeled": [
     {
      "pct": 0,
-     "price": 6.0
+     "price": 12.0
     },
     {
      "pct": 2,
-     "price": 6.0
+     "price": 12.0
     },
     {
      "pct": 4,
-     "price": 6.0
+     "price": 12.0
     },
     {
      "pct": 6,
-     "price": 6.0
+     "price": 12.0
     },
     {
      "pct": 8,
-     "price": 6.0
+     "price": 12.0
     },
     {
      "pct": 10,
@@ -1078,103 +1078,103 @@
     },
     {
      "pct": 50,
-     "price": 5.0
+     "price": 6.0
     },
     {
      "pct": 52,
-     "price": 5.0
+     "price": 6.0
     },
     {
      "pct": 54,
-     "price": 5.0
+     "price": 6.0
     },
     {
      "pct": 56,
-     "price": 5.0
+     "price": 6.0
     },
     {
      "pct": 58,
-     "price": 5.0
+     "price": 6.0
     },
     {
      "pct": 60,
-     "price": 5.0
+     "price": 6.0
     },
     {
      "pct": 62,
-     "price": 5.0
+     "price": 6.0
     },
     {
      "pct": 64,
-     "price": 5.0
+     "price": 6.0
     },
     {
      "pct": 66,
-     "price": 5.0
+     "price": 6.0
     },
     {
      "pct": 68,
-     "price": 5.0
+     "price": 6.0
     },
     {
      "pct": 70,
-     "price": 5.0
+     "price": 6.0
     },
     {
      "pct": 72,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 74,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 76,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 78,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 80,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 82,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 84,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 86,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 88,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 90,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 92,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 94,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 96,
-     "price": 4.14
+     "price": 6.0
     },
     {
      "pct": 98,
-     "price": 4.14
+     "price": 5.0
     },
     {
      "pct": 100,
@@ -1396,7 +1396,7 @@
    "modeled": [
     {
      "pct": 0,
-     "price": 12.0
+     "price": 6.0
     },
     {
      "pct": 2,
@@ -1588,11 +1588,11 @@
     },
     {
      "pct": 96,
-     "price": 6.0
+     "price": 5.0
     },
     {
      "pct": 98,
-     "price": 6.0
+     "price": 4.14
     },
     {
      "pct": 100,
@@ -1817,19 +1817,19 @@
    "by_block": [
     {
      "block": "coal (marginal)",
-     "share_pct": 97.7
+     "share_pct": 97.8
     },
     {
      "block": "biomass",
-     "share_pct": 1.1
+     "share_pct": 1.2
     },
     {
      "block": "natural_gas",
-     "share_pct": 0.9
+     "share_pct": 0.8
     },
     {
      "block": "oil",
-     "share_pct": 0.3
+     "share_pct": 0.2
     }
    ]
   },
@@ -1838,15 +1838,19 @@
    "by_block": [
     {
      "block": "coal (marginal)",
-     "share_pct": 49.6
+     "share_pct": 87.8
     },
     {
-     "block": "coal (committed)",
-     "share_pct": 29.8
+     "block": "oil",
+     "share_pct": 8.4
     },
     {
      "block": "biomass",
-     "share_pct": 20.6
+     "share_pct": 3.1
+    },
+    {
+     "block": "coal (committed)",
+     "share_pct": 0.6
     }
    ]
   },
@@ -1855,19 +1859,15 @@
    "by_block": [
     {
      "block": "coal (marginal)",
-     "share_pct": 99.4
+     "share_pct": 95.0
     },
     {
      "block": "biomass",
-     "share_pct": 0.4
+     "share_pct": 2.9
     },
     {
      "block": "coal (committed)",
-     "share_pct": 0.1
-    },
-    {
-     "block": "oil",
-     "share_pct": 0.1
+     "share_pct": 2.1
     }
    ]
   }
@@ -1876,31 +1876,31 @@
   "luzon": {
    "n_intervals": 16127,
    "observed_mean_php_kwh": 7.651,
-   "modeled_mean_php_kwh": 5.993,
-   "mae_php_kwh": 4.465,
-   "bias_php_kwh": -1.657,
-   "evening_peak_residual_php_kwh": 7.523,
-   "correlation": 0.162,
+   "modeled_mean_php_kwh": 5.99,
+   "mae_php_kwh": 4.466,
+   "bias_php_kwh": -1.66,
+   "evening_peak_residual_php_kwh": 7.525,
+   "correlation": 0.165,
    "note": null
   },
   "visayas": {
    "n_intervals": 16127,
    "observed_mean_php_kwh": 12.963,
-   "modeled_mean_php_kwh": 5.239,
-   "mae_php_kwh": 8.606,
-   "bias_php_kwh": -7.725,
-   "evening_peak_residual_php_kwh": 16.886,
-   "correlation": 0.612,
+   "modeled_mean_php_kwh": 6.463,
+   "mae_php_kwh": 8.416,
+   "bias_php_kwh": -6.5,
+   "evening_peak_residual_php_kwh": 14.635,
+   "correlation": 0.356,
    "note": null
   },
   "mindanao": {
    "n_intervals": 16127,
    "observed_mean_php_kwh": 11.519,
-   "modeled_mean_php_kwh": 5.999,
-   "mae_php_kwh": 7.803,
-   "bias_php_kwh": -5.519,
-   "evening_peak_residual_php_kwh": 12.687,
-   "correlation": 0.065,
+   "modeled_mean_php_kwh": 5.932,
+   "mae_php_kwh": 7.751,
+   "bias_php_kwh": -5.587,
+   "evening_peak_residual_php_kwh": 12.708,
+   "correlation": 0.182,
    "note": null
   }
  },
@@ -1908,145 +1908,145 @@
   "luzon": [
    {
     "hour": 0,
-    "demand_mw": 10955,
+    "demand_mw": 10888,
     "modeled_price": 6.0,
     "observed_price": 7.138
    },
    {
     "hour": 1,
-    "demand_mw": 10594,
+    "demand_mw": 10562,
     "modeled_price": 6.0,
     "observed_price": 5.679
    },
    {
     "hour": 2,
-    "demand_mw": 10270,
-    "modeled_price": 6.0,
+    "demand_mw": 10250,
+    "modeled_price": 5.997,
     "observed_price": 4.643
    },
    {
     "hour": 3,
-    "demand_mw": 10066,
-    "modeled_price": 5.99,
+    "demand_mw": 10072,
+    "modeled_price": 5.982,
     "observed_price": 4.4
    },
    {
     "hour": 4,
-    "demand_mw": 9970,
-    "modeled_price": 5.972,
+    "demand_mw": 9978,
+    "modeled_price": 5.964,
     "observed_price": 4.676
    },
    {
     "hour": 5,
-    "demand_mw": 9925,
-    "modeled_price": 5.929,
+    "demand_mw": 9899,
+    "modeled_price": 5.942,
     "observed_price": 4.538
    },
    {
     "hour": 6,
-    "demand_mw": 9793,
-    "modeled_price": 5.886,
+    "demand_mw": 9761,
+    "modeled_price": 5.887,
     "observed_price": 2.517
    },
    {
     "hour": 7,
-    "demand_mw": 10173,
-    "modeled_price": 5.873,
+    "demand_mw": 10155,
+    "modeled_price": 5.882,
     "observed_price": 2.836
    },
    {
     "hour": 8,
-    "demand_mw": 11001,
-    "modeled_price": 5.913,
+    "demand_mw": 10971,
+    "modeled_price": 5.911,
     "observed_price": 3.848
    },
    {
     "hour": 9,
-    "demand_mw": 11646,
-    "modeled_price": 5.939,
+    "demand_mw": 11606,
+    "modeled_price": 5.94,
     "observed_price": 3.471
    },
    {
     "hour": 10,
-    "demand_mw": 12163,
-    "modeled_price": 5.969,
+    "demand_mw": 12136,
+    "modeled_price": 5.977,
     "observed_price": 5.307
    },
    {
     "hour": 11,
-    "demand_mw": 12388,
-    "modeled_price": 5.999,
+    "demand_mw": 12362,
+    "modeled_price": 5.994,
     "observed_price": 4.874
    },
    {
     "hour": 12,
-    "demand_mw": 12325,
+    "demand_mw": 12300,
     "modeled_price": 6.0,
     "observed_price": 3.867
    },
    {
     "hour": 13,
-    "demand_mw": 12677,
+    "demand_mw": 12647,
     "modeled_price": 6.0,
     "observed_price": 7.199
    },
    {
     "hour": 14,
-    "demand_mw": 12852,
+    "demand_mw": 12809,
     "modeled_price": 6.0,
     "observed_price": 7.829
    },
    {
     "hour": 15,
-    "demand_mw": 12758,
-    "modeled_price": 6.188,
+    "demand_mw": 12718,
+    "modeled_price": 6.143,
     "observed_price": 9.805
    },
    {
     "hour": 16,
-    "demand_mw": 12431,
-    "modeled_price": 6.179,
+    "demand_mw": 12380,
+    "modeled_price": 6.152,
     "observed_price": 11.606
    },
    {
     "hour": 17,
-    "demand_mw": 11919,
+    "demand_mw": 11853,
     "modeled_price": 6.0,
     "observed_price": 11.242
    },
    {
     "hour": 18,
-    "demand_mw": 11972,
+    "demand_mw": 11885,
     "modeled_price": 6.0,
     "observed_price": 13.05
    },
    {
     "hour": 19,
-    "demand_mw": 12031,
+    "demand_mw": 11943,
     "modeled_price": 6.0,
     "observed_price": 13.13
    },
    {
     "hour": 20,
-    "demand_mw": 12135,
-    "modeled_price": 6.009,
+    "demand_mw": 12048,
+    "modeled_price": 6.0,
     "observed_price": 15.911
    },
    {
     "hour": 21,
-    "demand_mw": 12045,
+    "demand_mw": 11954,
     "modeled_price": 6.0,
     "observed_price": 14.325
    },
    {
     "hour": 22,
-    "demand_mw": 11811,
+    "demand_mw": 11709,
     "modeled_price": 6.0,
     "observed_price": 12.173
    },
    {
     "hour": 23,
-    "demand_mw": 11425,
+    "demand_mw": 11334,
     "modeled_price": 6.0,
     "observed_price": 9.065
    }
@@ -2054,291 +2054,291 @@
   "visayas": [
    {
     "hour": 0,
-    "demand_mw": 1525,
-    "modeled_price": 5.009,
+    "demand_mw": 2018,
+    "modeled_price": 6.0,
     "observed_price": 8.612
    },
    {
     "hour": 1,
-    "demand_mw": 1494,
-    "modeled_price": 4.843,
+    "demand_mw": 1943,
+    "modeled_price": 6.0,
     "observed_price": 6.269
    },
    {
     "hour": 2,
-    "demand_mw": 1452,
-    "modeled_price": 4.637,
+    "demand_mw": 1877,
+    "modeled_price": 6.0,
     "observed_price": 4.842
    },
    {
     "hour": 3,
-    "demand_mw": 1424,
-    "modeled_price": 4.504,
+    "demand_mw": 1823,
+    "modeled_price": 6.0,
     "observed_price": 4.399
    },
    {
     "hour": 4,
-    "demand_mw": 1412,
-    "modeled_price": 4.454,
+    "demand_mw": 1804,
+    "modeled_price": 6.0,
     "observed_price": 4.626
    },
    {
     "hour": 5,
-    "demand_mw": 1419,
-    "modeled_price": 4.453,
+    "demand_mw": 1825,
+    "modeled_price": 6.0,
     "observed_price": 5.45
    },
    {
     "hour": 6,
-    "demand_mw": 1433,
-    "modeled_price": 4.381,
+    "demand_mw": 1795,
+    "modeled_price": 5.993,
     "observed_price": 2.891
    },
    {
     "hour": 7,
-    "demand_mw": 1564,
-    "modeled_price": 4.528,
+    "demand_mw": 1857,
+    "modeled_price": 5.923,
     "observed_price": 3.313
    },
    {
     "hour": 8,
-    "demand_mw": 1767,
-    "modeled_price": 4.923,
+    "demand_mw": 2072,
+    "modeled_price": 5.853,
     "observed_price": 6.692
    },
    {
     "hour": 9,
-    "demand_mw": 1923,
-    "modeled_price": 5.084,
+    "demand_mw": 2234,
+    "modeled_price": 5.836,
     "observed_price": 9.399
    },
    {
     "hour": 10,
-    "demand_mw": 2033,
-    "modeled_price": 5.189,
+    "demand_mw": 2333,
+    "modeled_price": 5.841,
     "observed_price": 11.228
    },
    {
     "hour": 11,
-    "demand_mw": 2085,
-    "modeled_price": 5.258,
+    "demand_mw": 2372,
+    "modeled_price": 5.819,
     "observed_price": 11.902
    },
    {
     "hour": 12,
-    "demand_mw": 2077,
-    "modeled_price": 5.152,
+    "demand_mw": 2355,
+    "modeled_price": 5.8,
     "observed_price": 9.858
    },
    {
     "hour": 13,
-    "demand_mw": 2111,
-    "modeled_price": 5.348,
+    "demand_mw": 2443,
+    "modeled_price": 5.921,
     "observed_price": 17.336
    },
    {
     "hour": 14,
-    "demand_mw": 2089,
-    "modeled_price": 5.529,
+    "demand_mw": 2477,
+    "modeled_price": 5.982,
     "observed_price": 19.249
    },
    {
     "hour": 15,
-    "demand_mw": 2020,
-    "modeled_price": 5.611,
+    "demand_mw": 2455,
+    "modeled_price": 6.089,
     "observed_price": 20.302
    },
    {
     "hour": 16,
-    "demand_mw": 1915,
-    "modeled_price": 5.679,
+    "demand_mw": 2399,
+    "modeled_price": 6.509,
     "observed_price": 21.986
    },
    {
     "hour": 17,
-    "demand_mw": 1815,
-    "modeled_price": 5.883,
+    "demand_mw": 2322,
+    "modeled_price": 6.67,
     "observed_price": 21.781
    },
    {
     "hour": 18,
-    "demand_mw": 1860,
-    "modeled_price": 6.0,
+    "demand_mw": 2393,
+    "modeled_price": 9.634,
     "observed_price": 27.428
    },
    {
     "hour": 19,
-    "demand_mw": 1812,
-    "modeled_price": 5.942,
+    "demand_mw": 2346,
+    "modeled_price": 9.058,
     "observed_price": 23.234
    },
    {
     "hour": 20,
-    "demand_mw": 1804,
-    "modeled_price": 5.991,
+    "demand_mw": 2338,
+    "modeled_price": 8.339,
     "observed_price": 22.807
    },
    {
     "hour": 21,
-    "demand_mw": 1754,
-    "modeled_price": 5.958,
+    "demand_mw": 2291,
+    "modeled_price": 7.259,
     "observed_price": 18.92
    },
    {
     "hour": 22,
-    "demand_mw": 1669,
-    "modeled_price": 5.817,
+    "demand_mw": 2212,
+    "modeled_price": 6.34,
     "observed_price": 15.898
    },
    {
     "hour": 23,
-    "demand_mw": 1593,
-    "modeled_price": 5.482,
+    "demand_mw": 2117,
+    "modeled_price": 6.0,
     "observed_price": 11.486
    }
   ],
   "mindanao": [
    {
     "hour": 0,
-    "demand_mw": 2408,
-    "modeled_price": 6.0,
+    "demand_mw": 1982,
+    "modeled_price": 5.989,
     "observed_price": 7.482
    },
    {
     "hour": 1,
-    "demand_mw": 2334,
-    "modeled_price": 6.0,
+    "demand_mw": 1917,
+    "modeled_price": 5.974,
     "observed_price": 5.459
    },
    {
     "hour": 2,
-    "demand_mw": 2265,
-    "modeled_price": 6.0,
+    "demand_mw": 1859,
+    "modeled_price": 5.928,
     "observed_price": 4.166
    },
    {
     "hour": 3,
-    "demand_mw": 2218,
-    "modeled_price": 6.0,
+    "demand_mw": 1814,
+    "modeled_price": 5.844,
     "observed_price": 3.908
    },
    {
     "hour": 4,
-    "demand_mw": 2210,
-    "modeled_price": 6.0,
+    "demand_mw": 1810,
+    "modeled_price": 5.825,
     "observed_price": 4.251
    },
    {
     "hour": 5,
-    "demand_mw": 2242,
-    "modeled_price": 6.0,
+    "demand_mw": 1862,
+    "modeled_price": 5.908,
     "observed_price": 4.879
    },
    {
     "hour": 6,
-    "demand_mw": 2154,
-    "modeled_price": 5.99,
+    "demand_mw": 1824,
+    "modeled_price": 5.827,
     "observed_price": 2.816
    },
    {
     "hour": 7,
-    "demand_mw": 2147,
-    "modeled_price": 5.979,
+    "demand_mw": 1873,
+    "modeled_price": 5.734,
     "observed_price": 3.312
    },
    {
     "hour": 8,
-    "demand_mw": 2346,
-    "modeled_price": 5.95,
+    "demand_mw": 2071,
+    "modeled_price": 5.784,
     "observed_price": 6.665
    },
    {
     "hour": 9,
-    "demand_mw": 2494,
-    "modeled_price": 5.959,
+    "demand_mw": 2222,
+    "modeled_price": 5.811,
     "observed_price": 9.574
    },
    {
     "hour": 10,
-    "demand_mw": 2603,
-    "modeled_price": 5.985,
+    "demand_mw": 2330,
+    "modeled_price": 5.875,
     "observed_price": 11.457
    },
    {
     "hour": 11,
-    "demand_mw": 2653,
-    "modeled_price": 5.997,
+    "demand_mw": 2392,
+    "modeled_price": 5.933,
     "observed_price": 12.29
    },
    {
     "hour": 12,
-    "demand_mw": 2645,
-    "modeled_price": 6.0,
+    "demand_mw": 2392,
+    "modeled_price": 5.958,
     "observed_price": 10.354
    },
    {
     "hour": 13,
-    "demand_mw": 2776,
-    "modeled_price": 6.0,
+    "demand_mw": 2474,
+    "modeled_price": 5.98,
     "observed_price": 17.512
    },
    {
     "hour": 14,
-    "demand_mw": 2838,
+    "demand_mw": 2492,
     "modeled_price": 6.0,
     "observed_price": 18.946
    },
    {
     "hour": 15,
-    "demand_mw": 2847,
+    "demand_mw": 2452,
     "modeled_price": 6.0,
     "observed_price": 18.532
    },
    {
     "hour": 16,
-    "demand_mw": 2815,
-    "modeled_price": 6.018,
+    "demand_mw": 2382,
+    "modeled_price": 6.0,
     "observed_price": 17.545
    },
    {
     "hour": 17,
-    "demand_mw": 2774,
+    "demand_mw": 2333,
     "modeled_price": 6.0,
     "observed_price": 16.79
    },
    {
     "hour": 18,
-    "demand_mw": 2874,
-    "modeled_price": 6.107,
+    "demand_mw": 2429,
+    "modeled_price": 6.0,
     "observed_price": 23.007
    },
    {
     "hour": 19,
-    "demand_mw": 2795,
+    "demand_mw": 2350,
     "modeled_price": 6.0,
     "observed_price": 17.947
    },
    {
     "hour": 20,
-    "demand_mw": 2783,
+    "demand_mw": 2336,
     "modeled_price": 6.0,
     "observed_price": 19.498
    },
    {
     "hour": 21,
-    "demand_mw": 2723,
+    "demand_mw": 2277,
     "modeled_price": 6.0,
     "observed_price": 16.361
    },
    {
     "hour": 22,
-    "demand_mw": 2626,
+    "demand_mw": 2185,
     "modeled_price": 6.0,
     "observed_price": 13.285
    },
    {
     "hour": 23,
-    "demand_mw": 2519,
+    "demand_mw": 2085,
     "modeled_price": 6.0,
     "observed_price": 9.544
    }
@@ -2346,99 +2346,123 @@
  },
  "n1": [
   {
-   "unit": "Masinloc",
-   "grid": "luzon",
-   "fuel": "coal",
-   "capacity_mw": 1340,
-   "tight_evening_demand_mw": 13306,
-   "base_price_php_kwh": 6.0,
-   "tripped_price_php_kwh": 12.0,
-   "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14589,
-   "shortfall_at_peak_mw": 246.6
-  },
-  {
-   "unit": "GNPower Dinginin",
-   "grid": "luzon",
-   "fuel": "coal",
-   "capacity_mw": 1336,
-   "tight_evening_demand_mw": 13306,
-   "base_price_php_kwh": 6.0,
-   "tripped_price_php_kwh": 12.0,
-   "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14589,
-   "shortfall_at_peak_mw": 242.6
-  },
-  {
-   "unit": "Sual",
-   "grid": "luzon",
-   "fuel": "coal",
-   "capacity_mw": 1294,
-   "tight_evening_demand_mw": 13306,
-   "base_price_php_kwh": 6.0,
-   "tripped_price_php_kwh": 12.0,
-   "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14589,
-   "shortfall_at_peak_mw": 200.6
-  },
-  {
-   "unit": "Ilijan",
-   "grid": "luzon",
-   "fuel": "natural_gas",
-   "capacity_mw": 1200,
-   "tight_evening_demand_mw": 13306,
-   "base_price_php_kwh": 6.0,
-   "tripped_price_php_kwh": 12.0,
-   "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14589,
-   "shortfall_at_peak_mw": 106.6
-  },
-  {
    "unit": "Therma Visayas (TVI)",
    "grid": "visayas",
    "fuel": "coal",
    "capacity_mw": 340,
-   "tight_evening_demand_mw": 2256,
-   "base_price_php_kwh": 6.0,
-   "tripped_price_php_kwh": 12.0,
-   "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 2559,
-   "shortfall_at_peak_mw": 85.8
-  },
-  {
-   "unit": "Pagbilao",
-   "grid": "luzon",
-   "fuel": "coal",
-   "capacity_mw": 1155,
-   "tight_evening_demand_mw": 13306,
-   "base_price_php_kwh": 6.0,
-   "tripped_price_php_kwh": 12.0,
-   "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14589,
-   "shortfall_at_peak_mw": 61.6
+   "tight_evening_demand_mw": 2561,
+   "base_price_php_kwh": 12.0,
+   "tripped_price_php_kwh": 32.0,
+   "delta_price_php_kwh": 20.0,
+   "peak_demand_mw": 2769,
+   "shortfall_at_peak_mw": 296.1
   },
   {
    "unit": "PEDC",
    "grid": "visayas",
    "fuel": "coal",
    "capacity_mw": 314,
-   "tight_evening_demand_mw": 2256,
+   "tight_evening_demand_mw": 2561,
+   "base_price_php_kwh": 12.0,
+   "tripped_price_php_kwh": 32.0,
+   "delta_price_php_kwh": 20.0,
+   "peak_demand_mw": 2769,
+   "shortfall_at_peak_mw": 270.1
+  },
+  {
+   "unit": "CEDC",
+   "grid": "visayas",
+   "fuel": "coal",
+   "capacity_mw": 246,
+   "tight_evening_demand_mw": 2561,
+   "base_price_php_kwh": 12.0,
+   "tripped_price_php_kwh": 12.0,
+   "delta_price_php_kwh": 0.0,
+   "peak_demand_mw": 2769,
+   "shortfall_at_peak_mw": 202.1
+  },
+  {
+   "unit": "Masinloc",
+   "grid": "luzon",
+   "fuel": "coal",
+   "capacity_mw": 1340,
+   "tight_evening_demand_mw": 13256,
    "base_price_php_kwh": 6.0,
    "tripped_price_php_kwh": 12.0,
    "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 2559,
-   "shortfall_at_peak_mw": 59.8
+   "peak_demand_mw": 14539,
+   "shortfall_at_peak_mw": 196.6
+  },
+  {
+   "unit": "GNPower Dinginin",
+   "grid": "luzon",
+   "fuel": "coal",
+   "capacity_mw": 1336,
+   "tight_evening_demand_mw": 13256,
+   "base_price_php_kwh": 6.0,
+   "tripped_price_php_kwh": 12.0,
+   "delta_price_php_kwh": 6.0,
+   "peak_demand_mw": 14539,
+   "shortfall_at_peak_mw": 192.6
+  },
+  {
+   "unit": "KSPC (Kepco SPC)",
+   "grid": "visayas",
+   "fuel": "coal",
+   "capacity_mw": 200,
+   "tight_evening_demand_mw": 2561,
+   "base_price_php_kwh": 12.0,
+   "tripped_price_php_kwh": 12.0,
+   "delta_price_php_kwh": 0.0,
+   "peak_demand_mw": 2769,
+   "shortfall_at_peak_mw": 156.1
+  },
+  {
+   "unit": "Sual",
+   "grid": "luzon",
+   "fuel": "coal",
+   "capacity_mw": 1294,
+   "tight_evening_demand_mw": 13256,
+   "base_price_php_kwh": 6.0,
+   "tripped_price_php_kwh": 12.0,
+   "delta_price_php_kwh": 6.0,
+   "peak_demand_mw": 14539,
+   "shortfall_at_peak_mw": 150.6
+  },
+  {
+   "unit": "Ilijan",
+   "grid": "luzon",
+   "fuel": "natural_gas",
+   "capacity_mw": 1200,
+   "tight_evening_demand_mw": 13256,
+   "base_price_php_kwh": 6.0,
+   "tripped_price_php_kwh": 12.0,
+   "delta_price_php_kwh": 6.0,
+   "peak_demand_mw": 14539,
+   "shortfall_at_peak_mw": 56.6
+  },
+  {
+   "unit": "Pagbilao",
+   "grid": "luzon",
+   "fuel": "coal",
+   "capacity_mw": 1155,
+   "tight_evening_demand_mw": 13256,
+   "base_price_php_kwh": 6.0,
+   "tripped_price_php_kwh": 12.0,
+   "delta_price_php_kwh": 6.0,
+   "peak_demand_mw": 14539,
+   "shortfall_at_peak_mw": 11.6
   },
   {
    "unit": "Quezon Power",
    "grid": "luzon",
    "fuel": "coal",
    "capacity_mw": 511,
-   "tight_evening_demand_mw": 13306,
+   "tight_evening_demand_mw": 13256,
    "base_price_php_kwh": 6.0,
    "tripped_price_php_kwh": 12.0,
    "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14589,
+   "peak_demand_mw": 14539,
    "shortfall_at_peak_mw": 0.0
   },
   {
@@ -2446,35 +2470,11 @@
    "grid": "luzon",
    "fuel": "coal",
    "capacity_mw": 455,
-   "tight_evening_demand_mw": 13306,
+   "tight_evening_demand_mw": 13256,
    "base_price_php_kwh": 6.0,
    "tripped_price_php_kwh": 12.0,
    "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14589,
-   "shortfall_at_peak_mw": 0.0
-  },
-  {
-   "unit": "CEDC",
-   "grid": "visayas",
-   "fuel": "coal",
-   "capacity_mw": 246,
-   "tight_evening_demand_mw": 2256,
-   "base_price_php_kwh": 6.0,
-   "tripped_price_php_kwh": 12.0,
-   "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 2559,
-   "shortfall_at_peak_mw": 0.0
-  },
-  {
-   "unit": "KSPC (Kepco SPC)",
-   "grid": "visayas",
-   "fuel": "coal",
-   "capacity_mw": 200,
-   "tight_evening_demand_mw": 2256,
-   "base_price_php_kwh": 6.0,
-   "tripped_price_php_kwh": 12.0,
-   "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 2559,
+   "peak_demand_mw": 14539,
    "shortfall_at_peak_mw": 0.0
   }
  ],
@@ -2482,20 +2482,20 @@
   "luzon": {
    "installed_mw": 20968,
    "avail_at_peak_mw": 15681.9,
-   "peak_demand_mw": 14589,
-   "reserve_margin_pct": 7.5
+   "peak_demand_mw": 14539,
+   "reserve_margin_pct": 7.9
   },
   "visayas": {
    "installed_mw": 4007,
    "avail_at_peak_mw": 2813.4,
-   "peak_demand_mw": 2559,
-   "reserve_margin_pct": 9.9
+   "peak_demand_mw": 2769,
+   "reserve_margin_pct": 1.6
   },
   "mindanao": {
    "installed_mw": 4878,
    "avail_at_peak_mw": 3502.0,
-   "peak_demand_mw": 3227,
-   "reserve_margin_pct": 8.5
+   "peak_demand_mw": 2822,
+   "reserve_margin_pct": 24.1
   },
   "dict_2028": {
    "added_mw": 1500,
@@ -2504,12 +2504,12 @@
    "date": "2025-10",
    "src": "https://www.bworldonline.com/corporate/2025/10/23/707346/",
    "luzon_avail_at_peak_mw": 15681.9,
-   "luzon_peak_now_mw": 14589,
-   "luzon_peak_plus_dc_mw": 16089,
-   "reserve_margin_now_pct": 7.5,
-   "reserve_margin_with_dc_pct": -2.5,
-   "shortfall_intervals_with_dc": 109,
-   "eue_mwh_with_dc": 1531.0
+   "luzon_peak_now_mw": 14539,
+   "luzon_peak_plus_dc_mw": 16039,
+   "reserve_margin_now_pct": 7.9,
+   "reserve_margin_with_dc_pct": -2.2,
+   "shortfall_intervals_with_dc": 99,
+   "eue_mwh_with_dc": 1296.3
   }
  },
  "reliability": {
@@ -2545,22 +2545,22 @@
   "note": "Coal (~10%) and gas (~5%) forced-outage rates are from NERC GADS; hydro, geothermal, oil, and biomass are labeled industry-typical values. Only the named units are sampled; the rest of the fleet is held at its deterministic availability, so the mean is unchanged and the draws add the outage variance.",
   "per_grid": {
    "luzon": {
-    "lolp_pct": 0.19,
-    "expected_shortfall_mw": 0.9,
+    "lolp_pct": 0.15,
+    "expected_shortfall_mw": 0.8,
     "shortfall_mw_p50": 0.0,
     "shortfall_mw_p90": 0.0,
     "shortfall_mw_p99": 0.0,
     "shortfall_mw_max": 2222.6,
-    "eue_mwh_evening_window": 297.0
+    "eue_mwh_evening_window": 245.4
    },
    "visayas": {
-    "lolp_pct": 0.01,
-    "expected_shortfall_mw": 0.0,
+    "lolp_pct": 1.67,
+    "expected_shortfall_mw": 1.7,
     "shortfall_mw_p50": 0.0,
     "shortfall_mw_p90": 0.0,
-    "shortfall_mw_p99": 0.0,
-    "shortfall_mw_max": 36.7,
-    "eue_mwh_evening_window": 1.1
+    "shortfall_mw_p99": 53.9,
+    "shortfall_mw_max": 569.3,
+    "eue_mwh_evening_window": 541.8
    },
    "mindanao": {
     "lolp_pct": 0.0,
@@ -2574,16 +2574,16 @@
   },
   "load_dist": {
    "luzon": {
-    "mean": 11943.6,
-    "std": 630.6
+    "mean": 11880.7,
+    "std": 614.6
    },
    "visayas": {
-    "mean": 1817.7,
-    "std": 107.8
+    "mean": 2322.3,
+    "std": 108.4
    },
    "mindanao": {
-    "mean": 2805.2,
-    "std": 128.1
+    "mean": 2363.5,
+    "std": 127.6
    }
   },
   "dict_2028_luzon": {
@@ -2592,13 +2592,13 @@
    "date": "2025-10",
    "src": "https://www.bworldonline.com/corporate/2025/10/23/707346/",
    "distribution": {
-    "lolp_pct": 2.43,
-    "expected_shortfall_mw": 12.4,
+    "lolp_pct": 2.1,
+    "expected_shortfall_mw": 10.5,
     "shortfall_mw_p50": 0.0,
     "shortfall_mw_p90": 0.0,
-    "shortfall_mw_p99": 469.6,
-    "shortfall_mw_max": 2625.1,
-    "eue_mwh_evening_window": 4037.1
+    "shortfall_mw_p99": 403.1,
+    "shortfall_mw_max": 2525.1,
+    "eue_mwh_evening_window": 3431.4
    }
   }
  },
@@ -2617,7 +2617,7 @@
   "note": "Batteries (634 MW, DOE) plus Kalayaan pumped hydro (685 MW, CBK Power), both on Luzon (the national BESS placed on Luzon is a labeled simplification). They charge off-peak near the P4.14 commitment offer and discharge at about P5.17/kWh after round-trip loss. Energy-limited, so this firms the evening peak interval, not a sustained multi-day shortfall.",
   "dict_wave_peak_price": {
    "reference": "95th-percentile evening demand plus the DICT 1.5 GW wave",
-   "demand_mw": 14509,
+   "demand_mw": 14403,
    "without_storage_php_kwh": 12.0,
    "with_storage_php_kwh": 6.0,
    "without_storage_marginal_fuel": "oil",
@@ -2627,27 +2627,27 @@
   },
   "reliability_buyback": {
    "luzon_baseline": {
-    "lolp_without_pct": 0.19,
+    "lolp_without_pct": 0.15,
     "lolp_with_pct": 0.0
    },
    "luzon_dict_2028": {
     "without": {
-     "lolp_pct": 2.32,
-     "expected_shortfall_mw": 11.8,
+     "lolp_pct": 1.99,
+     "expected_shortfall_mw": 9.9,
      "shortfall_mw_p50": 0.0,
      "shortfall_mw_p90": 0.0,
-     "shortfall_mw_p99": 453.9,
-     "shortfall_mw_max": 3384.0,
-     "eue_mwh_evening_window": 3840.9
+     "shortfall_mw_p99": 369.6,
+     "shortfall_mw_max": 3234.0,
+     "eue_mwh_evening_window": 3238.7
     },
     "with_storage": {
-     "lolp_pct": 0.12,
-     "expected_shortfall_mw": 0.5,
+     "lolp_pct": 0.1,
+     "expected_shortfall_mw": 0.4,
      "shortfall_mw_p50": 0.0,
      "shortfall_mw_p90": 0.0,
      "shortfall_mw_p99": 0.0,
-     "shortfall_mw_max": 1651.8,
-     "eue_mwh_evening_window": 175.5
+     "shortfall_mw_max": 1551.8,
+     "eue_mwh_evening_window": 138.0
     }
    }
   }
@@ -2656,12 +2656,12 @@
   "luzon": {
    "by_fuel": {
     "biomass": {
-     "generation_gwh": 460.2,
+     "generation_gwh": 462.4,
      "tco2": 0
     },
     "coal": {
-     "generation_gwh": 9592.8,
-     "tco2": 9113124
+     "generation_gwh": 9587.0,
+     "tco2": 9107685
     },
     "geothermal": {
      "generation_gwh": 1494.7,
@@ -2672,12 +2672,12 @@
      "tco2": 0
     },
     "natural_gas": {
-     "generation_gwh": 6441.8,
-     "tco2": 2705560
+     "generation_gwh": 6443.9,
+     "tco2": 2706433
     },
     "oil": {
-     "generation_gwh": 0.5,
-     "tco2": 360
+     "generation_gwh": 0.3,
+     "tco2": 248
     },
     "solar": {
      "generation_gwh": 849.6,
@@ -2688,18 +2688,18 @@
      "tco2": 0
     }
    },
-   "total_tco2": 11819044,
-   "total_generation_gwh": 21744.4
+   "total_tco2": 11814366,
+   "total_generation_gwh": 21742.7
   },
   "visayas": {
    "by_fuel": {
     "biomass": {
-     "generation_gwh": 133.8,
+     "generation_gwh": 195.8,
      "tco2": 0
     },
     "coal": {
-     "generation_gwh": 1165.5,
-     "tco2": 1107208
+     "generation_gwh": 1796.6,
+     "tco2": 1706772
     },
     "geothermal": {
      "generation_gwh": 1684.7,
@@ -2708,6 +2708,10 @@
     "hydro": {
      "generation_gwh": 58.2,
      "tco2": 0
+    },
+    "oil": {
+     "generation_gwh": 8.6,
+     "tco2": 6476
     },
     "solar": {
      "generation_gwh": 330.4,
@@ -2718,18 +2722,18 @@
      "tco2": 0
     }
    },
-   "total_tco2": 1107208,
-   "total_generation_gwh": 3417.0
+   "total_tco2": 1713248,
+   "total_generation_gwh": 4118.7
   },
   "mindanao": {
    "by_fuel": {
     "biomass": {
-     "generation_gwh": 127.4,
+     "generation_gwh": 124.1,
      "tco2": 0
     },
     "coal": {
-     "generation_gwh": 3121.1,
-     "tco2": 2965030
+     "generation_gwh": 2424.3,
+     "tco2": 2303124
     },
     "geothermal": {
      "generation_gwh": 193.5,
@@ -2739,17 +2743,13 @@
      "generation_gwh": 1289.4,
      "tco2": 0
     },
-    "oil": {
-     "generation_gwh": 0.0,
-     "tco2": 9
-    },
     "solar": {
      "generation_gwh": 168.5,
      "tco2": 0
     }
    },
-   "total_tco2": 2965039,
-   "total_generation_gwh": 4899.9
+   "total_tco2": 2303124,
+   "total_generation_gwh": 4199.8
   }
  }
 }

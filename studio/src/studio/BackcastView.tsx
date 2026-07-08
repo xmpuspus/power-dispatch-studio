@@ -146,6 +146,57 @@ export function BackcastView({
         <p className="note">{bc.high_hour_note}</p>
       </Panel>
 
+      {bc.flows ? (
+        <Panel
+          title="Corridor flows against the observed imports and exports"
+          subtitle="With native-load demand the replay must move real MW to serve each grid; this scores whether it does."
+        >
+          <DataGrid
+            columns={[
+              {
+                key: 'c',
+                header: 'Corridor',
+                render: (k: string) => bc.flows![k].corridor,
+              },
+              {
+                key: 'obs',
+                header: 'Observed mean',
+                align: 'right',
+                mono: true,
+                render: (k: string) => `${num(bc.flows![k].observed_mean_mw)} MW`,
+              },
+              {
+                key: 'mod',
+                header: 'Modeled mean',
+                align: 'right',
+                mono: true,
+                render: (k: string) => `${num(bc.flows![k].modeled_mean_mw)} MW`,
+              },
+              {
+                key: 'mae',
+                header: 'MAE',
+                align: 'right',
+                mono: true,
+                render: (k: string) => `${num(bc.flows![k].mae_mw)} MW`,
+              },
+              {
+                key: 'dir',
+                header: 'Direction agreement',
+                align: 'right',
+                mono: true,
+                render: (k: string) => {
+                  const v = bc.flows![k].direction_agreement_pct
+                  return v == null ? 'n/a' : pct(v / 100, 0)
+                },
+              },
+            ]}
+            rows={Object.keys(bc.flows)}
+            getKey={(k) => k}
+          />
+          <p className="note">{bc.flows_note}</p>
+        </Panel>
+      ) : null}
+
       {bc.per_grid_mcp ? (
         <Panel
           title="Same replays against the observed clearing price (MCP)"

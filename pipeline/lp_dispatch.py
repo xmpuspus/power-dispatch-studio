@@ -149,9 +149,14 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
 
     reserve_req = None
     if opts.get("reserve_deduction"):
-        req = profiles.get("reserve_req_mean_mw") or {}
-        reserve_req = {g: round1(sum((req.get(g) or {}).values()))
-                       for g in GRID_KEYS}
+        # the DAY's scheduled requirement when the archive carries it, with
+        # the window mean as a PER-GRID fallback (a partial day dict must
+        # not zero a grid's requirement); mirrored in chrono.ts
+        day_req = day.get("reserve_req_mw") or {}
+        mean_req = profiles.get("reserve_req_mean_mw") or {}
+        reserve_req = {
+            g: round1(sum((day_req.get(g) or mean_req.get(g) or {}).values()))
+            for g in GRID_KEYS}
 
     # the day's observed hydro energy, scaled with hydro capacity so the
     # hydrology lever and capacity edits stay coherent (half the water at

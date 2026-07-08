@@ -183,7 +183,14 @@ export function assembleDay(
   if (opts.reserve_deduction) {
     reserveReq = { luzon: 0, visayas: 0, mindanao: 0 }
     for (const g of GRID_KEYS) {
-      const req = profiles.reserve_req_mean_mw[g] ?? {}
+      // the DAY's scheduled requirement when the archive carries it, with
+      // the window mean as a PER-GRID fallback; mirror of
+      // lp_dispatch._assemble (an empty per-grid dict also falls back)
+      const dayReq = day.reserve_req_mw?.[g]
+      const req =
+        dayReq && Object.keys(dayReq).length > 0
+          ? dayReq
+          : (profiles.reserve_req_mean_mw[g] ?? {})
       reserveReq[g] = round1(Object.values(req).reduce((s, v) => s + v, 0))
     }
   }

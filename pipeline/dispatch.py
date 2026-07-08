@@ -668,16 +668,21 @@ def build_dispatch() -> dict:
             gen = f(r.get("GENERATION"))
             if gen <= 0:
                 continue
+            # NATIVE LOAD: generation plus net market imports. Generation
+            # alone self-balances every grid and erases the observed
+            # inter-island flows (Visayas net-imports about a quarter of
+            # its own generation); the same rows carry the real geometry
+            load = gen + f(r.get("MKT_IMPORT")) - f(r.get("MKT_EXPORT"))
             ti = (r.get("TIME_INTERVAL") or "").strip()
             hour = hour_of(ti)
             iv = intervals.setdefault((day, ti),
                                       {"hour": hour, "market": is_market, "dem": {}})
-            iv["dem"][grid] = gen
+            iv["dem"][grid] = load
             blocks = stk(grid, hour)
-            res = clear(blocks, gen)
-            peak_demand[grid] = max(peak_demand[grid], gen)
-            demands[grid].append(gen)
-            hourly_dem[grid][hour].append(gen)
+            res = clear(blocks, load)
+            peak_demand[grid] = max(peak_demand[grid], load)
+            demands[grid].append(load)
+            hourly_dem[grid][hour].append(load)
             if res["shortfall_mw"] > 0:
                 lole_intervals[grid] += 1
                 eue_mwh[grid] += res["shortfall_mw"] * 5 / 60
@@ -687,8 +692,8 @@ def build_dispatch() -> dict:
             if price is not None and is_market:
                 obs[grid].append(price)
                 mod[grid].append(res["price"])
-                mod_nc[grid].append(clear(stk_nc(grid, hour), gen)["price"])
-                hourly[grid][hour].append((gen, res["price"], price))
+                mod_nc[grid].append(clear(stk_nc(grid, hour), load)["price"])
+                hourly[grid][hour].append((load, res["price"], price))
                 lbl = _marg_label(res["marginal_fuel"], res["price"])
                 marg_freq[grid][lbl] = marg_freq[grid].get(lbl, 0) + 1
 
@@ -861,8 +866,8 @@ def build_dispatch() -> dict:
     lz_pk = peak_demand["LUZON"]
     short_intervals = short_eue = 0
     for h in range(24):
-        for gen, _mp, _op in hourly["LUZON"][h]:
-            deficit = (gen + added) - lz_av
+        for load, _mp, _op in hourly["LUZON"][h]:
+            deficit = (load + added) - lz_av
             if deficit > 0:
                 short_intervals += 1
                 short_eue += deficit * 5 / 60
