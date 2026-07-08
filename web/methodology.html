@@ -450,12 +450,25 @@ archived advisory stream.</li>
 archive says why</b>: the processed SO instruction list carries a median
 of 10 MW across 151 instructed grid-hours in twelve weekly files, two
 orders of magnitude below the offer books it would constrain, so a
-must-take layer built from it would be inert and is not built. The real
-downward-inflexibility gap (the model reproduces no negative-price hours
-while the tape shows a few) needs per-resource fuel classification of
-the offer book to place minimum-stable floors on the right MW; that
-classification, through the registered-capacity key, is queued work, not
-a boundary.</li>
+must-take layer built from it would be inert and is not built.</li>
+<li><b>Minimum-stable coal floors were built, measured, and removed</b>:
+with the offer book fuel-classified (84.6 percent of offered MW through
+the alias table, hand-verified abbreviations, and a fuel-tolerant fleet
+match), carving the sourced 40 percent technical minimum of online coal
+down to the price floor left the books byte-identical, because the coal
+fleet ALREADY offers its committed tranche at the floor. Commitment
+behavior is in the bids; a floor layer would model what the market
+already models.</li>
+<li><b>The negative-price hours are a resolution limit, named and
+sized</b>: on the window's most negative day the clearing price itself
+went negative for eight midday hours (an ex-ante dispatch outcome, solar
+flooding, not a settlement artifact), and the hour's floor-priced supply
+came within 0.5 to 3 percent of native load (10,706 MW offered at or
+below zero against a 10,764 MW hour). The 5-minute market crosses that
+boundary intermittently; an hourly replay on hour-mean demand cannot.
+Reproducing the sign flips needs sub-hourly replay granularity, a
+scoped-out refinement (the 5-minute data exists in the archive), not a
+missing input.</li>
 <li><b>Offer-based dispatch is NOT a boundary</b>: IEMOP publishes the
 real-time generation offers and the regional merit-order tables in the same
 public window (verified July 2026), and dispatching against them is the

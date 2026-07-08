@@ -44,6 +44,7 @@ from datetime import date as date_cls
 from datetime import datetime, timedelta
 
 from archive_iemop import BASE, curl
+from pasa import _alias_for, grid_of_prefix
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(HERE, "..", "data", "raw")
@@ -53,10 +54,65 @@ SSN_SLUG = "rtd-self-scheduled-nominations"
 SERVER = "/var/www/html/wp-content/uploads/downloads/data"
 REGION = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao"}
 MAX_BLOCKS = 48
+# artifact schema: 2 adds the fuel-classified coal series and the
+# min-stable-floor variant book (hours_floor); derive() rewrites any
+# committed daily below this version
+SCHEMA_VERSION = 2
 # the WESM offer floor (-10,000 PhP/MWh) in PhP/kWh; self-scheduled MW
 # enters the stack here as price-taking capacity
 OFFER_FLOOR = -10.0
 SLEEP = 0.3
+
+
+# verified abbreviation -> fuel: each entry checked by hand against the DOE
+# fleet (grid + plausible MW). Fuel-level only: the codes' unit mapping can
+# stay ambiguous as long as every candidate row burns the same fuel.
+FUEL_ALIAS = {"GNPD": "coal", "SUAL": "coal", "QPPL": "coal",
+              "MSINLO": "coal", "MINBAL": "coal", "PALM": "coal",
+              "SMC": "coal"}
+
+_fleet_cache: dict | None = None
+
+
+def _fleet_index():
+    global _fleet_cache
+    if _fleet_cache is None:
+        import re as _re
+        path = os.path.join(HERE, "..", "web", "data", "fleet.json")
+        fleet = json.load(open(path))
+        _fleet_cache = {
+            "by_name": {p["name"]: p for p in fleet["plants"]},
+            "norm": [(_re.sub(r"[^A-Z0-9]", "", p["name"].upper()), p)
+                     for p in fleet["plants"]],
+        }
+    return _fleet_cache
+
+
+def classify_fuel(res: str) -> str | None:
+    """Fuel of an offer-book resource code, or None. Three verified paths:
+    the pasa alias table (authoritative), the hand-verified FUEL_ALIAS
+    abbreviations, then a fuel-tolerant core match against the DOE fleet
+    (accepted only when every candidate row in the code's grid agrees on
+    one fuel). Anything else stays unclassified; coverage is stated in the
+    artifact, never guessed."""
+    import re as _re
+    idx = _fleet_index()
+    alias = _alias_for(res)
+    if alias:
+        row = idx["by_name"].get(alias[0])
+        if row:
+            return row["fuel"]
+    grid = grid_of_prefix(res)
+    core = _re.sub(r"^\d+", "", res.split("_")[0])
+    if core in FUEL_ALIAS:
+        return FUEL_ALIAS[core]
+    core_n = _re.sub(r"[^A-Z0-9]", "", core.upper())
+    if len(core_n) < 3:
+        return None
+    fuels = {p["fuel"] for n, p in idx["norm"]
+             if (core_n in n or n.startswith(core_n))
+             and (grid is None or p["grid"] == grid)}
+    return fuels.pop() if len(fuels) == 1 else None
 
 
 def _fetch_hour_csv(slug: str, prefix: str, stamp: str) -> list[dict] | None:
@@ -160,6 +216,9 @@ def derive_day(date: str) -> dict:
     d = datetime.strptime(date, "%Y-%m-%d")
     hours: dict[str, list[list[list[float]] | None]] = {
         g: [None] * 24 for g in REGION.values()}
+    coal_mw: dict[str, list[float]] = {g: [0.0] * 24 for g in REGION.values()}
+    offered_mw_sum = {g: 0.0 for g in REGION.values()}
+    classified_mw_sum = {g: 0.0 for g in REGION.values()}
     n_res = 0
     for h in range(24):
         end = d + timedelta(hours=h + 1)
@@ -179,6 +238,7 @@ def derive_day(date: str) -> dict:
             raise RuntimeError(f"offers: empty book for {date} h{h}")
         per_grid: dict[str, list[tuple[float, float]]] = {
             g: [] for g in REGION.values()}
+
         seen = set()
         for r in rows:
             if (r.get("TIME_INTERVAL") or "").strip() != first:
@@ -188,7 +248,15 @@ def derive_day(date: str) -> dict:
             if not g or not res:
                 continue
             seen.add(res)
-            per_grid[g].extend(_segments(r))
+            segs = _segments(r)
+            per_grid[g].extend(segs)
+            mw = sum(m for _, m in segs)
+            offered_mw_sum[g] += mw
+            fuel = classify_fuel(res)
+            if fuel:
+                classified_mw_sum[g] += mw
+            if fuel == "coal":
+                coal_mw[g][h] += mw
         # self-scheduled capacity offers no curve; it enters as one
         # price-taking block at the offer floor (nuclear option of the
         # merit order: it runs whenever the grid runs)
@@ -209,6 +277,7 @@ def derive_day(date: str) -> dict:
         for g in REGION.values():
             if per_grid[g]:
                 hours[g][h] = [[p, m] for p, m in _compact(per_grid[g])]
+            coal_mw[g][h] = round(coal_mw[g][h], 1)
     gen = _rtdsum_gen(date)
     if gen is None:
         raise RuntimeError(f"offers: no RTDSUM for {date}; gate impossible")
@@ -220,9 +289,26 @@ def derive_day(date: str) -> dict:
                 raise RuntimeError(
                     f"offers: {date} {g} h{h} book {offered:.0f} MW < "
                     f"dispatched {served:.0f} MW; refused")
+    tot_off = sum(offered_mw_sum.values())
+    tot_cls = sum(classified_mw_sum.values())
     return {
         "date": date,
+        "schema_version": SCHEMA_VERSION,
         "hours": hours,
+        "coal_mw": coal_mw,
+        "fuel_classified_share_pct": (
+            round(100 * tot_cls / tot_off, 1) if tot_off else None),
+        "classification_note": ("coal_mw is the hour's offered MW from "
+                                "resources classified as coal (pasa alias "
+                                "+ hand-verified abbreviations + a "
+                                "fuel-tolerant fleet match; coverage "
+                                "stated). A min-stable floor carved from "
+                                "this series was MEASURED INERT before "
+                                "shipping: the coal fleet already offers "
+                                "its committed tranche at the price floor "
+                                "(the 40 percent carve left the books "
+                                "byte-identical), so commitment behavior "
+                                "is in the bids, not missing from them."),
         "max_resources_seen": n_res,
         "max_blocks": MAX_BLOCKS,
         "note": ("Observed per-grid hourly offer stacks from IEMOP's "
@@ -248,7 +334,12 @@ def derive(dates: list[str]) -> None:
         out = os.path.join(
             OUT_DIR, f"OFFERD_{date.replace('-', '')}.json")
         if os.path.isfile(out):
-            continue
+            try:
+                with open(out) as fh:
+                    if json.load(fh).get("schema_version", 1) >= SCHEMA_VERSION:
+                        continue
+            except (json.JSONDecodeError, OSError):
+                pass
         try:
             day = derive_day(date)
         except RuntimeError as e:

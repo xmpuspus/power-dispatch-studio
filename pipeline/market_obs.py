@@ -431,6 +431,112 @@ def build_outlook(fleet: dict) -> dict:
     return out
 
 
+def build_not_offered() -> dict:
+    """The registered-but-not-offered screen: per market day, registered
+    generation capacity (CAPEG, grid via the inferred code prefix) against
+    the offer book's fullest hour (RTDOE + self-scheduled, from the
+    committed offer dailies) and the operator's matched scheduled-out MW
+    (PASA). A data cut, not an accusation: the residual carries many
+    legitimate explanations and says so."""
+    from pasa import grid_of_prefix as _gof
+
+    offer_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "..", "data", "derived", "offer_daily")
+    if not os.path.isdir(offer_dir):
+        return {"available": False,
+                "note": "no derived offer days; run pipeline/offers.py"}
+    import csv as _csv
+    import json as _json
+
+    # registered MW per grid per day (CAPEG)
+    reg: dict[str, dict[str, float]] = {}
+    for path in dataset_files("CAPEG"):
+        day = day_of(path)
+        acc = {g: 0.0 for g in GRIDS_L}
+        with open(path, newline="", encoding="utf-8",
+                  errors="replace") as fh:
+            for r in _csv.DictReader(fh):
+                g = _gof((r.get("RESOURCE_NAME") or "").strip())
+                if not g:
+                    continue
+                try:
+                    acc[g] += float(r.get("MAXIMUM_CAPACITY") or 0)
+                except ValueError:
+                    continue
+        reg[day] = {g: round(v, 1) for g, v in acc.items()}
+
+    # matched scheduled-out MW per grid per day (PASA bake input)
+    pasa_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "..", "web", "data", "pasa.json")
+    out_by_day: dict[str, dict[str, float]] = {}
+    if os.path.isfile(pasa_path):
+        pas = _json.load(open(pasa_path))
+        for d in pas.get("days") or []:
+            out_by_day[d["date"]] = d.get("matched_mw") or {}
+
+    rows = []
+    for name in sorted(os.listdir(offer_dir)):
+        if not name.endswith(".json"):
+            continue
+        off = _json.load(open(os.path.join(offer_dir, name)))
+        date = off["date"]
+        if date not in reg:
+            continue
+        row: dict = {"date": date}
+        for g in GRIDS_L:
+            books = [sum(m for _, m in hb) for hb in off["hours"][g] if hb]
+            if not books:
+                continue
+            book_max = max(books)
+            out_mw = (out_by_day.get(date) or {}).get(g, 0.0)
+            row[g] = {
+                "registered_mw": reg[date][g],
+                "book_max_mw": round(book_max, 1),
+                "scheduled_out_mw": round(out_mw, 1),
+                "not_offered_mw": round(
+                    max(0.0, reg[date][g] - book_max - out_mw), 1),
+            }
+        rows.append(row)
+    if not rows:
+        return {"available": False,
+                "note": "no overlapping CAPEG + offer days yet"}
+    stats = {}
+    for g in GRIDS_L:
+        vals = [r[g]["not_offered_mw"] for r in rows if g in r]
+        regs = [r[g]["registered_mw"] for r in rows if g in r]
+        if vals:
+            svals = sorted(vals)
+            stats[g] = {
+                "days": len(vals),
+                "median_not_offered_mw": svals[len(svals) // 2],
+                "max_not_offered_mw": max(vals),
+                "median_share_of_registered_pct": round(
+                    100 * svals[len(svals) // 2]
+                    / (sum(regs) / len(regs)), 1),
+            }
+    return {
+        "available": True,
+        "days": rows,
+        "stats": stats,
+        "note": ("Registered generation capacity (CAPEG) minus the offer "
+                 "book's fullest hour (offers plus self-scheduled) minus "
+                 "the operator's matched scheduled-out MW, per market day: "
+                 "capacity the register carries that neither offered nor "
+                 "appears in the matched outage schedules. This is a data "
+                 "cut, not an accusation: the residual has many "
+                 "legitimate explanations the public files cannot "
+                 "separate: outages beyond the matched subset, derates, "
+                 "testing and commissioning, registration lag on retired "
+                 "or embedded units, and non-market obligations. The grid "
+                 "mapping uses the same inferred code prefix as the PASA "
+                 "layer."),
+        "src_registered": ("https://www.iemop.ph/market-data/"
+                           "registered-capacity-generation/"),
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
 def build_drivers(prices: dict, profiles: dict, pasa: dict,
                   advisories: dict, reserve_prices: dict) -> dict:
     """The per-day drivers timeline: what moved prices, joined from the

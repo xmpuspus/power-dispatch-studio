@@ -855,7 +855,8 @@ def main() -> int:
 
     # observed market operations (the 2026-07-07 dataset expansion) and the
     # per-day drivers timeline joined from every observed layer
-    from market_obs import (build_advisories, build_drivers, build_outlook,
+    from market_obs import (build_advisories, build_drivers,
+                            build_not_offered, build_outlook,
                             build_price_setters, build_reserve_prices)
 
     advisories = build_advisories()
@@ -865,6 +866,7 @@ def main() -> int:
         "reserve_prices": reserve_prices,
         "advisories": advisories,
         "outlook": build_outlook(fleet),
+        "not_offered": build_not_offered(),
     }
     drivers = build_drivers(prices, profiles, pasa, advisories,
                             reserve_prices)
