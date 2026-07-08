@@ -13,13 +13,14 @@ engines share byte for byte; this module only assembles inputs (reusing
 chrono.py's stack construction so the calibrated model is untouched), runs
 highspy, and post-processes the solution into the familiar hour rows.
 
-Unserved load keeps the model's documented stance (no VoLL adder: a short
-grid prices at its dearest block): the LP's shedding penalty sits one
-tenth-centavo above the dearest block, so shedding never beats available
-capacity but a short hour still prices at the top block to display rounding.
-The sourced WESM offer cap (P32/kWh, ERC, permanent since Dec 2015) is
-research on file, deliberately NOT introduced here: repricing scarcity is a
-product decision with map-wide blast radius, not an engine swap.
+Unserved load prices at the WESM offer cap (P32/kWh, WESM Tripartite
+Committee Joint Resolution No. 2 s.2013, permanent since Dec 2015): the
+market's own ceiling is where administrative shortage pricing lands, so a
+short hour displays at the cap instead of the old dearest-block-plus-epsilon
+stance. A published market rule, not a fitted value; a shed hour always
+labels 'shortage'. If a what-if edit pushes a block cost above the cap, the
+penalty rises just above that cost (shedding stays strictly dearer than
+serving); the label still says shortage.
 """
 from __future__ import annotations
 
@@ -28,22 +29,30 @@ import os
 import tempfile
 
 from chrono import (GRID_KEYS, build_stack, marginal, round1, round3)
+from constants_ph import MARKET_ANCHORS
 from lp_model import G_SHORT, build_day_lp
 
 FLOW_SAT_EPS = 0.5
 LABEL_EPS = 0.025
 STORE_EPS = 1e-3
+# The sourced ERC/WESM offer price ceiling; see constants_ph.MARKET_ANCHORS.
+OFFER_CAP = MARKET_ANCHORS["wesm_offer_cap_php_kwh"]
 
 
 def price_label(price: float, own_cost: float, own_fuel: str | None,
                 storage_marginal: bool,
-                hydro_marginal: bool = False) -> str | None:
+                hydro_marginal: bool = False,
+                unserved_marginal: bool = False) -> str | None:
     """Name what sets an LMP. The dual can sit away from the grid's own stack:
     on an importing grid it is the exporter's cost plus the wheel, on an
     exporting grid the importer's cost minus the wheel, with storage strictly
-    between its bounds at the arbitrage value, and with the day's water
-    binding at hydro's opportunity value. Shared verbatim by both engines;
-    the goldens pin it."""
+    between its bounds at the arbitrage value, with the day's water binding
+    at hydro's opportunity value, and with a short hour at the offer cap.
+    Shared verbatim by both engines; the goldens pin it."""
+    if unserved_marginal:
+        # a shed hour is a shortage no matter what block its penalty happens
+        # to coincide with (an edited cost can sit above the offer cap)
+        return "shortage"
     if abs(own_cost - price) <= LABEL_EPS:
         return own_fuel
     if storage_marginal:
@@ -102,11 +111,18 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
 
     fuel_base: dict[str, dict[str, float]] = {}
     solar_inst: dict[str, float] = {}
+    out_dev = day.get("out_dev_mw") or {}
     for g in GRID_KEYS:
         mo = dispatch["merit_order"][g]
         fa = dict(mo["fuel_avail_mw"])
         if hyd != 1.0 and fa.get("hydro") is not None:
             fa["hydro"] = round1(fa["hydro"] * hyd)
+        # the day's scheduled-outage deviation from the window mean (the
+        # static derate already carries the mean; hydro rides its water
+        # budget instead) comes off before any what-if lever
+        for fuel, dev in (out_dev.get(g) or {}).items():
+            if fa.get(fuel) is not None:
+                fa[fuel] = max(0.0, round1(fa[fuel] - dev))
         for fuel, delta in ((opts.get("fuel_avail_delta") or {})
                             .get(g) or {}).items():
             fa[fuel] = max(0.0, round1((fa.get(fuel) or 0.0) + delta))
@@ -154,11 +170,12 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
             else:
                 hydro_budget[g] = budget * (eff_hydro / base_hydro)
 
-    # unserved load prices at the dearest block (the model's documented
-    # no-VoLL stance); the +0.001 makes shedding strictly worse than serving
+    # unserved load prices at the sourced WESM offer cap (P32/kWh); the max
+    # guard keeps shedding strictly dearer than any block a scenario edit
+    # could push above the cap
     dearest = max((b["cost"] for g in GRID_KEYS
                    for hb in stacks[g] for b in hb), default=12.0)
-    voll = max(12.0, dearest) + 0.001
+    voll = max(OFFER_CAP, dearest + 0.001)
 
     return {"stacks": stacks, "demand": demand, "caps": caps, "wheel": wheel,
             "storage": storage, "reserve_req": reserve_req, "voll": voll,
@@ -232,7 +249,7 @@ def run_chronology_lp(dispatch: dict, profiles: dict, date: str,
                             break
             cost, fuel = marginal(m["stacks"][g][h], gen[g])
             marg[g] = price_label(price[g], cost, fuel, store_marg[g],
-                                  hyd_marg)
+                                  hyd_marg, shed[g] > STORE_EPS)
         sat1 = abs(f1) >= m["caps"]["leyte"] - FLOW_SAT_EPS
         sat2 = abs(f2) >= m["caps"]["mvip"] - FLOW_SAT_EPS
         rent1 = (round3(price["visayas"] - price["luzon"] if f1 > 0
@@ -291,7 +308,7 @@ def solve_snapshot_lp(stacks: dict, demand: dict, caps: dict,
     hdemand = {g: [demand[g]] for g in GRID_KEYS}
     dearest = max((b["cost"] for g in GRID_KEYS for b in stacks[g]),
                   default=12.0)
-    voll = max(12.0, dearest) + 0.001
+    voll = max(OFFER_CAP, dearest + 0.001)
     text = build_day_lp(hstacks, hdemand, caps, wheel, [], None, voll)
     sol = _highs_solve(text)
     cols, duals = sol["cols"], sol["duals"]

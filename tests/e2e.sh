@@ -137,6 +137,17 @@ if command -v agent-browser >/dev/null 2>&1; then
   AR=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.imp===250, d.coupledPrice!=null].join("|")' 2>/dev/null | strip)
   echo "coupled: baked=$CB price=$BR afterRelieve=$AR"
   [[ "$CB" == "true" && "$AR" == true\|true ]] && ok "coupled clear + relieve lever re-clears" || bad "coupled clear ($CB/$AR)"
+  # the observed price-setter table (MCP files) renders beside the modeled one
+  OS=$(agent-browser eval '[!!document.getElementById("sim-obssetters"), (document.getElementById("sim-obssetters")||{}).children ? document.getElementById("sim-obssetters").children.length>0 : false].join("|")' 2>/dev/null | strip)
+  [[ "$OS" == true\|true ]] && ok "observed price setters render in simulate" || bad "observed setters ($OS)"
+  # drivers mode: the day-by-day timeline renders rows and the week-ahead block
+  agent-browser eval 'document.querySelector(".mode[data-mode=drivers]").click()' >/dev/null 2>&1
+  sleep 1
+  DV=$(agent-browser eval '[window.__diag.mode, (window.__diag.driversDays||0)>20, document.querySelectorAll("details.drv").length>10].join("|")' 2>/dev/null | strip)
+  echo "drivers: $DV"
+  [[ "$DV" == drivers\|true\|true ]] && ok "drivers timeline renders day rows" || bad "drivers mode ($DV)"
+  agent-browser eval 'document.querySelector(".mode[data-mode=simulate]").click()' >/dev/null 2>&1
+  sleep 1
   # storage lever shaves the peak, and the item-5 charts rendered in the panel
   agent-browser eval 'document.querySelector(".gsel[data-grid=luzon]").click();
     const d=document.getElementById("sim-dc"); d.value=3000; d.dispatchEvent(new Event("input"))' >/dev/null 2>&1

@@ -21,6 +21,8 @@ from __future__ import annotations
 
 import math
 
+from fleet_ph import WESM_OFFER_CAP_PHP_KWH
+
 OIL_FALLBACK = 12.0
 GRID_KEYS = ["luzon", "visayas", "mindanao"]
 # outputs and epsilons mirror studio/src/studio/chrono.ts exactly; a change on
@@ -74,6 +76,10 @@ def build_stack(fuel_avail: dict, removed: dict, added: list[dict],
 
 
 def marginal(blocks: list[dict], g: float) -> tuple[float, str | None]:
+    """Marginal cost and fuel serving the g-th MW; beyond the stack the hour
+    is short and prices at the sourced WESM offer cap, so the heuristic
+    clear values serving exactly as the LP's shedding penalty does and the
+    cost-dominance oracle keeps comparing the same problem."""
     if not blocks:
         return OIL_FALLBACK, None
     if g <= 0:
@@ -83,7 +89,7 @@ def marginal(blocks: list[dict], g: float) -> tuple[float, str | None]:
         cum += b["mw"]
         if cum >= g:
             return b["cost"], b["fuel"]
-    return blocks[-1]["cost"], blocks[-1]["fuel"]
+    return WESM_OFFER_CAP_PHP_KWH, "shortage"
 
 
 def _root_decr(phi, lo: float, hi: float, target: float) -> float:
@@ -210,11 +216,18 @@ def run_chronology(dispatch: dict, profiles: dict, date: str,
 
     fuel_base: dict[str, dict[str, float]] = {}
     solar_inst: dict[str, float] = {}
+    out_dev = day.get("out_dev_mw") or {}
     for g in GRID_KEYS:
         mo = dispatch["merit_order"][g]
         fa = dict(mo["fuel_avail_mw"])
         if hyd != 1.0 and fa.get("hydro") is not None:
             fa["hydro"] = round1(fa["hydro"] * hyd)
+        # same day-outage deviation the LP engine applies (_assemble); the
+        # retired clear must keep solving the SAME problem to stay a valid
+        # cross-oracle for the cost-dominance test
+        for fuel, dev in (out_dev.get(g) or {}).items():
+            if fa.get(fuel) is not None:
+                fa[fuel] = max(0.0, round1(fa[fuel] - dev))
         for fuel, delta in ((opts.get("fuel_avail_delta") or {})
                             .get(g) or {}).items():
             fa[fuel] = max(0.0, round1((fa.get(fuel) or 0.0) + delta))
@@ -429,13 +442,48 @@ def _corr(xs: list[float], ys: list[float]) -> float | None:
     return round(sxy / math.sqrt(sxx * syy), 3)
 
 
+def _score_pairs(pts: list[tuple[float, float]]) -> dict | None:
+    """MAE/bias/correlation/high-hour metrics for (modeled, observed) pairs."""
+    if not pts:
+        return None
+    mod = [m for m, _ in pts]
+    obs = [o for _, o in pts]
+    n = len(pts)
+    mae = round(sum(abs(m - o) for m, o in pts) / n, 3)
+    bias = round(sum(m - o for m, o in pts) / n, 3)
+    obs_thr = _pctl_low(sorted(obs), 0.9)
+    mod_sorted = sorted(mod)
+    mod_thr = _pctl_low(mod_sorted, 0.9)
+    mod_med = _pctl_low(mod_sorted, 0.5)
+    # a flat model prices its median at its top decile; ranking is then
+    # meaningless and the hit rate is reported as null, not a fake 100%
+    rankable = mod_thr > mod_med
+    high = [(m, o) for m, o in pts if o >= obs_thr]
+    hit = sum(1 for m, _ in high if m >= mod_thr)
+    hit_rate = (round(100 * hit / len(high), 1)
+                if high and rankable else None)
+    return {
+        "n_hours": n,
+        "observed_mean_php_kwh": round(sum(obs) / n, 3),
+        "modeled_mean_php_kwh": round(sum(mod) / n, 3),
+        "mae_php_kwh": mae,
+        "bias_php_kwh": bias,
+        "correlation": _corr(mod, obs),
+        "high_hour_hit_rate_pct": hit_rate,
+    }
+
+
 def build_backcast(dispatch: dict, profiles: dict) -> dict:
     """Replay every full-coverage market day with the BASE model and score it
-    against the observed hourly LWAP. No storage cycling, no levers, no tuning:
-    the residual is the finding, exactly as in the snapshot calibration."""
+    against the observed hourly LWAP, and, where the archive carries it,
+    against the observed regional marginal price (MCP: the ex-ante clearing
+    price, the target commensurate with a dispatch dual; LWAP additionally
+    embeds nodal spread and settlement substitution). No storage cycling, no
+    levers, no tuning: the residual is the finding."""
     from lp_dispatch import run_chronology_lp
 
     pairs: dict[str, list[tuple[float, float]]] = {g: [] for g in GRID_KEYS}
+    pairs_mcp: dict[str, list[tuple[float, float]]] = {g: [] for g in GRID_KEYS}
     days_used = []
     for day in profiles["days"]:
         if not day["market"]:
@@ -446,45 +494,36 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
             continue
         res = run_chronology_lp(dispatch, profiles, day["date"])
         days_used.append(day["date"])
+        mc = day.get("mcp") or {}
         for g in GRID_KEYS:
+            mcg = mc.get(g) or []
             for h in range(24):
                 pairs[g].append((res["hours"][h]["price"][g], lw[g][h]))
+                if h < len(mcg) and mcg[h] is not None:
+                    pairs_mcp[g].append((res["hours"][h]["price"][g], mcg[h]))
     per_grid = {}
+    per_grid_mcp = {}
     for g in GRID_KEYS:
-        pts = pairs[g]
-        if not pts:
-            continue
-        mod = [m for m, _ in pts]
-        obs = [o for _, o in pts]
-        n = len(pts)
-        mae = round(sum(abs(m - o) for m, o in pts) / n, 3)
-        bias = round(sum(m - o for m, o in pts) / n, 3)
-        obs_thr = _pctl_low(sorted(obs), 0.9)
-        mod_sorted = sorted(mod)
-        mod_thr = _pctl_low(mod_sorted, 0.9)
-        mod_med = _pctl_low(mod_sorted, 0.5)
-        # a flat model prices its median at its top decile; ranking is then
-        # meaningless and the hit rate is reported as null, not a fake 100%
-        rankable = mod_thr > mod_med
-        high = [(m, o) for m, o in pts if o >= obs_thr]
-        hit = sum(1 for m, _ in high if m >= mod_thr)
-        hit_rate = (round(100 * hit / len(high), 1)
-                    if high and rankable else None)
-        per_grid[g] = {
-            "n_hours": n,
-            "observed_mean_php_kwh": round(sum(obs) / n, 3),
-            "modeled_mean_php_kwh": round(sum(mod) / n, 3),
-            "mae_php_kwh": mae,
-            "bias_php_kwh": bias,
-            "correlation": _corr(mod, obs),
-            "high_hour_hit_rate_pct": hit_rate,
-        }
+        scored = _score_pairs(pairs[g])
+        if scored:
+            per_grid[g] = scored
+        scored_mcp = _score_pairs(pairs_mcp[g])
+        if scored_mcp:
+            per_grid_mcp[g] = scored_mcp
     return {
         "available": bool(days_used),
         "days": len(days_used),
         "window": ({"from": days_used[0], "to": days_used[-1]}
                    if days_used else None),
         "per_grid": per_grid,
+        "per_grid_mcp": per_grid_mcp or None,
+        "mcp_note": ("per_grid_mcp scores the same replays against the "
+                     "observed regional marginal price (the RTD ex-ante "
+                     "clearing price, IEMOP MCP files): the target "
+                     "commensurate with a dispatch dual. LWAP additionally "
+                     "carries nodal spread and settlement substitution, so "
+                     "part of the LWAP gap is definitional, and this pair of "
+                     "tables shows how much."),
         "high_hour_note": "High hours are the top decile of observed hourly "
                           "LWAP in the window; the hit rate is how often the "
                           "model also ranks that hour in its own top decile. "

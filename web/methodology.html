@@ -106,6 +106,42 @@ as one regional price per island grid, not a per-node charge, while intra-region
 soft constraints are relaxed to zero shadow price. So a "congestion premium = 0"
 chart would assert the opposite of what is true; the layer stays archived. Full
 resolution in docs/research-launch-20260705.md.</td></tr>
+<tr><td>RTD Market Clearing Price (daily CSV; names the marginal resource and
+its price per region per 5-minute interval)</td>
+<td><a href="https://www.iemop.ph/market-data/rtd-market-clearing-price/">page</a></td>
+<td>Two uses. (1) The observed price-setter table: which resource the operator
+itself names as marginal, per grid, with share of intervals and mean price
+when setting; shown beside the model's marginal-block table, never merged
+with it. (2) The hourly regional clearing-price series the backcast scores
+against as a second target (per_grid_mcp): the ex-ante clearing price is the
+quantity commensurate with a dispatch dual, while LWAP additionally carries
+nodal spread and settlement substitution.</td></tr>
+<tr><td>RTD Regional Reserve Prices (daily CSV)</td>
+<td><a href="https://www.iemop.ph/market-data/rtd-regional-reserve-prices/">page</a></td>
+<td>The official co-optimised regional reserve price series per grid and
+reserve commodity (daily means, window stats). Supersedes the two-day
+per-resource sample as the reserve view's price evidence; the commodity-code
+meaning stays a labeled inference (IEMOP publishes no key).</td></tr>
+<tr><td>MPI Advisories (daily CSV; the NSO advisory stream)</td>
+<td><a href="https://www.iemop.ph/market-data/mpi-advisories/">page</a></td>
+<td>HVDC blockings and de-blockings, alert states, and trips as the operator
+announced them: the event log behind the alert-streak and corridor-separation
+stories, replacing news citations inside the window.</td></tr>
+<tr><td>Outage Schedules Used in WAP (daily CSV, week-ahead projection)</td>
+<td><a href="https://www.iemop.ph/market-data/outage-schedules-used-in-wap/">page</a></td>
+<td>The archive's only forward-looking file: what is scheduled out for the
+coming days, matched to DOE-fleet MW where the alias is confident (the
+Drivers panel's week-ahead block).</td></tr>
+<tr><td>Must-Run Units (weekly CSV, processed SO dispatch report)</td>
+<td><a href="https://www.iemop.ph/market-data/list-of-must-run-units-based-on-so-dispatch-instruction-report/">page</a></td>
+<td>Units instructed to run out of merit for grid security, with the stated
+reason; administered intervals, not market outcomes.</td></tr>
+<tr><td>Registered Capacity, generation (daily CSV; participant, resource,
+maximum capacity)</td>
+<td><a href="https://www.iemop.ph/market-data/registered-capacity-generation/">page</a></td>
+<td>Archived as the authoritative resource-code-to-MW-and-participant key;
+next in line to replace the hand-maintained alias table's MW where codes
+match.</td></tr>
 </table>
 <p class="muted">Courtesy: fetches are sequential with a 250 ms sleep and abort
 after 5 consecutive errors. IEMOP data is republished here as-is for public
@@ -203,18 +239,41 @@ the Backcast as one LP over the 24 coupled hours. Prices are the balance-row
 duals, real locational marginal prices: an importing grid can price at its
 neighbour's marginal block plus the small wheeling cost, an exporter at the
 importer's minus it, and the price-setter label says so (import, export,
-storage, or the named fuel). Unserved load prices one tenth-centavo above the
-dearest block, the model's documented no-VoLL stance, so shedding never beats
-available capacity and short hours still display at the top block. Tiny
+storage, shortage, or the named fuel). Unserved load prices at the WESM offer
+cap of P32/kWh (Tripartite Committee Joint Resolution No. 2 s.2013, permanent
+since December 2015): the market's own ceiling, a published rule rather than a
+fitted value, applied identically in every engine, the map's browser clear
+included. One stated exception: if a what-if edit pushes a fuel cost above
+the cap, the shedding penalty rises just above that cost instead (shedding
+must stay strictly dearer than serving), and the hour still labels
+'shortage'. The secondary price cap (P7.423/kWh when the 72-hour rolling GWAP
+breaches P12.413/kWh, ERC Resolution 26 s.2025) is stated here as the other
+published cap; the model does not synthesize its trigger, because the archive
+does not yet carry the GWAP series it runs on, and impositions announce
+themselves in the archived advisory stream when they happen. Tiny
 deterministic epsilons (at most fractions of a centavo, largest on the last
 enumerated block) make the optimum unique on the model's flat cost plateaus so
 both solver builds land on the same answer. The inputs and the checks:</p>
 <ul>
 <li><b>Observed day profiles</b> (<code>profiles.json</code>): per-grid hourly
-demand is the hourly mean of dispatched generation from the RTD regional
-summaries (the same load axis the dispatch model calibrates against), and the
-observed hourly price is the mean of that hour's 5-minute LWAP. Days without
-full 24-hour demand coverage on all three grids are dropped, not filled.</li>
+demand is the hourly mean of dispatched generation PLUS recorded curtailment
+from the RTD regional summaries: the load that was there to serve, so the
+backcast can reproduce the scarcity it is scored against instead of seeing a
+demand series already trimmed to what was met. The observed hourly price is
+the mean of that hour's 5-minute LWAP, and, where the archive carries it, the
+hourly regional clearing price (MCP) rides alongside as the second target.
+Days without full 24-hour demand coverage on all three grids are dropped, not
+filled.</li>
+<li><b>Daily scheduled outages</b>: each replayed day subtracts the DEVIATION
+of the operator's matched scheduled-out MW from the MARKET-window mean, per
+grid and fuel (the PASA layer's OUTRTD mapping). Deviation, not the raw MW:
+the static availability derates already carry the average outage state, so
+subtracting the raw schedule would double-count it; and the baseline is the
+market days the backcast replays, so the adjustment washes out over the
+scored window. Hydro is excluded here because its daily variation is
+already the observed water budget; unmatched codes carry no MW, so the
+adjustment is a floor. Snapshot views keep the static fleet (one reference
+hour has no day to deviate from).</li>
 <li><b>Solar shape</b>: the 24-hour availability profile is the model's labeled
 clear-sky-ish assumption (fleet_ph.SOLAR_PROFILE), not measured irradiance.
 Other fuels hold their derated availability across the day.</li>

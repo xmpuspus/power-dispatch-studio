@@ -54,6 +54,20 @@ DATASETS = {
     "OUTRTD": "outage-schedules-used-in-rtd",
     "DIPCEF": "dipc-energy-results-final",
     "RTDRS": "rtd-reserve-schedule",
+    # Added 2026-07-07 (the analyst-parity pass). One small CSV per day each:
+    # MCP names the marginal RESOURCE per region per 5-min interval (the
+    # observed price setter); RSVPR is the official regional reserve prices;
+    # CAPEG is registered maximum capacity per resource (the resource->MW
+    # key the outage and reserve mappings need); MPI is the NSO advisory
+    # stream (HVDC blocks/de-blocks, alerts); WAPOS is the week-ahead
+    # projection outage schedule (forward-looking); MRU is the processed
+    # must-run-unit instruction list (weekly file, range-stamped).
+    "MCP": "rtd-market-clearing-price",
+    "RSVPR": "rtd-regional-reserve-prices",
+    "CAPEG": "registered-capacity-generation",
+    "MPI": "mpi-advisories",
+    "WAPOS": "outage-schedules-used-in-wap",
+    "MRU": "list-of-must-run-units-based-on-so-dispatch-instruction-report",
 }
 
 # Large datasets kept as a static SAMPLE of recent days, not the full public
@@ -74,9 +88,22 @@ def curl(args: list[str], timeout: int = 60) -> tuple[int, bytes]:
         return 124, b""
 
 
+def _curl_retry(args: list[str], timeout: int = 60,
+                tries: int = 3) -> tuple[int, bytes]:
+    """curl with retries for IEMOP's transient TLS resets (exit 35 on
+    roughly one listing call in six under load); backs off between tries."""
+    code, body = 1, b""
+    for attempt in range(tries):
+        code, body = curl(args, timeout)
+        if code == 0 and body:
+            return code, body
+        time.sleep(3 + 7 * attempt)
+    return code, body
+
+
 def page_config(slug: str) -> tuple[str, str]:
     """Return (post_id, min_date) from the dataset page's php config blob."""
-    code, body = curl(["-L", f"{BASE}/{slug}/"])
+    code, body = _curl_retry(["-L", f"{BASE}/{slug}/"])
     if code != 0 or not body:
         raise RuntimeError(f"page fetch failed for {slug} (curl exit {code})")
     text = body.decode("utf-8", "replace").replace("\\", "")
@@ -89,9 +116,9 @@ def page_config(slug: str) -> tuple[str, str]:
 
 def list_files(slug: str, post_id: str) -> list[tuple[str, str]]:
     """Return [(b64_server_path, filename), ...] newest first."""
-    code, body = curl(["-X", "POST", AJAX, "--data",
-                       "action=display_filtered_market_data_files&sort="
-                       f"&datefilter=&page=1&post_id={post_id}"])
+    code, body = _curl_retry(["-X", "POST", AJAX, "--data",
+                              "action=display_filtered_market_data_files&sort="
+                              f"&datefilter=&page=1&post_id={post_id}"])
     if code != 0 or not body:
         raise RuntimeError(f"ajax list failed for {slug} (curl exit {code})")
     data = json.loads(body)

@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { GRID_KEYS } from './engine'
 import { buildChronoLpText, runChronology, runDuration, type ChronoOpts } from './chrono'
+import { OFFER_CAP } from './lpText'
 
 const read = (rel: string) =>
   JSON.parse(readFileSync(fileURLToPath(new URL(rel, import.meta.url)), 'utf8'))
@@ -217,5 +218,43 @@ describe('chronological behavior', () => {
           expect(h.price[gk]).toBeGreaterThan(0)
         }
     }
+  })
+
+  it('a short hour prices at the WESM offer cap and labels shortage', () => {
+    // starve every fuel on Luzon so the day must shed there
+    const kill: Record<string, number> = {}
+    for (const f of Object.keys(d.merit_order.luzon.fuel_avail_mw)) kill[f] = -1e6
+    const res = runChronology(d, profiles, date, {
+      fuel_avail_delta: { luzon: kill },
+      solar_delta_mw: { luzon: -1e6 },
+    })
+    const short = res.hours.filter((h) => h.shortfall.luzon > 1)
+    expect(short.length).toBeGreaterThan(0)
+    for (const h of short) {
+      expect(h.price.luzon).toBeCloseTo(OFFER_CAP, 1)
+      expect(h.marginal.luzon).toBe('shortage')
+    }
+  })
+
+  it('a day with a scheduled-outage deviation builds a different stack', () => {
+    const withDev = profiles.days.find(
+      (x) =>
+        x.market &&
+        x.out_dev_mw &&
+        Object.values(x.out_dev_mw).some(
+          (fm) => fm && Object.values(fm).some((v) => Math.abs(v) >= 10)
+        )
+    )
+    expect(withDev, 'a market day with a >=10 MW outage deviation exists').toBeTruthy()
+    if (!withDev) return
+    // neutralizing the deviation via the levers must change the LP text
+    const anti: Partial<Record<GridKey, Record<string, number>>> = {}
+    for (const [g, fm] of Object.entries(withDev.out_dev_mw!))
+      anti[g as GridKey] = Object.fromEntries(Object.entries(fm!).map(([f, v]) => [f, v]))
+    const base = buildChronoLpText(d, profiles, withDev.date, {})
+    const neutral = buildChronoLpText(d, profiles, withDev.date, {
+      fuel_avail_delta: anti,
+    })
+    expect(base).not.toBe(neutral)
   })
 })

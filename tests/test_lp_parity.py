@@ -79,11 +79,16 @@ for label, opts in CASES:
     check(f"{label}: storage never creates energy", ok)
 
 # cost dominance: the LP system cost may never exceed the heuristic clear's
-# cost on the same inputs (the LP is the optimum of the same problem)
-def dispatch_cost(res) -> float:
+# cost on the same inputs and the same objective (the LP is its optimum).
+# The objective includes the shedding penalty at the offer cap: comparing
+# production cost alone is valid only when both engines shed identically,
+# which shortage scenarios do not guarantee (the adversarial review's find).
+def dispatch_cost(res, extra_costs=None) -> float:
     a = dispatch["assumptions"]
     costs = dict(a["fuel_marginal_cost_php_kwh"])
+    costs.update(extra_costs or {})
     wheel = a["wheeling_cost_php_kwh"]
+    voll = max(32.0, max(costs.values()) + 0.001)
     total = 0.0
     for o in res["hours"]:
         for g in GRID_KEYS:
@@ -97,6 +102,7 @@ def dispatch_cost(res) -> float:
                 else:
                     total += mw * costs.get(fuel, 0.0)
         total += wheel * (abs(o["flow_lv"]) + abs(o["flow_vm"]))
+    total += voll * sum(res["summary"]["unserved_mwh"].values())
     return total
 
 
@@ -106,16 +112,28 @@ def dispatch_cost(res) -> float:
 free_day = next((d["date"] for d in profiles["days"]
                  if not d.get("hydro_budget_mwh")), None)
 check("an unbudgeted day exists for the cost oracle", free_day is not None)
-for label, opts in (("base", {}), ("dict wave",
-                                   {"demand_delta": {"luzon": 1500}})):
+kill_all = {f: -1e6 for f in ("coal", "oil", "hydro", "geothermal",
+                              "natural_gas", "biomass")}
+for label, opts in (
+        ("base", {}),
+        ("dict wave", {"demand_delta": {"luzon": 1500}}),
+        # the adversarial review's refutation scenario: a gutted grid plus
+        # edited fuel costs; shed differs between engines here, so the
+        # dominance oracle must (and now does) price the shedding penalty
+        ("shortage + cost edits",
+         {"fuel_avail_delta": {"mindanao": dict(kill_all)},
+          "fuel_cost": {"oil": 20, "natural_gas": 18}})):
     old = run_chronology(dispatch, profiles, free_day, opts)
     new = run_chronology_lp(dispatch, profiles, free_day, opts)
-    check(f"{label}: LP dispatch cost <= heuristic clear cost",
-          dispatch_cost(new) <= dispatch_cost(old) + 1.0)
-    # both engines agree on unserved energy for the base model
-    check(f"{label}: unserved energy agrees with the old clear", all(
-        abs(old["summary"]["unserved_mwh"][g]
-            - new["summary"]["unserved_mwh"][g]) <= 5.0 for g in GRID_KEYS))
+    extra = opts.get("fuel_cost")
+    check(f"{label}: LP total cost <= heuristic clear cost",
+          dispatch_cost(new, extra) <= dispatch_cost(old, extra) + 1.0)
+    if label in ("base", "dict wave"):
+        # both engines agree on unserved energy for the base model
+        check(f"{label}: unserved energy agrees with the old clear", all(
+            abs(old["summary"]["unserved_mwh"][g]
+                - new["summary"]["unserved_mwh"][g]) <= 5.0
+            for g in GRID_KEYS))
 
 # a reserve requirement beyond a grid's capable capacity must clamp, not
 # blow up the solve (the infeasible-row defect the adversarial review found)
@@ -128,6 +146,12 @@ check("reserve requirement beyond capable capacity still solves", all(
     0 < o["price"][g] < 100 for o in res["hours"] for g in GRID_KEYS))
 check("the gutted grid sheds instead of going infeasible",
       res["summary"]["unserved_mwh"]["mindanao"] > 0)
+# a short hour prices at the sourced WESM offer cap and says so
+short_hours = [o for o in res["hours"] if o["shortfall"]["mindanao"] > 1]
+check("short hours price at the P32 offer cap with the shortage label",
+      bool(short_hours) and all(
+          abs(o["price"]["mindanao"] - 32.0) < 0.5
+          and o["marginal"]["mindanao"] == "shortage" for o in short_hours))
 
 # hydro cannot exceed the day's observed water budget where one exists
 budgeted = next((d for d in profiles["days"]

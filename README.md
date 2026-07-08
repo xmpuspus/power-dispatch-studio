@@ -25,10 +25,14 @@ that names the exact transmission equipment sitting at its binding limit, per
 five-minute interval, and this repo archives and ranks them. A row **literally named
 `LEYTE_TO_CEBU`** shows up in the day-ahead runs on **68 of the window's 90 days**.
 The 230 kV lines that carry that corridor, Tabango (Leyte) to Daanbantayan (Cebu),
-top the league at a limit on **87 of 90 days**. The same corridor IEMOP's December
+top the league: at a binding limit in the hourly day-ahead runs on **87 of 90
+days**, and binding in the five-minute real-time dispatch, the run settlement
+actually sees, on **21 days** of the window. Both columns are in the table; the
+day-ahead count measures how persistently the constraint reappears across re-runs,
+the real-time count how often it actually bound. The same corridor IEMOP's December
 2025 report names in prose; here it is the receipts behind the prose.
 
-![The constraint league filling in bar by bar: named transmission equipment ranked by days at a binding limit over the 90-day archive window, the Leyte-Cebu corridor lines highlighted in coral topping the list at 87 of 90 days](docs/constraint-league.gif)
+![The constraint league filling in bar by bar: named transmission equipment ranked by days at a binding limit over the 90-day archive window, the Leyte-Cebu corridor lines highlighted in coral topping the list at 87 of 90 day-ahead days](docs/constraint-league.gif)
 
 Across the 90-day window, **84 distinct pieces of equipment** hit a limit at least
 once. The map ranks them by days at a limit (a day counts once, so a day-ahead
@@ -108,9 +112,22 @@ capacity-market chart.
 
 ![Who runs the Philippine power market: IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC regulates, DOE sets policy, and the last row notes WESM is energy-only with no capacity auction](docs/wesm-roles.png)
 
+## What moved prices, day by day
+
+The Drivers mode is the analyst's Monday-morning view: one row per archive day
+joining the observed daily LWAP per grid, recorded curtailment, the operator's
+matched scheduled-out MW, HVDC and alert advisories from the NSO stream, the
+day's binding constraints, and the dearest regional reserve price. A week-ahead
+block on top carries the operator's own projection outage schedule (WAPOS), the
+one forward-looking file in the archive. Every column is observed data; nothing
+in this mode is modeled. The Simulate panel also now shows **who actually set
+the price**: the marginal resource IEMOP names per 5-minute interval (market
+clearing price files), beside the model's own marginal-block table, never
+merged with it.
+
 ## Simulate the dispatch
 
-The map's fourth mode is a simplified merit-order model of the grid. It is **not
+The map's Simulate mode is a simplified merit-order model of the grid. It is **not
 PLEXOS**: it stacks a sourced generator fleet by marginal cost against the archive's
 own dispatched generation, per grid, and reads off the marginal clearing price.
 
@@ -120,7 +137,9 @@ marginal cost is the ERC administered price of **P6.00/kWh** and Malampaya gas i
 across grids are labeled model assumptions, except hydro, whose split now follows
 the DOE plant lists directly. The split reconciles exactly to the
 DOE national fuel totals and never exceeds a grid's published total (tests pin
-every column and every row).
+every column and every row). A short hour prices at the **P32/kWh WESM offer
+cap** (the market's own ceiling, permanent since December 2015), in every
+engine: a published rule, not a fitted value.
 
 The honest result is that a competitive cost stack predicts a nearly flat **~P6/kWh**
 line. Calibrated on the market-priced window only (the 56 days after WESM resumed on

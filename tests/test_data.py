@@ -677,5 +677,54 @@ check("bill June row matches the standing anchors",
 check("bill history rows each carry advisory + news sources", all(
     m["src"] and m["src_news"] for m in hist))
 
+# --- observed market operations (the 2026-07-07 dataset expansion) ------------------
+mo = load("market_ops.json")
+ps = mo["price_setters"]
+check("price setters baked from a full MCP window", ps["available"]
+      and ps["days"] >= 80)
+check("every grid names observed setters with shares that are shares", all(
+    ps["per_grid"][g]["n_setters"] > 10
+    and all(0 < r["share_pct"] <= 100 for r in ps["per_grid"][g]["top"])
+    for g in ("luzon", "visayas", "mindanao")))
+check("setter fuel matching is majority, never claimed complete", all(
+    50 <= ps["per_grid"][g]["fuel_matched_share_pct"] < 100
+    for g in ("luzon", "visayas", "mindanao")))
+rp = mo["reserve_prices"]
+check("official reserve prices span the window with stats", rp["available"]
+      and len(rp["dates"]) >= 80 and rp["stats"]["luzon"])
+adv = mo["advisories"]
+check("advisory stream baked with HVDC events captured",
+      adv["available"] and len(adv["days"]) >= 80
+      and len(adv["hvdc_events"]) > 0)
+ol = mo["outlook"]
+check("week-ahead outage outlook carries matched MW and honest gaps",
+      ol["available"] and ol["as_of"] >= "2026-07-01"
+      and all(g in ol["matched_mw"]
+              for g in ("luzon", "visayas", "mindanao")))
+drv = load("drivers.json")
+check("drivers timeline joins one row per archive day",
+      drv["available"] and len(drv["days"]) >= 80)
+check("drivers rows carry the observed columns", all(
+    "lwap" in r and "out_matched_mw" in r and "binding" in r
+    for r in drv["days"][:5]))
+check("every market_ops section carries the analytics disclaimer", all(
+    "disclaimer" in s for s in (ps, rp, adv, ol)) and "disclaimer" in drv)
+
+# profiles carry the engine-facing observed layers per day
+prof = load("profiles.json")
+mkt_days = [d for d in prof["days"] if d["market"]]
+check("market days carry the outage deviation layer", all(
+    d.get("out_dev_mw") is not None for d in mkt_days))
+check("hydro and storage never appear in outage deviations", all(
+    f not in ("hydro", "storage")
+    for d in mkt_days for g in (d.get("out_dev_mw") or {})
+    for f in (d["out_dev_mw"][g] or {})))
+check("most market days carry the observed MCP series", sum(
+    1 for d in mkt_days if d.get("mcp")) >= 0.8 * len(mkt_days))
+bc = prof["backcast"]
+check("backcast scores both targets (LWAP and MCP)",
+      bc["per_grid"] and bc.get("per_grid_mcp")
+      and set(bc["per_grid_mcp"]) == {"luzon", "visayas", "mindanao"})
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

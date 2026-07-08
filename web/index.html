@@ -72,6 +72,11 @@
   .simctl .tick{ font-size:10px; color:var(--muted); opacity:.8; }
   .simctl select{ padding:5px 6px; border:1px solid var(--line); border-radius:6px; font-size:12px; }
   .kv.shortfall span:last-child{ color:var(--sual,#b3261e); }
+  .bdg{ display:inline-block; color:#fff; border-radius:3px; padding:0 5px;
+    font-size:10px; line-height:16px; vertical-align:1px; }
+  details.drv{ border-bottom:1px dashed var(--line); padding:4px 0; }
+  details.drv summary{ cursor:pointer; font-size:12px; line-height:1.5; }
+  details.drv summary::-webkit-details-marker{ display:none; }
   /* story rail */
   #rail{ left:50%; transform:translateX(-50%); bottom:16px; width:min(600px, calc(100% - 24px)); padding:0; overflow:hidden; }
   .r-top{ display:flex; align-items:center; gap:8px; padding:9px 13px 7px; border-bottom:1px solid var(--line); }
@@ -170,6 +175,7 @@
   <button class="mode on" data-mode="supply" role="tab">1 Supply</button>
   <button class="mode" data-mode="choke" role="tab">2 Choke points</button>
   <button class="mode" data-mode="price" role="tab">3 Prices</button>
+  <button class="mode" data-mode="drivers" role="tab">Drivers</button>
   <button class="mode" data-mode="simulate" role="tab">Simulate</button>
 </div>
 
@@ -215,7 +221,8 @@ const fmt = (n, d=0) => n == null ? "n/a" :
 const FILES = ["meta.json","answers.json","congestion.json","prices.json",
   "reliability.json","outages.json","market_anchors.json","demand_anchors.json",
   "congestion_premium.json","findings.json","chokepoints.geojson",
-  "dc_sites.geojson","sual.geojson","generators.geojson","dispatch.json"];
+  "dc_sites.geojson","sual.geojson","generators.geojson","dispatch.json",
+  "drivers.json","market_ops.json"];
 const D = {};
 
 async function loadAll(){
@@ -420,7 +427,8 @@ function sideChoke(){
   const league = (C.league || []).slice(0, 10);
   let rows = league.map(e =>
     `<tr><td>${esc(e.equipment)}</td><td>${esc(e.station)}</td>
-     <td class="num">${fmt(e.days)}</td><td class="num">${fmt(e.rtd_intervals)}</td></tr>`).join("");
+     <td class="num">${fmt(e.days)}</td><td class="num">${fmt(e.rtd_days)}</td>
+     <td class="num">${fmt(e.rtd_intervals)}</td></tr>`).join("");
   const O = D["outages.json"] || {};
   const sualDays = O.sual_outage_day_count;
   const R = D["reliability.json"];
@@ -435,13 +443,14 @@ function sideChoke(){
   return `<h2>Where the grid already binds</h2>
   <p class="sub">Named equipment at its limit, straight from IEMOP's public
   "congestions manifesting" files over the archive window. Ranked by days at a
-  limit (a day counts once, so a re-run cannot inflate it). "RT intervals" is the
-  count of five-minute real-time dispatch rows; the day-ahead runs re-price
-  hourly and are kept separate. The Leyte-Luzon HVDC ran at its
+  limit in ANY run (a day counts once); most of those days come from the
+  hourly day-ahead re-runs, so the real-time columns sit alongside: "RT days"
+  is days with a binding five-minute real-time row, "RT itv" the row count.
+  Settlement sees the real-time column. The Leyte-Luzon HVDC ran at its
   ${fmt(A.hvdc_binding_share_dec2025_pct)}% share of the December 2025 billing
   period at max or offline (IEMOP monthly report).</p>
-  <table><thead><tr><th>Equipment</th><th>Station</th><th>Days</th><th>RT intervals</th></tr></thead>
-  <tbody>${rows || "<tr><td colspan=4>Bake pending.</td></tr>"}</tbody></table>
+  <table><thead><tr><th>Equipment</th><th>Station</th><th>Days</th><th>RT days</th><th>RT itv</th></tr></thead>
+  <tbody>${rows || "<tr><td colspan=5>Bake pending.</td></tr>"}</tbody></table>
   ${slackline}
   <button class="sual-btn" id="sualbtn">What if a Sual unit trips? (-647 MW)</button>
   <div class="note" id="sualread">${sualDays != null ?
@@ -490,6 +499,56 @@ function sideprice(){
   the increase to WESM at P${fmt(A.meralco_june2026_wesm_cost_php_kwh,2)}/kWh.
   Wholesale movements are not one-for-one bill movements.</div>`;
 }
+function sideDrivers(){
+  const DR = D["drivers.json"] || {};
+  const MO = D["market_ops.json"] || {};
+  const days = (DR.days || []).slice().reverse();
+  window.__diag.driversDays = days.length;
+  const ol = MO.outlook || {};
+  let outlook = "";
+  if (ol.as_of){
+    const big = (ol.scheduled_out || []).filter(r => r.mw).slice(0, 4)
+      .map(r => `${esc(r.resource)} (${fmt(r.mw)} MW, ${esc(r.grid || "?")})`)
+      .join(", ");
+    outlook = `<div class="note"><b>Week ahead (schedule as of ${esc(ol.as_of)}):</b>
+      matched scheduled-out MW: Luzon ${fmt((ol.matched_mw||{}).luzon)},
+      Visayas ${fmt((ol.matched_mw||{}).visayas)}, Mindanao
+      ${fmt((ol.matched_mw||{}).mindanao)}${big ? ". Largest: " + big : ""}.
+      ${fmt(ol.n_unmatched)} codes stay unmatched (listed, not sized).
+      Source: the operator's week-ahead outage schedule (WAPOS).</div>`;
+  }
+  const rows = days.slice(0, 28).map(d => {
+    const lw = d.lwap || {};
+    const badges = [];
+    const cur = d.curtailed_mwh
+      ? Object.values(d.curtailed_mwh).reduce((s, v) => s + v, 0) : 0;
+    if (cur > 0) badges.push(`<span class="bdg" style="background:#9c3d12">${fmt(cur)} MWh curtailed</span>`);
+    if (d.n_hvdc_advisories) badges.push(`<span class="bdg" style="background:#3a6b8a">${d.n_hvdc_advisories} HVDC advisories</span>`);
+    if (d.n_alert_advisories) badges.push(`<span class="bdg" style="background:#8a6bb0">${d.n_alert_advisories} alert advisories</span>`);
+    if (d.spread != null && d.spread >= 5) badges.push(`<span class="bdg" style="background:#b3261e">spread P${fmt(d.spread,1)}</span>`);
+    const outm = d.out_matched_mw
+      ? Object.values(d.out_matched_mw).reduce((s, v) => s + v, 0) : 0;
+    const top = ((d.binding || {}).top_equipment || [])
+      .map(e => `${esc(e.name)} (${fmt(e.rows)} rows)`).join(", ");
+    return `<details class="drv"><summary><b>${esc(d.date)}</b>
+      ${d.market ? "" : '<span class="bdg" style="background:#777">administered</span>'}
+      L P${fmt(lw.luzon,2)} / V P${fmt(lw.visayas,2)} / M P${fmt(lw.mindanao,2)}
+      ${badges.join(" ")}</summary>
+      <div class="kv"><span>Matched scheduled-out MW</span><span>${fmt(outm)}</span></div>
+      ${d.hydro_budget_mwh ? `<div class="kv"><span>Observed hydro water (MWh)</span><span>${fmt(Object.values(d.hydro_budget_mwh).reduce((s,v)=>s+v,0))}</span></div>` : ""}
+      ${d.reserve_price_max != null ? `<div class="kv"><span>Dearest regional reserve price</span><span>P${fmt(d.reserve_price_max,2)}/kWh</span></div>` : ""}
+      ${top ? `<div class="kv"><span>Top binding constraints (RTD)</span><span>${top}</span></div>` : ""}
+      ${d.n_advisories != null ? `<div class="kv"><span>Advisories</span><span>${fmt(d.n_advisories)}</span></div>` : ""}
+    </details>`;
+  }).join("");
+  return `<h2>What moved prices, day by day</h2>
+  <p class="sub">One row per archive day, every column observed: daily LWAP per
+  grid, recorded curtailment, the operator's matched scheduled-out MW, HVDC and
+  alert advisories, and the day's binding constraints. Open a day for detail.</p>
+  ${outlook}
+  ${rows || '<div class="note">Drivers bake pending.</div>'}
+  <div class="note">${esc(DR.note || "")}</div>`;
+}
 function sparkSVG(P){
   const W = 300, H = 90, pad = 6;
   const series = [["luzon","#3a6b8a"],["visayas","#9c3d12"],["mindanao","#1a7f48"]];
@@ -531,7 +590,11 @@ const LEGENDS = {
   simulate: { title:"Named generators (price movers)", keys: [
     ["sw","#6b6b6b","Coal unit (size by capacity)"],
     ["sw","#4e79a7","Natural-gas unit"]],
-    note:"The units large enough that one trip is felt on the grid. Pins are city-precision. Trip one in the panel to run the N-1." }
+    note:"The units large enough that one trip is felt on the grid. Pins are city-precision. Trip one in the panel to run the N-1." },
+  drivers: { title:"Day-by-day drivers", keys: [
+    ["sw","#9c3d12","Curtailment recorded"],
+    ["sw","#3a6b8a","HVDC advisory (block or de-block)"]],
+    note:"Every column in the panel is observed data from the archive: prices, outages, curtailment, advisories, binding constraints. Nothing modeled." }
 };
 function legendRender(){
   const L = LEGENDS[MODE];
@@ -549,7 +612,8 @@ function setMode(m, syncRail = true){
     b.classList.toggle("on", b.dataset.mode === m));
   const S = $("side");
   S.innerHTML = m === "supply" ? sideSupply() : m === "choke" ? sideChoke()
-    : m === "simulate" ? sideSimulate() : sideprice();
+    : m === "simulate" ? sideSimulate()
+    : m === "drivers" ? sideDrivers() : sideprice();
   legendRender();
   if (m === "choke"){
     const btn = $("sualbtn");
@@ -605,19 +669,24 @@ function sualToggle(btn){
 /* ---------- simulate: merit-order dispatch, re-cleared in the browser ---------- */
 const FUELCOL = { solar:"#e0b93b", wind:"#7fb2d6", hydro:"#3a6b8a",
   geothermal:"#8a6bb0", natural_gas:"#4e79a7", biomass:"#5a9e6f", coal:"#6b6b6b",
-  oil:"#b3261e", import:"#1a7f48", firm:"#125c34", storage:"#c77dff" };
+  oil:"#b3261e", import:"#1a7f48", firm:"#125c34", storage:"#c77dff",
+  shortage:"#5c0e0e" };
 const HVDC_IMPORT_LIMIT = { luzon:250, visayas:250, mindanao:450 };
 let SIM = { grid:"luzon", addDC:0, addFirm:0, imp:0, stor:0, trip:"" };
 
 function fuelLabel(f){ return String(f||"").replace(/_/g," "); }
 
-// mirror of fleet_ph.clear: stack the blocks by cost, read the marginal price
+// mirror of fleet_ph.clear: stack the blocks by cost, read the marginal price.
+// A short hour prices at the sourced WESM offer cap (P32/kWh, the market's
+// own ceiling), mirroring fleet_ph.WESM_OFFER_CAP_PHP_KWH.
+const WESM_OFFER_CAP = 32;
 function clearJS(blocks, demand){
   const merged = blocks.slice().sort((a,b)=>a.cost-b.cost);
   const total = merged.reduce((s,b)=>s+b.mw, 0);
   let cum = 0, price = merged.length ? merged[merged.length-1].cost : 0;
   let marginal = merged.length ? merged[merged.length-1].fuel : null;
   for (const b of merged){ cum += b.mw; if (cum >= demand){ price = b.cost; marginal = b.fuel; break; } }
+  if (demand > total){ price = WESM_OFFER_CAP; marginal = "shortage"; }
   return { price, avail: total, shortfall: Math.max(0, demand-total), marginal };
 }
 
@@ -659,7 +728,7 @@ function margJS(blocks, gmw){
   if (gmw <= 0) return blocks[0].cost;
   let cum = 0;
   for (const b of blocks){ cum += b.mw; if (cum >= gmw) return b.cost; }
-  return blocks[blocks.length-1].cost;
+  return WESM_OFFER_CAP;  // short: the sourced offer cap, mirror of _marg
 }
 function rootDecr(phi, lo, hi, target){
   for (let i=0; i<40 && hi-lo>0.25; i++){ const m=(lo+hi)/2; if (phi(m) > target) lo=m; else hi=m; }
@@ -760,6 +829,19 @@ function marginalFreqHTML(mf){
   return mf.by_block.map(b => `<div class="kv"><span>${esc(fuelLabel(b.block))}</span>
     <span>${fmt(b.share_pct,1)}%</span></div>`).join("");
 }
+function obsSettersHTML(g){
+  const ps = ((D["market_ops.json"] || {}).price_setters || {});
+  const pg = (ps.per_grid || {})[g];
+  if (!ps.available || !pg) return "";
+  const rows = (pg.top || []).slice(0, 8).map(r =>
+    `<div class="kv"><span>${esc(r.resource)}${r.fuel ? " (" + esc(fuelLabel(r.fuel)) + ")" : ""}</span>
+     <span>${fmt(r.share_pct,1)}% at P${fmt(r.mean_price_php_kwh,2)}</span></div>`).join("");
+  return `<h2 style="margin-top:12px">Who set the price (observed)</h2>
+  <div id="sim-obssetters">${rows}</div>
+  <div class="note">The marginal resource IEMOP names per 5-minute interval
+  (market clearing price files, ${fmt(ps.days)} days): the market's own answer,
+  next to the model's. Codes without a confident fleet alias show no fuel.</div>`;
+}
 
 function sideSimulate(){
   const disp = D["dispatch.json"] || {};
@@ -823,11 +905,13 @@ function sideSimulate(){
   <div id="sim-duration">${durationSVG(pdur)}</div>
   <div class="note"><b style="color:#333">modeled</b> vs
     <b style="color:#b3261e">observed</b>. ${esc(pdur.note)}</div>` : ""}
-  ${mfreq ? `<h2 style="margin-top:12px">Who sets the price</h2>
+  ${mfreq ? `<h2 style="margin-top:12px">Who sets the price (modeled)</h2>
   <div id="sim-margfreq">${marginalFreqHTML(mfreq)}</div>
-  <div class="note">Share of market intervals each block is on the margin. Block
-  dispatch cannot name the individual plant, so this is at the fuel level; coal is
-  split into its committed (overnight) and marginal (peak) tranches.</div>` : ""}
+  <div class="note">Share of market intervals each block is on the margin in the
+  MODEL. Block dispatch cannot name the individual plant, so this is at the fuel
+  level; coal is split into its committed (overnight) and marginal (peak)
+  tranches.</div>` : ""}
+  ${obsSettersHTML(g)}
   <h2 style="margin-top:12px">N-1: trip each named unit</h2>
   <table><thead><tr><th>Unit</th><th>MW</th><th>Evening price</th><th>Shed at peak</th></tr></thead>
   <tbody>${n1rows || "<tr><td colspan=4>Bake pending.</td></tr>"}</tbody></table>
@@ -996,7 +1080,7 @@ function syncURL(){
 function applyURL(){
   const p = new URLSearchParams(location.search);
   const q = p.get("q"), fid = p.get("finding");
-  if (q && ["supply","choke","price"].includes(q)) setMode(q, true);
+  if (q && ["supply","choke","price","drivers","simulate"].includes(q)) setMode(q, true);
   if (fid){
     const f = FINDINGS.find(x => x.id === fid);
     if (f){ openDrawer(true); selectFinding(f); }

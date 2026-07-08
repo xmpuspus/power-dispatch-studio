@@ -5,6 +5,7 @@ import type {
   Emissions,
   Fleet,
   GeneratorProps,
+  MarketOps,
   MarketPower,
   Pasa,
   Profiles,
@@ -56,6 +57,7 @@ function useJson<T>(file: string): Async<T> {
 
 export const useDispatch = () => useJson<Dispatch>('dispatch.json')
 export const useReserve = () => useJson<Reserve>('reserve.json')
+export const useMarketOps = () => useJson<MarketOps>('market_ops.json')
 export const useBill = () => useJson<Bill>('bill.json')
 export const useMarketPower = () => useJson<MarketPower>('market_power.json')
 export const useProfiles = () => useJson<Profiles>('profiles.json')
@@ -107,5 +109,6 @@ const FUEL_VAR: Record<string, string> = {
   firm: 'var(--primary)',
   import: 'var(--series-flow)',
   export: 'var(--series-flow)',
+  shortage: 'var(--negative)',
 }
 export const fuelColor = (f: string): string => FUEL_VAR[f] ?? 'var(--text-faint)'

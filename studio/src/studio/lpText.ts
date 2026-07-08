@@ -8,6 +8,12 @@
 import type { Block, GridKey } from '../lib/types'
 
 export const LP_GRID_KEYS: GridKey[] = ['luzon', 'visayas', 'mindanao']
+
+// The sourced WESM offer price ceiling (P32/kWh, WESM Tripartite Committee
+// Joint Resolution No. 2 s.2013, permanent since Dec 2015). Mirror of
+// lp_dispatch.OFFER_CAP, which reads constants_ph.MARKET_ANCHORS. Shortage
+// hours price here in both engines.
+export const OFFER_CAP = 32
 const G_SHORT: Record<GridKey, string> = { luzon: 'l', visayas: 'v', mindanao: 'm' }
 
 // reserve is held by capacity that can actually follow dispatch instructions

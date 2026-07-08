@@ -15,7 +15,7 @@
 import type { Block, Dispatch, GridKey } from '../lib/types'
 import type { Profiles } from '../lib/types'
 import { GRID_KEYS, buildStack, marginal } from './engine'
-import { buildDayLp, type LpStorage } from './lpText'
+import { OFFER_CAP, buildDayLp, type LpStorage } from './lpText'
 import { solveLp } from './solver'
 
 // bump when the run outputs change meaning; saved runs from an older engine
@@ -85,8 +85,12 @@ export function priceLabel(
   ownCost: number,
   ownFuel: string | null,
   storageMarginal: boolean,
-  hydroMarginal = false
+  hydroMarginal = false,
+  unservedMarginal = false
 ): string | null {
+  // a shed hour is a shortage no matter what block its penalty happens to
+  // coincide with (an edited cost can sit above the offer cap)
+  if (unservedMarginal) return 'shortage'
   if (Math.abs(ownCost - price) <= LABEL_EPS) return ownFuel
   if (storageMarginal) return 'storage'
   if (hydroMarginal) return 'hydro'
@@ -138,10 +142,16 @@ export function assembleDay(
 
   const fuelBase = {} as Record<GridKey, Record<string, number>>
   const solarInst = {} as Record<GridKey, number>
+  const outDev = day.out_dev_mw ?? {}
   for (const g of GRID_KEYS) {
     const mo = d.merit_order[g]
     const fa: Record<string, number> = { ...mo.fuel_avail_mw }
     if (hyd !== 1 && fa.hydro != null) fa.hydro = round1(fa.hydro * hyd)
+    // the day's scheduled-outage deviation from the window mean (the static
+    // derate already carries the mean; hydro rides its water budget instead)
+    // comes off before any what-if lever; mirror of lp_dispatch._assemble
+    for (const [fuel, dev] of Object.entries(outDev[g] ?? {}))
+      if (fa[fuel] != null) fa[fuel] = Math.max(0, round1(fa[fuel] - dev))
     for (const [fuel, delta] of Object.entries(opts.fuel_avail_delta?.[g] ?? {}))
       fa[fuel] = Math.max(0, round1((fa[fuel] ?? 0) + delta))
     fuelBase[g] = fa
@@ -194,12 +204,13 @@ export function assembleDay(
     }
   }
 
-  // unserved load prices at the dearest block (the documented no-VoLL
-  // stance); the +0.001 makes shedding strictly worse than serving
+  // unserved load prices at the sourced WESM offer cap (P32/kWh); the max
+  // guard keeps shedding strictly dearer than any block an edit could push
+  // above the cap
   let dearest = 12
   for (const g of GRID_KEYS)
     for (const hb of stacks[g]) for (const b of hb) if (b.cost > dearest) dearest = b.cost
-  const voll = dearest + 0.001
+  const voll = Math.max(OFFER_CAP, dearest + 0.001)
 
   return { stacks, demand, caps, wheel, storage, reserveReq, voll, hydroBudget }
 }
@@ -300,7 +311,14 @@ export function runChronology(
         })
       }
       const mres = marginal(m.stacks[g][h], gen[g])
-      marg[g] = priceLabel(price[g], mres.cost, mres.fuel, storeMarg[g], hydMarg)
+      marg[g] = priceLabel(
+        price[g],
+        mres.cost,
+        mres.fuel,
+        storeMarg[g],
+        hydMarg,
+        shed[g] > STORE_EPS
+      )
     }
     const sat1 = Math.abs(f1) >= m.caps.leyte - FLOW_SAT_EPS
     const sat2 = Math.abs(f2) >= m.caps.mvip - FLOW_SAT_EPS

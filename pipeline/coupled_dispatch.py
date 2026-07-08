@@ -22,7 +22,7 @@ residual, exactly as in the standalone model.
 """
 from __future__ import annotations
 
-from fleet_ph import FUEL_COST_PHP_KWH, stack
+from fleet_ph import FUEL_COST_PHP_KWH, WESM_OFFER_CAP_PHP_KWH, stack
 
 # The two HVDC corridors as a radial path. limit_kind distinguishes the sourced
 # operating limit (Leyte-Luzon: 250 MW Luzon->Visayas, IEMOP Dec 2025, below the
@@ -61,8 +61,10 @@ WHEEL = 0.02
 def _marg(blocks: list[dict], g: float) -> tuple[float, str | None]:
     """Marginal cost and fuel serving the g-th MW on a cost-sorted stack.
 
-    If g exceeds the stack's total (a shortfall), the top block sets the price;
-    the shortfall itself is reported by the caller, not priced with a VOLL adder.
+    If g exceeds the stack's total the hour is short: it prices at the
+    sourced WESM offer cap (fleet_ph.WESM_OFFER_CAP_PHP_KWH, the market's
+    own ceiling), which also makes the flow solve push imports toward a
+    short grid until a corridor saturates, exactly as the LP engine does.
     """
     if not blocks:
         return _OIL, None
@@ -73,7 +75,7 @@ def _marg(blocks: list[dict], g: float) -> tuple[float, str | None]:
         cum += b["mw"]
         if cum >= g:
             return b["cost"], b["fuel"]
-    return blocks[-1]["cost"], blocks[-1]["fuel"]
+    return WESM_OFFER_CAP_PHP_KWH, "shortage"
 
 
 def _root_decr(phi, lo: float, hi: float, target: float,
