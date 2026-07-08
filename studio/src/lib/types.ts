@@ -331,6 +331,43 @@ export interface Reserve {
   src_data?: string
 }
 
+// observed market operations (market_ops.json); only the sections the studio
+// renders are typed strictly
+export interface MarketOps {
+  price_setters?: {
+    available: boolean
+    days?: number
+    per_grid?: Partial<
+      Record<
+        GridKey,
+        {
+          n_intervals: number
+          n_setters: number
+          fuel_matched_share_pct: number | null
+          top: {
+            resource: string
+            fuel: string | null
+            share_pct: number
+            mean_price_php_kwh: number
+          }[]
+        }
+      >
+    >
+    note?: string
+  }
+  reserve_prices?: {
+    available: boolean
+    dates?: string[]
+    series?: Partial<Record<GridKey, Record<string, (number | null)[]>>>
+    stats?: Partial<Record<GridKey, Record<string, { mean: number; max: number }>>>
+    unit?: string
+    commodity_note?: string
+    src?: string
+  }
+  advisories?: { available: boolean }
+  outlook?: { available: boolean }
+}
+
 export interface MixMonth {
   period: string
   wesm_pct: number
@@ -497,6 +534,15 @@ export interface DayProfile {
   // observed daily hydro energy (DIPCEF-derived); null when the day is not
   // covered by the derived window
   hydro_budget_mwh?: Partial<Record<GridKey, number>> | null
+  // recorded curtailment summed over the day (MWh per grid); absent when zero
+  curtailed_mwh?: Partial<Record<GridKey, number>> | null
+  // the day's scheduled-outage deviation from the window mean, per grid and
+  // fuel (PASA-matched MW; hydro and storage excluded); null when OUTRTD
+  // does not cover the date
+  out_dev_mw?: Partial<Record<GridKey, Record<string, number>>> | null
+  // observed hourly regional clearing price (MCP, PhP/kWh); the backcast's
+  // second target; null when the MCP archive does not cover the date
+  mcp?: Partial<Record<GridKey, (number | null)[]>> | null
 }
 
 export interface StorageDefault {
@@ -582,6 +628,11 @@ export interface Profiles {
     days: number
     window: { from: string; to: string } | null
     per_grid: Partial<Record<GridKey, BackcastGrid>>
+    // same replays scored against the observed regional clearing price (MCP),
+    // the target commensurate with a dispatch dual; null when the MCP archive
+    // is absent
+    per_grid_mcp?: Partial<Record<GridKey, BackcastGrid>> | null
+    mcp_note?: string
     high_hour_note: string
     note: string
   }

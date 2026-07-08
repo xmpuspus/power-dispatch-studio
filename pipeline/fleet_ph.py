@@ -104,6 +104,12 @@ FUEL_COST_PHP_KWH = {
     "oil": 12.00,         # ASSUMPTION: bunker/diesel peaker proxy; scarcity setter
 }
 
+# SOURCED: the WESM offer price ceiling, P32/kWh (WESM Tripartite Committee
+# Joint Resolution No. 2 s.2013, permanent since Dec 2015). Short hours price
+# here in every engine: the market's own ceiling is where administrative
+# shortage pricing lands. https://resaph.com/p32kwh-price-ceiling-on-power-trade-permanent-wesm/
+WESM_OFFER_CAP_PHP_KWH = 32.0
+
 # --- availability derate by fuel (fraction of installed that can be dispatched) -
 # LABELLED ASSUMPTIONS. Solar is handled separately by SOLAR_PROFILE (time of day).
 FUEL_AVAIL = {
@@ -233,9 +239,11 @@ def clear(blocks: list[dict], demand_mw: float,
           imports: list[dict] | None = None) -> dict:
     """Clear a demand against a merit-order stack (plus optional import blocks).
 
-    Returns {price, served_mw, avail_mw, shortfall_mw, marginal_fuel}. If demand
-    exceeds available supply the price is set by the most expensive block and the
-    shortfall is reported (the model's LOLE/EUE signal).
+    Returns {price, served_mw, avail_mw, shortfall_mw, marginal_fuel}. If
+    demand exceeds available supply the hour is short: it prices at the
+    sourced WESM offer cap (P32/kWh, the market's own ceiling; see
+    constants_ph.MARKET_ANCHORS) and the shortfall is reported (the model's
+    LOLE/EUE signal). A published market rule, not a fitted value.
     """
     merged = sorted((blocks or []) + (imports or []), key=lambda b: b["cost"])
     total = sum(b["mw"] for b in merged)
@@ -248,6 +256,8 @@ def clear(blocks: list[dict], demand_mw: float,
             price, marginal = b["cost"], b["fuel"]
             break
     shortfall = max(0.0, demand_mw - total)
+    if shortfall > 0:
+        price, marginal = WESM_OFFER_CAP_PHP_KWH, "shortage"
     return {"price": round(price, 3), "served_mw": round(min(demand_mw, total), 1),
             "avail_mw": round(total, 1), "shortfall_mw": round(shortfall, 1),
             "marginal_fuel": marginal}

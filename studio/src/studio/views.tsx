@@ -1,5 +1,5 @@
 import type { Dispatch, GridKey, ReserveCategory, ReserveGridRow } from '../lib/types'
-import { num, php, pct, fuelLabel, useReserve } from '../lib/data'
+import { num, php, pct, fuelLabel, useMarketOps, useReserve } from '../lib/data'
 import { Panel, StatTile, Source, EmptyNote } from '../ui/kit'
 import { DataGrid, type Column } from '../ui/DataGrid'
 import { DurationCurve, ShareBars, CompareBars } from './charts'
@@ -236,6 +236,48 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
           empty="No reserve rows for this grid in the sample."
         />
       </Panel>
+
+      <OfficialReservePrices grid={grid} />
     </div>
+  )
+}
+
+/** The official regional reserve price series (RSVPR, daily archive): the
+ * window-long price evidence beside the per-resource sample above. */
+function OfficialReservePrices({ grid }: { grid: GridKey }) {
+  const mo = useMarketOps()
+  const rp = mo.data?.reserve_prices
+  if (mo.loading || !rp?.available || !rp.stats?.[grid]) return null
+  const rows = Object.entries(rp.stats[grid]!).sort((a, b) => b[1].mean - a[1].mean)
+  return (
+    <Panel
+      title={`Official regional reserve prices, ${cap(grid)}`}
+      subtitle={`IEMOP's published regional reserve price series over ${rp.dates?.length ?? 0} archive days: window mean and dearest daily mean per product code.`}
+      right={<Source href={rp.src} label="data" />}
+    >
+      <DataGrid
+        columns={[
+          { key: 'code', header: 'Product code', render: (x) => x[0] },
+          {
+            key: 'mean',
+            header: 'Window mean',
+            align: 'right',
+            mono: true,
+            render: (x) => php(x[1].mean),
+          },
+          {
+            key: 'max',
+            header: 'Dearest daily mean',
+            align: 'right',
+            mono: true,
+            render: (x) => php(x[1].max),
+          },
+        ]}
+        rows={rows}
+        getKey={(x) => x[0]}
+        empty="No official series for this grid yet."
+      />
+      <p className="note">{rp.commodity_note}</p>
+    </Panel>
   )
 }

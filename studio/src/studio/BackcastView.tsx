@@ -139,12 +139,43 @@ export function BackcastView({
       </div>
 
       <Panel
-        title="Model vs observed, whole market window"
+        title="Model vs observed LWAP, whole market window"
         subtitle={`Every full-coverage market day since ${bc.window?.from} replayed with the base model. Nothing tuned; the residual is the finding.`}
       >
         <DataGrid columns={cols} rows={GRIDS} getKey={(g) => g} />
         <p className="note">{bc.high_hour_note}</p>
       </Panel>
+
+      {bc.per_grid_mcp ? (
+        <Panel
+          title="Same replays against the observed clearing price (MCP)"
+          subtitle="The ex-ante regional marginal price, the target commensurate with a dispatch dual."
+        >
+          <DataGrid
+            columns={cols.map((c) =>
+              c.key === 'g'
+                ? c
+                : {
+                    ...c,
+                    render: (g: GridKey) => {
+                      const s = bc.per_grid_mcp?.[g]
+                      if (!s) return '-'
+                      if (c.key === 'obs') return php(s.observed_mean_php_kwh)
+                      if (c.key === 'mod') return php(s.modeled_mean_php_kwh)
+                      if (c.key === 'mae') return php(s.mae_php_kwh)
+                      if (c.key === 'bias') return php(s.bias_php_kwh)
+                      if (c.key === 'corr') return num(s.correlation ?? NaN, 2)
+                      const v = s.high_hour_hit_rate_pct
+                      return v == null ? 'n/a (flat model)' : pct(v / 100, 0)
+                    },
+                  }
+            )}
+            rows={GRIDS}
+            getKey={(g) => g}
+          />
+          <p className="note">{bc.mcp_note}</p>
+        </Panel>
+      ) : null}
 
       <Panel
         title={`One day against the tape, ${cap(grid)}`}

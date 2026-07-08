@@ -31,7 +31,7 @@ RAW = os.path.join(HERE, "..", "data", "raw")
 
 # resource code -> (fleet row name, mode). Only codes whose plant is unambiguous
 # against the DOE list are here; everything else stays unmatched.
-ALIAS: dict[str, tuple[str, str]] = {
+ALIAS: dict[str, tuple[str, str] | None] = {
     "01AMBUK": ("AMBUKLAO", "per_unit"),
     "01CASECN": ("CASECNAN (NIA)", "per_unit"),
     "01GIFT": ("GIFT", "row"),
@@ -40,14 +40,29 @@ ALIAS: dict[str, tuple[str, str]] = {
     "01PNTBNG": ("PANTABANGAN", "per_unit"),
     "01SROQUE": ("SAN ROQUE", "per_unit"),
     "03CALACA_G01": ("CALACA U1", "row"),
+    "03EERI": None,  # two aggregated fleet rows, unit codes ambiguous
+    "03ILIJAN": ("ILIJAN", "per_unit"),
     "03KAL": ("KALAYAAN PSPP", "per_unit"),
+    "03PAGBIL_G01": ("PAGBILAO U1", "row"),
+    "03PAGBIL_G02": ("PAGBILAO U2", "row"),
+    "03PAGBIL_G03": ("PAGBILAO U3", "row"),
     "03SLPGC_G01": ("SLPGC U1", "row"),
     "03SLPGC_G02": ("SLPGC U2", "row"),
     "03SNGAB": ("SAN GABRIEL", "row"),
+    "03STA-RI": ("SANTA RITA", "per_unit"),
+    "05CARMENDPP": ("TPC (Carmen Station)", "per_unit"),
+    "05CEDC_U01": ("CEDC U1", "row"),
+    "05CEDC_U02": ("CEDC U2", "row"),
+    "05CEDC_U03": ("CEDC U3", "row"),
     "05EAUC": ("EAST ASIA UTILITIES (MEPZA)", "per_unit"),
     "05THVI_U01": ("TVI U1", "row"),
+    "05TPC": None,  # two TPC fleet rows (coal 1A, oil Carmen), ambiguous
     "06HELIOS": ("HELIOS", "row"),
     "07BDPP": ("BOHOL DPP", "per_unit"),
+    "07BIDPP": ("BOHOL DPP", "per_unit"),
+    "08NABASDPP": ("AVON-NABAS", "per_unit"),
+    "08PEDC_U01": ("PEDC U1", "row"),
+    "08PEDC_U02": ("PEDC U2", "row"),
     "08PEDC_U03": ("PEDC U3", "row"),
     "08TIMBA": ("TIMBABAN HEPP", "per_unit"),
     "09WMPC": ("WMPC", "per_unit"),
@@ -56,11 +71,18 @@ ALIAS: dict[str, tuple[str, str]] = {
     "10AGUS5": ("AGUS 5", "per_unit"),
     "10AGUS6": ("AGUS 6", "per_unit"),
     "10AGUS7": ("AGUS 7", "per_unit"),
+    "10GNPK_U01": ("GNPOWER KAUSAWAGAN U1", "row"),
+    "10GNPK_U02": ("GNPOWER KAUSAWAGAN U2", "row"),
+    "10GNPK_U03": ("GNPOWER KAUSAWAGAN U3", "row"),
+    "10GNPK_U04": ("GNPOWER KAUSAWAGAN U4", "row"),
     "11FDC_U01": ("FDC MISAMIS U1", "row"),
+    "11FDC_U02": ("FDC MISAMIS U2", "row"),
+    "11FDC_U03": ("FDC MISAMIS U3", "row"),
     "11MANFOR_G01": ("MANOLO FORTICH U1", "row"),
     "11MANFOR_G02": ("MANOLO FORTICH U2", "row"),
     "11PULA4": ("PULANGI 4", "per_unit"),
     "12ASIGA": ("ASIGA", "row"),
+    "14SARANG_U01": ("SEC U1", "row"),
     "14SARANG_U02": ("SEC U2", "row"),
     "14SIGHYDRO": ("SIGUIL HEPP", "row"),
 }
@@ -135,20 +157,32 @@ def build_pasa(fleet: dict) -> dict:
                     seen.add(name)
         out = []
         matched_mw = {g: 0.0 for g in GRIDS}
+        matched_fuel_mw: dict[str, dict[str, float]] = {g: {} for g in GRIDS}
         n_unmatched = 0
+        # two spellings of one plant's code (07BDPP / 07BIDPP both alias
+        # BOHOL DPP) must not double-count the same unit on the same day
+        counted: set[tuple[str, str]] = set()
         for name in sorted(seen):
             if name not in resolved:
                 resolved[name] = resolve(name)
             rr = resolved[name]
             out.append(name)
             if rr["match"] == "verified" and rr["grid"] in matched_mw:
+                unit_key = (rr["plant"], name.split("_")[-1])
+                if unit_key in counted:
+                    continue
+                counted.add(unit_key)
                 matched_mw[rr["grid"]] += rr["unit_mw"]
+                fm = matched_fuel_mw[rr["grid"]]
+                fm[rr["fuel"]] = fm.get(rr["fuel"], 0.0) + rr["unit_mw"]
             elif rr["match"] == "unmatched":
                 n_unmatched += 1
         days.append({
             "date": date,
             "out": out,
             "matched_mw": {g: round(v, 1) for g, v in matched_mw.items()},
+            "matched_fuel_mw": {g: {f: round(v, 1) for f, v in fm.items()}
+                                for g, fm in matched_fuel_mw.items()},
             "n_out": len(out),
             "n_unmatched": n_unmatched,
         })

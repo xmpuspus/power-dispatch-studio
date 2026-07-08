@@ -7,7 +7,7 @@
 // hash from the Python solve, and engine.test.ts asserts this reproduces both.
 
 import type { Block, Dispatch, GridKey } from '../lib/types'
-import { buildDayLp } from './lpText'
+import { OFFER_CAP, buildDayLp } from './lpText'
 import { solveLp } from './solver'
 
 export const GRID_KEYS: GridKey[] = ['luzon', 'visayas', 'mindanao']
@@ -102,7 +102,9 @@ export function buildStack(
   return blocks
 }
 
-/** Marginal cost serving the g-th MW on a cost-sorted stack (mirror of _marg). */
+/** Marginal cost serving the g-th MW on a cost-sorted stack (mirror of
+ * chrono.marginal): beyond the stack the hour is short and prices at the
+ * sourced WESM offer cap. */
 export function marginal(
   blocks: Block[],
   g: number
@@ -114,8 +116,7 @@ export function marginal(
     cum += b.mw
     if (cum >= g) return { cost: b.cost, fuel: b.fuel }
   }
-  const last = blocks[blocks.length - 1]
-  return { cost: last.cost, fuel: last.fuel }
+  return { cost: OFFER_CAP, fuel: 'shortage' }
 }
 
 /** Single-grid clear: marginal price, availability, shortfall. */
@@ -140,7 +141,13 @@ const LABEL_EPS = 0.025
 const FLOW_SAT_EPS = 0.5
 
 /** Name what sets a snapshot price (no storage at the reference hour). */
-function snapshotLabel(price: number, ownCost: number, ownFuel: string | null) {
+function snapshotLabel(
+  price: number,
+  ownCost: number,
+  ownFuel: string | null,
+  unservedMarginal = false
+) {
+  if (unservedMarginal) return 'shortage'
   if (Math.abs(ownCost - price) <= LABEL_EPS) return ownFuel
   return price > ownCost ? 'export' : 'import'
 }
@@ -166,7 +173,16 @@ export function snapshotLpText(
   let dearest = 12
   for (const g of GRID_KEYS)
     for (const b of stacks[g]) if (b.cost > dearest) dearest = b.cost
-  return buildDayLp(hstacks, hdemand, caps, wheel, [], null, dearest + 0.001)
+  // shortage prices at the sourced WESM offer cap; mirror of solve_snapshot_lp
+  return buildDayLp(
+    hstacks,
+    hdemand,
+    caps,
+    wheel,
+    [],
+    null,
+    Math.max(OFFER_CAP, dearest + 0.001)
+  )
 }
 
 /**
@@ -200,7 +216,7 @@ export function clearCoupled(
     price[g] = round3(sol.dual(`bal_${S[g]}_0`))
     shortfall[g] = Math.max(0, round1(sol.col(`u_${S[g]}_0`)))
     const m = marginal(stacks[g], gen[g])
-    marginalLabel[g] = snapshotLabel(price[g], m.cost, m.fuel)
+    marginalLabel[g] = snapshotLabel(price[g], m.cost, m.fuel, shortfall[g] > 1e-3)
   }
   const sat1 = Math.abs(f1) >= caps.leyte - FLOW_SAT_EPS
   const sat2 = Math.abs(f2) >= caps.mvip - FLOW_SAT_EPS

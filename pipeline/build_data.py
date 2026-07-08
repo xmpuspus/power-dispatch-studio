@@ -814,8 +814,9 @@ def main() -> int:
     # PASA layer: scheduled outages from OUTRTD, mapped to fleet MW
     from pasa import build_pasa
 
+    pasa = build_pasa(fleet)
     with open(os.path.join(OUT, "pasa.json"), "w") as fh:
-        json.dump(build_pasa(fleet), fh, indent=1)
+        json.dump(pasa, fh, indent=1)
 
     # emission factors (sourced constants)
     from emissions import build_emissions
@@ -829,11 +830,27 @@ def main() -> int:
 
     merit_hydro = {g: dispatch["merit_order"][g]["fuel_avail_mw"].get("hydro")
                    for g in ("luzon", "visayas", "mindanao")}
-    profiles = build_profiles(fleet, merit_hydro)
+    profiles = build_profiles(fleet, merit_hydro, pasa)
     profiles["chrono_golden"] = build_chrono_golden(dispatch, profiles)
     profiles["backcast"] = build_backcast(dispatch, profiles)
     with open(os.path.join(OUT, "profiles.json"), "w") as fh:
         json.dump(profiles, fh, indent=1)
+
+    # observed market operations (the 2026-07-07 dataset expansion) and the
+    # per-day drivers timeline joined from every observed layer
+    from market_obs import (build_advisories, build_drivers, build_outlook,
+                            build_price_setters, build_reserve_prices)
+
+    advisories = build_advisories()
+    reserve_prices = build_reserve_prices()
+    market_ops = {
+        "price_setters": build_price_setters(fleet),
+        "reserve_prices": reserve_prices,
+        "advisories": advisories,
+        "outlook": build_outlook(fleet),
+    }
+    drivers = build_drivers(prices, profiles, pasa, advisories,
+                            reserve_prices)
 
     for name, obj in [("congestion.json", congestion),
                       ("reliability.json", reliability),
@@ -843,6 +860,8 @@ def main() -> int:
                       ("congestion_premium.json", premium),
                       ("demand_anchors.json", DEMAND_ANCHORS),
                       ("market_anchors.json", MARKET_ANCHORS),
+                      ("market_ops.json", market_ops),
+                      ("drivers.json", drivers),
                       ("answers.json", answers),
                       ("findings.json", findings)]:
         with open(os.path.join(OUT, name), "w") as fh:

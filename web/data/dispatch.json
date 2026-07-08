@@ -235,7 +235,7 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "add3ab9dfdecdae0e38250f7464b7f4b26e9b5152dfed44821cab1ec0faca96c",
+    "lp_sha256": "7ea4fe8901199367da570b721a918637e24774f5294436556930af87694ca395",
     "expect": {
      "price": {
       "luzon": 6.0,
@@ -274,7 +274,7 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "37a7447d6c5f09a53aa91015f38be5bddd25440fcf21964aa1ad171bc3aa6738",
+    "lp_sha256": "fd26135d54d9cdec7a6ccf15d00345491470401363da4ad60bc22c74f244614c",
     "expect": {
      "price": {
       "luzon": 6.02,
@@ -313,7 +313,7 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "8ac4b8bed5e1e3ee38f02cb65fb5b42122cea1d00a68ff69326b3f4cad2a89b3",
+    "lp_sha256": "79b0636ce45879e88c3aeaf3be8b49c80f52a10c553962d79eaf9600682e99e7",
     "expect": {
      "price": {
       "luzon": 6.0,
@@ -356,7 +356,7 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "6e08db5cef3b511a37c0f6840095a4919107a3ce922cf38c8e89e01628259ecb",
+    "lp_sha256": "b30a55af237a2e527dc58c5352ebedaf5b634175da709ba46db5dfd80ff1964c",
     "expect": {
      "price": {
       "luzon": 6.0,
@@ -395,7 +395,7 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "9cfb18109efd32edef8a89b5d25c98beca716301a7c98f022c5ac21a4ff39abb",
+    "lp_sha256": "afa3f73944853b791cb99e82cc2c9f9ab9bb4d4b538d8b3b2418ed75ba319dfa",
     "expect": {
      "price": {
       "luzon": 6.0,
@@ -506,7 +506,7 @@
    "leyte_luzon_saturated_pct": 31.7,
    "leyte_luzon_mean_rent_php_kwh": 5.645,
    "visayas_vs_luzon_observed_php_kwh": 6.2,
-   "visayas_vs_luzon_coupled_php_kwh": 1.942,
+   "visayas_vs_luzon_coupled_php_kwh": 1.943,
    "explained_fraction": 0.313
   },
   "dc_binding_threshold": {

@@ -64,16 +64,19 @@ inflating demand.
 | --- | --- |
 | Coupled zonal dispatch with congestion rent | Nodal LMPs (the public PH LMP congestion component is structurally zero) |
 | Per-unit fleet from the DOE list, unit-level N-1 | Security-constrained unit commitment, ramp rates, min up/down times |
-| Chronological replay of observed days | Load or price forecasting |
+| Chronological replay of observed days, with each day's scheduled-outage deviation applied (OUTRTD via the PASA mapping) | Load or price forecasting |
+| Shortage priced at the P32/kWh WESM offer cap (published rule), labeled 'shortage' | Offer-behavior pricing below the cap (per-participant strategy) |
 | Storage optimised over the day's hours (HiGHS LP) | Inter-day storage carryover |
-| Reserve as a withheld-capacity constraint | Reserve PRICES (the co-optimised reserve products stay a market layer this model does not clear) |
+| Reserve as a withheld-capacity constraint; OBSERVED official regional reserve prices shown beside it | Reserve co-optimisation inside the LP (needs per-participant reserve offer stacks) |
 | Monte Carlo adequacy on forced-outage rates, with the day's scheduled outages removable (PASA lite) | Maintenance-schedule optimisation |
 | DOE build pipeline as sourced candidates on a horizon (LT Plan lite) | Expansion optimisation, build-cost economics |
-| Load sweep, window band, per-hour binding classification, operational CO2 | Build-cost economics, reserve prices |
+| Load sweep, window band, per-hour binding classification, operational CO2 | Build-cost economics |
 | Energy-limited hydro: the day LP caps hydro at the day's OBSERVED water (DIPCEF per-resource schedules, derived daily; scaled with edits and the hydrology lever) | Inter-day water management (each day's budget stands alone) |
 
-The model's honesty gate is calibration against the observed load-weighted
-average price (LWAP). A competitive cost stack under-prices tight hours; that
+The model's honesty gate is calibration against two observed targets: the
+load-weighted average price (LWAP, the settlement-side series) and the
+regional market clearing price (MCP, the ex-ante series commensurate with a
+dispatch dual). A competitive cost stack under-prices tight hours; that
 residual is the scarcity and offer premium a cost model cannot see, and it is
 reported, not tuned away.
 
@@ -83,30 +86,43 @@ The Backcast view replays every full-coverage market day with the base model
 against the observed hourly LWAP. At the July 2026 bake (window 2026-05-01 to
 2026-06-25, 56 market days, 24 hourly points each per grid):
 
+Against the settlement-side LWAP:
+
 | Grid | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- | --- |
-| Luzon | P7.63/kWh | P6.31/kWh | P4.18 | -P1.33 | 0.35 | 42% |
-| Visayas | P12.91/kWh | P5.99/kWh | P8.66 | -P6.92 | 0.62 | n/a |
+| Luzon | P7.63/kWh | P6.09/kWh | P4.26 | -P1.54 | 0.21 | 52% |
+| Visayas | P12.91/kWh | P5.99/kWh | P8.65 | -P6.92 | 0.61 | n/a |
 | Mindanao | P11.48/kWh | P6.00/kWh | P7.58 | -P5.48 | 0.06 | 7% |
 
-Three engine steps sit inside these numbers, all reported rather than tuned.
+Against the observed regional clearing price (MCP, the ex-ante series
+commensurate with a dispatch dual; hours the MCP archive covers, with tied
+intervals averaged per interval before the hourly mean):
+
+| Grid | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
+| --- | --- | --- | --- | --- | --- | --- |
+| Luzon | P7.03/kWh | P6.09/kWh | P3.93 | -P0.94 | 0.35 | 46% |
+| Visayas | P14.78/kWh | P5.99/kWh | P10.91 | -P8.79 | 0.65 | 93% |
+| Mindanao | P11.58/kWh | P6.00/kWh | P8.21 | -P5.58 | 0.05 | 15% |
+
+Four engine steps sit inside these numbers, all reported rather than tuned.
 The LP swap completed the overnight corridor arbitrage the old
-coordinate-descent clear left half-done (mean error unchanged, a few
-hundredths of correlation traded away as solver noise). The water budgets
-then gave Luzon a real daily shape: hydro limited to each day's observed
-energy gets spent in the dear hours, correlation more than doubles to 0.35,
-and the high-hour hit rate goes from unrankable (a flat model) to 42 percent.
-The third step recalibrated the per-grid hydro capacity split against the
-DOE plant lists after the observed schedules contradicted it: the old
-allocation gave the Visayas 10 MW of hydro while DIPCEF showed its plants
-clearing up to 377 MWh a day. With the fleet-derived split (Luzon 2,560 /
-Visayas 55 / Mindanao 1,221 MW installed) the Visayas water budget finally
-binds and its correlation goes from 0.09 to 0.62, while the level bias is
-untouched: the model still under-prices the Visayas by P6.92/kWh, and that
-stays visible. Mindanao moves the other way, high-hour hit falling from 16
-to 7 percent: the extra fleet-sourced hydro suppresses modeled scarcity
-hours that observed prices keep. Its price formation is dominated by things
-this model does not carry, and the number says so.
+coordinate-descent clear left half-done. The water budgets gave the model a
+real daily shape. The fleet-derived hydro split made the Visayas budget
+bind (its old allocation was 10 MW against plants observably clearing 377
+MWh a day). The fourth step put the observed layers into every replayed
+day: demand now includes recorded curtailment, each day subtracts its
+scheduled-outage deviation from the market-window mean (OUTRTD via the PASA
+mapping; the deviations sum to zero over the scored window), and a short
+hour prices at the P32/kWh offer cap. Two honest movements came with it.
+Luzon's LWAP correlation FELL from 0.35 to 0.21 while its high-hour hit
+rate rose from 42 to 52 percent: outage-aware days sharpen tight-hour
+ranking, but LWAP's settlement smoothing does not follow the added
+day-to-day variation. And the MCP table shows where the LWAP gap was
+definitional: against the clearing price itself, Luzon's bias shrinks from
+-P1.54 to -P0.94, and the Visayas ranks 93 percent of its dear hours
+correctly while still missing their LEVEL by P8.79/kWh. That level miss is
+the scarcity and offer premium a cost stack cannot see, and it stays on the
+table instead of being tuned away.
 
 Read that table before trusting any scenario: the model explains the cost
 floor and the congestion geometry, and it under-prices scarcity everywhere,

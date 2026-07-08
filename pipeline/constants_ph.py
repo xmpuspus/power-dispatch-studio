@@ -7,6 +7,8 @@ as exact routes or addresses (each feature carries a `precision` field).
 """
 from __future__ import annotations
 
+from fleet_ph import WESM_OFFER_CAP_PHP_KWH
+
 # --- Grid choke points (named in primary sources) -----------------------------
 # Binding evidence: IEMOP December 2025 monthly report (Leyte-Luzon HVDC at its
 # 250 MW Luzon-to-Visayas limit or offline 69% of the billing period; 230 kV
@@ -280,6 +282,17 @@ MARKET_ANCHORS = {
     "wesm_may2026_demand_mw": 15755,
     "wesm_may2026_margin_mw": 3629,
     "src_may2026": "https://powerphilippines.com/wesm-prices-rise-38-5-in-may-as-demand-growth-outpaces-supply/",
+    # WESM price caps (published market rules, not model tuning).
+    # Offer cap: P32/kWh, WESM Tripartite Committee Joint Resolution No. 2
+    # s.2013, permanent since Dec 2015; the value itself lives in
+    # fleet_ph.WESM_OFFER_CAP_PHP_KWH (single definition, every engine reads
+    # it). Secondary cap: P7.423/kWh imposed when the 72-hour rolling GWAP
+    # breaches P12.413/kWh (ERC Res. 26 s.2025).
+    "wesm_offer_cap_php_kwh": WESM_OFFER_CAP_PHP_KWH,
+    "src_offer_cap": "https://resaph.com/p32kwh-price-ceiling-on-power-trade-permanent-wesm/",
+    "wesm_secondary_cap_php_kwh": 7.423,
+    "wesm_secondary_cap_trigger_php_kwh": 12.413,
+    "src_secondary_cap": "https://powerphilippines.com/erc-approves-higher-secondary-price-cap-thresholds-in-wesm/",
     # Suspension window (ERC; national energy emergency EO 110)
     "wesm_suspended_from": "2026-03-26",
     "wesm_resumed": "2026-05-01",
