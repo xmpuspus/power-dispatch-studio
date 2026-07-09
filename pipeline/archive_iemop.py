@@ -97,6 +97,21 @@ DATASETS = {
     # substitute.
     "PSMCOG": "psm-constrained-on-generators",
     "RTDSL": "security-limits-used-in-rtd",
+    # Added 2026-07-09 (the round-9 convergence critic): the SO dispatch
+    # instruction family the round-8 disposition failed to name. MOTRD is
+    # the weekly processed MOT-raise re-dispatch list (same schema and
+    # cadence as MRU but the full out-of-merit record: a pooled 55 MW
+    # median against MRU's 5.7, max 668 MW, 89k rows across the window,
+    # two weeks published empty); SODIR is the per-grid dispatch
+    # instruction log (dailies plus the operator's weekly compilations;
+    # consumers count dailies only) whose REMARKS name the cause (reserve
+    # activations, line limitations); VDSODIR is the operator's own list
+    # of valid discrepancies on that report, the data-quality flag for
+    # anything built from the other two.
+    "MOTRD": "list-of-mot-raise-re-dispatch-based-on-so-dispatch-"
+             "instruction-report",
+    "SODIR": "so-dispatch-instruction-report",
+    "VDSODIR": "valid-discrepancies-on-so-dispatch-instruction-report",
 }
 
 # Large datasets kept as a static SAMPLE of recent days, not the full public
@@ -105,6 +120,12 @@ DATASETS = {
 # human tops up the sample with --sample-days N on a backfill. RTDRS (reserve
 # schedules with co-optimised reserve clearing prices) joins DIPCEF here.
 SAMPLE_KEYS = {"DIPCEF", "RTDRS"}
+
+# Name-not-on-disk fetch keys: VDSODIR reissues old weeks under new as-of
+# names, and SODIR publishes weekly compilations whose range stamps sit
+# behind the newest daily; the newer-than-newest stamp rule would skip
+# both forever, so these keys fetch any listed name not already held.
+REVISION_KEYS = {"VDSODIR", "SODIR"}
 
 
 def curl(args: list[str], timeout: int = 60) -> tuple[int, bytes]:
@@ -208,6 +229,12 @@ def wanted(key: str, name: str, mode: str, sample_days: int,
                 for d in range(sample_days)}
         return stamp in keep
     if mode == "daily":
+        # Revision-stamped datasets (week + as-of date in the name) reissue
+        # OLD weeks under new names; the newer-than-newest rule would skip
+        # them, so fetch any listed name not yet on disk (looks_valid at
+        # the call site skips ones we already hold).
+        if key in REVISION_KEYS:
+            return True
         # Fetch everything newer than what is already on disk, not a fixed
         # 2-day lookback: final datasets publish with a lag (LWAPF ran ~10
         # days behind when measured on 2026-07-05), and a cron outage must
@@ -297,7 +324,11 @@ def archive(keys: list[str], mode: str, sample_days: int) -> list[str]:
 # simply between weekly prints.
 # PSMCOG is a final-calculation dataset: the newest file trails the
 # market day by about two weeks, so its budget is that lag plus slack.
+# MOTRD mirrors MRU's weekly cadence. VDSODIR is revision-stamped
+# (week + as-of date; the stamp regex reads the WEEK, which trails by
+# design), so it carries no budget.
 LAG_BUDGET_DAYS = {"LWAPF": 16, "GWAPF": 16, "MRU": 14, "PSMCOG": 24,
+                   "MOTRD": 14, "VDSODIR": None,
                    "DIPCEF": None, "RTDRS": None}
 LAG_DEFAULT_DAYS = 4
 

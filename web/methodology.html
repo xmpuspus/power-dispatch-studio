@@ -207,6 +207,36 @@ to; MAX equals MIN in the archived windows, so each is a pinned
 operating point, the physical record beside the corridor story
 (market_ops.json security_limits). Published next-day. Added after the
 round-8 audit.</td></tr>
+<tr><td>MOT-raise re-dispatch list (weekly processed CSV; every
+out-of-merit raise instruction per 5-minute interval with its MW,
+from the SO dispatch instruction report)</td>
+<td><a
+href="https://www.iemop.ph/market-data/list-of-mot-raise-re-dispatch-based-on-so-dispatch-instruction-report/">page</a></td>
+<td>The full out-of-merit record beside the must-run subset: 89
+thousand instructions across the archived window at a pooled 55 MW
+median, against the must-run list's 5.7; two of the twelve weekly
+files were published empty and are counted as published
+(market_ops.json so_instructions). Added after the round-9 audit
+found it untriaged.</td></tr>
+<tr><td>SO dispatch instruction report (per-grid CSVs: dailies plus
+the operator's weekly compilations; each instruction with MW from/to,
+category, and the operator's remark)</td>
+<td><a
+href="https://www.iemop.ph/market-data/so-dispatch-instruction-report/">page</a></td>
+<td>The instruction log with the CAUSE in the operator's own words:
+reserve activations with their variance readings, and line
+limitations named per instruction (the remarks screen in
+market_ops.json so_instructions counts them). The weekly compilations
+are archived beside the dailies but never counted, or 84 of the
+window's 90 days would double. Added after the round-9
+audit.</td></tr>
+<tr><td>Valid discrepancies on the SO dispatch instruction report
+(revision-stamped weekly CSV)</td>
+<td><a
+href="https://www.iemop.ph/market-data/valid-discrepancies-on-so-dispatch-instruction-report/">page</a></td>
+<td>The operator's own data-quality flag on the instruction family;
+newest revision per week counted beside the record it corrects.
+Added after the round-9 audit.</td></tr>
 </table>
 <p class="muted">Courtesy: fetches are sequential with a 250 ms sleep and abort
 after 5 consecutive errors. IEMOP data is republished here as-is for public
@@ -546,10 +576,20 @@ numbers, not the algorithm (series designation, weighting, imposition and
 lifting mechanics, effectivity), so the computed series is the trigger's
 input, not a reconstruction of the cap itself.</li>
 <li><b>Must-run instructions are displayed, not dispatched, and the
-archive says why</b>: the processed SO instruction list carries a median
-of 10 MW across 151 instructed grid-hours in twelve weekly files, two
-orders of magnitude below the offer books it would constrain, so a
-must-take layer built from it would be inert and is not built.</li>
+inertness finding is scoped to the must-run subset</b>: the processed
+must-run list carries a median of 10 MW across 151 instructed
+grid-hours in twelve weekly files, two orders of magnitude below the
+offer books it would constrain, so a must-take layer built from IT
+would be inert and is not built. The round-9 audit showed that
+finding does not extend to the family: the sibling MOT-raise
+re-dispatch record carries 89 thousand instructions across the
+archived weeks at a pooled 55 MW median and a 668 MW maximum, larger
+than one Sual unit, so the full out-of-merit record is not inert. It is archived and
+measured (market_ops.json so_instructions), the daily instruction
+log names the binding element in the operator's own remarks, and the
+engine layer the record sizes, an administered-dispatch overlay on
+the replay, is a named queued build with its input now in the
+archive.</li>
 <li><b>Minimum-stable coal floors were built, measured, and removed</b>:
 with the offer book fuel-classified (84.6 percent of offered MW through
 the alias table, hand-verified abbreviations, and a fuel-tolerant fleet
@@ -584,8 +624,15 @@ schedules zips (5-minute per-resource validation, the sub-hourly
 refinement), the per-resource reserve results (DIPC reserve results
 final, a tighter reserve validation), the reserve market clearing
 price, and the ancillary-services registered capacities (the reserve
-book's registration denominator). None of these contradicts a written
-claim; each is a deepening of a table that already exists.</li>
+book's registration denominator); the indicative modified
+administered prices ride with the administered-prices family. The
+System Operator's dispatch-instruction family (the full daily
+instruction log, the MOT-raise re-dispatch list, and its
+valid-discrepancy list) was MISSING from this triage until the
+round-9 audit named it; all three are now archived and measured
+(market_ops.json so_instructions). None of the remaining named
+features contradicts a written claim; each is a deepening of a table
+that already exists.</li>
 <li><b>Offer-based dispatch is NOT a boundary</b>: IEMOP publishes the
 real-time generation offers and the regional merit-order tables in the same
 public window (verified July 2026), and dispatching against them is the

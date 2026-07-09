@@ -56,6 +56,17 @@ that the archived files pin to a single MW value, the physical record of
 which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
+The instruction log behind both closes the causal loop. Across the 90
+daily logs the System Operator's own dispatch instructions carry a remark
+citing a line limitation **1,561 times, and 1,416 of those name the
+Leyte-Cebu corridor** ("Advise to discharge under MOT Raise due to
+Leyte-Cebu Line Limitation"), the same corridor the constraint league
+ranks first by shadow-price days. The full out-of-merit record rides
+beside it: **89,322 MOT-raise instructions** across the window at a **55
+MW** median, where the must-run subset the methodology measured out sits
+at 5.7 (`so_instructions` in the same file; the administered-dispatch
+overlay it sizes is a named queued build).
+
 ## Thin is the normal state
 
 In the operator's own real-time dispatch schedules, **Luzon scheduled reserves fell

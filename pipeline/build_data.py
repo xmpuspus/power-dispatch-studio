@@ -860,7 +860,7 @@ def main() -> int:
                             build_gwap_trigger, build_not_offered,
                             build_outlook, build_price_setters,
                             build_reserve_prices, build_reserve_validation,
-                            build_security_limits)
+                            build_security_limits, build_so_instructions)
 
     advisories = build_advisories()
     reserve_prices = build_reserve_prices()
@@ -873,6 +873,7 @@ def main() -> int:
                                            profiles),
         "constrained_on": build_constrained_on(fleet),
         "security_limits": build_security_limits(fleet),
+        "so_instructions": build_so_instructions(fleet),
         "advisories": advisories,
         "outlook": build_outlook(fleet),
         "not_offered": build_not_offered(),

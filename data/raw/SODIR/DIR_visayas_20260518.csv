@@ -1,0 +1,281 @@
+Visayas System Operations
+Dispatch Instruction Report
+18May2026-18May2026
+UNIT,INSTRUCTION,INSTRUCTION_TIME,MW_FROM,MW_TO,CATEGORY,REMARKS
+04LGPP_G01,"CUT-IN",05/18/2026 2:21:00 AM,0,2,GENERATOR START-UP,"TGPP U3 cut-in at 0221H (Unplanned Outage)"
+04TONGO_BAT,"MANUAL CHARGING",05/18/2026 3:09:00 PM,0,-5,REGULATING RESERVE,"Advise to charge manually by (-5) MW for Real Power Balancing and in preparation for peak demand; RR = 10 MW; SOC = 32.3%"
+04TONGO_BAT,"MANUAL MODE OPERATION",05/18/2026 3:43:00 PM,-5,0,REGULATING RESERVE,"Advise to set to zero; RR = 3 MW; SOC = 51%"
+04TONGO_BAT,"APFC MODE OPERATION",05/18/2026 4:00:00 PM,0,0,REGULATING RESERVE,"Advise to switch to APFC mode; RR = 10 MW"
+05CARMENDPP_U01,"ADVISE TO CUT IN",05/18/2026 12:23:00 PM,0,10,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 1231H)."
+05CARMENDPP_U01,"FOLLOW RTD",05/18/2026 12:56:00 PM,10,10,RTD,"Advise to follow RTD-EN; from DR-RMS dispatch.
+(RTD-EN=10MW)"
+05CARMENDPP_U01,"ADVISE TO CUT-IN",05/18/2026 11:31:00 PM,0,10,MOT RAISE,"Advise to cut-in unit as MOT Raise dispatch; 230 KV Leyte-Cebu line limitation; unit cut-in at 2333H"
+05CARMENDPP_U02,"ADVISE TO CUT IN",05/18/2026 12:23:00 PM,0,10,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 1230H)."
+05CARMENDPP_U02,"FOLLOW RTD",05/18/2026 1:01:00 PM,10,10,RTD,"Advise to follow RTD-EN; from DR-RMS dispatch.
+(RTD-EN=10MW)"
+05CARMENDPP_U02,"ADVISE TO CUT-IN",05/18/2026 11:31:00 PM,0,10,MOT RAISE,"Advise to cut-in unit as MOT Raise dispatch; 230 KV Leyte-Cebu line limitation; unit cut-in at 2332H"
+05CARMENDPP_U03,"ADVISE TO CUT IN",05/18/2026 12:23:00 PM,0,10,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 1235H)."
+05CARMENDPP_U03,"FOLLOW RTD",05/18/2026 12:47:00 PM,10,10,RTD,"Advise to follow RTD-EN; from DR-RMS dispatch.
+(RTD-EN=10MW)"
+05CARMENDPP_U03,"ADVISE TO CUT-IN",05/18/2026 11:31:00 PM,0,10,MOT RAISE,"Advise to cut-in unit as MOT Raise dispatch; 230 KV Leyte-Cebu line limitation; unit cut-in at 2334H"
+05CARMEN_BAT,"MANUAL CHARGING",05/18/2026 3:37:00 PM,0,-5,RTD,"Advise to charge manually by (-5) MW for Real Power Balancing and in preparation for peak demand; RTD = 0 MW"
+05CARMEN_BAT,"MANUAL MODE OPERATION",05/18/2026 4:30:00 PM,-5,0,RTD,"Advise to set to zero under Test and Commissioning; RTD = 15 MW; SOC = 71.2%"
+05CARMEN_BAT,"MANUAL DISCHARGE",05/18/2026 6:28:00 PM,15,10,RTD,"Advise to discharge manually by 10 MW due to Leyte-Cebu Line Limitation and peak demand period under Test and Commissioning; RTD = 15 MW; SOC = 64%"
+05CARMEN_BAT,"MANUAL MODE OPERATION",05/18/2026 6:30:00 PM,10,0,RTD,"Advise to set to zero under Test and Commissioning; RTD = 15 MW; SOC = 63.3%"
+05CEDC_U01,"RAISE LOAD",05/18/2026 8:04:00 AM,45.1,55,MOT RAISE,"Advise to raise load under MOT Raise. Real power balancing. (MOT-R=9.9MW) (RTD-EN=45.1MW)"
+05CEDC_U01,"FOLLOW RTD",05/18/2026 8:31:00 AM,55,59.3,RTD,"Advise to follow RTD-EN; from MOT-R dispatch.
+(RTD-EN=59.3MW)"
+05CEDC_U02,"RAISE LOAD",05/18/2026 8:04:00 AM,45.1,55,MOT RAISE,"Advise to raise load under MOT Raise. Real power balancing. (MOT-R=9.9MW) (RTD-EN=45.1MW)"
+05CEDC_U02,"FOLLOW RTD",05/18/2026 8:31:00 AM,55,59.3,RTD,"Advise to follow RTD-EN; from MOT-R dispatch.
+(RTD-EN=59.3MW)"
+05CEDC_U03,"RAISE LOAD",05/18/2026 8:04:00 AM,46.6,55,MOT RAISE,"Advise to raise load under MOT Raise. Real power balancing. (MOT-R=8.4MW) (RTD-EN=46.6MW)"
+05CEDC_U03,"FOLLOW RTD",05/18/2026 8:31:00 AM,55,48.1,RTD,"Advise to follow RTD-EN; from MOT-R dispatch.
+(RTD-EN=48.1MW)"
+05CEDC_U03,"RAISE LOAD",05/18/2026 9:30:00 AM,51.5,70,MOT RAISE,"Advise to raise load under MOT Raise. Real power balancing. (MOT-R=8.4MW) (RTD-EN=18.5MW)"
+05CEDC_U03,"FOLLOW RTD",05/18/2026 10:24:00 AM,70,62,RTD,"Advise to follow RTD-EN; from MOT-R dispatch.
+(RTD-EN=62MW)"
+05CPPC_U01,"ADVISE TO CUT-IN",05/18/2026 9:28:00 AM,0,4,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch; unit cut-in: 0938H"
+05CPPC_U01,"FOLLOW RTD",05/18/2026 10:06:00 AM,4,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+05CPPC_U01,"ADVISE TO CUT IN",05/18/2026 1:00:00 PM,0,6.5,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+Cut-in: 1310H."
+05CPPC_U01,"RESERVE MARKET ON TOP OF RTD",05/18/2026 3:16:00 PM,6.5,6.5,DISPATCHABLE RESERVE,"Advise to follow RTD schedule on top of Reserve Market schedule"
+05CPPC_U01,"RESERVE MARKET UTILIZATION",05/18/2026 8:50:00 PM,0,6.5,DISPATCHABLE RESERVE,"Advise to cut-in under Reserve Market schedule due to Leyte-Cebu Line Limitation; RTD = 0 MW; RM = 6.5 MW; Cut-in time 2056H"
+05CPPC_U01,"FOLLOW RTD",05/18/2026 9:04:00 PM,6.1,0,RTD,"Advise to follow RTD schedule; RTD = 0 MW; RM = 6.5 MW; Cut-out time 2109H"
+05CPPC_U03,"ADVISE TO CUT-IN",05/18/2026 9:28:00 AM,0,6.5,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch; unit cut-in: 0938H"
+05CPPC_U03,"FOLLOW RTD",05/18/2026 10:28:00 AM,6.5,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+05CPPC_U03,"ADVISE TO CUT IN",05/18/2026 1:00:00 PM,0,6.5,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+Cut-in: 1310H."
+05CPPC_U03,"RESERVE MARKET ON TOP OF RTD",05/18/2026 3:16:00 PM,6.5,6.5,DISPATCHABLE RESERVE,"Advise to follow RTD schedule on top of Reserve Market schedule"
+05CPPC_U04,"ADVISE TO CUT-IN",05/18/2026 9:28:00 AM,0,6.5,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch; unit cut-in: 0938H"
+05CPPC_U04,"FOLLOW RTD",05/18/2026 10:28:00 AM,6.5,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+05CPPC_U04,"ADVISE TO CUT IN",05/18/2026 11:43:00 AM,0,3.1,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+Cut-in: 1149H."
+05CPPC_U04,"FOLLOW RTD",05/18/2026 12:01:00 PM,6.5,0,RTD,"Advise to follow RTD-EN; from DR-RMS dispatch.
+(RTD-EN=0MW)"
+05CPPC_U04,"ADVISE TO CUT IN",05/18/2026 1:00:00 PM,0,6.5,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+Cut-in: 1305H."
+05CPPC_U04,"RESERVE MARKET ON TOP OF RTD",05/18/2026 3:16:00 PM,6.5,6.5,DISPATCHABLE RESERVE,"Advise to follow RTD schedule on top of Reserve Market schedule"
+05CPPC_U05,"RAISE LOAD",05/18/2026 2:10:00 PM,0,6.5,MOT RAISE,"Advise to cut-in under MOT Raise schedule due to Leyte-Cebu Line Limitation; RTD = 0 MW; RM = 6.5 MW; Cut-in time 1421H"
+05CPPC_U05,"RESERVE MARKET ON TOP OF RTD",05/18/2026 3:16:00 PM,6.5,6.5,DISPATCHABLE RESERVE,"Advise to follow RTD schedule on top of Reserve Market schedule"
+05CPPC_U05,"RESERVE MARKET UTILIZATION",05/18/2026 8:50:00 PM,0,6.5,DISPATCHABLE RESERVE,"Advise to cut-in under Reserve Market schedule due to Leyte-Cebu Line Limitation; RTD = 0 MW; RM = 6.5 MW; Cut-in time 2051H"
+05CPPC_U05,"FOLLOW RTD",05/18/2026 9:06:00 PM,6.2,0,RTD,"Advise to follow RTD schedule; RTD = 0 MW; RM = 6.5 MW; Cut-out time 2119H"
+05CPPC_U06,"ADVISE TO CUT IN",05/18/2026 1:00:00 PM,0,6.5,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+Cut-in: 1310H."
+05CPPC_U06,"RESERVE MARKET ON TOP OF RTD",05/18/2026 3:16:00 PM,6.5,6.5,DISPATCHABLE RESERVE,"Advise to follow RTD schedule on top of Reserve Market schedule"
+05CPPC_U07,"ADVISE TO CUT IN",05/18/2026 1:26:00 PM,0,5.1,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 1333H)."
+05CPPC_U07,"RESERVE MARKET ON TOP OF RTD",05/18/2026 3:16:00 PM,6.5,6.5,DISPATCHABLE RESERVE,"Advise to follow RTD schedule on top of Reserve Market schedule"
+05CPPC_U07,"RESERVE MARKET UTILIZATION",05/18/2026 8:57:00 PM,6.1,6.5,DISPATCHABLE RESERVE,"Advise to continue running under Reserve Market schedule due to Leyte-Cebu Line Limitation; RTD = 0 MW; RM = 6.5 MW"
+05CPPC_U07,"FOLLOW RTD",05/18/2026 8:58:00 PM,5.9,0,RTD,"Advise to follow RTD schedule; RTD = 0 MW; RM = 6.5 MW; Cut-out time 2103H"
+05CPPC_U08,"RAISE LOAD",05/18/2026 2:10:00 PM,0,6.5,MOT RAISE,"Advise to cut-in under MOT Raise schedule due to Leyte-Cebu Line Limitation; RTD = 0 MW; RM = 6.5 MW; Cut-in time 1418H"
+05CPPC_U08,"FOLLOW RTD",05/18/2026 3:16:00 PM,6.2,6.3,RTD,"Advise to follow RTD schedule; RTD = 6.3 MW; RM = 0 MW"
+05CPPC_U08,"RESERVE MARKET UTILIZATION",05/18/2026 8:50:00 PM,0,4.8,DISPATCHABLE RESERVE,"Advise to cut-in under Reserve Market schedule due to Leyte-Cebu Line Limitation; RTD = 0 MW; RM = 4.8 MW; Cut-in time 2055H"
+05CPPC_U08,"FOLLOW RTD",05/18/2026 9:10:00 PM,6.3,0,RTD,"Advise to follow RTD schedule; RTD = 0 MW; RM = 5.4 MW; Cut-out time 2117H"
+05CPPC_U09,"RAISE LOAD",05/18/2026 2:10:00 PM,0,6.5,MOT RAISE,"Advise to cut-in under MOT Raise schedule due to Leyte-Cebu Line Limitation; RTD = 0 MW; RM = 6.5 MW; Cut-in time 1419H"
+05CPPC_U09,"FOLLOW RTD",05/18/2026 3:16:00 PM,6.2,6.3,RTD,"Advise to follow RTD schedule; RTD = 6.3 MW; RM = 0 MW"
+05CPPC_U09,"RESERVE MARKET UTILIZATION",05/18/2026 8:50:00 PM,0,6.3,DISPATCHABLE RESERVE,"Advise to cut-in under Reserve Market schedule due to Leyte-Cebu Line Limitation; RTD = 0 MW; RM = 6.3 MW; Cut-in time 2051H"
+05CPPC_U09,"FOLLOW RTD",05/18/2026 9:04:00 PM,6.3,0,RTD,"Advise to follow RTD schedule; RTD = 0 MW; RM = 6.3 MW; Cut-out time 2109H"
+05CPPC_U10,"RAISE LOAD",05/18/2026 2:10:00 PM,0,6.5,MOT RAISE,"Advise to cut-in under MOT Raise schedule due to Leyte-Cebu Line Limitation; RTD = 0 MW; RM = 6.5 MW; Cut-in time 1418H"
+05CPPC_U10,"FOLLOW RTD",05/18/2026 3:16:00 PM,6.2,6.3,RTD,"Advise to follow RTD schedule; RTD = 6.3 MW; RM = 0 MW"
+05CPPC_U10,"RESERVE MARKET UTILIZATION",05/18/2026 8:50:00 PM,0,6.3,DISPATCHABLE RESERVE,"Advise to cut-in under Reserve Market schedule due to Leyte-Cebu Line Limitation; RTD = 0 MW; RM = 6.3 MW; Cut-in time 2054H"
+05CPPC_U10,"FOLLOW RTD",05/18/2026 9:04:00 PM,6.3,0,RTD,"Advise to follow RTD schedule; RTD = 0 MW; RM = 6.3 MW; Cut-out time 2108H"
+05EAUC_U02,"ADVISE TO CUT IN",05/18/2026 8:02:00 AM,0,9,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 0815H)."
+05EAUC_U02,"MANUAL RR DISPATCH",05/18/2026 2:15:00 PM,9,10.5,REGULATING RESERVE,"Advise to continue running under Regulating Reserve due to Leyte-Cebu Line Limitation; RTD = 8.5 MW; RR = 2.5 MW"
+05EAUC_U02,"FOLLOW RTD",05/18/2026 2:43:00 PM,9,8.5,RTD,"Advise to continue running and follow RTD schedule; RTD = 8.5 MW; RR = 2.5 MW"
+05EAUC_U02,"MANUAL CR DISPATCH",05/18/2026 4:17:00 PM,6,9,CONTINGENCY RESERVE,"Advise to continue running under Contingency Reserve due to Leyte-Cebu Line Limitation; RTD = 6 MW; CR = 5.1 MW"
+05EAUC_U02,"FOLLOW RTD",05/18/2026 5:21:00 PM,9,6,RTD,"Advise to continue running and follow RTD schedule; RTD = 6 MW; CR = 3 MW"
+05EAUC_U03,"ADVISE TO CUT IN",05/18/2026 7:44:00 AM,0,9,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. (Cut-in: 0759H)."
+05EAUC_U03,"FOLLOW RTD",05/18/2026 8:58:00 AM,9,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+05EAUC_U03,"CONTINUE RUNNING AS MRU",05/18/2026 12:21:00 PM,11.5,11.5,THERMAL LIMITS,"Advised to continue running as MRU dispatch due to System voltage support. (MRU=11.5) (RTD-EN=0)"
+05EAUC_U03,"FOLLOW RTD",05/18/2026 12:37:00 PM,11.5,0,RTD,"Advise to follow RTD-EN; from MRU dispatch.
+(RTD-EN=0MW)"
+05EAUC_U03,"MANUAL CR DISPATCH",05/18/2026 2:04:00 PM,6.4,11.5,CONTINGENCY RESERVE,"Advised to raise load under manual CR dispatch. Real power balancing. (RTD=6.4) (CR=5.1MW)"
+05EAUC_U03,"MANUAL CR DISPATCH",05/18/2026 2:15:00 PM,6.4,11.5,CONTINGENCY RESERVE,"Advise to continue running under Contingency Reserve due to Leyte-Cebu Line Limitation; RTD = 6.4 MW; CR = 2.8 MW"
+05EAUC_U03,"FOLLOW RTD",05/18/2026 2:43:00 PM,11,8.7,RTD,"Advise to continue running and follow RTD schedule; RTD = 8.7 MW; CR = 5.1 MW"
+05EAUC_U03,"MANUAL CR DISPATCH",05/18/2026 4:17:00 PM,6,11,CONTINGENCY RESERVE,"Advise to continue running under Contingency Reserve due to Leyte-Cebu Line Limitation; RTD = 6.4 MW; CR = 3 MW"
+05EAUC_U03,"FOLLOW RTD",05/18/2026 5:56:00 PM,11,11.5,RTD,"Advise to continue running and follow RTD schedule; RTD = 11.5 MW"
+05EAUC_U04,"ADVISE TO CUT IN",05/18/2026 8:02:00 AM,0,9,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 0812H)."
+05EAUC_U04,"FOLLOW RTD",05/18/2026 8:58:00 AM,9,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+05EAUC_U04,"MANUAL RR DISPATCH",05/18/2026 2:15:00 PM,10,11.5,REGULATING RESERVE,"Advise to continue running under Regulating Reserve due to Leyte-Cebu Line Limitation; RTD = 8.7 MW; RR = 5.1 MW"
+05EAUC_U04,"FOLLOW RTD",05/18/2026 2:43:00 PM,11,6.4,RTD,"Advise to continue running and follow RTD schedule; RTD = 6.4 MW; RR = 2.8 MW"
+05EAUC_U04,"MANUAL CR DISPATCH",05/18/2026 4:17:00 PM,6,11,CONTINGENCY RESERVE,"Advise to continue running under Contingency Reserve due to Leyte-Cebu Line Limitation; RTD = 6.1 MW; CR = 5.4 MW"
+05EAUC_U04,"FOLLOW RTD",05/18/2026 5:56:00 PM,11,11.5,RTD,"Advise to continue running and follow RTD schedule; RTD = 11.5 MW"
+05KSPC_G01,"RAISE LOAD",05/18/2026 8:01:00 AM,95,103,MOT RAISE,"Advise to raise load under MOT Raise. Leyte-Cebu line management. 
+(MOT-R=8.0 MW) (RTD-EN=95 MW)"
+05KSPC_G01,"FOLLOW RTD",05/18/2026 8:33:00 AM,103,103,RTD,"Advise to follow RTD-EN; from MOT-R dispatch.
+(RTD-EN=103MW)"
+05KSPC_G02,"RAISE LOAD",05/18/2026 8:01:00 AM,94.1,103,MOT RAISE,"Advise to raise load under MOT Raise. Leyte-Cebu line management. Real power balancing. (MOT-R=8.9 MW) (RTD-EN=94.1 MW)"
+05KSPC_G02,"FOLLOW RTD",05/18/2026 8:33:00 AM,103,103,RTD,"Advise to follow RTD-EN; from MOT-R dispatch.
+(RTD-EN=103MW)"
+05TOLEDO_BAT,"MANUAL DISCHARGING",05/18/2026 1:13:00 PM,0,20,CONTINGENCY RESERVE,"Advise to manual discharge under manual CR dispatch. Leyte-Cebu load management."
+05TOLEDO_BAT,"APFC MODE",05/18/2026 2:00:00 PM,20,0,CONTINGENCY RESERVE,"Advise to set to APFC mode from manual discharge CR dispatch. Leyte-Cebu load management."
+05TOLEDO_BAT,"MANUAL CHARGING",05/18/2026 3:20:00 PM,0,-10,CONTINGENCY RESERVE,"Advise to charge manually by (-10) MW for Real Power Balancing and in preparation for peak demand; CR = 19.3 MW; SOC = 8%"
+05TOLEDO_BAT,"MANUAL CHARGING",05/18/2026 3:32:00 PM,-10,-5,CONTINGENCY RESERVE,"Advise to charge manually by (-5) MW for Real Power Balancing and in preparation for peak demand; CR = 19.3 MW; SOC = 13.9%"
+05TOLEDO_BAT,"MANUAL CHARGING",05/18/2026 4:05:00 PM,0,-5,CONTINGENCY RESERVE,"Advise to charge manually by (-5) MW for Real Power Balancing and in preparation for peak demand; CR = 19.3 MW; SOC = 18.2%"
+05TOLEDO_BAT,"MANUAL CHARGING",05/18/2026 4:10:00 PM,-5,-10,CONTINGENCY RESERVE,"Advise to charge manually by (-10) MW for Real Power Balancing and in preparation for peak demand; CR = 19.3 MW; SOC = 19.7%"
+05TOLEDO_BAT,"MANUAL CHARGING",05/18/2026 4:24:00 PM,-5.21,-10,CONTINGENCY RESERVE,"Advise to charge manually by (-10) MW for Real Power Balancing and in preparation for peak demand; CR = 19.3 MW; SOC = 26.53%"
+05TOLEDO_BAT,"MANUAL CHARGING",05/18/2026 4:58:00 PM,-10,-15,CONTINGENCY RESERVE,"Advise to charge manually by (-15) MW for Real Power Balancing and in preparation for peak demand; CR = 12.1 MW; SOC = 51%"
+05TOLEDO_BAT,"MANUAL CHARGING",05/18/2026 5:01:00 PM,-15,-20,CONTINGENCY RESERVE,"Advise to charge manually by (-20) MW for Real Power Balancing and in preparation for peak demand; CR = 19.3 MW; SOC = 53.4%"
+05TOLEDO_BAT,"MANUAL MODE OPERATION",05/18/2026 5:35:00 PM,-20,0,CONTINGENCY RESERVE,"Advise to set to zero; CR = 12.1 MW; SOC = 89.3%"
+05TOLEDO_BAT,"MANUAL DISCHARGE",05/18/2026 6:11:00 PM,0,5,RTD,"Advise to discharge manually by 5 MW due to Leyte-Cebu Line Limitation and peak demand period; RTD = 19.3 MW; SOC = 89%"
+05TOLEDO_BAT,"MANUAL DISCHARGE",05/18/2026 6:24:00 PM,5,10,RTD,"Advise to discharge manually by 10 MW due to Leyte-Cebu Line Limitation and peak demand period; RTD = 19.3 MW; SOC = 84.6%"
+05TOLEDO_BAT,"MANUAL DISCHARGE",05/18/2026 6:29:00 PM,10,15,RTD,"Advise to discharge manually by 15 MW due to Leyte-Cebu Line Limitation and peak demand period; RTD = 19.3 MW; SOC = 81.3%"
+05TOLEDO_BAT,"MANUAL DISCHARGE",05/18/2026 6:37:00 PM,15,10,RTD,"Advise to discharge manually by 10 MW due to Leyte-Cebu Line Limitation and peak demand period; RTD = 19.3 MW; SOC = 73%"
+05TOLEDO_BAT,"MANUAL DISCHARGE",05/18/2026 6:58:00 PM,10,5,RTD,"Advise to discharge manually by 5 MW due to Leyte-Cebu Line Limitation and peak demand period; RTD = 19.3 MW; SOC = 61%"
+05TOLEDO_BAT,"APFC MODE OPERATION",05/18/2026 7:11:00 PM,5,0,CONTINGENCY RESERVE,"Advise to set to zero and switch to APFC mode from manual discharging; CR = 19.3 MW; SOC = 57.8%"
+06CENPRI_U01,"ADVISE TO CUT IN",05/18/2026 9:40:00 AM,0,2.66,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 0951H)."
+06CENPRI_U01,"FOLLOW RTD",05/18/2026 10:01:00 AM,2.66,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+06CENPRI_U02,"ADVISE TO CUT IN",05/18/2026 9:40:00 AM,0,2.65,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 0950H)."
+06CENPRI_U02,"FOLLOW RTD",05/18/2026 10:01:00 AM,2.65,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+06CENPRI_U03,"ADVISE TO CUT IN",05/18/2026 9:40:00 AM,0,2.65,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 0949H)."
+06CENPRI_U03,"FOLLOW RTD",05/18/2026 10:01:00 AM,2.65,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+06CENPRI_U04,"ADVISE TO CUT IN",05/18/2026 9:40:00 AM,0,3.97,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 0949H)."
+06CENPRI_U04,"FOLLOW RTD",05/18/2026 10:01:00 AM,3.97,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+06CENPRI_U05,"DERATED",05/18/2026 8:44:00 AM,6.5,6,GENERATOR PROBLEM/TROUBLE/TRIPPING,"Extended deration up to May 25, 2026, 2400H ."
+06KABAN_BAT,"MANUAL CHARGING",05/18/2026 3:25:00 PM,0,-10,REGULATING RESERVE,"Advise to charge manually by (-10) MW for Real Power Balancing and in preparation for peak demand; RR = 22 MW; SOC = 18%"
+06KABAN_BAT,"MANUAL CHARGING",05/18/2026 3:32:00 PM,-10,-5,REGULATING RESERVE,"Advise to charge manually by (-5) MW for Real Power Balancing and in preparation for peak demand; RR = 22 MW; SOC = 21%"
+06KABAN_BAT,"MANUAL MODE OPERATION",05/18/2026 3:42:00 PM,-5,0,REGULATING RESERVE,"Advise to set to zero; RR = 22 MW; SOC = 23.85%"
+06KABAN_BAT,"MANUAL CHARGING",05/18/2026 4:02:00 PM,0,-3,REGULATING RESERVE,"Advise to charge manually by (-3) MW for Real Power Balancing and in preparation for peak demand; RR = 22 MW; SOC = 24%"
+06KABAN_BAT,"MANUAL CHARGING",05/18/2026 4:10:00 PM,-3,-5,REGULATING RESERVE,"Advise to charge manually by (-5) MW for Real Power Balancing and in preparation for peak demand; RR = 22 MW; SOC = 25.3%"
+06KABAN_BAT,"MANUAL CHARGING",05/18/2026 4:23:00 PM,-5.06,-10,REGULATING RESERVE,"Advise to charge manually by (-10) MW for Real Power Balancing and in preparation for peak demand; RR = 22 MW; SOC = 28.55%"
+06KABAN_BAT,"MANUAL CHARGING",05/18/2026 4:44:00 PM,-10,-15,REGULATING RESERVE,"Advise to charge manually by (-15) MW for Real Power Balancing and in preparation for peak demand; RR = 19.8 MW; SOC = 41%"
+06KABAN_BAT,"MANUAL CHARGING",05/18/2026 4:56:00 PM,-15,-20,REGULATING RESERVE,"Advise to charge manually by (-5) MW for Real Power Balancing and in preparation for peak demand; RR = 19.8 MW; SOC = 50.4%"
+06KABAN_BAT,"MANUAL MODE OPERATION",05/18/2026 5:32:00 PM,-20,0,REGULATING RESERVE,"Advise to set to zero; RR = 19.8 MW; SOC = 89.7%"
+06KABAN_BAT,"MANUAL DISCHARGE",05/18/2026 6:24:00 PM,0,5,REGULATING RESERVE,"Advise to discharge manually by 5 MW due to Leyte-Cebu Line Limitation and peak demand period; RR = 13.8 MW; SOC = 89.5%"
+06KABAN_BAT,"MANUAL DISCHARGE",05/18/2026 6:27:00 PM,5,10,REGULATING RESERVE,"Advise to discharge manually by 10 MW due to Leyte-Cebu Line Limitation and peak demand period; RR = 13.8 MW; SOC = 88.6%"
+06KABAN_BAT,"MANUAL DISCHARGE",05/18/2026 7:00:00 PM,10,5,REGULATING RESERVE,"Advise to discharge manually by 5 MW due to Leyte-Cebu Line Limitation and peak demand period; RR = 16.3 MW; SOC = 69.4%"
+06KABAN_BAT,"APFC MODE OPERATION",05/18/2026 7:19:00 PM,5,0,REGULATING RESERVE,"Advise to set to zero and switch to APFC mode from manual discharging; RR = 16.3 MW; SOC = 62.8%"
+06SONEG_BAT,"MANUAL DISCHARGING",05/18/2026 1:43:00 PM,0,10,CONTINGENCY RESERVE,"Advise to manual discharge under manual RR dispatch. Leyte-Cebu load management."
+06SONEG_BAT,"MANUAL MODE OPERATION",05/18/2026 2:22:00 PM,0,0,REGULATING RESERVE,"Advise to set to zero since auto idle due to low SOC; RR = 3 MW; SOC = 9.5%"
+06SONEG_BAT,"MANUAL CHARGING",05/18/2026 3:09:00 PM,0,-5,REGULATING RESERVE,"Advise to charge manually by (-5) MW for Real Power Balancing and in preparation for peak demand; RR = 10 MW; SOC = 9.5%"
+06SONEG_BAT,"MANUAL MODE OPERATION",05/18/2026 3:43:00 PM,-5,0,REGULATING RESERVE,"Advise to set to zero; RR = 3 MW; SOC = 27%"
+06SONEG_BAT,"MANUAL CHARGING",05/18/2026 3:57:00 PM,0,-1,REGULATING RESERVE,"Advise to charge manually by (-1) MW for Real Power Balancing and in preparation for peak demand; RR = 3 MW; SOC = 27.5%"
+06SONEG_BAT,"MANUAL CHARGING",05/18/2026 4:40:00 PM,-5,-10,REGULATING RESERVE,"Advise to charge manually by (-10) MW for Real Power Balancing and in preparation for peak demand; RR = 3 MW; SOC = 36.6%"
+06SONEG_BAT,"MANUAL MODE OPERATION",05/18/2026 5:31:00 PM,-10,0,REGULATING RESERVE,"Advise to set to zero; RR = 3 MW; SOC = 90.6%"
+06SONEG_BAT,"MANUAL DISCHARGE",05/18/2026 6:19:00 PM,0,5,REGULATING RESERVE,"Advise to discharge manually by 5 MW due to Leyte-Cebu Line Limitation and peak demand period; RR = 3 MW; SOC = 90.5%"
+06SONEG_BAT,"MANUAL DISCHARGE",05/18/2026 6:29:00 PM,5,10,REGULATING RESERVE,"Advise to discharge manually by 10 MW due to Leyte-Cebu Line Limitation and peak demand period; RTD = 3 MW; SOC = 85.3%"
+06SONEG_BAT,"MANUAL DISCHARGE",05/18/2026 6:44:00 PM,10,5,REGULATING RESERVE,"Advise to discharge manually by 5 MW due to Leyte-Cebu Line Limitation and peak demand period; RTD = 3 MW; SOC = 67.7%"
+06SONEG_BAT,"APFC MODE OPERATION",05/18/2026 7:06:00 PM,5,0,REGULATING RESERVE,"Advise to set to zero and switch to APFC mode from manual discharging; RR = 3 MW; SOC = 53.5%"
+07BDPP_U01,"ADVISE TO CUT IN",05/18/2026 7:37:00 AM,0,4,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. (Cut-in: 0748)."
+07BDPP_U01,"FOLLOW RTD",05/18/2026 7:56:00 AM,4,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+07BDPP_U01,"ADVISE TO CUT IN",05/18/2026 10:42:00 AM,0,4,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 1051H)."
+07BDPP_U01,"FOLLOW RTD",05/18/2026 1:37:00 PM,4,2.4,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+07BDPP_U01,"ADVISE TO CUT-IN",05/18/2026 11:26:00 PM,0,3.99,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch; unit cut-in at 2338H"
+07BDPP_U01,"FOLLOW RTD",05/18/2026 11:46:00 PM,3.99,0,RTD,"Advise to follow RTD-EN; from DR-RMS dispatch"
+07BDPP_U02,"ADVISE TO CUT IN",05/18/2026 10:42:00 AM,0,4,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 1116H)."
+07BDPP_U02,"ADVISE TO CUT-IN",05/18/2026 11:26:00 PM,0,3.99,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch; unit cut-in at 2340H"
+07BDPP_U02,"FOLLOW RTD",05/18/2026 11:46:00 PM,3.99,0,RTD,"Advise to follow RTD-EN; from DR-RMS dispatch"
+07BDPP_U03,"ADVISE TO CUT IN",05/18/2026 7:38:00 AM,0,4.2,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. (Cut-in: 0745H)."
+07BDPP_U03,"FOLLOW RTD",05/18/2026 7:56:00 AM,4.2,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+07BDPP_U03,"ADVISE TO CUT IN",05/18/2026 9:44:00 AM,0,4.2,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 0950H)."
+07BDPP_U03,"FOLLOW RTD",05/18/2026 11:11:00 AM,4.2,0,RTD,"Advise to follow RTD-EN; from DR-RMS dispatch.
+(RTD-EN=0MW)"
+07BDPP_U03,"ADVISE TO CUT-IN",05/18/2026 11:26:00 PM,0,4.19,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch; unit cut-in at 2334H"
+07BDPP_U03,"FOLLOW RTD",05/18/2026 11:46:00 PM,4.19,0,RTD,"Advise to follow RTD-EN; from DR-RMS dispatch"
+07BDPP_U04,"ADVISE TO CUT IN",05/18/2026 7:38:00 AM,0,4,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. (Cut-in: 0747H)."
+07BDPP_U04,"FOLLOW RTD",05/18/2026 7:56:00 AM,4,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+07BDPP_U04,"FOLLOW RTD",05/18/2026 11:11:00 AM,4,0,RTD,"Advise to follow RTD-EN; from DR-RMS dispatch.
+(RTD-EN=0MW)"
+07BDPP_U04,"ADVISE TO CUT IN",05/18/2026 1:26:00 PM,0,4,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 1331H)."
+07BDPP_U04,"FOLLOW RTD",05/18/2026 3:06:00 PM,3.2,2.4,RTD,"Advise to continue running and follow RTD schedule; RTD = 2.4 MW"
+07BDPP_U04,"ADVISE TO CUT-IN",05/18/2026 11:26:00 PM,0,3.99,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch; unit cut-in at 2337H"
+07BDPP_U04,"FOLLOW RTD",05/18/2026 11:46:00 PM,3.99,0,RTD,"Advise to follow RTD-EN; from DR-RMS dispatch"
+07BIDPP_G01,"RAISE LOAD",05/18/2026 2:01:00 PM,0,20,MOT RAISE,"Advise to cut-in unit as MOT Raise dispatch. Leyte-Cebu line limitation. Unit cut-in: 1405H"
+07BIDPP_G01,"RAISE LOAD",05/18/2026 2:20:00 PM,11,63,MOT RAISE,"Advise to raise load under MOT Raise due to Leyte-Cebu Line Limitation"
+07BIDPP_G01,"FOLLOW RTD",05/18/2026 7:26:00 PM,44,45.4,RTD,"Advise to continue running and follow RTD schedule; RTD = 45.4 MW"
+07TPLPB4_U01,"ADVISE TO CUT-IN",05/18/2026 8:56:00 AM,0,7,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch; unit cut-in: 0905H"
+07TPLPB4_U01,"FOLLOW RTD",05/18/2026 9:42:00 AM,7,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+07TPLPB4_U02,"ADVISE TO CUT-IN",05/18/2026 8:56:00 AM,0,7,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch; unit cut-in: 0905H"
+07TPLPB4_U02,"FOLLOW RTD",05/18/2026 9:52:00 AM,7,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+07TPLPB4_U04,"ADVISE TO CUT-IN",05/18/2026 8:56:00 AM,0,7,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch; unit cut-in: 0906H"
+07TPLPB4_U04,"FOLLOW RTD",05/18/2026 9:52:00 AM,7,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+07TPLPB4_U04,"ADVISE TO CUT IN",05/18/2026 11:16:00 AM,0,7,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. 
+(Cut-in: 1124H)."
+07TPLPB4_U04,"FOLLOW RTD",05/18/2026 12:06:00 PM,7,0,RTD,"Advise to follow RTD-EN; from DR-RMS dispatch.
+(RTD-EN=0MW)"
+08NABASDPP_U01,"ADVISE TO CUT IN",05/18/2026 9:32:00 AM,0,3,MOT RAISE,"Advise to cut in under MOT Raise. Real power balancing. Cut in time: 0939H (MOT-R=3MW) (RTD-EN=0 MW)"
+08NABASDPP_U01,"CONTINUE RUNNING AS DR-RMS",05/18/2026 10:04:00 AM,3,3,DISPATCHABLE RESERVE,"Advise to continue running as DR-RMS dispatch; from MOT-R dispatch"
+08NABASDPP_U01,"FOLLOW RTD",05/18/2026 10:21:00 AM,3,3,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=3MW)"
+08NABASDPP_U01,"CONTINUE RUNNING AS DR-RMS",05/18/2026 10:29:00 AM,3,3,DISPATCHABLE RESERVE,"Advise to continue running as DR-RMS dispatch; from follow RTD-EN dispatch"
+08NABASDPP_U01,"FOLLOW RTD",05/18/2026 11:32:00 AM,3,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. 
+(RTD-EN=0MW)"
+08NABASDPP_U01,"RAISE LOAD",05/18/2026 11:27:00 PM,1.45,3,MOT RAISE,"Advise to raise load as MOT Raise dispatch; 230 KV Leyte-Cebu line limitation; RTD-EN=1.45"
+08NABASDPP_U02,"ADVISE TO CUT IN",05/18/2026 9:32:00 AM,0,3.4,MOT RAISE,"Advise to cut in under MOT Raise. Real power balancing. Cut in time: 0939H (MOT-R=3.4MW) (RTD-EN=0 MW)"
+08NABASDPP_U02,"CONTINUE RUNNING AS DR-RMS",05/18/2026 10:04:00 AM,3.4,3.4,DISPATCHABLE RESERVE,"Advise to continue running as DR-RMS dispatch; from MOT-R dispatch"
+08NABASDPP_U02,"FOLLOW RTD",05/18/2026 10:21:00 AM,3.4,3,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=3MW)"
+08NABASDPP_U02,"CONTINUE RUNNING AS DR-RMS",05/18/2026 10:29:00 AM,3,3.4,DISPATCHABLE RESERVE,"Advise to continue running as DR-RMS dispatch; from follow RTD-EN dispatch"
+08NABASDPP_U02,"FOLLOW RTD",05/18/2026 11:32:00 AM,3.4,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. 
+(RTD-EN=3.4MW)"
+08NABASDPP_U02,"RAISE LOAD",05/18/2026 11:27:00 PM,1.64,3.4,MOT RAISE,"Advise to raise load as MOT Raise dispatch; 230 KV Leyte-Cebu line limitation; RTD-EN=1.64"
+08PDPP1_U03,"ADVISE TO CUT IN",05/18/2026 6:00:00 AM,0,5,DISPATCHABLE RESERVE,"Advise to cut-in unit as DR-RMS dispatch. Real Power Balancing. (Cut-in: 0609H)."
+08PDPP1_U03,"FOLLOW RTD",05/18/2026 6:20:00 AM,5,0,RTD,"Advise to follow RTD from previous DR-RMS dispatch. (RTD-EN=0MW)"
+08PDPP1_U03,"RAISE LOAD",05/18/2026 1:34:00 PM,2.5,5,MOT RAISE,"Advise to raise load under MOT Raise. Real power balancing. 
+(MOT-R=2.5MW) (RTD-EN=2.5MW)"
+08PDPP1_U03,"FOLLOW RTD",05/18/2026 1:43:00 PM,5,5,RTD,"Advise to follow RTD-EN; from MOT-R dispatch.
+(RTD-EN=5MW)"
+08PDPP3_C,"ADVICE TO CUT IN",05/18/2026 1:10:00 PM,0,12,SYSTEM VOLTAGE,"Advise to cut-in unit under MRU-Dispatch. Voltage support.
+ Cut in time: 1321H."
+08PDPP3_C,"DERATED",05/18/2026 1:48:00 PM,12,8,GENERATOR PROBLEM/TROUBLE/TRIPPING,"Derated due to unbalanced firing pressure on various cylinders."
+08PDPP3_C,"FOLLOW RTD",05/18/2026 1:58:00 PM,8,8,RTD,"Advise to follow RTD-EN; from MRU dispatch.
+(RTD-EN=8MW)"
+08PDPP3_E,"ADVICE TO CUT IN",05/18/2026 10:18:00 AM,0,12,SYSTEM VOLTAGE,"Advise to cut-in unit under MRU-Dispatch. Voltage support.
+ Cut in time: 1027H."
+08PDPP3_E,"FOLLOW RTD",05/18/2026 10:43:00 AM,12,8,RTD,"Advise to follow RTD-EN; from MRU dispatch.
+(RTD-EN=8MW)"
+08PDPP3_E,"DR-RMS IN EXCESS OF RTD-EN",05/18/2026 12:06:00 PM,8,10.5,DISPATCHABLE RESERVE,"Advise to continue running as DR-RMS dispatch n excess of RTD-EN .
+(DR-RMS=8) (RTD-EN=2.5)"
+08PDPP3_E,"DR-RMS IN EXCESS OF RTD-EN",05/18/2026 2:05:00 PM,4,12,DISPATCHABLE RESERVE,"Advise to continue running as DR-RMS dispatch in excess of RTD-EN. 
+(DR-RMS=8) )(RTD-EN=4)"
+08PDPP3_E,"RESERVE MARKET ON TOP OF RTD",05/18/2026 3:12:00 PM,8,8,DISPATCHABLE RESERVE,"Advise to follow RTD schedule on top of Reserve Market schedule; RTD = 5.5 MW; RM = 2.5 MW"
+08PDPP3_G,"ADVICE TO CUT IN",05/18/2026 10:18:00 AM,0,13,SYSTEM VOLTAGE,"Advise to cut-in unit under MRU-Dispatch. Voltage support.
+ Cut in time: 1038H."
+08PDPP3_G,"FOLLOW RTD",05/18/2026 10:51:00 AM,13,5.5,RTD,"Advise to follow RTD-EN; from MRU dispatch.
+(RTD-EN=5.5MW)"
+08PDPP3_G,"CONTINUE RUNNING AS MRU",05/18/2026 11:31:00 AM,13,13,SYSTEM VOLTAGE,"Advised to continue running as MRU dispatch due to System voltage support. (MRU=13) (RTD-EN=0)"
+08PDPP3_G,"DERATED",05/18/2026 11:56:00 AM,13,10,GENERATOR PROBLEM/TROUBLE/TRIPPING,"Derated due to red hot exhaust manifold at both banks."
+08PDPP3_G,"FOLLOW RTD",05/18/2026 12:46:00 PM,10,10,RTD,"Advise to follow RTD-EN; from MRU dispatch.
+(RTD-EN=10MW)"
+08PDPP3_H,"ADVICE TO CUT IN",05/18/2026 1:10:00 PM,0,12,SYSTEM VOLTAGE,"Advise to cut-in unit under MRU-Dispatch. Voltage support.
+ Cut in time: 1323H."
+08PDPP3_H,"DERATED",05/18/2026 1:42:00 PM,13,9,GENERATOR PROBLEM/TROUBLE/TRIPPING,"Derated due to high EGT o various cylinders."
+08PDPP3_H,"FOLLOW RTD",05/18/2026 1:58:00 PM,9,9,RTD,"Advise to follow RTD-EN; from MRU dispatch.
+(RTD-EN=9MW)"
+08PEDC_U01,"RAISE LOAD",05/18/2026 8:06:00 AM,49.5,65,MOT RAISE,"Advise to raise load under MOT Raise. Real power balancing. (MOT-R=15.5MW) (RTD-EN=49.5MW)"
+08PEDC_U01,"RAISE LOAD",05/18/2026 8:47:00 AM,65,70,MOT RAISE,"Advise to raise load under MOT Raise. Real power balancing. (MOT-R=5MW) (RTD-EN=61.72MW)"
+08PEDC_U01,"FOLLOW RTD",05/18/2026 9:01:00 AM,70,74,RTD,"Advise to follow RTD-EN; from MOT-R dispatch.
+(RTD-EN=74MW)"
+08PEDC_U02,"RAISE LOAD",05/18/2026 8:06:00 AM,42.1,50,MOT RAISE,"Advise to raise load under MOT Raise. Real power balancing. (MOT-R=7.9MW) (RTD-EN=42.1MW)"
+08PEDC_U02,"RAISE LOAD",05/18/2026 8:47:00 AM,50,60,MOT RAISE,"Advise to raise load under MOT Raise. Real power balancing. (MOT-R=10MW) (RTD-EN=42.1MW)"
+08PEDC_U02,"RAISE LOAD",05/18/2026 9:21:00 AM,60,75,MOT RAISE,"Advise to raise load under MOT Raise. Real power balancing. (MOT-R=15MW) (RTD-EN=54.1MW)"
+08PEDC_U02,"FOLLOW RTD",05/18/2026 11:08:00 AM,75,62.6,RTD,"Advise to follow RTD-EN; from MOT-R dispatch.
+(RTD-EN=62.6MW)"
+08PEDC_U02,"RAISE LOAD",05/18/2026 12:17:00 PM,62.6,80,MOT RAISE,"Advise to raise load under MOT Raise. Real power balancing. 
+(MOT-R=17.4MW) (RTD-EN=62.6MW)"
+08PEDC_U02,"FOLLOW RTD",05/18/2026 1:08:00 PM,80,83.7,RTD,"Advise to follow RTD-EN; from MOT-R dispatch.
+(RTD-EN=83.7MW)"
+08STBPB1_U01,"ADVICE TO CUT IN",05/18/2026 10:15:00 AM,0,5.7,SYSTEM VOLTAGE,"Advise to cut-in unit under MRU-Dispatch. Voltage support.
+ Cut in time: 1023H."
+08STBPB1_U01,"RAISE LOAD",05/18/2026 11:31:00 PM,1.73,5.7,MOT RAISE,"Advise to raise load as MOT Raise dispatch; 230 KV Leyte-Cebu line limitation; RTD-EN=1.73"
+08STBPB1_U02,"ADVICE TO CUT IN",05/18/2026 10:15:00 AM,0,5.6,SYSTEM VOLTAGE,"Advise to cut-in unit under MRU-Dispatch. Voltage support.
+ Cut in time: 1024H."
+08STBPB1_U02,"RAISE LOAD",05/18/2026 11:31:00 PM,0.76,5.6,MOT RAISE,"Advise to raise load as MOT Raise dispatch; 230 KV Leyte-Cebu line limitation; RTD-EN=0.76"
+08STBPB1_U03,"ADVICE TO CUT IN",05/18/2026 10:15:00 AM,0,5.6,SYSTEM VOLTAGE,"Advise to cut-in unit under MRU-Dispatch. Voltage support.
+ Cut in time: 1025H."
+08STBPB1_U03,"RAISE LOAD",05/18/2026 11:31:00 PM,0.58,5.6,MOT RAISE,"Advise to raise load as MOT Raise dispatch; 230 KV Leyte-Cebu line limitation; RTD-EN=0.58"
+08STBPB1_U04,"ADVICE TO CUT IN",05/18/2026 10:15:00 AM,0,5.6,SYSTEM VOLTAGE,"Advise to cut-in unit under MRU-Dispatch. Voltage support.
+ Cut in time: 1026H."
+08STBPB1_U04,"RAISE LOAD",05/18/2026 11:31:00 PM,0,5.6,MOT RAISE,"Advise to raise load as MOT Raise dispatch; 230 KV Leyte-Cebu line limitation; RTD-EN=0"
+EOF
