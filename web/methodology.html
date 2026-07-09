@@ -203,8 +203,9 @@ MIN operating MW per window)</td>
 <td><a
 href="https://www.iemop.ph/market-data/security-limits-used-in-rtd/">page</a></td>
 <td>The per-resource operating points security constraints held units
-to; MAX equals MIN in the archived windows, so each is a pinned
-operating point, the physical record beside the corridor story
+to; MAX equals MIN in 99.2 percent of archived windows (regulating
+hydro, the Agus units, is the exception), so nearly every row is a
+pinned operating point, the physical record beside the corridor story
 (market_ops.json security_limits). Published next-day. Added after the
 round-8 audit.</td></tr>
 <tr><td>MOT-raise re-dispatch list (weekly processed CSV; every
@@ -577,7 +578,7 @@ lifting mechanics, effectivity), so the computed series is the trigger's
 input, not a reconstruction of the cap itself.</li>
 <li><b>Must-run instructions are displayed, not dispatched, and the
 inertness finding is scoped to the must-run subset</b>: the processed
-must-run list carries a median of 10 MW across 151 instructed
+must-run list carries a median of 10 MW across 153 instructed
 grid-hours in twelve weekly files, two orders of magnitude below the
 offer books it would constrain, so a must-take layer built from IT
 would be inert and is not built. The round-9 audit showed that
@@ -639,15 +640,20 @@ anchors above carry the DOE's 300 to 1,500 MW data-center range
 meanwhile). None of the remaining named features contradicts a
 written claim; each is a deepening of a table that already
 exists.</li>
-<li><b>Offer-based dispatch is NOT a boundary</b>: IEMOP publishes the
-real-time generation offers and the regional merit-order tables in the same
-public window (verified July 2026), and dispatching against them is the
-roadmap's next step. Until it ships, the flows table above stays the
-quantified evidence of what the cost proxy misses: the observed corridors
-run on offer differentials, about 2 percent of market-window hourly
-clearing prices are NEGATIVE (below any cost floor; the share reaches half
-of all hours inside the suspension's administered weeks, which the
-backcast excludes), and the model reproduces neither.</li>
+<li><b>Offer-based dispatch is NOT a boundary, and it shipped</b>:
+IEMOP publishes the real-time generation offers and the regional
+merit-order tables in the same public window (verified July 2026), and
+the replay now dispatches against the observed books: the offer-mode
+backcast and the studio's Observed-offers engine toggle (rounds 3 and 4
+of the parity loop), with the derived daily books committed under
+data/derived/offer_daily/. The flows table stays as the quantified
+evidence of what the COST proxy misses: the observed corridors run on
+offer differentials, about 2 percent of market-window hourly clearing
+prices are NEGATIVE (below any cost floor; the share reaches half of
+all hours inside the suspension's administered weeks, which the
+backcast excludes), and the cost stack reproduces neither. The offer
+mode reproduces the corridor directions; the negative hours remain the
+named sub-hourly refinement above.</li>
 </ul>
 
 <h2>What this map does NOT claim</h2>
