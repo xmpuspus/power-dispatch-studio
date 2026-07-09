@@ -52,8 +52,9 @@ named generators**, the Visayas leading by intervals, batteries topping the
 list at the P32 offer cap (`constrained_on` in
 [`web/data/market_ops.json`](web/data/market_ops.json)). Beside it sit the
 security limits used in real-time dispatch: per-resource operating points
-that the archived files pin to a single MW value, the physical record of
-which units the grid's security constraints held and where
+the archived files pin to a single MW value in 99.2 percent of windows
+(regulating hydro, the Agus units, is the exception), the physical record
+of which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
 The instruction log behind both closes the causal loop. Across the 90

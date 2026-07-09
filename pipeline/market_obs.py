@@ -1057,9 +1057,10 @@ def build_constrained_on(fleet: dict) -> dict:
 
 def build_security_limits(fleet: dict) -> dict:
     """Per-resource security limits used in RTD (RTDSL): the operating
-    points security constraints pin resources to, per window. In the
-    archived files MAX equals MIN everywhere, so each row pair is a fixed
-    security-constrained operating point, not a range."""
+    points security constraints pin resources to, per window. MAX equals
+    MIN in 99.2 percent of archived windows (regulating hydro, the Agus
+    units, is the exception), so nearly every row pair is a fixed
+    security-constrained operating point rather than a range."""
     files = dataset_files("RTDSL")
     if not files:
         return {"available": False,
