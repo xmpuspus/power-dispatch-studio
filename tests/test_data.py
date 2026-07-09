@@ -718,7 +718,9 @@ check("drivers rows carry the observed columns", all(
 check("every market_ops section carries the analytics disclaimer", all(
     "disclaimer" in s for s in (ps, rp, adv, ol,
                                 mo["reserve_validation"],
-                                mo["flow_record"], mo["gwap_trigger"]))
+                                mo["flow_record"], mo["gwap_trigger"],
+                                mo["constrained_on"],
+                                mo["security_limits"]))
     and "disclaimer" in drv)
 no = mo["not_offered"]
 check("the not-offered screen is baked, bounded, and self-disclaiming",
@@ -907,6 +909,36 @@ check("the trigger block disclaims its own mechanism gap",
 check("README's quoted Visayas offer-mode settlement bias matches the bake",
       abs(prof["offer_backcast"]["per_grid"]["visayas"]["bias_php_kwh"]
           - (-0.64)) <= 0.01)
+
+# --- round-8 consumption: the constrained-on roster and security limits ---
+co = mo.get("constrained_on") or {}
+check("constrained-on roster baked across its published window",
+      co.get("available") and co["n_days"] >= 70
+      and co["n_resources"] >= 100)
+check("constrained-on names units in all three grids with prices "
+      "inside the offer cap",
+      all(co["per_grid_intervals"][g] > 0
+          for g in ("luzon", "visayas", "mindanao"))
+      and all(0 < r["mean_price_php_kwh"] <= 32.0
+              and r["max_price_php_kwh"] <= 32.0
+              and r["n_intervals"] > 0 for r in co["top"]))
+check("constrained-on states what it is (administered, not market "
+      "clearing; two-week lag)",
+      "administered" in (co.get("note") or "")
+      and "two weeks" in (co.get("note") or ""))
+sl = mo.get("security_limits") or {}
+check("security limits baked across their published window",
+      sl.get("available") and sl["n_days"] >= 85
+      and sl["n_windows"] > 10000 and sl["n_resources"] >= 10)
+check("the security limits are pinned operating points (MAX equals MIN "
+      "in nearly every archived window, the note's claim)",
+      sl["pinned_share_pct"] is not None
+      and sl["pinned_share_pct"] >= 90.0
+      and all(r["max_mw"] > 0 and r["n_windows"] > 0 for r in sl["top"]))
+check("security-limit resources resolve to a grid (RTDSL region codes "
+      "mapped, the round-8 review's dead-field catch)",
+      all(r["grid"] in ("luzon", "visayas", "mindanao")
+          for r in sl["top"]))
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

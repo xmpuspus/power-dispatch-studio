@@ -2,7 +2,8 @@
 """Derive observed per-grid hourly RESERVE offer books from IEMOP's
 real-time reserve offers (RTDOR), the dataset the methodology wrongly
 called unpublished until the round-7 convergence critic enumerated the
-market-data sitemap (57 pages; the archive carried 14).
+market-data sitemap (57 pages then, 58 as of 2026-07-09; the archive
+carried 14).
 
 WESM co-optimises energy and reserves. RTDOR publishes every resource's
 actual reserve offer curve per 5-minute interval, per commodity (Fr

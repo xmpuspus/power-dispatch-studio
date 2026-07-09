@@ -855,11 +855,12 @@ def main() -> int:
 
     # observed market operations (the 2026-07-07 dataset expansion) and the
     # per-day drivers timeline joined from every observed layer
-    from market_obs import (build_advisories, build_drivers,
-                            build_flow_record, build_gwap_trigger,
-                            build_not_offered, build_outlook,
-                            build_price_setters, build_reserve_prices,
-                            build_reserve_validation)
+    from market_obs import (build_advisories, build_constrained_on,
+                            build_drivers, build_flow_record,
+                            build_gwap_trigger, build_not_offered,
+                            build_outlook, build_price_setters,
+                            build_reserve_prices, build_reserve_validation,
+                            build_security_limits)
 
     advisories = build_advisories()
     reserve_prices = build_reserve_prices()
@@ -870,6 +871,8 @@ def main() -> int:
         "flow_record": build_flow_record(profiles),
         "gwap_trigger": build_gwap_trigger(profiles.get("chrono_golden"),
                                            profiles),
+        "constrained_on": build_constrained_on(fleet),
+        "security_limits": build_security_limits(fleet),
         "advisories": advisories,
         "outlook": build_outlook(fleet),
         "not_offered": build_not_offered(),

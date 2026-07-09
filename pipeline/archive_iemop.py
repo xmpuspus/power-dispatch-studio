@@ -53,7 +53,11 @@ DATASETS = {
     "HVDCRTD": "hvdc-limits-imposed-in-rtd",
     "OUTRTD": "outage-schedules-used-in-rtd",
     "DIPCEF": "dipc-energy-results-final",
-    "RTDRS": "rtd-reserve-schedule",
+    # the page renamed to the plural slug at some point; the old singular
+    # 301s and the archiver's curl does not follow redirects (caught in
+    # the round-8 diff review; latent because RTDRS is a SAMPLE_KEY the
+    # daily cron never touches)
+    "RTDRS": "rtd-reserve-schedules",
     # Added 2026-07-07 (the analyst-parity pass). One small CSV per day each:
     # MCP names the marginal RESOURCE per region per 5-min interval (the
     # observed price setter); RSVPR is the official regional reserve prices;
@@ -69,8 +73,9 @@ DATASETS = {
     "WAPOS": "outage-schedules-used-in-wap",
     "MRU": "list-of-must-run-units-based-on-so-dispatch-instruction-report",
     # Added 2026-07-08 (the round-7 convergence critic enumerated the full
-    # market-data sitemap: 57 pages, the archive carried 14, and three of
-    # the unused pages falsified written boundary claims). GWAPF is the
+    # market-data sitemap: 57 pages then, 58 as of 2026-07-09, the archive
+    # carried 14, and three of the unused pages falsified written boundary
+    # claims). GWAPF is the
     # per-region generator weighted average price per 5-min interval, the
     # series the ERC secondary cap's 72-hour rolling trigger runs on
     # (methodology had called it unpublished); RTDHS is the per-interval
@@ -81,6 +86,17 @@ DATASETS = {
     # daily books from it, mirroring offers.py.
     "GWAPF": "generator-weighted-average-price-final",
     "RTDHS": "rtd-hvdc-schedules",
+    # Added 2026-07-09 (the round-8 convergence critic): PSMCOG is the
+    # operator's roster of generators network/security constraints force
+    # ON out of merit, named per 5-minute interval with the cleared or
+    # substituted price (a final-calculation dataset, published about two
+    # weeks behind); RTDSL is the per-resource security limit used in RTD
+    # (MAX/MIN operating MW per window; in practice MAX equals MIN, the
+    # security-pinned operating point), next-day current. Both sit
+    # squarely on the congestion question and neither had an in-repo
+    # substitute.
+    "PSMCOG": "psm-constrained-on-generators",
+    "RTDSL": "security-limits-used-in-rtd",
 }
 
 # Large datasets kept as a static SAMPLE of recent days, not the full public
@@ -279,7 +295,9 @@ def archive(keys: list[str], mode: str, sample_days: int) -> list[str]:
 # so its budget is a week of cadence plus a week of publication lag; the
 # 4-day default tripped the gate on 2026-07-08 with the source itself
 # simply between weekly prints.
-LAG_BUDGET_DAYS = {"LWAPF": 16, "GWAPF": 16, "MRU": 14,
+# PSMCOG is a final-calculation dataset: the newest file trails the
+# market day by about two weeks, so its budget is that lag plus slack.
+LAG_BUDGET_DAYS = {"LWAPF": 16, "GWAPF": 16, "MRU": 14, "PSMCOG": 24,
                    "DIPCEF": None, "RTDRS": None}
 LAG_DEFAULT_DAYS = 4
 

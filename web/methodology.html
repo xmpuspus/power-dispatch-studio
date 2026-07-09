@@ -188,6 +188,25 @@ HVDC-limits files. Raw dailies committed. Now scores both backcast
 modes' corridor flows directly (profiles.json flows_rtdhs) and supplies
 per-interval binding truth (CONGESTION_FLAG), a target the
 advisory-window inference never had.</td></tr>
+<tr><td>PSM constrained-on generators (daily CSV; the named units
+network or security constraints forced to run out of merit, per
+5-minute interval, with the cleared or substituted price)</td>
+<td><a
+href="https://www.iemop.ph/market-data/psm-constrained-on-generators/">page</a></td>
+<td>The congestion story with unit names beside the shadow-price
+league: which generators the constraints forced on, joined to the DOE
+fleet (market_ops.json constrained_on). Administered outcomes, not
+market clearing. A final-calculation dataset, about two weeks behind
+the market day. Added after the round-8 audit.</td></tr>
+<tr><td>Security limits used in RTD (daily CSV; per-resource MAX and
+MIN operating MW per window)</td>
+<td><a
+href="https://www.iemop.ph/market-data/security-limits-used-in-rtd/">page</a></td>
+<td>The per-resource operating points security constraints held units
+to; MAX equals MIN in the archived windows, so each is a pinned
+operating point, the physical record beside the corridor story
+(market_ops.json security_limits). Published next-day. Added after the
+round-8 audit.</td></tr>
 </table>
 <p class="muted">Courtesy: fetches are sequential with a 250 ms sleep and abort
 after 5 consecutive errors. IEMOP data is republished here as-is for public
@@ -549,6 +568,24 @@ boundary intermittently; an hourly replay on hour-mean demand cannot.
 Reproducing the sign flips needs sub-hourly replay granularity, a
 scoped-out refinement (the 5-minute data exists in the archive), not a
 missing input.</li>
+<li><b>The rest of the public surface is triaged and named, not
+ignored</b>: the IEMOP market-data sitemap carries 58 dataset pages;
+21 now feed this archive (the 18 daily keys plus the three offer-book
+pages the derived books come from). Of the remainder, the projection
+series (hour-ahead, day-ahead, and week-ahead price and schedule
+projections) project rather than record and are out of scope for a
+replay scored on the real-time record; the Original/Raw and interim
+variants duplicate final series already archived; and the
+settlement-side series are named queued features, each with its
+landing spot: prices used in settlement and the indicative
+administered prices (the suspension weeks' price record), day-ahead
+prices (an RT-vs-DA spread panel), the RTD per-resource prices and
+schedules zips (5-minute per-resource validation, the sub-hourly
+refinement), the per-resource reserve results (DIPC reserve results
+final, a tighter reserve validation), the reserve market clearing
+price, and the ancillary-services registered capacities (the reserve
+book's registration denominator). None of these contradicts a written
+claim; each is a deepening of a table that already exists.</li>
 <li><b>Offer-based dispatch is NOT a boundary</b>: IEMOP publishes the
 real-time generation offers and the regional merit-order tables in the same
 public window (verified July 2026), and dispatching against them is the

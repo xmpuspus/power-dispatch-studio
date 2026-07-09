@@ -979,6 +979,180 @@ def build_gwap_trigger(chrono_golden: dict | None = None,
     }
 
 
+def build_constrained_on(fleet: dict) -> dict:
+    """The operator's roster of generators that network and security
+    constraints forced ON out of merit (PSM constrained-on generators),
+    named per 5-minute interval with the cleared or substituted price:
+    the congestion story with unit names, not just shadow prices."""
+    files = dataset_files("PSMCOG")
+    if not files:
+        return {"available": False,
+                "note": "PSMCOG dataset absent; constrained-on roster "
+                        "unavailable."}
+    rows_by_name = {p["name"]: p for p in fleet.get("plants", [])}
+    grids_upper = {"LUZON": "luzon", "VISAYAS": "visayas",
+                   "MINDANAO": "mindanao"}
+    per_res: dict[str, dict] = {}
+    per_grid = {g: 0 for g in GRIDS_L}
+    days = []
+    for path in files:
+        day = day_of(path)
+        n = 0
+        res_seen = set()
+        pmax = 0.0
+        for r in rows_of(path):
+            res = (r.get("RESOURCE_NAME") or "").strip()
+            g = grids_upper.get((r.get("REGION_NAME") or "").strip())
+            if not res or not g:
+                continue
+            price = f(r.get("CLEARED_PRICE")) / 1000
+            n += 1
+            res_seen.add(res)
+            pmax = max(pmax, price)
+            per_grid[g] += 1
+            e = per_res.setdefault(res, {
+                "resource": res, "grid": g, "n_intervals": 0,
+                "price_sum": 0.0, "max_price_php_kwh": 0.0})
+            e["n_intervals"] += 1
+            e["price_sum"] += price
+            e["max_price_php_kwh"] = max(e["max_price_php_kwh"], price)
+        days.append({"date": day, "n_intervals": n,
+                     "n_resources": len(res_seen),
+                     "max_price_php_kwh": round(pmax, 3)})
+    top = []
+    for e in sorted(per_res.values(), key=lambda x: -x["n_intervals"])[:15]:
+        fuel, _ = _resolve(e["resource"], rows_by_name)
+        top.append({
+            "resource": e["resource"],
+            "grid": e["grid"],
+            "fuel": fuel,
+            "n_intervals": e["n_intervals"],
+            "mean_price_php_kwh": round(e["price_sum"] / e["n_intervals"], 3),
+            "max_price_php_kwh": round(e["max_price_php_kwh"], 3),
+        })
+    return {
+        "available": True,
+        "days": days,
+        "n_days": len(days),
+        "n_resources": len(per_res),
+        "per_grid_intervals": per_grid,
+        "top": top,
+        "note": ("The generators the operator names as constrained ON per "
+                 "5-minute interval (PSM constrained-on list): units that "
+                 "network or security constraints forced to run out of "
+                 "merit, with the cleared or substituted price. These are "
+                 "administered outcomes the pricing methodology carries, "
+                 "not market clearing, and they put unit names on the "
+                 "congestion story the shadow-price league tells in "
+                 "equipment terms. A final-calculation dataset, published "
+                 "about two weeks behind the market day."),
+        "fuel_note": ("Fuel per resource comes from the pasa alias table "
+                      "into the DOE fleet; codes without a confident alias "
+                      "show no fuel rather than a guessed one."),
+        "src": "https://www.iemop.ph/market-data/psm-constrained-on-generators/",
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
+def build_security_limits(fleet: dict) -> dict:
+    """Per-resource security limits used in RTD (RTDSL): the operating
+    points security constraints pin resources to, per window. In the
+    archived files MAX equals MIN everywhere, so each row pair is a fixed
+    security-constrained operating point, not a range."""
+    files = dataset_files("RTDSL")
+    if not files:
+        return {"available": False,
+                "note": "RTDSL dataset absent; security limits unavailable."}
+    rows_by_name = {p["name"]: p for p in fleet.get("plants", [])}
+    # RTDSL region values are the CLUZ/CVIS/CMIN codes, not the full names
+    # PSMCOG uses (the round-8 diff review caught the full-name map baking
+    # a dead grid field)
+    grid_names = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao",
+                  "LUZON": "luzon", "VISAYAS": "visayas",
+                  "MINDANAO": "mindanao"}
+    per_res: dict[str, dict] = {}
+    days = []
+    n_windows_total = 0
+    n_pinned_total = 0
+    # a window that spans midnight is listed in both daily files; count it
+    # once (322 of 82,084 in the first archived window)
+    seen_windows: set[tuple] = set()
+    for path in files:
+        day = day_of(path)
+        wins: dict[tuple, dict] = {}
+        for r in rows_of(path):
+            res = (r.get("RESOURCE_NAME") or "").strip()
+            pt = (r.get("PARAMETER_TYPE") or "").strip()
+            if not res or pt not in ("MAX_OPERATING_MW", "MIN_OPERATING_MW"):
+                continue
+            k = (res, (r.get("START_TIME") or "").strip(),
+                 (r.get("END_TIME") or "").strip())
+            w = wins.setdefault(k, {
+                "grid": grid_names.get((r.get("REGION_NAME") or "").strip())})
+            w[pt] = f(r.get("PARAMETER_VALUE"))
+        n_win = n_pin = 0
+        res_seen = set()
+        for k, w in wins.items():
+            if "MAX_OPERATING_MW" not in w or "MIN_OPERATING_MW" not in w:
+                continue
+            if k in seen_windows:
+                continue
+            seen_windows.add(k)
+            res = k[0]
+            n_win += 1
+            res_seen.add(res)
+            pinned = abs(w["MAX_OPERATING_MW"] - w["MIN_OPERATING_MW"]) < 0.05
+            if pinned:
+                n_pin += 1
+            e = per_res.setdefault(res, {
+                "resource": res, "grid": w.get("grid"), "n_windows": 0,
+                "max_mw": 0.0})
+            e["n_windows"] += 1
+            e["max_mw"] = max(e["max_mw"], w["MAX_OPERATING_MW"])
+        n_windows_total += n_win
+        n_pinned_total += n_pin
+        days.append({"date": day, "n_windows": n_win,
+                     "n_resources": len(res_seen)})
+    top = []
+    for e in sorted(per_res.values(), key=lambda x: -x["n_windows"])[:15]:
+        fuel, _ = _resolve(e["resource"], rows_by_name)
+        top.append({
+            "resource": e["resource"],
+            "grid": e["grid"],
+            "fuel": fuel,
+            "n_windows": e["n_windows"],
+            "max_mw": round(e["max_mw"], 1),
+        })
+    return {
+        "available": True,
+        "days": days,
+        "n_days": len(days),
+        "n_resources": len(per_res),
+        "n_windows": n_windows_total,
+        "pinned_share_pct": (round(100 * n_pinned_total / n_windows_total, 1)
+                             if n_windows_total else None),
+        "top": top,
+        "note": ("The per-resource security limits the operator used in "
+                 "real-time dispatch (RTDSL): each window names a resource "
+                 "and the MAX and MIN operating MW security constraints "
+                 "held it to. Where the two are equal (pinned_share_pct of "
+                 "archived windows), the constraint is a fixed "
+                 "security-constrained operating point, the physical "
+                 "record of which units the grid's security limits held "
+                 "and to what MW. Published next-day. A window revised "
+                 "within a file resolves to the latest run's value; a "
+                 "window spanning midnight appears in both daily files "
+                 "and counts once."),
+        "fuel_note": ("Fuel per resource comes from the pasa alias table "
+                      "into the DOE fleet; codes without a confident alias "
+                      "show no fuel rather than a guessed one."),
+        "src": "https://www.iemop.ph/market-data/security-limits-used-in-rtd/",
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
 def build_drivers(prices: dict, profiles: dict, pasa: dict,
                   advisories: dict, reserve_prices: dict) -> dict:
     """The per-day drivers timeline: what moved prices, joined from the

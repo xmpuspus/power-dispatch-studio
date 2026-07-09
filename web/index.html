@@ -424,6 +424,18 @@ function barRow(label, val, max, color, low){
 function sideChoke(){
   const C = D["congestion.json"] || {};
   const A = D["market_anchors.json"] || {};
+  const CO = ((D["market_ops.json"] || {}).constrained_on) || {};
+  const coRows = (CO.top || []).slice(0, 6).map(r =>
+    `<tr><td>${esc(r.resource)}</td><td>${esc(r.fuel || "?")}</td>
+     <td class="num">${fmt(r.n_intervals)}</td>
+     <td class="num">${fmt(r.mean_price_php_kwh, 2)}</td></tr>`).join("");
+  const coBlock = coRows ? `<p class="sub">The same story with unit names:
+  the generators the operator's own constrained-on list says network or
+  security constraints forced to run out of merit (PSM files, administered
+  prices, published about two weeks behind). Top by 5-minute intervals
+  across the window:</p>
+  <table><thead><tr><th>Unit</th><th>Fuel</th><th>Intervals</th>
+  <th>Mean P/kWh</th></tr></thead><tbody>${coRows}</tbody></table>` : "";
   const league = (C.league || []).slice(0, 10);
   let rows = league.map(e =>
     `<tr><td>${esc(e.equipment)}</td><td>${esc(e.station)}</td>
@@ -452,6 +464,7 @@ function sideChoke(){
   <table><thead><tr><th>Equipment</th><th>Station</th><th>Days</th><th>RT days</th><th>RT itv</th></tr></thead>
   <tbody>${rows || "<tr><td colspan=5>Bake pending.</td></tr>"}</tbody></table>
   ${slackline}
+  ${coBlock}
   <button class="sual-btn" id="sualbtn">What if a Sual unit trips? (-647 MW)</button>
   <div class="note" id="sualread">${sualDays != null ?
     "The archive's outage files list a Sual unit out on " + fmt(sualDays) +

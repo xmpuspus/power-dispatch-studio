@@ -44,6 +44,18 @@ columns, because the day-ahead market re-prices hourly and its raw row count
 measures re-run persistence, not time at the limit. Per-equipment receipts:
 [`web/data/congestion.json`](web/data/congestion.json); rebuild with `make data`.
 
+The operator also publishes the same story with unit names, and the map now
+carries it: the PSM constrained-on list names, per 5-minute interval, every
+generator that network or security constraints forced to run out of merit,
+with the administered price it was paid. Across the window that is **269
+named generators**, the Visayas leading by intervals, batteries topping the
+list at the P32 offer cap (`constrained_on` in
+[`web/data/market_ops.json`](web/data/market_ops.json)). Beside it sit the
+security limits used in real-time dispatch: per-resource operating points
+that the archived files pin to a single MW value, the physical record of
+which units the grid's security constraints held and where
+(`security_limits` in the same file).
+
 ## Thin is the normal state
 
 In the operator's own real-time dispatch schedules, **Luzon scheduled reserves fell

@@ -1779,6 +1779,1176 @@
   "src_rule": "https://powerphilippines.com/erc-approves-higher-secondary-price-cap-thresholds-in-wesm/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
+ "constrained_on": {
+  "available": true,
+  "days": [
+   {
+    "date": "2026-04-10",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-11",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-12",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-13",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-14",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-15",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-16",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-17",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-18",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-19",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-20",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-21",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-22",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-23",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-24",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-25",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-26",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-27",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-28",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-29",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-04-30",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-05-01",
+    "n_intervals": 184,
+    "n_resources": 24,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-02",
+    "n_intervals": 592,
+    "n_resources": 65,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-03",
+    "n_intervals": 819,
+    "n_resources": 78,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-04",
+    "n_intervals": 34,
+    "n_resources": 9,
+    "max_price_php_kwh": 19.274
+   },
+   {
+    "date": "2026-05-05",
+    "n_intervals": 117,
+    "n_resources": 24,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-06",
+    "n_intervals": 529,
+    "n_resources": 61,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-07",
+    "n_intervals": 1073,
+    "n_resources": 62,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-08",
+    "n_intervals": 2361,
+    "n_resources": 100,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-09",
+    "n_intervals": 1362,
+    "n_resources": 92,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-10",
+    "n_intervals": 1431,
+    "n_resources": 105,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-11",
+    "n_intervals": 3071,
+    "n_resources": 116,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-12",
+    "n_intervals": 3073,
+    "n_resources": 129,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-13",
+    "n_intervals": 376,
+    "n_resources": 55,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-14",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-05-15",
+    "n_intervals": 23,
+    "n_resources": 15,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-16",
+    "n_intervals": 126,
+    "n_resources": 87,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-17",
+    "n_intervals": 198,
+    "n_resources": 20,
+    "max_price_php_kwh": 14.97
+   },
+   {
+    "date": "2026-05-18",
+    "n_intervals": 1302,
+    "n_resources": 61,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-19",
+    "n_intervals": 709,
+    "n_resources": 73,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-20",
+    "n_intervals": 1181,
+    "n_resources": 87,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-21",
+    "n_intervals": 1459,
+    "n_resources": 116,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-22",
+    "n_intervals": 2487,
+    "n_resources": 141,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-23",
+    "n_intervals": 754,
+    "n_resources": 72,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-24",
+    "n_intervals": 699,
+    "n_resources": 66,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-25",
+    "n_intervals": 1165,
+    "n_resources": 97,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-26",
+    "n_intervals": 1275,
+    "n_resources": 77,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-27",
+    "n_intervals": 540,
+    "n_resources": 54,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-28",
+    "n_intervals": 543,
+    "n_resources": 67,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-29",
+    "n_intervals": 778,
+    "n_resources": 108,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-30",
+    "n_intervals": 261,
+    "n_resources": 56,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-05-31",
+    "n_intervals": 410,
+    "n_resources": 46,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-01",
+    "n_intervals": 226,
+    "n_resources": 28,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-02",
+    "n_intervals": 980,
+    "n_resources": 61,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-03",
+    "n_intervals": 33,
+    "n_resources": 11,
+    "max_price_php_kwh": 11.5
+   },
+   {
+    "date": "2026-06-04",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-06-05",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-06-06",
+    "n_intervals": 36,
+    "n_resources": 36,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-07",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-06-08",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-06-09",
+    "n_intervals": 878,
+    "n_resources": 75,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-10",
+    "n_intervals": 5152,
+    "n_resources": 143,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-11",
+    "n_intervals": 1363,
+    "n_resources": 107,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-12",
+    "n_intervals": 1259,
+    "n_resources": 94,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-13",
+    "n_intervals": 597,
+    "n_resources": 75,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-14",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-06-15",
+    "n_intervals": 746,
+    "n_resources": 95,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-16",
+    "n_intervals": 939,
+    "n_resources": 81,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-17",
+    "n_intervals": 2209,
+    "n_resources": 112,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-18",
+    "n_intervals": 0,
+    "n_resources": 0,
+    "max_price_php_kwh": 0.0
+   },
+   {
+    "date": "2026-06-19",
+    "n_intervals": 291,
+    "n_resources": 80,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-20",
+    "n_intervals": 412,
+    "n_resources": 56,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-21",
+    "n_intervals": 1838,
+    "n_resources": 125,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-22",
+    "n_intervals": 468,
+    "n_resources": 58,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-23",
+    "n_intervals": 621,
+    "n_resources": 103,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-24",
+    "n_intervals": 1675,
+    "n_resources": 108,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "date": "2026-06-25",
+    "n_intervals": 4773,
+    "n_resources": 157,
+    "max_price_php_kwh": 32.0
+   }
+  ],
+  "n_days": 77,
+  "n_resources": 269,
+  "per_grid_intervals": {
+   "luzon": 14345,
+   "visayas": 22084,
+   "mindanao": 16999
+  },
+  "top": [
+   {
+    "resource": "01SNMAN_BAT",
+    "grid": "luzon",
+    "fuel": "storage",
+    "n_intervals": 1370,
+    "mean_price_php_kwh": 32.0,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "resource": "01GAMU_BAT",
+    "grid": "luzon",
+    "fuel": "storage",
+    "n_intervals": 1342,
+    "mean_price_php_kwh": 32.0,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "resource": "08NABASDPP_U02",
+    "grid": "visayas",
+    "fuel": "oil",
+    "n_intervals": 1019,
+    "mean_price_php_kwh": 20.436,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "resource": "01MAGAT_BAT",
+    "grid": "luzon",
+    "fuel": "storage",
+    "n_intervals": 1008,
+    "mean_price_php_kwh": 32.0,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "resource": "08NABASDPP_U01",
+    "grid": "visayas",
+    "fuel": "oil",
+    "n_intervals": 985,
+    "mean_price_php_kwh": 20.502,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "resource": "05CARMENDPP_U03",
+    "grid": "visayas",
+    "fuel": "oil",
+    "n_intervals": 912,
+    "mean_price_php_kwh": 22.626,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "resource": "08STBPB1_U02",
+    "grid": "visayas",
+    "fuel": null,
+    "n_intervals": 896,
+    "mean_price_php_kwh": 21.917,
+    "max_price_php_kwh": 21.918
+   },
+   {
+    "resource": "01BINGA_U03",
+    "grid": "luzon",
+    "fuel": null,
+    "n_intervals": 815,
+    "mean_price_php_kwh": 20.741,
+    "max_price_php_kwh": 31.895
+   },
+   {
+    "resource": "06KABAN_BAT",
+    "grid": "visayas",
+    "fuel": "storage",
+    "n_intervals": 782,
+    "mean_price_php_kwh": 32.0,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "resource": "08STBPB1_U01",
+    "grid": "visayas",
+    "fuel": null,
+    "n_intervals": 781,
+    "mean_price_php_kwh": 22.15,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "resource": "01MAGAT_U03",
+    "grid": "luzon",
+    "fuel": null,
+    "n_intervals": 772,
+    "mean_price_php_kwh": 23.099,
+    "max_price_php_kwh": 31.9
+   },
+   {
+    "resource": "08STBPB1_U04",
+    "grid": "visayas",
+    "fuel": null,
+    "n_intervals": 771,
+    "mean_price_php_kwh": 22.008,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "resource": "07BIDPP_G01",
+    "grid": "visayas",
+    "fuel": "oil",
+    "n_intervals": 762,
+    "mean_price_php_kwh": 31.128,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "resource": "05CARMENDPP_U01",
+    "grid": "visayas",
+    "fuel": "oil",
+    "n_intervals": 747,
+    "mean_price_php_kwh": 22.666,
+    "max_price_php_kwh": 32.0
+   },
+   {
+    "resource": "10GNPK_U03",
+    "grid": "mindanao",
+    "fuel": "coal",
+    "n_intervals": 648,
+    "mean_price_php_kwh": 13.438,
+    "max_price_php_kwh": 26.0
+   }
+  ],
+  "note": "The generators the operator names as constrained ON per 5-minute interval (PSM constrained-on list): units that network or security constraints forced to run out of merit, with the cleared or substituted price. These are administered outcomes the pricing methodology carries, not market clearing, and they put unit names on the congestion story the shadow-price league tells in equipment terms. A final-calculation dataset, published about two weeks behind the market day.",
+  "fuel_note": "Fuel per resource comes from the pasa alias table into the DOE fleet; codes without a confident alias show no fuel rather than a guessed one.",
+  "src": "https://www.iemop.ph/market-data/psm-constrained-on-generators/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
+ "security_limits": {
+  "available": true,
+  "days": [
+   {
+    "date": "2026-04-10",
+    "n_windows": 1023,
+    "n_resources": 22
+   },
+   {
+    "date": "2026-04-11",
+    "n_windows": 922,
+    "n_resources": 20
+   },
+   {
+    "date": "2026-04-12",
+    "n_windows": 1006,
+    "n_resources": 23
+   },
+   {
+    "date": "2026-04-13",
+    "n_windows": 1076,
+    "n_resources": 22
+   },
+   {
+    "date": "2026-04-14",
+    "n_windows": 1108,
+    "n_resources": 20
+   },
+   {
+    "date": "2026-04-15",
+    "n_windows": 1204,
+    "n_resources": 22
+   },
+   {
+    "date": "2026-04-16",
+    "n_windows": 1057,
+    "n_resources": 25
+   },
+   {
+    "date": "2026-04-17",
+    "n_windows": 1271,
+    "n_resources": 20
+   },
+   {
+    "date": "2026-04-18",
+    "n_windows": 1219,
+    "n_resources": 14
+   },
+   {
+    "date": "2026-04-19",
+    "n_windows": 1038,
+    "n_resources": 15
+   },
+   {
+    "date": "2026-04-20",
+    "n_windows": 1284,
+    "n_resources": 19
+   },
+   {
+    "date": "2026-04-21",
+    "n_windows": 1260,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-04-22",
+    "n_windows": 1239,
+    "n_resources": 13
+   },
+   {
+    "date": "2026-04-23",
+    "n_windows": 1195,
+    "n_resources": 14
+   },
+   {
+    "date": "2026-04-24",
+    "n_windows": 958,
+    "n_resources": 12
+   },
+   {
+    "date": "2026-04-25",
+    "n_windows": 515,
+    "n_resources": 11
+   },
+   {
+    "date": "2026-04-26",
+    "n_windows": 446,
+    "n_resources": 9
+   },
+   {
+    "date": "2026-04-27",
+    "n_windows": 878,
+    "n_resources": 10
+   },
+   {
+    "date": "2026-04-28",
+    "n_windows": 730,
+    "n_resources": 12
+   },
+   {
+    "date": "2026-04-29",
+    "n_windows": 860,
+    "n_resources": 9
+   },
+   {
+    "date": "2026-04-30",
+    "n_windows": 626,
+    "n_resources": 8
+   },
+   {
+    "date": "2026-05-01",
+    "n_windows": 702,
+    "n_resources": 10
+   },
+   {
+    "date": "2026-05-02",
+    "n_windows": 582,
+    "n_resources": 9
+   },
+   {
+    "date": "2026-05-03",
+    "n_windows": 952,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-05-04",
+    "n_windows": 784,
+    "n_resources": 10
+   },
+   {
+    "date": "2026-05-05",
+    "n_windows": 838,
+    "n_resources": 14
+   },
+   {
+    "date": "2026-05-06",
+    "n_windows": 1006,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-05-07",
+    "n_windows": 652,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-05-08",
+    "n_windows": 821,
+    "n_resources": 13
+   },
+   {
+    "date": "2026-05-09",
+    "n_windows": 910,
+    "n_resources": 13
+   },
+   {
+    "date": "2026-05-10",
+    "n_windows": 1045,
+    "n_resources": 12
+   },
+   {
+    "date": "2026-05-11",
+    "n_windows": 870,
+    "n_resources": 9
+   },
+   {
+    "date": "2026-05-12",
+    "n_windows": 1059,
+    "n_resources": 14
+   },
+   {
+    "date": "2026-05-13",
+    "n_windows": 886,
+    "n_resources": 13
+   },
+   {
+    "date": "2026-05-14",
+    "n_windows": 1088,
+    "n_resources": 15
+   },
+   {
+    "date": "2026-05-15",
+    "n_windows": 915,
+    "n_resources": 15
+   },
+   {
+    "date": "2026-05-16",
+    "n_windows": 722,
+    "n_resources": 13
+   },
+   {
+    "date": "2026-05-17",
+    "n_windows": 899,
+    "n_resources": 11
+   },
+   {
+    "date": "2026-05-18",
+    "n_windows": 969,
+    "n_resources": 15
+   },
+   {
+    "date": "2026-05-19",
+    "n_windows": 796,
+    "n_resources": 14
+   },
+   {
+    "date": "2026-05-20",
+    "n_windows": 758,
+    "n_resources": 13
+   },
+   {
+    "date": "2026-05-21",
+    "n_windows": 1074,
+    "n_resources": 19
+   },
+   {
+    "date": "2026-05-22",
+    "n_windows": 1149,
+    "n_resources": 20
+   },
+   {
+    "date": "2026-05-23",
+    "n_windows": 1245,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-05-24",
+    "n_windows": 1089,
+    "n_resources": 12
+   },
+   {
+    "date": "2026-05-25",
+    "n_windows": 969,
+    "n_resources": 13
+   },
+   {
+    "date": "2026-05-26",
+    "n_windows": 967,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-05-27",
+    "n_windows": 841,
+    "n_resources": 17
+   },
+   {
+    "date": "2026-05-28",
+    "n_windows": 1153,
+    "n_resources": 17
+   },
+   {
+    "date": "2026-05-29",
+    "n_windows": 1087,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-05-30",
+    "n_windows": 1016,
+    "n_resources": 15
+   },
+   {
+    "date": "2026-05-31",
+    "n_windows": 951,
+    "n_resources": 12
+   },
+   {
+    "date": "2026-06-01",
+    "n_windows": 852,
+    "n_resources": 10
+   },
+   {
+    "date": "2026-06-02",
+    "n_windows": 997,
+    "n_resources": 13
+   },
+   {
+    "date": "2026-06-03",
+    "n_windows": 1051,
+    "n_resources": 15
+   },
+   {
+    "date": "2026-06-04",
+    "n_windows": 1049,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-06-05",
+    "n_windows": 717,
+    "n_resources": 13
+   },
+   {
+    "date": "2026-06-06",
+    "n_windows": 816,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-06-07",
+    "n_windows": 968,
+    "n_resources": 13
+   },
+   {
+    "date": "2026-06-08",
+    "n_windows": 664,
+    "n_resources": 14
+   },
+   {
+    "date": "2026-06-09",
+    "n_windows": 1209,
+    "n_resources": 21
+   },
+   {
+    "date": "2026-06-10",
+    "n_windows": 1114,
+    "n_resources": 19
+   },
+   {
+    "date": "2026-06-11",
+    "n_windows": 784,
+    "n_resources": 18
+   },
+   {
+    "date": "2026-06-12",
+    "n_windows": 949,
+    "n_resources": 15
+   },
+   {
+    "date": "2026-06-13",
+    "n_windows": 831,
+    "n_resources": 11
+   },
+   {
+    "date": "2026-06-14",
+    "n_windows": 533,
+    "n_resources": 9
+   },
+   {
+    "date": "2026-06-15",
+    "n_windows": 732,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-06-16",
+    "n_windows": 789,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-06-17",
+    "n_windows": 871,
+    "n_resources": 19
+   },
+   {
+    "date": "2026-06-18",
+    "n_windows": 1013,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-06-19",
+    "n_windows": 779,
+    "n_resources": 15
+   },
+   {
+    "date": "2026-06-20",
+    "n_windows": 878,
+    "n_resources": 11
+   },
+   {
+    "date": "2026-06-21",
+    "n_windows": 832,
+    "n_resources": 11
+   },
+   {
+    "date": "2026-06-22",
+    "n_windows": 804,
+    "n_resources": 12
+   },
+   {
+    "date": "2026-06-23",
+    "n_windows": 863,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-06-24",
+    "n_windows": 833,
+    "n_resources": 17
+   },
+   {
+    "date": "2026-06-25",
+    "n_windows": 643,
+    "n_resources": 17
+   },
+   {
+    "date": "2026-06-26",
+    "n_windows": 674,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-06-27",
+    "n_windows": 838,
+    "n_resources": 14
+   },
+   {
+    "date": "2026-06-28",
+    "n_windows": 776,
+    "n_resources": 11
+   },
+   {
+    "date": "2026-06-29",
+    "n_windows": 849,
+    "n_resources": 13
+   },
+   {
+    "date": "2026-06-30",
+    "n_windows": 693,
+    "n_resources": 18
+   },
+   {
+    "date": "2026-07-01",
+    "n_windows": 902,
+    "n_resources": 17
+   },
+   {
+    "date": "2026-07-02",
+    "n_windows": 715,
+    "n_resources": 14
+   },
+   {
+    "date": "2026-07-03",
+    "n_windows": 963,
+    "n_resources": 15
+   },
+   {
+    "date": "2026-07-04",
+    "n_windows": 817,
+    "n_resources": 16
+   },
+   {
+    "date": "2026-07-05",
+    "n_windows": 825,
+    "n_resources": 11
+   },
+   {
+    "date": "2026-07-06",
+    "n_windows": 897,
+    "n_resources": 18
+   },
+   {
+    "date": "2026-07-07",
+    "n_windows": 818,
+    "n_resources": 14
+   },
+   {
+    "date": "2026-07-08",
+    "n_windows": 714,
+    "n_resources": 14
+   }
+  ],
+  "n_days": 90,
+  "n_resources": 117,
+  "n_windows": 81762,
+  "pinned_share_pct": 99.2,
+  "top": [
+   {
+    "resource": "03LUMBSOL_G01",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 14632,
+    "max_mw": 56.0
+   },
+   {
+    "resource": "01BUGSOL_G01",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 13305,
+    "max_mw": 400.0
+   },
+   {
+    "resource": "01BARBASOL_G01",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 11430,
+    "max_mw": 85.6
+   },
+   {
+    "resource": "01CONSOL_G01",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 10975,
+    "max_mw": 115.4
+   },
+   {
+    "resource": "03LUNSOL_G01",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 9329,
+    "max_mw": 43.3
+   },
+   {
+    "resource": "01TERRASOL_G01",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 7928,
+    "max_mw": 500.0
+   },
+   {
+    "resource": "01BETASOL_G01",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 1760,
+    "max_mw": 17.3
+   },
+   {
+    "resource": "03STA-RI_G06",
+    "grid": "luzon",
+    "fuel": "natural_gas",
+    "n_windows": 1126,
+    "max_mw": 274.0
+   },
+   {
+    "resource": "03STA-RI_G05",
+    "grid": "luzon",
+    "fuel": "natural_gas",
+    "n_windows": 1072,
+    "max_mw": 274.0
+   },
+   {
+    "resource": "01PASBUSOL_G01",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 1064,
+    "max_mw": 58.5
+   },
+   {
+    "resource": "01MARSOL_G01",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 897,
+    "max_mw": 13.4
+   },
+   {
+    "resource": "01MSINLO_G04",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 847,
+    "max_mw": 350.5
+   },
+   {
+    "resource": "06SLYSOL_G02",
+    "grid": "visayas",
+    "fuel": null,
+    "n_windows": 748,
+    "max_mw": 20.6
+   },
+   {
+    "resource": "03ALMNOS_BAT1",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 717,
+    "max_mw": 20.0
+   },
+   {
+    "resource": "05CARMEN_BAT",
+    "grid": "visayas",
+    "fuel": "storage",
+    "n_windows": 484,
+    "max_mw": 25.0
+   }
+  ],
+  "note": "The per-resource security limits the operator used in real-time dispatch (RTDSL): each window names a resource and the MAX and MIN operating MW security constraints held it to. Where the two are equal (pinned_share_pct of archived windows), the constraint is a fixed security-constrained operating point, the physical record of which units the grid's security limits held and to what MW. Published next-day. A window revised within a file resolves to the latest run's value; a window spanning midnight appears in both daily files and counts once.",
+  "fuel_note": "Fuel per resource comes from the pasa alias table into the DOE fleet; codes without a confident alias show no fuel rather than a guessed one.",
+  "src": "https://www.iemop.ph/market-data/security-limits-used-in-rtd/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
  "advisories": {
   "available": true,
   "days": [
