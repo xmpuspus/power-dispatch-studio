@@ -36680,6 +36680,31 @@
     "n_decisive_hours": 1344
    }
   },
+  "flows_rtdhs": {
+   "lv": {
+    "corridor": "Luzon to Visayas",
+    "n_hours": 1344,
+    "observed_mean_mw": 46.1,
+    "modeled_mean_mw": -1.7,
+    "mae_mw": 91.8,
+    "direction_agreement_pct": 7.4,
+    "n_decisive_hours": 1237,
+    "observed_binding_share_pct": 60.8,
+    "modeled_at_cap_share_pct": 1.6
+   },
+   "vm": {
+    "corridor": "Visayas to Mindanao",
+    "n_hours": 1344,
+    "observed_mean_mw": -372.8,
+    "modeled_mean_mw": -3.7,
+    "mae_mw": 369.1,
+    "direction_agreement_pct": 3.8,
+    "n_decisive_hours": 1344,
+    "observed_binding_share_pct": 44.7,
+    "modeled_at_cap_share_pct": 0.0
+   }
+  },
+  "flows_rtdhs_note": "The same modeled flows scored against the operator's per-interval HVDC schedule (RTDHS), a published record independent of the net-import identity the demand construction uses; the binding pair sets the operator's CONGESTION_FLAG=Y share against the modeled at-cap share.",
   "flows_note": "Modeled corridor flows scored against the observed net market imports and exports in the RTD regional summaries (f1 is Luzon's net export southbound, f2 is Mindanao's net import). Demand is native load, so the replay must move real MW over the corridors to serve it; direction agreement counts hours where the observed flow is at least 10 MW.",
   "mcp_note": "per_grid_mcp scores the same replays against the observed regional marginal price (the RTD ex-ante clearing price, IEMOP MCP files): the target commensurate with a dispatch dual. LWAP additionally carries nodal spread and settlement substitution, so part of the LWAP gap is definitional, and this pair of tables shows how much.",
   "high_hour_note": "High hours are the top decile of observed hourly LWAP in the window; the hit rate is how often the model also ranks that hour in its own top decile. Rank agreement, not level agreement.",
@@ -36770,6 +36795,31 @@
     "n_decisive_hours": 1320
    }
   },
+  "flows_rtdhs": {
+   "lv": {
+    "corridor": "Luzon to Visayas",
+    "n_hours": 1320,
+    "observed_mean_mw": 45.2,
+    "modeled_mean_mw": 110.9,
+    "mae_mw": 101.0,
+    "direction_agreement_pct": 87.6,
+    "n_decisive_hours": 1213,
+    "observed_binding_share_pct": 60.5,
+    "modeled_at_cap_share_pct": 34.9
+   },
+   "vm": {
+    "corridor": "Visayas to Mindanao",
+    "n_hours": 1320,
+    "observed_mean_mw": -374.5,
+    "modeled_mean_mw": -336.7,
+    "mae_mw": 57.2,
+    "direction_agreement_pct": 99.2,
+    "n_decisive_hours": 1320,
+    "observed_binding_share_pct": 45.5,
+    "modeled_at_cap_share_pct": 33.3
+   }
+  },
+  "flows_rtdhs_note": "The same modeled flows scored against the operator's per-interval HVDC schedule (RTDHS), a published record independent of the net-import identity the demand construction uses; the binding pair sets the operator's CONGESTION_FLAG=Y share against the modeled at-cap share.",
   "note": "The same replays with the operator's own OFFER BOOKS (RTDOE + self-scheduled nominations) instead of the cost proxy: native-load demand, corridor caps, no storage or reserve or water layers (the books already embody unit behavior). Where the cost-mode tables show what a competitive cost stack would do, these show what the market as bid actually prices; the gap between the two IS the offer premium, measured instead of asserted."
  }
 }

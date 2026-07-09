@@ -171,6 +171,12 @@ def derive_day(date: str) -> dict:
     return {
         "date": date,
         "schema_version": SCHEMA_VERSION,
+        # the exact interval each hour's book was taken at, so consumers
+        # pairing against other per-interval series can verify the HH:05
+        # opening-interval assumption instead of inheriting it (days
+        # derived before this field carry no record of it)
+        "book_at": [dt.isoformat(sep=" ") if dt else None
+                    for dt in first_dt],
         "hours": hours,
         "sched_mw": {g: {c: sched[g][c]["sched"] for c in COMMODITIES}
                      for g in REGION.values()},

@@ -662,6 +662,23 @@ export interface Profiles {
       }
     > | null
     flows_note?: string
+    // the same modeled flows scored against the operator's per-interval
+    // HVDC schedule (RTDHS), with the binding-share pair
+    flows_rtdhs?: Record<
+      string,
+      {
+        corridor: string
+        n_hours: number
+        observed_mean_mw: number
+        modeled_mean_mw: number
+        mae_mw: number
+        direction_agreement_pct: number | null
+        n_decisive_hours: number
+        observed_binding_share_pct: number | null
+        modeled_at_cap_share_pct: number | null
+      }
+    > | null
+    flows_rtdhs_note?: string
     high_hour_note: string
     note: string
   }

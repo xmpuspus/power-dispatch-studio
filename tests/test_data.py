@@ -716,7 +716,10 @@ check("drivers rows carry the observed columns", all(
     "lwap" in r and "out_matched_mw" in r and "binding" in r
     for r in drv["days"][:5]))
 check("every market_ops section carries the analytics disclaimer", all(
-    "disclaimer" in s for s in (ps, rp, adv, ol)) and "disclaimer" in drv)
+    "disclaimer" in s for s in (ps, rp, adv, ol,
+                                mo["reserve_validation"],
+                                mo["flow_record"], mo["gwap_trigger"]))
+    and "disclaimer" in drv)
 no = mo["not_offered"]
 check("the not-offered screen is baked, bounded, and self-disclaiming",
       no["available"] and len(no["days"]) >= 30
@@ -813,6 +816,97 @@ check("newest reserve book honors the gate (book covers opening schedule)",
           >= (resd["sched_open_mw"][g][c][h] or 0) - 3.0
           for g in ("luzon", "visayas", "mindanao")
           for c in ("Fr", "Dr", "Ru", "Rd") for h in range(24)))
+
+# --- round-7b consumption: the three archived datasets are now scored ---
+mo = load("market_ops.json")
+rv = mo.get("reserve_validation") or {}
+check("reserve replay scored across the derived window (80+ days)",
+      rv.get("available") and rv["days"] >= 80)
+_rv_pools = [rv["pools"][g][c] for g in ("luzon", "visayas", "mindanao")
+             for c in ("Fr", "Dr", "Ru", "Rd")]
+check("reserve replay covers all 12 grid-commodity pools",
+      len(_rv_pools) == 12 and all(p["n_hours"] > 1500 for p in _rv_pools))
+check("the co-optimisation wedge is one-signed: every pool's bias is "
+      "negative (the book-only replay under-prices reserves everywhere)",
+      all(p["bias_php_kwh"] < 0 for p in _rv_pools))
+check("the wedge dominates to aggregate precision (MAE equals -bias "
+      "within half a centavo in every pool)",
+      all(abs(p["mae_php_kwh"] + p["bias_php_kwh"]) <= 0.005
+          for p in _rv_pools))
+check("hours where the marginal offer sits above the official price "
+      "stay noise-level (the prose's quantified concession)",
+      rv["hours_model_above_pct"] <= 10.0
+      and rv["max_model_above_php_kwh"] <= 0.05)
+check("Luzon dispatchable reserve reproduces the official price "
+      "(exact-hour share and calm MAE, the quoted anchors)",
+      rv["pools"]["luzon"]["Dr"]["exact_hours_pct"] >= 70.0
+      and rv["pools"]["luzon"]["Dr"]["mae_nonscarcity_php_kwh"] <= 0.8)
+check("reserve replay states its scarcity accounting and observes "
+      "scarcity somewhere in the window",
+      "scarcity" in (rv.get("scarcity_note") or "")
+      and any(p["n_scarcity_hours"] > 0 for p in _rv_pools))
+
+fr = mo.get("flow_record") or {}
+check("the two observed corridor records agree (identity vs RTDHS "
+      "within 1 MW on hourly means)",
+      fr.get("available")
+      and set(fr["corridors"]) == {"lv", "vm"}
+      and all(v["mae_mw"] <= 1.0 for v in fr["corridors"].values()))
+check("the operator's binding shares are real fractions of the record",
+      all(v["binding_share_pct"] is not None
+          and 20.0 <= v["binding_share_pct"] <= 80.0
+          and v["n_intervals"] > 20000 for v in fr["corridors"].values()))
+
+for _mode in ("backcast", "offer_backcast"):
+    _fx = (prof.get(_mode) or {}).get("flows_rtdhs") or {}
+    check(f"{_mode} scores its corridor flows against the operator's "
+          "HVDC record (RTDHS), both corridors",
+          set(_fx) == {"lv", "vm"} and all(
+              v["n_hours"] > 1000
+              and v["observed_binding_share_pct"] is not None
+              and v["modeled_at_cap_share_pct"] is not None
+              for v in _fx.values()))
+_ofx = prof["offer_backcast"]["flows_rtdhs"]
+check("offer mode keeps the corridor story against the independent "
+      "record (vm direction 95%+, MAE under 80 MW)",
+      _ofx["vm"]["direction_agreement_pct"] >= 95.0
+      and _ofx["vm"]["mae_mw"] <= 80.0)
+check("the under-binding gap is published: the operator flagged the "
+      "corridors binding more often than the replay hits the cap",
+      all(_ofx[k]["observed_binding_share_pct"]
+          > _ofx[k]["modeled_at_cap_share_pct"] for k in ("lv", "vm")))
+
+gt = mo.get("gwap_trigger") or {}
+check("the secondary-cap trigger series is computed on all four "
+      "published series with full-coverage windows",
+      gt.get("available")
+      and abs(gt["trigger_php_kwh"] - 12.413) < 1e-9
+      and abs(gt["cap_php_kwh"] - 7.423) < 1e-9
+      and set(gt["per_region"]) == {"luzon", "visayas", "mindanao",
+                                    "system"}
+      and all(v["max_rolling_72h"] is not None
+              for v in gt["per_region"].values()))
+check("the trigger arithmetic crossed its threshold inside the window "
+      "(the methodology's both-directions finding, first half)",
+      all(v["n_breach_windows"] > 0 for v in gt["per_region"].values()))
+check("the clamp scan found no day pinned at either cap level "
+      "(the both-directions finding, second half)",
+      gt.get("clamp_scan_days_pinned") == {"7.423": 0, "6.245": 0})
+check("the marquee as-bid day is flagged against the stated trigger "
+      "numbers, and the flag is the SCENARIO's (the same windows "
+      "unlifted stay under the threshold)",
+      (gt.get("marquee") or {}).get("trips_trigger") is True
+      and gt["marquee"]["baseline_trips"] is False
+      and gt["marquee"]["scenario_max_rolling_72h"]["rolling_php_kwh"]
+      > gt["trigger_php_kwh"]
+      >= gt["marquee"]["baseline_max_rolling_72h"]["rolling_php_kwh"])
+check("the trigger block disclaims its own mechanism gap",
+      "does not reproduce" in (gt.get("mechanism_note") or ""))
+
+# the README quotes the offer-mode Visayas settlement bias at -P0.64
+check("README's quoted Visayas offer-mode settlement bias matches the bake",
+      abs(prof["offer_backcast"]["per_grid"]["visayas"]["bias_php_kwh"]
+          - (-0.64)) <= 0.01)
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

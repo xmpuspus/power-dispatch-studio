@@ -197,6 +197,67 @@ export function BackcastView({
         </Panel>
       ) : null}
 
+      {bc.flows_rtdhs ? (
+        <Panel
+          title="Corridor flows against the operator's own HVDC record"
+          subtitle="The per-interval RTDHS schedule, independent of the demand construction; binding share is the operator's congestion flag."
+        >
+          <DataGrid
+            columns={[
+              {
+                key: 'c',
+                header: 'Corridor',
+                render: (k: string) => bc.flows_rtdhs![k].corridor,
+              },
+              {
+                key: 'obs',
+                header: 'Observed mean',
+                align: 'right',
+                mono: true,
+                render: (k: string) => `${num(bc.flows_rtdhs![k].observed_mean_mw)} MW`,
+              },
+              {
+                key: 'mod',
+                header: 'Modeled mean',
+                align: 'right',
+                mono: true,
+                render: (k: string) => `${num(bc.flows_rtdhs![k].modeled_mean_mw)} MW`,
+              },
+              {
+                key: 'mae',
+                header: 'MAE',
+                align: 'right',
+                mono: true,
+                render: (k: string) => `${num(bc.flows_rtdhs![k].mae_mw)} MW`,
+              },
+              {
+                key: 'bind',
+                header: 'Observed binding share',
+                align: 'right',
+                mono: true,
+                render: (k: string) => {
+                  const v = bc.flows_rtdhs![k].observed_binding_share_pct
+                  return v == null ? 'n/a' : pct(v / 100, 0)
+                },
+              },
+              {
+                key: 'atcap',
+                header: 'Modeled at-cap share',
+                align: 'right',
+                mono: true,
+                render: (k: string) => {
+                  const v = bc.flows_rtdhs![k].modeled_at_cap_share_pct
+                  return v == null ? 'n/a' : pct(v / 100, 0)
+                },
+              },
+            ]}
+            rows={Object.keys(bc.flows_rtdhs)}
+            getKey={(k) => k}
+          />
+          <p className="note">{bc.flows_rtdhs_note}</p>
+        </Panel>
+      ) : null}
+
       {bc.per_grid_mcp ? (
         <Panel
           title="Same replays against the observed clearing price (MCP)"

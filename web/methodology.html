@@ -167,23 +167,27 @@ the hour's scheduled reserve and requirement from RTDSUM beside it. Gate,
 like-for-like: each grid-hour-commodity book (the hour's opening
 interval) must cover the opening interval's scheduled reserve or the day
 is refused (resources re-offer within the hour, so the hour mean is not
-the opening book's obligation). Input for the queued joint energy+reserve
-clear.</td></tr>
+the opening book's obligation). Now consumed by the reserve replay
+(each book cleared at the operator's scheduled MW and scored against the
+official RSVPR price at the same interval, market_ops.json), and input
+for the queued per-resource joint energy+reserve clear.</td></tr>
 <tr><td>GWAP final (daily CSV; per-region generator weighted average
 price per 5-minute interval)</td>
 <td><a
 href="https://www.iemop.ph/market-data/generator-weighted-average-price-final/">page</a></td>
 <td>The series the ERC secondary cap's 72-hour rolling trigger runs on.
-Raw dailies committed. Input for the queued cap-trigger flag on replay
-hours.</td></tr>
+Raw dailies committed. The trigger arithmetic is now computed on it per
+region (market_ops.json gwap_trigger), with a clamp scan against the
+observed price record.</td></tr>
 <tr><td>RTD HVDC Schedules (daily CSV; per-interval corridor flow,
 congestion flag, overload MW for VISLUZ1 and MINVIS1)</td>
 <td><a
 href="https://www.iemop.ph/market-data/rtd-hvdc-schedules/">page</a></td>
 <td>The operator's own corridor record, unlike the header-only
-HVDC-limits files. Raw dailies committed. Input for the queued
-observed-flow validation set, independent of the demand-identity
-construction.</td></tr>
+HVDC-limits files. Raw dailies committed. Now scores both backcast
+modes' corridor flows directly (profiles.json flows_rtdhs) and supplies
+per-interval binding truth (CONGESTION_FLAG), a target the
+advisory-window inference never had.</td></tr>
 </table>
 <p class="muted">Courtesy: fetches are sequential with a 250 ms sleep and abort
 after 5 consecutive errors. IEMOP data is republished here as-is for public
@@ -290,13 +294,22 @@ the cap, the shedding penalty rises just above that cost instead (shedding
 must stay strictly dearer than serving), and the hour still labels
 'shortage'. The secondary price cap (P7.423/kWh when the 72-hour rolling GWAP
 breaches P12.413/kWh, ERC Resolution 26 s.2025) is stated here as the other
-published cap; the model does not yet synthesize its trigger. The per-region
-GWAP series the trigger runs on IS published per 5-minute interval
+published cap, and its trigger arithmetic is now computed rather than cited:
+the 72-hour rolling mean of the published 5-minute GWAP series
 (generator-weighted-average-price-final; archived here since July 2026 after
-a round-7 audit found the earlier "not published" claim false), so the
-72-hour arithmetic is computable, and flagging replay hours where the
-published rule would clamp is a queued build. Impositions announce
-themselves in the archived advisory stream when they happen. Tiny
+a round-7 audit found the earlier "not published" claim false) runs per
+region in market_ops.json. The computation is a finding in both directions.
+The simple rolling mean crosses the P12.413 threshold inside the window on
+every series (Luzon peaks at P13.14 ending May 30, the System row at
+P13.32), yet the observed price record shows no day pinned at either the
+current P7.423 or the prior P6.245 cap level, so the operational imposition
+runs on arithmetic the public file alone does not reproduce: series
+designation, weighting, imposition and lifting mechanics, or in-window
+effectivity. The computed series is the trigger's published input, the
+breach counts are flags on that input rather than findings that the cap was
+due, and the widest-swing as-bid scenario day is flagged against the stated
+numbers (it crosses them). Impositions announce themselves in the archived
+advisory stream when they happen. Tiny
 deterministic epsilons (at most fractions of a centavo, largest on the last
 enumerated block) make the optimum unique on the model's flat cost plateaus so
 both solver builds land on the same answer. The inputs and the checks:</p>
@@ -333,11 +346,16 @@ of replay hours). The dedicated HVDC-limits dataset (HVDCRTD) is
 header-only in every archived file, but the per-interval HVDC schedule
 (RTDHS: flow, congestion flag, overload MW per corridor per 5 minutes;
 archived here since July 2026) is the operator's own corridor record, and
-scoring the model's corridor flows against it, independent of the
-demand-identity construction, is a queued build. Until that layer ships,
-the advisory-window inference sets the caps; it is labeled here and the
-levers compose on the base limit. MVIP has no observed block events in the
-window and stays at its nameplate cap.</li>
+both backcast modes now score their corridor flows against it directly
+(profiles.json flows_rtdhs), independent of the demand-identity
+construction; the two observed records themselves agree to within about
+half a MW on hourly means (market_ops.json flow_record), and the
+operator's per-interval CONGESTION_FLAG supplies a binding-share target
+(the corridor bound in 50 percent of VISLUZ1 and 46 percent of MINVIS1
+intervals across the archived window) that the model's at-cap share is
+scored against. The advisory-window inference still sets the replay caps;
+it is labeled here and the levers compose on the base limit. MVIP has no
+observed block events in the window and stays at its nameplate cap.</li>
 <li><b>Solar shape</b>: the 24-hour availability profile is the model's labeled
 clear-sky-ish assumption (fleet_ph.SOLAR_PROFILE), not measured irradiance.
 Other fuels hold their derated availability across the day.</li>
@@ -469,29 +487,45 @@ fidelity.</p>
 
 <h2>Boundaries and queued builds, each with its named input</h2>
 <ul>
-<li><b>Reserve co-optimisation is a queued build, no longer a boundary</b>:
-WESM co-optimises energy and reserves, and this page long claimed the
-per-participant reserve offers were unpublished. A round-7 audit of the
-full IEMOP market-data surface found that claim false: RTDOR publishes
-every resource's reserve offer curve per commodity (Fr, Dr, Ru, Rd) in the
-same breakpoint schema as the generation offers. The archive now derives
-daily reserve books from it (data/derived/reserve_daily/, gated so each
-grid-hour-commodity book covers the scheduled reserve or the day is
-refused). Until the joint energy+reserve clear ships and is scored against
-the official reserve prices (RSVPR), the model keeps its stated
-approximation: withhold the requirement, show the official price beside
-it.</li>
+<li><b>Reserve co-optimisation: the replay is scored; the joint LP keeps
+its named input</b>: WESM co-optimises energy and reserves, and this page
+long claimed the per-participant reserve offers were unpublished. A
+round-7 audit of the full IEMOP market-data surface found that claim
+false: RTDOR publishes every resource's reserve offer curve per commodity
+(Fr, Dr, Ru, Rd) in the same breakpoint schema as the generation offers.
+The archive derives daily reserve books from it
+(data/derived/reserve_daily/, gated so each grid-hour-commodity book
+covers the scheduled reserve or the day is refused), and the reserve
+replay now scores them: each book cleared at the operator's scheduled MW
+for the book's exact interval, against the official RSVPR price at that
+same interval, 83 days by 12 grid-commodity pools (market_ops.json
+reserve_validation). Every pool's mean residual is negative, and the
+hours where the marginal offer sits above the official price are
+noise-level (7.9 percent of scored hours, by at most P0.033/kWh); that
+one-signed pool residual is the co-optimisation opportunity-cost wedge
+itself, measured per pool, biggest on regulation products and the tight
+islands and near zero on dispatchable reserve (Luzon Dr matches the
+official price within half a centavo in 79.5 percent of hours). What stays queued, with its named
+input, is the per-resource joint energy+reserve LP: the compacted public
+artifacts drop resource identity on both sides, so closing the wedge
+needs the raw hourly files replayed per resource. The dispatch model
+keeps its stated approximation meanwhile: withhold the requirement, show
+the official price beside it.</li>
 <li><b>Sub-zonal topology</b> (a Leyte-Cebu split): WESM expresses
 inter-island congestion as one price per island grid, so a split region has
 no published price series to validate against; only sample-day DIPCEF nodal
 LMPs could check it, which makes the layer diagnostic, not scorable.</li>
-<li><b>The exact secondary-cap trigger is computable, not yet computed</b>:
-the 72-hour rolling GWAP the cap runs on is published per region per
-5-minute interval (GWAPF, archived since July 2026; the earlier "not
-published" claim on this page was false). The caps are stated as rules,
-impositions announce themselves in the archived advisory stream, and
-flagging replay hours where the published trigger would clamp is queued on
-the new archive.</li>
+<li><b>The secondary-cap trigger is computed; its operational imposition
+is the remaining boundary</b>: the 72-hour rolling mean of the published
+per-region GWAP (GWAPF) now runs in market_ops.json, and it crosses the
+P12.413/kWh threshold inside the window on every series while the
+observed price record shows no day pinned at either the current or
+the prior cap level (the clamp scan is published beside the breach
+counts). The named missing input is the resolution's operational text:
+ERC Resolution 26 s.2025 as carried in the trade press gives the two
+numbers, not the algorithm (series designation, weighting, imposition and
+lifting mechanics, effectivity), so the computed series is the trigger's
+input, not a reconstruction of the cap itself.</li>
 <li><b>Must-run instructions are displayed, not dispatched, and the
 archive says why</b>: the processed SO instruction list carries a median
 of 10 MW across 151 instructed grid-hours in twelve weekly files, two

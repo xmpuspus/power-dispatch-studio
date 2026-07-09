@@ -512,6 +512,61 @@ def _score_pairs(pts: list[tuple[float, float]]) -> dict | None:
     }
 
 
+def _flows_vs_record(day_flows: dict[str, dict]) -> dict | None:
+    """Score modeled corridor flows against the operator's own per-interval
+    HVDC schedule (RTDHS): an independent published record, not the
+    net-import identity the demand construction uses. day_flows is
+    {date: {lv: [24], vm: [24], cap_lv: [24], cap_vm: [24]}}. The binding
+    pair compares the operator's CONGESTION_FLAG=Y interval share with the
+    share of modeled hours at the corridor cap."""
+    from market_obs import rtdhs_hourly
+
+    hs = rtdhs_hourly()
+    out = {}
+    for key, label in (("lv", "Luzon to Visayas"),
+                       ("vm", "Visayas to Mindanao")):
+        pts = []
+        at_cap = n_cap = bind_y = bind_n = 0
+        for date, rec in day_flows.items():
+            hrec = hs.get(date)
+            if not hrec:
+                continue
+            bind_y += hrec["bind_y"][key]
+            bind_n += hrec["bind_n"][key]
+            caps = rec["cap_" + key]
+            for h in range(24):
+                m = rec[key][h]
+                o = hrec[key][h]
+                if m is None or o is None:
+                    continue
+                pts.append((m, o))
+                n_cap += 1
+                # a zero cap (fully blocked hour) cannot bind in the
+                # congestion sense, so it never counts as at-cap
+                if caps[h] > 0.5 and abs(m) >= caps[h] - 0.5:
+                    at_cap += 1
+        if not pts:
+            continue
+        n = len(pts)
+        decisive = [(m, o) for m, o in pts if abs(o) >= 10.0]
+        agree = sum(1 for m, o in decisive if m * o > 0)
+        out[key] = {
+            "corridor": label,
+            "n_hours": n,
+            "observed_mean_mw": round(sum(o for _, o in pts) / n, 1),
+            "modeled_mean_mw": round(sum(m for m, _ in pts) / n, 1),
+            "mae_mw": round(sum(abs(m - o) for m, o in pts) / n, 1),
+            "direction_agreement_pct": (round(100 * agree / len(decisive), 1)
+                                        if decisive else None),
+            "n_decisive_hours": len(decisive),
+            "observed_binding_share_pct": (round(100 * bind_y / bind_n, 1)
+                                           if bind_n else None),
+            "modeled_at_cap_share_pct": (round(100 * at_cap / n_cap, 1)
+                                         if n_cap else None),
+        }
+    return out or None
+
+
 def build_offer_backcast(profiles: dict) -> dict:
     """Replay every market day covered by the derived offer stacks
     (data/derived/offer_daily) with the OBSERVED offer books instead of the
@@ -536,6 +591,7 @@ def build_offer_backcast(profiles: dict) -> dict:
     pairs_mcp: dict[str, list[tuple[float, float]]] = {
         g: [] for g in GRID_KEYS}
     flow_pairs: dict[str, list[tuple[float, float]]] = {"lv": [], "vm": []}
+    day_flows: dict[str, dict] = {}
     days_used = []
     for day in profiles["days"]:
         if not day["market"]:
@@ -579,9 +635,15 @@ def build_offer_backcast(profiles: dict) -> dict:
         days_used.append(day["date"])
         mc = day.get("mcp") or {}
         nf = day.get("net_flow") or {}
+        rec: dict = {"lv": [], "vm": []}
+        for key, ck in (("lv", "leyte"), ("vm", "mvip")):
+            c = o_caps[ck]
+            rec["cap_" + key] = c if isinstance(c, list) else [c] * 24
         for h in range(24):
             f1 = cols.get(f"f1p_{h}", 0.0) - cols.get(f"f1n_{h}", 0.0)
             f2 = cols.get(f"f2p_{h}", 0.0) - cols.get(f"f2n_{h}", 0.0)
+            rec["lv"].append(f1)
+            rec["vm"].append(f2)
             for g in GRID_KEYS:
                 price = round3(duals.get(f"bal_{s_of[g]}_{h}", 0.0))
                 pairs[g].append((price, lw[g][h]))
@@ -592,6 +654,7 @@ def build_offer_backcast(profiles: dict) -> dict:
                 obs_series = nf.get(key) or []
                 if h < len(obs_series) and obs_series[h] is not None:
                     flow_pairs[key].append((val, obs_series[h]))
+        day_flows[day["date"]] = rec
     per_grid = {g: _score_pairs(pairs[g]) for g in GRID_KEYS
                 if _score_pairs(pairs[g])}
     per_grid_mcp = {g: _score_pairs(pairs_mcp[g]) for g in GRID_KEYS
@@ -623,6 +686,14 @@ def build_offer_backcast(profiles: dict) -> dict:
         "per_grid": per_grid,
         "per_grid_mcp": per_grid_mcp or None,
         "flows": flows or None,
+        "flows_rtdhs": _flows_vs_record(day_flows),
+        "flows_rtdhs_note": ("The same modeled flows scored against the "
+                             "operator's per-interval HVDC schedule "
+                             "(RTDHS), a published record independent of "
+                             "the net-import identity the demand "
+                             "construction uses; the binding pair sets "
+                             "the operator's CONGESTION_FLAG=Y share "
+                             "against the modeled at-cap share."),
         "note": ("The same replays with the operator's own OFFER BOOKS "
                  "(RTDOE + self-scheduled nominations) instead of the cost "
                  "proxy: native-load demand, corridor caps, no storage or "
@@ -646,6 +717,11 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
     pairs: dict[str, list[tuple[float, float]]] = {g: [] for g in GRID_KEYS}
     pairs_mcp: dict[str, list[tuple[float, float]]] = {g: [] for g in GRID_KEYS}
     flow_pairs: dict[str, list[tuple[float, float]]] = {"lv": [], "vm": []}
+    day_flows: dict[str, dict] = {}
+    base_caps = {"leyte": 250.0, "mvip": 450.0}
+    for c in dispatch["coupling"]["corridors"]:
+        base_caps["leyte" if c["id"] == "leyte_luzon_hvdc" else "mvip"] = \
+            c["limit_mw"]
     days_used = []
     for day in profiles["days"]:
         if not day["market"]:
@@ -658,6 +734,17 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
         days_used.append(day["date"])
         mc = day.get("mcp") or {}
         nf = day.get("net_flow") or {}
+        cc = day.get("corridor_caps") or {}
+        rec: dict = {
+            "lv": [res["hours"][h]["flow_lv"] for h in range(24)],
+            "vm": [res["hours"][h]["flow_vm"] for h in range(24)],
+        }
+        for key, ck in (("lv", "leyte"), ("vm", "mvip")):
+            frac = cc.get(ck)
+            rec["cap_" + key] = ([round1(base_caps[ck] * frac[h])
+                                  for h in range(24)]
+                                 if frac else [base_caps[ck]] * 24)
+        day_flows[day["date"]] = rec
         for g in GRID_KEYS:
             mcg = mc.get(g) or []
             for h in range(24):
@@ -708,6 +795,14 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
         "per_grid": per_grid,
         "per_grid_mcp": per_grid_mcp or None,
         "flows": flows or None,
+        "flows_rtdhs": _flows_vs_record(day_flows),
+        "flows_rtdhs_note": ("The same modeled flows scored against the "
+                             "operator's per-interval HVDC schedule "
+                             "(RTDHS), a published record independent of "
+                             "the net-import identity the demand "
+                             "construction uses; the binding pair sets "
+                             "the operator's CONGESTION_FLAG=Y share "
+                             "against the modeled at-cap share."),
         "flows_note": ("Modeled corridor flows scored against the observed "
                        "net market imports and exports in the RTD regional "
                        "summaries (f1 is Luzon's net export southbound, f2 "

@@ -251,17 +251,35 @@ as-bid shock reaches the Visayas (**+P6.31**) and Mindanao (**+P3.12**)
 where the cost stack shows no change at all (both engines' runs are
 pinned in the baked golden cases; flip the studio's Chronology engine to
 "Observed offers" to reproduce them). Read every cost-mode delta as a
-floor.
+floor. One flag travels with it: under the secondary price cap's stated
+numbers (P7.423/kWh imposed when the 72-hour rolling GWAP breaches
+P12.413, ERC Res. 26 s.2025), a day like that pushes the computed rolling
+series past the threshold, so the as-bid spike carries price-mitigation
+exposure the cost floor does not. The same arithmetic also crossed the
+threshold inside the observed window while the price record shows no day
+pinned at the cap, so the flag is exposure under the rule's stated
+numbers, not a predicted clamp; the computed series and its clamp scan
+are in the methodology.
 
 The offer books close most of the rest. IEMOP publishes every resource's
 actual offer curve (and the self-scheduled capacity that submits none), and
 replaying the same days with those books instead of the cost proxy moves the
 corridors like the real grid: **99%** direction agreement on Visayas-Mindanao
-against a 375 MW mean observed flow, the Visayas settlement bias collapsing
-from **-P6.91** to **-P0.67/kWh**, Mindanao clearing-price correlation
-**0.87**. The gap between the cost-mode and offer-mode tables is the offer
-premium, measured per hour instead of asserted; both sets are published in
-the [studio's validation tables](studio/README.md).
+against a 375 MW mean observed flow, now scored against the operator's own
+per-interval HVDC schedule (RTDHS) rather than only the net-import identity
+the demand is built from, the Visayas settlement bias collapsing from
+**-P6.91** to **-P0.64/kWh**, Mindanao clearing-price correlation **0.87**.
+The operator's congestion flags add a target the replay still misses in one
+direction, and the tables say so: the real corridors bound in 45 to 61
+percent of intervals, the offer replay binds them in 33 to 35, the cost
+stack almost never. The reserve books are consumed the same way: every
+derived reserve book cleared at the operator's scheduled MW reproduces the
+official reserve price within half a centavo in 45 to 88 percent of hours
+per pool, and the residual is one-signed in all twelve pools, the measured
+co-optimisation opportunity-cost wedge. The gap between the cost-mode and
+offer-mode tables is the offer premium, measured per hour instead of
+asserted; all sets are published in the
+[studio's validation tables](studio/README.md).
 
 The mechanism the thesis names takes over under the documented outage. Re-clear the
 streak window with the **935 MW** of Visayas capacity NGCP recorded unavailable on

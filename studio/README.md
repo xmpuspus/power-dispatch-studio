@@ -126,7 +126,13 @@ with the set: the whole window sits inside the post-suspension restart
 regime, so this validates one market quarter, not a climatology; and the
 corridor DIRECTION agreement partly follows from native-load demand
 construction (a net exporter's load sits below its book by construction),
-so the load-bearing flow statistic is the MAE, not the direction column.
+so the load-bearing flow statistics are the MAE and the binding-share
+pair. The flows are no longer scored only against the net-import identity
+the demand is built from: the operator's own per-interval HVDC schedule
+(RTDHS) is an independent published record (it agrees with the identity
+flows to within half a MW on hourly means), and its congestion flag gives
+a per-interval binding-share target that no demand construction can
+imply.
 
 | Grid | Target | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- |
@@ -141,6 +147,26 @@ so the load-bearing flow statistic is the MAE, not the direction column.
 | --- | --- | --- | --- | --- |
 | Luzon to Visayas | 45 MW | 111 MW | 101 MW | 88% |
 | Visayas to Mindanao | -375 MW | -337 MW | 57 MW | 99% |
+
+A fifth set scores the same modeled flows against the operator's own
+per-interval HVDC schedule (RTDHS), the corridor record the operator
+publishes rather than the net-import identity the demand is built from,
+and adds the binding-share pair: the share of intervals the operator
+flagged the corridor congested against the share of modeled hours at the
+corridor cap. The offer book moves real MW in the observed direction but
+still binds the corridors less often than the operator did; the cost
+proxy barely binds them at all. That under-binding is the standing gap
+this table exists to show.
+
+| Corridor (vs operator record) | Observed mean | Modeled mean | MAE | Direction | Observed binding share | Modeled at-cap share |
+| --- | --- | --- | --- | --- | --- | --- |
+| Luzon to Visayas, cost mode | 46 MW | -2 MW | 92 MW | 7% | 61% | 2% |
+| Visayas to Mindanao, cost mode | -373 MW | -4 MW | 369 MW | 4% | 45% | 0% |
+| Luzon to Visayas, offer mode | 45 MW | 111 MW | 101 MW | 88% | 61% | 35% |
+| Visayas to Mindanao, offer mode | -374 MW | -337 MW | 57 MW | 99% | 46% | 33% |
+
+At-cap counts a modeled hour only when the hour's cap is nonzero: a
+fully blocked corridor hour cannot bind in the congestion sense.
 
 Five engine steps sit inside these numbers, all reported rather than tuned:
 the LP swap, the observed water budgets, the fleet-derived hydro split, the
@@ -176,7 +202,54 @@ market day, the DICT 1.5 GW wave costs +P4.75/kWh on the cost stack but
 +P9.08/kWh on the observed bids, with +P6.31 reaching the Visayas and
 +P3.12 Mindanao where the cost stack moves nothing (both runs are pinned
 in the golden cases; the Chronology engine toggle reproduces them). Read
-every cost-mode scenario delta as a floor.
+every cost-mode scenario delta as a floor. One flag travels with the
++P9.08: under the secondary cap's stated numbers (P7.423/kWh imposed when
+the 72-hour rolling GWAP breaches P12.413, ERC Res. 26 s.2025), a day
+like that pushes the computed rolling series past the threshold (P13.57
+against P12.413), so the as-bid spike carries price-mitigation exposure
+the cost floor does not. The same computed arithmetic also crossed the
+threshold inside the OBSERVED window with no day pinned at the cap
+anywhere in the price record, so the flag reads as exposure under the
+rule's stated numbers, not a predicted clamp; the full series, breach
+counts, and clamp
+scan are in market_ops.json and the methodology.
+
+The reserve replay closes the last unconsumed archive dataset. Each
+derived reserve book (RTDOR, the hour's opening 5-minute interval, per
+grid and commodity) is cleared at the MW the operator actually scheduled
+at that exact interval, and the marginal offer is scored against the
+official reserve price (RSVPR) at the same interval: 83 days, twelve
+grid-commodity pools, no tuning. Every pool's mean residual is negative,
+and the hours where the marginal offer sits above the official price are
+noise-level (7.9 percent of the ~23,850 scored hours, by at most
+P0.033/kWh). That one-signed pool residual IS the co-optimisation
+opportunity-cost wedge: WESM pays reserves the forgone energy margin on
+top of the reserve offer, biggest on regulation products and the tight
+islands, near zero on dispatchable reserve. Scarcity hours (scheduled MW
+under the stated requirement, where administrative pricing can sit above
+any offer) are counted per pool and excluded from the right-hand MAE.
+
+| Pool | Hours | Observed mean | Modeled mean | Bias | Exact hours | Scarcity hours | MAE outside scarcity |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Luzon contingency (Fr) | 1,992 | P5.94 | P1.80 | -P4.14 | 45.7% | 433 | P3.56 |
+| Luzon dispatchable (Dr) | 1,989 | P2.27 | P1.46 | -P0.82 | 79.5% | 364 | P0.51 |
+| Luzon regulation up (Ru) | 1,992 | P9.14 | P5.85 | -P3.29 | 63.7% | 861 | P2.61 |
+| Luzon regulation down (Rd) | 1,992 | P8.58 | P6.12 | -P2.46 | 56.6% | 852 | P2.88 |
+| Visayas contingency (Fr) | 1,986 | P10.70 | P3.92 | -P6.78 | 48.6% | 273 | P6.12 |
+| Visayas dispatchable (Dr) | 1,951 | P5.23 | P1.53 | -P3.70 | 65.8% | 287 | P1.04 |
+| Visayas regulation up (Ru) | 1,992 | P15.21 | P9.40 | -P5.82 | 44.7% | 266 | P5.46 |
+| Visayas regulation down (Rd) | 1,992 | P12.95 | P10.53 | -P2.42 | 60.3% | 266 | P2.34 |
+| Mindanao contingency (Fr) | 1,992 | P5.46 | P1.17 | -P4.29 | 53.7% | 284 | P3.53 |
+| Mindanao dispatchable (Dr) | 1,992 | P1.06 | P0.07 | -P0.99 | 88.4% | 339 | P0.24 |
+| Mindanao regulation up (Ru) | 1,992 | P15.66 | P12.02 | -P3.64 | 71.1% | 231 | P3.62 |
+| Mindanao regulation down (Rd) | 1,992 | P13.77 | P13.00 | -P0.77 | 85.7% | 226 | P0.71 |
+
+Exact hours match the official price within half a centavo: on Luzon
+dispatchable reserve the book alone reproduces the official price in four
+of five hours, and on Mindanao regulation down in six of seven. Closing
+the wedge needs a per-resource joint energy+reserve clear, and the
+compacted public artifacts drop resource identity on both sides; that
+build stays named in the methodology with its exact missing input.
 
 Read these tables before trusting any scenario: the cost model explains
 the cost floor and the congestion geometry and under-prices scarcity; the

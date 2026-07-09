@@ -1526,6 +1526,259 @@
   "src": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
+ "reserve_validation": {
+  "available": true,
+  "days": 83,
+  "n_short_books": 0,
+  "n_nonopen_hours_skipped": 0,
+  "hours_model_above_pct": 7.9,
+  "max_model_above_php_kwh": 0.033,
+  "pools": {
+   "luzon": {
+    "Fr": {
+     "n_hours": 1992,
+     "observed_mean_php_kwh": 5.939,
+     "modeled_mean_php_kwh": 1.799,
+     "mae_php_kwh": 4.14,
+     "bias_php_kwh": -4.14,
+     "correlation": 0.474,
+     "exact_hours_pct": 45.7,
+     "n_scarcity_hours": 433,
+     "mae_nonscarcity_php_kwh": 3.561
+    },
+    "Dr": {
+     "n_hours": 1989,
+     "observed_mean_php_kwh": 2.274,
+     "modeled_mean_php_kwh": 1.455,
+     "mae_php_kwh": 0.819,
+     "bias_php_kwh": -0.819,
+     "correlation": 0.618,
+     "exact_hours_pct": 79.5,
+     "n_scarcity_hours": 364,
+     "mae_nonscarcity_php_kwh": 0.512
+    },
+    "Ru": {
+     "n_hours": 1992,
+     "observed_mean_php_kwh": 9.136,
+     "modeled_mean_php_kwh": 5.849,
+     "mae_php_kwh": 3.286,
+     "bias_php_kwh": -3.286,
+     "correlation": 0.678,
+     "exact_hours_pct": 63.7,
+     "n_scarcity_hours": 861,
+     "mae_nonscarcity_php_kwh": 2.607
+    },
+    "Rd": {
+     "n_hours": 1992,
+     "observed_mean_php_kwh": 8.578,
+     "modeled_mean_php_kwh": 6.115,
+     "mae_php_kwh": 2.463,
+     "bias_php_kwh": -2.463,
+     "correlation": 0.83,
+     "exact_hours_pct": 56.6,
+     "n_scarcity_hours": 852,
+     "mae_nonscarcity_php_kwh": 2.878
+    }
+   },
+   "visayas": {
+    "Fr": {
+     "n_hours": 1986,
+     "observed_mean_php_kwh": 10.697,
+     "modeled_mean_php_kwh": 3.915,
+     "mae_php_kwh": 6.782,
+     "bias_php_kwh": -6.782,
+     "correlation": 0.361,
+     "exact_hours_pct": 48.6,
+     "n_scarcity_hours": 273,
+     "mae_nonscarcity_php_kwh": 6.115
+    },
+    "Dr": {
+     "n_hours": 1951,
+     "observed_mean_php_kwh": 5.23,
+     "modeled_mean_php_kwh": 1.528,
+     "mae_php_kwh": 3.702,
+     "bias_php_kwh": -3.702,
+     "correlation": 0.277,
+     "exact_hours_pct": 65.8,
+     "n_scarcity_hours": 287,
+     "mae_nonscarcity_php_kwh": 1.038
+    },
+    "Ru": {
+     "n_hours": 1992,
+     "observed_mean_php_kwh": 15.213,
+     "modeled_mean_php_kwh": 9.396,
+     "mae_php_kwh": 5.817,
+     "bias_php_kwh": -5.817,
+     "correlation": 0.559,
+     "exact_hours_pct": 44.7,
+     "n_scarcity_hours": 266,
+     "mae_nonscarcity_php_kwh": 5.455
+    },
+    "Rd": {
+     "n_hours": 1992,
+     "observed_mean_php_kwh": 12.95,
+     "modeled_mean_php_kwh": 10.53,
+     "mae_php_kwh": 2.42,
+     "bias_php_kwh": -2.42,
+     "correlation": 0.814,
+     "exact_hours_pct": 60.3,
+     "n_scarcity_hours": 266,
+     "mae_nonscarcity_php_kwh": 2.336
+    }
+   },
+   "mindanao": {
+    "Fr": {
+     "n_hours": 1992,
+     "observed_mean_php_kwh": 5.464,
+     "modeled_mean_php_kwh": 1.171,
+     "mae_php_kwh": 4.293,
+     "bias_php_kwh": -4.293,
+     "correlation": 0.432,
+     "exact_hours_pct": 53.7,
+     "n_scarcity_hours": 284,
+     "mae_nonscarcity_php_kwh": 3.531
+    },
+    "Dr": {
+     "n_hours": 1992,
+     "observed_mean_php_kwh": 1.058,
+     "modeled_mean_php_kwh": 0.07,
+     "mae_php_kwh": 0.987,
+     "bias_php_kwh": -0.987,
+     "correlation": 0.278,
+     "exact_hours_pct": 88.4,
+     "n_scarcity_hours": 339,
+     "mae_nonscarcity_php_kwh": 0.237
+    },
+    "Ru": {
+     "n_hours": 1992,
+     "observed_mean_php_kwh": 15.662,
+     "modeled_mean_php_kwh": 12.018,
+     "mae_php_kwh": 3.643,
+     "bias_php_kwh": -3.643,
+     "correlation": 0.785,
+     "exact_hours_pct": 71.1,
+     "n_scarcity_hours": 231,
+     "mae_nonscarcity_php_kwh": 3.615
+    },
+    "Rd": {
+     "n_hours": 1992,
+     "observed_mean_php_kwh": 13.765,
+     "modeled_mean_php_kwh": 12.997,
+     "mae_php_kwh": 0.768,
+     "bias_php_kwh": -0.768,
+     "correlation": 0.947,
+     "exact_hours_pct": 85.7,
+     "n_scarcity_hours": 226,
+     "mae_nonscarcity_php_kwh": 0.71
+    }
+   }
+  },
+  "note": "Each grid x commodity reserve book (RTDOR, the hour's opening 5-minute interval) cleared at the MW the operator actually scheduled at that same interval (RTDSUM); the marginal offer is the modeled reserve price, scored against the official regional reserve price (RSVPR) at that exact interval. Exact hours match within half a centavo.",
+  "wedge_note": "Every pool's mean residual is negative: the book-only replay under-prices the official co-optimised price, and the hours where the marginal offer sits above it are noise-level (hours_model_above_pct of scored hours, at most max_model_above_php_kwh). WESM pays reserves the forgone ENERGY margin, not just the reserve offer, so the one-signed pool residual is the co-optimisation opportunity-cost wedge, measured per pool. Closing it needs a joint energy+reserve clear with per-resource books on both sides, which the compacted artifacts drop; that build stays named in the methodology.",
+  "scarcity_note": "Hours where the scheduled MW sits under the market requirement (RTDSUM MKT_REQT, hourly mean) are counted per pool and excluded from the non-scarcity MAE: when reserves are short, administrative pricing can set RSVPR above any offer in the book.",
+  "src": "https://www.iemop.ph/market-data/rtd-reserve-offers/",
+  "src_obs": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
+ "flow_record": {
+  "available": true,
+  "days": 91,
+  "corridors": {
+   "lv": {
+    "corridor": "Luzon to Visayas",
+    "n_hours": 2184,
+    "identity_mean_mw": 6.4,
+    "record_mean_mw": 6.6,
+    "mae_mw": 0.5,
+    "binding_share_pct": 49.9,
+    "n_intervals": 26207
+   },
+   "vm": {
+    "corridor": "Visayas to Mindanao",
+    "n_hours": 2184,
+    "identity_mean_mw": -365.8,
+    "record_mean_mw": -365.8,
+    "mae_mw": 0.1,
+    "binding_share_pct": 45.6,
+    "n_intervals": 26207
+   }
+  },
+  "note": "The corridor flows the replay's demand construction implies (net market imports and exports in the RTD regional summaries) against the flows the operator itself scheduled per 5-minute interval (RTDHS): two independent published records of the same wire. The binding share is the fraction of intervals the operator flagged the corridor CONGESTION_FLAG=Y, per-interval binding truth the advisory-window inference never had.",
+  "src": "https://www.iemop.ph/market-data/rtd-hvdc-schedules/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
+ "gwap_trigger": {
+  "available": true,
+  "days": 78,
+  "trigger_php_kwh": 12.413,
+  "cap_php_kwh": 7.423,
+  "per_region": {
+   "luzon": {
+    "n_intervals": 22464,
+    "max_interval_php_kwh": 57.0,
+    "max_rolling_72h": {
+     "ends": "2026-05-30 10:45:00",
+     "rolling_php_kwh": 13.139
+    },
+    "headroom_php_kwh": -0.726,
+    "n_breach_windows": 302
+   },
+   "visayas": {
+    "n_intervals": 22464,
+    "max_interval_php_kwh": 165.05,
+    "max_rolling_72h": {
+     "ends": "2026-06-11 10:25:00",
+     "rolling_php_kwh": 18.975
+    },
+    "headroom_php_kwh": -6.562,
+    "n_breach_windows": 9092
+   },
+   "mindanao": {
+    "n_intervals": 22464,
+    "max_interval_php_kwh": 165.05,
+    "max_rolling_72h": {
+     "ends": "2026-05-16 00:25:00",
+     "rolling_php_kwh": 21.339
+    },
+    "headroom_php_kwh": -8.926,
+    "n_breach_windows": 6306
+   },
+   "system": {
+    "n_intervals": 22464,
+    "max_interval_php_kwh": 57.0,
+    "max_rolling_72h": {
+     "ends": "2026-05-30 10:35:00",
+     "rolling_php_kwh": 13.317
+    },
+    "headroom_php_kwh": -0.904,
+    "n_breach_windows": 813
+   }
+  },
+  "clamp_scan_days_pinned": {
+   "7.423": 0,
+   "6.245": 0
+  },
+  "marquee": {
+   "scenario_day": "2026-06-20",
+   "uplift_php_kwh": 9.08,
+   "scenario_max_rolling_72h": {
+    "ends": "2026-06-21 03:45:00",
+    "rolling_php_kwh": 13.572
+   },
+   "baseline_max_rolling_72h": {
+    "ends": "2026-06-20 03:10:00",
+    "rolling_php_kwh": 11.226
+   },
+   "trips_trigger": true,
+   "baseline_trips": false,
+   "note": "The studio's widest-swing as-bid scenario adds the DICT wave's Luzon daily-mean uplift uniformly to the scenario day's observed Luzon GWAP intervals and recomputes the rolling trigger over the windows ending on that day or in the 72 hours after it, beside the same windows unlifted. An arithmetic flag under the rule's stated numbers, not a prediction: the window's own record (mechanism_note) shows the operational trigger did not clamp even above the threshold."
+  },
+  "note": "The secondary price cap's own arithmetic, run on the operator's published series: the 72-hour rolling mean of the 5-minute generator-weighted average price (GWAPF), per region and for the System row as published. Only windows with all 864 intervals present are scored, so archive gaps cannot fake a calm window.",
+  "mechanism_note": "A simple 864-interval rolling mean of the published series crosses the P12.413/kWh threshold inside the window on every series, yet the observed price record shows no day pinned at either the current (P7.423) or prior (P6.245) cap level (clamp_scan). The operational imposition therefore runs on arithmetic the public file alone does not reproduce (series designation, weighting, imposition and lifting mechanics, or in-window effectivity of ERC Res. 26 s.2025); the series here is the trigger's published INPUT, and the breach counts are flags on that input, not findings that the cap was due.",
+  "src": "https://www.iemop.ph/market-data/generator-weighted-average-price-final/",
+  "src_rule": "https://powerphilippines.com/erc-approves-higher-secondary-price-cap-thresholds-in-wesm/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
  "advisories": {
   "available": true,
   "days": [

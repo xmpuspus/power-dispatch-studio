@@ -26,6 +26,7 @@ anything without a confident alias stays unmatched and carries no MW
 """
 from __future__ import annotations
 
+import functools
 import os
 import re
 
@@ -532,6 +533,447 @@ def build_not_offered() -> dict:
                  "layer."),
         "src_registered": ("https://www.iemop.ph/market-data/"
                            "registered-capacity-generation/"),
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
+def _corr(xs: list[float], ys: list[float]) -> float | None:
+    n = len(xs)
+    if n < 3:
+        return None
+    mx, my = sum(xs) / n, sum(ys) / n
+    sx = sum((x - mx) ** 2 for x in xs) ** 0.5
+    sy = sum((y - my) ** 2 for y in ys) ** 0.5
+    if sx < 1e-9 or sy < 1e-9:
+        return None
+    return round(sum((x - mx) * (y - my) for x, y in zip(xs, ys))
+                 / (sx * sy), 3)
+
+
+def _rsvpr_open(path: str) -> dict[str, dict[str, dict[int, float]]]:
+    """{grid: {commodity: {hour: PhP/kWh}}} at each hour's OPENING interval
+    (HH:05) from one RSVPR file: the exact interval the derived reserve
+    book was taken at, so the comparison is like-for-like."""
+    from datetime import datetime
+
+    out: dict[str, dict[str, dict[int, float]]] = {g: {} for g in GRIDS_L}
+    for r in rows_of(path):
+        ts = (r.get("TIME_INTERVAL") or "").strip()
+        if ":05:00" not in ts:
+            continue
+        grid = REGION_MAP.get((r.get("REGION_NAME") or "").strip())
+        com = (r.get("COMMODITY_TYPE") or "").strip()
+        if not grid or not com:
+            continue
+        try:
+            dt = datetime.strptime(ts, "%m/%d/%Y %I:%M:%S %p")
+        except ValueError:
+            continue
+        out[grid.lower()].setdefault(com, {})[dt.hour] = (
+            f(r.get("PRICE")) / 1000)
+    return out
+
+
+def _clear_book(book: list, mw: float) -> tuple[float, bool]:
+    """(marginal offer price, book_short) clearing an ascending (price, MW)
+    block list at mw. The deriver's gate allows the book to sit up to 1 MW
+    under the schedule, so a short book clears at its last block."""
+    cum = 0.0
+    for p, m in book:
+        cum += m
+        if cum >= mw - 1e-9:
+            return p, False
+    return book[-1][0], True
+
+
+def build_reserve_validation() -> dict:
+    """The reserve replay: clear each derived reserve book (RTDOR, the
+    hour's opening interval) at the operator's scheduled MW for that same
+    interval, and score the marginal offer against the official RSVPR
+    price at that interval, per grid x commodity pool."""
+    import json as _json
+
+    res_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "..", "data", "derived", "reserve_daily")
+    if not os.path.isdir(res_dir):
+        return {"available": False,
+                "note": "no derived reserve days; run pipeline/reserve_offers.py"}
+    rsvpr_by_day = {day_of(p): p for p in dataset_files("RSVPR")}
+    commodities = ("Fr", "Dr", "Ru", "Rd")
+    pairs: dict[tuple[str, str], list[tuple[float, float, bool]]] = {
+        (g, c): [] for g in GRIDS_L for c in commodities}
+    n_days = 0
+    n_short = 0
+    n_over = 0
+    max_over = 0.0
+    n_nonopen = 0
+    for name in sorted(os.listdir(res_dir)):
+        if not name.startswith("RESD_") or not name.endswith(".json"):
+            continue
+        day = _json.load(open(os.path.join(res_dir, name)))
+        rsvpr = rsvpr_by_day.get(day["date"])
+        if rsvpr is None:
+            continue
+        obs = _rsvpr_open(rsvpr)
+        # artifacts derived from schema 4 on record the book's interval;
+        # pairing assumes the HH:05 opening interval, so a recorded
+        # off-minute hour is skipped and counted instead of mispaired
+        book_at = day.get("book_at") or [None] * 24
+        n_days += 1
+        for g in GRIDS_L:
+            for c in commodities:
+                books = day["hours"][g][c]
+                sched = day["sched_open_mw"][g][c]
+                req = day["req_mw"][g][c]
+                for h in range(24):
+                    book, mw = books[h], sched[h]
+                    if not book or mw is None or mw <= 0.0:
+                        continue
+                    if book_at[h] and not book_at[h].endswith(":05:00"):
+                        n_nonopen += 1
+                        continue
+                    o = obs.get(g, {}).get(c, {}).get(h)
+                    if o is None:
+                        continue
+                    m, short = _clear_book(book, mw)
+                    if short:
+                        n_short += 1
+                    if m - o > 1e-12:
+                        n_over += 1
+                        max_over = max(max_over, m - o)
+                    scarce = req[h] is not None and mw < req[h] - 0.1
+                    pairs[(g, c)].append((m, o, scarce))
+    pools: dict[str, dict[str, dict]] = {}
+    for g in GRIDS_L:
+        for c in commodities:
+            pts = pairs[(g, c)]
+            if not pts:
+                continue
+            n = len(pts)
+            mod = [m for m, _, _ in pts]
+            ob = [o for _, o, _ in pts]
+            calm = [(m, o) for m, o, s in pts if not s]
+            pools.setdefault(g, {})[c] = {
+                "n_hours": n,
+                "observed_mean_php_kwh": round(sum(ob) / n, 3),
+                "modeled_mean_php_kwh": round(sum(mod) / n, 3),
+                "mae_php_kwh": round(sum(abs(m - o) for m, o, _ in pts) / n, 3),
+                "bias_php_kwh": round(sum(m - o for m, o, _ in pts) / n, 3),
+                "correlation": _corr(mod, ob),
+                "exact_hours_pct": round(100 * sum(
+                    1 for m, o, _ in pts if abs(m - o) <= 0.005) / n, 1),
+                "n_scarcity_hours": sum(1 for _, _, s in pts if s),
+                "mae_nonscarcity_php_kwh": (round(sum(
+                    abs(m - o) for m, o in calm) / len(calm), 3)
+                    if calm else None),
+            }
+    if not pools:
+        return {"available": False,
+                "note": "no overlapping reserve-book + RSVPR days yet"}
+    n_hours_total = sum(len(v) for v in pairs.values())
+    return {
+        "available": True,
+        "days": n_days,
+        "n_short_books": n_short,
+        "n_nonopen_hours_skipped": n_nonopen,
+        "hours_model_above_pct": round(100 * n_over / n_hours_total, 1),
+        "max_model_above_php_kwh": round(max_over, 3),
+        "pools": pools,
+        "note": ("Each grid x commodity reserve book (RTDOR, the hour's "
+                 "opening 5-minute interval) cleared at the MW the operator "
+                 "actually scheduled at that same interval (RTDSUM); the "
+                 "marginal offer is the modeled reserve price, scored "
+                 "against the official regional reserve price (RSVPR) at "
+                 "that exact interval. Exact hours match within half a "
+                 "centavo."),
+        "wedge_note": ("Every pool's mean residual is negative: the "
+                       "book-only replay under-prices the official "
+                       "co-optimised price, and the hours where the "
+                       "marginal offer sits above it are noise-level "
+                       "(hours_model_above_pct of scored hours, at most "
+                       "max_model_above_php_kwh). WESM pays reserves the "
+                       "forgone ENERGY margin, not just the reserve offer, "
+                       "so the one-signed pool residual is the "
+                       "co-optimisation opportunity-cost wedge, measured "
+                       "per pool. Closing it needs a joint energy+reserve "
+                       "clear with per-resource books on both sides, which "
+                       "the compacted artifacts drop; that build stays "
+                       "named in the methodology."),
+        "scarcity_note": ("Hours where the scheduled MW sits under the "
+                          "market requirement (RTDSUM MKT_REQT, hourly "
+                          "mean) are counted per pool and excluded from "
+                          "the non-scarcity MAE: when reserves are short, "
+                          "administrative pricing can set RSVPR above any "
+                          "offer in the book."),
+        "src": "https://www.iemop.ph/market-data/rtd-reserve-offers/",
+        "src_obs": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
+_HS_KEYS = {"VISLUZ1": "lv", "MINVIS1": "vm"}
+
+
+@functools.lru_cache(maxsize=1)
+def rtdhs_hourly() -> dict[str, dict]:
+    """{date: {"lv": [24], "vm": [24], "bind_y": {...}, "bind_n": {...}}}
+    from the operator's per-interval HVDC schedule (RTDHS): hourly mean
+    corridor flows plus per-corridor counts of intervals flagged binding
+    (CONGESTION_FLAG). Sign convention, verified against the RTDSUM
+    demand-identity flows: FLOW_FROM is positive toward the corridor's
+    FROM side, so the map's lv (positive = Luzon to Visayas) is -VISLUZ1
+    and vm (positive = Visayas to Mindanao) is -MINVIS1."""
+    out: dict[str, dict] = {}
+    for path in dataset_files("RTDHS"):
+        day = day_of(path)
+        acc: dict[str, dict[int, list[float]]] = {"lv": {}, "vm": {}}
+        bind_y = {"lv": 0, "vm": 0}
+        bind_n = {"lv": 0, "vm": 0}
+        for r in rows_of(path):
+            key = _HS_KEYS.get((r.get("HVDC_NAME") or "").strip())
+            if not key:
+                continue
+            ts = (r.get("TIME_INTERVAL") or "").strip()
+            if not ts:
+                continue
+            acc[key].setdefault(_interval_hour(ts), []).append(
+                -f(r.get("FLOW_FROM")))
+            bind_n[key] += 1
+            if (r.get("CONGESTION_FLAG") or "").strip() == "Y":
+                bind_y[key] += 1
+        out[day] = {
+            "lv": _hourly_mean(acc["lv"], 1),
+            "vm": _hourly_mean(acc["vm"], 1),
+            "bind_y": bind_y,
+            "bind_n": bind_n,
+        }
+    return out
+
+
+def build_flow_record(profiles: dict) -> dict:
+    """Two observed sources, one table: the demand-identity corridor flows
+    (RTDSUM net market imports/exports, what the replay demand is built
+    from) against the operator's own per-interval HVDC schedule (RTDHS),
+    plus the operator's binding-interval shares."""
+    hs = rtdhs_hourly()
+    if not hs:
+        return {"available": False,
+                "note": "RTDHS dataset absent; corridor record unavailable."}
+    prof_by_date = {d["date"]: d for d in profiles.get("days", [])}
+    corridors = {}
+    for key, label in (("lv", "Luzon to Visayas"),
+                       ("vm", "Visayas to Mindanao")):
+        pts = []
+        for date, rec in hs.items():
+            nf = (prof_by_date.get(date) or {}).get("net_flow") or {}
+            ident = nf.get(key) or []
+            for h in range(24):
+                r = rec[key][h]
+                i = ident[h] if h < len(ident) else None
+                if r is not None and i is not None:
+                    pts.append((i, r))
+        y = sum(rec["bind_y"][key] for rec in hs.values())
+        nn = sum(rec["bind_n"][key] for rec in hs.values())
+        if not pts:
+            continue
+        n = len(pts)
+        corridors[key] = {
+            "corridor": label,
+            "n_hours": n,
+            "identity_mean_mw": round(sum(i for i, _ in pts) / n, 1),
+            "record_mean_mw": round(sum(r for _, r in pts) / n, 1),
+            "mae_mw": round(sum(abs(i - r) for i, r in pts) / n, 1),
+            "binding_share_pct": (round(100 * y / nn, 1) if nn else None),
+            "n_intervals": nn,
+        }
+    return {
+        "available": bool(corridors),
+        "days": len(hs),
+        "corridors": corridors,
+        "note": ("The corridor flows the replay's demand construction "
+                 "implies (net market imports and exports in the RTD "
+                 "regional summaries) against the flows the operator "
+                 "itself scheduled per 5-minute interval (RTDHS): two "
+                 "independent published records of the same wire. The "
+                 "binding share is the fraction of intervals the operator "
+                 "flagged the corridor CONGESTION_FLAG=Y, per-interval "
+                 "binding truth the advisory-window inference never had."),
+        "src": "https://www.iemop.ph/market-data/rtd-hvdc-schedules/",
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
+def build_gwap_trigger(chrono_golden: dict | None = None,
+                       profiles: dict | None = None) -> dict:
+    """The ERC secondary-cap trigger, computed instead of cited: the
+    72-hour rolling mean of the published 5-minute GWAP per region, its
+    headroom to the P12.413/kWh trigger (breach imposes the P7.423/kWh
+    cap, ERC Res. 26 s.2025), whether the studio's widest-swing as-bid
+    scenario day would have tripped it, and the clamp scan that shows the
+    operational cap never actually bound in the window."""
+    from datetime import datetime, timedelta
+
+    files = dataset_files("GWAPF")
+    if not files:
+        return {"available": False,
+                "note": "GWAPF dataset absent; trigger series unavailable."}
+    from constants_ph import MARKET_ANCHORS
+
+    trigger = MARKET_ANCHORS["wesm_secondary_cap_trigger_php_kwh"]
+    cap = MARKET_ANCHORS["wesm_secondary_cap_php_kwh"]
+    region_key = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao",
+                  "System": "system"}
+    series: dict[str, dict] = {k: {} for k in region_key.values()}
+    for path in files:
+        for r in rows_of(path):
+            k = region_key.get((r.get("REGION_NAME") or "").strip())
+            if not k:
+                continue
+            ts = (r.get("TIME_INTERVAL") or "").strip()
+            # the midnight-ending interval is serialized as a bare date;
+            # midnight of that printed date IS the interval-ending moment
+            try:
+                dt = (datetime.strptime(ts, "%m/%d/%Y") if ":" not in ts
+                      else datetime.strptime(ts, "%m/%d/%Y %I:%M:%S %p"))
+            except ValueError:
+                continue
+            series[k][dt] = f(r.get("GWAP")) / 1000
+
+    window = timedelta(hours=72)
+    full = 864  # 72 h of 5-minute intervals
+
+    def _roll(vals: dict, after=None) -> tuple[dict | None, int]:
+        """(max full-coverage 72 h rolling mean, breach count), counting
+        only windows that END after `after` when given (history still
+        feeds the window sum)."""
+        items = sorted(vals.items())
+        best, breaches = None, 0
+        lo, run = 0, 0.0
+        for hi, (t, v) in enumerate(items):
+            run += v
+            while items[lo][0] <= t - window:
+                run -= items[lo][1]
+                lo += 1
+            if hi - lo + 1 == full and (after is None or t > after):
+                mean = run / full
+                if best is None or mean > best[1]:
+                    best = (t, mean)
+                if mean > trigger:
+                    breaches += 1
+        if best is None:
+            return None, 0
+        return {"ends": best[0].isoformat(sep=" "),
+                "rolling_php_kwh": round(best[1], 3)}, breaches
+
+    per_region = {}
+    for k, vals in series.items():
+        if not vals:
+            continue
+        peak, breaches = _roll(vals)
+        per_region[k] = {
+            "n_intervals": len(vals),
+            "max_interval_php_kwh": round(max(vals.values()), 3),
+            "max_rolling_72h": peak,
+            "headroom_php_kwh": (round(trigger - peak["rolling_php_kwh"], 3)
+                                 if peak else None),
+            "n_breach_windows": breaches,
+        }
+
+    # the clamp scan: if the cap had actually been imposed, hourly prices
+    # would pin at the cap level; count days with 4+ hours within P0.05 of
+    # the current (7.423) and prior (6.245) cap values
+    clamp_scan = None
+    if profiles:
+        clamp_scan = {}
+        for lvl in (cap, 6.245):
+            pinned = 0
+            for d in profiles.get("days", []):
+                if not d.get("market"):
+                    continue
+                for g in GRIDS_L:
+                    hrs = (d.get("lwap") or {}).get(g) or []
+                    if sum(1 for v in hrs
+                           if v is not None and abs(v - lvl) < 0.05) >= 4:
+                        pinned += 1
+            clamp_scan[str(lvl)] = pinned
+
+    marquee = None
+    cases = {c["label"]: c for c in (chrono_golden or {}).get("cases", [])}
+    base = cases.get("observed offer book, no levers")
+    wave = cases.get("DICT 1.5 GW on the observed offer book")
+    if base and wave and series["luzon"]:
+        gday = chrono_golden["date"]
+        uplift = round(wave["expect"]["summary"]["mean_price"]["luzon"]
+                       - base["expect"]["summary"]["mean_price"]["luzon"], 2)
+        d0 = datetime.strptime(gday, "%Y-%m-%d")
+        d1 = d0 + timedelta(days=1)
+        lifted = {t: v + uplift if d0 < t <= d1 else v
+                  for t, v in series["luzon"].items()}
+        # score only windows that end on the scenario day or inside the
+        # 72 hours after it, against the SAME windows unlifted: otherwise
+        # the whole baseline rides along and a May breach would flag a
+        # June scenario
+        horizon = d1 + window
+        peak, _ = _roll({t: v for t, v in lifted.items() if t <= horizon},
+                        after=d0)
+        base_peak, _ = _roll({t: v for t, v in series["luzon"].items()
+                              if t <= horizon}, after=d0)
+        marquee = {
+            "scenario_day": gday,
+            "uplift_php_kwh": uplift,
+            "scenario_max_rolling_72h": peak,
+            "baseline_max_rolling_72h": base_peak,
+            "trips_trigger": bool(peak
+                                  and peak["rolling_php_kwh"] > trigger),
+            "baseline_trips": bool(base_peak
+                                   and base_peak["rolling_php_kwh"]
+                                   > trigger),
+            "note": ("The studio's widest-swing as-bid scenario adds the "
+                     "DICT wave's Luzon daily-mean uplift uniformly to the "
+                     "scenario day's observed Luzon GWAP intervals and "
+                     "recomputes the rolling trigger over the windows "
+                     "ending on that day or in the 72 hours after it, "
+                     "beside the same windows unlifted. An arithmetic flag "
+                     "under the rule's stated numbers, not a prediction: "
+                     "the window's own record (mechanism_note) shows the "
+                     "operational trigger did not clamp even above the "
+                     "threshold."),
+        }
+
+    return {
+        "available": True,
+        "days": len(files),
+        "trigger_php_kwh": trigger,
+        "cap_php_kwh": cap,
+        "per_region": per_region,
+        "clamp_scan_days_pinned": clamp_scan,
+        "marquee": marquee,
+        "note": ("The secondary price cap's own arithmetic, run on the "
+                 "operator's published series: the 72-hour rolling mean of "
+                 "the 5-minute generator-weighted average price (GWAPF), "
+                 "per region and for the System row as published. Only "
+                 "windows with all 864 intervals present are scored, so "
+                 "archive gaps cannot fake a calm window."),
+        "mechanism_note": ("A simple 864-interval rolling mean of the "
+                           "published series crosses the P12.413/kWh "
+                           "threshold inside the window on every series, "
+                           "yet the observed price record shows no day "
+                           "pinned at either the current (P7.423) or "
+                           "prior (P6.245) cap level (clamp_scan). The "
+                           "operational imposition therefore runs on "
+                           "arithmetic the public file alone does not "
+                           "reproduce (series designation, weighting, "
+                           "imposition and lifting mechanics, or "
+                           "in-window effectivity of ERC Res. 26 "
+                           "s.2025); the series here is the trigger's "
+                           "published INPUT, and the breach counts are "
+                           "flags on that input, not findings that the "
+                           "cap was due."),
+        "src": "https://www.iemop.ph/market-data/generator-weighted-average-price-final/",
+        "src_rule": MARKET_ANCHORS["src_secondary_cap"],
         "disclaimer": ("Statistical indicators derived from public data. "
                        "Patterns may have legitimate explanations."),
     }
