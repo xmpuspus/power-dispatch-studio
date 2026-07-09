@@ -32,6 +32,10 @@ jobs:
         id: derive_offers
         continue-on-error: true
         run: python3 pipeline/offers.py --derive --limit 3
+      - name: Derive reserve-book dailies (RTDOR; hourly files too heavy to keep)
+        id: derive_reserve
+        continue-on-error: true
+        run: python3 pipeline/reserve_offers.py --derive --limit 3
       - name: Commit raw + derived files first (the archive is the irreplaceable asset)
         run: |
           git config user.name "archive-bot"
