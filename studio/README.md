@@ -67,7 +67,7 @@ inflating demand.
 | Chronological replay of observed days, with each day's scheduled-outage deviation applied (OUTRTD via the PASA mapping) | Load or price forecasting |
 | Shortage priced at the P32/kWh WESM offer cap (published rule), labeled 'shortage' | Offer-behavior pricing below the cap (per-participant strategy) |
 | Storage optimised over the day's hours (HiGHS LP) | Inter-day storage carryover |
-| Reserve as a withheld-capacity constraint; OBSERVED official regional reserve prices shown beside it | Reserve co-optimisation inside the LP (needs per-participant reserve offer stacks) |
+| Reserve as a withheld-capacity constraint; OBSERVED official regional reserve prices shown beside it | Reserve co-optimisation inside the LP (the observed reserve books, RTDOR, are archived as daily derived files since July 2026; the joint clear scored against RSVPR is the queued build) |
 | Monte Carlo adequacy on forced-outage rates, with the day's scheduled outages removable (PASA lite) | Maintenance-schedule optimisation |
 | DOE build pipeline as sourced candidates on a horizon (LT Plan lite) | Expansion optimisation, build-cost economics |
 | Load sweep, window band, per-hour binding classification, operational CO2 | Build-cost economics |

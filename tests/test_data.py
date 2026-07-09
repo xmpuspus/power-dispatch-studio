@@ -781,5 +781,38 @@ check("days with observed HVDC blocks carry corridor availability fractions",
           and any(f < 1.0 for f in d["corridor_caps"]["leyte"])
           for d in capped_days))
 
+# --- round-7 archival: the three datasets the convergence audit surfaced ---
+# (the archive is permanent, so these floors only ever grow)
+RAW_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "raw")
+with open(os.path.join(RAW_DIR, "manifest.json")) as _fh:
+    manifest = json.load(_fh)
+check("GWAPF (secondary-cap trigger series) is archived across its window",
+      (manifest.get("GWAPF") or {}).get("files", 0) >= 70)
+check("RTDHS (observed HVDC corridor record) is archived across its window",
+      (manifest.get("RTDHS") or {}).get("files", 0) >= 85)
+RES_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "derived",
+                       "reserve_daily")
+res_days = sorted(n for n in os.listdir(RES_DIR) if n.startswith("RESD_"))
+check("reserve books (RTDOR) derived across the offer window",
+      len(res_days) >= 55)
+with open(os.path.join(RES_DIR, res_days[-1])) as _fh:
+    resd = json.load(_fh)
+check("newest reserve book: four commodities x three grids x 24 hours",
+      all(len(resd["hours"][g][c]) == 24
+          for g in ("luzon", "visayas", "mindanao")
+          for c in ("Fr", "Dr", "Ru", "Rd")))
+check("newest reserve book prices sit inside the published reserve cap",
+      all(0.0 <= p <= res["reserve_cap_php_kwh"] + 0.001
+          for g in resd["hours"].values() for c in g.values()
+          for h in c for p, _ in (h or [])))
+# the deriver gates RAW pooled MW against the FIRST interval's schedule
+# (like-for-like: the book is the hour's opening interval); the committed
+# book is compacted (0.1 MW rounding, slivers dropped), so ~3 MW slack
+check("newest reserve book honors the gate (book covers opening schedule)",
+      all(sum(m for _, m in (resd["hours"][g][c][h] or []))
+          >= (resd["sched_open_mw"][g][c][h] or 0) - 3.0
+          for g in ("luzon", "visayas", "mindanao")
+          for c in ("Fr", "Dr", "Ru", "Rd") for h in range(24)))
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

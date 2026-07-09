@@ -68,6 +68,19 @@ DATASETS = {
     "MPI": "mpi-advisories",
     "WAPOS": "outage-schedules-used-in-wap",
     "MRU": "list-of-must-run-units-based-on-so-dispatch-instruction-report",
+    # Added 2026-07-08 (the round-7 convergence critic enumerated the full
+    # market-data sitemap: 57 pages, the archive carried 14, and three of
+    # the unused pages falsified written boundary claims). GWAPF is the
+    # per-region generator weighted average price per 5-min interval, the
+    # series the ERC secondary cap's 72-hour rolling trigger runs on
+    # (methodology had called it unpublished); RTDHS is the per-interval
+    # HVDC schedule (flow, congestion flag, overload MW), the operator's
+    # own corridor record (methodology had called the advisory stream the
+    # only observed record). RTDOR (per-participant reserve offers) is
+    # hourly and too heavy to keep raw; pipeline/reserve_offers.py derives
+    # daily books from it, mirroring offers.py.
+    "GWAPF": "generator-weighted-average-price-final",
+    "RTDHS": "rtd-hvdc-schedules",
 }
 
 # Large datasets kept as a static SAMPLE of recent days, not the full public
@@ -262,7 +275,7 @@ def archive(keys: list[str], mode: str, sample_days: int) -> list[str]:
 # DIPCEF is a static sample by design and is exempt. A dataset older than its
 # budget means the cron has been failing silently: --check exits nonzero so
 # the workflow goes red instead.
-LAG_BUDGET_DAYS = {"LWAPF": 16, "DIPCEF": None, "RTDRS": None}
+LAG_BUDGET_DAYS = {"LWAPF": 16, "GWAPF": 16, "DIPCEF": None, "RTDRS": None}
 LAG_DEFAULT_DAYS = 4
 
 
