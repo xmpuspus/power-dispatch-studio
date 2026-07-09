@@ -3158,9 +3158,9 @@
    },
    "n_limitation_remarks": 1561,
    "limitation_causes": {
-    "leyte-cebu": 1416,
-    "hvdc": 5,
-    "other": 140
+    "leyte-cebu": 1534,
+    "hvdc": 0,
+    "other": 27
    },
    "cause_note": "The cause screen is a substring count over the free-text REMARKS column, labeled as such: a remark containing 'limitation' flags the instruction, and the corridor tallies count which named element the operator wrote (the Leyte-Cebu corridor dominates). Counts cover the DAILY files only; the operator's weekly compilations are archived beside them but not counted, or the window's days would double.",
    "src": "https://www.iemop.ph/market-data/so-dispatch-instruction-report/"

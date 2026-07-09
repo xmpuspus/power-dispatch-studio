@@ -961,11 +961,12 @@ check("the daily instruction log spans the window with the operator's "
       and sod["n_weekly_files_archived"] >= 30
       and sod["n_instructions"] > 50000 and len(sod["categories"]) >= 5)
 check("the operator names the map's marquee corridor as the dispatch "
-      "cause (the README's Leyte-Cebu remark counts)",
+      "cause (the README's Leyte-Cebu remark counts; the round-10 "
+      "matcher fix holds all spellings)",
       sod["n_limitation_remarks"] > 1000
       and sod["limitation_causes"]["leyte-cebu"] > 1000
-      and sod["limitation_causes"]["leyte-cebu"]
-      > 5 * max(sod["limitation_causes"]["hvdc"], 1))
+      and 100 * sod["limitation_causes"]["leyte-cebu"]
+      / sod["n_limitation_remarks"] >= 95.0)
 check("the discrepancy list travels with the family (newest revision "
       "per week)",
       (so.get("discrepancies") or {}).get("n_weeks", 0) >= 5

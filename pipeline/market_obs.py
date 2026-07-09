@@ -1258,9 +1258,14 @@ def build_so_instructions(fleet: dict) -> dict:
             rem = (r.get("REMARKS") or "").lower()
             if "limitation" in rem:
                 n_limit += 1
-                if "leyte-cebu" in rem:
+                # the operator writes the corridor as "Leyte-Cebu",
+                # "Leyte - Cebu", and "Leyte Cebu"; squeeze separators so
+                # all three count (the round-10 critic found 118 remarks
+                # in the unhyphenated spellings misfiled as 'other')
+                squeezed = re.sub(r"[\s-]+", "", rem)
+                if "leytecebu" in squeezed:
                     causes["leyte-cebu"] += 1
-                elif "hvdc" in rem:
+                elif "hvdc" in squeezed:
                     causes["hvdc"] += 1
                 else:
                     causes["other"] += 1

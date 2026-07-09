@@ -58,10 +58,11 @@ which units the grid's security constraints held and where
 
 The instruction log behind both closes the causal loop. Across the 90
 daily logs the System Operator's own dispatch instructions carry a remark
-citing a line limitation **1,561 times, and 1,416 of those name the
+citing a line limitation **1,561 times, and 1,534 of those name the
 Leyte-Cebu corridor** ("Advise to discharge under MOT Raise due to
 Leyte-Cebu Line Limitation"), the same corridor the constraint league
-ranks first by shadow-price days. The full out-of-merit record rides
+ranks first by shadow-price days: one corridor carries 98 percent of
+every line-limitation instruction the operator wrote down. The full out-of-merit record rides
 beside it: **89,322 MOT-raise instructions** across the window at a **55
 MW** median, where the must-run subset the methodology measured out sits
 at 5.7 (`so_instructions` in the same file; the administered-dispatch

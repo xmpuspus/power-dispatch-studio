@@ -610,8 +610,8 @@ scoped-out refinement (the 5-minute data exists in the archive), not a
 missing input.</li>
 <li><b>The rest of the public surface is triaged and named, not
 ignored</b>: the IEMOP market-data sitemap carries 58 dataset pages;
-21 now feed this archive (the 18 daily keys plus the three offer-book
-pages the derived books come from). Of the remainder, the projection
+24 now feed this archive (the 21 archive keys plus the three
+offer-book pages the derived books come from). Of the remainder, the projection
 series (hour-ahead, day-ahead, and week-ahead price and schedule
 projections) project rather than record and are out of scope for a
 replay scored on the real-time record; the Original/Raw and interim
@@ -630,9 +630,15 @@ System Operator's dispatch-instruction family (the full daily
 instruction log, the MOT-raise re-dispatch list, and its
 valid-discrepancy list) was MISSING from this triage until the
 round-9 audit named it; all three are now archived and measured
-(market_ops.json so_instructions). None of the remaining named
-features contradicts a written claim; each is a deepening of a table
-that already exists.</li>
+(market_ops.json so_instructions). Beyond IEMOP, the one forward
+input this page leans on a single-month snapshot for is the Q1
+demand baseline: the DOE Power Development Plan's demand outlook is
+the named input for a long-term demand path in the LT Plan view, a
+queued build (the DOE publishes it as report tables; the demand-side
+anchors above carry the DOE's 300 to 1,500 MW data-center range
+meanwhile). None of the remaining named features contradicts a
+written claim; each is a deepening of a table that already
+exists.</li>
 <li><b>Offer-based dispatch is NOT a boundary</b>: IEMOP publishes the
 real-time generation offers and the regional merit-order tables in the same
 public window (verified July 2026), and dispatching against them is the
