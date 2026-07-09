@@ -1153,6 +1153,206 @@ def build_security_limits(fleet: dict) -> dict:
     }
 
 
+def build_so_instructions(fleet: dict) -> dict:
+    """The System Operator's own out-of-merit dispatch record, three
+    sibling publications the round-9 audit surfaced: the weekly processed
+    MOT-raise re-dispatch list (MOTRD; same schema and cadence as the
+    must-run list, but the full record), the per-grid dispatch
+    instruction log (SODIR; dailies plus weekly compilations, dailies
+    counted) whose remarks name the cause, and the operator's own
+    valid-discrepancy list on that report (VDSODIR)."""
+    import statistics as _stats
+
+    motrd = dataset_files("MOTRD")
+    sodir = dataset_files("SODIR")
+    if not motrd or not sodir:
+        return {"available": False,
+                "note": "MOTRD/SODIR datasets absent; SO instruction "
+                        "record unavailable."}
+    rows_by_name = {p["name"]: p for p in fleet.get("plants", [])}
+    # MOTRD REGION carries the CLUZ/CVIS/CMIN codes (same trap the RTDSL
+    # review caught); cover both forms
+    grid_names = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao",
+                  "LUZON": "luzon", "VISAYAS": "visayas",
+                  "MINDANAO": "mindanao"}
+
+    # the weekly processed MOT-raise list: the full out-of-merit record
+    weeks = []
+    all_mw: list[float] = []
+    per_res: dict[str, dict] = {}
+    cats: dict[str, int] = {}
+    for path in motrd:
+        wk_rows = 0
+        wk_mw: list[float] = []
+        wk_res = set()
+        for r in rows_of(path):
+            res = (r.get("RESOURCE_NAME") or "").strip()
+            if not res:
+                continue
+            mw = f(r.get("SO_MW_INSTRUCTION"))
+            wk_rows += 1
+            wk_mw.append(mw)
+            wk_res.add(res)
+            cat = (r.get("CATEGORY") or "").strip()
+            if cat:
+                cats[cat] = cats.get(cat, 0) + 1
+            e = per_res.setdefault(res, {
+                "resource": res,
+                "grid": grid_names.get((r.get("REGION") or "").strip()),
+                "n_rows": 0, "max_mw": 0.0})
+            e["n_rows"] += 1
+            e["max_mw"] = max(e["max_mw"], mw)
+        all_mw.extend(wk_mw)
+        weeks.append({"week": day_of(path), "n_rows": wk_rows,
+                      "n_resources": len(wk_res),
+                      "median_mw": (round(_stats.median(wk_mw), 1)
+                                    if wk_mw else None),
+                      "max_mw": round(max(wk_mw), 1) if wk_mw else None})
+    top = []
+    for e in sorted(per_res.values(), key=lambda x: -x["n_rows"])[:12]:
+        fuel, _ = _resolve(e["resource"], rows_by_name)
+        top.append({**e, "max_mw": round(e["max_mw"], 1), "fuel": fuel})
+
+    # the must-run subset, measured beside it: the inertness claim is
+    # scoped to THIS series and stays true; the full record is not inert
+    mru_mw = [f(r.get("SO_MW_INSTRUCTION")) for p in dataset_files("MRU")
+              for r in rows_of(p) if (r.get("RESOURCE_NAME") or "").strip()]
+
+    # the daily per-grid instruction log: causes, named. The remarks are
+    # free text, so the cause screen is a substring count (labeled), not
+    # a grammar: "limitation" flags the remark, and the corridor tallies
+    # count which named element the operator wrote
+    n_instr = 0
+    day_set = set()
+    sodir_cats: dict[str, int] = {}
+    causes = {"leyte-cebu": 0, "hvdc": 0, "other": 0}
+    n_limit = 0
+    n_weekly = 0
+    n_daily = 0
+    import csv as _csv
+    import io as _io
+    for path in sodir:
+        # range-stamped names are the operator's WEEKLY compilations (and
+        # occasional revisions) of the dailies; counting both would double
+        # 84 of the window's 90 days (the round-9 diff review caught the
+        # inflated counts)
+        if re.search(r"\d{8}-\d{8}", os.path.basename(path)):
+            n_weekly += 1
+            continue
+        n_daily += 1
+        day_set.add(day_of(path))
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            text = fh.read()
+        # three preamble lines (operations title, report name, date range)
+        # sit above the header
+        idx = text.find("UNIT,")
+        if idx < 0:
+            continue
+        for r in _csv.DictReader(_io.StringIO(text[idx:])):
+            if not (r.get("UNIT") or "").strip():
+                continue
+            n_instr += 1
+            cat = (r.get("CATEGORY") or "").strip()
+            if cat:
+                sodir_cats[cat] = sodir_cats.get(cat, 0) + 1
+            rem = (r.get("REMARKS") or "").lower()
+            if "limitation" in rem:
+                n_limit += 1
+                if "leyte-cebu" in rem:
+                    causes["leyte-cebu"] += 1
+                elif "hvdc" in rem:
+                    causes["hvdc"] += 1
+                else:
+                    causes["other"] += 1
+
+    # the operator's own discrepancy list: newest revision per week
+    vd_by_week: dict[str, tuple[str, str]] = {}
+    for path in dataset_files("VDSODIR"):
+        name = os.path.basename(path)
+        m = re.search(r"(\d{8})-\d{8}_as_of_(\d{8})", name)
+        if not m:
+            continue
+        wk, asof = m.group(1), m.group(2)
+        if wk not in vd_by_week or asof > vd_by_week[wk][0]:
+            vd_by_week[wk] = (asof, path)
+    vd_rows = sum(
+        sum(1 for r in rows_of(p) if any((v or "").strip()
+                                         for v in r.values()))
+        for _, p in vd_by_week.values())
+
+    return {
+        "available": True,
+        "motrd": {
+            "weeks": weeks,
+            "n_rows": len(all_mw),
+            "n_resources": len(per_res),
+            "median_mw": round(_stats.median(all_mw), 1),
+            "max_mw": round(max(all_mw), 1),
+            "n_at_least_100mw": sum(1 for m in all_mw if m >= 100),
+            "categories": dict(sorted(cats.items(), key=lambda kv: -kv[1])),
+            "top": top,
+            "src": ("https://www.iemop.ph/market-data/list-of-mot-raise-"
+                    "re-dispatch-based-on-so-dispatch-instruction-report/"),
+        },
+        "mru_contrast": {
+            "mru_median_mw": (round(_stats.median(mru_mw), 1)
+                              if mru_mw else None),
+            "mru_max_mw": round(max(mru_mw), 1) if mru_mw else None,
+            "note": ("The must-run list the methodology measured as inert "
+                     "is the SUBSET; its median instruction sits at "
+                     "roughly a tenth of the full MOT-raise record's, so "
+                     "the inertness finding is scoped to must-run and "
+                     "does not extend to this layer."),
+        },
+        "sodir": {
+            "n_files": n_daily,
+            "n_weekly_files_archived": n_weekly,
+            "n_days": len(day_set),
+            "n_instructions": n_instr,
+            "categories": dict(sorted(sodir_cats.items(),
+                                      key=lambda kv: -kv[1])[:10]),
+            "n_limitation_remarks": n_limit,
+            "limitation_causes": causes,
+            "cause_note": ("The cause screen is a substring count over "
+                           "the free-text REMARKS column, labeled as "
+                           "such: a remark containing 'limitation' flags "
+                           "the instruction, and the corridor tallies "
+                           "count which named element the operator wrote "
+                           "(the Leyte-Cebu corridor dominates). Counts "
+                           "cover the DAILY files only; the operator's "
+                           "weekly compilations are archived beside them "
+                           "but not counted, or the window's days would "
+                           "double."),
+            "src": ("https://www.iemop.ph/market-data/"
+                    "so-dispatch-instruction-report/"),
+        },
+        "discrepancies": {
+            "n_weeks": len(vd_by_week),
+            "n_rows_newest_revisions": vd_rows,
+            "note": ("The operator's own valid-discrepancy list on the "
+                     "dispatch instruction report, newest revision per "
+                     "week: the data-quality flag that travels with "
+                     "anything built from this family."),
+            "src": ("https://www.iemop.ph/market-data/valid-discrepancies-"
+                    "on-so-dispatch-instruction-report/"),
+        },
+        "note": ("The System Operator's out-of-merit dispatch record, "
+                 "measured: every MOT-raise re-dispatch instruction per "
+                 "5-minute interval with its MW (weekly processed files), "
+                 "the per-grid daily instruction log with the operator's "
+                 "stated cause, and the operator's own discrepancy list. "
+                 "Consuming this record as an engine layer (an "
+                 "administered-dispatch overlay on the replay) is a named "
+                 "queued build; this block is the measured record that "
+                 "sizes it."),
+        "fuel_note": ("Fuel per resource comes from the pasa alias table "
+                      "into the DOE fleet; codes without a confident alias "
+                      "show no fuel rather than a guessed one."),
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
 def build_drivers(prices: dict, profiles: dict, pasa: dict,
                   advisories: dict, reserve_prices: dict) -> dict:
     """The per-day drivers timeline: what moved prices, joined from the

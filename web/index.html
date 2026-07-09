@@ -429,13 +429,20 @@ function sideChoke(){
     `<tr><td>${esc(r.resource)}</td><td>${esc(r.fuel || "?")}</td>
      <td class="num">${fmt(r.n_intervals)}</td>
      <td class="num">${fmt(r.mean_price_php_kwh, 2)}</td></tr>`).join("");
+  const SO = ((D["market_ops.json"] || {}).so_instructions) || {};
+  const lcN = (((SO.sodir || {}).limitation_causes) || {})["leyte-cebu"];
+  const soLine = lcN ? `<div class="note">The operator names the cause in
+  its own dispatch instructions: ${fmt(lcN)} instruction remarks in this
+  window cite the Leyte-Cebu line limitation (SO dispatch instruction
+  report; parsed as a labeled substring screen).</div>` : "";
   const coBlock = coRows ? `<p class="sub">The same story with unit names:
   the generators the operator's own constrained-on list says network or
   security constraints forced to run out of merit (PSM files, administered
   prices, published about two weeks behind). Top by 5-minute intervals
   across the window:</p>
   <table><thead><tr><th>Unit</th><th>Fuel</th><th>Intervals</th>
-  <th>Mean P/kWh</th></tr></thead><tbody>${coRows}</tbody></table>` : "";
+  <th>Mean P/kWh</th></tr></thead><tbody>${coRows}</tbody></table>
+  ${soLine}` : "";
   const league = (C.league || []).slice(0, 10);
   let rows = league.map(e =>
     `<tr><td>${esc(e.equipment)}</td><td>${esc(e.station)}</td>

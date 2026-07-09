@@ -720,7 +720,8 @@ check("every market_ops section carries the analytics disclaimer", all(
                                 mo["reserve_validation"],
                                 mo["flow_record"], mo["gwap_trigger"],
                                 mo["constrained_on"],
-                                mo["security_limits"]))
+                                mo["security_limits"],
+                                mo["so_instructions"]))
     and "disclaimer" in drv)
 no = mo["not_offered"]
 check("the not-offered screen is baked, bounded, and self-disclaiming",
@@ -939,6 +940,38 @@ check("security-limit resources resolve to a grid (RTDSL region codes "
       "mapped, the round-8 review's dead-field catch)",
       all(r["grid"] in ("luzon", "visayas", "mindanao")
           for r in sl["top"]))
+
+# --- round-9 consumption: the SO dispatch-instruction family ---
+so = mo.get("so_instructions") or {}
+mot = so.get("motrd") or {}
+check("MOT-raise record baked across its weekly window",
+      so.get("available") and len(mot["weeks"]) >= 10
+      and mot["n_rows"] > 50000 and mot["n_resources"] >= 100)
+check("the full out-of-merit record is not inert (median several times "
+      "the must-run subset's, the rescoped boundary)",
+      mot["median_mw"] >= 5 * (so["mru_contrast"]["mru_median_mw"] or 1)
+      and mot["max_mw"] > (so["mru_contrast"]["mru_max_mw"] or 0))
+check("MOT-raise resources resolve to a grid (REGION codes mapped)",
+      all(r["grid"] in ("luzon", "visayas", "mindanao")
+          for r in mot["top"]))
+sod = so.get("sodir") or {}
+check("the daily instruction log spans the window with the operator's "
+      "own categories (weekly compilations archived, never counted)",
+      sod["n_files"] >= 260 and sod["n_days"] >= 85
+      and sod["n_weekly_files_archived"] >= 30
+      and sod["n_instructions"] > 50000 and len(sod["categories"]) >= 5)
+check("the operator names the map's marquee corridor as the dispatch "
+      "cause (the README's Leyte-Cebu remark counts)",
+      sod["n_limitation_remarks"] > 1000
+      and sod["limitation_causes"]["leyte-cebu"] > 1000
+      and sod["limitation_causes"]["leyte-cebu"]
+      > 5 * max(sod["limitation_causes"]["hvdc"], 1))
+check("the discrepancy list travels with the family (newest revision "
+      "per week)",
+      (so.get("discrepancies") or {}).get("n_weeks", 0) >= 5
+      and so["discrepancies"]["n_rows_newest_revisions"] > 0)
+check("the administered-dispatch overlay stays a named queued build",
+      "queued" in (so.get("note") or ""))
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

@@ -2949,6 +2949,232 @@
   "src": "https://www.iemop.ph/market-data/security-limits-used-in-rtd/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
+ "so_instructions": {
+  "available": true,
+  "motrd": {
+   "weeks": [
+    {
+     "week": "2026-04-13",
+     "n_rows": 0,
+     "n_resources": 0,
+     "median_mw": null,
+     "max_mw": null
+    },
+    {
+     "week": "2026-04-20",
+     "n_rows": 0,
+     "n_resources": 0,
+     "median_mw": null,
+     "max_mw": null
+    },
+    {
+     "week": "2026-04-27",
+     "n_rows": 2055,
+     "n_resources": 18,
+     "median_mw": 90.0,
+     "max_mw": 135.0
+    },
+    {
+     "week": "2026-05-04",
+     "n_rows": 6862,
+     "n_resources": 73,
+     "median_mw": 101.0,
+     "max_mw": 600.0
+    },
+    {
+     "week": "2026-05-11",
+     "n_rows": 10080,
+     "n_resources": 127,
+     "median_mw": 50.0,
+     "max_mw": 668.0
+    },
+    {
+     "week": "2026-05-18",
+     "n_rows": 8122,
+     "n_resources": 80,
+     "median_mw": 55.0,
+     "max_mw": 600.0
+    },
+    {
+     "week": "2026-05-25",
+     "n_rows": 9544,
+     "n_resources": 109,
+     "median_mw": 95.0,
+     "max_mw": 668.0
+    },
+    {
+     "week": "2026-06-01",
+     "n_rows": 9198,
+     "n_resources": 91,
+     "median_mw": 80.0,
+     "max_mw": 668.0
+    },
+    {
+     "week": "2026-06-08",
+     "n_rows": 12570,
+     "n_resources": 95,
+     "median_mw": 30.0,
+     "max_mw": 668.0
+    },
+    {
+     "week": "2026-06-15",
+     "n_rows": 12937,
+     "n_resources": 106,
+     "median_mw": 40.0,
+     "max_mw": 668.0
+    },
+    {
+     "week": "2026-06-22",
+     "n_rows": 10863,
+     "n_resources": 107,
+     "median_mw": 10.0,
+     "max_mw": 600.0
+    },
+    {
+     "week": "2026-06-29",
+     "n_rows": 7091,
+     "n_resources": 78,
+     "median_mw": 70.0,
+     "max_mw": 608.0
+    }
+   ],
+   "n_rows": 89322,
+   "n_resources": 192,
+   "median_mw": 55.0,
+   "max_mw": 668.0,
+   "n_at_least_100mw": 29474,
+   "categories": {
+    "MOT RAISE": 89322
+   },
+   "top": [
+    {
+     "resource": "10GNPK_U04",
+     "grid": "mindanao",
+     "n_rows": 6314,
+     "max_mw": 138.0,
+     "fuel": "coal"
+    },
+    {
+     "resource": "10GNPK_U03",
+     "grid": "mindanao",
+     "n_rows": 6289,
+     "max_mw": 138.0,
+     "fuel": "coal"
+    },
+    {
+     "resource": "10GNPK_U01",
+     "grid": "mindanao",
+     "n_rows": 5740,
+     "max_mw": 138.0,
+     "fuel": "coal"
+    },
+    {
+     "resource": "10GNPK_U02",
+     "grid": "mindanao",
+     "n_rows": 4522,
+     "max_mw": 125.0,
+     "fuel": "coal"
+    },
+    {
+     "resource": "07BIDPP_G01",
+     "grid": "visayas",
+     "n_rows": 3290,
+     "max_mw": 71.9,
+     "fuel": "oil"
+    },
+    {
+     "resource": "08STBPB1_U02",
+     "grid": "visayas",
+     "n_rows": 2012,
+     "max_mw": 6.0,
+     "fuel": null
+    },
+    {
+     "resource": "08STBPB1_U01",
+     "grid": "visayas",
+     "n_rows": 2008,
+     "max_mw": 6.0,
+     "fuel": null
+    },
+    {
+     "resource": "05CEDC_U03",
+     "grid": "visayas",
+     "n_rows": 1995,
+     "max_mw": 90.0,
+     "fuel": "coal"
+    },
+    {
+     "resource": "08STBPB1_U04",
+     "grid": "visayas",
+     "n_rows": 1987,
+     "max_mw": 6.0,
+     "fuel": null
+    },
+    {
+     "resource": "14PKPSOC_G01",
+     "grid": "mindanao",
+     "n_rows": 1899,
+     "max_mw": 51.0,
+     "fuel": null
+    },
+    {
+     "resource": "05CEDC_U02",
+     "grid": "visayas",
+     "n_rows": 1875,
+     "max_mw": 90.0,
+     "fuel": "coal"
+    },
+    {
+     "resource": "05CEDC_U01",
+     "grid": "visayas",
+     "n_rows": 1859,
+     "max_mw": 90.0,
+     "fuel": "coal"
+    }
+   ],
+   "src": "https://www.iemop.ph/market-data/list-of-mot-raise-re-dispatch-based-on-so-dispatch-instruction-report/"
+  },
+  "mru_contrast": {
+   "mru_median_mw": 5.7,
+   "mru_max_mw": 83.7,
+   "note": "The must-run list the methodology measured as inert is the SUBSET; its median instruction sits at roughly a tenth of the full MOT-raise record's, so the inertness finding is scoped to must-run and does not extend to this layer."
+  },
+  "sodir": {
+   "n_files": 270,
+   "n_weekly_files_archived": 36,
+   "n_days": 90,
+   "n_instructions": 55314,
+   "categories": {
+    "RTD": 15252,
+    "MARKET INTERVENTION/SUSPENSION": 11798,
+    "CONTINGENCY RESERVE": 6838,
+    "MOT RAISE": 6219,
+    "MOT LOWER": 4471,
+    "DISPATCHABLE RESERVE": 4133,
+    "REGULATING RESERVE": 1647,
+    "GENERATOR START-UP": 1413,
+    "GENERATOR SHUTDOWN": 1122,
+    "GENERATOR PROBLEM/TROUBLE/TRIPPING": 912
+   },
+   "n_limitation_remarks": 1561,
+   "limitation_causes": {
+    "leyte-cebu": 1416,
+    "hvdc": 5,
+    "other": 140
+   },
+   "cause_note": "The cause screen is a substring count over the free-text REMARKS column, labeled as such: a remark containing 'limitation' flags the instruction, and the corridor tallies count which named element the operator wrote (the Leyte-Cebu corridor dominates). Counts cover the DAILY files only; the operator's weekly compilations are archived beside them but not counted, or the window's days would double.",
+   "src": "https://www.iemop.ph/market-data/so-dispatch-instruction-report/"
+  },
+  "discrepancies": {
+   "n_weeks": 8,
+   "n_rows_newest_revisions": 3008,
+   "note": "The operator's own valid-discrepancy list on the dispatch instruction report, newest revision per week: the data-quality flag that travels with anything built from this family.",
+   "src": "https://www.iemop.ph/market-data/valid-discrepancies-on-so-dispatch-instruction-report/"
+  },
+  "note": "The System Operator's out-of-merit dispatch record, measured: every MOT-raise re-dispatch instruction per 5-minute interval with its MW (weekly processed files), the per-grid daily instruction log with the operator's stated cause, and the operator's own discrepancy list. Consuming this record as an engine layer (an administered-dispatch overlay on the replay) is a named queued build; this block is the measured record that sizes it.",
+  "fuel_note": "Fuel per resource comes from the pasa alias table into the DOE fleet; codes without a confident alias show no fuel rather than a guessed one.",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
  "advisories": {
   "available": true,
   "days": [
