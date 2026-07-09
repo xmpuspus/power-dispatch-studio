@@ -275,7 +275,12 @@ def archive(keys: list[str], mode: str, sample_days: int) -> list[str]:
 # DIPCEF is a static sample by design and is exempt. A dataset older than its
 # budget means the cron has been failing silently: --check exits nonzero so
 # the workflow goes red instead.
-LAG_BUDGET_DAYS = {"LWAPF": 16, "GWAPF": 16, "DIPCEF": None, "RTDRS": None}
+# MRU is a WEEKLY processed report (12 files across the 90-day window),
+# so its budget is a week of cadence plus a week of publication lag; the
+# 4-day default tripped the gate on 2026-07-08 with the source itself
+# simply between weekly prints.
+LAG_BUDGET_DAYS = {"LWAPF": 16, "GWAPF": 16, "MRU": 14,
+                   "DIPCEF": None, "RTDRS": None}
 LAG_DEFAULT_DAYS = 4
 
 
