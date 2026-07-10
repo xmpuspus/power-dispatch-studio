@@ -93,7 +93,8 @@
   "2026-07-06",
   "2026-07-07",
   "2026-07-08",
-  "2026-07-09"
+  "2026-07-09",
+  "2026-07-10"
  ],
  "series": {
   "luzon": [
@@ -754,6 +755,13 @@
     "curtailed_mwh": 14.1,
     "reserve_slack_min_mw": -76.2,
     "reserve_shortfall_intervals": 39
+   },
+   {
+    "date": "2026-07-10",
+    "load_bid_peak_mw": 466.0,
+    "curtailed_mwh": 2.97,
+    "reserve_slack_min_mw": -115.0,
+    "reserve_shortfall_intervals": 34
    }
   ],
   "visayas": [
@@ -1414,6 +1422,13 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": -60.9,
     "reserve_shortfall_intervals": 19
+   },
+   {
+    "date": "2026-07-10",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": -44.6,
+    "reserve_shortfall_intervals": 3
    }
   ],
   "mindanao": [
@@ -2074,14 +2089,21 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": 0.0,
     "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-07-10",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
    }
   ]
  },
  "totals": {
   "luzon": {
-   "days": 94,
-   "curtailment_days": 46,
-   "curtailed_mwh_total": 1128.3,
+   "days": 95,
+   "curtailment_days": 47,
+   "curtailed_mwh_total": 1131.3,
    "worst_curtailment": {
     "date": "2026-05-11",
     "load_bid_peak_mw": 475.0,
@@ -2089,11 +2111,11 @@
     "reserve_slack_min_mw": -8.7,
     "reserve_shortfall_intervals": 1
    },
-   "reserve_shortfall_days": 58,
-   "median_daily_min_reserve_slack_mw": -18.6
+   "reserve_shortfall_days": 59,
+   "median_daily_min_reserve_slack_mw": -18.7
   },
   "visayas": {
-   "days": 94,
+   "days": 95,
    "curtailment_days": 36,
    "curtailed_mwh_total": 2813.7,
    "worst_curtailment": {
@@ -2103,11 +2125,11 @@
     "reserve_slack_min_mw": -93.0,
     "reserve_shortfall_intervals": 168
    },
-   "reserve_shortfall_days": 61,
-   "median_daily_min_reserve_slack_mw": -50.2
+   "reserve_shortfall_days": 62,
+   "median_daily_min_reserve_slack_mw": -44.6
   },
   "mindanao": {
-   "days": 94,
+   "days": 95,
    "curtailment_days": 14,
    "curtailed_mwh_total": 445.8,
    "worst_curtailment": {

@@ -1,20 +1,20 @@
 {
  "window": {
   "from": "2026-04-07",
-  "to": "2026-07-09"
+  "to": "2026-07-10"
  },
  "q1": {
   "title": "Can the grid handle more data centers? Is there supply?",
   "verdict": "Only with new firm supply: the announced wave is the size of the margin.",
   "stat": "1,500 MW forecast by 2028 vs a 3,629 MW May 2026 system margin",
-  "blurb": "DICT's 2028 forecast alone equals 41% of the whole system's May margin, and Meralco has committed 1,000 MW for 10 data centers. A data center is near-flat 24/7 load. The operator's own dispatch schedules recorded load curtailed on 96 grid-day(s) in this archive window (4,387.8 MWh). Headroom for a wave this size means new firm supply, not spare change.",
+  "blurb": "DICT's 2028 forecast alone equals 41% of the whole system's May margin, and Meralco has committed 1,000 MW for 10 data centers. A data center is near-flat 24/7 load. The operator's own dispatch schedules recorded load curtailed on 97 grid-day(s) in this archive window (4,390.8 MWh). Headroom for a wave this size means new firm supply, not spare change.",
   "src": "IEMOP May 2026 report; PCIJ (Meralco commitment); DICT forecast via BusinessWorld; IEMOP RTD regional summaries"
  },
  "q2": {
   "title": "Is the infrastructure ready? Where would they have to sit?",
   "verdict": "The choke points are named, public, and already binding; siting that ignores them inherits them.",
-  "stat": "85 pieces of equipment hit limits across the real-time and day-ahead runs on 94 archive days; the Leyte-Luzon HVDC ran at max or offline 69% of Dec 2025",
-  "blurb": "The inter-island links and named 230 kV corridors already bind routinely; the table lists the receipts by equipment name. Nearly every announced data-center megawatt sits in the Luzon load pocket, on the importing side of those links. One Sual unit (647 MW) equals 18% of the May system margin, which is why a single trip moves the whole grid. Luzon scheduled reserves fell below the stated requirement in at least one 5-minute interval on 58 of the window's days.",
+  "stat": "85 pieces of equipment hit limits across the real-time and day-ahead runs on 95 archive days; the Leyte-Luzon HVDC ran at max or offline 69% of Dec 2025",
+  "blurb": "The inter-island links and named 230 kV corridors already bind routinely; the table lists the receipts by equipment name. Nearly every announced data-center megawatt sits in the Luzon load pocket, on the importing side of those links. One Sual unit (647 MW) equals 18% of the May system margin, which is why a single trip moves the whole grid. Luzon scheduled reserves fell below the stated requirement in at least one 5-minute interval on 59 of the window's days.",
   "src": "IEMOP congestions-manifesting files; IEMOP Dec 2025 report; IEMOP outage schedules"
  },
  "q3": {
