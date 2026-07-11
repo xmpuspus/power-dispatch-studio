@@ -10,6 +10,7 @@ import type {
   Pasa,
   Profiles,
   Projects,
+  DemandPath,
   Reserve,
 } from './types'
 
@@ -70,6 +71,7 @@ export const useProfiles = () => useJson<Profiles>('profiles.json')
 export const useFleet = () => useJson<Fleet>('fleet.json')
 export const usePasa = () => useJson<Pasa>('pasa.json')
 export const useProjects = () => useJson<Projects>('projects.json')
+export const useDemandPath = () => useJson<DemandPath>('demand_path.json')
 export const useEmissions = () => useJson<Emissions>('emissions.json')
 
 export interface FeatureCollection<P> {

@@ -603,6 +603,25 @@ check("every plant has a known fuel and positive installed MW", all(
 check("plant ids are unique per grid", len({(p["grid"], p["name"])
                                             for p in plants}) == len(plants))
 
+# --- Pass D: the DOE PDP demand path (LT Plan demand trajectory) -----------------
+dpath = load("demand_path.json")
+check("DOE PDP demand path baked: per-grid peak forecast, labeled DOE owner",
+      dpath.get("available") and dpath["owner"] == "DOE"
+      and "2023-2050" in dpath["plan"] and len(dpath["years"]) >= 25)
+check("every PDP year reconciles: the three grids sum to the plan's own "
+      "Philippines total within 2 MW (the parse gate held)",
+      all(abs(dpath["per_grid_mw"]["luzon"][i]
+              + dpath["per_grid_mw"]["visayas"][i]
+              + dpath["per_grid_mw"]["mindanao"][i]
+              - dpath["philippines_mw"][i]) <= 2
+          for i in range(len(dpath["years"]))))
+check("the demand path is a monotone growing forecast at the DOE's stated "
+      "~5 percent CAGR, labeled forecast not measurement",
+      dpath["philippines_mw"] == sorted(dpath["philippines_mw"])
+      and 4.5 <= dpath["cagr_2025_2050_pct"] <= 6.0
+      and dpath["actual_years"] == [2021, 2022]
+      and dpath["forecast_from_year"] == 2023)
+
 # --- LT Plan: DOE project lists + TDP corridors (PLEXOS carry-over pass) ---------
 pj = load("projects.json")
 check("projects available with the 2025-12-31 edition",

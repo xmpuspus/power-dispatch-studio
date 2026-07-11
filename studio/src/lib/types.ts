@@ -530,6 +530,20 @@ export interface TdpCorridor {
   src: string
 }
 
+export interface DemandPath {
+  available: boolean
+  owner?: string
+  plan?: string
+  unit?: string
+  years?: number[]
+  per_grid_mw?: Record<'luzon' | 'visayas' | 'mindanao', number[]>
+  philippines_mw?: number[]
+  forecast_from_year?: number
+  cagr_2025_2050_pct?: number | null
+  note?: string
+  src?: string
+}
+
 export interface Projects {
   available: boolean
   as_of?: string

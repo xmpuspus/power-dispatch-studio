@@ -6,7 +6,7 @@
 
 import { useMemo, useState } from 'react'
 import type { GridKey, TdpCorridor } from '../lib/types'
-import { num, php, fuelLabel, useProjects } from '../lib/data'
+import { num, php, fuelLabel, useProjects, useDemandPath } from '../lib/data'
 import { Panel, StatTile, Chip, Segmented, Source, EmptyNote } from '../ui/kit'
 import { DataGrid, type Column } from '../ui/DataGrid'
 import { addsAtHorizon, type GridFuelAdd } from './insights'
@@ -107,6 +107,7 @@ export function LTPlanView({
 
   return (
     <div className="view">
+      <DemandPathPanel />
       <p className="scn__lede">
         The DOE tracks every private-sector power project by grid, fuel, MW, and the
         proponent's target date: committed (permitted and financed) and indicative
@@ -209,5 +210,103 @@ export function LTPlanView({
         read against the announced data-center wave in the Load sweep view.
       </p>
     </div>
+  )
+}
+
+type MRow = {
+  year: number
+  luzon?: number
+  visayas?: number
+  mindanao?: number
+  ph?: number
+}
+
+/** The DOE PDP 2023-2050 peak-demand forecast, the demand trajectory the
+ * supply pipeline below has to serve. A labeled DOE forecast, not this site's
+ * projection. */
+function DemandPathPanel() {
+  const dp = useDemandPath()
+  if (dp.loading || !dp.data?.available) return null
+  const d = dp.data
+  const years = d.years ?? []
+  const idx = (y: number) => years.indexOf(y)
+  const ph = d.philippines_mw ?? []
+  const pg = d.per_grid_mw
+  const fmt = (v?: number) => (v == null ? 'n/a' : num(v))
+  const rows: MRow[] = [2025, 2030, 2040, 2050]
+    .filter((y) => idx(y) >= 0)
+    .map((y) => ({
+      year: y,
+      luzon: pg?.luzon?.[idx(y)],
+      visayas: pg?.visayas?.[idx(y)],
+      mindanao: pg?.mindanao?.[idx(y)],
+      ph: ph[idx(y)],
+    }))
+  const cols: Column<MRow>[] = [
+    { key: 'year', header: 'Year', render: (r) => String(r.year) },
+    {
+      key: 'luzon',
+      header: 'Luzon',
+      align: 'right',
+      mono: true,
+      render: (r) => fmt(r.luzon),
+    },
+    {
+      key: 'visayas',
+      header: 'Visayas',
+      align: 'right',
+      mono: true,
+      render: (r) => fmt(r.visayas),
+    },
+    {
+      key: 'mindanao',
+      header: 'Mindanao',
+      align: 'right',
+      mono: true,
+      render: (r) => fmt(r.mindanao),
+    },
+    {
+      key: 'ph',
+      header: 'Philippines',
+      align: 'right',
+      mono: true,
+      render: (r) => fmt(r.ph),
+    },
+  ]
+  return (
+    <Panel
+      title="System peak demand path (DOE forecast)"
+      subtitle={`The ${d.plan} peak-demand forecast, per grid in MW, that the build pipeline below has to serve. A labeled ${d.owner} forecast (the plan's Table 28), not this site's projection; national peak grows about ${d.cagr_2025_2050_pct} percent a year to ${fmt(ph[idx(2050)])} MW by 2050. The data-center anchors sit on top of this baseline growth.`}
+      right={<Source href={d.src} label="DOE PDP" />}
+    >
+      <div className="stat-row">
+        <StatTile
+          label="National peak, 2025"
+          value={fmt(ph[idx(2025)])}
+          unit="MW"
+          hint={`${d.owner} PDP forecast`}
+        />
+        <StatTile
+          label="2030"
+          value={fmt(ph[idx(2030)])}
+          unit="MW"
+          hint="reference scenario"
+        />
+        <StatTile
+          label="2040"
+          value={fmt(ph[idx(2040)])}
+          unit="MW"
+          hint="reference scenario"
+        />
+        <StatTile
+          label="2050"
+          value={fmt(ph[idx(2050)])}
+          unit="MW"
+          hint="end of horizon"
+        />
+      </div>
+      <DataGrid columns={cols} rows={rows} getKey={(r) => String(r.year)} />
+      <p className="note">{d.note}</p>
+    </Panel>
   )
 }

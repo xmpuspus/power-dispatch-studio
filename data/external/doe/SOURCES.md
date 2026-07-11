@@ -19,3 +19,21 @@ not reconcile to the PDF's own per-fuel subtotals.
 Earlier session note: a Wikipedia-derived sample (`doe_plants.csv`) was
 retrieved as a fallback before these captures were located; it was removed as
 superseded (Wikipedia is not a primary source for this project).
+
+## DOE Power Development Plan 2023-2050 (peak demand forecast)
+
+Primary source: Department of Energy (Philippines), "Power Development Plan
+2023-2050", Table 28 "Peak Demand Forecast (2021-2050) in MW", per grid
+(Luzon, Visayas, Mindanao, Philippines). doe.gov.ph returns 403 to non-PH
+requests, so the file is the Internet Archive's capture of the DOE's own URL.
+
+| File | As of | DOE URL | Wayback capture |
+|---|---|---|---|
+| pdp_2023-2050.txt | PDP 2023-2050 | doe.gov.ph/sites/default/files/pdf/electric_power/development_plans/Power%20Development%20Plan%202023-2050.pdf | https://web.archive.org/web/20250423153601/https://doe.gov.ph/sites/default/files/pdf/electric_power/development_plans/Power%20Development%20Plan%202023-2050.pdf |
+
+Only the `pdftotext -layout` extraction is committed (the 4 MB PDF is
+re-fetchable from the pinned Wayback capture above). `pipeline/pdp_demand.py`
+parses Table 28 into `web/data/demand_path.json` and refuses any year whose
+three grid values do not reconcile to the plan's own Philippines total within
+2 MW. Forecasts are labeled owner=DOE with the plan and horizon; the 2021 and
+2022 rows are the plan's stated actuals.

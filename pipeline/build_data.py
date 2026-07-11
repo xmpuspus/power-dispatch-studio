@@ -811,6 +811,12 @@ def main() -> int:
     with open(os.path.join(OUT, "projects.json"), "w") as fh:
         json.dump(build_projects(), fh, indent=1)
 
+    # LT Plan demand path: the DOE PDP 2023-2050 peak-demand forecast per grid
+    from pdp_demand import build_demand_path
+
+    with open(os.path.join(OUT, "demand_path.json"), "w") as fh:
+        json.dump(build_demand_path(), fh, indent=1)
+
     # PASA layer: scheduled outages from OUTRTD, mapped to fleet MW
     from pasa import build_pasa
 

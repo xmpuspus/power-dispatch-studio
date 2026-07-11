@@ -703,13 +703,19 @@ The System Operator's dispatch-instruction family (the full daily
 instruction log, the MOT-raise re-dispatch list, and its
 valid-discrepancy list) was MISSING from this triage until the
 round-9 audit named it; all three are now archived and measured
-(market_ops.json so_instructions). Beyond IEMOP, the one forward
-input this page leans on a single-month snapshot for is the Q1
-demand baseline: the DOE Power Development Plan's demand outlook is
-the named input for a long-term demand path in the LT Plan view, a
-queued build (the DOE publishes it as report tables; the demand-side
-anchors above carry the DOE's 300 to 1,500 MW data-center range
-meanwhile). None of the remaining named features contradicts a
+(market_ops.json so_instructions). Beyond IEMOP, the long-term
+demand outlook is now consumed: the DOE Power Development Plan
+2023-2050's peak-demand forecast (its Table 28, per grid, 2021-2050)
+is parsed into a demand path in the LT Plan view (demand_path.json,
+pipeline/pdp_demand.py), each year's three grid values reconciled to
+the plan's own Philippines total within 2 MW or the build refuses. It
+is a LABELED DOE forecast, not this site's projection: national peak
+grows about 5.3 percent a year from 19,003 MW in 2025 to 68,483 MW in
+2050, and the demand-side data-center anchors (DICT, DOE, Meralco)
+sit on top of that baseline growth. The DOE PDF 403s non-PH requests,
+so the source is the Internet Archive's capture of the DOE's own URL
+(the pdftotext extraction committed for a reproducible parse, like
+the plant lists). None of the remaining named features contradicts a
 written claim; each is a deepening of a table that already
 exists.</li>
 <li><b>Offer-based dispatch is NOT a boundary, and it shipped</b>:
