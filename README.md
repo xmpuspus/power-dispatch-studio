@@ -7,8 +7,14 @@ receipts), where the announced data-center megawatts land, and what the spot mar
 and the Meralco bill are doing. The studio replays market days two ways, on a
 calibrated cost stack and on the operator's own published offer books, so the
 offer premium in the wholesale price is a measured series, not a guess. Inputs,
-method, and every number are open and reproducible from a clean clone. Formerly
-gridbill-ph.
+method, and every number are open and reproducible from a clean clone.
+
+It is **free**, runs entirely in your browser with no license and no install,
+and every input traces to a public source. Think of it as a small, open answer
+to the commercial production-cost tools like PLEXOS: not a replacement for a
+licensed planning suite, but enough to actually model and validate the what-ifs
+that matter here, new data centers, choke points, and the price swings they
+drive, against the real Philippine market. Formerly gridbill-ph.
 
 [![CI](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml)
 [![License: MIT (code) / CC-BY-4.0 (data)](https://img.shields.io/badge/license-MIT%20%2F%20CC--BY--4.0-blue.svg)](LICENSE)
@@ -338,6 +344,30 @@ flow data showed the engine was right (a Manila data center saturates the link
 by *importing* cheap Visayas power; a gigawatt of solar cuts fuel and emissions
 but leaves the 7pm peak untouched), and the dated 935 MW outage backcast lands
 at 87.8%. Full scorecard in [studio/README.md](studio/README.md).
+
+## Does the model check out?
+
+Yes, and the check runs against the operator's own published prices, not a
+synthetic benchmark. The studio replays every full-coverage market day and
+scores the clear two ways. The simple cost model is a floor: it clears near the
+**P6 coal baseline** and under-prices scarcity, so read its levels as a lower
+bound. Replay the operator's own offer book instead and the model tracks the
+real price shape hour by hour, reaching **0.73 to 0.87 correlation** with
+observed prices across the quarter and **88 to 99 percent** of the inter-island
+flow direction. A dated event closes it: the **935 MW** Visayas outage of July 1
+reproduces **87.8 percent** of the observed island price gap, with the
+constraint kept out of the calibration. The gap between the cost floor and the
+offer-book replay is not hidden; it is itself a measured series, the offer
+premium the market bids over cost.
+
+![The backcast trust clip: on the widest-swing observed day the cost model clears flat at the P6 floor while the observed price spikes, then the engine toggles to the operator's own offer book and the modeled lines track the observed evening ramp hour by hour, then the whole-window backcast table shows the per-grid error stated with nothing tuned](docs/backcast-proof.gif)
+
+Every number here recomputes from the current archive each morning: a backtest
+that keeps scoring itself against yesterday's actual prices, not a one-time
+result frozen in a slide. Full per-grid accuracy tables for both engines, plus
+the corridor-flow scores, are in [studio/README.md](studio/README.md). It is a
+calibrated congestion-and-siting model, not a price forecaster, and it never
+claims to predict prices or brownouts.
 
 ## The studio
 
