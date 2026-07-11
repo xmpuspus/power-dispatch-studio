@@ -166,7 +166,7 @@ def derive() -> dict:
                  f"percent) with about a fifth on gas ({fuel_mix.get('natural_gas')} "
                  f"percent), and coal is the modeled marginal fuel on {coal_pct} "
                  "percent of the raise hours; every raise hour already prices at "
-                 f"or just above coal's floor (max {round(max_price, 2)} PhP/kWh "
+                 f"or just above coal's floor (max P{round(max_price, 2)}/kWh "
                  "across all raise hours), so a per-fuel coal floor cannot lift "
                  "a price coal already sets, and the only move it could make is "
                  "downward (coal displacing water), which does not add the "

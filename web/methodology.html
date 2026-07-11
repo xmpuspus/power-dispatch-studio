@@ -46,7 +46,7 @@ shortfalls computed from the archived real-time regional summaries.</li>
 public "congestions manifesting" files; the two HVDC inter-island links and three
 named AC corridors from primary reports; Sual unit-trip arithmetic against the
 published margin; Sual outage days read from archived outage schedules.</li>
-<li><b>Prices.</b> Each day's average of the load-weighted five-minute prices per
+<li><b>Prices.</b> Each day's average of the load-weighted 5-minute prices per
 grid from archived LWAP files, split into the administered (pre-resumption) and
 market regimes; regional spreads; the WESM-to-Meralco pass-through from the June
 2026 advisory.</li>
@@ -68,8 +68,8 @@ via <code>wp-admin/admin-ajax.php</code> (action
 <a href="https://www.iemop.ph/market-data/congestions-manifesting-in-dap/">DAP</a></td>
 <td>The constraint league: named equipment and station, ranked by days at a limit
 (a day counts once, so a day-ahead re-run cannot inflate it). Real-time (RTD)
-five-minute intervals and day-ahead (DAP) hourly rows are kept in separate columns,
-because the day-ahead market re-prices through the day and its raw row count
+5-minute intervals and day-ahead (DAP) hourly rows are kept in separate columns,
+because the day-ahead projection re-prices through the day and its raw row count
 measures re-run persistence, not time at the limit. Plus max overload MW and the
 per-corridor receipts joined onto the Leyte-Cebu line.</td></tr>
 <tr><td>RTD Regional Summaries (daily CSV; CLUZ/CVIS/CMIN; En/Dr/Fr/Ru/Rd)</td>
@@ -626,8 +626,8 @@ Where the requirement is met, the marginal Dr offer cleared to the
 scheduled quantity reproduces RSVPR to within about a centavo, so the
 offer stack already explains those hours (the pooled replay scores
 them). Where it clears short, the official price sits above the ENTIRE
-offer stack, an administered reserve-scarcity value (up to about 25
-PhP/kWh over the marginal offer on the sample) that the public offers
+offer stack, an administered reserve-scarcity value (up to about P25/kWh
+over the marginal offer on the sample) that the public offers
 cannot explain, and a joint LP that forces the full requirement goes
 infeasible on exactly those hours, as the real market could not meet it
 either. So the wedge is administered reserve scarcity on the
@@ -674,7 +674,7 @@ model's per-fuel block engines: the raised MW is mostly coal (about
 two thirds) with roughly a fifth on gas, and coal is already the
 modeled marginal fuel on about 90 percent of the raise hours. Every
 raise hour already prices at or just above coal's administered floor
-(the modeled price tops out at 6.04 PhP/kWh across all of them), so a
+(the modeled price tops out at P6.04/kWh across all of them), so a
 per-fuel administered floor (the form a raise takes once the named
 units are aggregated to their fuel) cannot lift a price coal already
 sets; the only move it could make is downward, coal displacing water,
@@ -705,7 +705,7 @@ picture is sharper than a clean resolution refinement: the crossing is a
 KNIFE-EDGE. On the crossing days the offer book's floor-priced supply
 comes within 0.54 to 2.3 percent of native load at the midday solar
 peak, and the observed regional load-weighted price does cross negative
-on five of the six closest days (down to about -10 PhP/kWh). But it
+on five of the six closest days (down to about -P10/kWh). But it
 splits into two boundaries, neither of which a per-grid 5-minute replay
 closes. The near-zero band is a true knife-edge: the offer book clears
 at exactly zero over a wide MW range, and its own 48-block compaction
@@ -713,7 +713,7 @@ moves about 4 percent of the floor-priced supply across the zero line,
 wider than the 0.5 percent margin, so whether a shallow interval reads
 -0.001 or +0.001 turns on supply accounting finer than the offers give.
 The DEEP negatives are not an aggregate crossing at all: at the day's
-most negative interval the observed price is about -10 PhP/kWh while
+most negative interval the observed price is about -P10/kWh while
 physical native load (9,870 MW) sits ABOVE the entire aggregate
 floor-priced supply (9,833 MW), so the per-grid clear must price
 positive there. That -10 is a load-weighted average of nodal prices

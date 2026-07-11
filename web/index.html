@@ -327,7 +327,7 @@ function addLayers(){
     if (r){
       receiptLine = `<br><b>Archive receipts:</b> at a limit on ${fmt(r.days)} of ` +
         `the window's days` +
-        (r.rtd_intervals ? `, including ${fmt(r.rtd_intervals)} five-minute ` +
+        (r.rtd_intervals ? `, including ${fmt(r.rtd_intervals)} 5-minute ` +
           `real-time intervals on ${fmt(r.rtd_days)} days` : "") + ".";
       if (r.matched_equipment && r.matched_equipment.length)
         receiptLine += `<br>Named lines: ` +
@@ -464,7 +464,7 @@ function sideChoke(){
   "congestions manifesting" files over the archive window. Ranked by days at a
   limit in ANY run (a day counts once); most of those days come from the
   hourly day-ahead re-runs, so the real-time columns sit alongside: "RT days"
-  is days with a binding five-minute real-time row, "RT itv" the row count.
+  is days with a binding 5-minute real-time row, "RT itv" the row count.
   Settlement sees the real-time column. The Leyte-Luzon HVDC ran at its
   ${fmt(A.hvdc_binding_share_dec2025_pct)}% share of the December 2025 billing
   period at max or offline (IEMOP monthly report).</p>
@@ -500,7 +500,7 @@ function sideprice(){
     the mean daily spread was P${fmt(mk.mean_spread,2)}/kWh across ${fmt(mk.days)} days.
     The chart shows both regimes; the flat stretch is the suspension.</div>` : "";
   return `<h2>What it does to prices</h2>
-  <p class="sub">Each day's average of the load-weighted five-minute prices per
+  <p class="sub">Each day's average of the load-weighted 5-minute prices per
   grid, from the archive. May 2026, the first full month after the market resumed,
   averaged P${fmt(A.wesm_may2026_system_avg_php_kwh,2)}/kWh system-wide
   (+${fmt(A.wesm_may2026_vs_april_pct,1)}% vs April): Luzon
@@ -914,7 +914,7 @@ function sideSimulate(){
   </div>
   ${couplingNote(disp)}
   ${storageNote(disp, g)}
-  <div class="note" id="sim-cal">Over ${fmt(cal.n_intervals)} five-minute intervals
+  <div class="note" id="sim-cal">Over ${fmt(cal.n_intervals)} 5-minute intervals
   in the market-priced window (after WESM resumed ${esc((disp.calibration_window||{}).from)}),
   the cost stack averaged P${fmt(cal.modeled_mean_php_kwh,2)}/kWh against an observed
   P${fmt(cal.observed_mean_php_kwh,2)}/kWh (MAE P${fmt(cal.mae_php_kwh,2)}). It
