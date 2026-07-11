@@ -182,7 +182,7 @@ every column and every row). A short hour prices at the **P32/kWh WESM offer
 cap** (the market's own ceiling, permanent since December 2015), in every
 engine: a published rule, not a fitted value.
 
-The honest result is that a competitive cost stack predicts a nearly flat **~P6/kWh**
+A competitive cost stack predicts a nearly flat **~P6/kWh**
 line. Calibrated on the market-priced window only (the 56 days after WESM resumed on
 May 1; the suspension's administered prices are excluded), the stack over-prices the
 overnight trough, because real units bid below cost to stay committed, and
@@ -195,9 +195,8 @@ A minimal unit-commitment layer takes the first bite out of the overnight miss.
 Committed baseload coal does not shut down overnight; it keeps its minimum stable load
 online (about **40%** of capacity, a sourced technical minimum) and offers it down to
 the H1 2025 WESM average of **P4.14/kWh**, below the P6.00 administered price. Both
-numbers are sourced, not fitted to the trough. The effect, reported honestly: it never
-worsens the fit and it lifts correlation where a grid's demand dips below the committed
-tranche. At the current bake, with the observed water budgets, the fleet-derived
+numbers are sourced, not fitted to the trough. The effect never worsens the fit and
+lifts correlation where a grid's demand dips below the committed tranche. At the current bake, with the observed water budgets, the fleet-derived
 hydro split, and native-load demand (each grid's generation plus its net market
 imports) all in the stack, Visayas sits at a correlation of **0.36** with an MAE
 of **P8.42**; Luzon at **0.17** with an MAE of **P4.47**; and the grid whose light
@@ -235,7 +234,7 @@ peak interval, not a multi-day event, and existing storage is already inside the
 observed prices, so this is a forward scenario against the modeled wave, not a
 calibration change.
 
-Two views make the whole calibration honest at a glance. The **price-duration curve**
+Two views show the whole calibration at a glance. The **price-duration curve**
 sorts every 5-minute market interval high to low and overlays modeled against observed:
 the cost stack is a low, flat plateau from about **P4.80 to P12**, while the observed
 curve runs from a **P35** scarcity spike on the left down to a negative oversupply tail
@@ -393,7 +392,7 @@ computed from the archive or a sourced list, with no optimizer choosing builds; 
 dispatch itself solves as a HiGHS linear program in the browser (the July 2026
 solver pass), with storage optimised across the day's hours, hydro energy-limited
 to each day's observed water where the archive carries the operator's
-per-resource schedules, and prices taken from the duals. The honest mapping to PLEXOS concepts, the model's scope, and its
+per-resource schedules, and prices taken from the duals. The mapping to PLEXOS concepts, the model's scope, and its
 accuracy statement live in [studio/README.md](studio/README.md).
 
 The whole flow in one pass: open the studio, prove it against real prices,

@@ -18,7 +18,7 @@ PLEXOS.
 ## If you use PLEXOS
 
 The studio deliberately follows the concepts you already have, at a fraction of
-the fidelity and none of the setup cost. The honest mapping:
+the fidelity and none of the setup cost. The mapping:
 
 | PLEXOS concept | Studio equivalent | What to expect |
 | --- | --- | --- |
@@ -42,7 +42,7 @@ constraints, no nodal network, and no expansion optimizer (the LT Plan view
 applies the DOE's own lists; it does not choose builds). The scope section
 below states exactly what solves.
 
-## The model, honestly scoped
+## The model and its scope
 
 Three zonal regions (Luzon, Visayas, Mindanao) with per-fuel merit-order
 blocks, cleared together over the two HVDC corridors as one HiGHS linear
@@ -447,7 +447,7 @@ done
 - Editing a unit shifts its fuel's available capacity by the delta: a labeled
   approximation, not unit commitment (the LP dispatches blocks, not units).
 - Storage optimisation resets daily: no inter-day carryover, and cycling that
-  does not pay within the day does not happen, honestly reported as idle.
+  does not pay within the day does not happen, reported as idle.
 - Unserved load prices at the dearest block (the documented no-VoLL stance),
   so the model still does not price the scarcity tail.
 - Observed-day replay is not a forecast. Forward cases (the LNG switch, dry
