@@ -364,6 +364,47 @@ export interface MarketOps {
     commodity_note?: string
     src?: string
   }
+  reserve_validation?: {
+    available: boolean
+    days?: number
+    pools?: Partial<
+      Record<
+        GridKey,
+        Record<
+          string,
+          {
+            n_hours: number
+            observed_mean_php_kwh: number
+            modeled_mean_php_kwh: number
+            mae_php_kwh: number
+            bias_php_kwh: number
+            correlation: number | null
+          }
+        >
+      >
+    >
+    wedge_note?: string
+    src?: string
+  }
+  reserve_results?: {
+    available: boolean
+    days?: number
+    resources_named?: number
+    pools?: Partial<
+      Record<
+        GridKey,
+        Record<
+          string,
+          {
+            vs_rtd_price?: { final_mean_php_kwh: number; bias_php_kwh: number }
+            replay_vs_final?: { bias_php_kwh: number; correlation: number | null }
+          }
+        >
+      >
+    >
+    note?: string
+    src?: string
+  }
   advisories?: { available: boolean }
   outlook?: { available: boolean }
 }

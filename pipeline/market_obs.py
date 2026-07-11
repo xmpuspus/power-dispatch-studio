@@ -1000,6 +1000,104 @@ def build_settlement_side() -> dict:
     }
 
 
+def build_solar_wind_observed() -> dict:
+    """Observed WESM-dispatched solar and wind daily energy per grid (from the
+    committed DIPCEF dailies), beside the model's clear-sky solar credit.
+
+    The measurement decided the framing: the observed dispatched energy is
+    NOT a clean curtailment gap against the clear-sky potential, because the
+    ratio flips by grid (Luzon runs well above the modeled credit, the islands
+    below). That is the model's grid solar SPLIT (a labeled national-split
+    assumption, GRID_FUEL_MW) being approximate, not a single curtailment
+    story. Separating curtailment from the split needs the per-resource
+    registered-capacity join (CAPEG, now archived) as a named refinement.
+    Classification is by resource-code pattern (SOL/SPV, WIND/WPP) plus a
+    named-alias set for renewable farms whose code carries no fuel token."""
+    import json as _json
+
+    dd_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          "..", "data", "derived", "dipcef_daily")
+    if not os.path.isdir(dd_dir):
+        return {"available": False,
+                "note": "no DIPCEF dailies; run pipeline/fuelmix.py"}
+    from fleet_ph import GRID_FUEL_MW
+    prof_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "..", "web", "data", "profiles.json")
+    shape = 5.9
+    if os.path.isfile(prof_path):
+        sp = (_json.load(open(prof_path)).get("solar_profile") or [])
+        if sp:
+            shape = sum(sp)
+    obs: dict = {(f, g): [] for f in ("solar", "wind") for g in GRIDS_L}
+    for name in sorted(os.listdir(dd_dir)):
+        if not name.endswith(".json"):
+            continue
+        day = _json.load(open(os.path.join(dd_dir, name)))
+        per: dict = {}
+        for res, v in (day.get("resources") or {}).items():
+            g = v.get("grid")
+            if not g:
+                continue
+            up = res.upper()
+            # code-pattern classify, plus a small named-alias set for renewable
+            # farms whose resource code carries no fuel token (BURGOS is the
+            # ~150 MW EDC wind farm in Ilocos Norte; its daily energy is
+            # wind-scale, impossible for its few MW of co-located solar)
+            fuel = ("solar" if ("SOL" in up or "SPV" in up)
+                    else "wind" if ("WIND" in up or "WPP" in up
+                                    or "BURGOS" in up) else None)
+            if fuel:
+                per[(fuel, g)] = per.get((fuel, g), 0.0) + (v.get("mwh") or 0.0)
+        for k in obs:
+            if k in per:
+                obs[k].append(per[k])
+    per_grid: dict = {}
+    for g in GRIDS_L:
+        gf = GRID_FUEL_MW.get(g.upper(), {})
+        sol = obs[("solar", g)]
+        wnd = obs[("wind", g)]
+        model_solar = round(gf.get("solar", 0) * shape, 0)
+        obs_solar = round(sum(sol) / len(sol), 0) if sol else None
+        per_grid[g] = {
+            "observed_solar_mwh_day": obs_solar,
+            "model_clearsky_solar_mwh_day": model_solar,
+            "observed_over_model_solar": (round(obs_solar / model_solar, 2)
+                                          if obs_solar and model_solar else None),
+            "observed_wind_mwh_day": (round(sum(wnd) / len(wnd), 0)
+                                      if wnd else None),
+            "installed_solar_mw_assumed": gf.get("solar"),
+            "installed_wind_mw_assumed": gf.get("wind"),
+        }
+    return {
+        "available": True,
+        "days": len(obs[("solar", "luzon")]),
+        "per_grid": per_grid,
+        "clearsky_flh_equiv": round(shape, 2),
+        "note": ("Observed WESM-dispatched solar and wind daily energy per "
+                 "grid (DIPCEF SCHED_MW, post-curtailment), beside the model's "
+                 "clear-sky solar credit (the labeled GRID_FUEL_MW installed "
+                 "solar times the clear-sky hourly shape). The observed/model "
+                 "ratio is not a single curtailment gap: it runs above one on "
+                 "Luzon and below one on the islands, which is the model's "
+                 "national solar SPLIT being approximate, not curtailment. "
+                 "Wind installed capacity is small and its shape is not "
+                 "modeled, so only the observed wind series is shown. Solar "
+                 "and wind are code-classified (SOL/SPV, WIND/WPP) plus a "
+                 "named-alias set for renewable farms whose code carries no "
+                 "fuel token (the Burgos wind farm), a labeled inference. A "
+                 "clean split of "
+                 "curtailment from the installed-split error needs the "
+                 "per-resource registered-capacity join (CAPEG), a named "
+                 "refinement; solar's dominance of the security-pinned "
+                 "operating-point list (security_limits) is the curtailment "
+                 "evidence meanwhile."),
+        "src": ("https://www.iemop.ph/market-data/"
+                "dipc-energy-results-final/"),
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
 _HS_KEYS = {"VISLUZ1": "lv", "MINVIS1": "vm"}
 
 

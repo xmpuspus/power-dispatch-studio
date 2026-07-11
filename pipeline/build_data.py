@@ -862,7 +862,7 @@ def main() -> int:
                             build_reserve_prices, build_reserve_registration,
                             build_reserve_results, build_reserve_validation,
                             build_security_limits, build_settlement_side,
-                            build_so_instructions)
+                            build_so_instructions, build_solar_wind_observed)
 
     advisories = build_advisories()
     reserve_prices = build_reserve_prices()
@@ -873,6 +873,7 @@ def main() -> int:
         "reserve_results": build_reserve_results(),
         "reserve_registration": build_reserve_registration(),
         "settlement_side": build_settlement_side(),
+        "solar_wind_observed": build_solar_wind_observed(),
         "flow_record": build_flow_record(profiles),
         "gwap_trigger": build_gwap_trigger(profiles.get("chrono_golden"),
                                            profiles),

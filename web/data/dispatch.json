@@ -430,6 +430,15 @@
    "from": "2026-05-01"
   },
   "n_coupled_intervals": 16127,
+  "observed_corridor_caps": {
+   "leyte_luzon_hvdc": {
+    "static_limit_mw": 250,
+    "intervals_capped_below_static": 1534,
+    "capped_share_pct": 9.5,
+    "mean_applied_cap_mw": 237.7
+   },
+   "note": "The base coupled replay now scales the Leyte-Luzon cap by the MPI-observed hourly unblocked fraction, so the corridor binds on the intervals it was actually blocked instead of holding a flat 250 MW; the offer and cost backcasts already carry the same series. MVIP stays at its nameplate cap (no observed events in the window)."
+  },
   "corridors": [
    {
     "id": "leyte_luzon_hvdc",
@@ -438,10 +447,10 @@
     "limit_kind": "sourced_operating_limit",
     "nameplate_mw": 440,
     "src": "https://www.iemop.ph/news/december-2025-power-market-luzon-prices-ease-as-supply-improves-visayas-and-mindanao-experience-tighter-conditions/",
-    "saturated_pct": 0.0,
-    "mean_congestion_rent_php_kwh": 0.867,
-    "mean_abs_flow_mw": 8.9,
-    "peak_abs_flow_mw": 250
+    "saturated_pct": 3.5,
+    "mean_congestion_rent_php_kwh": -0.583,
+    "mean_abs_flow_mw": 8.0,
+    "peak_abs_flow_mw": 250.0
    },
    {
     "id": "mvip_hvdc",
@@ -452,7 +461,7 @@
     "src": "https://powerphilippines.com/wesm-prices-rise-38-5-in-may-as-demand-growth-outpaces-supply/",
     "saturated_pct": 0.0,
     "mean_congestion_rent_php_kwh": 0.0,
-    "mean_abs_flow_mw": 2.1,
+    "mean_abs_flow_mw": 3.0,
     "peak_abs_flow_mw": 366.4
    }
   ],
@@ -460,32 +469,32 @@
    "luzon": {
     "observed_mean_php_kwh": 7.651,
     "coupled_modeled_mean_php_kwh": 5.991,
-    "mae_php_kwh": 4.47,
-    "correlation": 0.161
+    "mae_php_kwh": 4.471,
+    "correlation": 0.16
    },
    "visayas": {
     "observed_mean_php_kwh": 12.963,
-    "coupled_modeled_mean_php_kwh": 6.002,
-    "mae_php_kwh": 8.847,
-    "correlation": 0.146
+    "coupled_modeled_mean_php_kwh": 6.023,
+    "mae_php_kwh": 8.83,
+    "correlation": 0.118
    },
    "mindanao": {
     "observed_mean_php_kwh": 11.519,
     "coupled_modeled_mean_php_kwh": 5.952,
     "mae_php_kwh": 7.767,
-    "correlation": 0.174
+    "correlation": 0.175
    }
   },
   "spread_decomposition": {
    "note": "How much of the observed regional price spread the coupled merit-order model reproduces from corridor limits alone. The rest is scarcity and offer behaviour a cost model cannot price.",
    "visayas_vs_luzon": {
     "observed_php_kwh": 5.313,
-    "coupled_model_php_kwh": 0.011,
-    "explained_fraction": 0.002
+    "coupled_model_php_kwh": 0.032,
+    "explained_fraction": 0.006
    },
    "mindanao_vs_luzon": {
     "observed_php_kwh": 3.868,
-    "coupled_model_php_kwh": -0.038,
+    "coupled_model_php_kwh": -0.039,
     "explained_fraction": -0.01
    },
    "uncapped_counterfactual": {

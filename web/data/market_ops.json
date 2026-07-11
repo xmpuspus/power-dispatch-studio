@@ -7939,6 +7939,40 @@
   "src_dayahead": "https://www.iemop.ph/market-data/dap-prices-and-schedules/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
+ "solar_wind_observed": {
+  "available": true,
+  "days": 56,
+  "per_grid": {
+   "luzon": {
+    "observed_solar_mwh_day": 18537.0,
+    "model_clearsky_solar_mwh_day": 10620.0,
+    "observed_over_model_solar": 1.75,
+    "observed_wind_mwh_day": 933.0,
+    "installed_solar_mw_assumed": 1800,
+    "installed_wind_mw_assumed": 350
+   },
+   "visayas": {
+    "observed_solar_mwh_day": 3005.0,
+    "model_clearsky_solar_mwh_day": 4130.0,
+    "observed_over_model_solar": 0.73,
+    "observed_wind_mwh_day": 306.0,
+    "installed_solar_mw_assumed": 700,
+    "installed_wind_mw_assumed": 77
+   },
+   "mindanao": {
+    "observed_solar_mwh_day": 372.0,
+    "model_clearsky_solar_mwh_day": 2106.0,
+    "observed_over_model_solar": 0.18,
+    "observed_wind_mwh_day": null,
+    "installed_solar_mw_assumed": 357,
+    "installed_wind_mw_assumed": 0
+   }
+  },
+  "clearsky_flh_equiv": 5.9,
+  "note": "Observed WESM-dispatched solar and wind daily energy per grid (DIPCEF SCHED_MW, post-curtailment), beside the model's clear-sky solar credit (the labeled GRID_FUEL_MW installed solar times the clear-sky hourly shape). The observed/model ratio is not a single curtailment gap: it runs above one on Luzon and below one on the islands, which is the model's national solar SPLIT being approximate, not curtailment. Wind installed capacity is small and its shape is not modeled, so only the observed wind series is shown. Solar and wind are code-classified (SOL/SPV, WIND/WPP) plus a named-alias set for renewable farms whose code carries no fuel token (the Burgos wind farm), a labeled inference. A clean split of curtailment from the installed-split error needs the per-resource registered-capacity join (CAPEG), a named refinement; solar's dominance of the security-pinned operating-point list (security_limits) is the curtailment evidence meanwhile.",
+  "src": "https://www.iemop.ph/market-data/dipc-energy-results-final/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
  "flow_record": {
   "available": true,
   "days": 93,

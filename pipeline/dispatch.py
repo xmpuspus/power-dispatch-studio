@@ -160,6 +160,19 @@ def build_coupling(intervals: dict, prices: dict) -> dict:
     flow_abs = {c["id"]: [] for c in CORRIDORS}
     n_coupled = 0
     big = {"leyte_luzon_hvdc": 1e6, "mvip_hvdc": 1e6}
+    # item 1 (post-convergence): the map's 5-minute coupled replay used the
+    # static corridor limits; wire the OBSERVED hourly availability so the base
+    # coupling scales the Leyte-Luzon cap by the fraction of the hour the
+    # corridor was unblocked (the MPI advisory stream), the same series the
+    # offer and cost backcasts already carry. MVIP has no observed events and
+    # stays at its nameplate cap.
+    from market_obs import hvdc_unblocked_fractions
+    obs_caps = hvdc_unblocked_fractions()
+    base_leyte = next(c["limit_mw"] for c in CORRIDORS
+                      if c["id"] == "leyte_luzon_hvdc")
+    base_mvip = next(c["limit_mw"] for c in CORRIDORS if c["id"] == "mvip_hvdc")
+    n_capped = 0
+    cap_series: list[float] = []
 
     for (day, ti), iv in intervals.items():
         if not iv["market"] or len(iv["dem"]) < 3:
@@ -169,7 +182,14 @@ def build_coupling(intervals: dict, prices: dict) -> dict:
         if any(op[g] is None for g in grids):
             continue
         demand = {up[g]: iv["dem"][up[g]] for g in grids}
-        res = clear_coupled(demand, iv["hour"])
+        lf = obs_caps.get(day)
+        leyte_cap = base_leyte * (lf[iv["hour"]] if lf else 1.0)
+        if leyte_cap < base_leyte - 1e-9:
+            n_capped += 1
+        cap_series.append(leyte_cap)
+        res = clear_coupled(demand, iv["hour"],
+                            caps={"leyte_luzon_hvdc": leyte_cap,
+                                  "mvip_hvdc": base_mvip})
         unc_res = clear_coupled(demand, iv["hour"], caps=big)
         n_coupled += 1
         for g in grids:
@@ -227,6 +247,22 @@ def build_coupling(intervals: dict, prices: dict) -> dict:
         "wheeling_cost_php_kwh": 0.02,
         "calibration_window": {"regime": "market-only", "from": resumed},
         "n_coupled_intervals": n_coupled,
+        "observed_corridor_caps": {
+            "leyte_luzon_hvdc": {
+                "static_limit_mw": base_leyte,
+                "intervals_capped_below_static": n_capped,
+                "capped_share_pct": (round(100 * n_capped / n_coupled, 1)
+                                     if n_coupled else None),
+                "mean_applied_cap_mw": (round(_mean(cap_series), 1)
+                                        if cap_series else None),
+            },
+            "note": ("The base coupled replay now scales the Leyte-Luzon cap "
+                     "by the MPI-observed hourly unblocked fraction, so the "
+                     "corridor binds on the intervals it was actually blocked "
+                     "instead of holding a flat 250 MW; the offer and cost "
+                     "backcasts already carry the same series. MVIP stays at "
+                     "its nameplate cap (no observed events in the window)."),
+        },
         "corridors": corridor_stats,
         "per_grid": per_grid,
         "spread_decomposition": {

@@ -260,10 +260,12 @@ rent. A brute-force optimality test pins the solver. Still not PLEXOS.
 Demand here is native load (each grid's generation plus its net market imports,
 straight from the same IEMOP files), so the replay has to move real MW over the
 corridors to serve the Visayas, which imports roughly a quarter of what it
-consumes. Run over the market window with the full fleet available, the coupled
-model still reproduces almost **none** of the observed **P5.31/kWh** Visayas-Luzon
-spread (about **0%**; the corridor almost never saturates at cost-stack
-differentials). That is the finding, not a failure: cost stacks price the three
+consumes. Run over the market window with the full fleet available, and scaling
+the Leyte-Luzon cap by the operator's own hourly corridor-availability record
+(so it binds on the **9.5%** of intervals the corridor was actually blocked and
+saturates **3.5%** of the window), the coupled model still reproduces almost
+**none** of the observed **P5.31/kWh** Visayas-Luzon spread (about **1%**). That
+is the finding, not a failure: cost stacks price the three
 islands nearly identically, and the observed spread is the scarcity and offer
 premium of the 52-day yellow-alert streak, which a cost model cannot see.
 

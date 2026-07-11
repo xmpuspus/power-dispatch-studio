@@ -317,6 +317,15 @@ check("baseline coupling explains almost none of the V-L spread (the finding: "
 leyte_stat = next(c for c in cp["corridors"] if c["id"] == "leyte_luzon_hvdc")
 check("Leyte-Luzon rarely binds on baseline demand (<5% of intervals)",
       leyte_stat["saturated_pct"] < 5)
+# item 1 (post-convergence): the 5-minute coupled replay now scales the
+# corridor by the observed hourly availability (MPI), not a flat 250 MW
+_occ = cp["observed_corridor_caps"]["leyte_luzon_hvdc"]
+check("the coupled replay scales the corridor by the observed hourly "
+      "availability, binding on the intervals it was actually blocked "
+      "(not a flat static limit)",
+      0 < _occ["capped_share_pct"] < 30
+      and _occ["mean_applied_cap_mw"] < _occ["static_limit_mw"]
+      and _occ["intervals_capped_below_static"] > 500)
 check("MVIP cap is labeled nameplate-as-operating-limit (distinct from Leyte's "
       "sourced 250)", leyte_stat["limit_kind"] == "sourced_operating_limit"
       and next(c for c in cp["corridors"] if c["id"] == "mvip_hvdc")["limit_kind"]
@@ -920,6 +929,20 @@ check("the day-ahead projection spread is both-signed (a projection "
       "diagnostic, out of the replay's dispatch scope)",
       _ssg["luzon"]["dap_vs_rt_spread_range_php_kwh"][0] < 0
       < _ssg["luzon"]["dap_vs_rt_spread_range_php_kwh"][1])
+# item 2 (post-convergence): observed dispatched solar/wind per grid, and the
+# honest measurement that the observed/model ratio flips by grid (the model's
+# solar SPLIT is approximate, not a single curtailment gap)
+sw = mo["solar_wind_observed"]
+check("observed dispatched solar/wind consumed per grid (DIPCEF); the "
+      "observed/model solar ratio flips by grid, so the model's national "
+      "solar split is approximate, not a curtailment gap",
+      sw.get("available") and sw["days"] >= 40
+      and sw["per_grid"]["luzon"]["observed_over_model_solar"] > 1.0
+      and sw["per_grid"]["mindanao"]["observed_over_model_solar"] < 1.0)
+check("solar dominates observed dispatched renewables (Luzon solar many "
+      "times its wind)",
+      sw["per_grid"]["luzon"]["observed_solar_mwh_day"]
+      > 5 * (sw["per_grid"]["luzon"]["observed_wind_mwh_day"] or 1))
 
 fr = mo.get("flow_record") or {}
 check("the two observed corridor records agree (identity vs RTDHS "

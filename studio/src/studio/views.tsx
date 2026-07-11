@@ -238,6 +238,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
       </Panel>
 
       <OfficialReservePrices grid={grid} />
+      <ReserveValidation grid={grid} />
     </div>
   )
 }
@@ -278,6 +279,80 @@ function OfficialReservePrices({ grid }: { grid: GridKey }) {
         empty="No official series for this grid yet."
       />
       <p className="note">{rp.commodity_note}</p>
+    </Panel>
+  )
+}
+
+const RESERVE_LABEL: Record<string, string> = {
+  Fr: 'Contingency (Fr)',
+  Dr: 'Dispatchable (Dr)',
+  Ru: 'Regulation up (Ru)',
+  Rd: 'Regulation down (Rd)',
+}
+
+/** The reserve replay validation (market_ops): each derived reserve book,
+ * cleared at the operator's scheduled MW, under-prices the official RSVPR
+ * price by the co-optimisation opportunity-cost wedge; the per-resource final
+ * results (DIPCRF) confirm the same one-signed wedge against the authoritative
+ * clearing. */
+function ReserveValidation({ grid }: { grid: GridKey }) {
+  const mo = useMarketOps()
+  const rv = mo.data?.reserve_validation
+  const rr = mo.data?.reserve_results
+  if (mo.loading || !rv?.available || !rv.pools?.[grid]) return null
+  const pool = rv.pools[grid]!
+  const rrPool = rr?.pools?.[grid]
+  const rows = ['Fr', 'Dr', 'Ru', 'Rd']
+    .filter((c) => pool[c])
+    .map((c) => ({ c, v: pool[c]!, f: rrPool?.[c] }))
+  return (
+    <Panel
+      title={`Reserve replay validation, ${cap(grid)}`}
+      subtitle={`Each derived reserve book (RTDOR), cleared at the operator's scheduled MW and scored against the official RSVPR price over ${rv.days ?? 0} days. Every pool's bias is negative: the book-only replay under-prices the co-optimised reserve, the measured opportunity-cost wedge.${rr?.available ? ` The final per-resource results (DIPCRF, ${rr.resources_named ?? 0} resources) confirm it against the authoritative clearing.` : ''}`}
+      right={<Source href={rv.src} label="data" />}
+    >
+      <DataGrid
+        columns={[
+          {
+            key: 'product',
+            header: 'Reserve product',
+            render: (x) => RESERVE_LABEL[x.c] ?? x.c,
+          },
+          {
+            key: 'obs',
+            header: 'Official mean',
+            align: 'right',
+            mono: true,
+            render: (x) => php(x.v.observed_mean_php_kwh),
+          },
+          {
+            key: 'mod',
+            header: 'Replay mean',
+            align: 'right',
+            mono: true,
+            render: (x) => php(x.v.modeled_mean_php_kwh),
+          },
+          {
+            key: 'wedge',
+            header: 'Wedge (bias)',
+            align: 'right',
+            mono: true,
+            render: (x) => php(x.v.bias_php_kwh),
+          },
+          {
+            key: 'final',
+            header: 'vs DIPCRF final',
+            align: 'right',
+            mono: true,
+            render: (x) =>
+              x.f?.replay_vs_final ? php(x.f.replay_vs_final.bias_php_kwh) : 'n/a',
+          },
+        ]}
+        rows={rows}
+        getKey={(x) => x.c}
+        empty="No reserve replay for this grid yet."
+      />
+      <p className="note">{rv.wedge_note}</p>
     </Panel>
   )
 }
