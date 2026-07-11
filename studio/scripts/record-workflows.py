@@ -324,8 +324,11 @@ async def wf2(page: Page):
     wf2_mean = await tile(page, "Mean price, Luzon")
     wf2_rent = await tile(page, "Congestion rent")
     await r.cap(
-        "The observed stress evening prices the outage",
-        f"Luzon mean {wf2_mean}, congestion rent {wf2_rent} as the corridors bind in the peak hours.",
+        "The observed stress evening reprices, it does not shed",
+        f"With both Sual units gone the observed evening still clears coal to oil "
+        f"with no unserved load: the 10.6% is the reliability draw, not this day, "
+        f"and the binding constraint is the corridor. Luzon mean {wf2_mean}, "
+        f"congestion rent {wf2_rent} as the corridors bind in the peak hours.",
     )
     await scroll_top(page)
     await asyncio.sleep(3.2)
@@ -442,7 +445,7 @@ async def record_one(key: str):
             viewport={"width": W, "height": H},
             record_video_dir=str(OUT),
             record_video_size={"width": W, "height": H},
-            color_scheme="dark",
+            color_scheme="light",
             device_scale_factor=2,
         )
         page = await ctx.new_page()

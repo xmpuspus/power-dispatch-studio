@@ -269,6 +269,41 @@ exact price-setter labels. Any change to one engine that does not land in the
 other fails the suite, and the retired coordinate-descent clear stays in the
 pipeline test suite as a cost cross-oracle.
 
+The parity harness proves the two engines build the same program; a second
+check proves the program RESPONDS the way an energy-market analyst would
+predict. Eight counterfactuals an analyst would run to battle-test a dispatch
+model, each driven through the chronology engine (the harness is
+`pipeline/scenario_validation.py`): six moved in the predicted
+direction on the first pass, two moved in a direction I had not predicted and
+the flow data showed the engine was right, and one is a dated backcast.
+
+| What-if | An analyst expects | The engine does |
+| --- | --- | --- |
+| +1 GW solar, Luzon | fuel and emissions down, evening peak untouched | 5,900 MWh less coal and gas burned, 7pm peak unchanged (solar is zero at sunset) |
+| +300 MW data center, Luzon | absorbed by the big grid | absorbed, but it flips the Leyte-Luzon link from export to import and saturates it 6 hours: the corridor is Luzon's cushion |
+| +300 to +1,000 MW data center, Visayas | the small grid saturates the corridor | corridor saturated 17 to 24 hours of 24 across six days, a real Visayas-over-Luzon premium opens, Luzon's own price stays flat |
+| +50 MW small hydro, Luzon | small, dispatchable, energy-capped | +175 MWh over the day, price flat, bounded by the water budget |
+| +600 MW gas, Visayas | local generation relieves the island | Visayas mean falls, corridor dependence drops |
+| Malampaya to imported LNG (gas P4.80 to P10.30) | price shape lifts with the fuel cost | Luzon price rises toward the gas cost |
+| Trip both 647 MW Sual units | Luzon tightens | reprices coal to oil with no unserved load on the observed evening; the reliability draw puts loss-of-load probability at 10.6% |
+| 935 MW Visayas outage, Jul 1 (dated) | matches the observed island spread | reproduces 87.8% of the observed Visayas-over-Luzon spread |
+
+Two of these are quantitative claims that stand on their own. First, the
+corridor binds far below the announced wave: the forward replay saturates the
+250 MW Leyte-Luzon link at about 275 to 300 MW of extra Visayas load, and the
+independent backcast (`coupling.dc_binding_threshold`) puts the knee at 275 MW,
+two code paths landing on the same number, a fraction of DICT's 1.5 GW national
+forecast. Second, siting is the whole story: the same data-center megawatts are
+absorbed on Luzon but open a genuine island price premium and saturate the
+corridor almost all day when sited in the Visayas.
+
+Read the peso magnitudes as direction, not prediction. The cost model uses flat
+per-fuel blocks, so a price delta is the height of the next block, not a
+calibrated response: tripping both Sual units and stacking a dry year onto the
+DICT build both read +P5.98/kWh because both step Luzon from the P6 block to the
+P12 one. The corridor-saturation hours, the 275 MW threshold, and the 87.8%
+backcast are the structural claims that do not turn on block height.
+
 ## Three workflows to try
 
 **Price a data-center build.** System > Regions, raise Luzon load by the
@@ -284,7 +319,7 @@ adequacy hit; Chronology on the stress day shows whether the evening clears on
 oil or sheds load, and its congestion-rent tile prices the corridors binding in
 the peak hours.
 
-![Recorded studio walkthrough of the single contingency: zeroing both 647 MW Sual units lifts Luzon loss-of-load probability from a 0.15% base to 10.60% (1-in-100 shed 1,234 MW), leaves the rest of the fleet pricing coal to oil in N-1, and clears the observed stress evening at a P11.40 Luzon mean with P31.95M congestion rent.](docs/workflow-2-contingency.gif)
+![Recorded studio walkthrough of the single contingency: zeroing both 647 MW Sual units lifts Luzon loss-of-load probability from a 0.15% base to 10.60% (1-in-100 shed 1,234 MW) and leaves the rest of the fleet pricing coal to oil in N-1, yet the observed stress evening still clears with no unserved load at a P11.40 Luzon mean and P31.95M congestion rent: the 10.6% is the reliability draw across sampled evenings, not this day, and the binding constraint is the corridor.](docs/workflow-2-contingency.gif)
 
 **Test the Malampaya cliff.** System > Fuels, reprice natural gas from the
 Malampaya cost (P4.80/kWh) to the imported-LNG cost (P10.30/kWh), Run, and
