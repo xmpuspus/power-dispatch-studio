@@ -10,17 +10,18 @@ offer premium in the wholesale price is a measured series, not a guess. Inputs,
 method, and every number are open and reproducible from a clean clone.
 
 It is **free**, runs entirely in your browser with no license and no install,
-and every input traces to a public source. Think of it as a small, open answer
-to the commercial production-cost tools like PLEXOS: not a replacement for a
-licensed planning suite, but enough to actually model and validate the what-ifs
-that matter here, new data centers, choke points, and the price swings they
-drive, against the real Philippine market. Formerly gridbill-ph.
+and every input traces to a public source. Think of it as a small, open,
+browser-based counterpart to the licensed production-cost tools grid planners
+use (PLEXOS and the like), not a replacement for a planning suite but enough to
+actually model and validate the what-ifs that matter here: new data centers, the
+choke points they would sit behind, and how the market prices those constraints,
+against the real Philippine market. Formerly gridbill-ph.
 
 [![CI](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml)
 [![License: MIT (code) / CC-BY-4.0 (data)](https://img.shields.io/badge/license-MIT%20%2F%20CC--BY--4.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 
-[<img width="820" alt="A walkthrough of the map: the three questions across the top (supply, choke points, prices), the constraint league showing named 230 kV equipment at its limit on most of a 90-day window led by the Tabango-Daanbantayan corridor, the Leyte-Cebu line hovered to show its archive receipts, a Sual-unit toggle subtracting 647 MW from the system margin, and the regional price sparkline fanning apart after the market reopened" src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
+[<img width="820" alt="A walkthrough of the map: the three questions across the top (supply, choke points, prices), the constraint league showing named 230 kV equipment at its limit on most days of the archive window, led by the Tabango-Daanbantayan corridor, the Leyte-Cebu line hovered to show its archive receipts, a Sual-unit toggle subtracting 647 MW from the system margin, and the regional price sparkline fanning apart after the market reopened" src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
 
 Live: [the map](https://power-dispatch-studio.vercel.app) and
 [the studio](https://power-dispatch-studio.vercel.app/studio/), or open
@@ -32,25 +33,25 @@ is a shape a data center barely moves with room and jumps when full, one plant
 trip takes a fifth of the margin, and a WESM swing is only a slice of the Meralco
 bill.
 
-![Four-panel summary: a constraint league of named 230 kV lines at a binding limit on most of the 90-day window with the Leyte-Cebu corridor topping it; the Luzon price-versus-load curve where a 300 MW data center adds about P0.32/kWh with room but far more when the grid is full; the May 2026 system margin of 3,629 MW with one 647 MW Sual unit marked as 18 percent of it; and the Meralco June 2026 bill split showing the WESM spot cost as roughly half the generation charge and a third of the whole rate](docs/story-montage.gif)
+![Four-panel summary: a constraint league of named 230 kV lines at a binding limit on most days of the archive window with the Leyte-Cebu corridor topping it; the Luzon price-versus-load curve where a 300 MW data center adds about P0.32/kWh with room but far more when the grid is full; the May 2026 system margin of 3,629 MW with one 647 MW Sual unit marked as 18 percent of it; and the Meralco June 2026 bill split showing the WESM spot cost as roughly half the generation charge and a third of the whole rate](docs/story-montage.gif)
 
 ## The grid names its own choke point
 
 The choke points are not inferred. IEMOP publishes a "congestions manifesting" file
 that names the exact transmission equipment sitting at its binding limit, per
 5-minute interval, and this repo archives and ranks them. A row **literally named
-`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **68 of the window's 90 days**.
+`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **72 of the window's 95 days**.
 The 230 kV lines that carry that corridor, Tabango (Leyte) to Daanbantayan (Cebu),
-top the league: at a binding limit in the hourly day-ahead runs on **87 of 90
+top the league: at a binding limit in the hourly day-ahead runs on **92 of 95
 days**, and binding in the 5-minute real-time dispatch, the run settlement
-actually sees, on **21 days** of the window. Both columns are in the table; the
+actually sees, on **22 days** of the window. Both columns are in the table; the
 day-ahead count measures how persistently the constraint reappears across re-runs,
 the real-time count how often it actually bound. The same corridor IEMOP's December
 2025 report names in prose; here it is the receipts behind the prose.
 
-![The constraint league filling in bar by bar: named transmission equipment ranked by days at a binding limit over the 90-day archive window, the Leyte-Cebu corridor lines highlighted in coral topping the list at 87 of 90 day-ahead days](docs/constraint-league.gif)
+![The constraint league filling in bar by bar: named transmission equipment ranked by days at a binding limit over the archive window, the Leyte-Cebu corridor lines highlighted in coral topping the list by day-ahead days at a limit](docs/constraint-league.gif)
 
-Across the 90-day window, **84 distinct pieces of equipment** hit a limit at least
+Across the 95-day window, **85 distinct pieces of equipment** hit a limit at least
 once. The map ranks them by days at a limit (a day counts once, so a day-ahead
 re-run cannot inflate it) and keeps the real-time and day-ahead counts in separate
 columns, because the day-ahead projection re-prices hourly and its raw row count
@@ -70,7 +71,7 @@ the archived files pin to a single MW value in 99.2 percent of windows
 of which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
-The instruction log behind both closes the causal loop. Across the 90
+The instruction log behind both closes the causal loop. Across the 92
 daily logs the System Operator's own dispatch instructions carry a remark
 citing a line limitation **1,561 times, and 1,534 of those name the
 Leyte-Cebu corridor** ("Advise to discharge under MOT Raise due to
@@ -85,8 +86,8 @@ overlay it sizes is a named queued build).
 ## Thin is the normal state
 
 In the operator's own real-time dispatch schedules, **Luzon scheduled reserves fell
-below the stated requirement on 54 of the window's 90 days**, and load was curtailed
-in the dispatch schedules on **91 grid-days (4,125.4 MWh)** across the three grids.
+below the stated requirement on 59 of the window's 95 days**, and load was curtailed
+in the dispatch schedules on **97 grid-days (4,390.8 MWh)** across the three grids.
 This is observed curtailment in published schedules and observed reserve shortfall,
 not a brownout forecast. The Visayas grid ran a **52-day daily yellow-alert streak
 (May 11 to July 1, 2026)** that ended when one 150 MW unit returned, with 935.3 MW
@@ -118,7 +119,7 @@ into a market-outcome claim.
 That wholesale price passes into the Meralco bill monthly. The June 2026 advisory
 carried WESM at **P7.03/kWh** inside a **P9.07/kWh** generation charge on a
 **P14.48/kWh** total rate. One Sual unit (**647 MW**) equals **18% of the May system
-margin**, which is why a single trip moves the whole grid; the map's toggle does that
+margin**, which is why the loss of one large unit is felt system-wide; the map's toggle does that
 subtraction in the open, as arithmetic on the published margin, not a dispatch
 simulation.
 

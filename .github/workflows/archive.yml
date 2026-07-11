@@ -59,6 +59,10 @@ jobs:
           }
       - name: Rebake web data from the archive
         run: python3 pipeline/build_data.py
+      - name: Sync the README numbers to the fresh bake
+        # the window rolls a day forward every night; keep the README's rolling
+        # counts in lockstep with the map instead of letting the prose freeze.
+        run: python3 scripts/verify_claims.py --write
       - name: Data pins + banned-framing gate
         run: |
           python3 tests/test_data.py
@@ -66,7 +70,7 @@ jobs:
           python3 tests/qa_gate.py
       - name: Commit rebaked web data
         run: |
-          git add web/data
+          git add web/data README.md
           git diff --cached --quiet && echo "bake unchanged" || {
             git commit -m "bake: $(date -u +%Y-%m-%d)"
             git push

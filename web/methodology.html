@@ -228,8 +228,8 @@ href="https://www.iemop.ph/market-data/so-dispatch-instruction-report/">page</a>
 reserve activations with their variance readings, and line
 limitations named per instruction (the remarks screen in
 market_ops.json so_instructions counts them). The weekly compilations
-are archived beside the dailies but never counted, or 84 of the
-window's 90 days would double. Added after the round-9
+are archived beside the dailies but never counted, or the window's
+day-counts would double. Added after the round-9
 audit.</td></tr>
 <tr><td>Valid discrepancies on the SO dispatch instruction report
 (revision-stamped weekly CSV)</td>
@@ -360,8 +360,11 @@ requirements (<a href="https://pcij.org/2026/01/11/data-centers-raise-concerns/"
 (EO 110); market-driven pricing resumed 1 May
 (<a href="https://tribune.net.ph/2026/05/01/wesm-restart-restores-market-driven-power-prices">Tribune</a>).</li>
 <li>May 2026, first full post-resumption month: system average P7.79/kWh, up
-38.5% from April; Luzon P7.02, Visayas P10.20, Mindanao P9.28; supply 21,374 MW,
-demand 15,755 MW, margin 3,629 MW
+38.5% from April; Luzon P7.02, Visayas P10.20, Mindanao P9.28. The same report
+gives a system supply margin of 3,629 MW; its separately reported monthly-average
+supply (21,374 MW) and demand (15,755 MW) are means on a different basis and are
+not the subtraction behind that margin, so this page uses only the 3,629 MW margin
+figure for the share arithmetic
 (<a href="https://powerphilippines.com/wesm-prices-rise-38-5-in-may-as-demand-growth-outpaces-supply/">IEMOP May 2026 report via Power Philippines</a>).</li>
 <li>Meralco June 2026: overall rate P14.4833/kWh (+P0.1488); generation charge
 P9.0704/kWh with WESM at P7.0281/kWh
@@ -602,10 +605,10 @@ The archive derives daily reserve books from it
 covers the scheduled reserve or the day is refused), and the reserve
 replay now scores them: each book cleared at the operator's scheduled MW
 for the book's exact interval, against the official RSVPR price at that
-same interval, 83 days by 12 grid-commodity pools (market_ops.json
+same interval, 85 days by 12 grid-commodity pools (market_ops.json
 reserve_validation). Every pool's mean residual is negative, and the
 hours where the marginal offer sits above the official price are
-noise-level (7.9 percent of scored hours, by at most P0.033/kWh); that
+noise-level (8.0 percent of scored hours, by at most P0.033/kWh); that
 one-signed pool residual is the co-optimisation opportunity-cost wedge
 itself, measured per pool, biggest on regulation products and the tight
 islands and near zero on dispatchable reserve (Luzon Dr matches the

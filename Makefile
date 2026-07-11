@@ -1,4 +1,4 @@
-.PHONY: backfill archive data serve e2e qa clean
+.PHONY: backfill archive data viz serve e2e qa clean
 
 PY := python3
 
@@ -15,6 +15,14 @@ archive:
 data:
 	$(PY) pipeline/build_data.py
 
+# Re-cut the static share assets (OG card, constraint league, montage) from the
+# current bake. A deliberate step, not the nightly cron: these are dated
+# snapshots, so re-run when the narrative is re-cut, not every day.
+viz:
+	$(PY) scripts/og_card.py
+	$(PY) scripts/constraint_league_gif.py
+	$(PY) scripts/story_montage.py
+
 # Range-capable dev server (web/), port 8789.
 serve:
 	cd web && $(PY) serve.py 8789
@@ -30,6 +38,7 @@ qa:
 	$(PY) tests/test_data.py
 	$(PY) tests/test_lp_parity.py
 	$(PY) tests/qa_gate.py
+	$(PY) scripts/verify_claims.py
 
 clean:
 	rm -f web/data/*.json web/data/*.geojson
