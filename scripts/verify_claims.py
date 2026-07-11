@@ -24,6 +24,7 @@ import json
 import os
 import re
 import sys
+from decimal import ROUND_HALF_UP, Decimal
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WEB = os.path.join(ROOT, "web", "data")
@@ -56,6 +57,93 @@ def _reserve_table_md(rv):
     return "\n".join(rows)
 
 
+# The studio BackcastView renders these tables from profiles.json with
+# Intl.NumberFormat (halfExpand rounding). Python's round() is banker's rounding,
+# so use Decimal ROUND_HALF_UP to reproduce the app's cells exactly; the README
+# then matches what the live studio shows, not just the raw bake fields.
+def _q(v, dp):
+    return Decimal(str(v)).quantize(Decimal(1).scaleb(-dp), rounding=ROUND_HALF_UP)
+
+
+def _n(v, dp=0):
+    return f"{_q(v, dp):,.{dp}f}"
+
+
+def _p(v, kwh=False):          # peso mean/MAE, README P-convention
+    return f"P{_q(v, 2):.2f}" + ("/kWh" if kwh else "")
+
+
+def _pb(v):                    # signed peso bias, +P / -P
+    return ("-" if v < 0 else "+") + f"P{_q(abs(v), 2):.2f}"
+
+
+def _hit(s):
+    v = s.get("high_hour_hit_rate_pct")
+    return "n/a (flat model)" if v is None else f"{_n(v, 0)}%"
+
+
+def _mw(v):
+    return f"{_n(v, 0)} MW"
+
+
+def _bc_grid_table(pg, window_pg=None, coverage=False):
+    cols = ("| Grid | Coverage | Observed mean | Modeled mean | MAE | Bias | "
+            "Correlation | High-hour hit |") if coverage else (
+            "| Grid | Observed mean | Modeled mean | MAE | Bias | Correlation "
+            "| High-hour hit |")
+    dash = "| " + " | ".join(["---"] * (8 if coverage else 7)) + " |"
+    rows = [cols, dash]
+    for g in ("luzon", "visayas", "mindanao"):
+        s = pg[g]
+        cov = (f" {int(s['n_hours']):,} of {int(window_pg[g]['n_hours']):,} h |"
+               if coverage else "")
+        rows.append(
+            f"| {g.capitalize()} |{cov} {_p(s['observed_mean_php_kwh'], True)} | "
+            f"{_p(s['modeled_mean_php_kwh'], True)} | {_p(s['mae_php_kwh'])} | "
+            f"{_pb(s['bias_php_kwh'])} | {_n(s['correlation'], 2)} | {_hit(s)} |")
+    return "\n".join(rows)
+
+
+def _bc_flows_table(flows, header):
+    rows = [f"| {header} | Observed mean | Modeled mean | MAE | Direction agreement |",
+            "| --- | --- | --- | --- | --- |"]
+    for k in ("lv", "vm"):
+        f = flows[k]
+        rows.append(f"| {f['corridor']} | {_mw(f['observed_mean_mw'])} | "
+                    f"{_mw(f['modeled_mean_mw'])} | {_mw(f['mae_mw'])} | "
+                    f"{_n(f['direction_agreement_pct'], 0)}% |")
+    return "\n".join(rows)
+
+
+def _bc_offer_target(ob):
+    rows = ["| Grid | Target | MAE | Bias | Correlation | High-hour hit |",
+            "| --- | --- | --- | --- | --- | --- |"]
+    for tgt, key in (("LWAP", "per_grid"), ("MCP", "per_grid_mcp")):
+        for g in ("luzon", "visayas", "mindanao"):
+            s = ob[key][g]
+            rows.append(f"| {g.capitalize()} | {tgt} | {_p(s['mae_php_kwh'])} | "
+                        f"{_pb(s['bias_php_kwh'])} | {_n(s['correlation'], 2)} | "
+                        f"{_hit(s)} |")
+    return "\n".join(rows)
+
+
+def _bc_rtdhs(bc, ob):
+    rows = ["| Corridor (vs operator record) | Observed mean | Modeled mean | MAE "
+            "| Direction | Observed binding share | Modeled at-cap share |",
+            "| --- | --- | --- | --- | --- | --- | --- |"]
+    for mode, src in (("cost mode", bc["flows_rtdhs"]),
+                      ("offer mode", ob["flows_rtdhs"])):
+        for k in ("lv", "vm"):
+            f = src[k]
+            rows.append(
+                f"| {f['corridor']}, {mode} | {_mw(f['observed_mean_mw'])} | "
+                f"{_mw(f['modeled_mean_mw'])} | {_mw(f['mae_mw'])} | "
+                f"{_n(f['direction_agreement_pct'], 0)}% | "
+                f"{_n(f['observed_binding_share_pct'], 0)}% | "
+                f"{_n(f['modeled_at_cap_share_pct'], 0)}% |")
+    return "\n".join(rows)
+
+
 def canonical():
     """Every rolling count the public prose carries, straight from the bake."""
     cg = _load("congestion.json")
@@ -76,6 +164,8 @@ def canonical():
     sodir = mo["so_instructions"]["sodir"]
     rv = mo["reserve_validation"]
     profiles = _load("profiles.json")
+    bc = profiles["backcast"]
+    ob = profiles["offer_backcast"]
 
     # reserve-shortfall days are baked into the findings blurb; read the number
     # build_data.py already computed rather than recomputing the series here.
@@ -103,6 +193,14 @@ def canonical():
         "reserve_above_pct": f'{rv["hours_model_above_pct"]:.1f}',
         "scored_hours": f"{sum(c['n_hours'] for g in rv['pools'].values() for c in g.values()):,}",
         "reserve_table": _reserve_table_md(rv),
+        "bc_lwap": _bc_grid_table(bc["per_grid"]),
+        "bc_mcp": _bc_grid_table(bc["per_grid_mcp"], bc["per_grid"], coverage=True),
+        "bc_flows": _bc_flows_table(bc["flows"], "Corridor"),
+        "bc_offer_target": _bc_offer_target(ob),
+        "bc_offer_flows": _bc_flows_table(ob["flows"], "Corridor (offer mode)"),
+        "bc_rtdhs": _bc_rtdhs(bc, ob),
+        "vis_lwap_corr": _n(bc["per_grid"]["visayas"]["correlation"], 2),
+        "vis_mcp_corr": _n(bc["per_grid_mcp"]["visayas"]["correlation"], 2),
         "profiles_days": len(profiles["days"]),
         "window_from": cg["window"]["from"],
         "window_to": cg["window"]["to"],
@@ -150,6 +248,14 @@ REGISTRY = [
     ("studio/README.md",
      re.compile(r"Hourly demand and observed prices \((\d+) observed days\)"),
      ["profiles_days"]),
+    # the two backcast correlations quoted in the narrative prose (they must
+    # agree with the tables above them, which drifted apart before this)
+    ("studio/README.md",
+     re.compile(r"settlement-price shape \(correlation\s*\n?\s*(0\.\d+)"),
+     ["vis_lwap_corr"]),
+    ("studio/README.md",
+     re.compile(r"agreement \(correlation 0\.\d+ to (0\.\d+), hit"),
+     ["vis_mcp_corr"]),
     # --- web/methodology.html scalars
     ("web/methodology.html",
      re.compile(r"same interval, (\d+) days by 12 grid-commodity pools"),
@@ -166,6 +272,15 @@ REGISTRY = [
 BLOCKS = [
     ("studio/README.md", "<!-- reserve-table:", "<!-- /reserve-table -->",
      "reserve_table"),
+    # the six BackcastView tables, hand-typed and drift-prone before this
+    ("studio/README.md", "<!-- bc-lwap:", "<!-- /bc-lwap -->", "bc_lwap"),
+    ("studio/README.md", "<!-- bc-mcp:", "<!-- /bc-mcp -->", "bc_mcp"),
+    ("studio/README.md", "<!-- bc-flows:", "<!-- /bc-flows -->", "bc_flows"),
+    ("studio/README.md", "<!-- bc-offer-target:", "<!-- /bc-offer-target -->",
+     "bc_offer_target"),
+    ("studio/README.md", "<!-- bc-offer-flows:", "<!-- /bc-offer-flows -->",
+     "bc_offer_flows"),
+    ("studio/README.md", "<!-- bc-rtdhs:", "<!-- /bc-rtdhs -->", "bc_rtdhs"),
 ]
 
 # Every public prose file is now bake-derived and auto-synced by the nightly

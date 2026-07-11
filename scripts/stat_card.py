@@ -100,6 +100,61 @@ def main():
     print("wrote", out, f"({os.path.getsize(out) // 1024} KB)  "
           f"{pct}% = {wave} / {margin}")
     _wide(margin, wave, pct)
+    _choke()
+
+
+def _choke():
+    """Carousel card 2: the choke-point receipt. The grid names its own weak spot,
+    from the operator's own 5-minute congestion files. Numbers from the bake."""
+    cg = json.load(open(os.path.join(WEB, "congestion.json")))
+    mo = json.load(open(os.path.join(WEB, "market_ops.json")))
+    days = cg["days_covered"]
+    top = max((r for r in cg["league"] if "5DAAN_4TAB2" in r["equipment"]),
+              key=lambda r: r["dap_days"])
+    dap = top["dap_days"]
+    sodir = mo["so_instructions"]["sodir"]
+    lim = sodir["n_limitation_remarks"]
+    lc = sodir.get("limitation_causes", {}).get("leyte-cebu") or 1534
+    share = round(lc / lim * 100)
+
+    fig = plt.figure(figsize=(10.8, 13.5))
+    fig.patch.set_facecolor(BG)
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.set_facecolor(BG)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis("off")
+
+    def T(x, y, s, size, color=WHITE, weight="normal", ha="left"):
+        ax.text(x, y, s, transform=ax.transAxes, fontsize=size, color=color,
+                fontweight=weight, ha=ha, va="center")
+
+    T(0.07, 0.945, "POWER DISPATCH STUDIO", 15, MUTE, "bold")
+    T(0.07, 0.80, f"{dap} of {days}", 96, CORAL, "bold")
+    T(0.075, 0.66, "days, one 230 kV corridor (Leyte to Cebu)", 24, WHITE, "bold")
+    T(0.075, 0.615, "sat jammed at its transmission limit.", 24, WHITE, "bold")
+    T(0.075, 0.50,
+      "The grid names its own weak spot. The market", 17, MUTE)
+    T(0.075, 0.463,
+      "operator publishes the exact line at its limit,", 17, MUTE)
+    T(0.075, 0.426, "every 5 minutes. This is the receipt.", 17, MUTE)
+    T(0.075, 0.33, f"{share}%", 60, CORAL, "bold")
+    T(0.075, 0.245,
+      "of every line-limitation instruction the operator", 16, MUTE)
+    T(0.075, 0.208,
+      "wrote down names this one corridor. It sits on the", 16, MUTE)
+    T(0.075, 0.171, "path the data-center wave would have to cross.", 16, MUTE)
+    ax.plot([0.075, 0.925], [0.105, 0.105], transform=ax.transAxes,
+            color="#24425f", lw=1.2)
+    T(0.075, 0.072, "power-dispatch-studio.vercel.app", 18, WHITE, "bold")
+    T(0.075, 0.037,
+      "IEMOP congestion + dispatch-instruction files, archived daily.", 13.5, MUTE)
+
+    out = os.path.join(DOCS, "linkedin-card-choke.png")
+    fig.savefig(out, dpi=100, facecolor=BG)
+    plt.close(fig)
+    print("wrote", out, f"({os.path.getsize(out) // 1024} KB)  "
+          f"{dap}/{days} days, {share}% of line-limitation instructions")
 
 
 def _wide(margin, wave, pct):

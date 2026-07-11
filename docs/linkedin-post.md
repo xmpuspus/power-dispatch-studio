@@ -12,9 +12,12 @@ Three different prices exist. Keep them apart or the energy-literate crowd tears
   P15.72 on 2026-06-08. These roll as the window advances. [ROLLS]
 - THE MERALCO BILL (sourced constant): June 2026 WESM P7.03 inside a P9.07 generation
   charge, P14.48 total rate.
-- A NEWS PRINT is a news print. If you cite the June WESM system/Visayas averages,
-  attribute the outlet and never call them the tool's output. Better: skip them and
-  use the tool's own numbers above.
+- A NEWS PRINT is a news print. The June print is verified: WESM prices rose 22.7% in
+  June on thin supply and outages (BusinessMirror, 2026-07-09). If you use it, attribute
+  the outlet and never call it the tool's output. The May supply margin the card rides on
+  (3,629 MW, down from 4,427 MW in April, with average supply 21,374 MW and average demand
+  15,755 MW that do NOT subtract to it) is IEMOP's own reported figure via BusinessWorld
+  and Power Philippines, so the 41% share is on solid ground.
 
 ## Image (this is what fixes the scroll-past)
 
@@ -22,9 +25,11 @@ Every option below carries the 41% claim on the first frame. On LinkedIn a share
 video autoplays muted and the feed shows its real first frame, so the first frame is
 what has to land. Pick one:
 1. `docs/linkedin-card.png` (the portrait 41% card) as a single post image. Simplest, strongest.
-2. A 3-image carousel: (1) the stat card, (2) the four-panel `docs/story-montage.gif`
-   (or a still of it), (3) a screenshot of the live map's "Is there room for the wave?"
-   panel with the CTA. Carousels dwell well on LinkedIn.
+2. A 3-card carousel (all dark, portrait, one visual system): (1) `docs/linkedin-card.png`
+   (the 41% arithmetic), (2) `docs/linkedin-card-choke.png` (the choke-point receipt:
+   Leyte to Cebu at its limit 92 of 95 days, 98% of line-limitation instructions), (3) a
+   still of the four-panel `docs/story-montage.gif` as the proof. Carousels dwell well on
+   LinkedIn. Cards 1 and 2 are bake-derived, so `make viz` re-cuts them current.
 3. `docs/studio-e2e.mp4` as native video. It now OPENS on the 41% title card (the wide
    `docs/linkedin-card-wide.png` is baked into its first ~1.8 seconds), so the
    muted-autoplay first frame carries the claim, then it runs the full studio walkthrough.
@@ -83,6 +88,18 @@ First comment (keeps the tags out of the body so a mis-tag doesn't throttle reac
 > files; not affiliated with any operator or vendor.
 
 Hashtags (3-5): #Philippines #Energy #DataCenters #WESM #OpenData
+
+Amplifiers to tag in the follow-up comment (never in the body, never as an accusation),
+ranked by reshare odds for a public-data energy story:
+- ICSC (Institute for Climate and Sustainable Cities). They run PRESYO-PH, a power-rates
+  transparency platform, so an open WESM tool is squarely in their lane and a natural signal-boost.
+- PCIJ. They ran the viral flood-control data maps and the data-center-grid reporting this
+  project pegs to; a public-files investigation is their wheelhouse.
+- Energy-desk journalists: Power Philippines, BusinessWorld, BusinessMirror (Lenie Lectura
+  wrote the June WESM print), Rappler's data/energy desk.
+Frame the tag as "curious what you make of it," offering a reproducible public-data tool,
+not calling anyone out. Tag NGCP/DOE/DICT only if at all, and only because every number is
+their own published file.
 
 ## Pre-post checklist
 
