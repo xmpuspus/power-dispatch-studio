@@ -229,6 +229,7 @@ islands, near zero on dispatchable reserve. Scarcity hours (scheduled MW
 under the stated requirement, where administrative pricing can sit above
 any offer) are counted per pool and excluded from the right-hand MAE.
 
+<!-- reserve-table: generated from market_ops.json by scripts/verify_claims.py --write; do not hand-edit -->
 | Pool | Hours | Observed mean | Modeled mean | Bias | Exact hours | Scarcity hours | MAE outside scarcity |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Luzon contingency (Fr) | 2,040 | P6.00 | P1.86 | -P4.13 | 45.7% | 446 | P3.58 |
@@ -243,6 +244,7 @@ any offer) are counted per pool and excluded from the right-hand MAE.
 | Mindanao dispatchable (Dr) | 2,040 | P1.03 | P0.07 | -P0.96 | 88.6% | 349 | P0.23 |
 | Mindanao regulation up (Ru) | 2,040 | P15.77 | P12.13 | -P3.65 | 71.0% | 237 | P3.62 |
 | Mindanao regulation down (Rd) | 2,040 | P13.89 | P13.14 | -P0.75 | 86.0% | 232 | P0.69 |
+<!-- /reserve-table -->
 
 Exact hours match the official price within half a centavo: on Luzon
 dispatchable reserve the book alone reproduces the official price in four

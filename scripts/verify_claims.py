@@ -34,6 +34,28 @@ def _load(name):
         return json.load(fh)
 
 
+_RES_NAMES = {"Fr": "contingency (Fr)", "Dr": "dispatchable (Dr)",
+              "Ru": "regulation up (Ru)", "Rd": "regulation down (Rd)"}
+
+
+def _reserve_table_md(rv):
+    """Regenerate the studio reserve-validation table from the baked pools."""
+    def peso(x):
+        return f"-P{abs(x):.2f}" if x < 0 else f"P{x:.2f}"
+    rows = ["| Pool | Hours | Observed mean | Modeled mean | Bias | Exact hours "
+            "| Scarcity hours | MAE outside scarcity |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- |"]
+    for grid in ("luzon", "visayas", "mindanao"):
+        for cm in ("Fr", "Dr", "Ru", "Rd"):
+            p = rv["pools"][grid][cm]
+            rows.append(
+                f"| {grid.capitalize()} {_RES_NAMES[cm]} | {p['n_hours']:,} | "
+                f"P{p['observed_mean_php_kwh']:.2f} | P{p['modeled_mean_php_kwh']:.2f} | "
+                f"{peso(p['bias_php_kwh'])} | {p['exact_hours_pct']:.1f}% | "
+                f"{p['n_scarcity_hours']} | P{p['mae_nonscarcity_php_kwh']:.2f} |")
+    return "\n".join(rows)
+
+
 def canonical():
     """Every rolling count the public prose carries, straight from the bake."""
     cg = _load("congestion.json")
@@ -79,6 +101,8 @@ def canonical():
         "sodir_days": sodir["n_days"],
         "reserve_days": rv["days"],
         "reserve_above_pct": f'{rv["hours_model_above_pct"]:.1f}',
+        "scored_hours": f"{sum(c['n_hours'] for g in rv['pools'].values() for c in g.values()):,}",
+        "reserve_table": _reserve_table_md(rv),
         "profiles_days": len(profiles["days"]),
         "window_from": cg["window"]["from"],
         "window_to": cg["window"]["to"],
@@ -90,10 +114,9 @@ def canonical():
 # carries enough surrounding words to match exactly one place.
 # Each entry: (file, anchor regex with ONE capture group per key, keys). The
 # anchor carries enough surrounding words to match exactly one place. --write
-# rewrites the captured number(s) in place; --check fails on any mismatch.
-# NOTE: the studio reserve TABLE cells (studio/README.md) are NOT registered
-# here (96 cells); only its day-count/percent scalars are, which fail loudly
-# when the window rerolls and the table needs a re-cut.
+# rewrites the captured number(s) in place; --check fails on any mismatch. The
+# studio reserve TABLE's 96 cells are handled as a regenerated BLOCK below, not
+# as scalars here.
 REGISTRY = [
     # --- README.md (the LinkedIn-facing surface; --write auto-syncs it nightly)
     ("README.md",
@@ -122,8 +145,8 @@ REGISTRY = [
      re.compile(r"at the same interval: (\d+) days, twelve"),
      ["reserve_days"]),
     ("studio/README.md",
-     re.compile(r"noise-level \((\d+\.\d) percent of the ~[\d,]+ scored"),
-     ["reserve_above_pct"]),
+     re.compile(r"noise-level \((\d+\.\d) percent of the ~([\d,]+) scored"),
+     ["reserve_above_pct", "scored_hours"]),
     ("studio/README.md",
      re.compile(r"Hourly demand and observed prices \((\d+) observed days\)"),
      ["profiles_days"]),
@@ -137,12 +160,18 @@ REGISTRY = [
 ]
 
 
-# README.md is fully covered here, so the nightly cron auto-syncs it. The
-# studio/methodology entries also guard the reserve TABLE's day-count, whose 96
-# cells this oracle does not rewrite; auto-writing their scalar alone would
-# desync it from its own table, so those files are check-only (a --check failure
-# there is the signal to re-cut that section by hand and rerun `make viz`).
-WRITABLE = {"README.md"}
+# Marker-delimited blocks regenerated wholesale from the bake (the reserve
+# table's 96 cells). The block body between the two markers is replaced with the
+# canonical string on --write and compared on --check.
+BLOCKS = [
+    ("studio/README.md", "<!-- reserve-table:", "<!-- /reserve-table -->",
+     "reserve_table"),
+]
+
+# Every public prose file is now bake-derived and auto-synced by the nightly
+# cron: the scalar registry above plus the reserve-table block below cover all of
+# the rolling numbers in each, so none can silently freeze behind the map.
+WRITABLE = {"README.md", "studio/README.md", "web/methodology.html"}
 
 
 def _check_file(path, text, canon, write):
@@ -168,6 +197,22 @@ def _check_file(path, text, canon, write):
         else:
             problems.append(
                 f"[DRIFT] {path} {keys}: prose has {got}, bake says {want}")
+    for _f, start, end, key in [b for b in BLOCKS if b[0] == path]:
+        si, ei = text.find(start), text.find(end)
+        if si == -1 or ei == -1:
+            problems.append(f"[MISS] {path}: block markers not found ({start!r})")
+            continue
+        body_start = text.find("\n", si) + 1
+        want = canon[key] + "\n"
+        got = text[body_start:ei]
+        if got == want:
+            continue
+        if write:
+            text = text[:body_start] + want + text[ei:]
+            fixed += 1
+        else:
+            problems.append(
+                f"[DRIFT] {path} block {key}: table out of sync with the bake")
     return text, problems, fixed
 
 
@@ -178,7 +223,7 @@ def main():
     args = ap.parse_args()
 
     canon = canonical()
-    files = sorted({e[0] for e in REGISTRY})
+    files = sorted({e[0] for e in REGISTRY} | {b[0] for b in BLOCKS})
     all_problems = []
     total_fixed = 0
     for rel in files:
@@ -205,10 +250,9 @@ def main():
         print("verify_claims: public prose is out of lockstep with the bake\n")
         print("\n".join(all_problems))
         print("\nfix: run `python3 scripts/verify_claims.py --write` "
-              "(and `make viz` for the OG card + montage; the studio reserve "
-              "table cells re-cut by hand).")
+              "(and `make viz` for the OG card + montage).")
         sys.exit(1)
-    n = len(REGISTRY)
+    n = len(REGISTRY) + len(BLOCKS)
     print(f"verify_claims: all {n} claims across {len(files)} files match the bake "
           f"(window {canon['window_from']} to {canon['window_to']}, "
           f"{canon['days_covered']} days)")

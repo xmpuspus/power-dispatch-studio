@@ -18,15 +18,17 @@ Three different prices exist. Keep them apart or the energy-literate crowd tears
 
 ## Image (this is what fixes the scroll-past)
 
-Lead with `docs/linkedin-card.png` (the 41% stat card). On LinkedIn a shared video
-autoplays muted and the feed shows its real first frame, and the studio MP4 opens on
-a blank white frame, so DO NOT lead with the video. Best formats, in order:
-1. The single stat card as the post image (simplest, strongest).
-2. A 3-image carousel: (1) `docs/linkedin-card.png`, (2) `docs/story-montage.gif`
-   exported to a still or the four-panel image, (3) a screenshot of the live map's
-   "Is there room for the wave?" panel with the CTA. Carousels dwell well on LinkedIn.
-Only use the MP4 if the stat card is baked into its first ~2 seconds (a custom poster
-does NOT override in-feed muted autoplay).
+Every option below carries the 41% claim on the first frame. On LinkedIn a shared
+video autoplays muted and the feed shows its real first frame, so the first frame is
+what has to land. Pick one:
+1. `docs/linkedin-card.png` (the portrait 41% card) as a single post image. Simplest, strongest.
+2. A 3-image carousel: (1) the stat card, (2) the four-panel `docs/story-montage.gif`
+   (or a still of it), (3) a screenshot of the live map's "Is there room for the wave?"
+   panel with the CTA. Carousels dwell well on LinkedIn.
+3. `docs/studio-e2e.mp4` as native video. It now OPENS on the 41% title card (the wide
+   `docs/linkedin-card-wide.png` is baked into its first ~1.8 seconds), so the
+   muted-autoplay first frame carries the claim, then it runs the full studio walkthrough.
+The old blank-white first frame is fixed, so whichever format you pick, frame one is the number.
 
 ## The post
 
@@ -84,7 +86,7 @@ Hashtags (3-5): #Philippines #Energy #DataCenters #WESM #OpenData
 
 ## Pre-post checklist
 
-- [ ] Lead image is `docs/linkedin-card.png` (the 41% card), NOT the blank-opening video.
+- [ ] Lead image/video opens on the 41% card (card, carousel, or the MP4 that now opens on it).
 - [ ] The card's number (41%) matches the hook.
 - [ ] Every price labeled by period + source; no news print presented as the tool's output.
 - [ ] The "did not cause the alerts" guardrail line is in.
