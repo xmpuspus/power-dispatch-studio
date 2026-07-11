@@ -542,7 +542,7 @@ def build_findings(cong, rel, prices, outs, named_dc_mw, n_dc) -> dict:
             f"(Cebu) 230 kV lines that carry this corridor top the league: at "
             f"a limit on {top['days']} of {cong['days_covered']} archive days "
             f"across the day-ahead and real-time runs, including "
-            f"{cr['rtd_intervals']} five-minute real-time intervals on "
+            f"{cr['rtd_intervals']} 5-minute real-time intervals on "
             f"{cr['rtd_days']} days. The same corridor IEMOP's December 2025 "
             f"report names in prose.",
             "IEMOP congestions-manifesting files (RTD + DAP), archive window",

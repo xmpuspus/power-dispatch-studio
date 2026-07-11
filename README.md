@@ -2,7 +2,7 @@
 
 Can the Philippine grid host the announced data-center wave? An interactive map, a
 browser dispatch studio, and a daily archive built on the market operator's own
-public files: where transmission already binds (named equipment, five-minute
+public files: where transmission already binds (named equipment, 5-minute
 receipts), where the announced data-center megawatts land, and what the spot market
 and the Meralco bill are doing. The studio replays market days two ways, on a
 calibrated cost stack and on the operator's own published offer books, so the
@@ -25,11 +25,11 @@ Live: [the map](https://power-dispatch-studio.vercel.app) and
 
 The choke points are not inferred. IEMOP publishes a "congestions manifesting" file
 that names the exact transmission equipment sitting at its binding limit, per
-five-minute interval, and this repo archives and ranks them. A row **literally named
+5-minute interval, and this repo archives and ranks them. A row **literally named
 `LEYTE_TO_CEBU`** shows up in the day-ahead runs on **68 of the window's 90 days**.
 The 230 kV lines that carry that corridor, Tabango (Leyte) to Daanbantayan (Cebu),
 top the league: at a binding limit in the hourly day-ahead runs on **87 of 90
-days**, and binding in the five-minute real-time dispatch, the run settlement
+days**, and binding in the 5-minute real-time dispatch, the run settlement
 actually sees, on **21 days** of the window. Both columns are in the table; the
 day-ahead count measures how persistently the constraint reappears across re-runs,
 the real-time count how often it actually bound. The same corridor IEMOP's December
@@ -40,7 +40,7 @@ the real-time count how often it actually bound. The same corridor IEMOP's Decem
 Across the 90-day window, **84 distinct pieces of equipment** hit a limit at least
 once. The map ranks them by days at a limit (a day counts once, so a day-ahead
 re-run cannot inflate it) and keeps the real-time and day-ahead counts in separate
-columns, because the day-ahead market re-prices hourly and its raw row count
+columns, because the day-ahead projection re-prices hourly and its raw row count
 measures re-run persistence, not time at the limit. Per-equipment receipts:
 [`web/data/congestion.json`](web/data/congestion.json); rebuild with `make data`.
 
@@ -114,10 +114,10 @@ simulation.
 The price is a shape, not a number. The same data center draws the same power every
 hour, but what it does to the WESM price depends on how busy the grid already is:
 almost nothing when there is room, a jump when the grid is full. This is the Luzon
-grid's own price-vs-load curve, every faint dot a five-minute interval from the
+grid's own price-vs-load curve, every faint dot a 5-minute interval from the
 archive.
 
-![The Luzon price-versus-load curve: a faint cloud of five-minute intervals with a navy average line that stays near 4 pesos per kWh at 9 gigawatts of generation and climbs past 14 pesos as the grid fills toward 14 gigawatts, with a 300 MW data center marker moving along it](docs/price-shape.gif)
+![The Luzon price-versus-load curve: a faint cloud of 5-minute intervals with a navy average line that stays near 4 pesos per kWh at 9 gigawatts of generation and climbs past 14 pesos as the grid fills toward 14 gigawatts, with a 300 MW data center marker moving along it](docs/price-shape.gif)
 
 ![One Luzon day from the archive: dispatched generation meeting demand as a filled band dipping overnight and rising into the evening, with the WESM price line staying low through the day and climbing at the peak](docs/supply-demand-day.gif)
 
@@ -196,7 +196,7 @@ load, so the scarcity signal stays exactly where it was.
 The adequacy number is the checkable one. At the evening peak Luzon has about
 **15,680 MW** available against a **14,539 MW** native-load peak, a **7.9%** reserve
 margin. Add the DICT forecast of **1,500 MW** of data centers by 2028 (a labeled DICT
-forecast, October 2025) and that margin falls to **-2.2%**: 99 five-minute intervals
+forecast, October 2025) and that margin falls to **-2.2%**: 99 5-minute intervals
 in the window go short, 1,296 MWh unserved.
 
 That reserve margin is a single number; a forced outage is a coin toss, so the model
@@ -405,7 +405,7 @@ Every number on the map traces back to one of these.
 
 - [IEMOP market data](https://www.iemop.ph/market-data/). the Independent Electricity
   Market Operator's public files: congestions manifesting (named binding equipment per
-  five-minute interval), regional summaries, load-weighted average prices, HVDC limits,
+  5-minute interval), regional summaries, load-weighted average prices, HVDC limits,
   outage schedules. The rolling ~90-day window is what `pipeline/archive_iemop.py`
   turns into a permanent archive.
 - [IEMOP monthly reports](https://www.iemop.ph/news/). the operator's narrative on each
@@ -454,9 +454,9 @@ staleness gate that fails the cron if the archive stops growing.
 
 | File | What it is |
 |---|---|
-| `data/raw/RTDCV/`, `data/raw/DAPCV/` | IEMOP "congestions manifesting" daily CSVs: named equipment, station, binding limit, MW flow, overload, per five-minute interval (RTD) or hourly (DAP) |
+| `data/raw/RTDCV/`, `data/raw/DAPCV/` | IEMOP "congestions manifesting" daily CSVs: named equipment, station, binding limit, MW flow, overload, per 5-minute interval (RTD) or hourly (DAP) |
 | `data/raw/RTDSUM/` | RTD regional summaries: energy and reserve rows per grid (demand bids, load curtailed, reserve requirement vs scheduled) |
-| `data/raw/LWAPF/` | Load-weighted average prices, final, per grid per five-minute interval (PhP/MWh) |
+| `data/raw/LWAPF/` | Load-weighted average prices, final, per grid per 5-minute interval (PhP/MWh) |
 | `data/raw/HVDCRTD/`, `data/raw/OUTRTD/` | HVDC limits imposed in RTD; outage schedules used in RTD |
 | `web/data/congestion.json` | Constraint league (ranked by days, RT and DAP counts separate) plus per-corridor receipts joined to the choke-point lines |
 | `web/data/prices.json` | Daily regional price series, the administered-vs-market regime split, and the widest-spread day |

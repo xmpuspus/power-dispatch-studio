@@ -189,7 +189,7 @@ def derive() -> dict:
                  "interval's sign turns on supply accounting finer than the "
                  "offers give. The DEEP negatives are not an aggregate crossing "
                  "at all: at the day's most negative interval the observed price "
-                 "is about -10 PhP/kWh while physical native load sits above the "
+                 "is about -P10/kWh while physical native load sits above the "
                  "entire aggregate floor-priced supply, so the per-grid clear "
                  "must price positive there; that -10 is a load-weighted average "
                  "of nodal prices pulled to the floor by curtailed-solar "
