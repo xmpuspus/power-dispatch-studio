@@ -8093,6 +8093,68 @@
   "src": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
+ "subhourly_probe": {
+  "available": true,
+  "crossing_days": [
+   {
+    "date": "2026-05-03",
+    "closest_hour": 12,
+    "floor_supply_vs_load_margin_pct": 0.54,
+    "observed_negative_lwap_intervals": 50,
+    "observed_min_lwap_php_kwh": -10.5
+   },
+   {
+    "date": "2026-06-21",
+    "closest_hour": 9,
+    "floor_supply_vs_load_margin_pct": 1.37,
+    "observed_negative_lwap_intervals": 5,
+    "observed_min_lwap_php_kwh": -10.2
+   },
+   {
+    "date": "2026-05-10",
+    "closest_hour": 14,
+    "floor_supply_vs_load_margin_pct": 1.75,
+    "observed_negative_lwap_intervals": 27,
+    "observed_min_lwap_php_kwh": -10.26
+   },
+   {
+    "date": "2026-06-28",
+    "closest_hour": 12,
+    "floor_supply_vs_load_margin_pct": 2.03,
+    "observed_negative_lwap_intervals": 0,
+    "observed_min_lwap_php_kwh": 0.0
+   },
+   {
+    "date": "2026-05-31",
+    "closest_hour": 13,
+    "floor_supply_vs_load_margin_pct": 2.29,
+    "observed_negative_lwap_intervals": 26,
+    "observed_min_lwap_php_kwh": -10.4
+   },
+   {
+    "date": "2026-05-16",
+    "closest_hour": 9,
+    "floor_supply_vs_load_margin_pct": 2.3,
+    "observed_negative_lwap_intervals": 12,
+    "observed_min_lwap_php_kwh": -9.81
+   }
+  ],
+  "n_crossing_days": 6,
+  "n_days_with_observed_negatives": 5,
+  "min_margin_pct": 0.54,
+  "deep_negative_structural": {
+   "date": "2026-05-03",
+   "interval": "09:25",
+   "observed_price_php_kwh": -10.5,
+   "physical_native_load_mw": 9870,
+   "aggregate_floor_supply_mw": 9834,
+   "aggregate_must_price_positive": true
+  },
+  "verdict": "sign_flips_are_a_knife_edge_needing_finer_supply_than_offers",
+  "note": "The negative clearing prices the hourly replay drops were prototyped at 5-minute resolution and measured, and split into two boundaries neither of which a per-grid 5-minute replay closes. Near zero it is a true knife-edge: on the crossing days the offer book's floor-priced supply (self-scheduled solar and must-run at the WESM floor plus zero-priced offers) comes within 0.54 percent of native load at the midday peak, and the book's own 48-block compaction moves about 4 percent of that supply across the zero line, wider than the margin, so a shallow interval's sign turns on supply accounting finer than the offers give. The DEEP negatives are not an aggregate crossing at all: at the day's most negative interval the observed price is about -10 PhP/kWh while physical native load sits above the entire aggregate floor-priced supply, so the per-grid clear must price positive there; that -10 is a load-weighted average of nodal prices pulled to the floor by curtailed-solar pockets, which no per-grid replay reproduces at any time resolution. A clean 5-minute clear on the model's own demand basis reproduces none of the day's observed negative intervals (5 of the six days show observed negatives). Sub-hourly granularity is necessary but not sufficient; the sign flips stay a named boundary, a near-zero resolution knife-edge over a curtailed-solar nodal floor, and the model keeps its stated approximation.",
+  "src": "https://www.iemop.ph/market-data/load-weighted-average-prices-final/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
  "flow_record": {
   "available": true,
   "days": 93,

@@ -1119,6 +1119,24 @@ check("on the requirement-met hours the offer stack cleared to the scheduled "
       "the official is a large administered scarcity uplift above the stack",
       jl["max_offer_stack_gap_on_met_hours_php_kwh"] <= 3.0
       and jl["max_scarcity_uplift_on_short_hours_php_kwh"] >= 10.0)
+# Pass G: the negative-price sign flips are a knife-edge; sub-hourly resolution
+# is necessary (hour-mean cannot cross) but not sufficient (margin finer than
+# the offers pin down)
+sh = mo.get("subhourly_probe") or {}
+check("the negative-price sign flips are a measured knife-edge: floor-priced "
+      "supply within a few percent of native load, observed regional price "
+      "crosses negative, but the margin is finer than the offers resolve",
+      sh.get("available")
+      and sh["verdict"]
+      == "sign_flips_are_a_knife_edge_needing_finer_supply_than_offers"
+      and sh["min_margin_pct"] < 1.0
+      and sh["n_days_with_observed_negatives"] >= 3)
+check("the deep negatives are structurally nodal: at the deepest interval "
+      "physical load exceeds the aggregate floor supply, so the per-grid "
+      "clear must price positive there (no per-grid replay reproduces it)",
+      (sh.get("deep_negative_structural") or {}).get("aggregate_must_price_positive")
+      is True
+      and sh["deep_negative_structural"]["observed_price_php_kwh"] < -5.0)
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)
