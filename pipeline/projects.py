@@ -8,7 +8,7 @@ Internet Archive captures of the DOE's own PDFs; the DOE CMS refuses non-PH
 requests). Text extracts live in data/external/doe/ alongside the PDFs, same
 pattern as fleet_doe.py.
 
-The parser keeps the aggregate honest and refuses to guess names:
+The parser keeps the aggregate accurate and refuses to guess names:
   - every fuel section prints its own MW subtotal; a section's parsed rows must
     sum EXACTLY to that subtotal or the section is kept aggregate-only
     (subtotal, no timed rows) and flagged;

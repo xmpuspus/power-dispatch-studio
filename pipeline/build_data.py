@@ -254,7 +254,7 @@ def build_reliability() -> dict:
 
 
 # --- price vs load (RTDSUM GENERATION joined to LWAPF price) ---------------------
-# The honest load axis is dispatched generation (thousands of MW, grid scale), NOT
+# The load axis is dispatched generation (thousands of MW, grid scale), NOT
 # LOAD_BID (bid-in incremental load, near zero). Joined per 5-minute interval to the
 # load-weighted price. Produces the price-as-a-shape relationship and one
 # representative day's demand-and-price curve, both from the archive.

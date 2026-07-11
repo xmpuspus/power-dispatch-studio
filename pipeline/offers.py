@@ -14,7 +14,7 @@ data/derived/offer_daily/.
 Semantics and gates:
   - the hour's stack is the offer book at the hour's FIRST interval
     (HH:05); resources re-offer within the hour, and one representative
-    book per hour is what an hourly LP can honestly use (stated here, not
+    book per hour is what an hourly LP can use (stated here, not
     hidden).
   - hourly files are end-labeled like DIPCEF: day D hour h lives in the
     file stamped D_(h+1)00, and h=23 in (D+1)_0000.

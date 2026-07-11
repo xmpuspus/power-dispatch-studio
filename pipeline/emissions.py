@@ -8,7 +8,7 @@ oil-based uses the EMB's own diesel-plant figure. Geothermal carries a small
 nonzero factor (dissolved CO2 in the working fluid); hydro, solar, wind and
 storage discharge carry zero operational CO2 (their lifecycle emissions are
 real and out of scope). Biomass is EXCLUDED from the sum: its carbon
-accounting is contested and the honest move is to not count it either way.
+accounting is contested, so it is not counted either way.
 
 The DOE's published National Grid Emission Factor is baked alongside as an
 order-of-magnitude cross-check, never used in the per-fuel math.

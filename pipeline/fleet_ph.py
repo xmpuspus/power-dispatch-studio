@@ -31,7 +31,7 @@ here and they are kept apart on purpose:
       377 MWh/day against a modeled 5.5 MW of available capacity.
     - fuel availability derates and the solar time-of-day profile
     - the oil / peaker marginal cost (sets the scarcity price; the calibration
-      residual, not this number, carries the scarcity premium honestly)
+      residual, not this number, carries the scarcity premium)
     - CO2 emission factors by fuel (IPCC/EIA typical values)
 
 Nothing here is PLEXOS. It is a transparent economic-dispatch approximation whose
@@ -190,7 +190,7 @@ MERIT_ORDER = ["solar", "wind", "hydro", "geothermal", "natural_gas",
 #     https://www.philstar.com/business/2026/01/05/2498730/wesm-prices-hit-fresh-lows-2025
 # The marginal (cycling) coal tranche keeps the P6.00 administered price. This lowers
 # the modeled overnight price where demand is light without touching the evening
-# peak (still on the P6 tranche or oil), so the scarcity residual stays honest.
+# peak (still on the P6 tranche or oil), so the scarcity residual is preserved.
 COAL_MIN_LOAD_FRAC = 0.40
 COAL_COMMIT_PHP_KWH = 4.14
 

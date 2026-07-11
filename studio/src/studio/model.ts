@@ -3,7 +3,7 @@
 // a named override map; Run applies base + overrides, rebuilds the stacks, and solves
 // the coupled dispatch through engine.ts (which is golden-parity to the Python).
 //
-// Honest block-dispatch stance: the model clears aggregate per-fuel blocks. The Fuels
+// Block-dispatch stance: the model clears aggregate per-fuel blocks. The Fuels
 // class sets the stack (cost + available MW per grid). The Generators class carries
 // the DOE list of existing power plants (real units, DOE dependable capacities);
 // editing a unit shifts its fuel's available capacity on its grid by the change (an

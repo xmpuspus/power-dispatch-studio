@@ -136,7 +136,7 @@ def build_coupling(intervals: dict, prices: dict) -> dict:
     """Couple the three grids over the market window and decompose the regional
     price spread the coupled model reproduces vs the residual it cannot.
 
-    The honest finding, stated up front: with the STATIC fleet all three grids sit
+    The finding, stated up front: with the STATIC fleet all three grids sit
     on the ~P6 coal margin most of the market window, so 250 MW of Luzon import
     slides Visayas back under its own coal ceiling and the Leyte-Luzon corridor
     almost never binds. The coupled model therefore reproduces almost none of the
@@ -559,7 +559,7 @@ def build_reliability_mc(hourly_dem: dict, draws: int = 20000, seed: int = 42) -
 
 def build_storage(hourly_dem: dict, draws: int = 20000, seed: int = 42) -> dict:
     """Storage as a peak-firming time-shifter (item 4). Batteries and Kalayaan
-    pumped hydro charge off-peak and discharge at the evening peak. Two honest
+    pumped hydro charge off-peak and discharge at the evening peak. Two
     questions: how much does the existing 634 MW of batteries plus 685 MW of pumped
     hydro shave the DICT-wave peak price, and how much of the DC-wave loss-of-load
     probability does it buy back. Existing storage is already in the observed prices,
@@ -743,7 +743,7 @@ def build_dispatch() -> dict:
         # The window residual (observed - modeled) flips sign across the day: the
         # static stack OVER-prices the overnight trough (real units bid below cost
         # to stay committed) and UNDER-prices the evening peak (scarcity + offers).
-        # So the honest headline is MAE, not the netted mean. The one-directional
+        # So the headline is MAE, not the netted mean. The one-directional
         # scarcity signal is the evening-peak residual (hours 17-21), where observed
         # exceeds modeled every hour.
         peak_pts = [(mp, op) for h in range(17, 22)
@@ -764,7 +764,7 @@ def build_dispatch() -> dict:
                      if corr is None else None),
         }
 
-    # before/after the unit-commitment layer, reported honestly (not tuned). The
+    # before/after the unit-commitment layer, reported (not tuned). The
     # committed must-run coal tranche lowers the modeled overnight price; whether it
     # cuts MAE and lifts correlation is measured, per grid, against the static stack.
     unit_commitment = {
@@ -837,7 +837,7 @@ def build_dispatch() -> dict:
             "typical_evening_demand_mw": typical,
             "peak_demand_mw": round(peak_demand[g]),
             "fuel_avail_mw": fuel_avail,
-            # solar availability so the client scenario engine can add solar honestly:
+            # solar availability so the client scenario engine can add solar:
             # at the evening reference hour the profile is ~0 (the added-solar lever
             # barely moves adequacy; storage does), so it is carried alongside the
             # midday maximum to make that caveat concrete rather than a silent no-op.

@@ -58,7 +58,7 @@ describe('property edits move the solution the right way', () => {
     }
     const hi = solveModel(d, OBJ, ov)
     // evening load sets the clearing price; the reserve margin is avail vs the annual
-    // peak, so it is unaffected by an evening-load edit (that is the honest coupling)
+    // peak, so it is unaffected by an evening-load edit (that is the real coupling)
     expect(hi.coupled.price.luzon).toBeGreaterThan(base.coupled.price.luzon)
   })
 
