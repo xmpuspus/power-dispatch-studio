@@ -1117,6 +1117,24 @@ def build_admin_dispatch() -> dict:
     return d
 
 
+def build_joint_lp_probe() -> dict:
+    """The per-resource joint energy+reserve LP probe (Pass F): prototyped on
+    a sample of grid-hours, it does not reproduce the official co-optimised
+    reserve price, so the reserve wedge stays measured, not closed. Read from
+    the committed derivation (pipeline/joint_lp_probe.py)."""
+    import json as _json
+
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "..", "data", "derived", "joint_lp_probe.json")
+    if not os.path.isfile(p):
+        return {"available": False,
+                "note": "no joint-LP probe; run pipeline/joint_lp_probe.py"}
+    d = _json.load(open(p))
+    d.setdefault("disclaimer", "Statistical indicators derived from public "
+                 "data. Patterns may have legitimate explanations.")
+    return d
+
+
 _HS_KEYS = {"VISLUZ1": "lv", "MINVIS1": "vm"}
 
 

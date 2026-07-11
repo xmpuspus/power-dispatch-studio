@@ -615,13 +615,29 @@ final per-resource cleared reserve (DIPC reserve results final) is now
 archived, and the RTDOR book replay scored against it under-prices on
 every pool as it did against the RTD price, the same one-signed wedge
 confirmed against the authoritative final clearing (market_ops.json
-reserve_results). What stays queued, with its named input, is the
-per-resource joint energy+reserve LP itself: the cleared results are the
-answer to reproduce, but the LP needs the raw per-resource offer curves
-on BOTH sides (energy and reserve), which the compacted public artifacts
-pool away, so the joint clear needs the raw hourly offer files refetched
-per resource. The dispatch model keeps its stated approximation
-meanwhile: withhold the requirement, show the official price beside it.</li>
+reserve_results). The per-resource joint energy+reserve LP that would close
+the wedge was then PROTOTYPED from the raw hourly per-resource offer
+curves (RTDOE energy, RTDOR reserve) on a sample of grid-hours, and the
+prototype located exactly why it cannot reproduce the official RSVPR
+(market_ops.json joint_lp_probe). The reserve requirement CLEARS SHORT
+on the scarce hours: the operator's own RTDSUM shows the scheduled
+reserve at 11 to 36 percent of the market requirement on those hours.
+Where the requirement is met, the marginal Dr offer cleared to the
+scheduled quantity reproduces RSVPR to within about a centavo, so the
+offer stack already explains those hours (the pooled replay scores
+them). Where it clears short, the official price sits above the ENTIRE
+offer stack, an administered reserve-scarcity value (up to about 25
+PhP/kWh over the marginal offer on the sample) that the public offers
+cannot explain, and a joint LP that forces the full requirement goes
+infeasible on exactly those hours, as the real market could not meet it
+either. So the wedge is administered reserve scarcity on the
+requirement-short hours, not a co-optimisation internal recoverable from
+offers; fixing the energy dispatch to the observed schedule (DIPCEF) and
+registered capacity (CAPEG) tracks RSVPR only where the requirement is
+met and cannot recover the scarcity uplift where it is not. The wedge
+therefore stays measured, not closed, and the dispatch model keeps its
+stated approximation: withhold the requirement, show the official price
+beside it.</li>
 <li><b>Sub-zonal topology</b> (a Leyte-Cebu split): WESM expresses
 inter-island congestion as one price per island grid, so a split region has
 no published price series to validate against; only sample-day DIPCEF nodal

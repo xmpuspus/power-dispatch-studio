@@ -8019,6 +8019,80 @@
   "src": "https://www.iemop.ph/market-data/list-of-mot-raise-re-dispatch-based-on-so-dispatch-instruction-report/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
+ "joint_lp_probe": {
+  "available": true,
+  "samples": [
+   {
+    "date": "2026-05-15",
+    "hour": 19,
+    "grid": "luzon",
+    "mkt_reqt_mw": 668.0,
+    "scheduled_mw": 239.2,
+    "met_pct": 35.8,
+    "marginal_offer_at_scheduled_php_kwh": 0.0,
+    "official_rsvpr_php_kwh": 23.823,
+    "scarcity_uplift_php_kwh": 23.823,
+    "joint_lp_free_redispatch_php_kwh": "infeasible"
+   },
+   {
+    "date": "2026-05-30",
+    "hour": 20,
+    "grid": "luzon",
+    "mkt_reqt_mw": 596.0,
+    "scheduled_mw": 596.0,
+    "met_pct": 100.0,
+    "marginal_offer_at_scheduled_php_kwh": 1.9,
+    "official_rsvpr_php_kwh": 1.9,
+    "scarcity_uplift_php_kwh": -0.0,
+    "joint_lp_free_redispatch_php_kwh": 1.9
+   },
+   {
+    "date": "2026-06-10",
+    "hour": 19,
+    "grid": "visayas",
+    "mkt_reqt_mw": 93.0,
+    "scheduled_mw": 17.7,
+    "met_pct": 19.0,
+    "marginal_offer_at_scheduled_php_kwh": 0.0,
+    "official_rsvpr_php_kwh": 25.0,
+    "scarcity_uplift_php_kwh": 25.0,
+    "joint_lp_free_redispatch_php_kwh": "infeasible"
+   },
+   {
+    "date": "2026-06-20",
+    "hour": 19,
+    "grid": "luzon",
+    "mkt_reqt_mw": 668.0,
+    "scheduled_mw": 668.0,
+    "met_pct": 100.0,
+    "marginal_offer_at_scheduled_php_kwh": 4.0,
+    "official_rsvpr_php_kwh": 5.038,
+    "scarcity_uplift_php_kwh": 1.038,
+    "joint_lp_free_redispatch_php_kwh": 4.0
+   },
+   {
+    "date": "2026-06-20",
+    "hour": 20,
+    "grid": "mindanao",
+    "mkt_reqt_mw": 138.0,
+    "scheduled_mw": 15.0,
+    "met_pct": 10.9,
+    "marginal_offer_at_scheduled_php_kwh": 0.0,
+    "official_rsvpr_php_kwh": 0.0,
+    "scarcity_uplift_php_kwh": 0.0,
+    "joint_lp_free_redispatch_php_kwh": "infeasible"
+   }
+  ],
+  "n_samples": 5,
+  "n_requirement_met": 2,
+  "n_requirement_short": 3,
+  "max_offer_stack_gap_on_met_hours_php_kwh": 1.038,
+  "max_scarcity_uplift_on_short_hours_php_kwh": 25.0,
+  "verdict": "wedge_is_administered_reserve_scarcity_not_in_offers",
+  "note": "The named per-resource joint energy+reserve LP was prototyped from the raw RTDOE + RTDOR offers and does not reproduce the official reserve price (RSVPR); the diagnosis is that the reserve requirement CLEARS SHORT on the scarce hours and the shortfall is priced by an administered scarcity value that is not in the offers. On the requirement-met hours the marginal Dr offer cleared to the actually scheduled quantity (RTDSUM GENERATION) reproduces RSVPR to the centavo (the offer stack explains it, and the pooled replay already scores these). On the short hours the market scheduled only a fraction of the requirement (RTDSUM GENERATION well below MKT_REQT) and the official price sits above the ENTIRE offer stack, an administered reserve-scarcity value the public offers cannot explain; a free joint LP that forces the full requirement goes infeasible on exactly those hours. So the wedge Pass B measures is administered reserve scarcity on the requirement-short hours, not a co-optimisation internal recoverable from offers. It stays measured, not closed, and the model keeps its stated approximation, withhold the requirement and show the official price beside it. Fixing the energy dispatch to the observed schedule (DIPCEF) and registered capacity (CAPEG) does not change this: it tracks RSVPR only where the requirement is met, and cannot recover the administered scarcity uplift where it is not.",
+  "src": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
  "flow_record": {
   "available": true,
   "days": 93,
