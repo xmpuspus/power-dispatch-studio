@@ -1104,6 +1104,21 @@ check("the administered raises are material (several percent of dispatch on "
       "every grid's raise hours, not the inert must-run subset)",
       all(ad["mw_weighted_fraction_of_dispatch"][g]["mw_weighted_pct"] >= 3.0
           for g in ("luzon", "visayas", "mindanao")))
+# Pass F: the per-resource joint energy+reserve LP was prototyped and does NOT
+# reproduce the official reserve price, so the wedge stays measured not closed
+jl = mo.get("joint_lp_probe") or {}
+check("the joint energy+reserve LP was prototyped and diagnosed: the wedge is "
+      "administered reserve scarcity on the requirement-short hours, not "
+      "recoverable from the offers (documented boundary, not a build)",
+      jl.get("available")
+      and jl["verdict"] == "wedge_is_administered_reserve_scarcity_not_in_offers"
+      and jl["n_samples"] >= 4
+      and jl["n_requirement_short"] >= 2)
+check("on the requirement-met hours the offer stack cleared to the scheduled "
+      "reserve reproduces the official price (small gap); on the short hours "
+      "the official is a large administered scarcity uplift above the stack",
+      jl["max_offer_stack_gap_on_met_hours_php_kwh"] <= 3.0
+      and jl["max_scarcity_uplift_on_short_hours_php_kwh"] >= 10.0)
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)
