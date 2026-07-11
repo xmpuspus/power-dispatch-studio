@@ -36,6 +36,18 @@ jobs:
         id: derive_reserve
         continue-on-error: true
         run: python3 pipeline/reserve_offers.py --derive --limit 3
+      - name: Derive DIPCRF reserve results (per-resource cleared reserve; zips too heavy to keep)
+        id: derive_reserve_results
+        continue-on-error: true
+        run: python3 pipeline/reserve_results.py --derive --limit 3
+      - name: Re-measure the administered-dispatch overlay over the rolling window
+        id: derive_admin
+        continue-on-error: true
+        run: python3 pipeline/admin_dispatch.py --derive
+      - name: Re-measure the sub-hourly negative-price probe over the rolling window
+        id: derive_subhourly
+        continue-on-error: true
+        run: python3 pipeline/subhourly_probe.py --derive
       - name: Commit raw + derived files first (the archive is the irreplaceable asset)
         run: |
           git config user.name "archive-bot"
