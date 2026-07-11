@@ -389,6 +389,12 @@ to each day's observed water where the archive carries the operator's
 per-resource schedules, and prices taken from the duals. The honest mapping to PLEXOS concepts, the model's scope, and its
 accuracy statement live in [studio/README.md](studio/README.md).
 
+The whole flow in one pass: open the studio, prove it against real prices,
+build the DICT 1.5 GW data-center wave, and trip both Sual units on top. Full
+quality for sharing is [docs/studio-e2e.mp4](docs/studio-e2e.mp4).
+
+![One end-to-end pass through the studio: the grid as an object model; a backcast that clears flat at the P6 cost floor then, on the operator's own offer book, tracks the observed evening price shape hour by hour; building the DICT 1.5 GW data-center wave so the Luzon evening flips coal to oil and the Leyte-Luzon HVDC saturates; then tripping both 647 MW Sual units so loss-of-load probability jumps; closing on the free, browser-based, fully-sourced framing](docs/studio-e2e.gif)
+
 ## What this is
 
 - **A daily archive.** IEMOP's public window is a rolling ~90 days per dataset.
