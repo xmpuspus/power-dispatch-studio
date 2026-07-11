@@ -27,6 +27,13 @@ Live: [the map](https://power-dispatch-studio.vercel.app) and
 `web/index.html` after `make data` and read
 [every number and source](web/methodology.html).
 
+The whole argument in four charts: the grid names its own choke point, the price
+is a shape a data center barely moves with room and jumps when full, one plant
+trip takes a fifth of the margin, and a WESM swing is only a slice of the Meralco
+bill.
+
+![Four-panel summary: a constraint league of named 230 kV lines at a binding limit on most of the 90-day window with the Leyte-Cebu corridor topping it; the Luzon price-versus-load curve where a 300 MW data center adds about P0.32/kWh with room but far more when the grid is full; the May 2026 system margin of 3,629 MW with one 647 MW Sual unit marked as 18 percent of it; and the Meralco June 2026 bill split showing the WESM spot cost as roughly half the generation charge and a third of the whole rate](docs/story-montage.gif)
+
 ## The grid names its own choke point
 
 The choke points are not inferred. IEMOP publishes a "congestions manifesting" file
@@ -394,6 +401,16 @@ build the DICT 1.5 GW data-center wave, and trip both Sual units on top. Full
 quality for sharing is [docs/studio-e2e.mp4](docs/studio-e2e.mp4).
 
 ![One end-to-end pass through the studio: the grid as an object model; a backcast that clears flat at the P6 cost floor then, on the operator's own offer book, tracks the observed evening price shape hour by hour; building the DICT 1.5 GW data-center wave so the Luzon evening flips coal to oil and the Leyte-Luzon HVDC saturates; then tripping both 647 MW Sual units so loss-of-load probability jumps; closing on the free, browser-based, fully-sourced framing](docs/studio-e2e.gif)
+
+The individual what-ifs, each a recorded studio session:
+
+![Studio walkthrough: pricing the DICT 1.5 GW data-center build, the Luzon evening mean lifting from P6.01 to P11.60 and the Leyte-Luzon HVDC saturating, with the two runs compared at +P5.59/kWh and +P33.15M congestion rent](studio/docs/workflow-1-datacenter.gif)
+
+![Studio walkthrough: tripping both 647 MW Sual units, loss-of-load probability rising from 0.15 to 10.6 percent while the observed evening still clears with no unserved load](studio/docs/workflow-2-contingency.gif)
+
+![Studio walkthrough: repricing Malampaya gas to imported LNG so the whole Luzon price shape lifts to the gas cost, then stacking the announced build and a dry year to tip the evening to oil](studio/docs/workflow-3-malampaya.gif)
+
+![Studio walkthrough: editing a generator in the properties grid, running the model, replaying an observed day in Chronology, and reading the backcast against observed prices](studio/docs/demo.gif)
 
 ## What this is
 
