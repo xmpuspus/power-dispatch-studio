@@ -1085,8 +1085,25 @@ check("the discrepancy list travels with the family (newest revision "
       "per week)",
       (so.get("discrepancies") or {}).get("n_weeks", 0) >= 5
       and so["discrepancies"]["n_rows_newest_revisions"] > 0)
-check("the administered-dispatch overlay stays a named queued build",
-      "queued" in (so.get("note") or ""))
+# Pass E: the administered-dispatch overlay was MEASURED, and the measurement
+# killed the per-fuel engine build (material MW but price-inert: coal is the
+# marginal fuel on ~90 percent of raise hours)
+ad = mo.get("admin_dispatch") or {}
+check("the administered-dispatch overlay is measured: material in MW but "
+      "price-inert in the per-fuel engines (coal marginal on ~90 pct of "
+      "raise hours; every raise hour already prices at coal's floor so a "
+      "floor cannot lift it), documented not built",
+      ad.get("available")
+      and ad["verdict"] == "measured_material_but_per_fuel_inert"
+      and ad["coal_marginal_share_pct"] >= 80.0
+      and ad["max_modeled_price_on_raise_hours_php_kwh"] < 6.1
+      and ad["raised_mw_fuel_mix_pct"]["coal"] > 50.0
+      and ad["mw_weighted_fraction_of_dispatch"]["mindanao"]["mw_weighted_pct"]
+      > ad["mw_weighted_fraction_of_dispatch"]["luzon"]["mw_weighted_pct"])
+check("the administered raises are material (several percent of dispatch on "
+      "every grid's raise hours, not the inert must-run subset)",
+      all(ad["mw_weighted_fraction_of_dispatch"][g]["mw_weighted_pct"] >= 3.0
+          for g in ("luzon", "visayas", "mindanao")))
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

@@ -1098,6 +1098,25 @@ def build_solar_wind_observed() -> dict:
     }
 
 
+def build_admin_dispatch() -> dict:
+    """The administered-dispatch overlay measurement (Pass E): the MOT-raise
+    record is material in MW but price-inert in the per-fuel block engines
+    (coal is the marginal fuel on ~90 percent of raise hours), so it is
+    measured and documented, not built. Read from the committed derivation
+    (pipeline/admin_dispatch.py)."""
+    import json as _json
+
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "..", "data", "derived", "admin_dispatch.json")
+    if not os.path.isfile(p):
+        return {"available": False,
+                "note": "no admin-dispatch measure; run pipeline/admin_dispatch.py"}
+    d = _json.load(open(p))
+    d.setdefault("disclaimer", "Statistical indicators derived from public "
+                 "data. Patterns may have legitimate explanations.")
+    return d
+
+
 _HS_KEYS = {"VISLUZ1": "lv", "MINVIS1": "vm"}
 
 
