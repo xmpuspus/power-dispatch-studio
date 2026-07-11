@@ -238,6 +238,60 @@ href="https://www.iemop.ph/market-data/valid-discrepancies-on-so-dispatch-instru
 <td>The operator's own data-quality flag on the instruction family;
 newest revision per week counted beside the record it corrects.
 Added after the round-9 audit.</td></tr>
+<tr><td>DIPC reserve results final (hourly zips; every resource's cleared
+reserve schedule and price per commodity, Fr/Dr/Ru/Rd)</td>
+<td><a
+href="https://www.iemop.ph/market-data/dipc-reserve-results-final/">page</a></td>
+<td>The per-resource reserve results the pooled reserve replay and the
+one-price RSVPR could not carry. Hourly per-resource zips too heavy to
+commit raw, so pipeline/reserve_results.py takes each hour's opening
+interval and commits a compact daily (data/derived/reserve_results_daily/,
+76 days, 196 resources named). Two comparisons in market_ops.json
+reserve_results: the final cleared price against the real-time RSVPR,
+whose gap concentrates on the regulation products (Ru/Rd, largest on
+Mindanao at about P6/kWh) and stays small on contingency and dispatchable
+reserve, and the RTDOR book replay's marginal against the same final
+price, a tighter target than the RTD price, which the book replay
+under-prices on every one of the twelve pools (the co-optimisation
+opportunity-cost wedge, one-signed). DIPCRF is the final solve, so its
+schedule differs from the real-time RTDSUM schedule; that revision is a
+few MW at most, near zero on Luzon's contingency and dispatchable pools
+and reaching about 4 MW on the regulation pools and the tight island
+dispatchable reserve, and is reported not gated. The
+per-resource cleared schedules are the input the queued joint
+energy+reserve clear needs. Added by the post-convergence build queue.</td></tr>
+<tr><td>Registered capacity, ancillary services (daily CSV; participant,
+resource, product type Ru/Fr/Rd/Dr, maximum capacity)</td>
+<td><a
+href="https://www.iemop.ph/market-data/registered-capacity-ancillary-services/">page</a></td>
+<td>The reserve twin of registered-capacity-generation: the reserve book's
+registration denominator. Raw daily committed. market_ops.json
+reserve_registration sizes each grid's reserve offer book against its
+registration base, the same neutral data cut as the generation
+not-offered screen (registered reserve that did not appear in the offer
+book, with the same legitimate explanations). Added by the
+post-convergence build queue.</td></tr>
+<tr><td>Settlement-side price families, sampled (hourly zips: indicative
+administered prices, prices used in settlement, day-ahead prices and
+schedules)</td>
+<td><a
+href="https://www.iemop.ph/market-data/indicative-administered-prices/">administered</a>,
+<a
+href="https://www.iemop.ph/market-data/prices-used-in-settlement/">settlement</a>,
+<a
+href="https://www.iemop.ph/market-data/dap-prices-and-schedules/">day-ahead</a></td>
+<td>Measured, not built into the replay, because the measurement decided
+each (pipeline/settlement_side.py, sampled on market days,
+market_ops.json settlement_side). The indicative administered price is
+the operator's cost-based counterfactual, not the as-bid market price; it
+carries the island premium on the corridors (Visayas and Mindanao
+administered prices run well above Luzon's), a cost-regime cross-check
+rather than a market series. The settlement congestion
+component is zero at the one-price-per-island granularity WESM settles
+at, so it adds no receipt beyond the inter-island differences the flows
+table carries. The day-ahead price is a projection, out of the real-time
+replay's scope, and its signed spread to the settled price is reported as
+a diagnostic. Added by the post-convergence build queue.</td></tr>
 </table>
 <p class="muted">Courtesy: fetches are sequential with a 250 ms sleep and abort
 after 5 consecutive errors. IEMOP data is republished here as-is for public
@@ -555,12 +609,19 @@ noise-level (7.9 percent of scored hours, by at most P0.033/kWh); that
 one-signed pool residual is the co-optimisation opportunity-cost wedge
 itself, measured per pool, biggest on regulation products and the tight
 islands and near zero on dispatchable reserve (Luzon Dr matches the
-official price within half a centavo in 79.5 percent of hours). What stays queued, with its named
-input, is the per-resource joint energy+reserve LP: the compacted public
-artifacts drop resource identity on both sides, so closing the wedge
-needs the raw hourly files replayed per resource. The dispatch model
-keeps its stated approximation meanwhile: withhold the requirement, show
-the official price beside it.</li>
+official price within half a centavo in 79.5 percent of hours). The
+post-convergence build queue tightened the target: the operator's own
+final per-resource cleared reserve (DIPC reserve results final) is now
+archived, and the RTDOR book replay scored against it under-prices on
+every pool as it did against the RTD price, the same one-signed wedge
+confirmed against the authoritative final clearing (market_ops.json
+reserve_results). What stays queued, with its named input, is the
+per-resource joint energy+reserve LP itself: the cleared results are the
+answer to reproduce, but the LP needs the raw per-resource offer curves
+on BOTH sides (energy and reserve), which the compacted public artifacts
+pool away, so the joint clear needs the raw hourly offer files refetched
+per resource. The dispatch model keeps its stated approximation
+meanwhile: withhold the requirement, show the official price beside it.</li>
 <li><b>Sub-zonal topology</b> (a Leyte-Cebu split): WESM expresses
 inter-island congestion as one price per island grid, so a split region has
 no published price series to validate against; only sample-day DIPCEF nodal
@@ -611,23 +672,34 @@ scoped-out refinement (the 5-minute data exists in the archive), not a
 missing input.</li>
 <li><b>The rest of the public surface is triaged and named, not
 ignored</b>: the IEMOP market-data sitemap carries 58 dataset pages;
-24 now feed this archive (the 21 archive keys plus the three
-offer-book pages the derived books come from). Of the remainder, the projection
-series (hour-ahead, day-ahead, and week-ahead price and schedule
-projections) project rather than record and are out of scope for a
-replay scored on the real-time record; the Original/Raw and interim
-variants duplicate final series already archived; and the
-settlement-side series are named queued features, each with its
-landing spot: prices used in settlement and the indicative
-administered prices (the suspension weeks' price record), day-ahead
-prices (an RT-vs-DA spread panel), the RTD per-resource prices and
+29 now feed this archive (22 archive keys, the three offer-book pages
+the derived books come from, and the four settlement-side and
+reserve-results finals the post-convergence build queue consumed). Of
+the remainder, the projection series (hour-ahead and week-ahead price
+and schedule projections) project rather than record and are out of
+scope for a replay scored on the real-time record; the Original/Raw and
+interim variants duplicate final series already archived. The
+settlement-side family the round-8 disposition left queued is now
+measured: the per-resource reserve results (DIPC reserve results final)
+drive a tighter reserve validation and archive the per-resource cleared
+schedules for the queued joint clear (market_ops.json reserve_results);
+the ancillary-services registered capacities (CAPER) size the reserve
+book against its registration base (reserve_registration); the
+indicative administered prices and the prices used in settlement are
+sampled as a measured record (settlement_side), where the administered
+price is the operator's cost-based counterfactual, not the as-bid market
+price, carrying the island premium on the corridors (Visayas and
+Mindanao administered prices run well above Luzon's), while the
+settlement congestion component is empty at the one-price-per-island
+granularity WESM settles at, so neither adds a receipt the flows table
+does not already carry; and the day-ahead prices are measured as a
+diagnostic spread against the real-time settlement, both-signed, staying
+out of the replay's dispatch scope as a projection.
+What stays named with its landing spot: the RTD per-resource prices and
 schedules zips (5-minute per-resource validation, the sub-hourly
-refinement), the per-resource reserve results (DIPC reserve results
-final, a tighter reserve validation), the reserve market clearing
-price, and the ancillary-services registered capacities (the reserve
-book's registration denominator); the indicative modified
-administered prices ride with the administered-prices family. The
-System Operator's dispatch-instruction family (the full daily
+refinement below) and the reserve market clearing price; the indicative
+modified administered prices ride with the administered-prices family.
+The System Operator's dispatch-instruction family (the full daily
 instruction log, the MOT-raise re-dispatch list, and its
 valid-discrepancy list) was MISSING from this triage until the
 round-9 audit named it; all three are now archived and measured

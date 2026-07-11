@@ -1706,6 +1706,6239 @@
   "src_obs": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
+ "reserve_results": {
+  "available": true,
+  "days": 76,
+  "resources_named": 196,
+  "pools": {
+   "luzon": {
+    "Fr": {
+     "vs_rtd_price": {
+      "n_hours": 1800,
+      "final_mean_php_kwh": 5.326,
+      "rtd_mean_php_kwh": 5.838,
+      "mae_php_kwh": 3.808,
+      "bias_php_kwh": -0.513
+     },
+     "replay_vs_final": {
+      "n_hours": 1824,
+      "mae_php_kwh": 4.385,
+      "bias_php_kwh": -3.621,
+      "correlation": 0.28
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": 0.32
+     }
+    },
+    "Dr": {
+     "vs_rtd_price": {
+      "n_hours": 1800,
+      "final_mean_php_kwh": 1.841,
+      "rtd_mean_php_kwh": 2.126,
+      "mae_php_kwh": 0.704,
+      "bias_php_kwh": -0.285
+     },
+     "replay_vs_final": {
+      "n_hours": 1824,
+      "mae_php_kwh": 0.739,
+      "bias_php_kwh": -0.549,
+      "correlation": 0.543
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": 0.42
+     }
+    },
+    "Ru": {
+     "vs_rtd_price": {
+      "n_hours": 1800,
+      "final_mean_php_kwh": 11.309,
+      "rtd_mean_php_kwh": 8.94,
+      "mae_php_kwh": 3.35,
+      "bias_php_kwh": 2.368
+     },
+     "replay_vs_final": {
+      "n_hours": 1824,
+      "mae_php_kwh": 5.673,
+      "bias_php_kwh": -5.654,
+      "correlation": 0.501
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": -3.09
+     }
+    },
+    "Rd": {
+     "vs_rtd_price": {
+      "n_hours": 1800,
+      "final_mean_php_kwh": 11.065,
+      "rtd_mean_php_kwh": 8.4,
+      "mae_php_kwh": 3.442,
+      "bias_php_kwh": 2.665
+     },
+     "replay_vs_final": {
+      "n_hours": 1824,
+      "mae_php_kwh": 5.229,
+      "bias_php_kwh": -5.207,
+      "correlation": 0.577
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": -3.43
+     }
+    }
+   },
+   "visayas": {
+    "Fr": {
+     "vs_rtd_price": {
+      "n_hours": 1797,
+      "final_mean_php_kwh": 11.908,
+      "rtd_mean_php_kwh": 10.729,
+      "mae_php_kwh": 4.316,
+      "bias_php_kwh": 1.179
+     },
+     "replay_vs_final": {
+      "n_hours": 1821,
+      "mae_php_kwh": 8.102,
+      "bias_php_kwh": -8.096,
+      "correlation": 0.284
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": -0.4
+     }
+    },
+    "Dr": {
+     "vs_rtd_price": {
+      "n_hours": 1778,
+      "final_mean_php_kwh": 4.602,
+      "rtd_mean_php_kwh": 5.301,
+      "mae_php_kwh": 2.624,
+      "bias_php_kwh": -0.699
+     },
+     "replay_vs_final": {
+      "n_hours": 1802,
+      "mae_php_kwh": 3.494,
+      "bias_php_kwh": -3.242,
+      "correlation": 0.214
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": -4.28
+     }
+    },
+    "Ru": {
+     "vs_rtd_price": {
+      "n_hours": 1800,
+      "final_mean_php_kwh": 16.418,
+      "rtd_mean_php_kwh": 15.043,
+      "mae_php_kwh": 6.122,
+      "bias_php_kwh": 1.375
+     },
+     "replay_vs_final": {
+      "n_hours": 1824,
+      "mae_php_kwh": 7.351,
+      "bias_php_kwh": -7.351,
+      "correlation": 0.559
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": -1.59
+     }
+    },
+    "Rd": {
+     "vs_rtd_price": {
+      "n_hours": 1800,
+      "final_mean_php_kwh": 17.595,
+      "rtd_mean_php_kwh": 12.671,
+      "mae_php_kwh": 5.504,
+      "bias_php_kwh": 4.923
+     },
+     "replay_vs_final": {
+      "n_hours": 1824,
+      "mae_php_kwh": 7.65,
+      "bias_php_kwh": -7.65,
+      "correlation": 0.376
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": -1.37
+     }
+    }
+   },
+   "mindanao": {
+    "Fr": {
+     "vs_rtd_price": {
+      "n_hours": 1800,
+      "final_mean_php_kwh": 4.182,
+      "rtd_mean_php_kwh": 5.67,
+      "mae_php_kwh": 2.087,
+      "bias_php_kwh": -1.487
+     },
+     "replay_vs_final": {
+      "n_hours": 1824,
+      "mae_php_kwh": 3.146,
+      "bias_php_kwh": -3.023,
+      "correlation": 0.473
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": -0.42
+     }
+    },
+    "Dr": {
+     "vs_rtd_price": {
+      "n_hours": 1800,
+      "final_mean_php_kwh": 0.832,
+      "rtd_mean_php_kwh": 1.169,
+      "mae_php_kwh": 0.643,
+      "bias_php_kwh": -0.336
+     },
+     "replay_vs_final": {
+      "n_hours": 1824,
+      "mae_php_kwh": 0.746,
+      "bias_php_kwh": -0.746,
+      "correlation": 0.277
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": 4.19
+     }
+    },
+    "Ru": {
+     "vs_rtd_price": {
+      "n_hours": 1800,
+      "final_mean_php_kwh": 20.955,
+      "rtd_mean_php_kwh": 15.309,
+      "mae_php_kwh": 6.466,
+      "bias_php_kwh": 5.646
+     },
+     "replay_vs_final": {
+      "n_hours": 1824,
+      "mae_php_kwh": 9.391,
+      "bias_php_kwh": -9.391,
+      "correlation": 0.417
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": -0.61
+     }
+    },
+    "Rd": {
+     "vs_rtd_price": {
+      "n_hours": 1800,
+      "final_mean_php_kwh": 19.175,
+      "rtd_mean_php_kwh": 13.275,
+      "mae_php_kwh": 5.918,
+      "bias_php_kwh": 5.9
+     },
+     "replay_vs_final": {
+      "n_hours": 1824,
+      "mae_php_kwh": 6.638,
+      "bias_php_kwh": -6.638,
+      "correlation": 0.509
+     },
+     "final_vs_rtd_schedule_mw": {
+      "mean_daily_revision": -0.31
+     }
+    }
+   }
+  },
+  "note": "IEMOP's final per-resource cleared reserve (DIPCRF), per commodity. vs_rtd_price compares the final schedule-weighted clearing price against the real-time RSVPR at the same opening interval: the final re-solve's reserve-price movement. replay_vs_final clears the RTDOR reserve book at the final scheduled MW and scores its marginal offer against the final cleared price, a tighter check than against the RTD price. final_vs_rtd_schedule_mw is the mean daily revision of the pool's scheduled reserve between the real-time and final solves (near zero on Luzon, larger on the tight island reserve pools). The per-resource cleared schedules are archived under data/derived/reserve_results_daily/ as the input for the queued joint energy+reserve clear.",
+  "src": "https://www.iemop.ph/market-data/dipc-reserve-results-final/",
+  "src_rtd": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
+ "reserve_registration": {
+  "available": true,
+  "days": [
+   {
+    "date": "2026-04-11",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1025.1,
+      "not_offered_mw": 1421.6
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1165.9,
+      "not_offered_mw": 1491.1
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 494.3,
+      "not_offered_mw": 1771.6
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 494.3,
+      "not_offered_mw": 1771.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 203.9,
+      "not_offered_mw": 169.6
+     },
+     "Dr": {
+      "registered_mw": 415.0,
+      "book_max_mw": 369.9,
+      "not_offered_mw": 45.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 137.0,
+      "not_offered_mw": 256.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 137.0,
+      "not_offered_mw": 256.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 399.7,
+      "not_offered_mw": 337.6
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 557.7,
+      "not_offered_mw": 390.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 107.0,
+      "not_offered_mw": 345.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 107.0,
+      "not_offered_mw": 345.9
+     }
+    }
+   },
+   {
+    "date": "2026-04-12",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1089.9,
+      "not_offered_mw": 1356.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 987.9,
+      "not_offered_mw": 1669.1
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 322.3,
+      "not_offered_mw": 1943.6
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 322.3,
+      "not_offered_mw": 1943.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 203.9,
+      "not_offered_mw": 169.6
+     },
+     "Dr": {
+      "registered_mw": 415.0,
+      "book_max_mw": 369.9,
+      "not_offered_mw": 45.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 137.0,
+      "not_offered_mw": 256.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 137.0,
+      "not_offered_mw": 256.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 398.5,
+      "not_offered_mw": 338.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 557.7,
+      "not_offered_mw": 390.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-13",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1133.9,
+      "not_offered_mw": 1312.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1165.9,
+      "not_offered_mw": 1491.1
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 529.5,
+      "not_offered_mw": 1736.4
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 529.5,
+      "not_offered_mw": 1736.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 224.0,
+      "not_offered_mw": 149.5
+     },
+     "Dr": {
+      "registered_mw": 415.0,
+      "book_max_mw": 369.9,
+      "not_offered_mw": 45.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 170.5,
+      "not_offered_mw": 222.5
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 170.5,
+      "not_offered_mw": 222.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 388.5,
+      "not_offered_mw": 348.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 631.7,
+      "not_offered_mw": 316.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-14",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1099.6,
+      "not_offered_mw": 1347.1
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1443.9,
+      "not_offered_mw": 1213.1
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 577.9,
+      "not_offered_mw": 1688.0
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 577.9,
+      "not_offered_mw": 1688.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 234.0,
+      "not_offered_mw": 139.5
+     },
+     "Dr": {
+      "registered_mw": 415.0,
+      "book_max_mw": 368.8,
+      "not_offered_mw": 46.2
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 165.0,
+      "not_offered_mw": 228.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 165.0,
+      "not_offered_mw": 228.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 369.7,
+      "not_offered_mw": 367.6
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 629.7,
+      "not_offered_mw": 318.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-15",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1122.2,
+      "not_offered_mw": 1324.5
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1020.9,
+      "not_offered_mw": 1636.1
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 464.9,
+      "not_offered_mw": 1801.0
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 464.9,
+      "not_offered_mw": 1801.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 234.0,
+      "not_offered_mw": 139.5
+     },
+     "Dr": {
+      "registered_mw": 415.0,
+      "book_max_mw": 368.8,
+      "not_offered_mw": 46.2
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 435.7,
+      "not_offered_mw": 301.6
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 557.7,
+      "not_offered_mw": 390.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-16",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1081.7,
+      "not_offered_mw": 1365.0
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1513.9,
+      "not_offered_mw": 1143.1
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 477.9,
+      "not_offered_mw": 1788.0
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 477.9,
+      "not_offered_mw": 1788.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 249.4,
+      "not_offered_mw": 124.1
+     },
+     "Dr": {
+      "registered_mw": 415.0,
+      "book_max_mw": 362.8,
+      "not_offered_mw": 52.2
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 435.7,
+      "not_offered_mw": 301.6
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 557.7,
+      "not_offered_mw": 390.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-17",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1039.0,
+      "not_offered_mw": 1407.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1347.9,
+      "not_offered_mw": 1309.1
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 537.9,
+      "not_offered_mw": 1728.0
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 537.9,
+      "not_offered_mw": 1728.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 203.9,
+      "not_offered_mw": 169.6
+     },
+     "Dr": {
+      "registered_mw": 415.0,
+      "book_max_mw": 362.8,
+      "not_offered_mw": 52.2
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 435.7,
+      "not_offered_mw": 301.6
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 629.7,
+      "not_offered_mw": 318.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-18",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 933.0,
+      "not_offered_mw": 1513.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1166.9,
+      "not_offered_mw": 1490.1
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 537.9,
+      "not_offered_mw": 1728.0
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 537.9,
+      "not_offered_mw": 1728.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 218.9,
+      "not_offered_mw": 154.6
+     },
+     "Dr": {
+      "registered_mw": 415.0,
+      "book_max_mw": 368.8,
+      "not_offered_mw": 46.2
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 473.1,
+      "not_offered_mw": 264.2
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 557.7,
+      "not_offered_mw": 390.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 96.9,
+      "not_offered_mw": 356.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 96.9,
+      "not_offered_mw": 356.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-19",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1034.0,
+      "not_offered_mw": 1412.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1072.9,
+      "not_offered_mw": 1584.1
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 412.3,
+      "not_offered_mw": 1853.6
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 412.3,
+      "not_offered_mw": 1853.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 199.3,
+      "not_offered_mw": 174.2
+     },
+     "Dr": {
+      "registered_mw": 415.0,
+      "book_max_mw": 368.8,
+      "not_offered_mw": 46.2
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 137.0,
+      "not_offered_mw": 256.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 137.0,
+      "not_offered_mw": 256.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 473.1,
+      "not_offered_mw": 264.2
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 557.7,
+      "not_offered_mw": 390.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 96.9,
+      "not_offered_mw": 356.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 96.9,
+      "not_offered_mw": 356.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-20",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1057.4,
+      "not_offered_mw": 1389.3
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1157.1,
+      "not_offered_mw": 1499.9
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 447.9,
+      "not_offered_mw": 1818.0
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 447.9,
+      "not_offered_mw": 1818.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 209.4,
+      "not_offered_mw": 164.1
+     },
+     "Dr": {
+      "registered_mw": 415.0,
+      "book_max_mw": 369.9,
+      "not_offered_mw": 45.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 394.3,
+      "not_offered_mw": 343.0
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 625.7,
+      "not_offered_mw": 322.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 96.9,
+      "not_offered_mw": 356.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 96.9,
+      "not_offered_mw": 356.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-21",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 997.2,
+      "not_offered_mw": 1449.5
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1036.9,
+      "not_offered_mw": 1620.1
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 797.9,
+      "not_offered_mw": 1468.0
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 797.9,
+      "not_offered_mw": 1468.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 203.9,
+      "not_offered_mw": 169.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 359.9,
+      "not_offered_mw": 50.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 131.5,
+      "not_offered_mw": 261.5
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 131.5,
+      "not_offered_mw": 261.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 394.3,
+      "not_offered_mw": 343.0
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 557.7,
+      "not_offered_mw": 390.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 57.1,
+      "not_offered_mw": 395.8
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 57.1,
+      "not_offered_mw": 395.8
+     }
+    }
+   },
+   {
+    "date": "2026-04-22",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1244.4,
+      "not_offered_mw": 1202.3
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1182.1,
+      "not_offered_mw": 1474.9
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 514.9,
+      "not_offered_mw": 1751.0
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 514.9,
+      "not_offered_mw": 1751.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 239.4,
+      "not_offered_mw": 134.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 349.9,
+      "not_offered_mw": 60.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 131.0,
+      "not_offered_mw": 262.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 131.0,
+      "not_offered_mw": 262.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 424.3,
+      "not_offered_mw": 313.0
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 557.7,
+      "not_offered_mw": 390.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.1,
+      "not_offered_mw": 365.8
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.1,
+      "not_offered_mw": 365.8
+     }
+    }
+   },
+   {
+    "date": "2026-04-23",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1116.0,
+      "not_offered_mw": 1330.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1072.1,
+      "not_offered_mw": 1584.9
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 656.9,
+      "not_offered_mw": 1609.0
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 656.9,
+      "not_offered_mw": 1609.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 239.4,
+      "not_offered_mw": 134.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 349.9,
+      "not_offered_mw": 60.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 141.0,
+      "not_offered_mw": 252.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 141.0,
+      "not_offered_mw": 252.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 394.3,
+      "not_offered_mw": 343.0
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 557.7,
+      "not_offered_mw": 390.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.1,
+      "not_offered_mw": 365.8
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.1,
+      "not_offered_mw": 365.8
+     }
+    }
+   },
+   {
+    "date": "2026-04-24",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1043.0,
+      "not_offered_mw": 1403.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1076.1,
+      "not_offered_mw": 1580.9
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 662.3,
+      "not_offered_mw": 1603.6
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 662.3,
+      "not_offered_mw": 1603.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 249.4,
+      "not_offered_mw": 124.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 339.9,
+      "not_offered_mw": 70.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 131.0,
+      "not_offered_mw": 262.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 131.0,
+      "not_offered_mw": 262.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 394.3,
+      "not_offered_mw": 343.0
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 629.7,
+      "not_offered_mw": 318.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-25",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1019.0,
+      "not_offered_mw": 1427.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 982.1,
+      "not_offered_mw": 1674.9
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 622.3,
+      "not_offered_mw": 1643.6
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 622.3,
+      "not_offered_mw": 1643.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 243.9,
+      "not_offered_mw": 129.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 349.9,
+      "not_offered_mw": 60.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 141.0,
+      "not_offered_mw": 252.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 141.0,
+      "not_offered_mw": 252.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 413.1,
+      "not_offered_mw": 324.2
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 557.7,
+      "not_offered_mw": 390.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.1,
+      "not_offered_mw": 365.8
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.1,
+      "not_offered_mw": 365.8
+     }
+    }
+   },
+   {
+    "date": "2026-04-26",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1087.2,
+      "not_offered_mw": 1359.5
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 991.1,
+      "not_offered_mw": 1665.9
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 548.5,
+      "not_offered_mw": 1717.4
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 548.5,
+      "not_offered_mw": 1717.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 233.9,
+      "not_offered_mw": 139.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 349.9,
+      "not_offered_mw": 60.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 424.3,
+      "not_offered_mw": 313.0
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 557.7,
+      "not_offered_mw": 390.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.1,
+      "not_offered_mw": 365.8
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.1,
+      "not_offered_mw": 365.8
+     }
+    }
+   },
+   {
+    "date": "2026-04-27",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1197.6,
+      "not_offered_mw": 1249.1
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1247.6,
+      "not_offered_mw": 1409.4
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 573.3,
+      "not_offered_mw": 1692.6
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 573.3,
+      "not_offered_mw": 1692.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 244.0,
+      "not_offered_mw": 129.5
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 349.9,
+      "not_offered_mw": 60.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 424.3,
+      "not_offered_mw": 313.0
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 631.7,
+      "not_offered_mw": 316.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 106.9,
+      "not_offered_mw": 346.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 106.9,
+      "not_offered_mw": 346.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-28",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1041.0,
+      "not_offered_mw": 1405.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1110.6,
+      "not_offered_mw": 1546.4
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 670.9,
+      "not_offered_mw": 1595.0
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 670.9,
+      "not_offered_mw": 1595.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 245.9,
+      "not_offered_mw": 127.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 349.9,
+      "not_offered_mw": 60.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 424.5,
+      "not_offered_mw": 312.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 631.7,
+      "not_offered_mw": 316.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 126.9,
+      "not_offered_mw": 326.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-29",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1255.4,
+      "not_offered_mw": 1191.3
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1193.8,
+      "not_offered_mw": 1463.2
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 384.5,
+      "not_offered_mw": 1881.4
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 384.5,
+      "not_offered_mw": 1881.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 235.9,
+      "not_offered_mw": 137.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 349.9,
+      "not_offered_mw": 60.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.0,
+      "not_offered_mw": 246.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 404.5,
+      "not_offered_mw": 332.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 553.7,
+      "not_offered_mw": 394.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 106.9,
+      "not_offered_mw": 346.0
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 106.9,
+      "not_offered_mw": 346.0
+     }
+    }
+   },
+   {
+    "date": "2026-04-30",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1053.4,
+      "not_offered_mw": 1393.3
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1251.6,
+      "not_offered_mw": 1405.4
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 571.9,
+      "not_offered_mw": 1694.0
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 571.9,
+      "not_offered_mw": 1694.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 235.9,
+      "not_offered_mw": 137.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 346.9,
+      "not_offered_mw": 63.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 137.0,
+      "not_offered_mw": 256.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 137.0,
+      "not_offered_mw": 256.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 394.5,
+      "not_offered_mw": 342.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 616.7,
+      "not_offered_mw": 331.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 97.1,
+      "not_offered_mw": 355.8
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 97.1,
+      "not_offered_mw": 355.8
+     }
+    }
+   },
+   {
+    "date": "2026-05-01",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1059.9,
+      "not_offered_mw": 1386.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1868.6,
+      "not_offered_mw": 788.4
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 416.8,
+      "not_offered_mw": 1849.1
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 416.8,
+      "not_offered_mw": 1849.1
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 220.9,
+      "not_offered_mw": 152.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 371.9,
+      "not_offered_mw": 38.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.5,
+      "not_offered_mw": 245.5
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 147.5,
+      "not_offered_mw": 245.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 424.5,
+      "not_offered_mw": 312.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 553.7,
+      "not_offered_mw": 394.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 97.0,
+      "not_offered_mw": 355.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 97.0,
+      "not_offered_mw": 355.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-02",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1142.9,
+      "not_offered_mw": 1303.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1513.6,
+      "not_offered_mw": 1143.4
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 551.2,
+      "not_offered_mw": 1714.7
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 551.2,
+      "not_offered_mw": 1714.7
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 234.0,
+      "not_offered_mw": 139.5
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 371.9,
+      "not_offered_mw": 38.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 132.0,
+      "not_offered_mw": 261.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 132.0,
+      "not_offered_mw": 261.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 401.5,
+      "not_offered_mw": 335.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 555.1,
+      "not_offered_mw": 392.6
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-03",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1028.5,
+      "not_offered_mw": 1418.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1468.6,
+      "not_offered_mw": 1188.4
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 553.0,
+      "not_offered_mw": 1712.9
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 553.0,
+      "not_offered_mw": 1712.9
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 224.3,
+      "not_offered_mw": 149.2
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 371.9,
+      "not_offered_mw": 38.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 132.0,
+      "not_offered_mw": 261.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 132.0,
+      "not_offered_mw": 261.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 401.5,
+      "not_offered_mw": 335.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 568.7,
+      "not_offered_mw": 379.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 57.0,
+      "not_offered_mw": 395.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 57.0,
+      "not_offered_mw": 395.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-04",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 986.9,
+      "not_offered_mw": 1459.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1653.6,
+      "not_offered_mw": 1003.4
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 656.8,
+      "not_offered_mw": 1609.1
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 656.8,
+      "not_offered_mw": 1609.1
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 203.9,
+      "not_offered_mw": 169.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 371.9,
+      "not_offered_mw": 38.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 138.0,
+      "not_offered_mw": 255.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 138.0,
+      "not_offered_mw": 255.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 411.5,
+      "not_offered_mw": 325.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 589.9,
+      "not_offered_mw": 357.8
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-05",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 936.9,
+      "not_offered_mw": 1509.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1455.1,
+      "not_offered_mw": 1201.9
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 616.8,
+      "not_offered_mw": 1649.1
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 616.8,
+      "not_offered_mw": 1649.1
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 213.9,
+      "not_offered_mw": 159.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 348.9,
+      "not_offered_mw": 61.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 142.0,
+      "not_offered_mw": 251.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 142.0,
+      "not_offered_mw": 251.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 441.5,
+      "not_offered_mw": 295.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 589.9,
+      "not_offered_mw": 357.8
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 127.0,
+      "not_offered_mw": 325.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 127.0,
+      "not_offered_mw": 325.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-06",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1207.9,
+      "not_offered_mw": 1238.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1633.3,
+      "not_offered_mw": 1023.7
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 476.8,
+      "not_offered_mw": 1789.1
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 476.8,
+      "not_offered_mw": 1789.1
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 218.9,
+      "not_offered_mw": 154.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 350.4,
+      "not_offered_mw": 59.6
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 142.0,
+      "not_offered_mw": 251.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 142.0,
+      "not_offered_mw": 251.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 411.5,
+      "not_offered_mw": 325.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 589.9,
+      "not_offered_mw": 357.8
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-07",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1001.5,
+      "not_offered_mw": 1445.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1645.1,
+      "not_offered_mw": 1011.9
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 586.8,
+      "not_offered_mw": 1679.1
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 586.8,
+      "not_offered_mw": 1679.1
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 186.9,
+      "not_offered_mw": 186.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 360.4,
+      "not_offered_mw": 49.6
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 142.0,
+      "not_offered_mw": 251.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 142.0,
+      "not_offered_mw": 251.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 441.5,
+      "not_offered_mw": 295.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 534.7,
+      "not_offered_mw": 413.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-08",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1139.9,
+      "not_offered_mw": 1306.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1648.1,
+      "not_offered_mw": 1008.9
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 416.8,
+      "not_offered_mw": 1849.1
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 416.8,
+      "not_offered_mw": 1849.1
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 176.9,
+      "not_offered_mw": 196.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 371.9,
+      "not_offered_mw": 38.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 152.0,
+      "not_offered_mw": 241.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 152.0,
+      "not_offered_mw": 241.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 411.5,
+      "not_offered_mw": 325.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 553.7,
+      "not_offered_mw": 394.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 127.0,
+      "not_offered_mw": 325.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 127.0,
+      "not_offered_mw": 325.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-09",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1046.5,
+      "not_offered_mw": 1400.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1693.1,
+      "not_offered_mw": 963.9
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 433.8,
+      "not_offered_mw": 1832.1
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 433.8,
+      "not_offered_mw": 1832.1
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 182.3,
+      "not_offered_mw": 191.2
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 357.4,
+      "not_offered_mw": 52.6
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 141.5,
+      "not_offered_mw": 251.5
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 141.5,
+      "not_offered_mw": 251.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 416.5,
+      "not_offered_mw": 320.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 553.7,
+      "not_offered_mw": 394.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 127.0,
+      "not_offered_mw": 325.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 127.0,
+      "not_offered_mw": 325.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-10",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 936.9,
+      "not_offered_mw": 1509.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1462.6,
+      "not_offered_mw": 1194.4
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 563.8,
+      "not_offered_mw": 1702.1
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 563.8,
+      "not_offered_mw": 1702.1
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 192.3,
+      "not_offered_mw": 181.2
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 374.9,
+      "not_offered_mw": 35.1
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 136.5,
+      "not_offered_mw": 256.5
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 136.5,
+      "not_offered_mw": 256.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 386.5,
+      "not_offered_mw": 350.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 548.7,
+      "not_offered_mw": 399.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-11",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1101.4,
+      "not_offered_mw": 1345.3
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1567.6,
+      "not_offered_mw": 1089.4
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 547.2,
+      "not_offered_mw": 1718.7
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 547.2,
+      "not_offered_mw": 1718.7
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 166.9,
+      "not_offered_mw": 206.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 363.4,
+      "not_offered_mw": 46.6
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 152.0,
+      "not_offered_mw": 241.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 152.0,
+      "not_offered_mw": 241.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 426.5,
+      "not_offered_mw": 310.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 543.7,
+      "not_offered_mw": 404.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-12",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2446.7,
+      "book_max_mw": 1180.0,
+      "not_offered_mw": 1266.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1456.8,
+      "not_offered_mw": 1200.2
+     },
+     "Ru": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 428.5,
+      "not_offered_mw": 1837.4
+     },
+     "Rd": {
+      "registered_mw": 2265.9,
+      "book_max_mw": 428.5,
+      "not_offered_mw": 1837.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 191.5,
+      "not_offered_mw": 182.0
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 355.8,
+      "not_offered_mw": 54.2
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 195.8,
+      "not_offered_mw": 197.2
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 195.8,
+      "not_offered_mw": 197.2
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.3,
+      "book_max_mw": 386.5,
+      "not_offered_mw": 350.8
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 543.7,
+      "not_offered_mw": 404.0
+     },
+     "Ru": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     },
+     "Rd": {
+      "registered_mw": 452.9,
+      "book_max_mw": 87.0,
+      "not_offered_mw": 365.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-13",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1257.4,
+      "not_offered_mw": 1208.0
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1408.6,
+      "not_offered_mw": 1248.4
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 418.2,
+      "not_offered_mw": 1848.7
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 418.2,
+      "not_offered_mw": 1848.7
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 180.4,
+      "not_offered_mw": 193.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 355.8,
+      "not_offered_mw": 54.2
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 176.0,
+      "not_offered_mw": 217.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 176.0,
+      "not_offered_mw": 217.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.9,
+      "book_max_mw": 416.5,
+      "not_offered_mw": 321.4
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 543.7,
+      "not_offered_mw": 404.0
+     },
+     "Ru": {
+      "registered_mw": 453.6,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 325.9
+     },
+     "Rd": {
+      "registered_mw": 453.6,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 325.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-14",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1279.0,
+      "not_offered_mw": 1186.4
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1348.6,
+      "not_offered_mw": 1308.4
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 365.5,
+      "not_offered_mw": 1901.4
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 365.5,
+      "not_offered_mw": 1901.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 197.4,
+      "not_offered_mw": 176.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 363.3,
+      "not_offered_mw": 46.7
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 188.5,
+      "not_offered_mw": 204.5
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 188.5,
+      "not_offered_mw": 204.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.9,
+      "book_max_mw": 386.5,
+      "not_offered_mw": 351.4
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 528.0,
+      "not_offered_mw": 419.7
+     },
+     "Ru": {
+      "registered_mw": 453.6,
+      "book_max_mw": 147.7,
+      "not_offered_mw": 305.9
+     },
+     "Rd": {
+      "registered_mw": 453.6,
+      "book_max_mw": 147.7,
+      "not_offered_mw": 305.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-15",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1250.6,
+      "not_offered_mw": 1214.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1202.0,
+      "not_offered_mw": 1455.0
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 386.9,
+      "not_offered_mw": 1880.0
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 386.9,
+      "not_offered_mw": 1880.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 177.4,
+      "not_offered_mw": 196.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 355.6,
+      "not_offered_mw": 54.4
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 211.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 211.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.9,
+      "book_max_mw": 386.5,
+      "not_offered_mw": 351.4
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 531.7,
+      "not_offered_mw": 416.0
+     },
+     "Ru": {
+      "registered_mw": 453.6,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 325.9
+     },
+     "Rd": {
+      "registered_mw": 453.6,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 325.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-16",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1084.9,
+      "not_offered_mw": 1380.5
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1645.6,
+      "not_offered_mw": 1011.4
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 527.6,
+      "not_offered_mw": 1739.3
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 527.6,
+      "not_offered_mw": 1739.3
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 215.5,
+      "not_offered_mw": 158.0
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 327.7,
+      "not_offered_mw": 82.3
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 151.5,
+      "not_offered_mw": 241.5
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 151.5,
+      "not_offered_mw": 241.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.9,
+      "book_max_mw": 386.5,
+      "not_offered_mw": 351.4
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 603.2,
+      "not_offered_mw": 344.5
+     },
+     "Ru": {
+      "registered_mw": 453.6,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 325.9
+     },
+     "Rd": {
+      "registered_mw": 453.6,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 325.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-17",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1135.9,
+      "not_offered_mw": 1329.5
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1579.6,
+      "not_offered_mw": 1077.4
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 436.6,
+      "not_offered_mw": 1830.3
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 436.6,
+      "not_offered_mw": 1830.3
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 185.9,
+      "not_offered_mw": 187.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 352.1,
+      "not_offered_mw": 57.9
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 126.0,
+      "not_offered_mw": 267.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 126.0,
+      "not_offered_mw": 267.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.9,
+      "book_max_mw": 356.5,
+      "not_offered_mw": 381.4
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 603.2,
+      "not_offered_mw": 344.5
+     },
+     "Ru": {
+      "registered_mw": 453.6,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 325.9
+     },
+     "Rd": {
+      "registered_mw": 453.6,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 325.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-18",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1299.0,
+      "not_offered_mw": 1166.4
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1448.6,
+      "not_offered_mw": 1208.4
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 448.3,
+      "not_offered_mw": 1818.6
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 448.3,
+      "not_offered_mw": 1818.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 185.9,
+      "not_offered_mw": 187.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 360.1,
+      "not_offered_mw": 49.9
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 176.0,
+      "not_offered_mw": 217.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 176.0,
+      "not_offered_mw": 217.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 737.9,
+      "book_max_mw": 389.5,
+      "not_offered_mw": 348.4
+     },
+     "Dr": {
+      "registered_mw": 947.7,
+      "book_max_mw": 583.5,
+      "not_offered_mw": 364.2
+     },
+     "Ru": {
+      "registered_mw": 453.6,
+      "book_max_mw": 147.7,
+      "not_offered_mw": 305.9
+     },
+     "Rd": {
+      "registered_mw": 453.6,
+      "book_max_mw": 147.7,
+      "not_offered_mw": 305.9
+     }
+    }
+   },
+   {
+    "date": "2026-05-19",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1215.9,
+      "not_offered_mw": 1249.5
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1724.6,
+      "not_offered_mw": 932.4
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 510.3,
+      "not_offered_mw": 1756.6
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 510.3,
+      "not_offered_mw": 1756.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 167.4,
+      "not_offered_mw": 206.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 366.6,
+      "not_offered_mw": 43.4
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 166.0,
+      "not_offered_mw": 227.0
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 166.0,
+      "not_offered_mw": 227.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 398.5,
+      "not_offered_mw": 354.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 579.2,
+      "not_offered_mw": 369.7
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 106.2,
+      "not_offered_mw": 362.1
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 106.2,
+      "not_offered_mw": 362.1
+     }
+    }
+   },
+   {
+    "date": "2026-05-20",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1293.0,
+      "not_offered_mw": 1172.4
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1730.1,
+      "not_offered_mw": 926.9
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 515.3,
+      "not_offered_mw": 1751.6
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 515.3,
+      "not_offered_mw": 1751.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 177.4,
+      "not_offered_mw": 196.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 356.1,
+      "not_offered_mw": 53.9
+     },
+     "Ru": {
+      "registered_mw": 393.0,
+      "book_max_mw": 181.5,
+      "not_offered_mw": 211.5
+     },
+     "Rd": {
+      "registered_mw": 393.0,
+      "book_max_mw": 181.5,
+      "not_offered_mw": 211.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 409.5,
+      "not_offered_mw": 343.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 578.7,
+      "not_offered_mw": 370.2
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 106.2,
+      "not_offered_mw": 362.1
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 106.2,
+      "not_offered_mw": 362.1
+     }
+    }
+   },
+   {
+    "date": "2026-05-21",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1200.0,
+      "not_offered_mw": 1265.4
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1730.1,
+      "not_offered_mw": 926.9
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 509.3,
+      "not_offered_mw": 1757.6
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 509.3,
+      "not_offered_mw": 1757.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 187.4,
+      "not_offered_mw": 186.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 354.1,
+      "not_offered_mw": 55.9
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 191.5,
+      "not_offered_mw": 216.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 191.5,
+      "not_offered_mw": 216.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 409.5,
+      "not_offered_mw": 343.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 580.0,
+      "not_offered_mw": 368.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 107.5,
+      "not_offered_mw": 360.8
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 107.5,
+      "not_offered_mw": 360.8
+     }
+    }
+   },
+   {
+    "date": "2026-05-22",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1249.0,
+      "not_offered_mw": 1216.4
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1775.1,
+      "not_offered_mw": 881.9
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 463.3,
+      "not_offered_mw": 1803.6
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 463.3,
+      "not_offered_mw": 1803.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 177.4,
+      "not_offered_mw": 196.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 354.1,
+      "not_offered_mw": 55.9
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 180.0,
+      "not_offered_mw": 228.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 180.0,
+      "not_offered_mw": 228.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 409.5,
+      "not_offered_mw": 343.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 570.0,
+      "not_offered_mw": 378.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 107.5,
+      "not_offered_mw": 360.8
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 107.5,
+      "not_offered_mw": 360.8
+     }
+    }
+   },
+   {
+    "date": "2026-05-23",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1215.5,
+      "not_offered_mw": 1249.9
+     },
+     "Dr": {
+      "registered_mw": 2654.0,
+      "book_max_mw": 1695.1,
+      "not_offered_mw": 958.9
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 529.3,
+      "not_offered_mw": 1737.6
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 529.3,
+      "not_offered_mw": 1737.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 177.4,
+      "not_offered_mw": 196.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 344.5,
+      "not_offered_mw": 65.5
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 165.5,
+      "not_offered_mw": 242.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 165.5,
+      "not_offered_mw": 242.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 393.3,
+      "not_offered_mw": 359.3
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 588.1,
+      "not_offered_mw": 360.8
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 97.7,
+      "not_offered_mw": 370.6
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 97.7,
+      "not_offered_mw": 370.6
+     }
+    }
+   },
+   {
+    "date": "2026-05-24",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1067.4,
+      "not_offered_mw": 1398.0
+     },
+     "Dr": {
+      "registered_mw": 2654.0,
+      "book_max_mw": 1566.1,
+      "not_offered_mw": 1087.9
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 461.0,
+      "not_offered_mw": 1805.9
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 461.0,
+      "not_offered_mw": 1805.9
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 180.5,
+      "not_offered_mw": 193.0
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 352.5,
+      "not_offered_mw": 57.5
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 145.5,
+      "not_offered_mw": 262.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 145.5,
+      "not_offered_mw": 262.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 378.6,
+      "not_offered_mw": 374.0
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 591.0,
+      "not_offered_mw": 357.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 97.7,
+      "not_offered_mw": 370.6
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 97.7,
+      "not_offered_mw": 370.6
+     }
+    }
+   },
+   {
+    "date": "2026-05-25",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1222.0,
+      "not_offered_mw": 1243.4
+     },
+     "Dr": {
+      "registered_mw": 2654.0,
+      "book_max_mw": 1695.1,
+      "not_offered_mw": 958.9
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 492.3,
+      "not_offered_mw": 1774.6
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 492.3,
+      "not_offered_mw": 1774.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 175.4,
+      "not_offered_mw": 198.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 329.3,
+      "not_offered_mw": 80.7
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 186.0,
+      "not_offered_mw": 222.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 186.0,
+      "not_offered_mw": 222.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 394.5,
+      "not_offered_mw": 358.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 628.1,
+      "not_offered_mw": 320.8
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 107.5,
+      "not_offered_mw": 360.8
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 107.5,
+      "not_offered_mw": 360.8
+     }
+    }
+   },
+   {
+    "date": "2026-05-26",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1153.0,
+      "not_offered_mw": 1312.4
+     },
+     "Dr": {
+      "registered_mw": 2654.0,
+      "book_max_mw": 1694.1,
+      "not_offered_mw": 959.9
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 509.3,
+      "not_offered_mw": 1757.6
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 509.3,
+      "not_offered_mw": 1757.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 172.0,
+      "not_offered_mw": 201.5
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 329.3,
+      "not_offered_mw": 80.7
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 181.5,
+      "not_offered_mw": 226.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 181.5,
+      "not_offered_mw": 226.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 394.5,
+      "not_offered_mw": 358.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 644.0,
+      "not_offered_mw": 304.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 107.5,
+      "not_offered_mw": 360.8
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 107.5,
+      "not_offered_mw": 360.8
+     }
+    }
+   },
+   {
+    "date": "2026-05-27",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1234.0,
+      "not_offered_mw": 1231.4
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1599.1,
+      "not_offered_mw": 1057.9
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 509.3,
+      "not_offered_mw": 1757.6
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 509.3,
+      "not_offered_mw": 1757.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 172.3,
+      "not_offered_mw": 201.2
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 363.8,
+      "not_offered_mw": 46.2
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 156.5,
+      "not_offered_mw": 251.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 156.5,
+      "not_offered_mw": 251.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 424.5,
+      "not_offered_mw": 328.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 634.6,
+      "not_offered_mw": 314.3
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 132.6,
+      "not_offered_mw": 335.7
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 132.6,
+      "not_offered_mw": 335.7
+     }
+    }
+   },
+   {
+    "date": "2026-05-28",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1536.9,
+      "not_offered_mw": 928.5
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1297.1,
+      "not_offered_mw": 1359.9
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 493.3,
+      "not_offered_mw": 1773.6
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 493.3,
+      "not_offered_mw": 1773.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 171.9,
+      "not_offered_mw": 201.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 358.3,
+      "not_offered_mw": 51.7
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 179.5,
+      "not_offered_mw": 228.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 179.5,
+      "not_offered_mw": 228.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 394.5,
+      "not_offered_mw": 358.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 664.0,
+      "not_offered_mw": 284.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 137.5,
+      "not_offered_mw": 330.8
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 137.5,
+      "not_offered_mw": 330.8
+     }
+    }
+   },
+   {
+    "date": "2026-05-29",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1138.5,
+      "not_offered_mw": 1326.9
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1726.1,
+      "not_offered_mw": 930.9
+     },
+     "Ru": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 477.3,
+      "not_offered_mw": 1789.6
+     },
+     "Rd": {
+      "registered_mw": 2266.9,
+      "book_max_mw": 477.3,
+      "not_offered_mw": 1789.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 187.4,
+      "not_offered_mw": 186.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 358.3,
+      "not_offered_mw": 51.7
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 190.8,
+      "not_offered_mw": 217.2
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 190.8,
+      "not_offered_mw": 217.2
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 394.5,
+      "not_offered_mw": 358.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 674.0,
+      "not_offered_mw": 274.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 137.5,
+      "not_offered_mw": 330.8
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 137.5,
+      "not_offered_mw": 330.8
+     }
+    }
+   },
+   {
+    "date": "2026-05-30",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1167.9,
+      "not_offered_mw": 1297.5
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1707.6,
+      "not_offered_mw": 949.4
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 506.3,
+      "not_offered_mw": 1776.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 506.3,
+      "not_offered_mw": 1776.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 190.8,
+      "not_offered_mw": 182.7
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 351.3,
+      "not_offered_mw": 58.7
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 159.0,
+      "not_offered_mw": 249.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 159.0,
+      "not_offered_mw": 249.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 394.5,
+      "not_offered_mw": 358.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 644.0,
+      "not_offered_mw": 304.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 340.6
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 340.6
+     }
+    }
+   },
+   {
+    "date": "2026-05-31",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1045.5,
+      "not_offered_mw": 1419.9
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1508.6,
+      "not_offered_mw": 1148.4
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 506.3,
+      "not_offered_mw": 1776.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 506.3,
+      "not_offered_mw": 1776.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 172.3,
+      "not_offered_mw": 201.2
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 363.8,
+      "not_offered_mw": 46.2
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 144.0,
+      "not_offered_mw": 264.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 144.0,
+      "not_offered_mw": 264.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 394.5,
+      "not_offered_mw": 358.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 657.0,
+      "not_offered_mw": 291.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 87.7,
+      "not_offered_mw": 380.6
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 87.7,
+      "not_offered_mw": 380.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-01",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1107.9,
+      "not_offered_mw": 1357.5
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1567.9,
+      "not_offered_mw": 1089.1
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 526.3,
+      "not_offered_mw": 1756.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 526.3,
+      "not_offered_mw": 1756.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 176.9,
+      "not_offered_mw": 196.6
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 363.8,
+      "not_offered_mw": 46.2
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 179.5,
+      "not_offered_mw": 228.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 179.5,
+      "not_offered_mw": 228.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 424.5,
+      "not_offered_mw": 328.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 632.0,
+      "not_offered_mw": 316.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 137.5,
+      "not_offered_mw": 330.8
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 137.5,
+      "not_offered_mw": 330.8
+     }
+    }
+   },
+   {
+    "date": "2026-06-02",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1144.5,
+      "not_offered_mw": 1320.9
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1652.3,
+      "not_offered_mw": 1004.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 613.3,
+      "not_offered_mw": 1669.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 613.3,
+      "not_offered_mw": 1669.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 187.4,
+      "not_offered_mw": 186.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 316.4,
+      "not_offered_mw": 93.6
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 424.5,
+      "not_offered_mw": 328.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 682.0,
+      "not_offered_mw": 266.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 340.6
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 340.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-03",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1144.5,
+      "not_offered_mw": 1320.9
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1687.1,
+      "not_offered_mw": 969.9
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 628.9,
+      "not_offered_mw": 1653.9
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 628.9,
+      "not_offered_mw": 1653.9
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 185.4,
+      "not_offered_mw": 188.1
+     },
+     "Dr": {
+      "registered_mw": 410.0,
+      "book_max_mw": 348.3,
+      "not_offered_mw": 61.7
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 179.5,
+      "not_offered_mw": 228.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 179.5,
+      "not_offered_mw": 228.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 424.5,
+      "not_offered_mw": 328.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 672.0,
+      "not_offered_mw": 276.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 132.6,
+      "not_offered_mw": 335.7
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 132.6,
+      "not_offered_mw": 335.7
+     }
+    }
+   },
+   {
+    "date": "2026-06-04",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1130.7,
+      "not_offered_mw": 1334.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1562.9,
+      "not_offered_mw": 1094.1
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 462.3,
+      "not_offered_mw": 1820.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 462.3,
+      "not_offered_mw": 1820.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 192.4,
+      "not_offered_mw": 181.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 359.8,
+      "not_offered_mw": 40.2
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 159.5,
+      "not_offered_mw": 248.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 159.5,
+      "not_offered_mw": 248.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 424.5,
+      "not_offered_mw": 328.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 652.0,
+      "not_offered_mw": 296.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 340.6
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 340.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-05",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1064.4,
+      "not_offered_mw": 1401.0
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1664.3,
+      "not_offered_mw": 992.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 462.3,
+      "not_offered_mw": 1820.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 462.3,
+      "not_offered_mw": 1820.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 187.4,
+      "not_offered_mw": 186.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 359.8,
+      "not_offered_mw": 40.2
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 169.5,
+      "not_offered_mw": 238.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 169.5,
+      "not_offered_mw": 238.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 424.5,
+      "not_offered_mw": 328.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 652.0,
+      "not_offered_mw": 296.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 132.6,
+      "not_offered_mw": 335.7
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 132.6,
+      "not_offered_mw": 335.7
+     }
+    }
+   },
+   {
+    "date": "2026-06-06",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1128.2,
+      "not_offered_mw": 1337.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1782.3,
+      "not_offered_mw": 874.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 469.3,
+      "not_offered_mw": 1813.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 469.3,
+      "not_offered_mw": 1813.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 185.4,
+      "not_offered_mw": 188.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 341.3,
+      "not_offered_mw": 58.7
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 169.5,
+      "not_offered_mw": 238.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 169.5,
+      "not_offered_mw": 238.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 454.5,
+      "not_offered_mw": 298.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 637.0,
+      "not_offered_mw": 311.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 92.6,
+      "not_offered_mw": 375.7
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 92.6,
+      "not_offered_mw": 375.7
+     }
+    }
+   },
+   {
+    "date": "2026-06-07",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1204.2,
+      "not_offered_mw": 1261.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1562.3,
+      "not_offered_mw": 1094.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 431.9,
+      "not_offered_mw": 1850.9
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 431.9,
+      "not_offered_mw": 1850.9
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 185.4,
+      "not_offered_mw": 188.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 348.3,
+      "not_offered_mw": 51.7
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 164.0,
+      "not_offered_mw": 244.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 164.0,
+      "not_offered_mw": 244.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 459.4,
+      "not_offered_mw": 293.2
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 612.0,
+      "not_offered_mw": 336.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 97.5,
+      "not_offered_mw": 370.8
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 97.5,
+      "not_offered_mw": 370.8
+     }
+    }
+   },
+   {
+    "date": "2026-06-08",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1306.1,
+      "not_offered_mw": 1159.3
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1682.3,
+      "not_offered_mw": 974.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 462.3,
+      "not_offered_mw": 1820.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 462.3,
+      "not_offered_mw": 1820.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 195.4,
+      "not_offered_mw": 178.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 337.4,
+      "not_offered_mw": 62.6
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 159.0,
+      "not_offered_mw": 249.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 159.0,
+      "not_offered_mw": 249.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 424.5,
+      "not_offered_mw": 328.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 612.0,
+      "not_offered_mw": 336.9
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 113.4,
+      "not_offered_mw": 354.9
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 113.4,
+      "not_offered_mw": 354.9
+     }
+    }
+   },
+   {
+    "date": "2026-06-09",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1191.1,
+      "not_offered_mw": 1274.3
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1684.3,
+      "not_offered_mw": 972.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 575.7,
+      "not_offered_mw": 1707.1
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 575.7,
+      "not_offered_mw": 1707.1
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 195.4,
+      "not_offered_mw": 178.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 330.8,
+      "not_offered_mw": 69.2
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 191.3,
+      "not_offered_mw": 216.7
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 191.3,
+      "not_offered_mw": 216.7
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 410.5,
+      "not_offered_mw": 342.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 608.5,
+      "not_offered_mw": 340.4
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 129.6,
+      "not_offered_mw": 338.7
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 129.6,
+      "not_offered_mw": 338.7
+     }
+    }
+   },
+   {
+    "date": "2026-06-10",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1175.7,
+      "not_offered_mw": 1289.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1614.3,
+      "not_offered_mw": 1042.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 616.2,
+      "not_offered_mw": 1666.6
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 616.2,
+      "not_offered_mw": 1666.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 200.5,
+      "not_offered_mw": 173.0
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 328.3,
+      "not_offered_mw": 71.7
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 402.5,
+      "not_offered_mw": 350.1
+     },
+     "Dr": {
+      "registered_mw": 948.9,
+      "book_max_mw": 599.7,
+      "not_offered_mw": 349.2
+     },
+     "Ru": {
+      "registered_mw": 468.3,
+      "book_max_mw": 109.7,
+      "not_offered_mw": 358.6
+     },
+     "Rd": {
+      "registered_mw": 468.3,
+      "book_max_mw": 109.7,
+      "not_offered_mw": 358.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-11",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1210.2,
+      "not_offered_mw": 1255.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1645.3,
+      "not_offered_mw": 1011.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 504.3,
+      "not_offered_mw": 1778.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 504.3,
+      "not_offered_mw": 1778.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 195.4,
+      "not_offered_mw": 178.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 317.9,
+      "not_offered_mw": 82.1
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 171.5,
+      "not_offered_mw": 236.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 171.5,
+      "not_offered_mw": 236.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 782.6,
+      "book_max_mw": 418.7,
+      "not_offered_mw": 363.9
+     },
+     "Dr": {
+      "registered_mw": 968.9,
+      "book_max_mw": 579.1,
+      "not_offered_mw": 389.8
+     },
+     "Ru": {
+      "registered_mw": 480.3,
+      "book_max_mw": 105.7,
+      "not_offered_mw": 374.6
+     },
+     "Rd": {
+      "registered_mw": 480.3,
+      "book_max_mw": 105.7,
+      "not_offered_mw": 374.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-12",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1141.1,
+      "not_offered_mw": 1324.3
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1389.3,
+      "not_offered_mw": 1267.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 571.2,
+      "not_offered_mw": 1711.6
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 571.2,
+      "not_offered_mw": 1711.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 195.4,
+      "not_offered_mw": 178.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 331.9,
+      "not_offered_mw": 68.1
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 177.0,
+      "not_offered_mw": 231.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 177.0,
+      "not_offered_mw": 231.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 410.7,
+      "not_offered_mw": 341.9
+     },
+     "Dr": {
+      "registered_mw": 916.9,
+      "book_max_mw": 584.1,
+      "not_offered_mw": 332.8
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 109.7,
+      "not_offered_mw": 304.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 109.7,
+      "not_offered_mw": 304.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-13",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1136.7,
+      "not_offered_mw": 1328.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1447.0,
+      "not_offered_mw": 1210.0
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 558.0,
+      "not_offered_mw": 1724.8
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 558.0,
+      "not_offered_mw": 1724.8
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 185.4,
+      "not_offered_mw": 188.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 342.9,
+      "not_offered_mw": 57.1
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 155.8,
+      "not_offered_mw": 252.2
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 155.8,
+      "not_offered_mw": 252.2
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 414.7,
+      "not_offered_mw": 337.9
+     },
+     "Dr": {
+      "registered_mw": 916.9,
+      "book_max_mw": 580.1,
+      "not_offered_mw": 336.8
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 97.7,
+      "not_offered_mw": 316.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 97.7,
+      "not_offered_mw": 316.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-14",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1096.6,
+      "not_offered_mw": 1368.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1344.0,
+      "not_offered_mw": 1313.0
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 428.0,
+      "not_offered_mw": 1854.8
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 428.0,
+      "not_offered_mw": 1854.8
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 185.4,
+      "not_offered_mw": 188.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 336.4,
+      "not_offered_mw": 63.6
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 171.3,
+      "not_offered_mw": 236.7
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 171.3,
+      "not_offered_mw": 236.7
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 414.7,
+      "not_offered_mw": 337.9
+     },
+     "Dr": {
+      "registered_mw": 916.9,
+      "book_max_mw": 565.1,
+      "not_offered_mw": 351.8
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 139.7,
+      "not_offered_mw": 274.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 139.7,
+      "not_offered_mw": 274.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-15",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1004.6,
+      "not_offered_mw": 1460.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1207.0,
+      "not_offered_mw": 1450.0
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 442.3,
+      "not_offered_mw": 1840.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 442.3,
+      "not_offered_mw": 1840.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 195.4,
+      "not_offered_mw": 178.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 332.0,
+      "not_offered_mw": 68.0
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 171.0,
+      "not_offered_mw": 237.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 171.0,
+      "not_offered_mw": 237.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 414.7,
+      "not_offered_mw": 337.9
+     },
+     "Dr": {
+      "registered_mw": 916.9,
+      "book_max_mw": 575.1,
+      "not_offered_mw": 341.8
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 136.6,
+      "not_offered_mw": 277.7
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 136.6,
+      "not_offered_mw": 277.7
+     }
+    }
+   },
+   {
+    "date": "2026-06-16",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1032.1,
+      "not_offered_mw": 1433.3
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1333.0,
+      "not_offered_mw": 1324.0
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 554.3,
+      "not_offered_mw": 1728.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 554.3,
+      "not_offered_mw": 1728.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 200.4,
+      "not_offered_mw": 173.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 324.9,
+      "not_offered_mw": 75.1
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 181.0,
+      "not_offered_mw": 227.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 181.0,
+      "not_offered_mw": 227.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 414.7,
+      "not_offered_mw": 337.9
+     },
+     "Dr": {
+      "registered_mw": 911.9,
+      "book_max_mw": 569.8,
+      "not_offered_mw": 342.1
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 147.6,
+      "not_offered_mw": 266.7
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 147.6,
+      "not_offered_mw": 266.7
+     }
+    }
+   },
+   {
+    "date": "2026-06-17",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 908.6,
+      "not_offered_mw": 1556.8
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1435.5,
+      "not_offered_mw": 1221.5
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 521.3,
+      "not_offered_mw": 1761.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 521.3,
+      "not_offered_mw": 1761.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 200.4,
+      "not_offered_mw": 173.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 323.4,
+      "not_offered_mw": 76.6
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 444.7,
+      "not_offered_mw": 307.9
+     },
+     "Dr": {
+      "registered_mw": 911.9,
+      "book_max_mw": 520.1,
+      "not_offered_mw": 391.8
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 117.6,
+      "not_offered_mw": 296.7
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 117.6,
+      "not_offered_mw": 296.7
+     }
+    }
+   },
+   {
+    "date": "2026-06-18",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1006.7,
+      "not_offered_mw": 1458.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1515.5,
+      "not_offered_mw": 1141.5
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 428.0,
+      "not_offered_mw": 1854.8
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 428.0,
+      "not_offered_mw": 1854.8
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 210.9,
+      "not_offered_mw": 162.6
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 301.9,
+      "not_offered_mw": 98.1
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 444.7,
+      "not_offered_mw": 307.9
+     },
+     "Dr": {
+      "registered_mw": 911.9,
+      "book_max_mw": 543.2,
+      "not_offered_mw": 368.7
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 131.7,
+      "not_offered_mw": 282.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 131.7,
+      "not_offered_mw": 282.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-19",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 985.7,
+      "not_offered_mw": 1479.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1541.5,
+      "not_offered_mw": 1115.5
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 461.4,
+      "not_offered_mw": 1821.4
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 461.4,
+      "not_offered_mw": 1821.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 205.8,
+      "not_offered_mw": 167.7
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 311.4,
+      "not_offered_mw": 88.6
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 414.7,
+      "not_offered_mw": 337.9
+     },
+     "Dr": {
+      "registered_mw": 911.9,
+      "book_max_mw": 500.8,
+      "not_offered_mw": 411.1
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 132.6,
+      "not_offered_mw": 281.7
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 132.6,
+      "not_offered_mw": 281.7
+     }
+    }
+   },
+   {
+    "date": "2026-06-20",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 948.5,
+      "not_offered_mw": 1516.9
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1432.5,
+      "not_offered_mw": 1224.5
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 521.1,
+      "not_offered_mw": 1761.7
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 521.1,
+      "not_offered_mw": 1761.7
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 187.4,
+      "not_offered_mw": 186.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 306.9,
+      "not_offered_mw": 93.1
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 172.0,
+      "not_offered_mw": 236.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 172.0,
+      "not_offered_mw": 236.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 384.7,
+      "not_offered_mw": 367.9
+     },
+     "Dr": {
+      "registered_mw": 911.9,
+      "book_max_mw": 473.7,
+      "not_offered_mw": 438.2
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 137.5,
+      "not_offered_mw": 276.8
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 137.5,
+      "not_offered_mw": 276.8
+     }
+    }
+   },
+   {
+    "date": "2026-06-21",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 874.2,
+      "not_offered_mw": 1591.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1331.0,
+      "not_offered_mw": 1326.0
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 383.4,
+      "not_offered_mw": 1899.4
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 383.4,
+      "not_offered_mw": 1899.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 180.5,
+      "not_offered_mw": 193.0
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 315.8,
+      "not_offered_mw": 84.2
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 151.5,
+      "not_offered_mw": 256.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 151.5,
+      "not_offered_mw": 256.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 346.7,
+      "not_offered_mw": 405.9
+     },
+     "Dr": {
+      "registered_mw": 911.9,
+      "book_max_mw": 521.7,
+      "not_offered_mw": 390.2
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-22",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 906.2,
+      "not_offered_mw": 1559.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1395.0,
+      "not_offered_mw": 1262.0
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 545.5,
+      "not_offered_mw": 1737.3
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 545.5,
+      "not_offered_mw": 1737.3
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 175.4,
+      "not_offered_mw": 198.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 304.3,
+      "not_offered_mw": 95.7
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 172.0,
+      "not_offered_mw": 236.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 172.0,
+      "not_offered_mw": 236.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 387.0,
+      "not_offered_mw": 365.6
+     },
+     "Dr": {
+      "registered_mw": 911.9,
+      "book_max_mw": 506.7,
+      "not_offered_mw": 405.2
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-23",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 993.7,
+      "not_offered_mw": 1471.7
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1235.6,
+      "not_offered_mw": 1421.4
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 500.4,
+      "not_offered_mw": 1782.4
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 500.4,
+      "not_offered_mw": 1782.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 185.5,
+      "not_offered_mw": 188.0
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 304.2,
+      "not_offered_mw": 95.8
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 338.0,
+      "not_offered_mw": 414.6
+     },
+     "Dr": {
+      "registered_mw": 911.9,
+      "book_max_mw": 470.4,
+      "not_offered_mw": 441.5
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 87.7,
+      "not_offered_mw": 326.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 87.7,
+      "not_offered_mw": 326.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-24",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 896.2,
+      "not_offered_mw": 1569.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1358.6,
+      "not_offered_mw": 1298.4
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 480.4,
+      "not_offered_mw": 1802.4
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 480.4,
+      "not_offered_mw": 1802.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 185.8,
+      "not_offered_mw": 187.7
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 309.2,
+      "not_offered_mw": 90.8
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 159.5,
+      "not_offered_mw": 248.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 159.5,
+      "not_offered_mw": 248.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 392.7,
+      "not_offered_mw": 359.9
+     },
+     "Dr": {
+      "registered_mw": 911.9,
+      "book_max_mw": 401.4,
+      "not_offered_mw": 510.5
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 87.7,
+      "not_offered_mw": 326.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 87.7,
+      "not_offered_mw": 326.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-25",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 966.2,
+      "not_offered_mw": 1499.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1347.3,
+      "not_offered_mw": 1309.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 508.5,
+      "not_offered_mw": 1774.3
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 508.5,
+      "not_offered_mw": 1774.3
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 185.5,
+      "not_offered_mw": 188.0
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 304.2,
+      "not_offered_mw": 95.8
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 410.7,
+      "not_offered_mw": 341.9
+     },
+     "Dr": {
+      "registered_mw": 911.9,
+      "book_max_mw": 382.8,
+      "not_offered_mw": 529.1
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 95.7,
+      "not_offered_mw": 318.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 95.7,
+      "not_offered_mw": 318.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-26",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 954.2,
+      "not_offered_mw": 1511.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1467.3,
+      "not_offered_mw": 1189.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 405.4,
+      "not_offered_mw": 1877.4
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 405.4,
+      "not_offered_mw": 1877.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 175.4,
+      "not_offered_mw": 198.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 277.6,
+      "not_offered_mw": 122.4
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 182.0,
+      "not_offered_mw": 226.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 404.7,
+      "not_offered_mw": 347.9
+     },
+     "Dr": {
+      "registered_mw": 906.9,
+      "book_max_mw": 527.5,
+      "not_offered_mw": 379.4
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 95.7,
+      "not_offered_mw": 318.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 95.7,
+      "not_offered_mw": 318.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-27",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1040.5,
+      "not_offered_mw": 1424.9
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1396.3,
+      "not_offered_mw": 1260.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 418.4,
+      "not_offered_mw": 1864.4
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 418.4,
+      "not_offered_mw": 1864.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 185.4,
+      "not_offered_mw": 188.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 284.6,
+      "not_offered_mw": 115.4
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 146.5,
+      "not_offered_mw": 261.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 146.5,
+      "not_offered_mw": 261.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 437.7,
+      "not_offered_mw": 314.9
+     },
+     "Dr": {
+      "registered_mw": 906.9,
+      "book_max_mw": 581.2,
+      "not_offered_mw": 325.7
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 87.7,
+      "not_offered_mw": 326.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 87.7,
+      "not_offered_mw": 326.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-28",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1047.0,
+      "not_offered_mw": 1418.4
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1363.3,
+      "not_offered_mw": 1293.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 391.2,
+      "not_offered_mw": 1891.6
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 391.2,
+      "not_offered_mw": 1891.6
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 175.4,
+      "not_offered_mw": 198.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 275.1,
+      "not_offered_mw": 124.9
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 136.5,
+      "not_offered_mw": 271.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 136.5,
+      "not_offered_mw": 271.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 407.7,
+      "not_offered_mw": 344.9
+     },
+     "Dr": {
+      "registered_mw": 906.9,
+      "book_max_mw": 541.5,
+      "not_offered_mw": 365.4
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 87.7,
+      "not_offered_mw": 326.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 87.7,
+      "not_offered_mw": 326.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-29",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 1070.0,
+      "not_offered_mw": 1395.4
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1382.0,
+      "not_offered_mw": 1275.0
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 445.4,
+      "not_offered_mw": 1837.4
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 445.4,
+      "not_offered_mw": 1837.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 175.4,
+      "not_offered_mw": 198.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 283.8,
+      "not_offered_mw": 116.2
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 151.5,
+      "not_offered_mw": 256.5
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 151.5,
+      "not_offered_mw": 256.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 418.7,
+      "not_offered_mw": 333.9
+     },
+     "Dr": {
+      "registered_mw": 906.9,
+      "book_max_mw": 541.5,
+      "not_offered_mw": 365.4
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     }
+    }
+   },
+   {
+    "date": "2026-06-30",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 948.5,
+      "not_offered_mw": 1516.9
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1513.8,
+      "not_offered_mw": 1143.2
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 465.4,
+      "not_offered_mw": 1817.4
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 465.4,
+      "not_offered_mw": 1817.4
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 181.9,
+      "not_offered_mw": 191.6
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 290.0,
+      "not_offered_mw": 110.0
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 156.0,
+      "not_offered_mw": 252.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 156.0,
+      "not_offered_mw": 252.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 418.7,
+      "not_offered_mw": 333.9
+     },
+     "Dr": {
+      "registered_mw": 906.9,
+      "book_max_mw": 516.3,
+      "not_offered_mw": 390.6
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 95.7,
+      "not_offered_mw": 318.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 95.7,
+      "not_offered_mw": 318.6
+     }
+    }
+   },
+   {
+    "date": "2026-07-01",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 966.9,
+      "not_offered_mw": 1498.5
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1527.8,
+      "not_offered_mw": 1129.2
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 433.8,
+      "not_offered_mw": 1849.0
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 433.8,
+      "not_offered_mw": 1849.0
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 220.0,
+      "not_offered_mw": 153.5
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 293.5,
+      "not_offered_mw": 106.5
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 142.0,
+      "not_offered_mw": 266.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 142.0,
+      "not_offered_mw": 266.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 410.7,
+      "not_offered_mw": 341.9
+     },
+     "Dr": {
+      "registered_mw": 906.9,
+      "book_max_mw": 591.3,
+      "not_offered_mw": 315.6
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 95.7,
+      "not_offered_mw": 318.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 95.7,
+      "not_offered_mw": 318.6
+     }
+    }
+   },
+   {
+    "date": "2026-07-02",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 844.5,
+      "not_offered_mw": 1620.9
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1404.3,
+      "not_offered_mw": 1252.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 473.7,
+      "not_offered_mw": 1809.1
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 473.7,
+      "not_offered_mw": 1809.1
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 197.5,
+      "not_offered_mw": 176.0
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 311.5,
+      "not_offered_mw": 88.5
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 136.0,
+      "not_offered_mw": 272.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 136.0,
+      "not_offered_mw": 272.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 387.7,
+      "not_offered_mw": 364.9
+     },
+     "Dr": {
+      "registered_mw": 906.9,
+      "book_max_mw": 596.4,
+      "not_offered_mw": 310.5
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     }
+    }
+   },
+   {
+    "date": "2026-07-03",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 837.9,
+      "not_offered_mw": 1627.5
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1499.3,
+      "not_offered_mw": 1157.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 453.7,
+      "not_offered_mw": 1829.1
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 453.7,
+      "not_offered_mw": 1829.1
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 202.4,
+      "not_offered_mw": 171.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 300.0,
+      "not_offered_mw": 100.0
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 141.0,
+      "not_offered_mw": 267.0
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 141.0,
+      "not_offered_mw": 267.0
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 425.7,
+      "not_offered_mw": 326.9
+     },
+     "Dr": {
+      "registered_mw": 906.9,
+      "book_max_mw": 591.3,
+      "not_offered_mw": 315.6
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 131.7,
+      "not_offered_mw": 282.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 131.7,
+      "not_offered_mw": 282.6
+     }
+    }
+   },
+   {
+    "date": "2026-07-04",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 898.5,
+      "not_offered_mw": 1566.9
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1530.3,
+      "not_offered_mw": 1126.7
+     },
+     "Ru": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 389.3,
+      "not_offered_mw": 1893.5
+     },
+     "Rd": {
+      "registered_mw": 2282.8,
+      "book_max_mw": 389.3,
+      "not_offered_mw": 1893.5
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 218.5,
+      "not_offered_mw": 155.0
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 311.5,
+      "not_offered_mw": 88.5
+     },
+     "Ru": {
+      "registered_mw": 408.0,
+      "book_max_mw": 139.8,
+      "not_offered_mw": 268.2
+     },
+     "Rd": {
+      "registered_mw": 408.0,
+      "book_max_mw": 139.8,
+      "not_offered_mw": 268.2
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 752.6,
+      "book_max_mw": 447.7,
+      "not_offered_mw": 304.9
+     },
+     "Dr": {
+      "registered_mw": 906.9,
+      "book_max_mw": 581.3,
+      "not_offered_mw": 325.6
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     }
+    }
+   }
+  ],
+  "stats": {
+   "luzon": {
+    "Fr": {
+     "days": 85,
+     "median_registered_mw": 2465.4,
+     "median_not_offered_mw": 1365.0,
+     "median_share_of_registered_pct": 55.5
+    },
+    "Dr": {
+     "days": 85,
+     "median_registered_mw": 2657.0,
+     "median_not_offered_mw": 1194.4,
+     "median_share_of_registered_pct": 45.0
+    },
+    "Ru": {
+     "days": 85,
+     "median_registered_mw": 2266.9,
+     "median_not_offered_mw": 1776.5,
+     "median_share_of_registered_pct": 78.1
+    },
+    "Rd": {
+     "days": 85,
+     "median_registered_mw": 2266.9,
+     "median_not_offered_mw": 1776.5,
+     "median_share_of_registered_pct": 78.1
+    }
+   },
+   "visayas": {
+    "Fr": {
+     "days": 85,
+     "median_registered_mw": 373.5,
+     "median_not_offered_mw": 181.1,
+     "median_share_of_registered_pct": 48.5
+    },
+    "Dr": {
+     "days": 85,
+     "median_registered_mw": 410.0,
+     "median_not_offered_mw": 59.6,
+     "median_share_of_registered_pct": 14.6
+    },
+    "Ru": {
+     "days": 85,
+     "median_registered_mw": 408.0,
+     "median_not_offered_mw": 246.0,
+     "median_share_of_registered_pct": 61.4
+    },
+    "Rd": {
+     "days": 85,
+     "median_registered_mw": 408.0,
+     "median_not_offered_mw": 246.0,
+     "median_share_of_registered_pct": 61.4
+    }
+   },
+   "mindanao": {
+    "Fr": {
+     "days": 85,
+     "median_registered_mw": 752.6,
+     "median_not_offered_mw": 337.9,
+     "median_share_of_registered_pct": 45.3
+    },
+    "Dr": {
+     "days": 85,
+     "median_registered_mw": 947.7,
+     "median_not_offered_mw": 364.2,
+     "median_share_of_registered_pct": 38.8
+    },
+    "Ru": {
+     "days": 85,
+     "median_registered_mw": 452.9,
+     "median_not_offered_mw": 330.8,
+     "median_share_of_registered_pct": 74.0
+    },
+    "Rd": {
+     "days": 85,
+     "median_registered_mw": 452.9,
+     "median_not_offered_mw": 330.8,
+     "median_share_of_registered_pct": 74.0
+    }
+   }
+  },
+  "note": "Registered ancillary-services capacity (CAPER) minus the reserve offer book's fullest hour (RTDOR), per grid x commodity per market day: registered reserve capacity that did not appear in the operator's reserve offer book. The same data cut as the generation not-offered screen and the same caveats: a resource can be committed to energy, on outage or derate, testing, or holding reserve under a non-market obligation; registered capacity is a ceiling, not an expectation. It sizes the reserve book against its registration base. Grid via the inferred code prefix.",
+  "src_registered": "https://www.iemop.ph/market-data/registered-capacity-ancillary-services/",
+  "src_offered": "https://www.iemop.ph/market-data/rtd-reserve-offers/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
+ "settlement_side": {
+  "available": true,
+  "sample_days": [
+   "2026-05-20",
+   "2026-06-05",
+   "2026-06-15",
+   "2026-06-25"
+  ],
+  "per_grid": {
+   "luzon": {
+    "admin_lmp_mean_php_kwh": 8.537,
+    "settlement_lmp_mean_php_kwh": 5.824,
+    "settlement_congestion_max_abs_php_kwh": 0.0,
+    "dap_vs_rt_spread_mean_php_kwh": 0.024,
+    "dap_vs_rt_spread_range_php_kwh": [
+     -2.267,
+     1.82
+    ]
+   },
+   "visayas": {
+    "admin_lmp_mean_php_kwh": 17.584,
+    "settlement_lmp_mean_php_kwh": 16.466,
+    "settlement_congestion_max_abs_php_kwh": 0.0,
+    "dap_vs_rt_spread_mean_php_kwh": -6.394,
+    "dap_vs_rt_spread_range_php_kwh": [
+     -9.294,
+     -2.393
+    ]
+   },
+   "mindanao": {
+    "admin_lmp_mean_php_kwh": 17.265,
+    "settlement_lmp_mean_php_kwh": 14.301,
+    "settlement_congestion_max_abs_php_kwh": 0.0,
+    "dap_vs_rt_spread_mean_php_kwh": 1.027,
+    "dap_vs_rt_spread_range_php_kwh": [
+     -0.601,
+     3.261
+    ]
+   }
+  },
+  "note": "Sampled settlement-side price families (Pass B measure record). admin_lmp is the mean generator-node indicative administered price (AP), the operator's cost-substitute price; settlement_lmp the mean settled LMP (STLPRICE); settlement_congestion its congestion component (zero at the one-price-per-island granularity WESM settles at); dap_lmp the day-ahead projection mean and dap_vs_rt_spread its signed gap to the settled price. Daily means over a small market-day sample: these families were measured, not built into the replay (administered prices are cost-substitute counterfactuals, the settlement congestion component is empty at regional granularity, and the day-ahead run is a projection, out of the real-time replay's scope).",
+  "src_admin": "https://www.iemop.ph/market-data/indicative-administered-prices/",
+  "src_settlement": "https://www.iemop.ph/market-data/prices-used-in-settlement/",
+  "src_dayahead": "https://www.iemop.ph/market-data/dap-prices-and-schedules/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
  "flow_record": {
   "available": true,
   "days": 93,

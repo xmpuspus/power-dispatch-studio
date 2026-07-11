@@ -112,6 +112,17 @@ DATASETS = {
              "instruction-report",
     "SODIR": "so-dispatch-instruction-report",
     "VDSODIR": "valid-discrepancies-on-so-dispatch-instruction-report",
+    # Added 2026-07-10 (post-convergence build queue, Pass B). CAPER is the
+    # per-resource registered ancillary-services capacity by commodity
+    # (Ru/Fr/Rd/Dr), the reserve-side twin of CAPEG (registered-capacity-
+    # generation): one small daily CSV, the registration denominator the
+    # reserve not-offered screen needs. The heavier settlement-side finals
+    # from the same Pass B (DIPC reserve results DIPCRF, indicative
+    # administered prices AP) are hourly per-resource zips and stay
+    # deriver-only, like the offer books: pipeline/reserve_results.py and
+    # pipeline/admin_prices.py fetch them transiently and commit compact
+    # dailies under data/derived/.
+    "CAPER": "registered-capacity-ancillary-services",
 }
 
 # Large datasets kept as a static SAMPLE of recent days, not the full public

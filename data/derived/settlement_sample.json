@@ -1,0 +1,126 @@
+{
+ "sample_days": [
+  "2026-05-20",
+  "2026-06-05",
+  "2026-06-15",
+  "2026-06-25"
+ ],
+ "days": [
+  {
+   "date": "2026-05-20",
+   "admin_lmp": {
+    "luzon": 10.075,
+    "visayas": 13.889,
+    "mindanao": 21.518
+   },
+   "settlement_lmp": {
+    "luzon": 4.193,
+    "visayas": 15.783,
+    "mindanao": 14.595
+   },
+   "settlement_congestion": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 0.0
+   },
+   "dap_lmp": {
+    "luzon": 6.013,
+    "visayas": 13.39,
+    "mindanao": 17.856
+   },
+   "dap_vs_rt_spread": {
+    "luzon": 1.82,
+    "visayas": -2.393,
+    "mindanao": 3.261
+   }
+  },
+  {
+   "date": "2026-06-05",
+   "admin_lmp": {
+    "luzon": 10.543,
+    "visayas": 16.598,
+    "mindanao": 14.736
+   },
+   "settlement_lmp": {
+    "luzon": 2.304,
+    "visayas": 15.257,
+    "mindanao": 8.493
+   },
+   "settlement_congestion": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 0.0
+   },
+   "dap_lmp": {
+    "luzon": 3.348,
+    "visayas": 7.437,
+    "mindanao": 8.08
+   },
+   "dap_vs_rt_spread": {
+    "luzon": 1.044,
+    "visayas": -7.82,
+    "mindanao": -0.413
+   }
+  },
+  {
+   "date": "2026-06-15",
+   "admin_lmp": {
+    "luzon": 5.422,
+    "visayas": 25.388,
+    "mindanao": 20.505
+   },
+   "settlement_lmp": {
+    "luzon": 6.616,
+    "visayas": 18.24,
+    "mindanao": 18.235
+   },
+   "settlement_congestion": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 0.0
+   },
+   "dap_lmp": {
+    "luzon": 6.115,
+    "visayas": 8.946,
+    "mindanao": 17.634
+   },
+   "dap_vs_rt_spread": {
+    "luzon": -0.501,
+    "visayas": -9.294,
+    "mindanao": -0.601
+   }
+  },
+  {
+   "date": "2026-06-25",
+   "admin_lmp": {
+    "luzon": 8.11,
+    "visayas": 14.462,
+    "mindanao": 12.303
+   },
+   "settlement_lmp": {
+    "luzon": 10.182,
+    "visayas": 16.585,
+    "mindanao": 15.881
+   },
+   "settlement_congestion": {
+    "luzon": 0.0,
+    "visayas": 0.0,
+    "mindanao": 0.0
+   },
+   "dap_lmp": {
+    "luzon": 7.915,
+    "visayas": 10.516,
+    "mindanao": 17.742
+   },
+   "dap_vs_rt_spread": {
+    "luzon": -2.267,
+    "visayas": -6.069,
+    "mindanao": 1.861
+   }
+  }
+ ],
+ "note": "Sampled settlement-side price families (Pass B measure record). admin_lmp is the mean generator-node indicative administered price (AP), the operator's cost-substitute price; settlement_lmp the mean settled LMP (STLPRICE); settlement_congestion its congestion component (zero at the one-price-per-island granularity WESM settles at); dap_lmp the day-ahead projection mean and dap_vs_rt_spread its signed gap to the settled price. Daily means over a small market-day sample: these families were measured, not built into the replay (administered prices are cost-substitute counterfactuals, the settlement congestion component is empty at regional granularity, and the day-ahead run is a projection, out of the real-time replay's scope).",
+ "src_admin": "https://www.iemop.ph/market-data/indicative-administered-prices/",
+ "src_settlement": "https://www.iemop.ph/market-data/prices-used-in-settlement/",
+ "src_dayahead": "https://www.iemop.ph/market-data/dap-prices-and-schedules/"
+}

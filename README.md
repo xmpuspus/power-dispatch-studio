@@ -301,7 +301,14 @@ stack almost never. The reserve books are consumed the same way: every
 derived reserve book cleared at the operator's scheduled MW reproduces the
 official reserve price within half a centavo in 45 to 88 percent of hours
 per pool, and the residual is one-signed in all twelve pools, the measured
-co-optimisation opportunity-cost wedge. The gap between the cost-mode and
+co-optimisation opportunity-cost wedge. The operator's own final
+per-resource cleared reserve (DIPC reserve results final, **196 resources**
+across 76 days) confirms it: the book replay under-prices the authoritative
+final clearing on every one of the twelve pools too, and the final re-solve
+moves the reserve schedule by only a few MW, scattered across the
+regulation products and the tight island dispatchable reserve.
+Registered ancillary-services capacity sizes each reserve book against its
+registration base. The gap between the cost-mode and
 offer-mode tables is the offer premium, measured per hour instead of
 asserted; all sets are published in the
 [studio's validation tables](studio/README.md).
