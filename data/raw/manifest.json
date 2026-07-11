@@ -8,6 +8,15 @@
   "post_id": "302634",
   "slug": "registered-capacity-generation"
  },
+ "CAPER": {
+  "bytes": 1453036,
+  "files": 91,
+  "newest": "20260710",
+  "oldest": "20260411",
+  "page_min_date": "04/12/2026",
+  "post_id": "302635",
+  "slug": "registered-capacity-ancillary-services"
+ },
  "DAPCV": {
   "bytes": 4089401,
   "files": 95,
@@ -188,5 +197,5 @@
   "post_id": "5763",
   "slug": "outage-schedules-used-in-wap"
  },
- "fetched_at_utc": "2026-07-10T23:39:15+00:00"
+ "fetched_at_utc": "2026-07-11T00:59:22+00:00"
 }

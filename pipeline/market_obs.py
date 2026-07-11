@@ -538,6 +538,105 @@ def build_not_offered() -> dict:
     }
 
 
+def build_reserve_registration() -> dict:
+    """The reserve-side registration denominator: per market day, registered
+    ancillary-services capacity (CAPER, the reserve twin of CAPEG) per grid x
+    commodity against the reserve offer book's fullest hour (RTDOR, the
+    committed reserve dailies). The reserve counterpart of the generation
+    not-offered screen; a data cut with the same legitimate explanations, not
+    an accusation. It gives the reserve book a registration base."""
+    import json as _json
+
+    res_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "..", "data", "derived", "reserve_daily")
+    if not os.path.isdir(res_dir):
+        return {"available": False,
+                "note": "no derived reserve days; run pipeline/reserve_offers.py"}
+    commodities = ("Fr", "Dr", "Ru", "Rd")
+    comm_canon = {"FR": "Fr", "DR": "Dr", "RU": "Ru", "RD": "Rd"}
+    # registered AS capacity per grid x commodity per day (CAPER)
+    reg: dict[str, dict[str, dict[str, float]]] = {}
+    for path in dataset_files("CAPER"):
+        day = day_of(path)
+        acc = {g: {c: 0.0 for c in commodities} for g in GRIDS_L}
+        for r in rows_of(path):
+            g = grid_of_prefix((r.get("RESOURCE_NAME") or "").strip())
+            c = comm_canon.get((r.get("PRODUCT_TYPE") or "").strip().upper())
+            if not g or not c:
+                continue
+            try:
+                acc[g][c] += float(r.get("MAX_CAPACITY") or 0)
+            except ValueError:
+                continue
+        reg[day] = acc
+    rows = []
+    for name in sorted(os.listdir(res_dir)):
+        if not name.startswith("RESD_") or not name.endswith(".json"):
+            continue
+        day = _json.load(open(os.path.join(res_dir, name)))
+        date = day["date"]
+        if date not in reg:
+            continue
+        row: dict = {"date": date}
+        for g in GRIDS_L:
+            for c in commodities:
+                books = day["hours"][g][c]
+                offered = [sum(m for _, m in hb) for hb in books if hb]
+                if not offered:
+                    continue
+                registered = reg[date][g][c]
+                book_max = max(offered)
+                row.setdefault(g, {})[c] = {
+                    "registered_mw": round(registered, 1),
+                    "book_max_mw": round(book_max, 1),
+                    "not_offered_mw": round(max(0.0, registered - book_max), 1),
+                }
+        if len(row) > 1:
+            rows.append(row)
+    if not rows:
+        return {"available": False,
+                "note": "no overlapping CAPER + reserve-book days yet"}
+    stats: dict = {}
+    for g in GRIDS_L:
+        for c in commodities:
+            regs = [r[g][c]["registered_mw"] for r in rows
+                    if g in r and c in r[g]]
+            noff = [r[g][c]["not_offered_mw"] for r in rows
+                    if g in r and c in r[g]]
+            if not regs:
+                continue
+            snoff = sorted(noff)
+            med_reg = sum(regs) / len(regs)
+            stats.setdefault(g, {})[c] = {
+                "days": len(regs),
+                "median_registered_mw": round(sorted(regs)[len(regs) // 2], 1),
+                "median_not_offered_mw": round(snoff[len(snoff) // 2], 1),
+                "median_share_of_registered_pct": (round(
+                    100 * snoff[len(snoff) // 2] / med_reg, 1)
+                    if med_reg > 0 else None),
+            }
+    return {
+        "available": True,
+        "days": rows,
+        "stats": stats,
+        "note": ("Registered ancillary-services capacity (CAPER) minus the "
+                 "reserve offer book's fullest hour (RTDOR), per grid x "
+                 "commodity per market day: registered reserve capacity that "
+                 "did not appear in the operator's reserve offer book. The "
+                 "same data cut as the generation not-offered screen and the "
+                 "same caveats: a resource can be committed to energy, on "
+                 "outage or derate, testing, or holding reserve under a "
+                 "non-market obligation; registered capacity is a ceiling, "
+                 "not an expectation. It sizes the reserve book against its "
+                 "registration base. Grid via the inferred code prefix."),
+        "src_registered": ("https://www.iemop.ph/market-data/"
+                           "registered-capacity-ancillary-services/"),
+        "src_offered": "https://www.iemop.ph/market-data/rtd-reserve-offers/",
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
 def _corr(xs: list[float], ys: list[float]) -> float | None:
     n = len(xs)
     if n < 3:
@@ -708,6 +807,194 @@ def build_reserve_validation() -> dict:
                           "offer in the book."),
         "src": "https://www.iemop.ph/market-data/rtd-reserve-offers/",
         "src_obs": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
+def build_reserve_results() -> dict:
+    """The per-resource reserve validation. DIPC reserve results final
+    (DIPCRF) is IEMOP's final per-resource cleared reserve, schedule and
+    price per commodity. Two comparisons the pooled RTDOR replay could not
+    make: the final cleared price against the real-time RSVPR (how far the
+    final re-solve moves the reserve price), and the RTDOR book replay's
+    marginal against the same final cleared price (does the book replay
+    reproduce the authoritative final clearing, tighter than against the RTD
+    price). The per-resource cleared schedules it archives are the input the
+    queued joint energy+reserve LP needs."""
+    import json as _json
+
+    rr_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          "..", "data", "derived", "reserve_results_daily")
+    res_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "..", "data", "derived", "reserve_daily")
+    if not os.path.isdir(rr_dir):
+        return {"available": False,
+                "note": "no DIPCRF days; run pipeline/reserve_results.py"}
+    rsvpr_by_day = {day_of(p): p for p in dataset_files("RSVPR")}
+    books_by_day = {}
+    if os.path.isdir(res_dir):
+        for n in os.listdir(res_dir):
+            if n.startswith("RESD_") and n.endswith(".json"):
+                d = _json.load(open(os.path.join(res_dir, n)))
+                books_by_day[d["date"]] = d
+    commodities = ("Fr", "Dr", "Ru", "Rd")
+    # final-vs-RTD price pairs and replay-vs-final pairs, per pool
+    fr_rtd: dict = {(g, c): [] for g in GRIDS_L for c in commodities}
+    replay: dict = {(g, c): [] for g in GRIDS_L for c in commodities}
+    sched_rev: dict = {(g, c): [] for g in GRIDS_L for c in commodities}
+    n_days = 0
+    resources = set()
+    for name in sorted(os.listdir(rr_dir)):
+        if not name.startswith("RRESD_") or not name.endswith(".json"):
+            continue
+        day = _json.load(open(os.path.join(rr_dir, name)))
+        date = day["date"]
+        n_days += 1
+        obs = _rsvpr_open(rsvpr_by_day[date]) if date in rsvpr_by_day else {}
+        book_day = books_by_day.get(date)
+        for g in GRIDS_L:
+            for c in commodities:
+                final_p = day["cleared_price"][g][c]
+                final_s = day["sched_mw"][g][c]
+                gap = (day.get("rtd_schedule_gap_mw", {})
+                       .get(g, {}).get(c, {}) or {})
+                if gap.get("mean") is not None:
+                    sched_rev[(g, c)].append(gap["mean"])
+                for h in range(24):
+                    fp = final_p[h]
+                    if fp is None:
+                        continue
+                    for res, _mw, _pr in (day["hours"][g][c][h] or []):
+                        resources.add(res)
+                    o = obs.get(g, {}).get(c, {}).get(h)
+                    if o is not None:
+                        fr_rtd[(g, c)].append((fp, o))
+                    if book_day is not None:
+                        bk = book_day["hours"][g][c][h]
+                        ba = (book_day.get("book_at") or [None] * 24)[h]
+                        sm = final_s[h]
+                        if bk and sm and (not ba or ba.endswith(":05:00")):
+                            m, _short = _clear_book(bk, sm)
+                            replay[(g, c)].append((m, fp))
+    pools: dict = {}
+    for g in GRIDS_L:
+        for c in commodities:
+            pool: dict = {}
+            fp_rtd = fr_rtd[(g, c)]
+            if fp_rtd:
+                n = len(fp_rtd)
+                pool["vs_rtd_price"] = {
+                    "n_hours": n,
+                    "final_mean_php_kwh": round(
+                        sum(a for a, _ in fp_rtd) / n, 3),
+                    "rtd_mean_php_kwh": round(
+                        sum(b for _, b in fp_rtd) / n, 3),
+                    "mae_php_kwh": round(
+                        sum(abs(a - b) for a, b in fp_rtd) / n, 3),
+                    "bias_php_kwh": round(
+                        sum(a - b for a, b in fp_rtd) / n, 3),
+                }
+            rp = replay[(g, c)]
+            if rp:
+                n = len(rp)
+                pool["replay_vs_final"] = {
+                    "n_hours": n,
+                    "mae_php_kwh": round(
+                        sum(abs(a - b) for a, b in rp) / n, 3),
+                    "bias_php_kwh": round(
+                        sum(a - b for a, b in rp) / n, 3),
+                    "correlation": _corr([a for a, _ in rp],
+                                         [b for _, b in rp]),
+                }
+            rev = sched_rev[(g, c)]
+            if rev:
+                pool["final_vs_rtd_schedule_mw"] = {
+                    "mean_daily_revision": round(sum(rev) / len(rev), 2),
+                }
+            if pool:
+                pools.setdefault(g, {})[c] = pool
+    if not pools:
+        return {"available": False, "note": "no scored DIPCRF pools yet"}
+    return {
+        "available": True,
+        "days": n_days,
+        "resources_named": len(resources),
+        "pools": pools,
+        "note": ("IEMOP's final per-resource cleared reserve (DIPCRF), per "
+                 "commodity. vs_rtd_price compares the final schedule-weighted "
+                 "clearing price against the real-time RSVPR at the same "
+                 "opening interval: the final re-solve's reserve-price "
+                 "movement. replay_vs_final clears the RTDOR reserve book at "
+                 "the final scheduled MW and scores its marginal offer against "
+                 "the final cleared price, a tighter check than against the "
+                 "RTD price. final_vs_rtd_schedule_mw is the mean daily "
+                 "revision of the pool's scheduled reserve between the "
+                 "real-time and final solves (near zero on Luzon, larger on "
+                 "the tight island reserve pools). The per-resource cleared "
+                 "schedules are archived under data/derived/"
+                 "reserve_results_daily/ as the input for the queued joint "
+                 "energy+reserve clear."),
+        "src": ("https://www.iemop.ph/market-data/"
+                "dipc-reserve-results-final/"),
+        "src_rtd": ("https://www.iemop.ph/market-data/"
+                    "rtd-regional-reserve-prices/"),
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
+def build_settlement_side() -> dict:
+    """The sampled settlement-side price record (Pass B measure): the
+    indicative administered price (a cost-substitute, sitting in the cost
+    regime on Luzon), the settlement congestion component (empty at the
+    one-price-per-island granularity WESM settles at), and the day-ahead
+    projection's signed spread to the real-time settlement (a projection,
+    out of the replay's scope). Read from the committed sample; each family
+    was measured, not built into the replay."""
+    import json as _json
+
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "..", "data", "derived", "settlement_sample.json")
+    if not os.path.isfile(p):
+        return {"available": False,
+                "note": "no settlement sample; run pipeline/settlement_side.py"}
+    s = _json.load(open(p))
+    days = s.get("days") or []
+    if not days:
+        return {"available": False, "note": "settlement sample is empty"}
+
+    def _vals(key, g):
+        return [d[key][g] for d in days if (d.get(key) or {}).get(g) is not None]
+
+    per_grid: dict = {}
+    for g in GRIDS_L:
+        admin = _vals("admin_lmp", g)
+        settle = _vals("settlement_lmp", g)
+        cong = _vals("settlement_congestion", g)
+        spread = _vals("dap_vs_rt_spread", g)
+        if not admin:
+            continue
+        per_grid[g] = {
+            "admin_lmp_mean_php_kwh": round(sum(admin) / len(admin), 3),
+            "settlement_lmp_mean_php_kwh": (round(sum(settle) / len(settle), 3)
+                                            if settle else None),
+            "settlement_congestion_max_abs_php_kwh": (round(
+                max(abs(x) for x in cong), 4) if cong else None),
+            "dap_vs_rt_spread_mean_php_kwh": (round(sum(spread) / len(spread), 3)
+                                              if spread else None),
+            "dap_vs_rt_spread_range_php_kwh": ([round(min(spread), 3),
+                                                round(max(spread), 3)]
+                                               if spread else None),
+        }
+    return {
+        "available": True,
+        "sample_days": s.get("sample_days"),
+        "per_grid": per_grid,
+        "note": s.get("note"),
+        "src_admin": s.get("src_admin"),
+        "src_settlement": s.get("src_settlement"),
+        "src_dayahead": s.get("src_dayahead"),
         "disclaimer": ("Statistical indicators derived from public data. "
                        "Patterns may have legitimate explanations."),
     }

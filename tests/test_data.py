@@ -849,6 +849,78 @@ check("reserve replay states its scarcity accounting and observes "
       "scarcity" in (rv.get("scarcity_note") or "")
       and any(p["n_scarcity_hours"] > 0 for p in _rv_pools))
 
+# --- post-convergence Pass B: the settlement-side and reserve-results finals ---
+# item 6: per-resource cleared reserve (DIPCRF), the tighter reserve target
+# and the joint-clear input
+rr = mo.get("reserve_results") or {}
+check("per-resource reserve results are consumed (DIPCRF: 70+ days, the "
+      "resource identity the pooled replay and RSVPR both drop)",
+      rr.get("available") and rr["days"] >= 70
+      and rr["resources_named"] >= 150)
+_rr_pools = [rr["pools"][g][c]
+             for g in ("luzon", "visayas", "mindanao")
+             for c in ("Fr", "Dr", "Ru", "Rd")
+             if c in (rr.get("pools", {}).get(g) or {})]
+check("the book replay under-prices the FINAL cleared price on every pool "
+      "too: the co-optimisation wedge holds against the authoritative target",
+      len(_rr_pools) == 12
+      and all(p["replay_vs_final"]["bias_php_kwh"] < 0
+              for p in _rr_pools if "replay_vs_final" in p))
+_rr_grids = ("luzon", "visayas", "mindanao")
+check("the final re-solve's reserve-schedule revision stays a few MW across "
+      "all pools (reported, not gated): near zero on Luzon "
+      "contingency/dispatchable, a few MW on regulation and the tight island "
+      "dispatchable reserve",
+      all(abs(rr["pools"][g][c]["final_vs_rtd_schedule_mw"]
+              ["mean_daily_revision"]) < 8.0
+          for g in _rr_grids for c in ("Fr", "Dr", "Ru", "Rd"))
+      and abs(rr["pools"]["luzon"]["Fr"]["final_vs_rtd_schedule_mw"]
+              ["mean_daily_revision"]) < 1.0
+      and abs(rr["pools"]["visayas"]["Dr"]["final_vs_rtd_schedule_mw"]
+              ["mean_daily_revision"]) > 2.0)
+check("the final-vs-RTD reserve-price gap concentrates on the regulation "
+      "products (Ru/Rd), not contingency (the corrected framing)",
+      max(abs(rr["pools"][g][c]["vs_rtd_price"]["bias_php_kwh"])
+          for g in _rr_grids for c in ("Ru", "Rd"))
+      > max(abs(rr["pools"][g]["Fr"]["vs_rtd_price"]["bias_php_kwh"])
+            for g in _rr_grids))
+# item 8: registered ancillary-services capacity (CAPER), the reserve
+# book's registration denominator
+rreg = mo.get("reserve_registration") or {}
+check("registered ancillary-services capacity gives the reserve book a "
+      "registration base (CAPER: 3 grids x 4 commodities, 80+ days)",
+      rreg.get("available") and len(rreg["days"]) >= 80
+      and all(c in (rreg.get("stats", {}).get(g) or {})
+              for g in ("luzon", "visayas", "mindanao")
+              for c in ("Fr", "Dr", "Ru", "Rd")))
+check("the tight Visayas dispatchable reserve offers most of its "
+      "registration: a low not-offered share, neutral framing",
+      rreg["stats"]["visayas"]["Dr"]["median_share_of_registered_pct"]
+      < rreg["stats"]["luzon"]["Ru"]["median_share_of_registered_pct"])
+# items 5 and 7: the sampled settlement-side record (administered, settlement,
+# day-ahead), measured not built into the replay
+ss = mo.get("settlement_side") or {}
+_ssg = ss.get("per_grid") or {}
+check("the settlement-side sample is consumed (administered, settlement, "
+      "and day-ahead on market days)",
+      ss.get("available") and len(ss.get("sample_days") or []) >= 3
+      and all(g in _ssg for g in ("luzon", "visayas", "mindanao")))
+check("the settlement congestion component is empty at regional "
+      "granularity (no receipt beyond the flows table)",
+      all(_ssg[g]["settlement_congestion_max_abs_php_kwh"] <= 0.01
+          for g in ("luzon", "visayas", "mindanao")))
+check("the administered price carries the island premium (Visayas and "
+      "Mindanao administered prices run above Luzon's, a cost-based "
+      "counterfactual not the flat cost floor)",
+      _ssg["visayas"]["admin_lmp_mean_php_kwh"]
+      > _ssg["luzon"]["admin_lmp_mean_php_kwh"]
+      and _ssg["mindanao"]["admin_lmp_mean_php_kwh"]
+      > _ssg["luzon"]["admin_lmp_mean_php_kwh"])
+check("the day-ahead projection spread is both-signed (a projection "
+      "diagnostic, out of the replay's dispatch scope)",
+      _ssg["luzon"]["dap_vs_rt_spread_range_php_kwh"][0] < 0
+      < _ssg["luzon"]["dap_vs_rt_spread_range_php_kwh"][1])
+
 fr = mo.get("flow_record") or {}
 check("the two observed corridor records agree (identity vs RTDHS "
       "within 1 MW on hourly means)",
