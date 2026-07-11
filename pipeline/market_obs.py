@@ -1135,6 +1135,24 @@ def build_joint_lp_probe() -> dict:
     return d
 
 
+def build_subhourly_probe() -> dict:
+    """The sub-hourly negative-price probe (Pass G): the 5-minute sign flips
+    are a knife-edge, sub-hourly resolution is necessary but the crossing
+    margin is finer than the offers pin down. Read from the committed
+    derivation (pipeline/subhourly_probe.py)."""
+    import json as _json
+
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "..", "data", "derived", "subhourly_probe.json")
+    if not os.path.isfile(p):
+        return {"available": False,
+                "note": "no sub-hourly probe; run pipeline/subhourly_probe.py"}
+    d = _json.load(open(p))
+    d.setdefault("disclaimer", "Statistical indicators derived from public "
+                 "data. Patterns may have legitimate explanations.")
+    return d
+
+
 _HS_KEYS = {"VISLUZ1": "lv", "MINVIS1": "vm"}
 
 

@@ -698,10 +698,32 @@ went negative for eight midday hours (an ex-ante dispatch outcome, solar
 flooding, not a settlement artifact), and the hour's floor-priced supply
 came within 0.5 to 3 percent of native load (10,706 MW offered at or
 below zero against a 10,764 MW hour). The 5-minute market crosses that
-boundary intermittently; an hourly replay on hour-mean demand cannot.
-Reproducing the sign flips needs sub-hourly replay granularity, a
-scoped-out refinement (the 5-minute data exists in the archive), not a
-missing input.</li>
+boundary intermittently; an hourly replay on hour-mean demand cannot,
+it averages the intra-hour dip away. A sub-hourly replay was then
+prototyped and measured (market_ops.json subhourly_probe), and the
+picture is sharper than a clean resolution refinement: the crossing is a
+KNIFE-EDGE. On the crossing days the offer book's floor-priced supply
+comes within 0.54 to 2.3 percent of native load at the midday solar
+peak, and the observed regional load-weighted price does cross negative
+on five of the six closest days (down to about -10 PhP/kWh). But it
+splits into two boundaries, neither of which a per-grid 5-minute replay
+closes. The near-zero band is a true knife-edge: the offer book clears
+at exactly zero over a wide MW range, and its own 48-block compaction
+moves about 4 percent of the floor-priced supply across the zero line,
+wider than the 0.5 percent margin, so whether a shallow interval reads
+-0.001 or +0.001 turns on supply accounting finer than the offers give.
+The DEEP negatives are not an aggregate crossing at all: at the day's
+most negative interval the observed price is about -10 PhP/kWh while
+physical native load (9,870 MW) sits ABOVE the entire aggregate
+floor-priced supply (9,833 MW), so the per-grid clear must price
+positive there. That -10 is a load-weighted average of nodal prices
+pulled to the floor by curtailed-solar pockets, which the per-grid model
+cannot produce at any time resolution. A clean 5-minute clear on the
+model's own demand basis reproduces none of the day's 50 observed
+negative intervals. Sub-hourly granularity is necessary but not
+sufficient; the sign flips stay a named boundary, a near-zero resolution
+knife-edge over a curtailed-solar nodal floor, not a clean missing
+input.</li>
 <li><b>The rest of the public surface is triaged and named, not
 ignored</b>: the IEMOP market-data sitemap carries 58 dataset pages;
 29 now feed this archive (22 archive keys, the three offer-book pages
