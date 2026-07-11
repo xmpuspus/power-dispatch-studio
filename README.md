@@ -329,6 +329,16 @@ forecast. The full decomposition is the `coupling` block in
 [`web/data/dispatch.json`](web/data/dispatch.json); the coupled solver is
 `pipeline/coupled_dispatch.py`.
 
+A forward battle-test reaches the same **275 MW** knee from the other direction.
+Eight what-ifs an energy analyst would run, driven through the dispatch engine
+(site a data center in Cebu versus Manila, build a gigawatt of solar, switch
+Malampaya gas to imported LNG, trip both 647 MW Sual units): six moved the way
+the analyst would predict, two moved a way that first looked wrong until the
+flow data showed the engine was right (a Manila data center saturates the link
+by *importing* cheap Visayas power; a gigawatt of solar cuts fuel and emissions
+but leaves the 7pm peak untouched), and the dated 935 MW outage backcast lands
+at 87.8%. Full scorecard in [studio/README.md](studio/README.md).
+
 ## The studio
 
 The full authoring surface lives at
