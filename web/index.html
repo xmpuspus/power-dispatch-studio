@@ -113,6 +113,24 @@
     color:var(--ac); border-radius:7px; padding:7px 10px; font-size:12px; font-weight:600;
     text-decoration:none; line-height:1.35; }
   #studiolink:hover{ background:#e7f0f5; }
+  #findbox{ margin-top:9px; position:relative; }
+  #findq{ width:100%; box-sizing:border-box; border:1px solid var(--line); border-radius:7px;
+    padding:7px 10px; font-size:12.5px; color:var(--ink); background:#fff; }
+  #findq:focus{ outline:none; border-color:var(--ac); }
+  #findres{ position:absolute; left:0; right:0; top:34px; z-index:8; background:#fff;
+    border:1px solid var(--line); border-radius:7px; box-shadow:0 4px 14px rgba(16,33,43,.12);
+    overflow:hidden; display:none; }
+  #findres.on{ display:block; }
+  #findres button{ display:block; width:100%; text-align:left; border:0; border-bottom:1px solid #eef1f2;
+    background:#fff; padding:6px 10px; cursor:pointer; font-size:12px; color:var(--ink); line-height:1.3; }
+  #findres button:last-child{ border-bottom:0; }
+  #findres button:hover, #findres button.hi{ background:#f2f7fa; }
+  #findres .k{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; }
+  #findres .s{ color:var(--muted); font-size:11px; }
+  #findisl{ margin-top:7px; display:flex; gap:6px; align-items:center; font-size:11.5px; color:var(--muted); }
+  #findisl button{ border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:6px;
+    padding:3px 9px; cursor:pointer; font-size:11.5px; font-weight:600; }
+  #findisl button:hover{ background:#f2f7fa; border-color:var(--ac); color:var(--ac); }
   #findings{ position:absolute; z-index:6; top:12px; left:12px; bottom:12px; width:356px;
     max-width:calc(100% - 24px); display:none; flex-direction:column; padding:0; }
   #findings.open{ display:flex; }
@@ -158,6 +176,17 @@
   <div class="scope" id="scope">Archive window loading. Corridor lines are schematic
   links between named endpoints, not route maps. Data-center pins are city-precision.</div>
   <button id="fopen"><span>Key findings, computed from the archive</span><span>&rarr;</span></button>
+  <div id="findbox">
+    <input id="findq" type="search" autocomplete="off"
+      placeholder="Find your plant or data center" aria-label="Find a power plant or data center on the map">
+    <div id="findres" role="listbox" aria-label="Search results"></div>
+    <div id="findisl" role="group" aria-label="Jump to an island grid">
+      <span>Jump to</span>
+      <button data-isl="luzon">Luzon</button>
+      <button data-isl="visayas">Visayas</button>
+      <button data-isl="mindanao">Mindanao</button>
+    </div>
+  </div>
   <a id="studiolink" href="studio/">Open the dispatch studio: edit the fleet, replay observed days, read the backcast &rarr;</a>
 </div>
 
@@ -1108,6 +1137,80 @@ function applyURL(){
 }
 
 /* ---------- boot ---------- */
+/* ---------- find yours: search plants/data centers + jump to an island ---------- */
+const ISLANDS = {
+  luzon:    { c:[121.0, 15.7], z:6.3 },
+  visayas:  { c:[123.6, 10.9], z:7.0 },
+  mindanao: { c:[124.7, 7.9],  z:6.6 }
+};
+function findIndex(){
+  const out = [], fu = s => esc(String(s||"").replace(/_/g," "));
+  for (const f of ((D["generators.geojson"]||{}).features)||[]){
+    const p = f.properties;
+    out.push({ kind:"plant", name:p.name, sub:`${p.city} · ${fmt(p.capacity_mw)} MW ${String(p.fuel||"").replace(/_/g," ")}`,
+      c:f.geometry.coordinates, mode:"simulate",
+      html:`<b>${esc(p.name)}</b><br>${esc(p.city)} · ${esc(p.grid)}<br>${fmt(p.capacity_mw)} MW ${fu(p.fuel)}`
+        + (p.owner ? `<br>${esc(p.owner)}` : "")
+        + `<br><i>Open Simulate to trip it (N-1) and watch the reserve margin move.</i>` });
+  }
+  for (const f of ((D["dc_sites.geojson"]||{}).features)||[]){
+    const p = f.properties;
+    out.push({ kind:"data center", name:p.name, sub:`${p.city}${p.mw ? ` · ${fmt(p.mw,1)} MW` : ""}`,
+      c:f.geometry.coordinates, mode:"supply",
+      html:`<b>${esc(p.name)}</b><br>${esc(p.city)} · ${fu(p.status)}`
+        + (p.mw ? `<br>${fmt(p.mw,1)} MW (public figure)` : "<br>No public MW figure")
+        + `<br><i>Pin is city-precision.</i>` });
+  }
+  for (const f of ((D["sual.geojson"]||{}).features)||[]){
+    const p = f.properties;
+    out.push({ kind:"plant", name:p.name || "Sual coal plant", sub:"Pangasinan · largest single units on Luzon",
+      c:f.geometry.coordinates, mode:"choke",
+      html:`<b>${esc(p.name || "Sual coal plant")}</b><br>${esc(p.location || "Sual, Pangasinan")}<br>`
+        + `${fmt(p.units || 2)} x ${fmt(p.unit_mw || 647)} MW.<br><i>Trip a unit in the Choke points view.</i>` });
+  }
+  return out;
+}
+function wireFind(){
+  const idx = findIndex();
+  const q = $("findq"), res = $("findres");
+  let cur = [], hi = -1;
+  const close = () => { res.classList.remove("on"); hi = -1; };
+  const go = (it) => {
+    close(); q.value = it.name;
+    if (it.mode && it.mode !== MODE) setMode(it.mode, true);
+    map.flyTo({ center: it.c, zoom: 9.2, duration: 900 });
+    pop.setLngLat(it.c).setHTML(it.html).addTo(map);
+  };
+  const render = () => {
+    const t = q.value.trim().toLowerCase();
+    if (!t){ close(); return; }
+    cur = idx.filter(it => (it.name + " " + it.sub).toLowerCase().includes(t)).slice(0, 7);
+    hi = -1;
+    res.innerHTML = cur.length
+      ? cur.map((it,i) => `<button data-i="${i}"><span class="k">${it.kind}</span> ${esc(it.name)}` +
+          `<br><span class="s">${esc(it.sub)}</span></button>`).join("")
+      : `<button disabled class="s">No plant or data center by that name</button>`;
+    res.querySelectorAll("button[data-i]").forEach(b => b.onclick = () => go(cur[+b.dataset.i]));
+    res.classList.add("on");
+  };
+  q.addEventListener("input", render);
+  q.addEventListener("keydown", e => {
+    const bs = [...res.querySelectorAll("button[data-i]")];
+    if (e.key === "Enter" && cur.length){ e.preventDefault(); go(cur[hi < 0 ? 0 : hi]); return; }
+    if (e.key === "Escape"){ close(); return; }
+    if (e.key === "ArrowDown"){ e.preventDefault(); hi = Math.min(hi + 1, bs.length - 1); }
+    else if (e.key === "ArrowUp"){ e.preventDefault(); hi = Math.max(hi - 1, 0); }
+    else return;
+    bs.forEach((b,i) => b.classList.toggle("hi", i === hi));
+  });
+  document.addEventListener("click", e => { if (!$("findbox").contains(e.target)) close(); });
+  document.querySelectorAll("#findisl button").forEach(b => b.onclick = () => {
+    const isl = ISLANDS[b.dataset.isl];
+    if (isl) map.flyTo({ center: isl.c, zoom: isl.z, duration: 900 });
+  });
+  window.__diag.findCount = idx.length;
+}
+
 loadAll().then(() => {
   const A = D["answers.json"];
   const M = D["meta.json"] || {};
@@ -1139,6 +1242,7 @@ loadAll().then(() => {
   ];
   const draw = () => {
     addLayers();
+    wireFind();
     window.__diag.chokepoints = (D["chokepoints.geojson"]||{features:[]}).features.length;
     window.__diag.dcs = (D["dc_sites.geojson"]||{features:[]}).features.length;
     window.__diag.generators = (D["generators.geojson"]||{features:[]}).features.length;
