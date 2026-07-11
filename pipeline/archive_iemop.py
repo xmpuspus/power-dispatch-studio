@@ -324,21 +324,26 @@ def archive(keys: list[str], mode: str, sample_days: int) -> list[str]:
     return failures
 
 
-# Publication-lag budget per dataset, in days behind today (PHT). LWAPF is a
-# settlement-final series and ran ~10 days behind when measured 2026-07-05;
-# DIPCEF is a static sample by design and is exempt. A dataset older than its
-# budget means the cron has been failing silently: --check exits nonzero so
-# the workflow goes red instead.
+# Publication-lag budget per dataset, in days behind today (PHT). DIPCEF is a
+# static sample by design and is exempt. A dataset older than its budget means
+# the cron has been failing silently: --check exits nonzero so the workflow goes
+# red instead.
+# LWAPF, GWAPF, and PSMCOG are settlement-FINAL series that publish per WESM
+# billing period (each period ends on the 25th). The whole period's daily files
+# land together about ten days after the period closes, then the newest day sits
+# unchanged until the next period finalises. So the newest final day is ~10 days
+# behind right after a batch and can reach ~6 weeks behind just before the next
+# one; the 45-day budget covers that cycle and still reds on a genuine
+# multi-batch stall. (The 16-day budget tripped 2026-07-11 with the June-period
+# batch, newest 2026-06-25, sitting a normal 17 days behind between batches.)
 # MRU is a WEEKLY processed report (12 files across the 90-day window),
 # so its budget is a week of cadence plus a week of publication lag; the
 # 4-day default tripped the gate on 2026-07-08 with the source itself
 # simply between weekly prints.
-# PSMCOG is a final-calculation dataset: the newest file trails the
-# market day by about two weeks, so its budget is that lag plus slack.
 # MOTRD mirrors MRU's weekly cadence. VDSODIR is revision-stamped
 # (week + as-of date; the stamp regex reads the WEEK, which trails by
 # design), so it carries no budget.
-LAG_BUDGET_DAYS = {"LWAPF": 16, "GWAPF": 16, "MRU": 14, "PSMCOG": 24,
+LAG_BUDGET_DAYS = {"LWAPF": 45, "GWAPF": 45, "MRU": 14, "PSMCOG": 45,
                    "MOTRD": 14, "VDSODIR": None,
                    "DIPCEF": None, "RTDRS": None}
 LAG_DEFAULT_DAYS = 4
