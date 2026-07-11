@@ -583,7 +583,8 @@ def build_findings(cong, rel, prices, outs, named_dc_mw, n_dc) -> dict:
             "The market prices the geography the day it comes back",
             f"Administered window: the three grids priced within "
             f"P{ad['max_spread']}/kWh of each other. Market window: a mean "
-            f"daily spread of P{mk['mean_spread']}/kWh",
+            f"daily high-to-low spread of P{mk['mean_spread']}/kWh across the "
+            f"three grids",
             f"While WESM was suspended (through {P['resumed']}), daily "
             f"regional prices were near-identical. After trading resumed, the "
             f"islands split: Luzon P{mk['means']['luzon']}, Visayas "
@@ -685,8 +686,8 @@ def build_answers(cong, rel, prices, outs) -> dict:
         q3_blurb += (f" While WESM ran administered prices (through "
                      f"{prices['resumed']}), the three grids stayed within "
                      f"P{ad['max_spread']}/kWh of each other; once trading "
-                     f"resumed the mean daily spread was "
-                     f"P{mk['mean_spread']}/kWh.")
+                     f"resumed the mean daily high-to-low spread across the "
+                     f"three grids was P{mk['mean_spread']}/kWh.")
     if spread.get("php") is not None:
         q3_blurb += (f" Widest daily regional spread in the archive: "
                      f"P{spread['php']}/kWh on {spread['date']}.")

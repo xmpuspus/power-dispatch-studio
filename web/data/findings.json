@@ -52,7 +52,7 @@
    "id": "market-prices-geography",
    "tag": "One market, three prices",
    "title": "The market prices the geography the day it comes back",
-   "stat": "Administered window: the three grids priced within P0.015/kWh of each other. Market window: a mean daily spread of P5.88/kWh",
+   "stat": "Administered window: the three grids priced within P0.015/kWh of each other. Market window: a mean daily high-to-low spread of P5.88/kWh across the three grids",
    "blurb": "While WESM was suspended (through 2026-05-01), daily regional prices were near-identical. After trading resumed, the islands split: Luzon P7.65, Visayas P12.96, Mindanao P11.52 per kWh on average, with 28 days spreading beyond P5/kWh and a widest daily spread of P15.722/kWh on 2026-06-08. The links between the islands are the reason the numbers differ.",
    "source": "IEMOP load-weighted average prices (final), archive window",
    "focus": {

@@ -88,11 +88,13 @@ against the observed hourly LWAP. At the July 2026 bake (window 2026-05-01 to
 
 Against the settlement-side LWAP (1,344 hours per grid):
 
+<!-- bc-lwap: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
 | Grid | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- | --- |
-| Luzon | P7.63/kWh | P6.00/kWh | P4.33 | -P1.63 | 0.38 | 43% |
+| Luzon | P7.63/kWh | P6.00/kWh | P4.33 | -P1.63 | 0.38 | 42% |
 | Visayas | P12.91/kWh | P6.00/kWh | P8.66 | -P6.91 | 0.46 | 45% |
 | Mindanao | P11.48/kWh | P6.00/kWh | P7.58 | -P5.48 | 0.07 | 7% |
+<!-- /bc-lwap -->
 
 Against the observed regional clearing price (MCP, the ex-ante series
 commensurate with a dispatch dual; tied intervals averaged per interval
@@ -101,19 +103,23 @@ files name a price in fewer Visayas intervals than Luzon ones, and if the
 missing intervals skew toward substituted extremes the observed means here
 are subset statistics:
 
+<!-- bc-mcp: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
 | Grid | Coverage | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Luzon | 1,310 of 1,344 h | P7.03/kWh | P6.00/kWh | P4.01 | -P1.02 | 0.38 | 43% |
+| Luzon | 1,310 of 1,344 h | P7.03/kWh | P6.00/kWh | P4.01 | -P1.03 | 0.38 | 43% |
 | Visayas | 777 of 1,344 h | P14.78/kWh | P6.00/kWh | P10.91 | -P8.78 | 0.32 | 30% |
 | Mindanao | 1,196 of 1,344 h | P11.58/kWh | P6.00/kWh | P8.21 | -P5.58 | 0.06 | 15% |
+<!-- /bc-mcp -->
 
 And the corridors themselves, the third table (modeled flow vs the observed
 net market imports and exports in the same files):
 
+<!-- bc-flows: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
 | Corridor | Observed mean | Modeled mean | MAE | Direction agreement |
 | --- | --- | --- | --- | --- |
-| Luzon to Visayas | 46 MW | -2 MW | 92 MW | 7% |
-| Visayas to Mindanao | -373 MW | -4 MW | 369 MW | 4% |
+| Luzon to Visayas | 46 MW | -1 MW | 91 MW | 8% |
+| Visayas to Mindanao | -373 MW | -3 MW | 370 MW | 4% |
+<!-- /bc-flows -->
 
 The fourth set replays the same days with the operator's own OFFER BOOKS
 (every resource's priced curve from the real-time generation offers, plus
@@ -134,6 +140,7 @@ flows to within half a MW on hourly means), and its congestion flag gives
 a per-interval binding-share target that no demand construction can
 imply.
 
+<!-- bc-offer-target: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
 | Grid | Target | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- |
 | Luzon | LWAP | P2.94 | +P1.45 | 0.73 | 54% |
@@ -142,11 +149,14 @@ imply.
 | Luzon | MCP | P2.80 | +P1.94 | 0.78 | 69% |
 | Visayas | MCP | P6.23 | -P5.36 | 0.73 | 49% |
 | Mindanao | MCP | P3.08 | -P2.48 | 0.87 | 70% |
+<!-- /bc-offer-target -->
 
+<!-- bc-offer-flows: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
 | Corridor (offer mode) | Observed mean | Modeled mean | MAE | Direction agreement |
 | --- | --- | --- | --- | --- |
 | Luzon to Visayas | 45 MW | 111 MW | 101 MW | 88% |
 | Visayas to Mindanao | -375 MW | -337 MW | 57 MW | 99% |
+<!-- /bc-offer-flows -->
 
 A fifth set scores the same modeled flows against the operator's own
 per-interval HVDC schedule (RTDHS), the corridor record the operator
@@ -158,12 +168,14 @@ still binds the corridors less often than the operator did; the cost
 proxy barely binds them at all. That under-binding is the standing gap
 this table exists to show.
 
+<!-- bc-rtdhs: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
 | Corridor (vs operator record) | Observed mean | Modeled mean | MAE | Direction | Observed binding share | Modeled at-cap share |
 | --- | --- | --- | --- | --- | --- | --- |
-| Luzon to Visayas, cost mode | 46 MW | -2 MW | 92 MW | 7% | 61% | 2% |
-| Visayas to Mindanao, cost mode | -373 MW | -4 MW | 369 MW | 4% | 45% | 0% |
+| Luzon to Visayas, cost mode | 46 MW | -1 MW | 91 MW | 8% | 61% | 2% |
+| Visayas to Mindanao, cost mode | -373 MW | -3 MW | 370 MW | 4% | 45% | 0% |
 | Luzon to Visayas, offer mode | 45 MW | 111 MW | 101 MW | 88% | 61% | 35% |
-| Visayas to Mindanao, offer mode | -374 MW | -337 MW | 57 MW | 99% | 46% | 33% |
+| Visayas to Mindanao, offer mode | -375 MW | -337 MW | 57 MW | 99% | 46% | 33% |
+<!-- /bc-rtdhs -->
 
 At-cap counts a modeled hour only when the hour's cap is nonzero: a
 fully blocked corridor hour cannot bind in the congestion sense.
@@ -176,10 +188,10 @@ plus net market imports, so each grid carries the load it actually served
 rather than a series that self-balances by construction. That last step
 moved three things at once, in different directions, and the tables say so.
 The Visayas finally has a rankable settlement-price shape (correlation
-0.47, hit rate 45 percent, from unrankable) and its adequacy margin drops
+0.46, hit rate 45 percent, from unrankable) and its adequacy margin drops
 to 1.6 percent at peak, which is what a grid living through a 52-day
 yellow-alert streak should look like. The same change CUT the Visayas MCP
-agreement (correlation 0.65 to 0.33, hit 93 to 30 percent): the old
+agreement (correlation 0.65 to 0.32, hit 93 to 30 percent): the old
 self-balanced demand had flattered the sparse-coverage MCP subset, and
 that flattery is gone.
 
