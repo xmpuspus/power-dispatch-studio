@@ -94,7 +94,113 @@ async def backcast(page: Page):
     await asyncio.sleep(0.5)
 
 
-WORKFLOWS = {"backcast": backcast}
+# ---- the end-to-end hero (validation first, then the power) ------------------
+
+async def hero(page: Page):
+    r = Rec(page, 7)
+    await enter(page)
+    await r.intro(
+        "Power Dispatch Studio",
+        "A free browser dispatch model for the Philippine grid. Build a what-if, "
+        "clear it in the browser, and check it against the operator's real prices.",
+        hold=3.0,
+    )
+
+    # 1. the object model
+    await sysm(page)
+    await view(page, "Generators")
+    await r.cap(
+        "The grid as an object model",
+        "Every plant from the DOE list, the two HVDC corridors, three islands: "
+        "the working shape of a production-cost tool, in a browser tab.",
+    )
+    await asyncio.sleep(3.0)
+
+    # 2-3. does it match reality? cost floor, then the operator's own bids
+    await sim(page)
+    await chrono(page)
+    await pick_day(page, "widest swing")
+    await asyncio.sleep(0.6)
+    await r.cap(
+        "First: does it match reality?",
+        "On the widest-swing day the cost model clears flat at the P6 floor while "
+        "the observed price (dashed) spikes into the evening.",
+    )
+    await scroll_to(page, "svg", "center")
+    await asyncio.sleep(2.8)
+    await r.clear()
+    await engine(page, "Observed offers", hold=0.6)
+    await r.cap(
+        "Replay the operator's own bids and it tracks the real shape",
+        "The modeled lines now follow the observed evening ramp hour by hour. "
+        "Across the quarter the offer book reaches 0.73 to 0.87 correlation with "
+        "observed prices, nothing tuned.",
+    )
+    await scroll_to(page, "svg", "center")
+    await asyncio.sleep(3.8)
+
+    # 4-5. build the DICT data-center wave
+    await engine(page, "Cost model", hold=0.5)
+    await sysm(page)
+    await view(page, "Regions")
+    load = await input_value(page, "Luzon Load (evening)")
+    tgt = int(load + 1500)
+    await r.cap(
+        "Now build the DICT 1.5 GW data-center wave",
+        f"Raise Luzon evening load {int(load):,} to {tgt:,} MW, a flat 24/7 "
+        f"data-center shape.",
+    )
+    await edit_cell(page, "Luzon Load (evening)", str(tgt), hold=1.4)
+    await run(page)
+    await asyncio.sleep(0.5)
+    await sim(page)
+    await chrono(page)
+    await pick_day(page, "demand peak")
+    m2 = await tile(page, "Mean price, Luzon")
+    pk = await tile(page, "Window peak")
+    rent = await tile(page, "Congestion rent")
+    await r.cap(
+        "The evening flips coal to oil and the HVDC saturates",
+        f"Luzon mean rises to {m2}, peak {pk}; the Leyte-Luzon corridor binds, "
+        f"congestion rent {rent}.",
+    )
+    await scroll_top(page)
+    await asyncio.sleep(3.2)
+
+    # 6-7. stress it: trip both Sual units on top
+    await sysm(page)
+    await view(page, "Generators")
+    await r.cap(
+        "Now stress it: trip both 647 MW Sual units",
+        "SPI U1 and U2, the largest single units on Luzon, to 0 MW.",
+    )
+    await edit_cell(page, "SPI U1 Dependable", "0", hold=0.8)
+    await edit_cell(page, "SPI U2 Dependable", "0", hold=1.0)
+    await run(page)
+    await asyncio.sleep(0.5)
+    await sim(page)
+    await view(page, "Reliability")
+    lolp = await tile(page, "LOLP Luzon")
+    await r.cap(
+        "Loss-of-load probability jumps",
+        f"With the wave already on and both Sual units gone, Luzon "
+        f"loss-of-load probability reaches {lolp}: a reliability draw, not a "
+        f"forecast.",
+    )
+    await scroll_top(page)
+    await asyncio.sleep(3.4)
+
+    await r.intro(
+        "Free. In your browser. Nothing hidden.",
+        "Every input traces to a public IEMOP, NGCP, or Meralco file, and the "
+        "whole thing rebuilds from a clean clone. An independent homage, not "
+        "affiliated with Energy Exemplar, not PLEXOS.",
+        hold=4.0,
+    )
+    await asyncio.sleep(0.5)
+
+
+WORKFLOWS = {"backcast": backcast, "hero": hero}
 
 
 async def record_one(key: str):

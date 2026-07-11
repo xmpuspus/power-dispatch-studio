@@ -1,6 +1,6 @@
 # Power Dispatch Studio
 
-Power Dispatch Studio is an
+Power Dispatch Studio is a free,
 open, browser-based dispatch studio for the Philippine wholesale electricity
 market (WESM). It carries the working shape of a commercial production-cost
 tool: an object model you edit in a properties grid, scenarios as tagged
