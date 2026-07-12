@@ -4,7 +4,7 @@
 // offers, caps, outages the cost model cannot see) is the finding; the offer
 // books close most of it, which is the point of the toggle.
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { num, php, pct, useOfferDay } from '../lib/data'
 import { Panel, Segmented, StatTile } from '../ui/kit'
@@ -88,6 +88,16 @@ export function BackcastView({
     )
 
   const stats = bc.per_grid[grid]
+  // on the offer view, show how each figure moved from the base cost model
+  const costStats = offers ? profiles.backcast?.per_grid?.[grid] : undefined
+  const fromCost = (base: string, from: ReactNode) =>
+    costStats != null && from != null ? (
+      <>
+        {base} <span className="stat__delta">from {from}</span>
+      </>
+    ) : (
+      base
+    )
   const residual =
     run != null
       ? day.lwap![grid]!.map((obs, h) =>
@@ -167,17 +177,26 @@ export function BackcastView({
         <StatTile
           label={`MAE, ${cap(grid)}`}
           value={php(stats?.mae_php_kwh)}
-          hint={`${bc.days} market days, hourly`}
+          hint={fromCost(
+            `${bc.days} market days, hourly`,
+            costStats ? php(costStats.mae_php_kwh) : null
+          )}
         />
         <StatTile
           label="Bias"
           value={php(stats?.bias_php_kwh)}
-          hint="model minus observed; negative = under-priced"
+          hint={fromCost(
+            'model minus observed; negative = under-priced',
+            costStats ? php(costStats.bias_php_kwh) : null
+          )}
         />
         <StatTile
           label="Correlation"
           value={num(stats?.correlation ?? NaN, 2)}
-          hint="hourly, whole window"
+          hint={fromCost(
+            'hourly, whole window',
+            costStats ? num(costStats.correlation ?? NaN, 2) : null
+          )}
         />
         <StatTile
           label={`Evening residual, ${date}`}

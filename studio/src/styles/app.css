@@ -469,6 +469,11 @@
   color: var(--text-faint);
   margin-top: 2px;
 }
+.stat__delta {
+  color: var(--positive);
+  font-weight: 500;
+  white-space: nowrap;
+}
 .stat--accent {
   border-color: color-mix(in srgb, var(--accent) 40%, transparent);
 }
@@ -1460,4 +1465,41 @@
   font-size: var(--fs-12);
   color: var(--text-muted);
   padding-bottom: 6px;
+}
+
+/* phone refinements for the desktop-first studio (kept last so they win source order) */
+@media (max-width: 680px) {
+  .btn--ghost {
+    white-space: nowrap;
+  }
+  /* the hint is a two-column row on desktop; let it flow as one paragraph on a phone */
+  .datapane__hint {
+    display: block;
+  }
+  .datapane__run {
+    margin: var(--sp-2) 0 0;
+  }
+  /* the property grid is wider than a phone; pin the Object column and show the scrollbar */
+  .propgrid-wrap {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  .propgrid-wrap::-webkit-scrollbar {
+    height: 8px;
+  }
+  .propgrid-wrap::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 4px;
+  }
+  .propgrid th:first-child,
+  .propgrid td:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border-strong);
+  }
+  .propgrid thead th:first-child {
+    background: var(--surface-2);
+    z-index: 1;
+  }
 }
