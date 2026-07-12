@@ -21,7 +21,7 @@ against the real Philippine market. Formerly gridbill-ph.
 [![License: MIT (code) / CC-BY-4.0 (data)](https://img.shields.io/badge/license-MIT%20%2F%20CC--BY--4.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 
-[<img width="820" alt="A walkthrough of the map: the three questions across the top (supply, choke points, prices), the constraint league showing named 230 kV equipment at its limit on most days of the archive window, led by the Tabango-Daanbantayan corridor, the Leyte-Cebu line hovered to show its archive receipts, a Sual-unit toggle subtracting 647 MW from the system margin, and the regional price sparkline fanning apart after the market reopened" src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
+[<img width="820" alt="A tour of the map through its five modes. The head panel asks whether the Philippine grid can host the announced data-center wave. Supply shows the May 2026 system margin against the announced megawatts; Choke points lists the named 230 kV equipment at a binding limit; Prices shows the three island grids fanning apart after the market reopened; Drivers is the day-by-day archive feed; and Simulate re-clears the merit-order price in the browser as a data-center load is added" src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
 
 Live: [the map](https://power-dispatch-studio.vercel.app) and
 [the studio](https://power-dispatch-studio.vercel.app/studio/), or open
@@ -173,7 +173,7 @@ The map's Simulate mode is a simplified merit-order model of the grid. It is **n
 PLEXOS**: it stacks a sourced generator fleet by marginal cost against the archive's
 own dispatched generation, per grid, and reads off the marginal clearing price.
 
-![A walkthrough of the Simulate mode on the Luzon grid: the merit-order stack sits on the coal margin at a P6 clearing price, then a data-center slider adds flat load until the demand line crosses into the oil block and the price flips to P12, then tripping the Sual coal unit opens a several-hundred-megawatt supply shortfall, then an inter-island import lever shrinks it, then the grid switches to the tighter Visayas stack where a competitive cost stack of P6 sits far below the observed P13 scarcity price](docs/dispatch-demo.gif) Coal
+![A walkthrough of the Simulate mode on the Luzon grid: the merit-order stack sits on the coal margin at a P6 clearing price, then a data-center slider adds 1,500 MW of flat load until the demand line crosses into the oil block and the price flips to P12, then tripping the 1,294 MW Sual coal unit holds the grid on that oil margin, then the levers relieve the feeding HVDC corridor, then the grid switches to the smaller Visayas stack, which clears on its own coal margin at P6](docs/dispatch-demo.gif) Coal
 marginal cost is the ERC administered price of **P6.00/kWh** and Malampaya gas is
 **P4.80/kWh**, both sourced; the availability derates and the split of the fleet
 across grids are labeled model assumptions, except hydro, whose split now follows
