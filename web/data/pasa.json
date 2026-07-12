@@ -2803,6 +2803,46 @@
    },
    "n_out": 10,
    "n_unmatched": 4
+  },
+  {
+   "date": "2026-07-12",
+   "out": [
+    "01SMC_G01",
+    "01SROQUE_U03",
+    "03SLPGC_G02",
+    "03SNGAB_G01",
+    "08PDPP3_C",
+    "08PDPP3_E",
+    "08PDPP3_G",
+    "08PDPP3_H",
+    "10AGUS5_U01",
+    "11FDC_U01",
+    "11KBSOL_G01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "12TM2_U01",
+    "13SMC_U02",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 688.3,
+    "visayas": 0.0,
+    "mindanao": 163.5
+   },
+   "matched_fuel_mw": {
+    "luzon": {
+     "hydro": 134.7,
+     "coal": 133.5,
+     "natural_gas": 420.1
+    },
+    "visayas": {},
+    "mindanao": {
+     "hydro": 40.5,
+     "coal": 123.0
+    }
+   },
+   "n_out": 16,
+   "n_unmatched": 10
   }
  ],
  "resources": [
@@ -3103,6 +3143,38 @@
    "match": "verified"
   },
   {
+   "resource": "08PDPP3_C",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "08PDPP3_E",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "08PDPP3_G",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
+   "resource": "08PDPP3_H",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
    "resource": "08PEDC_U03",
    "grid": "visayas",
    "plant": "PEDC U3",
@@ -3263,6 +3335,14 @@
    "match": "verified"
   },
   {
+   "resource": "11KBSOL_G01",
+   "grid": "mindanao",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
    "resource": "11MANFOR_G01",
    "grid": "mindanao",
    "plant": "MANOLO FORTICH U1",
@@ -3335,6 +3415,14 @@
    "match": "unmatched"
   },
   {
+   "resource": "12TM2_U01",
+   "grid": "mindanao",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
    "resource": "13MACO_BAT",
    "grid": "mindanao",
    "plant": null,
@@ -3367,12 +3455,12 @@
    "match": "verified"
   }
  ],
- "n_resources": 70,
+ "n_resources": 76,
  "n_verified": 50,
- "n_unmatched": 15,
+ "n_unmatched": 21,
  "n_storage": 5,
  "grid_mapping_note": "Grid per resource comes from the WESM code's numeric area prefix (01-03 Luzon, 04-08 Visayas, 09-14 Mindanao), an INFERRED mapping spot-checked against named plants; IEMOP does not publish a code key on this dataset.",
- "coverage_note": "50 of 70 outage codes in this window map to a DOE-fleet plant with a dependable MW; 15 stay unmatched and carry no MW (their outage is listed, not sized), and 5 are grid batteries outside the generation list. Matched MW is therefore a floor on the true scheduled-outage MW.",
+ "coverage_note": "50 of 76 outage codes in this window map to a DOE-fleet plant with a dependable MW; 21 stay unmatched and carry no MW (their outage is listed, not sized), and 5 are grid batteries outside the generation list. Matched MW is therefore a floor on the true scheduled-outage MW.",
  "note": "The operator's own outage schedules used in real-time dispatch (IEMOP OUTRTD), one row per resource out per day. This is the observed maintenance-plus-forced outage state, not a forecast.",
  "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/",
  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
