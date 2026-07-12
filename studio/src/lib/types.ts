@@ -663,6 +663,49 @@ export interface BackcastGrid {
   high_hour_hit_rate_pct: number | null
 }
 
+// One validation set: the base cost model (profiles.backcast) or the observed
+// offer books (profiles.offer_backcast), same shape so the Backcast view can
+// render either. high_hour_note/flows_note/mcp_note are optional because the
+// offer set does not carry all of them.
+export interface BackcastSet {
+  available: boolean
+  days: number
+  window: { from: string; to: string } | null
+  per_grid: Partial<Record<GridKey, BackcastGrid>>
+  per_grid_mcp?: Partial<Record<GridKey, BackcastGrid>> | null
+  mcp_note?: string
+  flows?: Record<
+    string,
+    {
+      corridor: string
+      n_hours: number
+      observed_mean_mw: number
+      modeled_mean_mw: number
+      mae_mw: number
+      direction_agreement_pct: number | null
+      n_decisive_hours: number
+    }
+  > | null
+  flows_note?: string
+  flows_rtdhs?: Record<
+    string,
+    {
+      corridor: string
+      n_hours: number
+      observed_mean_mw: number
+      modeled_mean_mw: number
+      mae_mw: number
+      direction_agreement_pct: number | null
+      n_decisive_hours: number
+      observed_binding_share_pct: number | null
+      modeled_at_cap_share_pct: number | null
+    }
+  > | null
+  flows_rtdhs_note?: string
+  high_hour_note?: string
+  note: string
+}
+
 export interface Profiles {
   unit: string
   note: string
@@ -692,51 +735,10 @@ export interface Profiles {
     note?: string
     cases?: ChronoGoldenCase[]
   }
-  backcast: {
-    available: boolean
-    days: number
-    window: { from: string; to: string } | null
-    per_grid: Partial<Record<GridKey, BackcastGrid>>
-    // same replays scored against the observed regional clearing price (MCP),
-    // the target commensurate with a dispatch dual; null when the MCP archive
-    // is absent
-    per_grid_mcp?: Partial<Record<GridKey, BackcastGrid>> | null
-    mcp_note?: string
-    // modeled corridor flows scored against the observed net market
-    // imports/exports (the third validation table)
-    flows?: Record<
-      string,
-      {
-        corridor: string
-        n_hours: number
-        observed_mean_mw: number
-        modeled_mean_mw: number
-        mae_mw: number
-        direction_agreement_pct: number | null
-        n_decisive_hours: number
-      }
-    > | null
-    flows_note?: string
-    // the same modeled flows scored against the operator's per-interval
-    // HVDC schedule (RTDHS), with the binding-share pair
-    flows_rtdhs?: Record<
-      string,
-      {
-        corridor: string
-        n_hours: number
-        observed_mean_mw: number
-        modeled_mean_mw: number
-        mae_mw: number
-        direction_agreement_pct: number | null
-        n_decisive_hours: number
-        observed_binding_share_pct: number | null
-        modeled_at_cap_share_pct: number | null
-      }
-    > | null
-    flows_rtdhs_note?: string
-    high_hour_note: string
-    note: string
-  }
+  // the base cost model replayed against the tape
+  backcast: BackcastSet
+  // the same days replayed with the operator's observed offer books
+  offer_backcast: BackcastSet
 }
 
 export interface FleetPlant {

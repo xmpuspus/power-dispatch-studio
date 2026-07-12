@@ -1,11 +1,13 @@
-// Backcast: the trust artifact. Every full-coverage market day replayed with the
-// BASE model against the observed hourly LWAP, error stated, nothing tuned. The
-// gap (scarcity, offers, caps, outages the model cannot see) is the finding.
+// Backcast: the trust artifact. Every full-coverage market day replayed against
+// the observed hourly LWAP, error stated, nothing tuned. Two engines: the base
+// COST model, and the operator's own OBSERVED OFFER BOOKS. The gap (scarcity,
+// offers, caps, outages the cost model cannot see) is the finding; the offer
+// books close most of it, which is the point of the toggle.
 
 import { useMemo, useState } from 'react'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
-import { num, php, pct } from '../lib/data'
-import { Panel, StatTile } from '../ui/kit'
+import { num, php, pct, useOfferDay } from '../lib/data'
+import { Panel, Segmented, StatTile } from '../ui/kit'
 import { DataGrid, type Column } from '../ui/DataGrid'
 import { HourLines } from './charts'
 import { runChronology } from './chrono'
@@ -22,7 +24,10 @@ export function BackcastView({
   profiles: Profiles
   grid: GridKey
 }) {
-  const bc = profiles.backcast
+  const [engine, setEngine] = useState<'cost' | 'offers'>('cost')
+  const offers = engine === 'offers'
+  const bc = offers ? profiles.offer_backcast : profiles.backcast
+
   const marketDays = useMemo(
     () =>
       profiles.days.filter(
@@ -39,26 +44,57 @@ export function BackcastView({
     () => profiles.default_day ?? marketDays[marketDays.length - 1]?.date
   )
   const day = marketDays.find((x) => x.date === date) ?? marketDays[0]
-  // base model, no levers, no storage cycling: the same run the baked stats score
+
+  // the one-day chart replays the selected engine: cost proxy, or the day's book
+  const offerDay = useOfferDay(offers ? (day?.date ?? null) : null)
+  const runReady = !offers || !!offerDay.data
   const run = useMemo(
-    () => (day ? runChronology(d, profiles, day.date, {}) : null),
-    [d, profiles, day]
+    () =>
+      day && runReady
+        ? runChronology(
+            d,
+            profiles,
+            day.date,
+            offerDay.data ? { offer_day: offerDay.data } : {}
+          )
+        : null,
+    [d, profiles, day, runReady, offerDay.data]
   )
 
-  if (!bc.available || !day || !run)
+  const engineToggle = (
+    <Segmented
+      ariaLabel="Validation engine"
+      value={engine}
+      onChange={(v) => setEngine(v as 'cost' | 'offers')}
+      options={[
+        { value: 'cost', label: 'Cost model' },
+        { value: 'offers', label: 'Observed offers' },
+      ]}
+    />
+  )
+
+  if (!bc.available || !day)
     return (
       <div className="view">
+        <div className="chrono__controls">{engineToggle}</div>
         <Panel title="Backcast" subtitle="Model vs observed prices.">
-          <p className="note">No full-coverage market day in the archive window yet.</p>
+          <p className="note">
+            {offers
+              ? 'No derived offer books in the archive window yet.'
+              : 'No full-coverage market day in the archive window yet.'}
+          </p>
         </Panel>
       </div>
     )
 
   const stats = bc.per_grid[grid]
-  const residual = day.lwap![grid]!.map((obs, h) =>
-    obs == null ? null : obs - run.hours[h].price[grid]
-  )
-  const peakResid = residual.slice(17, 22).filter((v): v is number => v != null)
+  const residual =
+    run != null
+      ? day.lwap![grid]!.map((obs, h) =>
+          obs == null ? null : obs - run.hours[h].price[grid]
+        )
+      : null
+  const peakResid = (residual ?? []).slice(17, 22).filter((v): v is number => v != null)
   const peakResidMean = peakResid.length
     ? peakResid.reduce((s, v) => s + v, 0) / peakResid.length
     : null
@@ -112,8 +148,21 @@ export function BackcastView({
     },
   ]
 
+  const engineLabel = offers
+    ? "the operator's observed offer books"
+    : 'the base cost model'
+
   return (
     <div className="view">
+      <div className="chrono__controls">
+        {engineToggle}
+        <span className="note">
+          {offers
+            ? 'The same market days replayed with the operator’s published offer books, the tool’s strongest validation.'
+            : 'The base merit-order cost model against the tape. Nothing tuned; the residual is the finding.'}
+        </span>
+      </div>
+
       <div className="stat-row">
         <StatTile
           label={`MAE, ${cap(grid)}`}
@@ -140,10 +189,10 @@ export function BackcastView({
 
       <Panel
         title="Model vs observed LWAP, whole market window"
-        subtitle={`Every full-coverage market day since ${bc.window?.from} replayed with the base model. Nothing tuned; the residual is the finding.`}
+        subtitle={`Every full-coverage market day since ${bc.window?.from} replayed with ${engineLabel}.`}
       >
         <DataGrid columns={cols} rows={GRIDS} getKey={(g) => g} />
-        <p className="note">{bc.high_hour_note}</p>
+        {bc.high_hour_note ? <p className="note">{bc.high_hour_note}</p> : null}
       </Panel>
 
       {bc.flows ? (
@@ -193,7 +242,7 @@ export function BackcastView({
             rows={Object.keys(bc.flows)}
             getKey={(k) => k}
           />
-          <p className="note">{bc.flows_note}</p>
+          {bc.flows_note ? <p className="note">{bc.flows_note}</p> : null}
         </Panel>
       ) : null}
 
@@ -254,7 +303,7 @@ export function BackcastView({
             rows={Object.keys(bc.flows_rtdhs)}
             getKey={(k) => k}
           />
-          <p className="note">{bc.flows_rtdhs_note}</p>
+          {bc.flows_rtdhs_note ? <p className="note">{bc.flows_rtdhs_note}</p> : null}
         </Panel>
       ) : null}
 
@@ -285,13 +334,13 @@ export function BackcastView({
             rows={GRIDS}
             getKey={(g) => g}
           />
-          <p className="note">{bc.mcp_note}</p>
+          {bc.mcp_note ? <p className="note">{bc.mcp_note}</p> : null}
         </Panel>
       ) : null}
 
       <Panel
         title={`One day against the tape, ${cap(grid)}`}
-        subtitle="Base model (no edits, no storage cycling) against the observed hourly LWAP."
+        subtitle={`Replayed with ${engineLabel} (no edits, no storage cycling) against the observed hourly LWAP.`}
       >
         <div className="chrono__controls">
           <label className="chrono__ctl">
@@ -310,21 +359,29 @@ export function BackcastView({
             </select>
           </label>
         </div>
-        <HourLines
-          series={[
-            {
-              label: 'modeled',
-              color: 'var(--series-modeled)',
-              pts: run.hours.map((h) => h.price[grid]),
-            },
-            {
-              label: 'observed',
-              color: 'var(--series-observed)',
-              pts: day.lwap![grid]!,
-              dash: '4 3',
-            },
-          ]}
-        />
+        {run != null ? (
+          <HourLines
+            series={[
+              {
+                label: 'modeled',
+                color: 'var(--series-modeled)',
+                pts: run.hours.map((h) => h.price[grid]),
+              },
+              {
+                label: 'observed',
+                color: 'var(--series-observed)',
+                pts: day.lwap![grid]!,
+                dash: '4 3',
+              },
+            ]}
+          />
+        ) : (
+          <p className="note">
+            {offerDay.loading
+              ? 'Loading the day’s offer book.'
+              : 'No derived offer book for this day. Books cover the market window with a few days’ publication lag; pick an earlier day or switch to the cost model.'}
+          </p>
+        )}
       </Panel>
 
       <p className="note">{bc.note}</p>
