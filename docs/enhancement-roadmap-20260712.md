@@ -134,9 +134,15 @@ Shipped and screenshot-gated at 1440x900 and 390px (evidence in tmp/uiux-audit-2
   through scripts/vizstyle.py, so this codifies the two-lane rule rather than re-coloring.
 - **11 Dark-mode chips** WITHDRAWN. Re-checked the tokens: the homage pill and Solved chip do adapt to dark
   (dark-brown, green-on-dark); the first-pass "cream holdover" read was wrong. Not a bug.
-- **9 Studio landing map** OPEN, needs your Chrome. Renders blank in every automated capture including the
-  deployed dist; unverified in a real browser. Could be a real lazy-mount init bug, not only a headless artifact.
-- **10, 12, 13** NOT DONE (outside the four executed tracks): studio mobile grid overflow; Backcast cost-vs-offers
-  delta; search aliasing common owner names like "Meralco".
+- **9 Studio landing map** DEFENSIVE FIX added (IntersectionObserver + map.resize() on the section entering view),
+  but still needs your Chrome: it renders blank in every automated capture including the deployed dist and the
+  resize does not paint it there, so the blank is a headless WebGL limit for the lazy second map. Unverified in a
+  real browser. If it is blank in your Chrome too, the resize hook is the right place to extend the fix.
+- **10 Studio mobile** DONE. Properties grid pins the Object column and shows a scrollbar so the MW values are
+  reachable; the hint flows as one paragraph; Close studio no longer wraps; no horizontal overflow.
+- **12 Backcast delta** DONE. The offer view shows each figure's move from the cost model in green (MAE from P4.33,
+  correlation from 0.36, bias from P-1.63).
+- **13 Search aliasing** DONE. "Meralco" and "NGCP" return a short sourced note plus a Jump button instead of a
+  dead end; the generic no-match now suggests a plant name.
 
-Shipped to main and the personal Vercel on 2026-07-12.
+Both passes shipped to main and the personal Vercel on 2026-07-12.

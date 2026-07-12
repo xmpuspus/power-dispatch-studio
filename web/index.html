@@ -155,6 +155,10 @@
   #findres button:hover, #findres button.hi{ background:#f2f7fa; }
   #findres .k{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; }
   #findres .s{ color:var(--muted); font-size:11px; }
+  #findres .findnote{ padding:9px 11px; font-size:11.5px; color:var(--muted); line-height:1.5; }
+  #findres button.findjump{ display:inline-flex; width:auto; margin-top:7px; border:1px solid var(--line);
+    border-radius:6px; padding:4px 10px; font-size:11.5px; font-weight:600; color:var(--ac); background:#f2f7fa; }
+  #findres button.findjump:hover{ background:#e7f0f5; }
   #findisl{ margin-top:7px; display:flex; gap:6px; align-items:center; font-size:11.5px; color:var(--muted); }
   #findisl button{ border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:6px;
     padding:3px 9px; cursor:pointer; font-size:11.5px; font-weight:600; }
@@ -1273,16 +1277,33 @@ function wireFind(){
     map.flyTo({ center: it.c, zoom: 9.2, duration: 900 });
     pop.setLngLat(it.c).setHTML(it.html).addTo(map);
   };
+  // common searches that are not a pin: utilities and the grid operator. Guide, do not dead-end.
+  const cap = (s) => s[0].toUpperCase() + s.slice(1);
+  const ALIASES = [
+    { match:["meralco"], isl:"luzon",
+      note:"Meralco is a distribution utility, not a generator. It buys from WESM (see Prices) and has committed about 1,000 MW for 10 data centers (see Supply)." },
+    { match:["ngcp"], isl:null,
+      note:"NGCP operates the grid, not a generator. The corridors it runs are named in Choke points." },
+  ];
+  const aliasFor = (t) => ALIASES.find(a => a.match.some(k => t.includes(k)));
   const render = () => {
     const t = q.value.trim().toLowerCase();
     if (!t){ close(); return; }
     cur = idx.filter(it => (it.name + " " + it.sub).toLowerCase().includes(t)).slice(0, 7);
     hi = -1;
+    const a = cur.length ? null : aliasFor(t);
     res.innerHTML = cur.length
       ? cur.map((it,i) => `<button data-i="${i}"><span class="k">${it.kind}</span> ${esc(it.name)}` +
           `<br><span class="s">${esc(it.sub)}</span></button>`).join("")
-      : `<button disabled class="s">No plant or data center by that name</button>`;
+      : a
+        ? `<div class="findnote">${esc(a.note)}${a.isl ? ` <button class="findjump" data-isl="${a.isl}">Jump to ${cap(a.isl)}</button>` : ""}</div>`
+        : `<button disabled class="s">No plant or data center by that name. Try a plant name like Sual, or use Jump to.</button>`;
     res.querySelectorAll("button[data-i]").forEach(b => b.onclick = () => go(cur[+b.dataset.i]));
+    res.querySelectorAll("button.findjump").forEach(b => b.onclick = () => {
+      const isl = ISLANDS[b.dataset.isl];
+      if (isl) map.flyTo({ center: isl.c, zoom: isl.z, duration: 900 });
+      close();
+    });
     res.classList.add("on");
   };
   q.addEventListener("input", render);

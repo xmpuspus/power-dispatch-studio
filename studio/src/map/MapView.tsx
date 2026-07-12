@@ -30,6 +30,16 @@ export function MapView({ theme }: { theme: 'light' | 'dark' }) {
     })
     map.current = m
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right')
+    // the map mounts lazily below the fold; a below-fold WebGL canvas can paint a
+    // blank first frame. Force a resize when it scrolls into view or its box changes.
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) m.resize()
+    })
+    const ro = new ResizeObserver(() => m.resize())
+    if (holder.current) {
+      io.observe(holder.current)
+      ro.observe(holder.current)
+    }
     m.on('load', async () => {
       const [ck, gen, dc] = await Promise.all([
         fetch(`${DATA}/chokepoints.geojson`).then((r) => r.json()),
@@ -111,7 +121,11 @@ export function MapView({ theme }: { theme: 'light' | 'dark' }) {
       bind('ck-line', (p) => `<b>${p.name}</b><br>${p.evidence ?? ''}`)
       setReady(true)
     })
-    return () => m.remove()
+    return () => {
+      io.disconnect()
+      ro.disconnect()
+      m.remove()
+    }
   }, [theme])
 
   useEffect(() => {
