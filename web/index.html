@@ -31,6 +31,11 @@
   #modebar{ top:12px; left:50%; transform:translateX(-50%); padding:6px 7px; display:flex; gap:5px; flex-wrap:wrap; justify-content:center; max-width:calc(100% - 24px); }
   .mode{ border:1px solid var(--line); background:#fff; border-radius:6px; padding:6px 11px; cursor:pointer; font-size:12.5px; color:var(--muted); white-space:nowrap; }
   .mode.on{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  #headtoggle{ display:none; position:absolute; top:8px; right:10px; align-items:center; gap:4px;
+    border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:22px;
+    padding:0 14px; font-size:12px; font-weight:600; cursor:pointer; min-height:44px; }
+  #headtoggle .chev{ transition:transform .18s; font-size:10px; }
+  body.head-open #headtoggle .chev{ transform:rotate(180deg); }
   #legend{ bottom:16px; left:12px; padding:11px 13px; font-size:12px; max-width:264px; }
   #legend b{ font-size:12px; }
   .keys{ margin-top:6px; display:flex; flex-direction:column; gap:3px; }
@@ -39,7 +44,19 @@
   .keys .ln{ width:16px; height:0; border-top:3px solid #000; }
   #lg-note{ margin-top:7px; font-size:11px; color:var(--muted); line-height:1.4; }
   /* right panel (mode content) */
-  #side{ right:12px; top:12px; width:336px; max-width:calc(100% - 24px); max-height:calc(100% - 120px); overflow-y:auto; padding:12px 14px; }
+  #side{ right:12px; top:12px; width:336px; max-width:calc(100% - 24px); max-height:calc(100% - 120px); overflow-y:auto; padding:12px 14px 16px;
+    scrollbar-width:thin; scrollbar-color:#cbd5db transparent;
+    background:
+      linear-gradient(#fff 30%, rgba(255,255,255,0)) center top,
+      linear-gradient(rgba(255,255,255,0), #fff 70%) center bottom,
+      radial-gradient(farthest-side at 50% 0, rgba(16,33,43,.16), rgba(16,33,43,0)) center top,
+      radial-gradient(farthest-side at 50% 100%, rgba(16,33,43,.16), rgba(16,33,43,0)) center bottom;
+    background-repeat:no-repeat;
+    background-size:100% 30px, 100% 30px, 100% 11px, 100% 11px;
+    background-attachment:local, local, scroll, scroll;
+    background-color:#fff; }
+  #side::-webkit-scrollbar{ width:8px; }
+  #side::-webkit-scrollbar-thumb{ background:#cbd5db; border-radius:4px; }
   #side h2{ margin:0 0 2px; font-size:14px; }
   #side .sub{ font-size:11.5px; color:var(--muted); margin:0 0 8px; line-height:1.4; }
   .stat{ font-size:24px; font-weight:700; letter-spacing:-.4px; margin:4px 0 0; }
@@ -57,6 +74,9 @@
   .barrow .tr{ height:9px; background:#eef1f3; border-radius:3px; margin-top:3px; position:relative; overflow:hidden; }
   .barrow .fl{ position:absolute; inset:0 auto 0 0; border-radius:3px; }
   #spark svg{ display:block; width:100%; height:auto; }
+  .fkeys{ display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:6px; }
+  .fkey{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; color:var(--muted); text-transform:capitalize; }
+  .fsw{ width:10px; height:10px; border-radius:2px; border:1px solid rgba(0,0,0,.12); }
   .sual-btn{ width:100%; margin-top:9px; border:1px solid var(--line); background:#fff; color:var(--ink);
     border-radius:7px; padding:7px 10px; cursor:pointer; font-size:12.5px; font-weight:600; }
   .sual-btn.on{ background:var(--sual); border-color:var(--sual); color:#fff; }
@@ -84,6 +104,8 @@
   #r-dots{ display:flex; gap:4px; margin-left:auto; }
   #r-dots i{ width:6px; height:6px; border-radius:50%; background:var(--line); display:block; }
   #r-dots i.on{ background:var(--ink); }
+  #rail-chev{ display:none; margin-left:8px; font-size:10px; color:var(--muted); transition:transform .18s; }
+  body.rail-open #rail-chev{ transform:rotate(180deg); }
   .r-body{ display:flex; align-items:stretch; gap:8px; padding:10px 10px 6px; }
   .r-nav{ flex:0 0 auto; width:38px; border:1px solid var(--line); background:#fff; border-radius:8px; cursor:pointer; color:var(--ink); font-size:20px; line-height:1; }
   .r-nav:hover{ background:#f5f8f9; } .r-nav:disabled{ opacity:.35; cursor:default; }
@@ -95,12 +117,18 @@
   .r-src{ display:block; font-size:10.5px; color:var(--muted); font-style:italic; margin-top:6px; }
   .r-foot{ padding:7px 13px 9px; border-top:1px solid var(--line); font-size:10.5px; color:var(--muted); line-height:1.4; }
   .r-foot a{ color:var(--ink); }
+  #r-extra{ display:none; padding:10px 13px 8px; }
+  #r-extra .x-tag{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
+  #r-extra .x-title{ display:block; font-size:13.5px; font-weight:600; line-height:1.32; margin:3px 0 4px; }
+  #r-extra .x-blurb{ display:block; font-size:12px; color:var(--muted); line-height:1.45; }
+  body.mode-extra .r-body{ display:none; }
+  body.mode-extra #r-dots{ display:none; }
+  body.mode-extra #r-extra{ display:block; }
   @media(max-width:640px){
-    #head{ max-width:none; right:12px; }
+    #head{ max-width:none; left:8px; right:8px; top:8px; padding:8px 12px; }
+    #head h1{ font-size:16px; padding-right:76px; margin:0; line-height:44px; }
     #side{ display:none; }
     #legend{ display:none; }
-    #modebar{ top:auto; bottom:96px; }
-    #rail{ left:0; right:0; bottom:0; transform:none; width:100%; border-radius:14px 14px 0 0; }
   }
   .hovpop .maplibregl-popup-content{ padding:6px 9px; font-size:11.5px; border-radius:7px; box-shadow:0 1px 6px rgba(16,33,43,.14); max-width:260px; }
   .hovpop .maplibregl-popup-content b{ font-size:12px; } .hovpop .maplibregl-popup-tip{ display:none; }
@@ -152,16 +180,47 @@
     padding:7px 12px; font-size:12px; display:none; max-width:min(560px, calc(100% - 24px)); }
   #mside{ display:none; }
   @media(max-width:640px){
-    #head{ max-height:32vh; overflow-y:auto; }
-    #rail{ max-height:44vh; }
-    .r-blurb{ display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
-    #modebar{ bottom:calc(44vh + 18px); }
-    #findings{ right:12px; width:auto; }
-    #mside{ display:block; position:absolute; z-index:5; right:12px; bottom:calc(44vh + 64px);
-      border:1px solid var(--line); background:#fff; border-radius:7px; padding:7px 11px;
-      font-size:12.5px; font-weight:600; color:var(--ink); cursor:pointer; }
-    body.show-side #side{ display:block; position:absolute; z-index:6; left:12px; right:12px;
-      top:12px; width:auto; max-height:60vh; }
+    /* full-screen map; head collapses to a title bar, modes dock to the bottom */
+    #headtoggle{ display:inline-flex; }
+    #head p, #head #scope, #head #fopen, #head #findbox, #head #studiolink{ display:none; }
+    body.head-open #head{ max-height:82vh; overflow-y:auto; }
+    body.head-open #head p, body.head-open #head #scope,
+    body.head-open #head #fopen, body.head-open #head #findbox,
+    body.head-open #head #studiolink{ display:block; }
+
+    /* search results flow inline so they never clip inside the head */
+    #findres{ position:static; margin-top:6px; max-height:190px; overflow-y:auto; box-shadow:none; }
+
+    /* modes: docked to the bottom, full width, horizontal scroll */
+    #modebar{ top:auto; bottom:10px; left:8px; right:8px; transform:none; max-width:none;
+      flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; padding:6px 8px; }
+    .mode{ flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:0 14px; }
+
+    /* three questions: a bottom sheet above the mode bar, collapsed to a handle by default */
+    #rail{ left:8px; right:8px; bottom:78px; transform:none; width:auto; border-radius:14px; max-height:none; }
+    #rail .r-top{ cursor:pointer; min-height:44px; }
+    #rail-chev{ display:inline-block; }
+    #rail .r-body, #rail .r-foot{ display:none; }
+    body.rail-open #rail{ max-height:54vh; overflow-y:auto; }
+    body.rail-open #rail .r-body{ display:flex; }
+    body.rail-open #rail .r-foot{ display:block; }
+    body.mode-extra #r-extra{ display:none; }
+    body.rail-open.mode-extra #r-extra{ display:block; }
+    .r-blurb{ display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden; }
+
+    /* the details pill opens the mode panel as an overlay, clear of the map controls */
+    #findings{ right:8px; left:8px; width:auto; }
+    #mside{ display:inline-flex; align-items:center; position:absolute; z-index:5; left:12px; bottom:130px;
+      min-height:44px; border:1px solid var(--line); background:#fff; border-radius:22px; padding:0 16px;
+      font-size:12.5px; font-weight:600; color:var(--ink); cursor:pointer;
+      box-shadow:0 1px 8px rgba(16,33,43,.14); }
+    body.show-side #side{ display:block; position:absolute; z-index:9; left:8px; right:8px;
+      top:56px; bottom:66px; width:auto; max-height:none; }
+    body.rail-open #mside{ display:none; }
+
+    /* lift the map credits above the bottom cluster; drop the zoom buttons (pinch works) */
+    .maplibregl-ctrl-bottom-right{ bottom:128px; }
+    .maplibregl-ctrl-bottom-right .maplibregl-ctrl-group{ display:none; }
   }
 </style>
 </head>
@@ -169,6 +228,7 @@
 <div id="map" aria-label="Map of the Philippines with grid choke points and data-center sites"></div>
 
 <div id="head" class="panel">
+  <button id="headtoggle" aria-label="Show intro, search and links" aria-expanded="false">Find <span class="chev">&#9662;</span></button>
   <h1>Power Dispatch Studio</h1>
   <p>Can the Philippine grid host the announced data-center wave? Built on the market
   operator's own public files: where transmission already binds, where the announced
@@ -218,8 +278,9 @@
 
 <div id="rail" class="panel">
   <div class="r-top">
-    <span class="r-kick">The three questions</span>
+    <span class="r-kick" id="r-kick">The three questions</span>
     <div id="r-dots"><i class="on"></i><i></i><i></i></div>
+    <span id="rail-chev" class="chev" aria-hidden="true">&#9662;</span>
   </div>
   <div class="r-body">
     <button class="r-nav" id="r-prev" aria-label="Previous">&#8249;</button>
@@ -232,6 +293,7 @@
     </div>
     <button class="r-nav" id="r-next" aria-label="Next">&#8250;</button>
   </div>
+  <div id="r-extra"></div>
   <div class="r-foot">Statistical indicators from public records (IEMOP, NGCP, Meralco,
   PCIJ, company filings). Patterns may have legitimate explanations. Forecasts are
   labeled with their owner. <a href="methodology.html">Methodology and every source</a>.</div>
@@ -642,7 +704,9 @@ const LEGENDS = {
     note:"The units large enough that one trip is felt on the grid. Pins are city-precision. Trip one in the panel to run the N-1." },
   drivers: { title:"Day-by-day drivers", keys: [
     ["sw","#9c3d12","Curtailment recorded"],
-    ["sw","#3a6b8a","HVDC advisory (block or de-block)"]],
+    ["sw","#3a6b8a","HVDC advisory (block or de-block)"],
+    ["sw","#8a6bb0","Alert advisory"],
+    ["sw","#b3261e","Regional price spread (P5/kWh or more)"]],
     note:"Every column in the panel is observed data from the archive: prices, outages, curtailment, advisories, binding constraints. Nothing modeled." }
 };
 function legendRender(){
@@ -682,6 +746,19 @@ function setMode(m, syncRail = true){
   if (syncRail){
     const idx = ["supply","choke","price"].indexOf(m);
     if (idx >= 0 && idx !== RAIL_I){ RAIL_I = idx; railRender(); }
+  }
+  const inRail = ["supply","choke","price"].includes(m);
+  document.body.classList.toggle("mode-extra", !inRail);
+  $("r-kick").textContent = inRail ? "The three questions"
+    : (m === "drivers" ? "Drivers" : "Simulate");
+  if (!inRail){
+    $("r-extra").innerHTML = m === "drivers"
+      ? `<span class="x-tag">Beyond the three questions</span>
+         <span class="x-title">What moved prices, day by day</span>
+         <span class="x-blurb">Every column is observed archive data: prices, curtailment, advisories, binding constraints. Open Details for the day-by-day feed.</span>`
+      : `<span class="x-tag">Beyond the three questions</span>
+         <span class="x-title">Simulate the dispatch</span>
+         <span class="x-blurb">A simplified merit-order model, not PLEXOS. Move the levers in Details; the price re-clears in your browser.</span>`;
   }
   syncURL();
 }
@@ -832,6 +909,15 @@ function stackSVG(blocks, demand){
     stroke="#111" stroke-width="1.6" stroke-dasharray="3 2"/>
     <text x="${Math.min(dx+3,W-70).toFixed(1)}" y="40" font-size="8.5" fill="#111">demand ${fmt(demand)} MW</text>`;
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Merit-order supply stack with the demand line">${segs}</svg>`;
+}
+
+// a compact key of only the fuels present in the stack, in merit (cost) order
+function fuelKey(blocks){
+  const seen = [];
+  blocks.slice().sort((a,b)=>a.cost-b.cost).forEach(b => { if (!seen.includes(b.fuel)) seen.push(b.fuel); });
+  if (!seen.length) return "";
+  return `<div class="fkeys" aria-label="Fuel colors in the stack">` + seen.map(f =>
+    `<span class="fkey"><span class="fsw" style="background:${FUELCOL[f]||'#999'}"></span>${esc(fuelLabel(f))}</span>`).join("") + `</div>`;
 }
 
 // the coupled-model finding, read straight from the baked coupling block
@@ -1043,7 +1129,7 @@ function updateSim(){
        <span>${fmt(res.avail)} MW vs ${fmt(s.demand)} MW</span></div>` +
     (res.shortfall > 0 ? `<div class="kv shortfall"><span>Supply shortfall (load shed)</span>
        <span><b>${fmt(res.shortfall)} MW</b></span></div>` : "");
-  const st = $("sim-stack"); if (st) st.innerHTML = stackSVG(s.blocks, s.demand);
+  const st = $("sim-stack"); if (st) st.innerHTML = stackSVG(s.blocks, s.demand) + fuelKey(s.blocks);
 
   // coupled readout: the selected grid cleared together with the other two islands
   const cs = coupledSim();
@@ -1115,6 +1201,12 @@ function openDrawer(o){
 $("fopen").onclick = () => openDrawer(true);
 $("fclose").onclick = () => { openDrawer(false); };
 $("mside").onclick = () => document.body.classList.toggle("show-side");
+$("headtoggle").onclick = () => {
+  const open = document.body.classList.toggle("head-open");
+  $("headtoggle").setAttribute("aria-expanded", open ? "true" : "false");
+};
+document.querySelector("#rail .r-top").addEventListener("click", () =>
+  document.body.classList.toggle("rail-open"));
 
 /* ---------- URL state (deep-linkable mode + finding) ---------- */
 let URL_READY = false;
