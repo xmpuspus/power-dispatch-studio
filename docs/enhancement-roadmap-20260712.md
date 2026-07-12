@@ -134,10 +134,12 @@ Shipped and screenshot-gated at 1440x900 and 390px (evidence in tmp/uiux-audit-2
   through scripts/vizstyle.py, so this codifies the two-lane rule rather than re-coloring.
 - **11 Dark-mode chips** WITHDRAWN. Re-checked the tokens: the homage pill and Solved chip do adapt to dark
   (dark-brown, green-on-dark); the first-pass "cream holdover" read was wrong. Not a bug.
-- **9 Studio landing map** DEFENSIVE FIX added (IntersectionObserver + map.resize() on the section entering view),
-  but still needs your Chrome: it renders blank in every automated capture including the deployed dist and the
-  resize does not paint it there, so the blank is a headless WebGL limit for the lazy second map. Unverified in a
-  real browser. If it is blank in your Chrome too, the resize hook is the right place to extend the fix.
+- **9 Studio landing map** FIXED. It was a real bug, not a headless artifact (Xavier's own Chrome showed it blank
+  too). Root cause found by querying the map instance: the map rendered fine (style loaded, 96 layers, 69 features)
+  but its container had height 0. MapLibre adds `.maplibregl-map { position: relative }` to the container div,
+  which has equal specificity to `.mapview__canvas { position: absolute }` and wins on source order, so the
+  container collapsed and clipped the canvas. Fix: pin `width/height: 100%` on the container so it fills the
+  631px `.mapview` parent regardless of position. Verified painting in light, dark, desktop, and mobile.
 - **10 Studio mobile** DONE. Properties grid pins the Object column and shows a scrollbar so the MW values are
   reachable; the hint flows as one paragraph; Close studio no longer wraps; no horizontal overflow.
 - **12 Backcast delta** DONE. The offer view shows each figure's move from the cost model in green (MAE from P4.33,

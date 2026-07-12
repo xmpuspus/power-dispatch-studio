@@ -145,6 +145,10 @@
 .mapview__canvas {
   position: absolute;
   inset: 0;
+  /* MapLibre adds .maplibregl-map (position: relative) to the canvas container, which
+     wins source order and collapses it to 0 height; pin the size so it fills .mapview */
+  width: 100%;
+  height: 100%;
 }
 .mapview__legend {
   position: absolute;
