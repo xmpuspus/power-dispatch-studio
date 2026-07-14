@@ -23,6 +23,7 @@ import { EnsembleView } from './EnsembleView'
 import { Rtdoe5View } from './Rtdoe5View'
 import { ForwardView } from './ForwardView'
 import { MultiYearView } from './MultiYearView'
+import { ExpansionView } from './ExpansionView'
 import { decodeShare, loadRuns, type SavedRun } from './runs'
 import {
   CLASSES,
@@ -71,6 +72,7 @@ type AnalysisId =
   | 'rtdoe5'
   | 'forward'
   | 'multiyear'
+  | 'expansion'
   | 'vintage'
 type PhaseId = 'lt' | 'pasa'
 type Nav =
@@ -107,6 +109,7 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   rtdoe5: '5-minute replay',
   forward: 'Forward prices',
   multiyear: 'Multi-year path',
+  expansion: 'Expansion mix',
   vintage: 'Assumptions',
 }
 const PHASE_LABEL: Record<PhaseId, string> = {
@@ -826,6 +829,7 @@ function DataPane({
       return <ForwardView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'multiyear' && profiles)
       return <MultiYearView d={d} profiles={profiles} grid={grid} />
+    if (nav.id === 'expansion') return <ExpansionView />
     if (nav.id === 'vintage') return <VintageView d={d} />
     return <MarketPowerView d={d} />
   }

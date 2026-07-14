@@ -907,9 +907,15 @@ def main() -> int:
     r5_path = os.path.join(HERE, "..", "data", "derived", "rtdoe5_replay.json")
     rtdoe5 = (json.load(open(r5_path)) if os.path.isfile(r5_path)
               else {"available": False})
+    # the greenfield expansion optimizer result (pipeline/expansion.py), passed
+    # through for the studio's LT Plan comparison; absent until derived
+    exp_path = os.path.join(HERE, "..", "data", "derived", "expansion.json")
+    expansion = (json.load(open(exp_path)) if os.path.isfile(exp_path)
+                 else {"available": False})
 
     for name, obj in [("congestion.json", congestion),
                       ("rtdoe5.json", rtdoe5),
+                      ("expansion.json", expansion),
                       ("reliability.json", reliability),
                       ("prices.json", prices),
                       ("price_load.json", price_load), ("hvdc.json", hvdc),

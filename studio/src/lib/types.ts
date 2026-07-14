@@ -808,3 +808,22 @@ export interface Rtdoe5 {
   note?: string
   src?: string
 }
+
+export interface ExpansionMix {
+  mix_mw: Record<string, number>
+  mix_share_pct: Record<string, number>
+  re_share_pct: number
+  total_mw?: number
+  annual_cost_php_bn?: number
+}
+export interface Expansion {
+  available: boolean
+  horizon_year?: number
+  peak_mw?: number
+  reserve_margin_pct?: number
+  optimized?: ExpansionMix
+  doe_pipeline?: ExpansionMix
+  verdict?: string
+  costs_note?: string
+  src?: string
+}

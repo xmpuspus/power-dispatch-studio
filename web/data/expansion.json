@@ -1,0 +1,52 @@
+{
+ "available": true,
+ "horizon_year": 2040,
+ "peak_mw": 42759.0,
+ "reserve_margin_pct": 20,
+ "optimized": {
+  "mix_mw": {
+   "solar": 18338.9,
+   "wind": 78391.5,
+   "oil": 13245.8,
+   "storage": 28119.9
+  },
+  "total_mw": 138096.1,
+  "annual_cost_php_bn": 943.6,
+  "mix_share_pct": {
+   "solar": 13.3,
+   "wind": 56.8,
+   "oil": 9.6,
+   "storage": 20.4
+  },
+  "re_share_pct": 70.0
+ },
+ "doe_pipeline": {
+  "mix_mw": {
+   "coal": 4676,
+   "oil": 136,
+   "natural_gas": 8128,
+   "hydro": 9330,
+   "biomass": 227,
+   "solar": 26747,
+   "wind": 83333,
+   "storage": 5618,
+   "geothermal": 490
+  },
+  "mix_share_pct": {
+   "coal": 3.4,
+   "oil": 0.1,
+   "natural_gas": 5.9,
+   "hydro": 6.7,
+   "biomass": 0.2,
+   "solar": 19.3,
+   "wind": 60.1,
+   "storage": 4.1,
+   "geothermal": 0.4
+  },
+  "re_share_pct": 86.5
+ },
+ "verdict": "A least-cost greenfield build lands renewable-heavy, the same direction as the DOE pipeline, without being told to: the check is the RE share, not a plant-by-plant match.",
+ "costs_note": "Generic technology costs, NREL ATB 2024 moderate case, 2022 USD annualized (CRF 0.09) and converted at 56 PhP/USD. Labeled generic, not PH-specific.",
+ "src": "https://atb.nrel.gov/electricity/2024/",
+ "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+}
