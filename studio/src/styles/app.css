@@ -1587,3 +1587,19 @@
     z-index: 1;
   }
 }
+.r5chart {
+  width: 100%;
+  height: auto;
+  margin-top: 6px;
+}
+.r5chart__fine {
+  fill: none;
+  stroke: var(--coral, #e0603a);
+  stroke-width: 1;
+}
+.r5chart__hourly {
+  fill: none;
+  stroke: var(--steel, #3b7ea1);
+  stroke-width: 1.6;
+  stroke-dasharray: 4 3;
+}
