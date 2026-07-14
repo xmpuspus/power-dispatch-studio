@@ -4,6 +4,7 @@ import { fuelLabel, num, php, useEmissions, useGenerators } from '../lib/data'
 import { Panel, StatTile, Chip, EmptyNote } from '../ui/kit'
 import { MeritStack, FlowDiagram } from './charts'
 import { buildTemplateCsv, type ImportResult } from './importData'
+import { initLevers } from './levers'
 import { downloadCsv } from './runs'
 import { solveScenario, type Levers, type TrippableUnit } from './engine'
 import {
@@ -18,22 +19,6 @@ import {
 } from './model'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
-
-function initLevers(d: Dispatch, grid: GridKey): Levers {
-  return {
-    grid,
-    addDC: 0,
-    addSolar: 0,
-    addGas: 0,
-    addCoal: 0,
-    addStorage: 0,
-    trip: '',
-    coalPrice: d.assumptions.fuel_marginal_cost_php_kwh.coal,
-    reliefMW: 0,
-    lngSwitch: false,
-    hydrology: 1,
-  }
-}
 
 export function ScenarioView({
   d,
