@@ -7,7 +7,15 @@ import { num, php, useEmissions } from '../lib/data'
 import { Chip, EmptyNote, Panel } from '../ui/kit'
 import { HourLines } from './charts'
 import { buildRunReport, downloadReport } from './report'
-import { deleteRun, downloadCsv, isStale, runCsv, type SavedRun } from './runs'
+import {
+  deleteRun,
+  downloadCsv,
+  exportRuns,
+  importRuns,
+  isStale,
+  runCsv,
+  type SavedRun,
+} from './runs'
 
 const GRIDS: GridKey[] = ['luzon', 'visayas', 'mindanao']
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
@@ -40,9 +48,29 @@ export function RunsView({
 }) {
   const [aId, setAId] = useState<string>('')
   const [bId, setBId] = useState<string>('')
+  const [importMsg, setImportMsg] = useState<string>('')
   const a = runs.find((r) => r.id === aId) ?? runs[0]
   const b = runs.find((r) => r.id === bId) ?? runs[1]
   const emissions = useEmissions()
+
+  const onExportAll = () => {
+    downloadCsv(`power-dispatch-runs-${new Date().toISOString().slice(0, 10)}.json`, exportRuns())
+  }
+  const onImportFile = (file: File | undefined) => {
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const merged = importRuns(String(reader.result ?? ''))
+        onRunsChange(merged)
+        setImportMsg(`Imported. Archive now holds ${merged.length} runs.`)
+      } catch (e) {
+        setImportMsg(e instanceof Error ? e.message : 'Could not read that file.')
+      }
+    }
+    reader.onerror = () => setImportMsg('Could not read that file.')
+    reader.readAsText(file)
+  }
 
   const exportReport = (r: SavedRun) => {
     downloadReport(
@@ -66,6 +94,21 @@ export function RunsView({
             No saved runs yet. Open Chronology, configure a scenario and a window, and
             press Save run.
           </EmptyNote>
+          <div className="runs__archive-bar">
+            <label className="btn btn--ghost btn--sm">
+              Import runs
+              <input
+                type="file"
+                accept="application/json,.json"
+                style={{ display: 'none' }}
+                onChange={(e) => {
+                  onImportFile(e.target.files?.[0])
+                  e.target.value = ''
+                }}
+              />
+            </label>
+            {importMsg && <span className="runs__import-msg">{importMsg}</span>}
+          </div>
         </Panel>
       </div>
     )
@@ -87,6 +130,24 @@ export function RunsView({
         title="Saved runs"
         subtitle="Frozen chronological solves: scenario snapshot, window, engine version, hourly results."
       >
+        <div className="runs__archive-bar">
+          <button className="btn btn--ghost btn--sm" onClick={onExportAll}>
+            Export runs
+          </button>
+          <label className="btn btn--ghost btn--sm">
+            Import runs
+            <input
+              type="file"
+              accept="application/json,.json"
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                onImportFile(e.target.files?.[0])
+                e.target.value = ''
+              }}
+            />
+          </label>
+          {importMsg && <span className="runs__import-msg">{importMsg}</span>}
+        </div>
         <div className="propgrid-wrap">
           <table className="propgrid">
             <thead>

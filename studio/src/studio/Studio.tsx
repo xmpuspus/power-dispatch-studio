@@ -15,6 +15,8 @@ import { DistributionView } from './DistributionView'
 import { LTPlanView } from './LTPlanView'
 import { PasaView } from './PasaView'
 import { EmissionsView } from './EmissionsView'
+import { CaptureView } from './CaptureView'
+import { VintageView } from './VintageView'
 import { decodeShare, loadRuns, type SavedRun } from './runs'
 import {
   CLASSES,
@@ -49,7 +51,14 @@ type SolId =
   | 'duration'
   | 'marginal'
   | 'reliability'
-type AnalysisId = 'reserve' | 'bill' | 'market' | 'backcast' | 'emissions'
+type AnalysisId =
+  | 'reserve'
+  | 'bill'
+  | 'market'
+  | 'backcast'
+  | 'emissions'
+  | 'capture'
+  | 'vintage'
 type PhaseId = 'lt' | 'pasa'
 type Nav =
   | { kind: 'class'; id: ClassId }
@@ -78,6 +87,8 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   bill: 'Bill impact',
   market: 'Market power',
   emissions: 'Emissions',
+  capture: 'Capture prices',
+  vintage: 'Assumptions',
 }
 const PHASE_LABEL: Record<PhaseId, string> = {
   lt: 'LT Plan',
@@ -243,7 +254,8 @@ export function Studio({
   const editCount = Object.keys(active.overrides).length
   const gridScoped =
     (nav.kind === 'sol' && GRID_SOL.has(nav.id)) ||
-    (nav.kind === 'analysis' && (nav.id === 'reserve' || nav.id === 'backcast'))
+    (nav.kind === 'analysis' &&
+      (nav.id === 'reserve' || nav.id === 'backcast' || nav.id === 'capture'))
 
   const revertAll = () => {
     setScenarios((prev) => prev.map((s, i) => (i === ai ? { ...s, overrides: {} } : s)))
@@ -700,7 +712,17 @@ function DataPane({
       />
     )
   }
-  if (nav.kind === 'quick') return <ScenarioView d={d} grid={grid} />
+  if (nav.kind === 'quick')
+    return (
+      <ScenarioView
+        d={d}
+        grid={grid}
+        objects={objects}
+        overrides={overrides}
+        onEdit={onEdit}
+        onRevert={onRevert}
+      />
+    )
   if (nav.kind === 'phase') {
     if (nav.id === 'lt') return <LTPlanView objects={objects} onEdit={onEdit} />
     return <PasaView d={d} objects={objects} overrides={ranOv} />
@@ -720,6 +742,8 @@ function DataPane({
     }
     if (nav.id === 'reserve') return <ReserveView d={d} grid={grid} />
     if (nav.id === 'bill') return <BillView />
+    if (nav.id === 'capture') return <CaptureView runsList={runsList} grid={grid} />
+    if (nav.id === 'vintage') return <VintageView d={d} />
     return <MarketPowerView d={d} />
   }
   // solution views

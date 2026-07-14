@@ -21,7 +21,7 @@ export interface SavedRun {
 }
 
 const KEY = 'power-dispatch-studio-runs-v1'
-export const MAX_RUNS = 12
+export const MAX_RUNS = 50
 
 export function loadRuns(): SavedRun[] {
   try {
@@ -63,6 +63,66 @@ export function deleteRun(id: string): SavedRun[] {
 
 export function isStale(run: SavedRun): boolean {
   return run.engineVersion !== ENGINE_VERSION
+}
+
+// ---- portability: export the archive to a file, import one back ----------------
+
+/** The whole run archive as a JSON string, for download or backup. */
+export function exportRuns(): string {
+  return JSON.stringify({ runs: loadRuns() }, null, 2)
+}
+
+function isSavedRun(x: unknown): x is SavedRun {
+  if (!x || typeof x !== 'object') return false
+  const r = x as Record<string, unknown>
+  return (
+    typeof r.id === 'string' &&
+    typeof r.name === 'string' &&
+    typeof r.savedAt === 'string' &&
+    typeof r.scenarioName === 'string' &&
+    typeof r.overrides === 'object' &&
+    r.overrides !== null &&
+    typeof r.date === 'string' &&
+    (r.span === 'day' || r.span === 'week') &&
+    typeof r.engineVersion === 'number' &&
+    Array.isArray(r.hours) &&
+    Array.isArray(r.summaries)
+  )
+}
+
+/** Merge imported runs into an existing list: dedupe by id (the existing copy
+ * wins on a collision, so an import never silently overwrites local data),
+ * newest first, capped at MAX_RUNS. Pure, so it is testable without
+ * localStorage. */
+export function mergeRuns(existing: SavedRun[], imported: SavedRun[]): SavedRun[] {
+  const byId = new Map<string, SavedRun>()
+  for (const r of [...existing, ...imported]) if (!byId.has(r.id)) byId.set(r.id, r)
+  return [...byId.values()]
+    .sort((a, b) => b.savedAt.localeCompare(a.savedAt))
+    .slice(0, MAX_RUNS)
+}
+
+/** Parse and merge a run-archive JSON export into the current archive.
+ * Throws a plain, user-readable Error on malformed input; the caller decides
+ * how to surface it (never lets a bad file crash the app). */
+export function importRuns(json: string): SavedRun[] {
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(json)
+  } catch {
+    throw new Error('That file is not valid JSON.')
+  }
+  const raw = (parsed as { runs?: unknown } | null)?.runs
+  if (!Array.isArray(raw)) throw new Error('No runs array found in that file.')
+  const valid = raw.filter(isSavedRun)
+  if (!valid.length) throw new Error('No valid runs found in that file.')
+  const merged = mergeRuns(loadRuns(), valid)
+  try {
+    localStorage.setItem(KEY, JSON.stringify({ runs: merged }))
+  } catch {
+    /* best-effort */
+  }
+  return merged
 }
 
 // ---- CSV export -----------------------------------------------------------------
