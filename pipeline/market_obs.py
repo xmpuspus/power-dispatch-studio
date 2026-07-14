@@ -1000,6 +1000,34 @@ def build_settlement_side() -> dict:
     }
 
 
+def solar_observed_by_day() -> dict[str, dict[str, float]]:
+    """{date: {grid: observed WESM-dispatched solar MWh}} from the committed
+    DIPCEF dailies, same SOL/SPV resource classification as
+    build_solar_wind_observed. The per-day observed solar energy a replay can
+    reproduce instead of the flat clear-sky credit (roadmap item 8)."""
+    import json as _json
+
+    dd_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          "..", "data", "derived", "dipcef_daily")
+    if not os.path.isdir(dd_dir):
+        return {}
+    out: dict[str, dict[str, float]] = {}
+    for name in sorted(os.listdir(dd_dir)):
+        if not name.endswith(".json"):
+            continue
+        day = _json.load(open(os.path.join(dd_dir, name)))
+        per = {g: 0.0 for g in GRIDS_L}
+        for res, v in (day.get("resources") or {}).items():
+            g = v.get("grid")
+            if not g or g not in per:
+                continue
+            up = res.upper()
+            if "SOL" in up or "SPV" in up:
+                per[g] += v.get("mwh") or 0.0
+        out[day.get("date")] = per
+    return out
+
+
 def build_solar_wind_observed() -> dict:
     """Observed WESM-dispatched solar and wind daily energy per grid (from the
     committed DIPCEF dailies), beside the model's clear-sky solar credit.
@@ -1255,6 +1283,21 @@ def build_corridor_cap_probe() -> dict:
         return {"available": False,
                 "note": ("no corridor-cap probe; run "
                          "pipeline/corridor_cap_probe.py --derive")}
+    return _json.load(open(p))
+
+
+def build_vre_probe() -> dict:
+    """The observed-solar backcast experiment (roadmap item 8): replaying each
+    day's DIPCEF solar energy on the flat clear-sky shape worsens the price
+    correlation, so the shipped backcast keeps the clear-sky credit. Read from
+    the committed derivation (pipeline/vre_probe.py)."""
+    import json as _json
+
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "..", "data", "derived", "vre_probe.json")
+    if not os.path.isfile(p):
+        return {"available": False,
+                "note": "no VRE probe; run pipeline/vre_probe.py --derive"}
     return _json.load(open(p))
 
 
