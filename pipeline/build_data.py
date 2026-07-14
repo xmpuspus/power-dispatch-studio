@@ -902,7 +902,14 @@ def main() -> int:
     drivers = build_drivers(prices, profiles, pasa, advisories,
                             reserve_prices)
 
+    # the 5-minute sample-day replay (pipeline/rtdoe5_replay.py), passed
+    # through for the studio's intraday-volatility view; absent until derived
+    r5_path = os.path.join(HERE, "..", "data", "derived", "rtdoe5_replay.json")
+    rtdoe5 = (json.load(open(r5_path)) if os.path.isfile(r5_path)
+              else {"available": False})
+
     for name, obj in [("congestion.json", congestion),
+                      ("rtdoe5.json", rtdoe5),
                       ("reliability.json", reliability),
                       ("prices.json", prices),
                       ("price_load.json", price_load), ("hvdc.json", hvdc),

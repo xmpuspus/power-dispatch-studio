@@ -793,3 +793,18 @@ export interface MarketAnchors {
   src_offer_cap?: string
   [k: string]: unknown
 }
+
+export interface Rtdoe5Day {
+  date: string
+  labels: string[]
+  series: Record<GridKey, (number | null)[]>
+  hourly: Record<GridKey, (number | null)[]>
+  n_priced: number
+}
+export interface Rtdoe5 {
+  available: boolean
+  unit?: string
+  days?: Rtdoe5Day[]
+  note?: string
+  src?: string
+}
