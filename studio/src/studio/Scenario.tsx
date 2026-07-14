@@ -1,9 +1,19 @@
 import { useMemo, useState } from 'react'
 import type { Dispatch, GridKey } from '../lib/types'
-import { fuelLabel, num, php, useGenerators } from '../lib/data'
+import { fuelLabel, num, php, useEmissions, useGenerators } from '../lib/data'
 import { Panel, StatTile, Chip, EmptyNote } from '../ui/kit'
 import { MeritStack, FlowDiagram } from './charts'
 import { solveScenario, type Levers, type TrippableUnit } from './engine'
+import {
+  CARBON_DISCLAIMER,
+  CARBON_FUEL_ID,
+  CARBON_PROP,
+  carbonCostDelta,
+  carbonPriceOf,
+  type ClassId,
+  type ObjRow,
+  type Overrides,
+} from './model'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 
@@ -23,8 +33,23 @@ function initLevers(d: Dispatch, grid: GridKey): Levers {
   }
 }
 
-export function ScenarioView({ d, grid }: { d: Dispatch; grid: GridKey }) {
+export function ScenarioView({
+  d,
+  grid,
+  objects,
+  overrides,
+  onEdit,
+  onRevert,
+}: {
+  d: Dispatch
+  grid: GridKey
+  objects: Record<ClassId, ObjRow[]>
+  overrides: Overrides
+  onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
+  onRevert: (cls: ClassId, id: string, prop: string) => void
+}) {
   const gens = useGenerators()
+  const em = useEmissions()
   const [lv, setLv] = useState<Levers>(() => initLevers(d, grid))
 
   // reset the levers when the grid changes (levers are grid-scoped)
@@ -88,6 +113,38 @@ export function ScenarioView({ d, grid }: { d: Dispatch; grid: GridKey }) {
 
   const coalFloor = d.assumptions.coal_commit_php_kwh
   const storageOnGrid = grid === 'luzon' ? d.storage.assets.luzon.total_mw : 0
+
+  // carbon price lever: a synthetic scenario override, not a real object, so
+  // it survives a remount. Writes each carbon-emitting fuel's Price directly,
+  // the SAME override chronoOptsFrom already folds into opts.fuel_cost, so
+  // every chronological view (Chronology, Emissions, Runs, reports) that
+  // reads this scenario's overrides inherits the effect with no extra wiring.
+  const factors = em.data?.factor_map ?? {}
+  const carbonPrice = carbonPriceOf(overrides)
+  const carbonRows = objects.fuel
+    .map((f) => ({ fuel: f.id, delta: carbonCostDelta(carbonPrice, factors[f.id]) }))
+    .filter((r) => r.delta > 0)
+  const setCarbonPrice = (v: number) => {
+    const cp = Math.max(0, Math.round(v))
+    if (cp > 0) onEdit('fuel', CARBON_FUEL_ID, CARBON_PROP, cp)
+    else onRevert('fuel', CARBON_FUEL_ID, CARBON_PROP)
+    // only ever touches fuels with a nonzero baked factor, so a manual edit to
+    // a zero-carbon fuel's price (solar, wind, hydro, storage) is never
+    // clobbered; a manual edit to coal/gas/oil/geo price IS overwritten while
+    // this lever is nonzero, since both share the one Price override slot
+    for (const f of objects.fuel) {
+      const factor = factors[f.id]
+      if (!factor) continue
+      const delta = carbonCostDelta(cp, factor)
+      const base = f.props.cost as number
+      if (delta > 0) onEdit('fuel', f.id, 'cost', Math.round((base + delta) * 1000) / 1000)
+      else onRevert('fuel', f.id, 'cost')
+    }
+  }
+  const resetLevers = () => {
+    setLv(initLevers(d, grid))
+    setCarbonPrice(0)
+  }
 
   return (
     <div className="view" data-testid="scenario">
@@ -223,10 +280,26 @@ export function ScenarioView({ d, grid }: { d: Dispatch; grid: GridKey }) {
                 ))}
               </select>
             </label>
-            <button
-              className="btn btn--ghost lever__reset"
-              onClick={() => setLv(initLevers(d, grid))}
-            >
+            <Slider
+              label="Carbon price, system-wide"
+              value={carbonPrice}
+              min={0}
+              max={5000}
+              step={250}
+              fmt={(v) => `₱${num(v)}/tCO2`}
+              tick={`${CARBON_DISCLAIMER}. Raises each carbon-emitting fuel's Price by carbon price times its baked tCO2/MWh factor, divided by 1000, so higher-carbon fuels climb the merit order.`}
+              onChange={setCarbonPrice}
+            />
+            {carbonRows.length > 0 && (
+              <p className="note">
+                Applies now, Fuels &gt; Price:{' '}
+                {carbonRows
+                  .map((r) => `${fuelLabel(r.fuel)} +₱${r.delta.toFixed(2)}/kWh`)
+                  .join(', ')}
+                .
+              </p>
+            )}
+            <button className="btn btn--ghost lever__reset" onClick={resetLevers}>
               Reset levers
             </button>
           </div>

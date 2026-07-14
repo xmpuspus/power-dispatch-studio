@@ -4,7 +4,7 @@
 
 import type { GridKey } from '../lib/types'
 import type { SavedRun } from './runs'
-import { bindingCounts } from './insights'
+import { bindingCounts, capturePrices } from './insights'
 
 const GRIDS: GridKey[] = ['luzon', 'visayas', 'mindanao']
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
@@ -106,6 +106,24 @@ ${rows
     }; lifecycle emissions are out of scope. Storage discharge carries no factor of its own; its charging energy is counted at the generating fuel.</p>`
   }
 
+  let capture = ''
+  if (run.hours.length) {
+    const rows = capturePrices(run.hours)
+    if (rows.length)
+      capture = `<h2>Capture prices per technology</h2>
+<table><thead><tr><th>Fuel</th><th>Grid</th><th class="n">Generation MWh</th><th class="n">Capture price ₱/kWh</th><th class="n">Capture rate</th></tr></thead><tbody>
+${rows
+        .map(
+          (r) =>
+            `<tr><td>${esc(r.fuel.replace(/_/g, ' '))}</td><td>${esc(cap(r.grid))}</td>` +
+            `<td class="n">${num(r.gen_mwh)}</td><td class="n">${r.capture_price_php_kwh.toFixed(3)}</td>` +
+            `<td class="n">${r.capture_rate === null ? 'n/a' : r.capture_rate.toFixed(3)}</td></tr>`
+        )
+        .join('')}
+</tbody></table>
+<p class="note">Generation-weighted capture price per technology: sum(generation times price) divided by generation, on each grid's own price. The capture rate is that divided by the run's time-average price, the revenue signal a project or GEA analyst needs. Solar and wind capture below the flat average when they clear mostly in their own cheap hours.</p>`
+  }
+
   const hourRows = run.hours
     .map(
       (h, i) =>
@@ -142,6 +160,7 @@ ${
 <tbody>${sumRows}</tbody></table>
 
 ${bindingBlocks}
+${capture}
 ${emissions}
 
 <h2>Hourly results</h2>

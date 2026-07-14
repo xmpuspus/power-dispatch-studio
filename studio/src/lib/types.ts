@@ -782,5 +782,14 @@ export interface GeneratorProps {
 
 export interface Meta {
   built_utc?: string
+  datasets?: Record<string, number>
+  [k: string]: unknown
+}
+
+// market_anchors.json: sourced spot-market anchors; only the offer cap fields
+// are typed strictly, the rest passes through for whichever view needs it
+export interface MarketAnchors {
+  wesm_offer_cap_php_kwh?: number
+  src_offer_cap?: string
   [k: string]: unknown
 }

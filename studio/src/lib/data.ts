@@ -5,8 +5,10 @@ import type {
   Emissions,
   Fleet,
   GeneratorProps,
+  MarketAnchors,
   MarketOps,
   MarketPower,
+  Meta,
   Pasa,
   Profiles,
   Projects,
@@ -73,6 +75,8 @@ export const usePasa = () => useJson<Pasa>('pasa.json')
 export const useProjects = () => useJson<Projects>('projects.json')
 export const useDemandPath = () => useJson<DemandPath>('demand_path.json')
 export const useEmissions = () => useJson<Emissions>('emissions.json')
+export const useMeta = () => useJson<Meta>('meta.json')
+export const useMarketAnchors = () => useJson<MarketAnchors>('market_anchors.json')
 
 export interface FeatureCollection<P> {
   type: 'FeatureCollection'

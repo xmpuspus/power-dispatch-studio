@@ -207,3 +207,57 @@ export function emissionsByFuel(
     }))
     .sort((a, b) => b.tco2 - a.tco2 || b.mwh - a.mwh)
 }
+
+// ---- capture prices: generation-weighted average price per technology -----------
+
+export interface CaptureRow {
+  fuel: string
+  grid: GridKey
+  gen_mwh: number
+  capture_price_php_kwh: number
+  // capture price divided by the run's time-average price on the same grid;
+  // null when that average is zero (nothing to divide by)
+  capture_rate: number | null
+}
+
+/** Generation-weighted capture price per fuel per grid over a run's hours:
+ * sum(generation x price) / sum(generation), each grid's own price. The
+ * revenue signal a GEA or project analyst needs: a flat PPA misses the
+ * merit-order effect solar and wind create for themselves as they clear. */
+export function capturePrices(hours: ChronoHour[]): CaptureRow[] {
+  const grids: GridKey[] = ['luzon', 'visayas', 'mindanao']
+  const genPriceSum = new Map<string, number>()
+  const genSum = new Map<string, number>()
+  const priceSum: Record<GridKey, number> = { luzon: 0, visayas: 0, mindanao: 0 }
+  for (const h of hours) {
+    for (const g of grids) {
+      priceSum[g] += h.price[g]
+      for (const [fuel, mw] of Object.entries(h.fuelGen[g])) {
+        const k = `${fuel}|${g}`
+        genPriceSum.set(k, (genPriceSum.get(k) ?? 0) + mw * h.price[g])
+        genSum.set(k, (genSum.get(k) ?? 0) + mw)
+      }
+    }
+  }
+  const n = hours.length || 1
+  const avgPrice: Record<GridKey, number> = {
+    luzon: priceSum.luzon / n,
+    visayas: priceSum.visayas / n,
+    mindanao: priceSum.mindanao / n,
+  }
+  const rows: CaptureRow[] = []
+  for (const [k, gen] of genSum) {
+    if (gen <= 0) continue
+    const [fuel, grid] = k.split('|') as [string, GridKey]
+    const capturePrice = (genPriceSum.get(k) ?? 0) / gen
+    const ap = avgPrice[grid]
+    rows.push({
+      fuel,
+      grid,
+      gen_mwh: Math.round(gen),
+      capture_price_php_kwh: Math.round(capturePrice * 1000) / 1000,
+      capture_rate: ap > 0 ? Math.round((capturePrice / ap) * 1000) / 1000 : null,
+    })
+  }
+  return rows.sort((a, b) => b.gen_mwh - a.gen_mwh)
+}

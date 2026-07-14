@@ -6,6 +6,7 @@ import { runChronology, type ChronoHour } from './chrono'
 import {
   addsAtHorizon,
   bindingCounts,
+  capturePrices,
   classifyHour,
   emissionsByFuel,
   hourlyBand,
@@ -136,6 +137,46 @@ describe('emissions math', () => {
     expect(Math.abs(total - runEmissionsT(hours, factors))).toBeLessThanOrEqual(
       rows.length
     )
+  })
+})
+
+describe('capture prices', () => {
+  it('generation-weights price per fuel per grid against a hand-computed fixture', () => {
+    const hours = [
+      hour({
+        price: { luzon: 4, visayas: 6, mindanao: 6 },
+        fuelGen: { luzon: { coal: 1000, solar: 500 }, visayas: {}, mindanao: {} },
+      }),
+      hour({
+        price: { luzon: 8, visayas: 6, mindanao: 6 },
+        fuelGen: { luzon: { coal: 3000, solar: 100 }, visayas: {}, mindanao: {} },
+      }),
+    ]
+    const rows = capturePrices(hours)
+    const coal = rows.find((r) => r.fuel === 'coal' && r.grid === 'luzon')!
+    // (1000*4 + 3000*8) / (1000+3000) = 7
+    expect(coal.capture_price_php_kwh).toBeCloseTo(7, 6)
+    expect(coal.gen_mwh).toBe(4000)
+    const solar = rows.find((r) => r.fuel === 'solar' && r.grid === 'luzon')!
+    // (500*4 + 100*8) / 600 = 4.6667
+    expect(solar.capture_price_php_kwh).toBeCloseTo(2800 / 600, 3)
+    // time-average luzon price = (4+8)/2 = 6; capture rate = capture price / average
+    // (capture_rate is rounded to 3 dp in capturePrices, so match that precision)
+    expect(coal.capture_rate).toBeCloseTo(7 / 6, 3)
+    expect(solar.capture_rate).toBeCloseTo(2800 / 600 / 6, 3)
+    // solar earns less than the flat average as it clears mostly in the cheap hour
+    expect(solar.capture_rate!).toBeLessThan(coal.capture_rate!)
+  })
+  it('sorts by generation descending and skips fuels with zero generation', () => {
+    const hours = [
+      hour({
+        fuelGen: { luzon: { coal: 100, solar: 900 }, visayas: {}, mindanao: {} },
+      }),
+    ]
+    const rows = capturePrices(hours).filter((r) => r.grid === 'luzon')
+    expect(rows.map((r) => r.fuel)).toEqual(['solar', 'coal'])
+    expect(rows.every((r) => r.gen_mwh > 0)).toBe(true)
+    expect(rows.some((r) => r.fuel === 'natural_gas')).toBe(false)
   })
 })
 

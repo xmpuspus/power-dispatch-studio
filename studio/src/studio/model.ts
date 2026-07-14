@@ -313,6 +313,44 @@ export function effNum(
   return k in ov ? ov[k] : base
 }
 
+// ---- carbon price lever: a policy what-if, not a market fact -------------------
+//
+// Raises each fuel's marginal cost via the SAME Fuel "cost" override
+// chronoOptsFrom already folds into opts.fuel_cost (see above): no new LP
+// input, no engine change. The Quick scenario slider (Scenario.tsx) writes
+// these overrides directly, so every chronological view/report that reads
+// this scenario's overrides inherits the effect for free.
+
+// a synthetic Fuel id/prop pair, not a real object row, so the raw PhP/tCO2
+// value survives a component remount without reverse-engineering it from a
+// cost delta
+export const CARBON_FUEL_ID = '__carbon__'
+export const CARBON_PROP = 'carbon_php_per_tco2'
+export const CARBON_DISCLAIMER = 'policy what-if: the PH has no carbon price today'
+
+/** The carbon price (PhP/tCO2) a scenario carries, 0 if the lever is off. */
+export function carbonPriceOf(ov: Overrides): number {
+  return ov[overrideKey('fuel', CARBON_FUEL_ID, CARBON_PROP)] ?? 0
+}
+
+/** The run-label suffix a nonzero carbon price adds, or null when it is off. */
+export function carbonRunSuffix(ov: Overrides): string | null {
+  const cp = carbonPriceOf(ov)
+  return cp > 0 ? `carbon PhP${cp}/tCO2` : null
+}
+
+/** PhP/kWh a carbon price adds to one fuel's marginal cost, from its baked
+ * tCO2/MWh emission factor: carbon_price * factor / 1000. Zero for a zero or
+ * missing factor (solar, wind, hydro, storage; biomass is excluded upstream
+ * of this call, its factor is null in the baked data). */
+export function carbonCostDelta(
+  carbonPricePhpPerTco2: number,
+  tco2PerMwh: number | null | undefined
+): number {
+  if (carbonPricePhpPerTco2 <= 0 || !tco2PerMwh) return 0
+  return Math.round(((carbonPricePhpPerTco2 * tco2PerMwh) / 1000) * 1000) / 1000
+}
+
 export interface N1Solved {
   unit: string
   grid: GridKey
