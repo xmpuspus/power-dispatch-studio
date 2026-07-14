@@ -367,7 +367,8 @@ export function carbonCostDelta(
 // (lp_model.build_day_lp, lpText.buildDayLp), pinned by a golden case.
 export const GAS_FUEL_ID = '__gas_supply__'
 export const GAS_PROP = 'malampaya_supply_pct'
-export const GAS_SOURCE_NOTE = 'Malampaya gas: 429 MMscfd at full field (DOE), depletion expected around 2027'
+export const GAS_SOURCE_NOTE =
+  'Malampaya gas: 429 MMscfd at full field (DOE), depletion expected around 2027'
 
 /** The Malampaya gas supply percent a scenario carries (100 = flat out, no
  * fuel limit). */

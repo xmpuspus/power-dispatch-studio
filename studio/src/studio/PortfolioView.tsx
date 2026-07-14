@@ -28,7 +28,8 @@ const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 
 function fuelsInRun(run: SavedRun, grid: GridKey): string[] {
   const set = new Set<string>()
-  for (const h of run.hours) for (const f of Object.keys(h.fuelGen[grid] ?? {})) set.add(f)
+  for (const h of run.hours)
+    for (const f of Object.keys(h.fuelGen[grid] ?? {})) set.add(f)
   return [...set].sort()
 }
 
@@ -77,16 +78,20 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
     <div className="view" data-testid="portfolio">
       <p className="scn__lede">
         Value a generation position against a saved run's hourly prices. Generation is
-        your share of one fuel's dispatched MW in one grid, not a named unit's output:
-        the public run tracks fuel-level dispatch. The PSA is modeled as a contract for
-        differences on a flat volume: paid (strike minus spot) on the contracted MWh,
-        on top of selling everything at spot.
+        your share of one fuel's dispatched MW in one grid, not a named unit's output: the
+        public run tracks fuel-level dispatch. The PSA is modeled as a contract for
+        differences on a flat volume: paid (strike minus spot) on the contracted MWh, on
+        top of selling everything at spot.
       </p>
 
       <div className="scn">
         <Panel
           title="Position"
-          subtitle={withHours.length > 1 ? 'Pick the run, the position, and the PSA terms.' : `Run: ${run.name}`}
+          subtitle={
+            withHours.length > 1
+              ? 'Pick the run, the position, and the PSA terms.'
+              : `Run: ${run.name}`
+          }
         >
           <div className="levers">
             {withHours.length > 1 && (
@@ -130,7 +135,9 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
                 aria-label="Fuel"
               >
                 {fuels.length === 0 ? (
-                  <option value={activeFuel}>{fuelLabel(activeFuel)}, no dispatch this run</option>
+                  <option value={activeFuel}>
+                    {fuelLabel(activeFuel)}, no dispatch this run
+                  </option>
                 ) : (
                   fuels.map((f) => (
                     <option key={f} value={f}>

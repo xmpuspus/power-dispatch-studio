@@ -46,7 +46,10 @@ export interface ImportResult {
 }
 
 function normId(s: string): string {
-  return s.trim().toLowerCase().replace(/[\s_-]+/g, '_')
+  return s
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]+/g, '_')
 }
 
 function findObj(rows: ObjRow[], rawId: string): ObjRow | undefined {
@@ -163,7 +166,9 @@ export function parseImportCsv(
       }
     }
   } catch (e) {
-    warnings.push(`Could not read that file: ${e instanceof Error ? e.message : String(e)}.`)
+    warnings.push(
+      `Could not read that file: ${e instanceof Error ? e.message : String(e)}.`
+    )
   }
 
   return {

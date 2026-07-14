@@ -54,7 +54,10 @@ export function RunsView({
   const emissions = useEmissions()
 
   const onExportAll = () => {
-    downloadCsv(`power-dispatch-runs-${new Date().toISOString().slice(0, 10)}.json`, exportRuns())
+    downloadCsv(
+      `power-dispatch-runs-${new Date().toISOString().slice(0, 10)}.json`,
+      exportRuns()
+    )
   }
   const onImportFile = (file: File | undefined) => {
     if (!file) return

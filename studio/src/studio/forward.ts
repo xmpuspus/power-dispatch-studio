@@ -35,13 +35,20 @@ export interface YearBand {
 
 function pct(sorted: number[], p: number): number {
   if (!sorted.length) return 0
-  const i = Math.min(sorted.length - 1, Math.max(0, Math.round((p / 100) * (sorted.length - 1))))
+  const i = Math.min(
+    sorted.length - 1,
+    Math.max(0, Math.round((p / 100) * (sorted.length - 1)))
+  )
   return sorted[i]
 }
 
 /** The additive per-grid demand growth (MW) from the base year to a target
  * year, straight off the DOE PDP peak-demand path. */
-export function pdpGrowth(pdp: PdpPath, baseYear: number, year: number): Partial<Record<GridKey, number>> {
+export function pdpGrowth(
+  pdp: PdpPath,
+  baseYear: number,
+  year: number
+): Partial<Record<GridKey, number>> {
   const bi = pdp.years.indexOf(baseYear)
   const yi = pdp.years.indexOf(year)
   if (bi < 0 || yi < 0) return {}
@@ -110,7 +117,8 @@ export function multiYearTrajectory(
           oil: c.oil + carbon * (OIL_TCO2 / 1000),
         },
       }
-      if (scenario.gasBudgetLuzonMwh != null) opts.gas_budget = { luzon: scenario.gasBudgetLuzonMwh }
+      if (scenario.gasBudgetLuzonMwh != null)
+        opts.gas_budget = { luzon: scenario.gasBudgetLuzonMwh }
       const res = runChronology(d, profiles, date, opts)
       for (const g of GRIDS) acc[g].push(res.summary.meanPrice[g])
     }

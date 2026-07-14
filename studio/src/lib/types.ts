@@ -334,7 +334,19 @@ export interface Reserve {
 // observed market operations (market_ops.json); only the sections the studio
 // renders are typed strictly
 export interface MarketOps {
-  reserve_aware?: { available: boolean; by_grid?: Record<string, { energy_php_kwh: number; reserve_offer_clear_php_kwh: number; reserve_scarcity_wedge_php_kwh: number; reserve_aware_php_kwh: number }>; note?: string }
+  reserve_aware?: {
+    available: boolean
+    by_grid?: Record<
+      string,
+      {
+        energy_php_kwh: number
+        reserve_offer_clear_php_kwh: number
+        reserve_scarcity_wedge_php_kwh: number
+        reserve_aware_php_kwh: number
+      }
+    >
+    note?: string
+  }
   price_setters?: {
     available: boolean
     days?: number
@@ -654,6 +666,43 @@ export interface ChronoGoldenCase {
   }
 }
 
+// the native 168h week golden (roadmap item 6): seven explicit dates solved on
+// one LP, the studio replays the same window and must build byte-identical text
+export interface WeekGolden {
+  available: boolean
+  note?: string
+  label?: string
+  input: {
+    dates: string[]
+    solar_delta_mw?: Partial<Record<GridKey, number>>
+    demand_delta?: Partial<Record<GridKey, number>>
+    storage?: { grid: GridKey; power_mw: number; energy_mwh: number }[]
+  }
+  lp_sha256: string
+  expect: {
+    price: Record<GridKey, number[]>
+    soc_mwh: number[]
+    flow_lv: number[]
+    days: {
+      date: string
+      mean_price: Record<GridKey, number>
+      peak_price: Record<GridKey, number>
+      start_soc_mwh: number
+      end_soc_mwh: number
+    }[]
+    summary: {
+      dates: string[]
+      physical_cost: number
+      mean_price: Record<GridKey, number>
+      peak_price: Record<GridKey, number>
+      unserved_mwh: Record<GridKey, number>
+      leyte_rent_m_php: number
+      mvip_rent_m_php: number
+      soc_swing_mwh: number
+    }
+  }
+}
+
 export interface BackcastGrid {
   n_hours: number
   observed_mean_php_kwh: number
@@ -735,6 +784,7 @@ export interface Profiles {
     tolerance_mw?: number
     note?: string
     cases?: ChronoGoldenCase[]
+    week?: WeekGolden
   }
   // the base cost model replayed against the tape
   backcast: BackcastSet

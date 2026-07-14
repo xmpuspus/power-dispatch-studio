@@ -12,7 +12,12 @@ import {
 } from './forward'
 
 const read = (f: string) =>
-  JSON.parse(readFileSync(fileURLToPath(new URL(`../../public/data/${f}`, import.meta.url)), 'utf8'))
+  JSON.parse(
+    readFileSync(
+      fileURLToPath(new URL(`../../public/data/${f}`, import.meta.url)),
+      'utf8'
+    )
+  )
 const d: Dispatch = read('dispatch.json')
 const profiles: Profiles = read('profiles.json')
 const dp = read('demand_path.json')

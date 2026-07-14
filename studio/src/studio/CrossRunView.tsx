@@ -70,12 +70,48 @@ export function CrossRunView({
   const rows = runsList.map(metricsOf)
   const cols: Column<RunMetrics>[] = [
     { key: 'name', header: 'Run', render: (r) => r.name },
-    { key: 'ml', header: 'Mean Luzon', align: 'right', mono: true, render: (r) => php(r.meanLuzon) },
-    { key: 'mv', header: 'Mean Visayas', align: 'right', mono: true, render: (r) => php(r.meanVisayas) },
-    { key: 'mm', header: 'Mean Mindanao', align: 'right', mono: true, render: (r) => php(r.meanMindanao) },
-    { key: 'pl', header: 'Peak Luzon', align: 'right', mono: true, render: (r) => php(r.peakLuzon) },
-    { key: 'un', header: 'Unserved MWh', align: 'right', mono: true, render: (r) => num(r.unserved) },
-    { key: 'rent', header: 'Rent M PhP', align: 'right', mono: true, render: (r) => r.rent.toFixed(2) },
+    {
+      key: 'ml',
+      header: 'Mean Luzon',
+      align: 'right',
+      mono: true,
+      render: (r) => php(r.meanLuzon),
+    },
+    {
+      key: 'mv',
+      header: 'Mean Visayas',
+      align: 'right',
+      mono: true,
+      render: (r) => php(r.meanVisayas),
+    },
+    {
+      key: 'mm',
+      header: 'Mean Mindanao',
+      align: 'right',
+      mono: true,
+      render: (r) => php(r.meanMindanao),
+    },
+    {
+      key: 'pl',
+      header: 'Peak Luzon',
+      align: 'right',
+      mono: true,
+      render: (r) => php(r.peakLuzon),
+    },
+    {
+      key: 'un',
+      header: 'Unserved MWh',
+      align: 'right',
+      mono: true,
+      render: (r) => num(r.unserved),
+    },
+    {
+      key: 'rent',
+      header: 'Rent M PhP',
+      align: 'right',
+      mono: true,
+      render: (r) => r.rent.toFixed(2),
+    },
   ]
 
   return (

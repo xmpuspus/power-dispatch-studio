@@ -61,7 +61,9 @@ export function buildDayLp(
   storage: LpStorage[],
   reserveReq: Record<GridKey, number> | null,
   voll: number,
-  hydroBudget: Partial<Record<GridKey, number | Array<number | null> | null>> | null = null,
+  hydroBudget: Partial<
+    Record<GridKey, number | Array<number | null> | null>
+  > | null = null,
   gasBudget: Partial<Record<GridKey, number | null>> | null = null,
   hydroDayHours: number | null = null
 ): string {

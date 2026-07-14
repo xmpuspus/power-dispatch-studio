@@ -57,8 +57,7 @@ export function WeekView({
     const dates = windows[Math.min(wIdx, windows.length - 1)]
     const st = STORAGE[storeKey]
     const opts: ChronoOpts = {}
-    if (st.mw > 0)
-      opts.storage = [{ grid: 'luzon', power_mw: st.mw, energy_mwh: st.mwh }]
+    if (st.mw > 0) opts.storage = [{ grid: 'luzon', power_mw: st.mw, energy_mwh: st.mwh }]
     if (dcWave) {
       opts.solar_delta_mw = { luzon: 8000 }
       opts.demand_delta = { luzon: 2500 }
@@ -81,8 +80,8 @@ export function WeekView({
       <div className="view">
         <Panel title="Native 168-hour week" subtitle="Seven observed days on one LP.">
           <EmptyNote>
-            The observed library has fewer than seven full-coverage days, so a week
-            cannot be assembled.
+            The observed library has fewer than seven full-coverage days, so a week cannot
+            be assembled.
           </EmptyNote>
         </Panel>
       </div>
@@ -100,7 +99,9 @@ export function WeekView({
   const socMax = Math.max(1, ...week.hours.map((o) => o.socMwh))
   const X = (h: number) => padL + (h / 167) * (W - padL - 12)
   const Y = (v: number) => padT + (1 - v / socMax) * (H - padT - padB)
-  const soc = week.hours.map((o, h) => `${X(h).toFixed(1)},${Y(o.socMwh).toFixed(1)}`).join(' ')
+  const soc = week.hours
+    .map((o, h) => `${X(h).toFixed(1)},${Y(o.socMwh).toFixed(1)}`)
+    .join(' ')
 
   const cols: Column<WeekDaySummary>[] = [
     { key: 'date', header: 'Day', render: (r) => r.date },
@@ -161,7 +162,11 @@ export function WeekView({
           </select>
         </label>
         <label className="chrono__reserve">
-          <input type="checkbox" checked={dcWave} onChange={(e) => setDcWave(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={dcWave}
+            onChange={(e) => setDcWave(e.target.checked)}
+          />
           DC-wave spread (8 GW solar + 2.5 GW load)
         </label>
       </div>
@@ -189,16 +194,28 @@ export function WeekView({
             tone={carry > 1 ? 'accent' : 'default'}
           />
         </div>
-        <svg viewBox={`0 0 ${W} ${H}`} className="fwdchart" role="img"
-             aria-label="Storage state of charge across the week">
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="fwdchart"
+          role="img"
+          aria-label="Storage state of charge across the week"
+        >
           <line x1={padL} y1={Y(0)} x2={W - 12} y2={Y(0)} className="chart__ax" />
           <text x={padL - 6} y={Y(socMax)} textAnchor="end" className="chart__ax">
             {socMax.toFixed(0)}
           </text>
-          <text x={padL - 6} y={Y(0)} textAnchor="end" className="chart__ax">0</text>
+          <text x={padL - 6} y={Y(0)} textAnchor="end" className="chart__ax">
+            0
+          </text>
           {dates.map((dt, i) => (
             <g key={dt}>
-              <line x1={X(i * 24)} y1={padT} x2={X(i * 24)} y2={H - padB} className="chart__grid" />
+              <line
+                x1={X(i * 24)}
+                y1={padT}
+                x2={X(i * 24)}
+                y2={H - padB}
+                className="chart__grid"
+              />
               <text x={X(i * 24) + 2} y={H - 8} className="chart__ax">
                 {dt.slice(5)}
               </text>

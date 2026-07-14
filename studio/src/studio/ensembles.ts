@@ -56,7 +56,10 @@ export interface EnsembleResult {
 
 function pct(sorted: number[], p: number): number {
   if (!sorted.length) return 0
-  const i = Math.min(sorted.length - 1, Math.max(0, Math.round((p / 100) * (sorted.length - 1))))
+  const i = Math.min(
+    sorted.length - 1,
+    Math.max(0, Math.round((p / 100) * (sorted.length - 1)))
+  )
   return sorted[i]
 }
 
@@ -92,7 +95,9 @@ export function runEnsemble(
       p10: Math.round(pct(sorted, 10) * 1000) / 1000,
       p50: Math.round(pct(sorted, 50) * 1000) / 1000,
       p90: Math.round(pct(sorted, 90) * 1000) / 1000,
-      mean: Math.round((sorted.reduce((s, x) => s + x, 0) / (sorted.length || 1)) * 1000) / 1000,
+      mean:
+        Math.round((sorted.reduce((s, x) => s + x, 0) / (sorted.length || 1)) * 1000) /
+        1000,
     }
   }
   return { nDraws, seed, date, perGrid, prices }

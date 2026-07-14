@@ -545,7 +545,18 @@ function assembleWeek(
     if (has) anyHydro = true
   }
   if (!anyHydro) hydroBudget = null
-  const text = buildDayLp(stacks, demand, caps, wheel, storage, null, voll, hydroBudget, null, 24)
+  const text = buildDayLp(
+    stacks,
+    demand,
+    caps,
+    wheel,
+    storage,
+    null,
+    voll,
+    hydroBudget,
+    null,
+    24
+  )
   return { stacks, demand, caps, wheel, storage, voll, hydroBudget, H, text }
 }
 
@@ -630,7 +641,14 @@ export function runWeek(
         })
       }
       const mres = marginal(stacks[g][h], round1(gen[g]))
-      marg[g] = priceLabel(price[g], mres.cost, mres.fuel, storeMarg[g], hydMarg, shed[g] > STORE_EPS)
+      marg[g] = priceLabel(
+        price[g],
+        mres.cost,
+        mres.fuel,
+        storeMarg[g],
+        hydMarg,
+        shed[g] > STORE_EPS
+      )
     }
     const cap1 = caps.leyte[h]
     const cap2 = caps.mvip[h]
@@ -658,7 +676,9 @@ export function runWeek(
       mvip: {
         sat: sat2,
         rent: sat2
-          ? round3(f2 > 0 ? price.mindanao - price.visayas : price.visayas - price.mindanao)
+          ? round3(
+              f2 > 0 ? price.mindanao - price.visayas : price.visayas - price.mindanao
+            )
           : 0,
       },
       fuelGen,
@@ -685,7 +705,10 @@ export function runWeek(
   })
   const rentM = (key: 'leyte' | 'mvip', flowKey: 'flowLV' | 'flowVM') =>
     round3(
-      hours.reduce((s, o) => s + (o[key].sat ? (Math.abs(o[flowKey]) * o[key].rent) / 1000 : 0), 0)
+      hours.reduce(
+        (s, o) => s + (o[key].sat ? (Math.abs(o[flowKey]) * o[key].rent) / 1000 : 0),
+        0
+      )
     )
 
   // physical system cost EXCLUDING the uniqueness epsilons; the comparable
@@ -700,7 +723,10 @@ export function runWeek(
     }
     phys +=
       wheel *
-      (sol.col(`f1p_${h}`) + sol.col(`f1n_${h}`) + sol.col(`f2p_${h}`) + sol.col(`f2n_${h}`))
+      (sol.col(`f1p_${h}`) +
+        sol.col(`f1n_${h}`) +
+        sol.col(`f2p_${h}`) +
+        sol.col(`f2n_${h}`))
   }
 
   return {

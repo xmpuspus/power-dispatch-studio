@@ -53,10 +53,34 @@ export function EnsembleView({
   const rows: DistRow[] = GRIDS.map((g) => ({ grid: g, dist: result!.perGrid[g] }))
   const cols: Column<DistRow>[] = [
     { key: 'grid', header: 'Grid', render: (r) => cap(r.grid) },
-    { key: 'p10', header: 'P10', align: 'right', mono: true, render: (r) => php(r.dist.p10) },
-    { key: 'p50', header: 'Median', align: 'right', mono: true, render: (r) => php(r.dist.p50) },
-    { key: 'p90', header: 'P90', align: 'right', mono: true, render: (r) => php(r.dist.p90) },
-    { key: 'mean', header: 'Mean', align: 'right', mono: true, render: (r) => php(r.dist.mean) },
+    {
+      key: 'p10',
+      header: 'P10',
+      align: 'right',
+      mono: true,
+      render: (r) => php(r.dist.p10),
+    },
+    {
+      key: 'p50',
+      header: 'Median',
+      align: 'right',
+      mono: true,
+      render: (r) => php(r.dist.p50),
+    },
+    {
+      key: 'p90',
+      header: 'P90',
+      align: 'right',
+      mono: true,
+      render: (r) => php(r.dist.p90),
+    },
+    {
+      key: 'mean',
+      header: 'Mean',
+      align: 'right',
+      mono: true,
+      render: (r) => php(r.dist.mean),
+    },
   ]
   const sel = result!.perGrid[grid]
 
@@ -108,7 +132,8 @@ export function EnsembleView({
         <p className="note">
           A scenario ensemble on one observed day, not a forecast. The band is the spread
           across plausible operating states (load, water, fuel, an outage), seeded so a
-          re-run reproduces it. Prices are the day-mean clearing price per grid in PhP/kWh.
+          re-run reproduces it. Prices are the day-mean clearing price per grid in
+          PhP/kWh.
         </p>
       </Panel>
     </div>

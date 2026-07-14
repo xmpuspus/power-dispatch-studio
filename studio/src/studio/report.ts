@@ -129,13 +129,13 @@ ${rows
       capture = `<h2>Capture prices per technology</h2>
 <table><thead><tr><th>Fuel</th><th>Grid</th><th class="n">Generation MWh</th><th class="n">Capture price ₱/kWh</th><th class="n">Capture rate</th></tr></thead><tbody>
 ${rows
-        .map(
-          (r) =>
-            `<tr><td>${esc(r.fuel.replace(/_/g, ' '))}</td><td>${esc(cap(r.grid))}</td>` +
-            `<td class="n">${num(r.gen_mwh)}</td><td class="n">${r.capture_price_php_kwh.toFixed(3)}</td>` +
-            `<td class="n">${r.capture_rate === null ? 'n/a' : r.capture_rate.toFixed(3)}</td></tr>`
-        )
-        .join('')}
+  .map(
+    (r) =>
+      `<tr><td>${esc(r.fuel.replace(/_/g, ' '))}</td><td>${esc(cap(r.grid))}</td>` +
+      `<td class="n">${num(r.gen_mwh)}</td><td class="n">${r.capture_price_php_kwh.toFixed(3)}</td>` +
+      `<td class="n">${r.capture_rate === null ? 'n/a' : r.capture_rate.toFixed(3)}</td></tr>`
+  )
+  .join('')}
 </tbody></table>
 <p class="note">Generation-weighted capture price per technology: sum(generation times price) divided by generation, on each grid's own price. The capture rate is that divided by the run's time-average price, the revenue signal a project or GEA analyst needs. Solar and wind capture below the flat average when they clear mostly in their own cheap hours.</p>`
   }

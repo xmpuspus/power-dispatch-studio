@@ -24,7 +24,9 @@ export function VintageView({ d }: { d: Dispatch }) {
 
   if (meta.loading) return <EmptyNote>Loading the bake record.</EmptyNote>
   if (meta.error || !meta.data)
-    return <EmptyNote>Bake record not found: {meta.error ?? 'meta.json missing'}.</EmptyNote>
+    return (
+      <EmptyNote>Bake record not found: {meta.error ?? 'meta.json missing'}.</EmptyNote>
+    )
 
   const a = d.assumptions
   const hy = a.hydrology
@@ -162,7 +164,9 @@ export function VintageView({ d }: { d: Dispatch }) {
 
       <Panel
         title="Emission factors"
-        subtitle={em.data?.unit ?? 'Operational (combustion) emission factors per technology.'}
+        subtitle={
+          em.data?.unit ?? 'Operational (combustion) emission factors per technology.'
+        }
       >
         {em.loading && <EmptyNote>Loading the emission factors.</EmptyNote>}
         {!em.loading && (!em.data?.available || !em.data.factors) && (
@@ -170,15 +174,18 @@ export function VintageView({ d }: { d: Dispatch }) {
         )}
         {em.data?.factors && (
           <>
-            <DataGrid columns={factorCols} rows={em.data.factors} getKey={(f) => f.fuel} />
+            <DataGrid
+              columns={factorCols}
+              rows={em.data.factors}
+              getKey={(f) => f.fuel}
+            />
             <p className="note">{em.data.note}</p>
             {em.data.ngef && (
               <p className="note">
                 DOE grid factor (cross-check, not an input): Luzon-Visayas{' '}
                 {em.data.ngef.luzon_visayas_tco2_per_mwh.toFixed(3)} tCO2/MWh, Mindanao{' '}
                 {em.data.ngef.mindanao_tco2_per_mwh.toFixed(3)} tCO2/MWh (
-                {em.data.ngef.vintage}).{' '}
-                <Source href={em.data.ngef.src} label="source" />
+                {em.data.ngef.vintage}). <Source href={em.data.ngef.src} label="source" />
               </p>
             )}
           </>

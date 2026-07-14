@@ -35,7 +35,10 @@ export function Rtdoe5View({ grid }: { grid: GridKey }) {
   if (!r5.data?.available || !day)
     return (
       <div className="view">
-        <Panel title="5-minute replay" subtitle="Intraday price volatility on the sample days.">
+        <Panel
+          title="5-minute replay"
+          subtitle="Intraday price volatility on the sample days."
+        >
           <EmptyNote>
             No 5-minute sample days baked yet. Run pipeline/rtdoe5_replay.py and rebake.
           </EmptyNote>
@@ -60,7 +63,9 @@ export function Rtdoe5View({ grid }: { grid: GridKey }) {
     .filter(Boolean)
     .join(' ')
   const hourlyPts = hourly
-    .map((v, h) => (v == null ? null : `${X((h + 0.5) * 12).toFixed(1)},${Y(v).toFixed(1)}`))
+    .map((v, h) =>
+      v == null ? null : `${X((h + 0.5) * 12).toFixed(1)},${Y(v).toFixed(1)}`
+    )
     .filter(Boolean)
     .join(' ')
 
@@ -90,13 +95,25 @@ export function Rtdoe5View({ grid }: { grid: GridKey }) {
       >
         {stats && (
           <div className="stat-row">
-            <StatTile label="Intraday range" value={php(stats.max - stats.min)} hint="min to max" />
+            <StatTile
+              label="Intraday range"
+              value={php(stats.max - stats.min)}
+              hint="min to max"
+            />
             <StatTile label="Peak 5-min" value={php(stats.max)} hint="dearest interval" />
-            <StatTile label="At the offer cap" value={`${stats.atCapPct}%`} hint="scarcity intervals" />
+            <StatTile
+              label="At the offer cap"
+              value={`${stats.atCapPct}%`}
+              hint="scarcity intervals"
+            />
           </div>
         )}
-        <svg viewBox={`0 0 ${W} ${H}`} className="r5chart" role="img"
-             aria-label={`5-minute ${grid} price series for ${day.date}`}>
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="r5chart"
+          role="img"
+          aria-label={`5-minute ${grid} price series for ${day.date}`}
+        >
           <line x1={padL} y1={Y(lo)} x2={W - 8} y2={Y(lo)} className="chart__ax" />
           <text x={padL - 6} y={Y(hi)} textAnchor="end" className="chart__ax">
             ₱{hi.toFixed(0)}
@@ -106,8 +123,12 @@ export function Rtdoe5View({ grid }: { grid: GridKey }) {
           </text>
           <polyline points={linePts} className="r5chart__fine" />
           <polyline points={hourlyPts} className="r5chart__hourly" />
-          <text x={padL} y={H - 6} className="chart__ax">00:00</text>
-          <text x={W - 8} y={H - 6} textAnchor="end" className="chart__ax">24:00</text>
+          <text x={padL} y={H - 6} className="chart__ax">
+            00:00
+          </text>
+          <text x={W - 8} y={H - 6} textAnchor="end" className="chart__ax">
+            24:00
+          </text>
         </svg>
         <p className="note">
           A 5-minute as-bid replay on a sample day, own-stack marginal (not the coupled

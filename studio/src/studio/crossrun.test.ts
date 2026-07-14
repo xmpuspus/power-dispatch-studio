@@ -36,8 +36,17 @@ describe('lever tornado', () => {
 
   it('covers every Quick lever once', () => {
     expect(bars.map((b) => b.lever).sort()).toEqual(
-      ['addCoal', 'addDC', 'addGas', 'addSolar', 'addStorage', 'coalPrice',
-       'hydrology', 'lngSwitch', 'reliefMW'].sort()
+      [
+        'addCoal',
+        'addDC',
+        'addGas',
+        'addSolar',
+        'addStorage',
+        'coalPrice',
+        'hydrology',
+        'lngSwitch',
+        'reliefMW',
+      ].sort()
     )
   })
 

@@ -9,7 +9,12 @@ import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { php, useDemandPath } from '../lib/data'
 import { Panel, EmptyNote } from '../ui/kit'
 import { DataGrid, type Column } from '../ui/DataGrid'
-import { multiYearTrajectory, type PdpPath, type PolicyScenario, type TrajectoryPoint } from './forward'
+import {
+  multiYearTrajectory,
+  type PdpPath,
+  type PolicyScenario,
+  type TrajectoryPoint,
+} from './forward'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 const BASE_YEAR = 2026
@@ -45,8 +50,13 @@ export function MultiYearView({
   if (!paths)
     return (
       <div className="view">
-        <Panel title="Multi-year price path" subtitle="A median price trajectory to 2040.">
-          <EmptyNote>The DOE PDP demand path is unavailable, so the trajectory cannot be built.</EmptyNote>
+        <Panel
+          title="Multi-year price path"
+          subtitle="A median price trajectory to 2040."
+        >
+          <EmptyNote>
+            The DOE PDP demand path is unavailable, so the trajectory cannot be built.
+          </EmptyNote>
         </Panel>
       </div>
     )
@@ -59,7 +69,8 @@ export function MultiYearView({
   const allVals = paths.flatMap((p) => p.map((pt) => pt.median[grid]))
   const lo = Math.min(0, ...allVals)
   const hi = Math.max(1, ...allVals) * 1.05
-  const X = (yr: number) => padL + ((yr - YEARS[0]) / (YEARS[YEARS.length - 1] - YEARS[0])) * (W - padL - 12)
+  const X = (yr: number) =>
+    padL + ((yr - YEARS[0]) / (YEARS[YEARS.length - 1] - YEARS[0])) * (W - padL - 12)
   const Y = (v: number) => padT + (1 - (v - lo) / (hi - lo)) * (H - padT - padB)
 
   const rows = YEARS.map((yr) => ({ year: yr }))
@@ -82,9 +93,17 @@ export function MultiYearView({
       <div className="chrono__controls">
         <label className="chrono__ctl">
           Draws per year
-          <select className="ribbon__select" value={draws}
-                  onChange={(e) => setDraws(Number(e.target.value))} aria-label="Draws per year">
-            {[10, 15, 30].map((n) => <option key={n} value={n}>{n}</option>)}
+          <select
+            className="ribbon__select"
+            value={draws}
+            onChange={(e) => setDraws(Number(e.target.value))}
+            aria-label="Draws per year"
+          >
+            {[10, 15, 30].map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
           </select>
         </label>
       </div>
@@ -100,28 +119,45 @@ export function MultiYearView({
             </span>
           ))}
         </div>
-        <svg viewBox={`0 0 ${W} ${H}`} className="fwdchart" role="img"
-             aria-label={`Multi-year ${grid} price path to 2040`}>
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="fwdchart"
+          role="img"
+          aria-label={`Multi-year ${grid} price path to 2040`}
+        >
           <line x1={padL} y1={Y(lo)} x2={W - 12} y2={Y(lo)} className="chart__ax" />
-          <text x={padL - 6} y={Y(hi)} textAnchor="end" className="chart__ax">₱{hi.toFixed(0)}</text>
-          <text x={padL - 6} y={Y(lo)} textAnchor="end" className="chart__ax">₱{lo.toFixed(0)}</text>
+          <text x={padL - 6} y={Y(hi)} textAnchor="end" className="chart__ax">
+            ₱{hi.toFixed(0)}
+          </text>
+          <text x={padL - 6} y={Y(lo)} textAnchor="end" className="chart__ax">
+            ₱{lo.toFixed(0)}
+          </text>
           {paths.map((p, i) => (
-            <polyline key={i} points={p.map((pt) => `${X(pt.year).toFixed(1)},${Y(pt.median[grid]).toFixed(1)}`).join(' ')}
-                      fill="none" stroke={COLORS[i]} strokeWidth={2} />
+            <polyline
+              key={i}
+              points={p
+                .map((pt) => `${X(pt.year).toFixed(1)},${Y(pt.median[grid]).toFixed(1)}`)
+                .join(' ')}
+              fill="none"
+              stroke={COLORS[i]}
+              strokeWidth={2}
+            />
           ))}
           {YEARS.filter((_, i) => i % 2 === 0).map((yr) => (
-            <text key={yr} x={X(yr)} y={H - 8} textAnchor="middle" className="chart__ax">{yr}</text>
+            <text key={yr} x={X(yr)} y={H - 8} textAnchor="middle" className="chart__ax">
+              {yr}
+            </text>
           ))}
         </svg>
         <DataGrid columns={cols} rows={rows} getKey={(r) => r.year} />
         <p className="note">
           Each line is the median of the same seeded observed-day draws under the DOE PDP
-          load growth. The Malampaya cliff caps Luzon gas fuel energy; the carbon line adds
-          a price per tonne to each fuel's cost. The fleet is held at today's, no new
+          load growth. The Malampaya cliff caps Luzon gas fuel energy; the carbon line
+          adds a price per tonne to each fuel's cost. The fleet is held at today's, no new
           builds, so the lines flatten at the offer cap once the PDP load outgrows the
-          current fleet: that saturation is itself the signal that expansion is needed. One
-          regime and not a forecast: it is the trajectory observed days imply under the load
-          path and each policy, the question a long PSA or an NDC pathway asks.
+          current fleet: that saturation is itself the signal that expansion is needed.
+          One regime and not a forecast: it is the trajectory observed days imply under
+          the load path and each policy, the question a long PSA or an NDC pathway asks.
         </p>
       </Panel>
     </div>

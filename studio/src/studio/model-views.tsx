@@ -78,7 +78,11 @@ export function PropertiesGrid({
                       step={s.dp === 2 ? 0.01 : 1}
                       value={value}
                       aria-label={`${r.label} ${s.label}${isImported ? ', user-supplied' : ''}`}
-                      title={isImported ? 'user-supplied value from your CSV import' : undefined}
+                      title={
+                        isImported
+                          ? 'user-supplied value from your CSV import'
+                          : undefined
+                      }
                       onChange={(e) => onEdit(cls, r.id, s.key, Number(e.target.value))}
                     />
                     {overridden && (

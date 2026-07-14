@@ -139,7 +139,8 @@ export function ScenarioView({
       if (!factor) continue
       const delta = carbonCostDelta(cp, factor)
       const base = f.props.cost as number
-      if (delta > 0) onEdit('fuel', f.id, 'cost', Math.round((base + delta) * 1000) / 1000)
+      if (delta > 0)
+        onEdit('fuel', f.id, 'cost', Math.round((base + delta) * 1000) / 1000)
       else onRevert('fuel', f.id, 'cost')
     }
   }
@@ -333,9 +334,10 @@ export function ScenarioView({
               <div className="byo">
                 <div className="byo__head">Bring your own data</div>
                 <p className="note">
-                  Load a CSV of your own unit parameters (dependable MW, fuel price, forced
-                  outage), region load, or corridor limits. It stays in this browser and is
-                  never uploaded. Imported values are labeled user-supplied everywhere.
+                  Load a CSV of your own unit parameters (dependable MW, fuel price,
+                  forced outage), region load, or corridor limits. It stays in this
+                  browser and is never uploaded. Imported values are labeled user-supplied
+                  everywhere.
                 </p>
                 <div className="byo__actions">
                   <label className="btn btn--ghost btn--sm">
@@ -353,7 +355,10 @@ export function ScenarioView({
                   <button
                     className="btn btn--ghost btn--sm"
                     onClick={() =>
-                      downloadCsv('power-dispatch-import-template.csv', buildTemplateCsv())
+                      downloadCsv(
+                        'power-dispatch-import-template.csv',
+                        buildTemplateCsv()
+                      )
                     }
                   >
                     Download template
@@ -367,8 +372,9 @@ export function ScenarioView({
                 </div>
                 {importMsg && <p className="byo__msg note">{importMsg}</p>}
                 <p className="note">
-                  Full hourly load shapes and hydro inflow series are consumed by the baked
-                  chronology, not these per-object overrides, so they are out of this import.
+                  Full hourly load shapes and hydro inflow series are consumed by the
+                  baked chronology, not these per-object overrides, so they are out of
+                  this import.
                 </p>
               </div>
             )}

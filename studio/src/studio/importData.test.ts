@@ -43,16 +43,25 @@ const OBJECTS: Record<ClassId, ObjRow[]> = {
 
 describe('parseImportCsv round-trip', () => {
   it('resolves a bare unit name to the real grid-prefixed generator id', () => {
-    const csv = ['id,class,dependable_mw,fuel_price_php_kwh', 'CALACA U1,generator,650,2.30'].join(
-      '\n'
-    )
+    const csv = [
+      'id,class,dependable_mw,fuel_price_php_kwh',
+      'CALACA U1,generator,650,2.30',
+    ].join('\n')
     const r = parseImportCsv(csv, OBJECTS)
     expect(r.warnings).toEqual([])
     expect(r.matched).toBe(2)
-    expect(r.overrides[overrideKey('generator', 'luzon:CALACA U1', 'capacity_mw')]).toBe(650)
-    expect(r.overrides[overrideKey('generator', 'luzon:CALACA U1', 'marginal_cost')]).toBe(2.3)
-    expect(r.importedKeys).toContain(overrideKey('generator', 'luzon:CALACA U1', 'capacity_mw'))
-    expect(r.importedKeys).toContain(overrideKey('generator', 'luzon:CALACA U1', 'marginal_cost'))
+    expect(r.overrides[overrideKey('generator', 'luzon:CALACA U1', 'capacity_mw')]).toBe(
+      650
+    )
+    expect(
+      r.overrides[overrideKey('generator', 'luzon:CALACA U1', 'marginal_cost')]
+    ).toBe(2.3)
+    expect(r.importedKeys).toContain(
+      overrideKey('generator', 'luzon:CALACA U1', 'capacity_mw')
+    )
+    expect(r.importedKeys).toContain(
+      overrideKey('generator', 'luzon:CALACA U1', 'marginal_cost')
+    )
   })
 
   it('round-trips a multi-class CSV to the expected overrides and importedKeys', () => {
@@ -112,7 +121,9 @@ describe('unmatched ids', () => {
     const r = parseImportCsv(csv, OBJECTS)
     expect(r.matched).toBe(1)
     expect(r.skipped).toEqual(['GHOST PLANT'])
-    expect(r.overrides[overrideKey('generator', 'luzon:CALACA U1', 'capacity_mw')]).toBe(650)
+    expect(r.overrides[overrideKey('generator', 'luzon:CALACA U1', 'capacity_mw')]).toBe(
+      650
+    )
   })
 })
 
@@ -125,8 +136,12 @@ describe('non-numeric cells', () => {
     expect(() => parseImportCsv(csv, OBJECTS)).not.toThrow()
     const r = parseImportCsv(csv, OBJECTS)
     expect(r.warnings.some((w) => w.includes('not-a-number'))).toBe(true)
-    expect(r.overrides[overrideKey('generator', 'luzon:CALACA U1', 'capacity_mw')]).toBeUndefined()
-    expect(r.overrides[overrideKey('generator', 'luzon:CALACA U1', 'marginal_cost')]).toBe(2.3)
+    expect(
+      r.overrides[overrideKey('generator', 'luzon:CALACA U1', 'capacity_mw')]
+    ).toBeUndefined()
+    expect(
+      r.overrides[overrideKey('generator', 'luzon:CALACA U1', 'marginal_cost')]
+    ).toBe(2.3)
     expect(r.matched).toBe(1)
   })
 
@@ -163,10 +178,7 @@ describe('class hint disambiguation', () => {
   it('restricts a row to columns matching its declared class', () => {
     // a fuel row that also happens to carry a generator-only column: the hint
     // means the generator column is ignored for this row, not misapplied.
-    const csv = [
-      'id,class,fuel_price,dependable_mw',
-      'coal,fuel,2.60,900',
-    ].join('\n')
+    const csv = ['id,class,fuel_price,dependable_mw', 'coal,fuel,2.60,900'].join('\n')
     const r = parseImportCsv(csv, OBJECTS)
     expect(r.overrides[overrideKey('fuel', 'coal', 'cost')]).toBe(2.6)
     expect(Object.keys(r.overrides)).toHaveLength(1)

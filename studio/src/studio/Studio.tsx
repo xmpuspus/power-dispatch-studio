@@ -266,7 +266,11 @@ export function Studio({
         if (i !== ai) return s
         const o = { ...s.overrides }
         delete o[k]
-        return { ...s, overrides: o, importedKeys: (s.importedKeys ?? []).filter((x) => x !== k) }
+        return {
+          ...s,
+          overrides: o,
+          importedKeys: (s.importedKeys ?? []).filter((x) => x !== k),
+        }
       })
     )
     setDirty(true)
@@ -280,7 +284,9 @@ export function Studio({
             ? {
                 ...s,
                 overrides: { ...s.overrides, ...res.overrides },
-                importedKeys: [...new Set([...(s.importedKeys ?? []), ...res.importedKeys])],
+                importedKeys: [
+                  ...new Set([...(s.importedKeys ?? []), ...res.importedKeys]),
+                ],
               }
             : s
         )
@@ -418,7 +424,10 @@ export function Studio({
         <span>
           Scenario <b>{active.name}</b>, {editCount} edit{editCount === 1 ? '' : 's'}
           {active.importedKeys && active.importedKeys.length > 0 && (
-            <span className="statuschip statuschip--user" title="Your own CSV inputs, never uploaded">
+            <span
+              className="statuschip statuschip--user"
+              title="Your own CSV inputs, never uploaded"
+            >
               {' '}
               user-supplied data ({active.importedKeys.length})
             </span>

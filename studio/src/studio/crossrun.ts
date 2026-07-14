@@ -24,24 +24,78 @@ type Sweep = {
 }
 
 const SWEEPS: Sweep[] = [
-  { key: 'addDC', label: 'Add a data center', step: '+1500 MW',
-    apply: (lv) => { lv.addDC = 1500 } },
-  { key: 'addSolar', label: 'Add solar', step: '+1000 MW',
-    apply: (lv) => { lv.addSolar = 1000 } },
-  { key: 'addGas', label: 'Add gas', step: '+1000 MW',
-    apply: (lv) => { lv.addGas = 1000 } },
-  { key: 'addCoal', label: 'Add coal', step: '+1000 MW',
-    apply: (lv) => { lv.addCoal = 1000 } },
-  { key: 'addStorage', label: 'Discharge storage', step: '+500 MW',
-    apply: (lv) => { lv.addStorage = 500 } },
-  { key: 'coalPrice', label: 'Coal price', step: '+2 PhP/kWh',
-    apply: (lv, d) => { lv.coalPrice = d.assumptions.fuel_marginal_cost_php_kwh.coal + 2 } },
-  { key: 'reliefMW', label: 'Relieve the corridor', step: '+250 MW',
-    apply: (lv) => { lv.reliefMW = 250 } },
-  { key: 'hydrology', label: 'Dry hydrology', step: 'x0.5',
-    apply: (lv) => { lv.hydrology = 0.5 } },
-  { key: 'lngSwitch', label: 'Switch gas to LNG', step: 'on',
-    apply: (lv) => { lv.lngSwitch = true } },
+  {
+    key: 'addDC',
+    label: 'Add a data center',
+    step: '+1500 MW',
+    apply: (lv) => {
+      lv.addDC = 1500
+    },
+  },
+  {
+    key: 'addSolar',
+    label: 'Add solar',
+    step: '+1000 MW',
+    apply: (lv) => {
+      lv.addSolar = 1000
+    },
+  },
+  {
+    key: 'addGas',
+    label: 'Add gas',
+    step: '+1000 MW',
+    apply: (lv) => {
+      lv.addGas = 1000
+    },
+  },
+  {
+    key: 'addCoal',
+    label: 'Add coal',
+    step: '+1000 MW',
+    apply: (lv) => {
+      lv.addCoal = 1000
+    },
+  },
+  {
+    key: 'addStorage',
+    label: 'Discharge storage',
+    step: '+500 MW',
+    apply: (lv) => {
+      lv.addStorage = 500
+    },
+  },
+  {
+    key: 'coalPrice',
+    label: 'Coal price',
+    step: '+2 PhP/kWh',
+    apply: (lv, d) => {
+      lv.coalPrice = d.assumptions.fuel_marginal_cost_php_kwh.coal + 2
+    },
+  },
+  {
+    key: 'reliefMW',
+    label: 'Relieve the corridor',
+    step: '+250 MW',
+    apply: (lv) => {
+      lv.reliefMW = 250
+    },
+  },
+  {
+    key: 'hydrology',
+    label: 'Dry hydrology',
+    step: 'x0.5',
+    apply: (lv) => {
+      lv.hydrology = 0.5
+    },
+  },
+  {
+    key: 'lngSwitch',
+    label: 'Switch gas to LNG',
+    step: 'on',
+    apply: (lv) => {
+      lv.lngSwitch = true
+    },
+  },
 ]
 
 /** The one-at-a-time lever tornado for a base scenario on a grid: each lever's

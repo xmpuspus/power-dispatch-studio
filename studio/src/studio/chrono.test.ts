@@ -89,7 +89,8 @@ describe('chronological golden parity vs the Python chrono engine', () => {
 })
 
 describe('native 168h week parity vs the Python week engine', () => {
-  const w = profiles.chrono_golden.week
+  // the data pin guarantees the week block is baked (>= 7 full-coverage days)
+  const w = profiles.chrono_golden.week!
   const tolP = profiles.chrono_golden.tolerance_php_kwh ?? 0.02
   const tolMW = profiles.chrono_golden.tolerance_mw ?? 1.0
 
@@ -146,7 +147,8 @@ describe('native 168h week parity vs the Python week engine', () => {
     // and at flat observed prices the battery never cycles (zero saving)
     const obsWeek = runWeek(d, profiles, dates, battery)
     const obsDaily = dates.reduce(
-      (s: number, dt: string) => s + runWeek(d, profiles, [dt], battery).summary.physicalCost,
+      (s: number, dt: string) =>
+        s + runWeek(d, profiles, [dt], battery).summary.physicalCost,
       0
     )
     expect(obsDaily - obsWeek.summary.physicalCost).toBeGreaterThanOrEqual(-0.5)
@@ -159,7 +161,8 @@ describe('native 168h week parity vs the Python week engine', () => {
     }
     const waveWeek = runWeek(d, profiles, dates, wave)
     const waveDaily = dates.reduce(
-      (s: number, dt: string) => s + runWeek(d, profiles, [dt], wave).summary.physicalCost,
+      (s: number, dt: string) =>
+        s + runWeek(d, profiles, [dt], wave).summary.physicalCost,
       0
     )
     expect(waveDaily - waveWeek.summary.physicalCost).toBeGreaterThan(1000)

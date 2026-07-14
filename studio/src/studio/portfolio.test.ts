@@ -22,9 +22,18 @@ const hour = (over: Partial<ChronoHour>): ChronoHour => ({
 describe('valuePortfolio', () => {
   it('scales generation by share, prices it at spot, and settles the PSA slice against a hand-computed fixture', () => {
     const hours = [
-      hour({ fuelGen: { luzon: { coal: 1000 }, visayas: {}, mindanao: {} }, price: { luzon: 5, visayas: 6, mindanao: 6 } }),
-      hour({ fuelGen: { luzon: { coal: 2000 }, visayas: {}, mindanao: {} }, price: { luzon: 8, visayas: 6, mindanao: 6 } }),
-      hour({ fuelGen: { luzon: { coal: 500 }, visayas: {}, mindanao: {} }, price: { luzon: 3, visayas: 6, mindanao: 6 } }),
+      hour({
+        fuelGen: { luzon: { coal: 1000 }, visayas: {}, mindanao: {} },
+        price: { luzon: 5, visayas: 6, mindanao: 6 },
+      }),
+      hour({
+        fuelGen: { luzon: { coal: 2000 }, visayas: {}, mindanao: {} },
+        price: { luzon: 8, visayas: 6, mindanao: 6 },
+      }),
+      hour({
+        fuelGen: { luzon: { coal: 500 }, visayas: {}, mindanao: {} },
+        price: { luzon: 3, visayas: 6, mindanao: 6 },
+      }),
     ]
     const spec: PortfolioSpec = {
       grid: 'luzon',
@@ -74,9 +83,18 @@ describe('valuePortfolio', () => {
 
   it('caps the contracted volume at generation when the contract exceeds it', () => {
     const hours = [
-      hour({ fuelGen: { luzon: { coal: 1000 }, visayas: {}, mindanao: {} }, price: { luzon: 5, visayas: 6, mindanao: 6 } }),
-      hour({ fuelGen: { luzon: { coal: 2000 }, visayas: {}, mindanao: {} }, price: { luzon: 8, visayas: 6, mindanao: 6 } }),
-      hour({ fuelGen: { luzon: { coal: 500 }, visayas: {}, mindanao: {} }, price: { luzon: 3, visayas: 6, mindanao: 6 } }),
+      hour({
+        fuelGen: { luzon: { coal: 1000 }, visayas: {}, mindanao: {} },
+        price: { luzon: 5, visayas: 6, mindanao: 6 },
+      }),
+      hour({
+        fuelGen: { luzon: { coal: 2000 }, visayas: {}, mindanao: {} },
+        price: { luzon: 8, visayas: 6, mindanao: 6 },
+      }),
+      hour({
+        fuelGen: { luzon: { coal: 500 }, visayas: {}, mindanao: {} },
+        price: { luzon: 3, visayas: 6, mindanao: 6 },
+      }),
     ]
     const spec: PortfolioSpec = {
       grid: 'luzon',
@@ -97,7 +115,10 @@ describe('valuePortfolio', () => {
 
   it('an hour with no dispatch from the chosen fuel contributes zero generation', () => {
     const hours = [
-      hour({ fuelGen: { luzon: { coal: 1000 }, visayas: {}, mindanao: {} }, price: { luzon: 5, visayas: 6, mindanao: 6 } }),
+      hour({
+        fuelGen: { luzon: { coal: 1000 }, visayas: {}, mindanao: {} },
+        price: { luzon: 5, visayas: 6, mindanao: 6 },
+      }),
       hour({
         fuelGen: { luzon: { natural_gas: 500 }, visayas: {}, mindanao: {} },
         price: { luzon: 9, visayas: 6, mindanao: 6 },
@@ -122,9 +143,18 @@ describe('valuePortfolio', () => {
 describe('exposureDurationCurve', () => {
   it('pairs the uncontracted MWh with spot price and sorts dearest spot first', () => {
     const hours = [
-      hour({ fuelGen: { luzon: { coal: 100 }, visayas: {}, mindanao: {} }, price: { luzon: 3, visayas: 6, mindanao: 6 } }),
-      hour({ fuelGen: { luzon: { coal: 400 }, visayas: {}, mindanao: {} }, price: { luzon: 9, visayas: 6, mindanao: 6 } }),
-      hour({ fuelGen: { luzon: { coal: 300 }, visayas: {}, mindanao: {} }, price: { luzon: 6, visayas: 6, mindanao: 6 } }),
+      hour({
+        fuelGen: { luzon: { coal: 100 }, visayas: {}, mindanao: {} },
+        price: { luzon: 3, visayas: 6, mindanao: 6 },
+      }),
+      hour({
+        fuelGen: { luzon: { coal: 400 }, visayas: {}, mindanao: {} },
+        price: { luzon: 9, visayas: 6, mindanao: 6 },
+      }),
+      hour({
+        fuelGen: { luzon: { coal: 300 }, visayas: {}, mindanao: {} },
+        price: { luzon: 6, visayas: 6, mindanao: 6 },
+      }),
     ]
     const spec: PortfolioSpec = {
       grid: 'luzon',
@@ -143,7 +173,10 @@ describe('exposureDurationCurve', () => {
 
   it('never reports negative exposure when the contract exceeds generation', () => {
     const hours = [
-      hour({ fuelGen: { luzon: { coal: 100 }, visayas: {}, mindanao: {} }, price: { luzon: 5, visayas: 6, mindanao: 6 } }),
+      hour({
+        fuelGen: { luzon: { coal: 100 }, visayas: {}, mindanao: {} },
+        price: { luzon: 5, visayas: 6, mindanao: 6 },
+      }),
     ]
     const spec: PortfolioSpec = {
       grid: 'luzon',

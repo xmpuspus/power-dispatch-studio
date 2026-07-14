@@ -14,13 +14,7 @@ import type { SavedRun } from './runs'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 
-export function CaptureView({
-  runsList,
-  grid,
-}: {
-  runsList: SavedRun[]
-  grid: GridKey
-}) {
+export function CaptureView({ runsList, grid }: { runsList: SavedRun[]; grid: GridKey }) {
   const [runId, setRunId] = useState('')
   const withHours = runsList.filter((r) => r.hours.length > 0)
   const run = withHours.find((r) => r.id === runId) ?? withHours[0]
