@@ -9,3 +9,5 @@ tmp/
 .vercel_out/
 .vercel/
 .vercel
+dist/
+*.egg-info/

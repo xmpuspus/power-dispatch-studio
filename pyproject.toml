@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "power-dispatch-studio"
+dynamic = ["version"]
+description = "The PH WESM dispatch engine behind Power Dispatch Studio: an observed-day LP replay with scenario overrides, as an importable module and CLI."
+readme = "src/power_dispatch/README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Xavier Puspus" }]
+keywords = ["WESM", "philippines", "electricity", "dispatch", "energy-market", "IEMOP", "linear-programming"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+    "Intended Audience :: Science/Research",
+]
+dependencies = ["highspy>=1.7"]
+
+[project.urls]
+Homepage = "https://power-dispatch-studio.vercel.app"
+Source = "https://github.com/xmpuspus/power-dispatch-studio"
+
+[project.scripts]
+power-dispatch = "power_dispatch.cli:main"
+
+[tool.hatch.version]
+path = "src/power_dispatch/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/power_dispatch"]
+artifacts = ["src/power_dispatch/data/**"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/power_dispatch",
+    "LICENSE",
+    "README.md",
+]
