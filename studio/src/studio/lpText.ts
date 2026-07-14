@@ -61,7 +61,8 @@ export function buildDayLp(
   storage: LpStorage[],
   reserveReq: Record<GridKey, number> | null,
   voll: number,
-  hydroBudget: Partial<Record<GridKey, number | null>> | null = null
+  hydroBudget: Partial<Record<GridKey, number | null>> | null = null,
+  gasBudget: Partial<Record<GridKey, number | null>> | null = null
 ): string {
   const H = demand.luzon.length
   const wheelM = micro(wheel)
@@ -211,6 +212,25 @@ export function buildDayLp(
       }
       if (!terms.length) continue
       rows.push(` hyd_${s}:` + terms.join('') + ` <= ${mtext(micro(budget))}`)
+    }
+  }
+
+  // gas is energy-limited by the day's fuel supply (the Malampaya budget): the
+  // sum of natural-gas dispatch across the hours may not exceed the budget.
+  // Same structure as the hydro water budget; off unless a scenario sets it
+  if (gasBudget) {
+    for (const g of LP_GRID_KEYS) {
+      const budget = gasBudget[g]
+      if (budget == null) continue
+      const s = G_SHORT[g]
+      const terms: string[] = []
+      for (let h = 0; h < H; h++) {
+        stacks[g][h].forEach((b, i) => {
+          if (b.fuel === 'natural_gas') terms.push(` + x_${s}_${h}_${i}`)
+        })
+      }
+      if (!terms.length) continue
+      rows.push(` gas_${s}:` + terms.join('') + ` <= ${mtext(micro(budget))}`)
     }
   }
 

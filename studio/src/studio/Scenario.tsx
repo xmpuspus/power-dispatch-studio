@@ -11,8 +11,12 @@ import {
   CARBON_DISCLAIMER,
   CARBON_FUEL_ID,
   CARBON_PROP,
+  GAS_FUEL_ID,
+  GAS_PROP,
+  GAS_SOURCE_NOTE,
   carbonCostDelta,
   carbonPriceOf,
+  gasSupplyPctOf,
   type ClassId,
   type ObjRow,
   type Overrides,
@@ -115,6 +119,13 @@ export function ScenarioView({
   const carbonRows = objects.fuel
     .map((f) => ({ fuel: f.id, delta: carbonCostDelta(carbonPrice, factors[f.id]) }))
     .filter((r) => r.delta > 0)
+  const gasSupplyPct = gasSupplyPctOf(overrides)
+  const setGasSupply = (v: number) => {
+    const p = Math.round(v)
+    if (p < 100) onEdit('fuel', GAS_FUEL_ID, GAS_PROP, p)
+    else onRevert('fuel', GAS_FUEL_ID, GAS_PROP)
+  }
+
   const setCarbonPrice = (v: number) => {
     const cp = Math.max(0, Math.round(v))
     if (cp > 0) onEdit('fuel', CARBON_FUEL_ID, CARBON_PROP, cp)
@@ -305,6 +316,16 @@ export function ScenarioView({
                 .
               </p>
             )}
+            <Slider
+              label="Malampaya gas supply"
+              value={gasSupplyPct}
+              min={0}
+              max={100}
+              step={5}
+              fmt={(v) => `${v}%`}
+              tick={`${GAS_SOURCE_NOTE}. Caps the gas fleet's daily energy to this percent of its flat-out day, a fuel budget applied in the chronology (the Malampaya supply cliff what-if).`}
+              onChange={setGasSupply}
+            />
             <button className="btn btn--ghost lever__reset" onClick={resetLevers}>
               Reset levers
             </button>

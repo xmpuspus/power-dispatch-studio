@@ -406,6 +406,9 @@ def build_chrono_golden(dispatch: dict, profiles: dict) -> dict:
         # fallback semantics) across both engines
         {"label": "reserve withheld at the day's scheduled requirement",
          "opts": {"reserve_deduction": True}},
+        # pins the day-level gas fuel-energy budget (Malampaya) across engines
+        {"label": "Malampaya gas budget on Luzon",
+         "opts": {"gas_budget": {"luzon": 40000}}},
     ]
     # pin the OFFER-MODE replay when the default day has a derived book:
     # the stored input carries only the marker; both engines load the same

@@ -298,6 +298,9 @@ export function chronoOptsFrom(
     }))
     .filter((s) => s.power_mw > 0 && s.energy_mwh > 0)
   if (storage.length) opts.storage = storage
+
+  const gasMwh = gasBudgetMwh(objects, ov)
+  if (gasMwh != null) opts.gas_budget = { luzon: gasMwh }
   return opts
 }
 
@@ -353,6 +356,42 @@ export function carbonCostDelta(
 ): number {
   if (carbonPricePhpPerTco2 <= 0 || !tco2PerMwh) return 0
   return Math.round(((carbonPricePhpPerTco2 * tco2PerMwh) / 1000) * 1000) / 1000
+}
+
+// ---- Malampaya gas supply lever: gas as a daily fuel-energy budget ------------
+//
+// The Leyte-Luzon gas fleet burns Malampaya gas (429 MMscfd at full field, DOE;
+// commercial depletion expected around 2027). This lever caps the gas fleet's
+// daily ENERGY as a percent of its flat-out day, modeling the supply cliff. It
+// flows through opts.gas_budget, a day-level constraint both engines build
+// (lp_model.build_day_lp, lpText.buildDayLp), pinned by a golden case.
+export const GAS_FUEL_ID = '__gas_supply__'
+export const GAS_PROP = 'malampaya_supply_pct'
+export const GAS_SOURCE_NOTE = 'Malampaya gas: 429 MMscfd at full field (DOE), depletion expected around 2027'
+
+/** The Malampaya gas supply percent a scenario carries (100 = flat out, no
+ * fuel limit). */
+export function gasSupplyPctOf(ov: Overrides): number {
+  return ov[overrideKey('fuel', GAS_FUEL_ID, GAS_PROP)] ?? 100
+}
+
+/** The run-label suffix a gas-supply cut adds, or null when it is off. */
+export function gasRunSuffix(ov: Overrides): string | null {
+  const p = gasSupplyPctOf(ov)
+  return p < 100 ? `Malampaya ${p}%` : null
+}
+
+/** The Luzon gas daily energy budget MWh at a supply percent, from the gas
+ * fleet's Luzon availability (its flat-out day). Null when the lever is off. */
+export function gasBudgetMwh(
+  objects: Record<ClassId, ObjRow[]>,
+  ov: Overrides
+): number | null {
+  const pct = gasSupplyPctOf(ov)
+  if (pct >= 100) return null
+  const gas = objects.fuel.find((f) => f.id === 'natural_gas')
+  const luzonMw = (gas?.props.luzon_mw as number) ?? 0
+  return Math.round(luzonMw * 24 * (pct / 100))
 }
 
 export interface N1Solved {
