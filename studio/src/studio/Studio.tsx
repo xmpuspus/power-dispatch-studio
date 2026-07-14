@@ -17,6 +17,7 @@ import { PasaView } from './PasaView'
 import { EmissionsView } from './EmissionsView'
 import { CaptureView } from './CaptureView'
 import { VintageView } from './VintageView'
+import { PortfolioView } from './PortfolioView'
 import { decodeShare, loadRuns, type SavedRun } from './runs'
 import {
   CLASSES,
@@ -59,6 +60,7 @@ type AnalysisId =
   | 'backcast'
   | 'emissions'
   | 'capture'
+  | 'portfolio'
   | 'vintage'
 type PhaseId = 'lt' | 'pasa'
 type Nav =
@@ -89,6 +91,7 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   market: 'Market power',
   emissions: 'Emissions',
   capture: 'Capture prices',
+  portfolio: 'Portfolio',
   vintage: 'Assumptions',
 }
 const PHASE_LABEL: Record<PhaseId, string> = {
@@ -791,6 +794,7 @@ function DataPane({
     if (nav.id === 'reserve') return <ReserveView d={d} grid={grid} />
     if (nav.id === 'bill') return <BillView />
     if (nav.id === 'capture') return <CaptureView runsList={runsList} grid={grid} />
+    if (nav.id === 'portfolio') return <PortfolioView runsList={runsList} d={d} />
     if (nav.id === 'vintage') return <VintageView d={d} />
     return <MarketPowerView d={d} />
   }
