@@ -868,18 +868,22 @@ def main() -> int:
                             build_drivers, build_flow_record,
                             build_gwap_trigger, build_not_offered,
                             build_outlook, build_price_setters,
-                            build_reserve_prices, build_reserve_registration,
-                            build_reserve_results, build_reserve_validation,
+                            build_reserve_aware, build_reserve_prices,
+                            build_reserve_registration, build_reserve_results,
+                            build_reserve_validation,
                             build_security_limits, build_settlement_side,
                             build_admin_dispatch, build_so_instructions,
                             build_solar_wind_observed)
 
     advisories = build_advisories()
     reserve_prices = build_reserve_prices()
+    reserve_validation = build_reserve_validation()
     market_ops = {
         "price_setters": build_price_setters(fleet),
         "reserve_prices": reserve_prices,
-        "reserve_validation": build_reserve_validation(),
+        "reserve_validation": reserve_validation,
+        "reserve_aware": build_reserve_aware(reserve_validation, reserve_prices,
+                                             prices),
         "reserve_results": build_reserve_results(),
         "reserve_registration": build_reserve_registration(),
         "settlement_side": build_settlement_side(),

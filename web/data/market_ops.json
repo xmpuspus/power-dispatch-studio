@@ -1745,6 +1745,35 @@
   "src_obs": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
+ "reserve_aware": {
+  "available": true,
+  "by_grid": {
+   "luzon": {
+    "energy_php_kwh": 7.047,
+    "reserve_offer_clear_php_kwh": 3.935,
+    "reserve_scarcity_wedge_php_kwh": 2.73,
+    "reserve_total_php_kwh": 6.665,
+    "reserve_aware_php_kwh": 13.712
+   },
+   "visayas": {
+    "energy_php_kwh": 10.766,
+    "reserve_offer_clear_php_kwh": 6.433,
+    "reserve_scarcity_wedge_php_kwh": 4.685,
+    "reserve_total_php_kwh": 11.118,
+    "reserve_aware_php_kwh": 21.884
+   },
+   "mindanao": {
+    "energy_php_kwh": 9.756,
+    "reserve_offer_clear_php_kwh": 6.745,
+    "reserve_scarcity_wedge_php_kwh": 2.378,
+    "reserve_total_php_kwh": 9.123,
+    "reserve_aware_php_kwh": 18.879
+   }
+  },
+  "note": "The reserve-aware price is the energy price plus the reserve price. The reserve price splits into what the reserve offer stack itself clears (the pool-level joint clear, which reproduces the official RSVPR on requirement-met hours) and the administered scarcity wedge on short hours (observed minus modeled), an empirical adder that is not in the public offers. The wedge is reported here, not tuned away: capacity holding reserve cannot also sell energy, and scarce hours price on an administered curve the offers do not carry.",
+  "src": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
  "reserve_results": {
   "available": true,
   "days": 76,

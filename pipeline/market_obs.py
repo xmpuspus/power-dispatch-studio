@@ -1269,6 +1269,60 @@ def hvdc_binding_caps() -> dict[str, dict[str, list[float]]]:
     return out
 
 
+def build_reserve_aware(reserve_validation: dict, reserve_prices: dict,
+                        prices: dict) -> dict:
+    """The co-optimized reserve-aware price per grid (roadmap item 4): the
+    energy price plus the reserve price, split into the part the offer stack
+    prices (the pool-level joint clear that reproduces RSVPR on requirement-met
+    hours) and the administered scarcity wedge (observed minus modeled, the
+    empirical adder on short hours that is not in the public offers). The wedge
+    stays reported, not hidden: this is the honest partial, energy plus the
+    reserve stack clear, with the scarcity uplift labeled."""
+    pv = reserve_validation.get("pools") or {}
+    grids = {}
+    for g in ("luzon", "visayas", "mindanao"):
+        pools = pv.get(g) or {}
+        if not pools:
+            continue
+        # requirement-weighted-ish mean across the reserve commodities
+        obs = [p["observed_mean_php_kwh"] for p in pools.values()
+               if p.get("observed_mean_php_kwh") is not None]
+        mod = [p["modeled_mean_php_kwh"] for p in pools.values()
+               if p.get("modeled_mean_php_kwh") is not None]
+        if not obs or not mod:
+            continue
+        series = prices.get("series", {}).get(g) or []
+        clean = [x for x in series if x is not None]
+        energy = round(sum(clean) / len(clean), 3) if clean else None
+        r_obs = round(sum(obs) / len(obs), 3)
+        r_mod = round(sum(mod) / len(mod), 3)
+        wedge = round(r_obs - r_mod, 3)
+        grids[g] = {
+            "energy_php_kwh": energy,
+            "reserve_offer_clear_php_kwh": r_mod,
+            "reserve_scarcity_wedge_php_kwh": wedge,
+            "reserve_total_php_kwh": r_obs,
+            "reserve_aware_php_kwh": (round(energy + r_obs, 3)
+                                      if energy is not None else None),
+        }
+    return {
+        "available": bool(grids),
+        "by_grid": grids,
+        "note": ("The reserve-aware price is the energy price plus the reserve "
+                 "price. The reserve price splits into what the reserve offer "
+                 "stack itself clears (the pool-level joint clear, which "
+                 "reproduces the official RSVPR on requirement-met hours) and "
+                 "the administered scarcity wedge on short hours (observed "
+                 "minus modeled), an empirical adder that is not in the public "
+                 "offers. The wedge is reported here, not tuned away: capacity "
+                 "holding reserve cannot also sell energy, and scarce hours "
+                 "price on an administered curve the offers do not carry."),
+        "src": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
+
+
 def build_corridor_cap_probe() -> dict:
     """The RTDHS corridor-cap experiment (roadmap item 7): feeding the
     operator's own binding-schedule caps into the LP lowers Luzon price MAE a

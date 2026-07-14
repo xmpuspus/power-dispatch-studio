@@ -334,6 +334,7 @@ export interface Reserve {
 // observed market operations (market_ops.json); only the sections the studio
 // renders are typed strictly
 export interface MarketOps {
+  reserve_aware?: { available: boolean; by_grid?: Record<string, { energy_php_kwh: number; reserve_offer_clear_php_kwh: number; reserve_scarcity_wedge_php_kwh: number; reserve_aware_php_kwh: number }>; note?: string }
   price_setters?: {
     available: boolean
     days?: number

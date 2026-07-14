@@ -239,7 +239,40 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
 
       <OfficialReservePrices grid={grid} />
       <ReserveValidation grid={grid} />
+      <ReserveAware grid={grid} />
     </div>
+  )
+}
+
+/** The co-optimized reserve-aware price (item 4): energy plus reserve, split
+ * into the pool-level joint clear (reproduces RSVPR on met hours) and the
+ * administered scarcity wedge on short hours. The wedge stays reported. */
+function ReserveAware({ grid }: { grid: GridKey }) {
+  const mo = useMarketOps()
+  const ra = mo.data?.reserve_aware
+  const v = ra?.by_grid?.[grid]
+  if (!ra?.available || !v) return null
+  return (
+    <Panel
+      title={`Reserve-aware price on ${cap(grid)}`}
+      subtitle="Energy plus the reserve price, co-optimized. Capacity holding reserve cannot also sell energy."
+    >
+      <div className="stat-row">
+        <StatTile label="Energy" value={php(v.energy_php_kwh)} hint="observed mean" />
+        <StatTile label="Reserve, offer clear" value={php(v.reserve_offer_clear_php_kwh)}
+                  hint="pool joint clear, met hours" />
+        <StatTile label="Scarcity wedge" value={php(v.reserve_scarcity_wedge_php_kwh)}
+                  hint="administered, short hours" />
+        <StatTile label="Reserve-aware" value={php(v.reserve_aware_php_kwh)} hint="energy + reserve" tone="accent" />
+      </div>
+      <p className="note">
+        The reserve price splits into what the offer stack itself clears, a pool-level joint
+        clear that reproduces the official RSVPR on requirement-met hours, and the
+        administered scarcity wedge on short hours, an empirical adder that is not in the
+        public offers. The wedge is reported, not tuned away: scarce hours price reserve on a
+        curve the offers do not carry. {ra.note ? '' : ''}
+      </p>
+    </Panel>
   )
 }
 
