@@ -705,14 +705,25 @@ def build_offer_backcast(profiles: dict) -> dict:
     }
 
 
-def build_backcast(dispatch: dict, profiles: dict) -> dict:
+def build_backcast(dispatch: dict, profiles: dict,
+                   observed_solar: bool = False) -> dict:
     """Replay every full-coverage market day with the BASE model and score it
     against the observed hourly LWAP, and, where the archive carries it,
     against the observed regional marginal price (MCP: the ex-ante clearing
     price, the target commensurate with a dispatch dual; LWAP additionally
     embeds nodal spread and settlement substitution). No storage cycling, no
-    levers, no tuning: the residual is the finding."""
+    levers, no tuning: the residual is the finding.
+
+    observed_solar=True replaces the flat clear-sky solar credit with each day's
+    own WESM-dispatched solar energy (DIPCEF), for the item-8 measurement only
+    (vre_probe): it is OFF in the shipped backcast because it worsens the price
+    correlation (the flat shape misplaces the observed energy without an
+    observed hourly shape)."""
     from lp_dispatch import run_chronology_lp
+    from market_obs import solar_observed_by_day
+
+    obs_solar = solar_observed_by_day() if observed_solar else {}
+    solar_shape = sum(profiles.get("solar_profile") or []) or 1.0
 
     pairs: dict[str, list[tuple[float, float]]] = {g: [] for g in GRID_KEYS}
     pairs_mcp: dict[str, list[tuple[float, float]]] = {g: [] for g in GRID_KEYS}
@@ -730,7 +741,14 @@ def build_backcast(dispatch: dict, profiles: dict) -> dict:
         if not all(len(lw.get(g) or []) == 24
                    and all(v is not None for v in lw[g]) for g in GRID_KEYS):
             continue
-        res = run_chronology_lp(dispatch, profiles, day["date"])
+        opts: dict = {}
+        osol = obs_solar.get(day["date"])
+        if osol:
+            opts["solar_delta_mw"] = {
+                g: round1(osol.get(g, 0.0) / solar_shape
+                          - dispatch["merit_order"][g]["solar_installed_mw"])
+                for g in GRID_KEYS}
+        res = run_chronology_lp(dispatch, profiles, day["date"], opts)
         days_used.append(day["date"])
         mc = day.get("mcp") or {}
         nf = day.get("net_flow") or {}
