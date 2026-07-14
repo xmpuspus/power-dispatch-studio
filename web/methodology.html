@@ -467,26 +467,28 @@ observed block events in the window and stays at its nameplate cap. We
 measured the alternative of feeding the operator's own RTDHS binding-schedule
 caps into the LP for both corridors (pipeline/corridor_cap_probe.py): it makes
 the modeled at-cap share track the observed binding share by construction, but
-on the independent judge, the price backcast, it lowers Luzon price MAE by
-about 0.16 PhP/kWh while worsening price correlation on every grid (Visayas
-about 0.46 to 0.11), because the Leyte de-rate to near-zero on flagged hours
-decouples Visayas from its observed import pattern. A model that tracks the
-observed price shape worse is not an improvement, so the caps stay
-advisory-based and the corridor under-binding versus RTDHS stays a reported
-boundary, not a constructed match (market_ops.json corridor_cap_probe).</li>
+on the independent judge, the price backcast, it lowers Luzon price MAE only
+slightly while worsening price correlation on every grid, badly on Visayas,
+because the Leyte de-rate to near-zero on flagged hours decouples Visayas from
+its observed import pattern. A model that tracks the observed price shape worse
+is not an improvement, so the caps stay advisory-based and the corridor
+under-binding versus RTDHS stays a reported boundary, not a constructed match
+(the measured deltas live in market_ops.json corridor_cap_probe, regenerated
+from the current archive by pipeline/corridor_cap_probe.py).</li>
 <li><b>Solar shape</b>: the 24-hour availability profile is the model's labeled
 clear-sky-ish assumption (fleet_ph.SOLAR_PROFILE), not measured irradiance.
 Other fuels hold their derated availability across the day. We measured the
 alternative of replaying each day's OWN observed solar energy (the DIPCEF
 dailies, market_ops.json solar_wind_observed) by scaling that shape to the
 observed daily total (pipeline/vre_probe.py): it collapses the Luzon price
-correlation (about 0.35 to 0.07 vs the observed MCP) while barely moving MAE,
-because Luzon's observed solar runs about 1.75 times the clear-sky credit and
-the flat shape dumps that extra energy into midday, crushing modeled daytime
-prices below what actually cleared. The missing piece is a per-resource hourly
-solar series, which the daily energy cannot supply, so the backcast keeps the
-clear-sky credit and the per-day observed solar stays a reported observation,
-not a replay input (market_ops.json vre_probe).</li>
+correlation while barely moving MAE, because Luzon's observed solar runs well
+above the clear-sky credit and the flat shape dumps that extra energy into
+midday, crushing modeled daytime prices below what actually cleared. The
+missing piece is a per-resource hourly solar series, which the daily energy
+cannot supply, so the backcast keeps the clear-sky credit and the per-day
+observed solar stays a reported observation, not a replay input (the measured
+deltas live in market_ops.json vre_probe, regenerated from the current archive
+by pipeline/vre_probe.py).</li>
 <li><b>Per-grid hydro capacity</b>: recalibrated July 2026 from the DOE
 plant lists after the observed schedules contradicted the old allocation
 (the model gave the Visayas 10 MW of hydro; DIPCEF showed its plants
