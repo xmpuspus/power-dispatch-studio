@@ -13,6 +13,15 @@ window encode into the URL.
 It is free and open, built on public data, with no license, no install, and no
 account.
 
+**It works, and it says how well.** Every full-coverage market day is re-priced by
+the model and scored against the actual WESM price, error stated per grid, nothing
+tuned. That backcast is the proof, and the studio shows it:
+
+![Backcast view: modeled versus observed WESM price over 56 market days, with MAE, bias, and correlation stated per grid, and the model-versus-observed table for Luzon, Visayas and Mindanao.](docs/view-backcast.gif)
+
+And here it is in use, opening the studio, editing a generator, running the model,
+and replaying an observed day:
+
 ![Screen recording: opening the studio, editing a generator in the properties grid, running the model, replaying an observed day in Chronology, and reading the backcast against observed prices.](docs/demo.gif)
 
 ## What the studio does
@@ -352,14 +361,14 @@ forecast.
 
 ## Three workflows to try
 
-**Price a data-center build.** System > Regions, raise Luzon load by the
+**Add a data center and see the price.** System > Regions, raise Luzon load by the
 build's MW (flat, the data-center shape), Run. Chronology on the demand-peak
 day shows which hours flip from coal to oil; Save run, revert the edit, save
 the base, and Compare two runs gives the price and congestion-rent delta.
 
 ![Recorded studio walkthrough of pricing a data-center build: on the demand-peak day the base Luzon mean is P6.01 on the coal margin; raising Luzon load by 1,500 MW (the DICT 2028 build) lifts the mean to P11.60 and the peak to P12.00 and saturates the Leyte-Luzon HVDC; Compare two runs reads +P5.59/kWh and +P33.15M congestion rent.](docs/workflow-1-datacenter.gif)
 
-**Stress the single contingency.** System > Generators, set SPI U1 and SPI U2
+**Turn off the two biggest units.** System > Generators, set SPI U1 and SPI U2
 (the two 647 MW Sual units) to zero, Run. N-1 and Reliability show the
 adequacy hit; Chronology on the stress day shows whether the evening clears on
 oil or sheds load, and its congestion-rent tile prices the corridors binding in
@@ -367,7 +376,7 @@ the peak hours.
 
 ![Recorded studio walkthrough of the single contingency: zeroing both 647 MW Sual units lifts Luzon loss-of-load probability from a 0.15% base to 10.60% (1-in-100 shed 1,234 MW) and leaves the rest of the fleet pricing coal to oil in N-1, yet the observed stress evening still clears with no unserved load at a P11.40 Luzon mean and P31.95M congestion rent: the 10.6% is the reliability draw across sampled evenings, not this day, and the binding constraint is the corridor.](docs/workflow-2-contingency.gif)
 
-**Test the Malampaya cliff.** System > Fuels, reprice natural gas from the
+**Switch gas to imported LNG.** System > Fuels, reprice natural gas from the
 Malampaya cost (P4.80/kWh) to the imported-LNG cost (P10.30/kWh), Run, and
 read the Chronology price shape; then in the Quick scenario, stack the announced
 build and a dry year on the LNG switch for the compounding view. Share the exact

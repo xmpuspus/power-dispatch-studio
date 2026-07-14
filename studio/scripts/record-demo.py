@@ -3,7 +3,7 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
-BASE = "http://localhost:5173/"
+BASE = "http://localhost:5188/"
 OUT = Path("/tmp/studio-rec")
 OUT.mkdir(exist_ok=True)
 W, H = 1400, 840
