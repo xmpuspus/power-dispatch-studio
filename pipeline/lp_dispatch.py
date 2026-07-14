@@ -151,7 +151,7 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
         return {"stacks": o_stacks, "demand": o_demand, "caps": caps,
                 "wheel": wheel, "storage": [], "reserve_req": o_reserve,
                 "voll": max(OFFER_CAP, dearest + 0.001),
-                "hydro_budget": None}
+                "hydro_budget": None, "gas_budget": opts.get("gas_budget") or None}
 
     fuel_base: dict[str, dict[str, float]] = {}
     solar_inst: dict[str, float] = {}
@@ -226,9 +226,13 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
                    for hb in stacks[g] for b in hb), default=12.0)
     voll = max(OFFER_CAP, dearest + 0.001)
 
+    # a day-level gas fuel-energy budget (the Malampaya supply cliff), a
+    # passthrough what-if: the caller sets {grid: MWh}, unset means unconstrained
+    gas_budget = opts.get("gas_budget") or None
+
     return {"stacks": stacks, "demand": demand, "caps": caps, "wheel": wheel,
             "storage": storage, "reserve_req": reserve_req, "voll": voll,
-            "hydro_budget": hydro_budget}
+            "hydro_budget": hydro_budget, "gas_budget": gas_budget}
 
 
 def run_chronology_lp(dispatch: dict, profiles: dict, date: str,
@@ -239,7 +243,7 @@ def run_chronology_lp(dispatch: dict, profiles: dict, date: str,
     m = _assemble(dispatch, profiles, date, opts)
     text = build_day_lp(m["stacks"], m["demand"], m["caps"], m["wheel"],
                         m["storage"], m["reserve_req"], m["voll"],
-                        m["hydro_budget"])
+                        m["hydro_budget"], m["gas_budget"])
     sol = _highs_solve(text)
     cols, duals = sol["cols"], sol["duals"]
 

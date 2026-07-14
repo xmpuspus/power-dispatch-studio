@@ -59,7 +59,8 @@ def mtext(k: int) -> str:
 
 def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
                  storage: list[dict], reserve_req: dict | None,
-                 voll: float, hydro_budget: dict | None = None) -> str:
+                 voll: float, hydro_budget: dict | None = None,
+                 gas_budget: dict | None = None) -> str:
     """The canonical LP text.
 
     stacks:  {grid: [blocks per hour]} with blocks [{fuel, cost, mw}, ...]
@@ -196,6 +197,26 @@ def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
             if not terms:
                 continue
             rows.append(f" hyd_{s}:" + "".join(terms)
+                        + f" <= {mtext(micro(budget))}")
+
+    # gas is energy-limited by the day's fuel supply (the Malampaya budget):
+    # the sum of natural-gas dispatch across the hours may not exceed the
+    # budget. Same structure as the hydro water budget; off unless a scenario
+    # sets it, so the default LP text is unchanged
+    if gas_budget:
+        for g in GRID_KEYS:
+            budget = gas_budget.get(g)
+            if budget is None:
+                continue
+            s = G_SHORT[g]
+            terms = []
+            for h in range(H):
+                for i, b in enumerate(stacks[g][h]):
+                    if b["fuel"] == "natural_gas":
+                        terms.append(f" + x_{s}_{h}_{i}")
+            if not terms:
+                continue
+            rows.append(f" gas_{s}:" + "".join(terms)
                         + f" <= {mtext(micro(budget))}")
 
     return ("\\ power-dispatch-studio day LP v1\n"

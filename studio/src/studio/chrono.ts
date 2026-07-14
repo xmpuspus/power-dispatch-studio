@@ -35,6 +35,8 @@ export interface ChronoOpts {
   caps?: { leyte?: number; mvip?: number }
   storage?: { grid: GridKey; power_mw: number; energy_mwh: number }[]
   reserve_deduction?: boolean
+  // a day-level gas fuel-energy budget (the Malampaya supply cliff), {grid: MWh}
+  gas_budget?: Partial<Record<GridKey, number>>
   // OFFER MODE: the day's derived offer book (web/data/offers/); replaces
   // the cost-proxy stacks, disables every layer the book already embodies
   // (storage, reserve, water, outage deviations, fleet levers); only the
@@ -117,6 +119,7 @@ interface Assembled {
   reserveReq: Record<GridKey, number> | null
   voll: number
   hydroBudget: Partial<Record<GridKey, number | null>> | null
+  gasBudget: Partial<Record<GridKey, number | null>> | null
 }
 
 /** Input assembly, shared by the run and the parity hash test. Mirrors
@@ -203,6 +206,7 @@ export function assembleDay(
       reserveReq: oReserve,
       voll: Math.max(OFFER_CAP, dearest + 0.001),
       hydroBudget: null,
+      gasBudget: opts.gas_budget ?? null,
     }
   }
 
@@ -294,6 +298,7 @@ export function assembleDay(
     reserveReq,
     voll,
     hydroBudget,
+    gasBudget: opts.gas_budget ?? null,
   }
 }
 
@@ -313,7 +318,8 @@ export function buildChronoLpText(
     m.storage,
     m.reserveReq,
     m.voll,
-    m.hydroBudget
+    m.hydroBudget,
+    m.gasBudget
   )
 }
 
@@ -334,7 +340,8 @@ export function runChronology(
       m.storage,
       m.reserveReq,
       m.voll,
-      m.hydroBudget
+      m.hydroBudget,
+      m.gasBudget
     )
   )
   const S: Record<GridKey, string> = { luzon: 'l', visayas: 'v', mindanao: 'm' }

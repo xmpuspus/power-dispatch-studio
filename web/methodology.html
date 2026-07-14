@@ -532,6 +532,18 @@ WESM hydro matched to the DOE fleet (pumped storage and batteries excluded;
 anything that hints hydro but stays unclassified is listed and NOT counted,
 so the budget is a verified floor). Embedded hydro never appears in the
 nodal schedules, which matches the model's grid-connected scope.</li>
+<li><b>Gas fuel budget (Malampaya)</b>: the Leyte-Luzon gas fleet burns
+Malampaya gas, which the DOE rates at 429 MMscfd at full field
+(<a href="https://doe.gov.ph/natgas/malampaya-gas-field">doe.gov.ph/natgas/malampaya-gas-field</a>)
+and expects to deplete commercially around 2027
+(<a href="https://www.bworldonline.com/economy/2021/05/19/369673/malampaya-depletion-expected-by-1st-quarter-of-2027/">BusinessWorld</a>).
+The Malampaya-supply lever models that cliff as a day-level gas ENERGY budget,
+built into the LP the same way as the hydro water budget (lp_model.build_day_lp
+and lpText.buildDayLp, a gas_ constraint pinned by a golden case in both
+engines): the sum of natural-gas dispatch across the day may not exceed the
+budget, set as a percent of the gas fleet's flat-out day. Off at 100 percent, a
+what-if below it, so a user can price the supply cliff without inventing a
+figure the DOE has not stated.</li>
 <li><b>Reserve</b>: an optional toggle withholds the mean scheduled requirement
 per grid (RTD reserve rows) from the reserve-capable stack (coal, gas, oil,
 geothermal, hydro, biomass, storage discharge), so tight hours price the
