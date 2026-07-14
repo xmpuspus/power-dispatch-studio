@@ -21,6 +21,7 @@ import { PortfolioView } from './PortfolioView'
 import { CrossRunView } from './CrossRunView'
 import { EnsembleView } from './EnsembleView'
 import { Rtdoe5View } from './Rtdoe5View'
+import { ForwardView } from './ForwardView'
 import { decodeShare, loadRuns, type SavedRun } from './runs'
 import {
   CLASSES,
@@ -67,6 +68,7 @@ type AnalysisId =
   | 'crossrun'
   | 'ensemble'
   | 'rtdoe5'
+  | 'forward'
   | 'vintage'
 type PhaseId = 'lt' | 'pasa'
 type Nav =
@@ -101,6 +103,7 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   crossrun: 'Cross-run',
   ensemble: 'Ensembles',
   rtdoe5: '5-minute replay',
+  forward: 'Forward prices',
   vintage: 'Assumptions',
 }
 const PHASE_LABEL: Record<PhaseId, string> = {
@@ -303,7 +306,8 @@ export function Studio({
         nav.id === 'capture' ||
         nav.id === 'crossrun' ||
         nav.id === 'ensemble' ||
-        nav.id === 'rtdoe5'))
+        nav.id === 'rtdoe5' ||
+        nav.id === 'forward'))
 
   const revertAll = () => {
     setScenarios((prev) =>
@@ -814,6 +818,8 @@ function DataPane({
     if (nav.id === 'ensemble' && profiles)
       return <EnsembleView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'rtdoe5') return <Rtdoe5View grid={grid} />
+    if (nav.id === 'forward' && profiles)
+      return <ForwardView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'vintage') return <VintageView d={d} />
     return <MarketPowerView d={d} />
   }

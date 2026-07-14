@@ -1603,3 +1603,17 @@
   stroke-width: 1.6;
   stroke-dasharray: 4 3;
 }
+.fwdchart {
+  width: 100%;
+  height: auto;
+  margin: 6px 0;
+}
+.fwdchart__band {
+  fill: color-mix(in srgb, var(--steel, #3b7ea1) 22%, transparent);
+  stroke: none;
+}
+.fwdchart__median {
+  fill: none;
+  stroke: var(--steel, #3b7ea1);
+  stroke-width: 2;
+}
