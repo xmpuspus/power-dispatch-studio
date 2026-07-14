@@ -38,9 +38,10 @@ the fidelity and none of the setup cost. The mapping:
 | Model validation | Backcast view | Every full-coverage market day replayed against observed hourly LWAP, error stated per grid, nothing tuned |
 
 What it is not: an LP, not a MILP: no unit commitment, no security
-constraints, no nodal network, and no expansion optimizer (the LT Plan view
-applies the DOE's own lists; it does not choose builds). The scope section
-below states exactly what solves.
+constraints, and no nodal network. The dispatch model chooses no builds (the LT
+Plan view applies the DOE's own lists); a separate Expansion mix analysis runs a
+labeled greenfield least-cost LP as a direction check, not a build recommendation.
+The scope section below states exactly what solves.
 
 ## The model and its scope
 
@@ -66,7 +67,7 @@ inflating demand.
 | Per-unit fleet from the DOE list, unit-level N-1 | Security-constrained unit commitment, ramp rates, min up/down times |
 | Chronological replay of observed days, with each day's scheduled-outage deviation applied (OUTRTD via the PASA mapping) | Load or price forecasting |
 | Shortage priced at the P32/kWh WESM offer cap (published rule), labeled 'shortage' | Offer-behavior pricing below the cap (per-participant strategy) |
-| Storage optimised over the day's hours (HiGHS LP) | Inter-day storage carryover |
+| Storage optimised over the day's hours (HiGHS LP); the Native week view adds inter-day carryover in a native 168-hour LP | Inter-day storage carryover in the default day mode |
 | Reserve as a withheld-capacity constraint; OBSERVED official regional reserve prices shown beside it | Reserve co-optimisation inside the LP (the observed reserve books, RTDOR, are archived as daily derived files since July 2026; the joint clear scored against RSVPR is the queued build) |
 | Monte Carlo adequacy on forced-outage rates, with the day's scheduled outages removable (PASA lite) | Maintenance-schedule optimisation |
 | DOE build pipeline as sourced candidates on a horizon (LT Plan lite) | Expansion optimisation, build-cost economics |
@@ -318,6 +319,48 @@ DICT build both read +P5.98/kWh because both step Luzon from the P6 block to the
 P12 one. The corridor-saturation hours, the 275 MW threshold, and the 87.8%
 backcast are the structural claims that do not turn on block height.
 
+### What parity proves, and what it does not
+
+Three claims in this project carry the word parity, and they are not the same
+claim. Being exact about which one is proven is the point.
+
+1. **Workflow coverage, shown by construction.** An analyst can run the eight
+analyses they would open PLEXOS for: chronological dispatch, model validation,
+reserve, capacity expansion, portfolio revenue, forward and multi-year price
+scenarios, and sub-hourly replay. Each has a working view (the ten added in the
+July 2026 build-out are galleried below). You verify this by using it. It is a
+coverage claim, not a claim that any number equals PLEXOS's.
+
+2. **Dual-engine self-consistency, proven by hash.** The Python pipeline and the
+browser build the byte-identical linear program (sha256-pinned) and reproduce the
+same outputs to P0.02/kWh. This proves the studio is consistent with its own
+reference engine: studio equals pipeline. It says nothing about PLEXOS.
+
+3. **Validation against observed reality, measured and not against PLEXOS.** The
+dispatch is scored against observed WESM prices over 56 market days; Luzon tracks
+at 0.36 correlation with a stated negative bias, the scarcity premium a cost model
+cannot see, reported not tuned. Every analysis that reads the dispatch (Chronology,
+Capture prices, Cross-run, Native week, Portfolio, five-minute replay) inherits
+this validation.
+
+What is not proven, and is not claimed: numerical parity with PLEXOS. There was no
+PLEXOS license, no PLEXOS Philippine model, and no PLEXOS output to compare
+against, so no head-to-head test exists anywhere in this repo. The engine is a
+simplified zonal merit-order LP, deliberately less detailed than PLEXOS: no
+security-constrained unit commitment, no ramp rates, no nodal network. Where the
+PLEXOS-grade detail was actually built and run through the same backcast, three
+additions (unit commitment with a generic minimum-stable level, each day's
+observed solar shape, and RTDHS corridor caps) made the fit to observed prices
+worse, because public Philippine data cannot support per-unit calibration; each
+measured delta is published in `market_ops.json` and the model keeps the simpler
+engine. That is the opposite of a parity claim: it is a measured account of where
+more PLEXOS-like detail does not pay for itself on the data that exists.
+
+Real numerical parity would take a licensed PLEXOS Philippine model, the same
+fleet, fuel, load, and constraints loaded in both, and an hour-by-hour comparison
+of dispatch, prices, flows, and unserved energy within tolerance. That is out of
+reach for an open project and is not claimed here.
+
 ## Three workflows to try
 
 **Price a data-center build.** System > Regions, raise Luzon load by the
@@ -342,6 +385,85 @@ build and a dry year on the LNG switch for the compounding view. Share the exact
 scenario with Copy link.
 
 ![Recorded studio walkthrough of the Malampaya cliff: repricing gas from the Malampaya cost P4.80 to the imported-LNG cost P10.30 lifts the whole Luzon price shape to the gas cost, mean P6.00 to P10.30 with congestion rent P25.39M; then in the Quick scenario, stacking imported LNG, the announced 1,500 MW build, and a dry year tips the evening to oil at P12.00, +P6.00/kWh.](docs/workflow-3-malampaya.gif)
+
+## The parity build-out: ten new analyses
+
+Ten analyses were added in the July 2026 build-out, one recorded clip each (real
+captures of the running studio; the numbers on screen are one dated bake and the
+live view recomputes them as the archive window rolls). How far each one is
+validated is the honest part, so read [What parity proves, and what it does
+not](#what-parity-proves-and-what-it-does-not) first.
+
+Backcast-validated, each a transform of the dispatch the backcast scores against
+observed WESM prices:
+
+**Native week.** A native 168-hour linear program where the battery state of
+charge carries across midnight instead of resetting each day; the daily water
+budget stays. The inter-day storage value is measured, and it is exactly zero at
+today's observed price spreads (the model's own prices are too flat for arbitrage
+to beat the round-trip loss); it turns positive only under a data-center-wave
+scenario. Dual-engine byte-parity is pinned by a golden hash.
+
+![Native week: a 168-hour storage state-of-charge sawtooth that does not fall back to zero between days, with the inter-day saving, peak charge, and the MWh carried across midnight.](docs/view-week.gif)
+
+**Capture prices.** Generation-weighted average price per technology over a saved
+run's window, the number a project uses for revenue and GEA bid support.
+
+![Capture prices: a per-technology table of generation, capture price, and capture rate for a saved run.](docs/view-capture.gif)
+
+**Portfolio.** A contract-for-differences valuation of an owner position (grid,
+fuel, share, PSA strike) against a saved run's hourly WESM prices, with the
+uncontracted-exposure profile beside it.
+
+![Portfolio: a position panel and an uncontracted-exposure chart valuing a generation position against WESM.](docs/view-portfolio.gif)
+
+**Cross-run.** Every saved run's headline metrics side by side, plus a lever
+tornado that sweeps each Quick lever one at a time and ranks it by how far it
+moves the clearing price.
+
+![Cross-run: a metric matrix across saved runs and a lever tornado ranking each lever by its price impact.](docs/view-crossrun.gif)
+
+**Five-minute replay.** The observed five-minute offer books for a sample day
+cleared to the grid's own generation, 288 intervals, showing the scarcity spikes
+the hourly replay smooths.
+
+![Five-minute replay: a 288-point intraday price line against the hourly-mean step, with the intraday range and the offer-cap share.](docs/view-rtdoe5.gif)
+
+Scenario and forward-looking, where the workflow runs on sourced inputs but there
+is no observed future or greenfield build to backcast against; each is labeled a
+scenario on one observed quarter, not a forecast:
+
+**Forward prices.** The observed day library re-priced under the DOE PDP peak-load
+growth to a P10, median, and P90 band per year to 2030. A scenario ensemble, not a
+forecast; one post-suspension quarter, so one regime.
+
+![Forward prices: a price band to 2030 with the median line, built from the observed library and the DOE PDP demand growth.](docs/view-forward.gif)
+
+**Multi-year path.** The median clearing price per year to 2040 under three policy
+scenarios (base, a Malampaya supply cliff, a carbon price); a fixed fleet saturates
+at its capacity, which the view labels.
+
+![Multi-year path: three policy price lines to 2040 with a per-year table.](docs/view-multiyear.gif)
+
+**Ensembles.** Seeded Monte Carlo joint draws (load, hydrology, fuel price, a
+forced outage) through the day model on one observed day, reported as P10, median,
+and P90 per grid. The band is the spread across plausible operating states, not a
+prediction.
+
+![Ensembles: P10, median and P90 clearing-price tiles and a per-grid table from seeded Monte Carlo draws.](docs/view-ensembles.gif)
+
+**Expansion mix.** A separate, labeled greenfield least-cost linear program over
+representative periods with generic NREL ATB costs, beside the DOE's own pipeline.
+It lands near 70% renewables and reproduces the direction of the DOE plan's
+86.5%-RE share. A direction check, not PLEXOS capacity expansion, and not a build
+recommendation.
+
+![Expansion mix: a least-cost greenfield technology-share table beside the DOE pipeline, with the RE-share tiles.](docs/view-expansion.gif)
+
+**Assumptions.** Every baked value with its primary source and the bake date, and
+the archive coverage per dataset: the model's own vintage, in the studio.
+
+![Assumptions: the bake date, engine version, and the per-dataset archive-coverage table.](docs/view-vintage.gif)
 
 ## Data
 
