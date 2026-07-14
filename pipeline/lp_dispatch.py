@@ -356,6 +356,172 @@ def run_chronology_lp(dispatch: dict, profiles: dict, date: str,
             "lp_sha256": hashlib.sha256(text.encode()).hexdigest()}
 
 
+def run_week_lp(dispatch: dict, profiles: dict, dates: list[str],
+                opts: dict | None = None) -> dict:
+    """A native seven-day chronology on ONE linear program: 168 hours solved
+    together so the storage state of charge carries across midnight instead of
+    resetting each day. Cheap hours on Monday can bank water in the battery
+    that discharges on Thursday's peak, which the day-by-day engine can never
+    see. The water stays daily-budgeted (hydro_day_hours=24) so a wet Tuesday
+    cannot lend its river to a dry Friday. Reserve and the gas budget are
+    day-mode analyses and stay off here; the week LP answers the one question
+    the day engine cannot: what is inter-day storage worth.
+
+    Output shape mirrors run_chronology_lp but over 168 hours, plus a per-day
+    summary list and the same lp_sha256 the goldens pin."""
+    opts = opts or {}
+    days = [_assemble(dispatch, profiles, d, opts) for d in dates]
+    nd = len(days)
+    H = nd * 24
+
+    def expand(cap):
+        return list(cap) if isinstance(cap, (list, tuple)) else [cap] * 24
+
+    stacks = {g: [h for m in days for h in m["stacks"][g]]
+              for g in GRID_KEYS}
+    demand = {g: [v for m in days for v in m["demand"][g]]
+              for g in GRID_KEYS}
+    caps = {"leyte": [c for m in days for c in expand(m["caps"]["leyte"])],
+            "mvip": [c for m in days for c in expand(m["caps"]["mvip"])]}
+    wheel = days[0]["wheel"]
+    storage = days[0]["storage"]
+    voll = max(m["voll"] for m in days)
+
+    # per-day water: hydro_budget[g] becomes a 7-long list, one cap per day,
+    # skipping grids that carry no budget on any day
+    hydro_budget: dict | None = {}
+    for g in GRID_KEYS:
+        per_day = [(m["hydro_budget"] or {}).get(g) for m in days]
+        hydro_budget[g] = per_day if any(v is not None for v in per_day) else None
+    if not any(hydro_budget.values()):
+        hydro_budget = None
+
+    text = build_day_lp(stacks, demand, caps, wheel, storage, None, voll,
+                        hydro_budget, None, hydro_day_hours=24)
+    sol = _highs_solve(text)
+    cols, duals = sol["cols"], sol["duals"]
+
+    out_hours = []
+    for h in range(H):
+        dd = h // 24
+        f1 = cols.get(f"f1p_{h}", 0.0) - cols.get(f"f1n_{h}", 0.0)
+        f2 = cols.get(f"f2p_{h}", 0.0) - cols.get(f"f2n_{h}", 0.0)
+        price, shed, fuel_gen, gen = {}, {}, {}, {}
+        for g in GRID_KEYS:
+            s = G_SHORT[g]
+            price[g] = round3(duals.get(f"bal_{s}_{h}", 0.0))
+            shed[g] = max(0.0, round1(cols.get(f"u_{s}_{h}", 0.0)))
+            per: dict[str, float] = {}
+            for i, b in enumerate(stacks[g][h]):
+                x = cols.get(f"x_{s}_{h}_{i}", 0.0)
+                if x > 1e-6:
+                    per[b["fuel"]] = per.get(b["fuel"], 0.0) + x
+            fuel_gen[g] = {f: round1(v) for f, v in per.items()}
+        charge = {g: 0.0 for g in GRID_KEYS}
+        dis = {g: 0.0 for g in GRID_KEYS}
+        soc_total = 0.0
+        for k, st in enumerate(storage):
+            charge[st["grid"]] += cols.get(f"ch_{k}_{h}", 0.0)
+            dis[st["grid"]] += cols.get(f"dis_{k}_{h}", 0.0)
+            soc_total += cols.get(f"soc_{k}_{h}", 0.0)
+        for g in GRID_KEYS:
+            if dis[g] > 1e-6:
+                fuel_gen[g]["storage"] = round1(
+                    fuel_gen[g].get("storage", 0.0) + dis[g])
+        dem = {g: demand[g][h] + charge[g] for g in GRID_KEYS}
+        gen["luzon"] = dem["luzon"] + f1 - shed["luzon"]
+        gen["visayas"] = dem["visayas"] + f2 - f1 - shed["visayas"]
+        gen["mindanao"] = dem["mindanao"] - f2 - shed["mindanao"]
+        store_marg = {g: False for g in GRID_KEYS}
+        for k, st in enumerate(storage):
+            d_k = cols.get(f"dis_{k}_{h}", 0.0)
+            if STORE_EPS < d_k < st["power_mw"] - STORE_EPS:
+                store_marg[st["grid"]] = True
+        marg = {}
+        for g in GRID_KEYS:
+            s_g = G_SHORT[g]
+            hyd_marg = False
+            if abs(duals.get(f"hyd_{s_g}_{dd}", 0.0)) > 1e-6:
+                for i, b in enumerate(stacks[g][h]):
+                    if b["fuel"] == "hydro":
+                        x = cols.get(f"x_{s_g}_{h}_{i}", 0.0)
+                        if STORE_EPS < x < b["mw"] - STORE_EPS:
+                            hyd_marg = True
+                            break
+            cost, fuel = marginal(stacks[g][h], round1(gen[g]))
+            marg[g] = price_label(price[g], cost, fuel, store_marg[g],
+                                  hyd_marg, shed[g] > STORE_EPS)
+        cap1_h, cap2_h = caps["leyte"][h], caps["mvip"][h]
+        sat1 = abs(f1) >= cap1_h - FLOW_SAT_EPS
+        sat2 = abs(f2) >= cap2_h - FLOW_SAT_EPS
+        rent1 = (round3(price["visayas"] - price["luzon"] if f1 > 0
+                        else price["luzon"] - price["visayas"])
+                 if sat1 else 0.0)
+        rent2 = (round3(price["mindanao"] - price["visayas"] if f2 > 0
+                        else price["visayas"] - price["mindanao"])
+                 if sat2 else 0.0)
+        out_hours.append({
+            "hour": h, "day": dd, "price": price, "marginal": marg,
+            "demand": {g: round1(dem[g]) for g in GRID_KEYS},
+            "shortfall": shed, "flow_lv": round1(f1), "flow_vm": round1(f2),
+            "leyte": {"sat": sat1, "rent": rent1},
+            "mvip": {"sat": sat2, "rent": rent2},
+            "fuel_gen": fuel_gen, "soc_mwh": round1(soc_total),
+            "charge_mw": round1(sum(charge.values())),
+            "discharge_mw": round1(sum(dis.values())),
+        })
+
+    day_summaries = []
+    for dd in range(nd):
+        block = [o for o in out_hours if o["day"] == dd]
+        day_summaries.append({
+            "date": dates[dd],
+            "mean_price": {g: round3(sum(o["price"][g] for o in block) / 24)
+                           for g in GRID_KEYS},
+            "peak_price": {g: max(o["price"][g] for o in block)
+                           for g in GRID_KEYS},
+            "start_soc_mwh": round1(block[0]["soc_mwh"]),
+            "end_soc_mwh": round1(block[-1]["soc_mwh"]),
+        })
+
+    def rent_m_php(key: str, flow_key: str) -> float:
+        return round3(sum(abs(o[flow_key]) * o[key]["rent"] / 1000.0
+                          for o in out_hours if o[key]["sat"]))
+
+    # physical system cost EXCLUDING the uniqueness epsilons: block cost times
+    # dispatch, plus wheeling on the flows, plus unserved at the offer cap.
+    # This is the comparable number for the inter-day saving (the raw solver
+    # objective carries the per-variable epsilons, which the 168h and the 7x24h
+    # formulations perturb differently, so an objective delta is not physical)
+    phys = 0.0
+    for h in range(H):
+        for g in GRID_KEYS:
+            s = G_SHORT[g]
+            for i, b in enumerate(stacks[g][h]):
+                phys += cols.get(f"x_{s}_{h}_{i}", 0.0) * b["cost"]
+            phys += voll * cols.get(f"u_{s}_{h}", 0.0)
+        phys += wheel * (cols.get(f"f1p_{h}", 0.0) + cols.get(f"f1n_{h}", 0.0)
+                         + cols.get(f"f2p_{h}", 0.0) + cols.get(f"f2n_{h}", 0.0))
+
+    summary = {
+        "dates": dates,
+        "physical_cost": round1(phys),
+        "mean_price": {g: round3(sum(o["price"][g] for o in out_hours) / H)
+                       for g in GRID_KEYS},
+        "peak_price": {g: max(o["price"][g] for o in out_hours)
+                       for g in GRID_KEYS},
+        "unserved_mwh": {g: round1(sum(o["shortfall"][g] for o in out_hours))
+                         for g in GRID_KEYS},
+        "leyte_rent_m_php": rent_m_php("leyte", "flow_lv"),
+        "mvip_rent_m_php": rent_m_php("mvip", "flow_vm"),
+        "soc_swing_mwh": round1(max((o["soc_mwh"] for o in out_hours),
+                                    default=0.0)),
+    }
+    return {"hours": out_hours, "days": day_summaries, "summary": summary,
+            "objective": sol["objective"],
+            "lp_sha256": hashlib.sha256(text.encode()).hexdigest()}
+
+
 def solve_snapshot_lp(stacks: dict, demand: dict, caps: dict,
                       wheel: float) -> dict:
     """Single-hour coupled clear on the LP: the snapshot engine's solve.

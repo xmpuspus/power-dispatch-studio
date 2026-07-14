@@ -60,7 +60,8 @@ def mtext(k: int) -> str:
 def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
                  storage: list[dict], reserve_req: dict | None,
                  voll: float, hydro_budget: dict | None = None,
-                 gas_budget: dict | None = None) -> str:
+                 gas_budget: dict | None = None,
+                 hydro_day_hours: int | None = None) -> str:
     """The canonical LP text.
 
     stacks:  {grid: [blocks per hour]} with blocks [{fuel, cost, mw}, ...]
@@ -181,23 +182,33 @@ def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
                 rows.append(f" res_{s}_{h}:" + "".join(terms)
                             + f" <= {mtext(rhs)}")
 
-    # hydro is energy-limited by the day's observed water: the sum of hydro
-    # dispatch across the hours may not exceed the budget
+    # hydro is energy-limited by the observed water: hydro dispatch may not
+    # exceed the budget. In a native multi-day (168h) LP the water stays
+    # DAILY-budgeted, so with hydro_day_hours set the cap is written per day
+    # block (hydro_budget[g] a per-day list); the default (whole horizon, one
+    # row, scalar budget) leaves the single-day LP byte-identical
     if hydro_budget:
+        dh = hydro_day_hours or H
+        ndays = H // dh
         for g in GRID_KEYS:
-            budget = hydro_budget.get(g)
-            if budget is None:
+            gb = hydro_budget.get(g)
+            if gb is None:
                 continue
             s = G_SHORT[g]
-            terms = []
-            for h in range(H):
-                for i, b in enumerate(stacks[g][h]):
-                    if b["fuel"] == "hydro":
-                        terms.append(f" + x_{s}_{h}_{i}")
-            if not terms:
-                continue
-            rows.append(f" hyd_{s}:" + "".join(terms)
-                        + f" <= {mtext(micro(budget))}")
+            for dd in range(ndays):
+                budget = gb[dd] if isinstance(gb, list) else gb
+                if budget is None:
+                    continue
+                terms = []
+                for h in range(dd * dh, (dd + 1) * dh):
+                    for i, b in enumerate(stacks[g][h]):
+                        if b["fuel"] == "hydro":
+                            terms.append(f" + x_{s}_{h}_{i}")
+                if not terms:
+                    continue
+                name = f"hyd_{s}" if ndays == 1 else f"hyd_{s}_{dd}"
+                rows.append(f" {name}:" + "".join(terms)
+                            + f" <= {mtext(micro(budget))}")
 
     # gas is energy-limited by the day's fuel supply (the Malampaya budget):
     # the sum of natural-gas dispatch across the hours may not exceed the

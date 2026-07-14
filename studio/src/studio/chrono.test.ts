@@ -4,7 +4,14 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { GRID_KEYS } from './engine'
-import { buildChronoLpText, runChronology, runDuration, type ChronoOpts } from './chrono'
+import {
+  buildChronoLpText,
+  buildWeekLpText,
+  runChronology,
+  runDuration,
+  runWeek,
+  type ChronoOpts,
+} from './chrono'
 import { OFFER_CAP } from './lpText'
 
 const read = (rel: string) =>
@@ -79,6 +86,85 @@ describe('chronological golden parity vs the Python chrono engine', () => {
       ).toBeLessThanOrEqual(0.01)
     })
   }
+})
+
+describe('native 168h week parity vs the Python week engine', () => {
+  const w = profiles.chrono_golden.week
+  const tolP = profiles.chrono_golden.tolerance_php_kwh ?? 0.02
+  const tolMW = profiles.chrono_golden.tolerance_mw ?? 1.0
+
+  it('week golden fixture is baked with an explicit date list', () => {
+    expect(w?.available).toBe(true)
+    expect(w.input.dates).toHaveLength(7)
+  })
+
+  it('builds the byte-identical 168h LP the Python engine hashed', () => {
+    const { dates, ...opts } = w.input
+    const text = buildWeekLpText(d, profiles, dates, opts as ChronoOpts)
+    expect(createHash('sha256').update(text).digest('hex')).toBe(w.lp_sha256)
+  })
+
+  it('reproduces the 168h prices, storage carry and per-day summaries', () => {
+    const { dates, ...opts } = w.input
+    const res = runWeek(d, profiles, dates, opts as ChronoOpts)
+    expect(res.hours).toHaveLength(168)
+    for (let h = 0; h < 168; h++) {
+      for (const gk of GRID_KEYS)
+        expect(
+          Math.abs(res.hours[h].price[gk] - w.expect.price[gk][h]),
+          `${gk} price h${h}`
+        ).toBeLessThanOrEqual(tolP)
+      expect(
+        Math.abs(res.hours[h].socMwh - w.expect.soc_mwh[h]),
+        `soc h${h}`
+      ).toBeLessThanOrEqual(tolMW)
+      expect(
+        Math.abs(res.hours[h].flowLV - w.expect.flow_lv[h]),
+        `flowLV h${h}`
+      ).toBeLessThanOrEqual(tolMW)
+    }
+    // the storage carries across midnight: at least one day ends non-empty
+    expect(Math.max(...res.days.map((x) => x.endSocMwh))).toBeGreaterThan(1)
+    for (let i = 0; i < res.days.length; i++)
+      expect(
+        Math.abs(res.days[i].endSocMwh - w.expect.days[i].end_soc_mwh),
+        `end soc day${i}`
+      ).toBeLessThanOrEqual(tolMW)
+    expect(
+      Math.abs(res.summary.physicalCost - w.expect.summary.physical_cost),
+      'physical cost'
+    ).toBeLessThanOrEqual(50)
+  })
+
+  it('storage is idle on observed spreads but carries under the DC-wave', () => {
+    const dates = w.input.dates
+    const battery: ChronoOpts = {
+      storage: [{ grid: 'luzon', power_mw: 2000, energy_mwh: 16000 }],
+    }
+    // observed: the week LP is a strict superset of the seven independent days,
+    // so its physical cost can never exceed the day-by-day total (saving >= 0),
+    // and at flat observed prices the battery never cycles (zero saving)
+    const obsWeek = runWeek(d, profiles, dates, battery)
+    const obsDaily = dates.reduce(
+      (s: number, dt: string) => s + runWeek(d, profiles, [dt], battery).summary.physicalCost,
+      0
+    )
+    expect(obsDaily - obsWeek.summary.physicalCost).toBeGreaterThanOrEqual(-0.5)
+    expect(Math.max(...obsWeek.days.map((x) => x.endSocMwh))).toBeLessThan(1)
+    // DC-wave: the battery banks cheap energy and hands it across midnight
+    const wave: ChronoOpts = {
+      ...battery,
+      solar_delta_mw: { luzon: 8000 },
+      demand_delta: { luzon: 2500 },
+    }
+    const waveWeek = runWeek(d, profiles, dates, wave)
+    const waveDaily = dates.reduce(
+      (s: number, dt: string) => s + runWeek(d, profiles, [dt], wave).summary.physicalCost,
+      0
+    )
+    expect(waveDaily - waveWeek.summary.physicalCost).toBeGreaterThan(1000)
+    expect(Math.max(...waveWeek.days.map((x) => x.endSocMwh))).toBeGreaterThan(500)
+  })
 })
 
 describe('chronological behavior', () => {

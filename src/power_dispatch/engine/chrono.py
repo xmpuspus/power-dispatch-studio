@@ -457,6 +457,42 @@ def build_chrono_golden(dispatch: dict, profiles: dict) -> dict:
                 "summary": res["summary"],
             },
         })
+    # native 168h WEEK golden: seven consecutive full-coverage days on ONE LP,
+    # a battery and the DC-wave scenario so storage cycles and carries across
+    # midnight (the day engine resets it). The explicit date list rides in the
+    # input so the studio replays the exact same window, never recomputes it;
+    # the studio must build the byte-identical 168h LP (pinned by lp_sha256)
+    # and reproduce these arrays.
+    from .lp_dispatch import run_week_lp
+
+    full = [dd["date"] for dd in profiles["days"] if dd["market"]
+            and all(len((dd.get("lwap") or {}).get(g) or []) == 24
+                    and all(v is not None for v in dd["lwap"][g])
+                    for g in GRID_KEYS)]
+    week_block = {"available": False,
+                  "note": "fewer than seven full-coverage days in the window"}
+    if len(full) >= 7:
+        week_dates = full[-7:]
+        week_opts = {"solar_delta_mw": {"luzon": 8000},
+                     "demand_delta": {"luzon": 2500},
+                     "storage": [{"grid": "luzon", "power_mw": 2000,
+                                  "energy_mwh": 16000}]}
+        wr = run_week_lp(dispatch, profiles, week_dates, week_opts)
+        week_block = {
+            "available": True,
+            "label": "native 168h week, DC-wave with 2 GW / 16 GWh storage",
+            "input": {"dates": week_dates, **week_opts},
+            "lp_sha256": wr["lp_sha256"],
+            "expect": {
+                "price": {g: [o["price"][g] for o in wr["hours"]]
+                          for g in GRID_KEYS},
+                "soc_mwh": [o["soc_mwh"] for o in wr["hours"]],
+                "flow_lv": [o["flow_lv"] for o in wr["hours"]],
+                "days": wr["days"],
+                "summary": wr["summary"],
+            },
+        }
+
     return {
         "available": True,
         "date": date,
@@ -468,6 +504,7 @@ def build_chrono_golden(dispatch: dict, profiles: dict) -> dict:
                 "LP (pinned by lp_sha256) and reproduce these outputs; the "
                 "studio test asserts both.",
         "cases": out,
+        "week": week_block,
     }
 
 

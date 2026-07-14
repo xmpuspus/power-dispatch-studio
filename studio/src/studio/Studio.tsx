@@ -21,6 +21,7 @@ import { PortfolioView } from './PortfolioView'
 import { CrossRunView } from './CrossRunView'
 import { EnsembleView } from './EnsembleView'
 import { Rtdoe5View } from './Rtdoe5View'
+import { WeekView } from './WeekView'
 import { ForwardView } from './ForwardView'
 import { MultiYearView } from './MultiYearView'
 import { ExpansionView } from './ExpansionView'
@@ -72,6 +73,7 @@ type AnalysisId =
   | 'rtdoe5'
   | 'forward'
   | 'multiyear'
+  | 'week'
   | 'expansion'
   | 'vintage'
 type PhaseId = 'lt' | 'pasa'
@@ -109,6 +111,7 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   rtdoe5: '5-minute replay',
   forward: 'Forward prices',
   multiyear: 'Multi-year path',
+  week: 'Native week',
   expansion: 'Expansion mix',
   vintage: 'Assumptions',
 }
@@ -314,7 +317,8 @@ export function Studio({
         nav.id === 'ensemble' ||
         nav.id === 'rtdoe5' ||
         nav.id === 'forward' ||
-        nav.id === 'multiyear'))
+        nav.id === 'multiyear' ||
+        nav.id === 'week'))
 
   const revertAll = () => {
     setScenarios((prev) =>
@@ -829,6 +833,11 @@ function DataPane({
       return <ForwardView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'multiyear' && profiles)
       return <MultiYearView d={d} profiles={profiles} grid={grid} />
+    if (nav.id === 'week') {
+      if (!profiles)
+        return <div className="basecase-banner">Loading the observed day profiles.</div>
+      return <WeekView d={d} profiles={profiles} grid={grid} />
+    }
     if (nav.id === 'expansion') return <ExpansionView />
     if (nav.id === 'vintage') return <VintageView d={d} />
     return <MarketPowerView d={d} />

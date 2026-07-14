@@ -550,9 +550,9 @@ check("reserve requirement means are positive per grid", all(
     v > 0 for g in prof["reserve_req_mean_mw"].values() for v in g.values()))
 
 cg = prof["chrono_golden"]
-check("chrono golden has 10 cases (7 cost-mode + 3 offer-mode) of 24 hourly "
+check("chrono golden has 11 cases (8 cost-mode + 3 offer-mode) of 24 hourly "
       "prices per grid",
-      cg["available"] and len(cg["cases"]) == 10 and all(
+      cg["available"] and len(cg["cases"]) == 11 and all(
           len(c["expect"]["price"][g]) == 24
           for c in cg["cases"] for g in ("luzon", "visayas", "mindanao")))
 check("the offer-mode goldens carry the marker both engines resolve",
@@ -567,6 +567,17 @@ check("the default storage fleet actually cycles in its golden case",
 check("golden tolerances are the parity contract",
       math.isclose(cg["tolerance_php_kwh"], 0.02)
       and math.isclose(cg["tolerance_mw"], 1.0))
+
+# item 6: the native 168h week golden. Seven explicit dates ride in the input
+# so the studio replays the same window; the storage carries across midnight
+# (a day ends with charge it hands the next), which the day engine cannot do.
+wk = cg.get("week", {})
+check("week golden baked with seven explicit dates and a 168-price expect",
+      wk.get("available") and len(wk["input"]["dates"]) == 7
+      and all(len(wk["expect"]["price"][g]) == 168
+              for g in ("luzon", "visayas", "mindanao")))
+check("week storage carries across midnight (a day ends with charge to spare)",
+      max(d["end_soc_mwh"] for d in wk["expect"]["days"]) > 1)
 
 bc = prof["backcast"]
 check("backcast replays at least 30 market days",

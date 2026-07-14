@@ -61,8 +61,9 @@ export function buildDayLp(
   storage: LpStorage[],
   reserveReq: Record<GridKey, number> | null,
   voll: number,
-  hydroBudget: Partial<Record<GridKey, number | null>> | null = null,
-  gasBudget: Partial<Record<GridKey, number | null>> | null = null
+  hydroBudget: Partial<Record<GridKey, number | Array<number | null> | null>> | null = null,
+  gasBudget: Partial<Record<GridKey, number | null>> | null = null,
+  hydroDayHours: number | null = null
 ): string {
   const H = demand.luzon.length
   const wheelM = micro(wheel)
@@ -197,21 +198,31 @@ export function buildDayLp(
     }
   }
 
-  // hydro is energy-limited by the day's observed water: the sum of hydro
-  // dispatch across the hours may not exceed the budget
+  // hydro is energy-limited by the observed water: hydro dispatch may not
+  // exceed the budget. In a native multi-day (168h) LP the water stays
+  // DAILY-budgeted, so with hydroDayHours set the cap is written per day block
+  // (hydroBudget[g] a per-day list); the default (whole horizon, one row,
+  // scalar budget) leaves the single-day LP byte-identical
   if (hydroBudget) {
+    const dh = hydroDayHours ?? H
+    const ndays = Math.floor(H / dh)
     for (const g of LP_GRID_KEYS) {
-      const budget = hydroBudget[g]
-      if (budget == null) continue
+      const gb = hydroBudget[g]
+      if (gb == null) continue
       const s = G_SHORT[g]
-      const terms: string[] = []
-      for (let h = 0; h < H; h++) {
-        stacks[g][h].forEach((b, i) => {
-          if (b.fuel === 'hydro') terms.push(` + x_${s}_${h}_${i}`)
-        })
+      for (let dd = 0; dd < ndays; dd++) {
+        const budget = Array.isArray(gb) ? gb[dd] : gb
+        if (budget == null) continue
+        const terms: string[] = []
+        for (let h = dd * dh; h < (dd + 1) * dh; h++) {
+          stacks[g][h].forEach((b, i) => {
+            if (b.fuel === 'hydro') terms.push(` + x_${s}_${h}_${i}`)
+          })
+        }
+        if (!terms.length) continue
+        const name = ndays === 1 ? `hyd_${s}` : `hyd_${s}_${dd}`
+        rows.push(` ${name}:` + terms.join('') + ` <= ${mtext(micro(budget))}`)
       }
-      if (!terms.length) continue
-      rows.push(` hyd_${s}:` + terms.join('') + ` <= ${mtext(micro(budget))}`)
     }
   }
 

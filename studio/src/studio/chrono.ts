@@ -474,6 +474,252 @@ export function runChronology(
   }
 }
 
+export interface WeekDaySummary {
+  date: string
+  meanPrice: Record<GridKey, number>
+  peakPrice: Record<GridKey, number>
+  startSocMwh: number
+  endSocMwh: number
+}
+
+export interface WeekResult {
+  hours: (ChronoHour & { day: number })[]
+  days: WeekDaySummary[]
+  summary: {
+    dates: string[]
+    physicalCost: number
+    meanPrice: Record<GridKey, number>
+    peakPrice: Record<GridKey, number>
+    unservedMwh: Record<GridKey, number>
+    leyteRentMPhp: number
+    mvipRentMPhp: number
+    socSwingMwh: number
+  }
+  objective: number
+}
+
+interface AssembledWeek {
+  stacks: Record<GridKey, Block[][]>
+  demand: Record<GridKey, number[]>
+  caps: { leyte: number[]; mvip: number[] }
+  wheel: number
+  storage: LpStorage[]
+  voll: number
+  hydroBudget: Partial<Record<GridKey, Array<number | null> | null>> | null
+  H: number
+  text: string
+}
+
+/** Concatenate seven assembled days into one 168-hour model, water kept
+ * daily-budgeted. Mirror of lp_dispatch.run_week_lp's assembly. */
+function assembleWeek(
+  d: Dispatch,
+  profiles: Profiles,
+  dates: string[],
+  opts: ChronoOpts
+): AssembledWeek {
+  const days = dates.map((date) => assembleDay(d, profiles, date, opts))
+  const H = days.length * 24
+  const expand = (c: number | number[]) => (Array.isArray(c) ? [...c] : Array(24).fill(c))
+  const stacks = {} as Record<GridKey, Block[][]>
+  const demand = {} as Record<GridKey, number[]>
+  for (const g of GRID_KEYS) {
+    stacks[g] = days.flatMap((m) => m.stacks[g])
+    demand[g] = days.flatMap((m) => m.demand[g])
+  }
+  const caps = {
+    leyte: days.flatMap((m) => expand(m.caps.leyte)),
+    mvip: days.flatMap((m) => expand(m.caps.mvip)),
+  }
+  const wheel = days[0].wheel
+  const storage = days[0].storage
+  const voll = Math.max(...days.map((m) => m.voll))
+  // per-day water: hydroBudget[g] becomes an nd-long list, one cap per day,
+  // skipping grids that carry no budget on any day
+  let hydroBudget: Partial<Record<GridKey, Array<number | null> | null>> | null = {}
+  let anyHydro = false
+  for (const g of GRID_KEYS) {
+    const perDay = days.map((m) => (m.hydroBudget ?? {})[g] ?? null)
+    const has = perDay.some((v) => v != null)
+    hydroBudget[g] = has ? perDay : null
+    if (has) anyHydro = true
+  }
+  if (!anyHydro) hydroBudget = null
+  const text = buildDayLp(stacks, demand, caps, wheel, storage, null, voll, hydroBudget, null, 24)
+  return { stacks, demand, caps, wheel, storage, voll, hydroBudget, H, text }
+}
+
+/** The canonical 168-hour week LP text; the week golden hashes this. */
+export function buildWeekLpText(
+  d: Dispatch,
+  profiles: Profiles,
+  dates: string[],
+  opts: ChronoOpts = {}
+): string {
+  return assembleWeek(d, profiles, dates, opts).text
+}
+
+/** A native seven-day chronology on ONE 168-hour LP: storage carries across
+ * midnight instead of resetting each day, while the water stays daily-budgeted
+ * (hydroDayHours=24). Reserve and gas are day-mode analyses and stay off here.
+ * Mirror of lp_dispatch.run_week_lp; the week golden pins buildWeekLpText's sha. */
+export function runWeek(
+  d: Dispatch,
+  profiles: Profiles,
+  dates: string[],
+  opts: ChronoOpts = {}
+): WeekResult {
+  const { stacks, demand, caps, wheel, storage, voll, H, text } = assembleWeek(
+    d,
+    profiles,
+    dates,
+    opts
+  )
+  const S: Record<GridKey, string> = { luzon: 'l', visayas: 'v', mindanao: 'm' }
+  const sol = solveLp(text)
+
+  const hours = Array.from({ length: H }, (_, h) => {
+    const dd = Math.floor(h / 24)
+    const f1 = sol.col(`f1p_${h}`) - sol.col(`f1n_${h}`)
+    const f2 = sol.col(`f2p_${h}`) - sol.col(`f2n_${h}`)
+    const price = {} as Record<GridKey, number>
+    const shed = {} as Record<GridKey, number>
+    const fuelGen = {} as Record<GridKey, Record<string, number>>
+    for (const g of GRID_KEYS) {
+      price[g] = round3(sol.dual(`bal_${S[g]}_${h}`))
+      shed[g] = Math.max(0, round1(sol.col(`u_${S[g]}_${h}`)))
+      const per: Record<string, number> = {}
+      stacks[g][h].forEach((b, i) => {
+        const x = sol.col(`x_${S[g]}_${h}_${i}`)
+        if (x > 1e-6) per[b.fuel] = (per[b.fuel] ?? 0) + x
+      })
+      fuelGen[g] = Object.fromEntries(Object.entries(per).map(([f, v]) => [f, round1(v)]))
+    }
+    const charge = { luzon: 0, visayas: 0, mindanao: 0 } as Record<GridKey, number>
+    const dis = { luzon: 0, visayas: 0, mindanao: 0 } as Record<GridKey, number>
+    let socTotal = 0
+    const storeMarg = { luzon: false, visayas: false, mindanao: false } as Record<
+      GridKey,
+      boolean
+    >
+    storage.forEach((st, k) => {
+      const dk = sol.col(`dis_${k}_${h}`)
+      charge[st.grid] += sol.col(`ch_${k}_${h}`)
+      dis[st.grid] += dk
+      socTotal += sol.col(`soc_${k}_${h}`)
+      if (dk > STORE_EPS && dk < st.power_mw - STORE_EPS) storeMarg[st.grid] = true
+    })
+    for (const g of GRID_KEYS)
+      if (dis[g] > 1e-6) fuelGen[g].storage = round1((fuelGen[g].storage ?? 0) + dis[g])
+    const dem = {} as Record<GridKey, number>
+    for (const g of GRID_KEYS) dem[g] = demand[g][h] + charge[g]
+    const gen: Record<GridKey, number> = {
+      luzon: dem.luzon + f1 - shed.luzon,
+      visayas: dem.visayas + f2 - f1 - shed.visayas,
+      mindanao: dem.mindanao - f2 - shed.mindanao,
+    }
+    const marg = {} as Record<GridKey, string | null>
+    for (const g of GRID_KEYS) {
+      let hydMarg = false
+      if (Math.abs(sol.dual(`hyd_${S[g]}_${dd}`)) > 1e-6) {
+        stacks[g][h].forEach((b, i) => {
+          if (b.fuel === 'hydro') {
+            const x = sol.col(`x_${S[g]}_${h}_${i}`)
+            if (x > STORE_EPS && x < b.mw - STORE_EPS) hydMarg = true
+          }
+        })
+      }
+      const mres = marginal(stacks[g][h], round1(gen[g]))
+      marg[g] = priceLabel(price[g], mres.cost, mres.fuel, storeMarg[g], hydMarg, shed[g] > STORE_EPS)
+    }
+    const cap1 = caps.leyte[h]
+    const cap2 = caps.mvip[h]
+    const sat1 = Math.abs(f1) >= cap1 - FLOW_SAT_EPS
+    const sat2 = Math.abs(f2) >= cap2 - FLOW_SAT_EPS
+    return {
+      hour: h,
+      day: dd,
+      price,
+      marginal: marg,
+      demand: {
+        luzon: round1(dem.luzon),
+        visayas: round1(dem.visayas),
+        mindanao: round1(dem.mindanao),
+      },
+      shortfall: shed,
+      flowLV: round1(f1),
+      flowVM: round1(f2),
+      leyte: {
+        sat: sat1,
+        rent: sat1
+          ? round3(f1 > 0 ? price.visayas - price.luzon : price.luzon - price.visayas)
+          : 0,
+      },
+      mvip: {
+        sat: sat2,
+        rent: sat2
+          ? round3(f2 > 0 ? price.mindanao - price.visayas : price.visayas - price.mindanao)
+          : 0,
+      },
+      fuelGen,
+      socMwh: round1(socTotal),
+      chargeMw: round1(Object.values(charge).reduce((s, v) => s + v, 0)),
+      dischargeMw: round1(Object.values(dis).reduce((s, v) => s + v, 0)),
+    }
+  })
+
+  const per = (f: (g: GridKey) => number) =>
+    ({ luzon: f('luzon'), visayas: f('visayas'), mindanao: f('mindanao') }) as Record<
+      GridKey,
+      number
+    >
+  const daySummaries: WeekDaySummary[] = dates.map((date, dd) => {
+    const block = hours.filter((o) => o.day === dd)
+    return {
+      date,
+      meanPrice: per((g) => round3(block.reduce((s, o) => s + o.price[g], 0) / 24)),
+      peakPrice: per((g) => Math.max(...block.map((o) => o.price[g]))),
+      startSocMwh: round1(block[0].socMwh),
+      endSocMwh: round1(block[block.length - 1].socMwh),
+    }
+  })
+  const rentM = (key: 'leyte' | 'mvip', flowKey: 'flowLV' | 'flowVM') =>
+    round3(
+      hours.reduce((s, o) => s + (o[key].sat ? (Math.abs(o[flowKey]) * o[key].rent) / 1000 : 0), 0)
+    )
+
+  // physical system cost EXCLUDING the uniqueness epsilons; the comparable
+  // number for the inter-day saving (mirror of lp_dispatch.run_week_lp)
+  let phys = 0
+  for (let h = 0; h < H; h++) {
+    for (const g of GRID_KEYS) {
+      stacks[g][h].forEach((b, i) => {
+        phys += sol.col(`x_${S[g]}_${h}_${i}`) * b.cost
+      })
+      phys += voll * sol.col(`u_${S[g]}_${h}`)
+    }
+    phys +=
+      wheel *
+      (sol.col(`f1p_${h}`) + sol.col(`f1n_${h}`) + sol.col(`f2p_${h}`) + sol.col(`f2n_${h}`))
+  }
+
+  return {
+    hours,
+    days: daySummaries,
+    summary: {
+      dates,
+      physicalCost: round1(phys),
+      meanPrice: per((g) => round3(hours.reduce((s, o) => s + o.price[g], 0) / H)),
+      peakPrice: per((g) => Math.max(...hours.map((o) => o.price[g]))),
+      unservedMwh: per((g) => round1(hours.reduce((s, o) => s + o.shortfall[g], 0))),
+      leyteRentMPhp: rentM('leyte', 'flowLV'),
+      mvipRentMPhp: rentM('mvip', 'flowVM'),
+      socSwingMwh: round1(Math.max(0, ...hours.map((o) => o.socMwh))),
+    },
+    objective: sol.objective,
+  }
+}
+
 /** Duration points (pct of window, price high to low) from a run's hourly prices. */
 export function runDuration(
   hours: ChronoHour[],
