@@ -18,6 +18,9 @@ export interface SavedRun {
   engineVersion: number
   hours: ChronoHour[]
   summaries: ChronoSummary[]
+  // override keys that came from a user-supplied CSV import (item 2); present
+  // so a frozen run still labels its user-supplied inputs in the report
+  importedKeys?: string[]
 }
 
 const KEY = 'power-dispatch-studio-runs-v1'

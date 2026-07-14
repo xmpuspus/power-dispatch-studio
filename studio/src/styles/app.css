@@ -927,6 +927,38 @@
   align-self: flex-start;
   margin-top: 2px;
 }
+.byo {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line, #e5e7eb);
+}
+.byo__head {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.byo__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 8px 0;
+}
+.byo__badge {
+  font-size: 12px;
+  color: var(--accent, #2563eb);
+  font-weight: 600;
+}
+.byo__msg {
+  margin-top: 4px;
+}
+.statuschip--user {
+  color: var(--accent, #2563eb);
+  font-weight: 600;
+}
+.propgrid__input.is-imported {
+  outline: 1px dashed var(--accent, #2563eb);
+  outline-offset: -1px;
+}
 .kvs {
   display: flex;
   flex-direction: column;

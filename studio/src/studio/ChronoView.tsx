@@ -24,6 +24,7 @@ export function ChronologyView({
   profiles,
   objects,
   overrides,
+  importedKeys,
   grid,
   scenarioName,
   date,
@@ -36,6 +37,7 @@ export function ChronologyView({
   profiles: Profiles
   objects: Record<ClassId, ObjRow[]>
   overrides: Overrides
+  importedKeys?: string[]
   grid: GridKey
   scenarioName: string
   date: string
@@ -158,6 +160,7 @@ export function ChronologyView({
         savedAt: new Date().toISOString(),
         scenarioName,
         overrides,
+        importedKeys,
         date,
         span,
         engineVersion: ENGINE_VERSION,

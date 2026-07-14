@@ -3,6 +3,8 @@ import type { Dispatch, GridKey } from '../lib/types'
 import { fuelLabel, num, php, useEmissions, useGenerators } from '../lib/data'
 import { Panel, StatTile, Chip, EmptyNote } from '../ui/kit'
 import { MeritStack, FlowDiagram } from './charts'
+import { buildTemplateCsv, type ImportResult } from './importData'
+import { downloadCsv } from './runs'
 import { solveScenario, type Levers, type TrippableUnit } from './engine'
 import {
   CARBON_DISCLAIMER,
@@ -40,6 +42,8 @@ export function ScenarioView({
   overrides,
   onEdit,
   onRevert,
+  onImportCsv,
+  importedKeys,
 }: {
   d: Dispatch
   grid: GridKey
@@ -47,6 +51,8 @@ export function ScenarioView({
   overrides: Overrides
   onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
   onRevert: (cls: ClassId, id: string, prop: string) => void
+  onImportCsv?: (text: string) => ImportResult
+  importedKeys?: string[]
 }) {
   const gens = useGenerators()
   const em = useEmissions()
@@ -141,6 +147,21 @@ export function ScenarioView({
       else onRevert('fuel', f.id, 'cost')
     }
   }
+  const [importMsg, setImportMsg] = useState<string>('')
+  const onImportFile = (file: File | undefined) => {
+    if (!file || !onImportCsv) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      const res: ImportResult = onImportCsv(String(reader.result ?? ''))
+      const parts = [`Imported ${res.matched} value${res.matched === 1 ? '' : 's'}.`]
+      if (res.skipped.length) parts.push(`No object matched: ${res.skipped.join(', ')}.`)
+      if (res.warnings.length) parts.push(res.warnings.join(' '))
+      setImportMsg(parts.join(' '))
+    }
+    reader.onerror = () => setImportMsg('Could not read that file.')
+    reader.readAsText(file)
+  }
+
   const resetLevers = () => {
     setLv(initLevers(d, grid))
     setCarbonPrice(0)
@@ -302,6 +323,49 @@ export function ScenarioView({
             <button className="btn btn--ghost lever__reset" onClick={resetLevers}>
               Reset levers
             </button>
+            {onImportCsv && (
+              <div className="byo">
+                <div className="byo__head">Bring your own data</div>
+                <p className="note">
+                  Load a CSV of your own unit parameters (dependable MW, fuel price, forced
+                  outage), region load, or corridor limits. It stays in this browser and is
+                  never uploaded. Imported values are labeled user-supplied everywhere.
+                </p>
+                <div className="byo__actions">
+                  <label className="btn btn--ghost btn--sm">
+                    Import CSV
+                    <input
+                      type="file"
+                      accept="text/csv,.csv"
+                      style={{ display: 'none' }}
+                      onChange={(e) => {
+                        onImportFile(e.target.files?.[0])
+                        e.target.value = ''
+                      }}
+                    />
+                  </label>
+                  <button
+                    className="btn btn--ghost btn--sm"
+                    onClick={() =>
+                      downloadCsv('power-dispatch-import-template.csv', buildTemplateCsv())
+                    }
+                  >
+                    Download template
+                  </button>
+                  {importedKeys && importedKeys.length > 0 && (
+                    <span className="byo__badge">
+                      {importedKeys.length} user-supplied value
+                      {importedKeys.length === 1 ? '' : 's'} active
+                    </span>
+                  )}
+                </div>
+                {importMsg && <p className="byo__msg note">{importMsg}</p>}
+                <p className="note">
+                  Full hourly load shapes and hydro inflow series are consumed by the baked
+                  chronology, not these per-object overrides, so they are out of this import.
+                </p>
+              </div>
+            )}
           </div>
         </Panel>
 

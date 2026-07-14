@@ -50,6 +50,10 @@ export type Overrides = Record<string, number>
 export interface Scenario {
   name: string
   overrides: Overrides
+  // override keys whose value came from a user-supplied CSV import (item 2),
+  // tracked so every view and the report can label them user-supplied and never
+  // uploaded, distinct from the baked public data
+  importedKeys?: string[]
 }
 
 export const CLASSES: SystemClass[] = [

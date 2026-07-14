@@ -106,6 +106,22 @@ ${rows
     }; lifecycle emissions are out of scope. Storage discharge carries no factor of its own; its charging energy is counted at the generating fuel.</p>`
   }
 
+  let userSupplied = ''
+  const imported = run.importedKeys ?? []
+  if (imported.length) {
+    const rows = imported
+      .map((k) => {
+        const cls = k.slice(0, k.indexOf(':'))
+        const prop = k.slice(k.lastIndexOf(':') + 1)
+        const id = k.slice(cls.length + 1, k.length - prop.length - 1)
+        return `<tr><td>${esc(cls)}</td><td>${esc(id)}</td><td>${esc(prop)}</td><td class="n">${run.overrides[k]}</td></tr>`
+      })
+      .join('')
+    userSupplied = `<h2>User-supplied inputs (${imported.length})</h2>
+<table><thead><tr><th>Class</th><th>Object</th><th>Property</th><th class="n">Value</th></tr></thead><tbody>${rows}</tbody></table>
+<p class="note">These values were imported from the analyst's own CSV in the browser and never uploaded. They are the analyst's inputs, not the baked public data.</p>`
+  }
+
   let capture = ''
   if (run.hours.length) {
     const rows = capturePrices(run.hours)
@@ -159,6 +175,7 @@ ${
   ).join('')}<th class="n">Unserved MWh</th><th class="n">Rent MP</th></tr></thead>
 <tbody>${sumRows}</tbody></table>
 
+${userSupplied}
 ${bindingBlocks}
 ${capture}
 ${emissions}

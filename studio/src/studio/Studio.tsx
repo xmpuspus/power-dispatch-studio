@@ -28,6 +28,7 @@ import {
   type Scenario,
   type SolvedModel,
 } from './model'
+import { parseImportCsv, type ImportResult } from './importData'
 import {
   CompareView,
   MembershipsView,
@@ -218,25 +219,51 @@ export function Studio({
     setDirty(false)
   }
   const edit = (cls: ClassId, id: string, prop: string, value: number) => {
+    const k = overrideKey(cls, id, prop)
     setScenarios((prev) =>
       prev.map((s, i) =>
         i === ai
-          ? { ...s, overrides: { ...s.overrides, [overrideKey(cls, id, prop)]: value } }
+          ? {
+              ...s,
+              overrides: { ...s.overrides, [k]: value },
+              // a manual edit supersedes an imported value: it is no longer
+              // user-supplied data, it is a studio edit
+              importedKeys: (s.importedKeys ?? []).filter((x) => x !== k),
+            }
           : s
       )
     )
     setDirty(true)
   }
   const revert = (cls: ClassId, id: string, prop: string) => {
+    const k = overrideKey(cls, id, prop)
     setScenarios((prev) =>
       prev.map((s, i) => {
         if (i !== ai) return s
         const o = { ...s.overrides }
-        delete o[overrideKey(cls, id, prop)]
-        return { ...s, overrides: o }
+        delete o[k]
+        return { ...s, overrides: o, importedKeys: (s.importedKeys ?? []).filter((x) => x !== k) }
       })
     )
     setDirty(true)
+  }
+  const importCsv = (text: string): ImportResult => {
+    const res = parseImportCsv(text, objects)
+    if (res.matched > 0) {
+      setScenarios((prev) =>
+        prev.map((s, i) =>
+          i === ai
+            ? {
+                ...s,
+                overrides: { ...s.overrides, ...res.overrides },
+                importedKeys: [...new Set([...(s.importedKeys ?? []), ...res.importedKeys])],
+              }
+            : s
+        )
+      )
+      setDirty(true)
+    }
+    return res
   }
   const pickScenario = (idx: number) => {
     setAi(idx)
@@ -245,7 +272,11 @@ export function Studio({
   const addScenario = () => {
     setScenarios((prev) => [
       ...prev,
-      { name: `Scenario ${prev.length}`, overrides: { ...prev[ai].overrides } },
+      {
+        name: `Scenario ${prev.length}`,
+        overrides: { ...prev[ai].overrides },
+        importedKeys: [...(prev[ai].importedKeys ?? [])],
+      },
     ])
     setAi(scenarios.length)
     setDirty(true)
@@ -258,7 +289,9 @@ export function Studio({
       (nav.id === 'reserve' || nav.id === 'backcast' || nav.id === 'capture'))
 
   const revertAll = () => {
-    setScenarios((prev) => prev.map((s, i) => (i === ai ? { ...s, overrides: {} } : s)))
+    setScenarios((prev) =>
+      prev.map((s, i) => (i === ai ? { ...s, overrides: {}, importedKeys: [] } : s))
+    )
     setDirty(true)
   }
   const copySummary = () => {
@@ -337,6 +370,8 @@ export function Studio({
                 dirty={dirty}
                 onEdit={edit}
                 onRevert={revert}
+                onImportCsv={importCsv}
+                importedKeys={active.importedKeys}
                 onRun={run}
               />
             </SolveBoundary>
@@ -350,6 +385,12 @@ export function Studio({
         </span>
         <span>
           Scenario <b>{active.name}</b>, {editCount} edit{editCount === 1 ? '' : 's'}
+          {active.importedKeys && active.importedKeys.length > 0 && (
+            <span className="statuschip statuschip--user" title="Your own CSV inputs, never uploaded">
+              {' '}
+              user-supplied data ({active.importedKeys.length})
+            </span>
+          )}
         </span>
         <span>
           Luzon reserve margin <b>{pct(solved.reserveMarginPct.luzon / 100, 1)}</b>
@@ -671,6 +712,8 @@ function DataPane({
   dirty,
   onEdit,
   onRevert,
+  onImportCsv,
+  importedKeys,
   onRun,
 }: {
   d: Dispatch
@@ -693,6 +736,8 @@ function DataPane({
   dirty: boolean
   onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
   onRevert: (cls: ClassId, id: string, prop: string) => void
+  onImportCsv: (text: string) => ImportResult
+  importedKeys: string[] | undefined
   onRun: () => void
 }) {
   if (nav.kind === 'compare')
@@ -705,6 +750,7 @@ function DataPane({
         cls={nav.id}
         objects={objects}
         overrides={overrides}
+        importedKeys={importedKeys}
         dirty={dirty}
         onEdit={onEdit}
         onRevert={onRevert}
@@ -721,6 +767,8 @@ function DataPane({
         overrides={overrides}
         onEdit={onEdit}
         onRevert={onRevert}
+        onImportCsv={onImportCsv}
+        importedKeys={importedKeys}
       />
     )
   if (nav.kind === 'phase') {
@@ -758,6 +806,7 @@ function DataPane({
         profiles={profiles}
         objects={objects}
         overrides={ranOv}
+        importedKeys={importedKeys}
         grid={grid}
         scenarioName={scenarioName}
         date={chronoDate}
@@ -904,6 +953,7 @@ function ClassPane({
   cls,
   objects,
   overrides,
+  importedKeys,
   dirty,
   onEdit,
   onRevert,
@@ -912,6 +962,7 @@ function ClassPane({
   cls: ClassId
   objects: ReturnType<typeof baseObjects>
   overrides: Scenario['overrides']
+  importedKeys: string[] | undefined
   dirty: boolean
   onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
   onRevert: (cls: ClassId, id: string, prop: string) => void
@@ -962,6 +1013,7 @@ function ClassPane({
             cls={cls}
             rows={rows}
             overrides={overrides}
+            importedKeys={importedKeys}
             onEdit={onEdit}
             onRevert={onRevert}
           />
