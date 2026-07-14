@@ -28,6 +28,13 @@ Live: [the map](https://power-dispatch-studio.vercel.app) and
 `web/index.html` after `make data` and read
 [every number and source](web/methodology.html).
 
+The dispatch engine is also a pip package,
+[power-dispatch-studio on PyPI](https://pypi.org/project/power-dispatch-studio/):
+`pip install power-dispatch-studio`, then `power-dispatch run --date 2026-06-17`
+emits an hourly CSV, or `import power_dispatch as pd; pd.run_scenario(...)` in a
+notebook. It is the same LP engine the browser runs, with a bundled snapshot of
+the public data archive, so it works offline.
+
 The whole argument in four charts: the grid names its own choke point, the price
 is a shape a data center barely moves with room and jumps when full, one plant
 trip takes a fifth of the margin, and a WESM swing is only a slice of the Meralco

@@ -11,3 +11,4 @@ tmp/
 .vercel
 dist/
 *.egg-info/
+uv.lock
