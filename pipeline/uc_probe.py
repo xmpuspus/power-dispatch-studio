@@ -2,7 +2,7 @@
 """MILP unit commitment vs the LP dispatch, measured on the backcast (roadmap
 item 9).
 
-PLEXOS runs a mixed-integer unit commitment: each thermal unit is either
+A commercial production-cost tool runs a mixed-integer unit commitment: each thermal unit is either
 committed (and must then run at or above its minimum-stable level) or off, with
 start costs and minimum up/down times. The studio dispatches LP blocks, so a
 committed coal tranche can idle to zero instead of holding a must-run floor.

@@ -1107,7 +1107,7 @@
   font-weight: 500;
 }
 
-/* ============ PLEXOS shell: ribbon, run, status ============ */
+/* ============ studio shell: ribbon, run, status ============ */
 .studio__ribbon {
   display: flex;
   align-items: center;

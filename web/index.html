@@ -762,7 +762,7 @@ function setMode(m, syncRail = true){
          <span class="x-blurb">Every column is observed archive data: prices, curtailment, advisories, binding constraints. Open Details for the day-by-day feed.</span>`
       : `<span class="x-tag">Beyond the three questions</span>
          <span class="x-title">Simulate the dispatch</span>
-         <span class="x-blurb">A simplified merit-order model, not PLEXOS. Move the levers in Details; the price re-clears in your browser.</span>`;
+         <span class="x-blurb">A simplified merit-order model. Move the levers in Details; the price re-clears in your browser.</span>`;
   }
   syncURL();
 }
@@ -1009,7 +1009,7 @@ function sideSimulate(){
   const mfreq = (disp.marginal_frequency||{})[g];
   window.__diag.priceDuration = !!pdur;
   return `<h2>Simulate the dispatch</h2>
-  <p class="sub">A simplified merit-order model, <b>not PLEXOS</b>: it stacks the
+  <p class="sub">A <b>simplified merit-order model</b>: it stacks the
   sourced fleet by marginal cost against demand and reads off the clearing price.
   Move the levers; the price re-clears here in your browser, on the same stack the
   model baked. Calibrated against observed prices, not a predictor of them.</p>

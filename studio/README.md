@@ -10,38 +10,37 @@ price tape. Everything runs client-side on baked public data. There is no
 license server, no import wizard, and no project file: a scenario and its run
 window encode into the URL.
 
-This is an independent, open homage. Not affiliated with Energy Exemplar. Not
-PLEXOS.
+It is free and open, built on public data, with no license, no install, and no
+account.
 
 ![Screen recording: opening the studio, editing a generator in the properties grid, running the model, replaying an observed day in Chronology, and reading the backcast against observed prices.](docs/demo.gif)
 
-## If you use PLEXOS
+## What the studio does
 
-The studio deliberately follows the concepts you already have, at a fraction of
-the fidelity and none of the setup cost. The mapping:
+Every surface a WESM analyst needs, browser-side on baked public data:
 
-| PLEXOS concept | Studio equivalent | What to expect |
-| --- | --- | --- |
-| Objects and classes | System tree: Generators, Fuels, Interfaces, Regions, Storage | Generators are the DOE List of Existing Power Plants at unit level (355 units, 2025 editions); Interfaces are the two HVDC corridors (Leyte-Luzon, MVIP) |
-| Properties grid, scenario tagging | Same interaction: edit a cell, the edit is tagged to the active scenario, revert per cell | Base values return with the x on a changed cell |
-| Execute | Run | One HiGHS linear program clearing the three grids together (the browser runs the same wasm solver build commercial tools embed); milliseconds per solve, so the Run gate is authentic without the queue |
-| ST Schedule | Chronology | Hour-by-hour replay of an observed market day (or the week ending on it) from the IEMOP archive, on your edited model |
-| LT Plan | LT Plan view | The DOE's committed and indicative project lists (reconciled to the DOE's own subtotals) as build candidates on a horizon slider; Apply writes them into the scenario as ordinary edits. No expansion optimizer runs |
-| PASA | PASA view | The operator's own outage schedules (OUTRTD), sized against the DOE fleet, with the reliability Monte Carlo re-run on the day's scheduled-out MW |
-| Execute a model list | Load sweep | The snapshot solve stepped over added flat load on one grid: where the corridor binds, where the marginal fuel flips, where unserved load begins |
-| Stochastic samples | Window band | The scenario replayed across every full-coverage market day in the archive; per-hour price percentiles and the daily-mean distribution. The sample is the observed days, nothing synthetic |
-| Binding-constraint reporting | What set the price | Every Chronology hour classified: marginal fuel block, saturated corridor on the importing side, or unserved load |
-| Solution browser | Solution views | Merit order, Chronology, Load sweep, Window band, Coupled flows, N-1, Regions, a seeded Monte Carlo reliability, plus scenario compare |
-| Solution files | Saved runs | Frozen solves (scenario snapshot, window, engine version, hourly results): diff two runs, export hourly CSV or a self-contained HTML report, restore as a scenario |
-| Emissions accounting | Emissions view | Dispatched energy priced in operational tCO2 with sourced per-technology factors; biomass reported uncounted rather than assigned a contested factor |
-| Datafiles | Baked JSON artifacts | Produced by the Python pipeline from archived IEMOP files; the frontend never computes a number the pipeline cannot reproduce |
-| Model validation | Backcast view | Every full-coverage market day replayed against observed hourly LWAP, error stated per grid, nothing tuned |
+| Surface | What it is |
+| --- | --- |
+| System tree: Generators, Fuels, Interfaces, Regions, Storage | Generators are the DOE List of Existing Power Plants at unit level (355 units, 2025 editions); Interfaces are the two HVDC corridors (Leyte-Luzon, MVIP) |
+| Properties grid with scenario tagging | Edit a cell and the edit is tagged to the active scenario, revert per cell; base values return with the x on a changed cell |
+| Run | One HiGHS linear program clearing the three grids together (the browser runs the same wasm solver build commercial tools embed); milliseconds per solve, so the Run gate is authentic without the queue |
+| Chronology (Short-term) | Hour-by-hour replay of an observed market day, or the week ending on it, from the IEMOP archive, on your edited model |
+| Long-term | The DOE's committed and indicative project lists (reconciled to the DOE's own subtotals) as build candidates on a horizon slider; Apply writes them into the scenario as ordinary edits |
+| Adequacy | The operator's own outage schedules (OUTRTD), sized against the DOE fleet, with the reliability Monte Carlo re-run on the day's scheduled-out MW |
+| Load sweep | The snapshot solve stepped over added flat load on one grid: where the corridor binds, where the marginal fuel flips, where unserved load begins |
+| Window band | The scenario replayed across every full-coverage market day in the archive; per-hour price percentiles and the daily-mean distribution. The sample is the observed days, nothing synthetic |
+| What set the price | Every Chronology hour classified: marginal fuel block, saturated corridor on the importing side, or unserved load |
+| Solution views | Merit order, Chronology, Load sweep, Window band, Coupled flows, N-1, Regions, a seeded Monte Carlo reliability, plus scenario compare |
+| Saved runs | Frozen solves (scenario snapshot, window, engine version, hourly results): diff two runs, export hourly CSV or a self-contained HTML report, restore as a scenario |
+| Emissions | Dispatched energy priced in operational tCO2 with sourced per-technology factors; biomass reported uncounted rather than assigned a contested factor |
+| Baked JSON artifacts | Produced by the Python pipeline from archived IEMOP files; the frontend never computes a number the pipeline cannot reproduce |
+| Backcast | Every full-coverage market day replayed against observed hourly LWAP, error stated per grid, nothing tuned |
 
 What it is not: an LP, not a MILP: no unit commitment, no security
-constraints, and no nodal network. The dispatch model chooses no builds (the LT
-Plan view applies the DOE's own lists); a separate Expansion mix analysis runs a
-labeled greenfield least-cost LP as a direction check, not a build recommendation.
-The scope section below states exactly what solves.
+constraints, and no nodal network. The dispatch model chooses no builds (the
+Long-term view applies the DOE's own lists); a separate Expansion mix analysis
+runs a labeled greenfield least-cost LP as a direction check, not a build
+recommendation. The scope section below states exactly what solves.
 
 ## The model and its scope
 
@@ -319,47 +318,37 @@ DICT build both read +P5.98/kWh because both step Luzon from the P6 block to the
 P12 one. The corridor-saturation hours, the 275 MW threshold, and the 87.8%
 backcast are the structural claims that do not turn on block height.
 
-### What parity proves, and what it does not
+### How far these analyses are validated
 
-Three claims in this project carry the word parity, and they are not the same
-claim. Being exact about which one is proven is the point.
+Two things stand behind every number the studio shows, and it is worth being
+exact about each.
 
-1. **Workflow coverage, shown by construction.** An analyst can run the eight
-analyses they would open PLEXOS for: chronological dispatch, model validation,
-reserve, capacity expansion, portfolio revenue, forward and multi-year price
-scenarios, and sub-hourly replay. Each has a working view (the ten added in the
-July 2026 build-out are galleried below). You verify this by using it. It is a
-coverage claim, not a claim that any number equals PLEXOS's.
-
-2. **Dual-engine self-consistency, proven by hash.** The Python pipeline and the
+1. **Dual-engine self-consistency, proven by hash.** The Python pipeline and the
 browser build the byte-identical linear program (sha256-pinned) and reproduce the
-same outputs to P0.02/kWh. This proves the studio is consistent with its own
-reference engine: studio equals pipeline. It says nothing about PLEXOS.
+same outputs to P0.02/kWh. The studio is consistent with its own reference engine:
+studio equals pipeline.
 
-3. **Validation against observed reality, measured and not against PLEXOS.** The
-dispatch is scored against observed WESM prices over 56 market days; Luzon tracks
-at 0.36 correlation with a stated negative bias, the scarcity premium a cost model
-cannot see, reported not tuned. Every analysis that reads the dispatch (Chronology,
-Capture prices, Cross-run, Native week, Portfolio, five-minute replay) inherits
-this validation.
+2. **Validation against observed reality, measured.** The dispatch is scored
+against observed WESM prices over 56 market days; Luzon tracks at 0.36 correlation
+with a stated negative bias, the scarcity premium a cost model cannot see, reported
+not tuned. Every analysis that reads the dispatch (Chronology, Capture prices,
+Cross-run, Native week, Portfolio, five-minute replay) inherits this validation, so
+its credibility is the backcast's.
 
-What is not proven, and is not claimed: numerical parity with PLEXOS. There was no
-PLEXOS license, no PLEXOS Philippine model, and no PLEXOS output to compare
-against, so no head-to-head test exists anywhere in this repo. The engine is a
-simplified zonal merit-order LP, deliberately less detailed than PLEXOS: no
-security-constrained unit commitment, no ramp rates, no nodal network. Where the
-PLEXOS-grade detail was actually built and run through the same backcast, three
-additions (unit commitment with a generic minimum-stable level, each day's
-observed solar shape, and RTDHS corridor caps) made the fit to observed prices
-worse, because public Philippine data cannot support per-unit calibration; each
-measured delta is published in `market_ops.json` and the model keeps the simpler
-engine. That is the opposite of a parity claim: it is a measured account of where
-more PLEXOS-like detail does not pay for itself on the data that exists.
+The honest limit: the engine is a simplified zonal merit-order LP, with no
+security-constrained unit commitment, no ramp rates, and no nodal network. Where
+more unit-level detail was actually built and run through the same backcast, three
+additions (unit commitment with a generic minimum-stable level, each day's observed
+solar shape, and RTDHS corridor caps) made the fit to observed prices worse,
+because public Philippine data cannot support per-unit calibration; each measured
+delta is published in `market_ops.json` and the model keeps the simpler engine.
+Added detail is kept only when it earns its place against the price tape.
 
-Real numerical parity would take a licensed PLEXOS Philippine model, the same
-fleet, fuel, load, and constraints loaded in both, and an hour-by-hour comparison
-of dispatch, prices, flows, and unserved energy within tolerance. That is out of
-reach for an open project and is not claimed here.
+The forward-looking analyses (Forward prices, Multi-year path, Expansion mix, and
+the Ensembles band) cannot be backcast: there is no observed future or greenfield
+build to score against. Each runs on sourced inputs (the DOE PDP demand path, NREL
+ATB generic costs) and is labeled a scenario on one observed quarter, not a
+forecast.
 
 ## Three workflows to try
 
@@ -386,13 +375,13 @@ scenario with Copy link.
 
 ![Recorded studio walkthrough of the Malampaya cliff: repricing gas from the Malampaya cost P4.80 to the imported-LNG cost P10.30 lifts the whole Luzon price shape to the gas cost, mean P6.00 to P10.30 with congestion rent P25.39M; then in the Quick scenario, stacking imported LNG, the announced 1,500 MW build, and a dry year tips the evening to oil at P12.00, +P6.00/kWh.](docs/workflow-3-malampaya.gif)
 
-## The parity build-out: ten new analyses
+## Ten analyses added in the July 2026 build-out
 
 Ten analyses were added in the July 2026 build-out, one recorded clip each (real
 captures of the running studio; the numbers on screen are one dated bake and the
 live view recomputes them as the archive window rolls). How far each one is
-validated is the honest part, so read [What parity proves, and what it does
-not](#what-parity-proves-and-what-it-does-not) first.
+validated is the honest part, so read [How far these analyses are
+validated](#how-far-these-analyses-are-validated) first.
 
 Backcast-validated, each a transform of the dispatch the backcast scores against
 observed WESM prices:
@@ -455,7 +444,7 @@ prediction.
 **Expansion mix.** A separate, labeled greenfield least-cost linear program over
 representative periods with generic NREL ATB costs, beside the DOE's own pipeline.
 It lands near 70% renewables and reproduces the direction of the DOE plan's
-86.5%-RE share. A direction check, not PLEXOS capacity expansion, and not a build
+86.5%-RE share. A direction check, not a full capacity-expansion optimization, and not a build
 recommendation.
 
 ![Expansion mix: a least-cost greenfield technology-share table beside the DOE pipeline, with the RE-share tiles.](docs/view-expansion.gif)
@@ -595,5 +584,4 @@ done
 
 Code MIT; baked data products CC-BY-4.0. Attribution when redistributing:
 Power Dispatch Studio (2026), IEMOP public market data archive, DOE List of Existing
-Power Plants. The interface is an original work; PLEXOS is a trademark of
-Energy Exemplar, used here only to describe the homage.
+Power Plants. The interface is an original work.

@@ -1,4 +1,4 @@
-// Forward price scenarios (roadmap item 1): the reason a PH analyst opens PLEXOS.
+// Forward price scenarios (roadmap item 1): the reason a PH analyst opens a production-cost model.
 // Builds a forward price DISTRIBUTION per future year by sampling the observed
 // day library, applying the DOE PDP peak-demand growth for that year, and
 // drawing joint operating states (hydrology, fuel price, a forced outage)

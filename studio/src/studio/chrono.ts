@@ -1,6 +1,6 @@
 // Chronological dispatch engine: replay an observed day on the (optionally
 // edited) model, solved as ONE linear program over the 24 coupled hours by
-// HiGHS (the same solver build PLEXOS-class tools embed, compiled to wasm).
+// HiGHS (the same solver build commercial production-cost tools embed, compiled to wasm).
 // Storage is true inter-temporal optimisation (it cycles only when the price
 // spread beats the round-trip loss), the reserve toggle is a real
 // withheld-capacity constraint, and prices are the balance duals: locational

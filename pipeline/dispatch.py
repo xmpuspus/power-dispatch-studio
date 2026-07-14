@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A simplified merit-order economic-dispatch model for the Philippine grid.
 
-NOT PLEXOS. This stacks the sourced fleet (pipeline/fleet_ph.py) by marginal cost
+Not a production-cost optimiser. This stacks the sourced fleet (pipeline/fleet_ph.py) by marginal cost
 against the archive's observed dispatched generation, per grid, per interval, and
 reads off the marginal clearing price. Its honesty gate is the calibration residual
 against observed load-weighted average price (LWAP): a competitive cost stack fits
@@ -243,7 +243,7 @@ def build_coupling(intervals: dict, prices: dict) -> dict:
 
     coupling = {
         "model": "inter-island coupled economic dispatch (radial 3-grid path over "
-                 "the two HVDC corridors); still not PLEXOS",
+                 "the two HVDC corridors); a simplified merit-order model",
         "wheeling_cost_php_kwh": 0.02,
         "calibration_window": {"regime": "market-only", "from": resumed},
         "n_coupled_intervals": n_coupled,
@@ -504,7 +504,7 @@ def build_reliability_mc(hourly_dem: dict, draws: int = 20000, seed: int = 42) -
     per-fuel rate), then samples one evening-peak load (hours 18-21, when solar is
     gone and the risk sits), and takes the shortfall. Over the draws that gives a
     loss-of-load probability (share of tight intervals that go short) and the
-    distribution of shortfall size. Still not PLEXOS: only the named contingency
+    distribution of shortfall size. Still a simplified model: only the named contingency
     drivers are sampled, and the mean available capacity is pinned to the
     deterministic model so the outages add variance, not a lower mean. Snapshot
     draws, so no single outage is frozen across the window.
@@ -536,7 +536,7 @@ def build_reliability_mc(hourly_dem: dict, draws: int = 20000, seed: int = 42) -
         "method": "Monte Carlo forced outages on the 11 named large units (Bernoulli "
                   "at the sourced per-fuel rate) vs a sampled evening-peak load; "
                   "snapshot draws give a loss-of-load probability and a shortfall "
-                  "distribution, not a point. Still not PLEXOS.",
+                  "distribution, not a point. A simplified contingency model.",
         "draws": draws,
         "seed": seed,
         "load_hours": "18-21 (evening peak, solar ~ 0)",
@@ -1014,7 +1014,7 @@ def build_dispatch() -> dict:
         "unit": "PhP/kWh clearing price from a merit-order stack vs observed "
                 "dispatched generation, per grid, per 5-min interval",
         "model": "simplified merit-order economic dispatch, calibrated against "
-                 "observed LWAP; not PLEXOS",
+                 "observed LWAP",
         "assumptions": {
             "fuel_marginal_cost_php_kwh": FUEL_COST_PHP_KWH,
             "national_fuel_mw": NATIONAL_FUEL_MW,

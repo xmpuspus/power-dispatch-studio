@@ -116,8 +116,8 @@ export default function App() {
             PCIJ). Patterns may have legitimate explanations.
           </span>
           <span className="app__footnote">
-            Power Dispatch Studio is an independent open homage to the PLEXOS workflow.
-            Not affiliated with Energy Exemplar. Not PLEXOS.
+            Power Dispatch Studio is a free, open, independent production-cost tool for
+            the WESM, built on public data.
           </span>
         </footer>
       </main>

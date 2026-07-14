@@ -1,6 +1,6 @@
 // Window distribution: replay the ran scenario across EVERY full-coverage market
 // day in the archive and read the outcome as a band, not a single day. The
-// browser analog of a PLEXOS stochastic sample set: the sample is the archive's
+// browser analog of a commercial tool's stochastic sample set: the sample is the archive's
 // own observed days, nothing synthetic.
 
 import { useMemo } from 'react'

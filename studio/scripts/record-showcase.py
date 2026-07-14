@@ -5,7 +5,7 @@
              the operator's own offer book and the model tracks the real evening
              ramp hour by hour. Then the whole-window Backcast, nothing tuned.
   hero     : the end-to-end LinkedIn flow (open, build a data center, trip Sual,
-             switch to LNG, prove it against real prices, close on free-not-PLEXOS).
+             switch to LNG, prove it against real prices, close on free-and-open).
 
     python3 scripts/record-showcase.py backcast|hero|all
 Outputs a .webm per clip into /tmp/studio-rec.
@@ -193,8 +193,8 @@ async def hero(page: Page):
     await r.intro(
         "Free. In your browser. Nothing hidden.",
         "Every input traces to a public IEMOP, NGCP, or Meralco file, and the "
-        "whole thing rebuilds from a clean clone. An independent homage, not "
-        "affiliated with Energy Exemplar, not PLEXOS.",
+        "whole thing rebuilds from a clean clone. Free and open, built on "
+        "public data.",
         hold=4.0,
     )
     await asyncio.sleep(0.5)

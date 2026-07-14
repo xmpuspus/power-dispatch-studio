@@ -1,6 +1,6 @@
 // Cross-run analytics (roadmap item 17): every saved run's headline metrics in
 // one matrix, and a one-at-a-time lever tornado that ranks the Quick levers by
-// how far each moves the selected grid's price. PLEXOS Cloud does this in a
+// how far each moves the selected grid's price. Commercial suites do this in a
 // pivot dashboard; here it is one view over the runs already in the browser.
 
 import { useMemo } from 'react'

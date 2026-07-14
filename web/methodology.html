@@ -489,10 +489,11 @@ cannot supply, so the backcast keeps the clear-sky credit and the per-day
 observed solar stays a reported observation, not a replay input (the measured
 deltas live in market_ops.json vre_probe, regenerated from the current archive
 by pipeline/vre_probe.py).</li>
-<li><b>Unit commitment</b>: PLEXOS commits each thermal unit as an integer
-decision, so a committed unit holds a minimum-stable floor instead of idling to
-zero. We built that as a mixed-integer program on the same solver (HiGHS solves
-MIP on both engine builds): binary commitment plus a generic minimum-stable
+<li><b>Unit commitment</b>: a full production-cost model commits each thermal unit
+as an integer decision, so a committed unit holds a minimum-stable floor instead
+of idling to zero. We built that as a mixed-integer program on the same solver
+(HiGHS solves MIP on both engine builds): binary commitment plus a generic
+minimum-stable
 level on the thermal blocks (coal, gas, geothermal, oil, biomass, at NREL
 ATB / typical fractions, labeled generic), priced by solving the MIP, fixing the
 commitments, and reading the balance duals (pipeline/uc_probe.py). Measured on
@@ -570,7 +571,7 @@ products stay a market layer this model does not clear.</li>
 </ul>
 
 <h2>The planning layers (July 2026 pass)</h2>
-<p>Five layers added in the PLEXOS-carry-over pass. Each is either computed from
+<p>Five layers added in the market-operations pass. Each is either computed from
 the archive or a sourced list; none runs an optimizer.</p>
 <ul>
 <li><b>Load sweep</b>: the snapshot solve repeated over steps of added flat

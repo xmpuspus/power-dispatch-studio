@@ -1,4 +1,4 @@
-// Editable object model for the PLEXOS-style authoring surface. Objects (Fuels,
+// Editable object model behind the authoring surface. Objects (Fuels,
 // Generators, Interfaces, Regions) carry properties you edit in a grid; a Scenario is
 // a named override map; Run applies base + overrides, rebuilds the stacks, and solves
 // the coupled dispatch through engine.ts (which is golden-parity to the Python).

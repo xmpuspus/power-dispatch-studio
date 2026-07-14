@@ -363,7 +363,7 @@ export function ChronologyView({
         whole day solves as one linear program (HiGHS): storage couples the hours, prices
         are the balance duals (locational marginal prices, so an importing hour can price
         at the exporter plus the wheeling cost), and shedding never beats available
-        capacity. Still not PLEXOS: blocks, not units.
+        capacity. Still not full unit commitment: blocks, not units.
       </p>
     </div>
   )

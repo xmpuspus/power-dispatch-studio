@@ -116,8 +116,8 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   vintage: 'Assumptions',
 }
 const PHASE_LABEL: Record<PhaseId, string> = {
-  lt: 'LT Plan',
-  pasa: 'PASA',
+  lt: 'Long-term',
+  pasa: 'Adequacy',
 }
 // views that recompute from the current model (the rest read the calibrated base case)
 const LIVE_SOL = new Set<SolId>([
@@ -351,8 +351,8 @@ export function Studio({
             <div className="studio__tag">Philippine WESM</div>
           </div>
         </div>
-        <span className="studio__homage" title="An independent, open homage.">
-          An independent homage. Not affiliated with Energy Exemplar. Not PLEXOS.
+        <span className="studio__homage" title="Free and open, built on public data.">
+          Open production-cost studio for the WESM, built on public data.
         </span>
         <div className="studio__barright">
           <span className={`statuschip statuschip--${dirty ? 'unsolved' : 'solved'}`}>
@@ -419,7 +419,7 @@ export function Studio({
 
       <footer className="studio__status mono">
         <span>
-          Phase <b>ST Schedule</b>
+          Phase <b>Short-term</b>
         </span>
         <span>
           Scenario <b>{active.name}</b>, {editCount} edit{editCount === 1 ? '' : 's'}
@@ -559,7 +559,7 @@ function Ribbon({
           <>
             <RibbonGroup label="Phase">
               <span className="ribbon__meta">
-                ST Schedule <span className="tree__live">active</span>
+                Short-term <span className="tree__live">active</span>
               </span>
             </RibbonGroup>
             <RibbonGroup label="Export">
@@ -680,10 +680,10 @@ function Explorer({
             ))}
             <div className="tree__phase is-off">
               <NodeIcon group="Solution" />
-              MT Schedule
+              Medium-term
             </div>
             <TreeItem
-              label="ST Schedule"
+              label="Short-term"
               icon="sol"
               live
               active={isActive({ kind: 'sol', id: 'chrono' })}

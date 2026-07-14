@@ -1,6 +1,6 @@
 // Load sweep: solve the model at each step of added flat 24/7 load on one grid
-// and read the price response as a curve, not a point. The PLEXOS habit this
-// carries is the model-list execute; here every step is a full coupled snapshot
+// and read the price response as a curve, not a point. The usual production-cost
+// workflow runs a model list; here every step is a full coupled snapshot
 // solve on the ranked scenario, cheap enough to run on every Run.
 
 import { useMemo, useState } from 'react'

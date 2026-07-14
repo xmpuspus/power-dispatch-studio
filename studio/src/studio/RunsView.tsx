@@ -1,5 +1,5 @@
-// Saved runs: frozen chronological solves compared side by side. PLEXOS makes you
-// dig through solution files for this; here a run is a named row, a diff, a CSV.
+// Saved runs: frozen chronological solves compared side by side. Commercial tools make
+// you dig through solution files for this; here a run is a named row, a diff, a CSV.
 
 import { useState } from 'react'
 import type { GridKey } from '../lib/types'

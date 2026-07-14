@@ -34,7 +34,7 @@ here and they are kept apart on purpose:
       residual, not this number, carries the scarcity premium)
     - CO2 emission factors by fuel (IPCC/EIA typical values)
 
-Nothing here is PLEXOS. It is a transparent economic-dispatch approximation whose
+Nothing here is a production-cost optimiser. It is a transparent economic-dispatch approximation whose
 honesty gate is the calibration residual against observed LWAP (see dispatch.py).
 
 Sources:

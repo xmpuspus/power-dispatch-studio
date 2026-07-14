@@ -218,8 +218,8 @@ check("Malampaya gas cost sourced at P4.80/kWh below coal",
       math.isclose(fl.FUEL_COST_PHP_KWH["natural_gas"], 4.80)
       and fl.FUEL_COST_PHP_KWH["natural_gas"] < fl.FUEL_COST_PHP_KWH["coal"])
 
-check("dispatch model available + labeled not-PLEXOS",
-      disp.get("available") and "not PLEXOS" in disp.get("model", ""))
+check("dispatch model available + labeled simplified",
+      disp.get("available") and "simplified merit-order" in disp.get("model", ""))
 # the price calibration must be market-window only (regime separation, like prices.json)
 cw = disp.get("calibration_window", {})
 check("calibration is market-window only (WESM resumed 2026-05-01)",
@@ -302,8 +302,8 @@ check("no VOLL adder: an oil-margin grid caps at the oil cost P12",
       oiled["grids"]["visayas"]["price"] <= fl.FUEL_COST_PHP_KWH["oil"] + 1e-6)
 
 cp = disp["coupling"]
-check("coupling section baked + labeled not-PLEXOS",
-      "not PLEXOS" in cp.get("model", "") and cp.get("n_coupled_intervals", 0) > 1000)
+check("coupling section baked + labeled simplified",
+      "simplified merit-order" in cp.get("model", "") and cp.get("n_coupled_intervals", 0) > 1000)
 check("coupling couples only all-three-grid market intervals",
       cp["calibration_window"]["regime"] == "market-only")
 sd = cp["spread_decomposition"]
@@ -381,8 +381,8 @@ check("evening-peak scarcity residual survives commitment (still the honest sign
 # Monte Carlo forced outages turn the deterministic LOLE/EUE point into a
 # distribution. Sourced FOR (NERC GADS for coal/gas), seeded so the bake is stable.
 mc = disp["reliability_mc"]
-check("reliability MC present + labeled not-PLEXOS + seeded + sourced FOR",
-      "not PLEXOS" in mc.get("method", "") and mc.get("draws", 0) >= 2000
+check("reliability MC present + labeled simplified + seeded + sourced FOR",
+      "simplified" in mc.get("method", "") and mc.get("draws", 0) >= 2000
       and mc.get("seed") is not None and mc.get("src_for")
       and math.isclose(mc["forced_outage_rates"]["coal"], 0.10)
       and math.isclose(mc["forced_outage_rates"]["natural_gas"], 0.05))
@@ -633,7 +633,7 @@ check("the demand path is a monotone growing forecast at the DOE's stated "
       and dpath["actual_years"] == [2021, 2022]
       and dpath["forecast_from_year"] == 2023)
 
-# --- LT Plan: DOE project lists + TDP corridors (PLEXOS carry-over pass) ---------
+# --- LT Plan: DOE project lists + TDP corridors (long-term plan carry-over pass) ---------
 pj = load("projects.json")
 check("projects available with the 2025-12-31 edition",
       pj["available"] and pj["as_of"] == "2025-12-31")

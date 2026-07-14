@@ -17,7 +17,7 @@ import {
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 
-// ---- editable Properties grid (the PLEXOS authoring surface) -----------------
+// ---- editable Properties grid (the object authoring surface) -----------------
 
 export function PropertiesGrid({
   cls,
@@ -315,7 +315,7 @@ export function SolvedReliabilityView({ s }: { s: SolvedModel }) {
   )
 }
 
-// PLEXOS-style Memberships: the relations each object belongs to (a Generator to its
+// Memberships: the relations each object belongs to (a Generator to its
 // Region and Fuel; an Interface to its two Regions; a Region and a Fuel to their
 // member Generators). Read-only, derived from the object model.
 export function MembershipsView({

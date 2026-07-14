@@ -11,7 +11,7 @@ discharge-dear heuristic. This module is the SAME loop in Python, consuming the
 same baked inputs, and build_chrono_golden() emits input/output pairs the studio
 test must reproduce (the parity harness, exactly like dispatch.scenario_golden).
 
-Still NOT PLEXOS: block dispatch per hour, no inter-temporal optimisation. The
+Still a simplified model: block dispatch per hour, no inter-temporal optimisation. The
 storage policy is a two-pass heuristic (quartile thresholds from a first pass
 without storage), stated as such wherever it surfaces.
 

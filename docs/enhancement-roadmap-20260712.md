@@ -10,7 +10,7 @@ tmp/uiux-audit-20260712/.
 
 ## What is already strong (leave alone)
 
-- The desktop studio app is the highlight: a credible PLEXOS-homage (ribbon, System/Simulation
+- The desktop studio app is the highlight: a credible production-cost studio (ribbon, System/Simulation
   explorer, Excel-like properties grid, Solved badge, HiGHS status bar). The Backcast cost-vs-offers
   toggle reads cleanly (MAE 4.33 to 2.94, correlation 0.36 to 0.73, and the red accent tile correctly
   drops off when the evening residual shrinks).

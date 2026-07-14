@@ -9,7 +9,7 @@ layer. This bakes the observed reserve clearing prices, per grid and per reserve
 category, from IEMOP's public RTD Reserve Schedule files so the studio can show
 what the energy-only view leaves out.
 
-NOT PLEXOS, and not a model: these are the operator's own published reserve
+Not a model at all: these are the operator's own published reserve
 clearing prices (PhP/MWh -> PhP/kWh) over a sample of recent days.
 
 The WESM Reserve Market ran full commercial operations from 26 January 2024, with

@@ -12,7 +12,7 @@ method, and every number are open and reproducible from a clean clone.
 It is **free**, runs entirely in your browser with no license and no install,
 and every input traces to a public source. Think of it as a small, open,
 browser-based counterpart to the licensed production-cost tools grid planners
-use (PLEXOS and the like), not a replacement for a planning suite but enough to
+use, not a replacement for a planning suite but enough to
 actually model and validate the what-ifs that matter here: new data centers, the
 choke points they would sit behind, and how the market prices those constraints,
 against the real Philippine market. Formerly gridbill-ph.
@@ -176,9 +176,9 @@ merged with it.
 
 ## Simulate the dispatch
 
-The map's Simulate mode is a simplified merit-order model of the grid. It is **not
-PLEXOS**: it stacks a sourced generator fleet by marginal cost against the archive's
-own dispatched generation, per grid, and reads off the marginal clearing price.
+The map's Simulate mode is a simplified merit-order model of the grid. It stacks a
+sourced generator fleet by marginal cost against the archive's own dispatched
+generation, per grid, and reads off the marginal clearing price.
 
 ![A walkthrough of the Simulate mode on the Luzon grid: the merit-order stack sits on the coal margin at a P6 clearing price, then a data-center slider adds 1,500 MW of flat load until the demand line crosses into the oil block and the price flips to P12, then tripping the 1,294 MW Sual coal unit holds the grid on that oil margin, then the levers relieve the feeding HVDC corridor, then the grid switches to the smaller Visayas stack, which clears on its own coal margin at P6](docs/dispatch-demo.gif) Coal
 marginal cost is the ERC administered price of **P6.00/kWh** and Malampaya gas is
@@ -275,7 +275,7 @@ limit, below its 440 MW nameplate) and the Mindanao-Visayas HVDC (its 450 MW
 nameplate used as the cap), and the three clearing prices solve together. On a radial
 path the cost-minimizing dispatch equalizes adjacent prices across an open corridor
 and, across a saturated one, prices the downstream island higher by the congestion
-rent. A brute-force optimality test pins the solver. Still not PLEXOS.
+rent. A brute-force optimality test pins the solver.
 
 Demand here is native load (each grid's generation plus its net market imports,
 straight from the same IEMOP files), so the replay has to move real MW over the
@@ -400,7 +400,7 @@ computed from the archive or a sourced list, with no optimizer choosing builds; 
 dispatch itself solves as a HiGHS linear program in the browser (the July 2026
 solver pass), with storage optimised across the day's hours, hydro energy-limited
 to each day's observed water where the archive carries the operator's
-per-resource schedules, and prices taken from the duals. The mapping to PLEXOS concepts, the model's scope, and its
+per-resource schedules, and prices taken from the duals. The model's scope and its
 accuracy statement live in [studio/README.md](studio/README.md).
 
 The whole flow in one pass: open the studio, prove it against real prices,
@@ -445,8 +445,8 @@ The individual what-ifs, each a recorded studio session:
   prices are driven by fuel, outages, weather, and the market restart.
 - Not a brownout forecast. It shows observed curtailment in dispatch schedules,
   observed reserve shortfalls, and arithmetic on published margins.
-- Not a price forecast. The dispatch model is a simplified merit-order stack (not
-  PLEXOS) calibrated against observed prices; it shows what a competitive cost stack
+- Not a price forecast. The dispatch model is a simplified merit-order stack
+  calibrated against observed prices; it shows what a competitive cost stack
   does and does not explain, and is not a predictor. Every plant number is sourced;
   the fuel-availability and per-grid-split assumptions are labeled as such.
 - Not a complete data-center inventory (Cushman counts 24 operational facilities;

@@ -1,7 +1,7 @@
 {
  "available": true,
  "unit": "PhP/kWh clearing price from a merit-order stack vs observed dispatched generation, per grid, per 5-min interval",
- "model": "simplified merit-order economic dispatch, calibrated against observed LWAP; not PLEXOS",
+ "model": "simplified merit-order economic dispatch, calibrated against observed LWAP",
  "assumptions": {
   "fuel_marginal_cost_php_kwh": {
    "solar": 0.0,
@@ -423,7 +423,7 @@
   ]
  },
  "coupling": {
-  "model": "inter-island coupled economic dispatch (radial 3-grid path over the two HVDC corridors); still not PLEXOS",
+  "model": "inter-island coupled economic dispatch (radial 3-grid path over the two HVDC corridors); a simplified merit-order model",
   "wheeling_cost_php_kwh": 0.02,
   "calibration_window": {
    "regime": "market-only",
@@ -2536,7 +2536,7 @@
   }
  },
  "reliability_mc": {
-  "method": "Monte Carlo forced outages on the 11 named large units (Bernoulli at the sourced per-fuel rate) vs a sampled evening-peak load; snapshot draws give a loss-of-load probability and a shortfall distribution, not a point. Still not PLEXOS.",
+  "method": "Monte Carlo forced outages on the 11 named large units (Bernoulli at the sourced per-fuel rate) vs a sampled evening-peak load; snapshot draws give a loss-of-load probability and a shortfall distribution, not a point. A simplified contingency model.",
   "draws": 20000,
   "seed": 42,
   "load_hours": "18-21 (evening peak, solar ~ 0)",

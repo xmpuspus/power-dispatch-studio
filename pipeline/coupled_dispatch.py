@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Inter-island coupled economic dispatch for the three PH grids.
 
-Still NOT PLEXOS. Where pipeline/dispatch.py clears each grid ALONE against its own
+Still a simplified model. Where pipeline/dispatch.py clears each grid ALONE against its own
 demand, this couples them: cheap Luzon energy flows south to Visayas and Mindanao
 over the two HVDC corridors, up to each corridor's operating limit, and the three
 clearing prices are solved together. If a corridor saturates, the downstream grid

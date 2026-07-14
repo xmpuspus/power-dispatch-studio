@@ -1,4 +1,4 @@
-"""Record one real GIF per new analysis view (the 2026-07-14 PLEXOS-parity
+"""Record one real GIF per new analysis view (the 2026-07-14 analyst-workflow
 build-out). Each recording opens the actual studio in Playwright, drops a title
 card naming the view, navigates to it, lets it solve, and holds on the payoff.
 Real motion capture of the running app, never stitched screenshots.
@@ -92,6 +92,9 @@ async def save_runs(page: Page, n: int):
 
 
 VIEWS = [
+    {"key": "backcast", "label": "Backcast", "title": "Validated on history",
+     "sub": "Every observed market day re-priced by the model against the actual WESM price, error stated per grid, nothing tuned.",
+     "settle": 2.2},
     {"key": "week", "label": "Native week", "title": "Native week (168-hour LP)",
      "sub": "The battery state of charge carries across midnight; the day engine resets it.",
      "settle": 1.8},
