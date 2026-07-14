@@ -1355,6 +1355,22 @@ def build_vre_probe() -> dict:
     return _json.load(open(p))
 
 
+def build_uc_probe() -> dict:
+    """The unit-commitment backcast experiment (roadmap item 9): adding binary
+    commitment and a generic minimum-stable floor to the thermal blocks worsens
+    the price correlation everywhere (block-level min-stable is too coarse; a
+    per-PH-unit registry would be needed), so the LP stays the default engine.
+    Read from the committed derivation (pipeline/uc_probe.py)."""
+    import json as _json
+
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "..", "data", "derived", "uc_probe.json")
+    if not os.path.isfile(p):
+        return {"available": False,
+                "note": "no UC probe; run pipeline/uc_probe.py --derive"}
+    return _json.load(open(p))
+
+
 def build_flow_record(profiles: dict) -> dict:
     """Two observed sources, one table: the demand-identity corridor flows
     (RTDSUM net market imports/exports, what the replay demand is built

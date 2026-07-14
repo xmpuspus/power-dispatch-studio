@@ -748,6 +748,17 @@ check("week-ahead outage outlook carries matched MW and honest gaps",
       ol["available"] and ol["as_of"] >= "2026-07-01"
       and all(g in ol["matched_mw"]
               for g in ("luzon", "visayas", "mindanao")))
+# item 9: the unit-commitment backcast measurement. Commitment must worsen the
+# price correlation (block-level min-stable is too coarse) and the verdict must
+# keep the LP as the default engine, the Phase-A gate the roadmap requires.
+uc = mo["uc_probe"]
+check("UC probe baked with the generic labeled min-stable and a verdict",
+      uc.get("engine_default") == "lp"
+      and uc["min_stable_generic"]["coal"] > 0
+      and "generic" in uc["min_stable_label"])
+check("commitment worsens the Luzon LWAP price correlation (LP stays default)",
+      uc["corr_delta"]["lwap"]["luzon"]["delta"] < 0)
+
 drv = load("drivers.json")
 check("drivers timeline joins one row per archive day",
       drv["available"] and len(drv["days"]) >= 80)

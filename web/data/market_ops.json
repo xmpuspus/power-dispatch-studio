@@ -8574,6 +8574,160 @@
   "src": "https://www.iemop.ph/market-data/dipc-energy-results-final/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
+ "uc_probe": {
+  "generated_by": "pipeline/uc_probe.py",
+  "min_stable_generic": {
+   "coal": 0.4,
+   "natural_gas": 0.3,
+   "geothermal": 0.85,
+   "oil": 0.4,
+   "biomass": 0.5
+  },
+  "min_stable_label": "generic NREL ATB / typical thermal, fuel-block level; RTDSL examined but VRE-pinned and coded, no thermal de-fabrication without a unit registry",
+  "overgen_penalty_php_kwh": 0.001,
+  "lp": {
+   "lwap": {
+    "luzon": {
+     "n_hours": 1344,
+     "observed_mean_php_kwh": 7.631,
+     "modeled_mean_php_kwh": 6.002,
+     "mae_php_kwh": 4.334,
+     "bias_php_kwh": -1.629,
+     "correlation": 0.356,
+     "high_hour_hit_rate_pct": 36.8
+    },
+    "visayas": {
+     "n_hours": 1344,
+     "observed_mean_php_kwh": 12.913,
+     "modeled_mean_php_kwh": 6.002,
+     "mae_php_kwh": 8.656,
+     "bias_php_kwh": -6.911,
+     "correlation": 0.463,
+     "high_hour_hit_rate_pct": 45.6
+    },
+    "mindanao": {
+     "n_hours": 1344,
+     "observed_mean_php_kwh": 11.483,
+     "modeled_mean_php_kwh": 6.0,
+     "mae_php_kwh": 7.579,
+     "bias_php_kwh": -5.483,
+     "correlation": 0.069,
+     "high_hour_hit_rate_pct": 7.4
+    }
+   },
+   "mcp": {
+    "luzon": {
+     "n_hours": 1224,
+     "observed_mean_php_kwh": 6.538,
+     "modeled_mean_php_kwh": 6.002,
+     "mae_php_kwh": 3.699,
+     "bias_php_kwh": -0.536,
+     "correlation": 0.436,
+     "high_hour_hit_rate_pct": 44.4
+    },
+    "visayas": null,
+    "mindanao": {
+     "n_hours": 552,
+     "observed_mean_php_kwh": 9.055,
+     "modeled_mean_php_kwh": 6.0,
+     "mae_php_kwh": 6.04,
+     "bias_php_kwh": -3.055,
+     "correlation": 0.024,
+     "high_hour_hit_rate_pct": 3.5
+    }
+   }
+  },
+  "uc": {
+   "lwap": {
+    "luzon": {
+     "n_hours": 1344,
+     "observed_mean_php_kwh": 7.631,
+     "modeled_mean_php_kwh": 5.733,
+     "mae_php_kwh": 4.209,
+     "bias_php_kwh": -1.897,
+     "correlation": 0.068,
+     "high_hour_hit_rate_pct": null
+    },
+    "visayas": {
+     "n_hours": 1344,
+     "observed_mean_php_kwh": 12.913,
+     "modeled_mean_php_kwh": 5.908,
+     "mae_php_kwh": 8.679,
+     "bias_php_kwh": -7.005,
+     "correlation": 0.029,
+     "high_hour_hit_rate_pct": 28.7
+    },
+    "mindanao": {
+     "n_hours": 1344,
+     "observed_mean_php_kwh": 11.483,
+     "modeled_mean_php_kwh": 5.91,
+     "mae_php_kwh": 7.562,
+     "bias_php_kwh": -5.573,
+     "correlation": 0.027,
+     "high_hour_hit_rate_pct": 1.5
+    }
+   },
+   "mcp": {
+    "luzon": {
+     "n_hours": 1224,
+     "observed_mean_php_kwh": 6.538,
+     "modeled_mean_php_kwh": 5.729,
+     "mae_php_kwh": 3.572,
+     "bias_php_kwh": -0.809,
+     "correlation": 0.063,
+     "high_hour_hit_rate_pct": null
+    },
+    "visayas": null,
+    "mindanao": {
+     "n_hours": 552,
+     "observed_mean_php_kwh": 9.055,
+     "modeled_mean_php_kwh": 5.937,
+     "mae_php_kwh": 6.023,
+     "bias_php_kwh": -3.118,
+     "correlation": 0.01,
+     "high_hour_hit_rate_pct": 0.0
+    }
+   }
+  },
+  "corr_delta": {
+   "lwap": {
+    "luzon": {
+     "lp_corr": 0.356,
+     "uc_corr": 0.068,
+     "delta": -0.288
+    },
+    "visayas": {
+     "lp_corr": 0.463,
+     "uc_corr": 0.029,
+     "delta": -0.434
+    },
+    "mindanao": {
+     "lp_corr": 0.069,
+     "uc_corr": 0.027,
+     "delta": -0.042
+    }
+   },
+   "mcp": {
+    "luzon": {
+     "lp_corr": 0.436,
+     "uc_corr": 0.063,
+     "delta": -0.373
+    },
+    "visayas": {
+     "lp_corr": null,
+     "uc_corr": null,
+     "delta": null
+    },
+    "mindanao": {
+     "lp_corr": 0.024,
+     "uc_corr": 0.01,
+     "delta": -0.014
+    }
+   }
+  },
+  "verdict": "commitment does not improve the price backcast; the LP stays the default engine",
+  "engine_default": "lp"
+ },
  "flow_record": {
   "available": true,
   "days": 96,
