@@ -306,8 +306,10 @@ def archive(keys: list[str], mode: str, sample_days: int) -> list[str]:
                                     "consecutive fetch errors")
                     break
         have = sorted(os.listdir(ddir))
-        stamps = [re.search(r"(\d{8})", n).group(1)
-                  for n in have if re.search(r"(\d{8})", n)]
+        # collect every date in each name so range files (MRU, MOTRD:
+        # mru_mo_processed_<start>-<end>.csv) report their end as newest, not the
+        # first date re.search returned; oldest/newest then bound the real window.
+        stamps = [d for n in have for d in re.findall(r"(20\d{6})", n)]
         manifest[key] = {
             "slug": slug, "post_id": post_id, "page_min_date": min_date,
             "files": len(have),
