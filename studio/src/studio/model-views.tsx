@@ -23,15 +23,18 @@ export function PropertiesGrid({
   cls,
   rows,
   overrides,
+  importedKeys,
   onEdit,
   onRevert,
 }: {
   cls: ClassId
   rows: ObjRow[]
   overrides: Overrides
+  importedKeys?: string[]
   onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
   onRevert: (cls: ClassId, id: string, prop: string) => void
 }) {
+  const imported = new Set(importedKeys ?? [])
   const specs = CLASSES.find((c) => c.id === cls)?.props ?? []
   return (
     <div className="propgrid-wrap">
@@ -65,15 +68,17 @@ export function PropertiesGrid({
                 }
                 const k = overrideKey(cls, r.id, s.key)
                 const overridden = k in overrides
+                const isImported = imported.has(k)
                 const value = effNum(overrides, cls, r.id, s.key, raw)
                 return (
                   <td key={s.key} className="propgrid__num propgrid__edit">
                     <input
-                      className={`propgrid__input${overridden ? ' is-set' : ''}`}
+                      className={`propgrid__input${overridden ? ' is-set' : ''}${isImported ? ' is-imported' : ''}`}
                       type="number"
                       step={s.dp === 2 ? 0.01 : 1}
                       value={value}
-                      aria-label={`${r.label} ${s.label}`}
+                      aria-label={`${r.label} ${s.label}${isImported ? ', user-supplied' : ''}`}
+                      title={isImported ? 'user-supplied value from your CSV import' : undefined}
                       onChange={(e) => onEdit(cls, r.id, s.key, Number(e.target.value))}
                     />
                     {overridden && (
