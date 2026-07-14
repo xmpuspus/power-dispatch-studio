@@ -1617,3 +1617,20 @@
   stroke: var(--steel, #3b7ea1);
   stroke-width: 2;
 }
+.fwdlegend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 4px 0 2px;
+  font-size: 12px;
+}
+.fwdlegend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.fwdlegend__item i {
+  width: 12px;
+  height: 3px;
+  border-radius: 2px;
+}

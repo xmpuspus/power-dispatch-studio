@@ -2,7 +2,14 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { beforeAll, describe, expect, it } from 'vitest'
 import type { Dispatch, Profiles } from '../lib/types'
-import { forwardPath, pdpGrowth, type PdpPath, type YearBand } from './forward'
+import {
+  forwardPath,
+  multiYearTrajectory,
+  pdpGrowth,
+  type PdpPath,
+  type PolicyScenario,
+  type YearBand,
+} from './forward'
 
 const read = (f: string) =>
   JSON.parse(readFileSync(fileURLToPath(new URL(`../../public/data/${f}`, import.meta.url)), 'utf8'))
@@ -36,5 +43,17 @@ describe('forward path', () => {
   it('is reproducible for a fixed seed', () => {
     const again = forwardPath(d, profiles, pdp, 2026, [2026, 2028, 2030], 15, 11)
     expect(again).toEqual(bands)
+  })
+})
+
+describe('multi-year trajectory', () => {
+  const base: PolicyScenario = { label: 'Base' }
+  const carbon: PolicyScenario = { label: 'Carbon', carbonPhpPerTco2: 3000 }
+  it('returns a median per year and rises under a carbon price', () => {
+    const b = multiYearTrajectory(d, profiles, pdp, 2026, [2026, 2030], base, 12, 5)
+    const c = multiYearTrajectory(d, profiles, pdp, 2026, [2026, 2030], carbon, 12, 5)
+    expect(b.map((p) => p.year)).toEqual([2026, 2030])
+    // a carbon price on coal/gas/oil cannot lower the median clearing price
+    expect(c[0].median.luzon).toBeGreaterThanOrEqual(b[0].median.luzon - 1e-9)
   })
 })
