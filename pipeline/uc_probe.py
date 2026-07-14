@@ -122,6 +122,27 @@ def _uc_text(m: dict, fixed: dict | None = None) -> str:
             rows.append(f" bal_{s}_{h}:" + "".join(terms)
                         + f" = {mtext(micro(demand[g][h]))}")
 
+    # hydro is energy-limited by the day's observed water, the SAME cap the LP
+    # baseline enforces (build_day_lp, single-day scalar budget). Without it the
+    # commitment comparison would also be removing the water cap (free hydro
+    # displacing coal), confounding the min-stable measurement.
+    hydro_budget = m.get("hydro_budget")
+    if hydro_budget:
+        for g in GRID_KEYS:
+            budget = hydro_budget.get(g)
+            if budget is None:
+                continue
+            s = G_SHORT[g]
+            terms = []
+            for h in range(H):
+                for i, b in enumerate(stacks[g][h]):
+                    if b["fuel"] == "hydro":
+                        terms.append(f" + x_{s}_{h}_{i}")
+            if not terms:
+                continue
+            rows.append(f" hyd_{s}:" + "".join(terms)
+                        + f" <= {mtext(micro(budget))}")
+
     text = ("\\ uc probe\nminimize\n obj:" + "".join(obj) + "\n"
             "subject to\n" + "\n".join(rows) + "\n"
             "bounds\n" + "\n".join(bounds) + "\n")
