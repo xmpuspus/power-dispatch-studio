@@ -862,7 +862,8 @@ def main() -> int:
 
     # observed market operations (the 2026-07-07 dataset expansion) and the
     # per-day drivers timeline joined from every observed layer
-    from market_obs import build_joint_lp_probe, build_subhourly_probe
+    from market_obs import (build_corridor_cap_probe, build_joint_lp_probe,
+                            build_subhourly_probe)
     from market_obs import (build_advisories, build_constrained_on,
                             build_drivers, build_flow_record,
                             build_gwap_trigger, build_not_offered,
@@ -886,6 +887,7 @@ def main() -> int:
         "admin_dispatch": build_admin_dispatch(),
         "joint_lp_probe": build_joint_lp_probe(),
         "subhourly_probe": build_subhourly_probe(),
+        "corridor_cap_probe": build_corridor_cap_probe(),
         "flow_record": build_flow_record(profiles),
         "gwap_trigger": build_gwap_trigger(profiles.get("chrono_golden"),
                                            profiles),

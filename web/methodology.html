@@ -463,7 +463,17 @@ operator's per-interval CONGESTION_FLAG supplies a binding-share target
 intervals across the archived window) that the model's at-cap share is
 scored against. The advisory-window inference still sets the replay caps;
 it is labeled here and the levers compose on the base limit. MVIP has no
-observed block events in the window and stays at its nameplate cap.</li>
+observed block events in the window and stays at its nameplate cap. We
+measured the alternative of feeding the operator's own RTDHS binding-schedule
+caps into the LP for both corridors (pipeline/corridor_cap_probe.py): it makes
+the modeled at-cap share track the observed binding share by construction, but
+on the independent judge, the price backcast, it lowers Luzon price MAE by
+about 0.16 PhP/kWh while worsening price correlation on every grid (Visayas
+about 0.46 to 0.11), because the Leyte de-rate to near-zero on flagged hours
+decouples Visayas from its observed import pattern. A model that tracks the
+observed price shape worse is not an improvement, so the caps stay
+advisory-based and the corridor under-binding versus RTDHS stays a reported
+boundary, not a constructed match (market_ops.json corridor_cap_probe).</li>
 <li><b>Solar shape</b>: the 24-hour availability profile is the model's labeled
 clear-sky-ish assumption (fleet_ph.SOLAR_PROFILE), not measured irradiance.
 Other fuels hold their derated availability across the day.</li>

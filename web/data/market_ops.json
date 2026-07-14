@@ -8400,6 +8400,79 @@
   "src": "https://www.iemop.ph/market-data/load-weighted-average-prices-final/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
+ "corridor_cap_probe": {
+  "available": true,
+  "baseline": {
+   "per_grid": {
+    "luzon": {
+     "mae": 4.334,
+     "corr": 0.356
+    },
+    "visayas": {
+     "mae": 8.656,
+     "corr": 0.463
+    },
+    "mindanao": {
+     "mae": 7.579,
+     "corr": 0.069
+    }
+   },
+   "per_grid_mcp": {
+    "luzon": {
+     "mae": 4.01,
+     "corr": 0.353
+    },
+    "visayas": {
+     "mae": 10.908,
+     "corr": 0.324
+    },
+    "mindanao": {
+     "mae": 8.207,
+     "corr": 0.057
+    }
+   }
+  },
+  "with_rtdhs_caps": {
+   "per_grid": {
+    "luzon": {
+     "mae": 4.172,
+     "corr": 0.259
+    },
+    "visayas": {
+     "mae": 8.654,
+     "corr": 0.105
+    },
+    "mindanao": {
+     "mae": 7.577,
+     "corr": 0.049
+    }
+   },
+   "per_grid_mcp": {
+    "luzon": {
+     "mae": 3.848,
+     "corr": 0.339
+    },
+    "visayas": {
+     "mae": 10.905,
+     "corr": 0.09
+    },
+    "mindanao": {
+     "mae": 8.204,
+     "corr": 0.042
+    }
+   }
+  },
+  "shipped": "baseline",
+  "verdict": "The RTDHS binding-schedule caps lower Luzon price MAE (4.01 to 3.848 PhP/kWh vs MCP) but worsen price correlation on every grid; the shipped engine keeps the advisory-based caps.",
+  "corr_worse_grids": [
+   "luzon",
+   "mindanao",
+   "visayas"
+  ],
+  "note": "The modeled at-cap share cannot judge an RTDHS-sourced cap (it aligns with the observed binding share by construction); the price backcast, independent of RTDHS, is the judge, and it says the caps do not improve the replay.",
+  "src": "https://www.iemop.ph/market-data/rtd-hvdc-schedules/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
  "flow_record": {
   "available": true,
   "days": 96,

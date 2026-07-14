@@ -1192,6 +1192,72 @@ def rtdhs_hourly() -> dict[str, dict]:
     return out
 
 
+# corridor nameplate limits (dispatch.json coupling.corridors limit_mw); the
+# binding-cap fraction scales these, so on a congested hour the modeled cap
+# equals the operator's own scheduled flow
+_HVDC_NAMEPLATE = {"lv": 250.0, "vm": 450.0}
+_HS_OUT = {"lv": "leyte", "vm": "mvip"}
+
+
+def hvdc_binding_caps() -> dict[str, dict[str, list[float]]]:
+    """{date: {"leyte":[24], "mvip":[24]}} per-hour corridor cap FRACTIONS from
+    the operator's own RTD HVDC schedule (RTDHS). On an hour the operator flagged
+    the corridor congested (CONGESTION_FLAG=Y in any interval), the effective
+    limit is the operator's mean scheduled |flow| that hour, so the fraction is
+    that flow over the corridor nameplate: a security de-rate the outage-advisory
+    inference (leyte-only, whole-link blocks) cannot see, and the only source for
+    the Visayas-Mindanao corridor at all. Hours with no flagged interval stay
+    1.0 (uncapped). Same sign convention as rtdhs_hourly (-FLOW_FROM)."""
+    out: dict[str, dict[str, list[float]]] = {}
+    for path in dataset_files("RTDHS"):
+        day = day_of(path)
+        acc: dict[str, dict[int, list[tuple[float, bool]]]] = {
+            "lv": {h: [] for h in range(24)},
+            "vm": {h: [] for h in range(24)},
+        }
+        for r in rows_of(path):
+            key = _HS_KEYS.get((r.get("HVDC_NAME") or "").strip())
+            if not key:
+                continue
+            ts = (r.get("TIME_INTERVAL") or "").strip()
+            if not ts:
+                continue
+            flow = abs(f(r.get("FLOW_FROM")))
+            flagged = (r.get("CONGESTION_FLAG") or "").strip() == "Y"
+            acc[key][_interval_hour(ts)].append((flow, flagged))
+        caps = {"leyte": [1.0] * 24, "mvip": [1.0] * 24}
+        for key in ("lv", "vm"):
+            for h in range(24):
+                # the enforced limit is the flow the operator held on the
+                # intervals it actually flagged binding, not an average that
+                # dilutes the de-rate with the hour's unconstrained intervals
+                flagged_flow = [fw for fw, fl in acc[key][h] if fl]
+                if not flagged_flow:
+                    continue
+                limit = sum(flagged_flow) / len(flagged_flow)
+                frac = max(0.0, min(1.0, limit / _HVDC_NAMEPLATE[key]))
+                caps[_HS_OUT[key]][h] = round(frac, 3)
+        out[day] = caps
+    return out
+
+
+def build_corridor_cap_probe() -> dict:
+    """The RTDHS corridor-cap experiment (roadmap item 7): feeding the
+    operator's own binding-schedule caps into the LP lowers Luzon price MAE a
+    little but worsens price correlation on every grid, so the shipped engine
+    keeps the advisory-based caps. Read from the committed derivation
+    (pipeline/corridor_cap_probe.py)."""
+    import json as _json
+
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "..", "data", "derived", "corridor_cap_probe.json")
+    if not os.path.isfile(p):
+        return {"available": False,
+                "note": ("no corridor-cap probe; run "
+                         "pipeline/corridor_cap_probe.py --derive")}
+    return _json.load(open(p))
+
+
 def build_flow_record(profiles: dict) -> dict:
     """Two observed sources, one table: the demand-identity corridor flows
     (RTDSUM net market imports/exports, what the replay demand is built
