@@ -10,6 +10,8 @@ backfill:
 archive:
 	$(PY) pipeline/archive_iemop.py --daily
 	$(PY) pipeline/fuelmix.py --derive --limit 3
+	$(PY) pipeline/offers.py --derive --limit 3
+	$(PY) pipeline/archive_rtdoe.py --latest 1
 
 # Bake the static data from the archive + verified constants into web/data/.
 data:
