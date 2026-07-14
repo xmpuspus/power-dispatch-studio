@@ -18,6 +18,7 @@ import { EmissionsView } from './EmissionsView'
 import { CaptureView } from './CaptureView'
 import { VintageView } from './VintageView'
 import { PortfolioView } from './PortfolioView'
+import { CrossRunView } from './CrossRunView'
 import { decodeShare, loadRuns, type SavedRun } from './runs'
 import {
   CLASSES,
@@ -61,6 +62,7 @@ type AnalysisId =
   | 'emissions'
   | 'capture'
   | 'portfolio'
+  | 'crossrun'
   | 'vintage'
 type PhaseId = 'lt' | 'pasa'
 type Nav =
@@ -92,6 +94,7 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   emissions: 'Emissions',
   capture: 'Capture prices',
   portfolio: 'Portfolio',
+  crossrun: 'Cross-run',
   vintage: 'Assumptions',
 }
 const PHASE_LABEL: Record<PhaseId, string> = {
@@ -289,7 +292,10 @@ export function Studio({
   const gridScoped =
     (nav.kind === 'sol' && GRID_SOL.has(nav.id)) ||
     (nav.kind === 'analysis' &&
-      (nav.id === 'reserve' || nav.id === 'backcast' || nav.id === 'capture'))
+      (nav.id === 'reserve' ||
+        nav.id === 'backcast' ||
+        nav.id === 'capture' ||
+        nav.id === 'crossrun'))
 
   const revertAll = () => {
     setScenarios((prev) =>
@@ -795,6 +801,8 @@ function DataPane({
     if (nav.id === 'bill') return <BillView />
     if (nav.id === 'capture') return <CaptureView runsList={runsList} grid={grid} />
     if (nav.id === 'portfolio') return <PortfolioView runsList={runsList} d={d} />
+    if (nav.id === 'crossrun')
+      return <CrossRunView runsList={runsList} d={d} grid={grid} />
     if (nav.id === 'vintage') return <VintageView d={d} />
     return <MarketPowerView d={d} />
   }
