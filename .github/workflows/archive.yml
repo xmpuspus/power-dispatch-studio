@@ -32,6 +32,10 @@ jobs:
         id: derive_offers
         continue-on-error: true
         run: python3 pipeline/offers.py --derive --limit 3
+      - name: Preserve the newest full 5-minute RTDOE book (window erases it daily)
+        id: derive_rtdoe5
+        continue-on-error: true
+        run: python3 pipeline/archive_rtdoe.py --latest 1
       - name: Derive reserve-book dailies (RTDOR; hourly files too heavy to keep)
         id: derive_reserve
         continue-on-error: true
