@@ -1038,9 +1038,10 @@ function sideSimulate(){
       ? `<label class="lever-off">Relieve the feeding HVDC corridor <span class="tick">Luzon is the exporter, not fed by a corridor. Pick Visayas or Mindanao to relieve its feeding link.</span>
       <input type="range" id="sim-imp" min="0" max="${impMax}" step="25" value="0" disabled></label>`
       : `<label>Relieve the feeding HVDC corridor (extra operating limit): <b id="sim-impv">${fmt(SIM.imp)}</b> MW
+      <span class="tick">Bites only once the feeding link saturates; add data-center load to bind it.</span>
       <input type="range" id="sim-imp" min="0" max="${impMax}" step="25" value="${SIM.imp}"></label>`}
     <label>Discharge storage at the peak: <b id="sim-storv">${fmt(SIM.stor)}</b> MW
-      <span class="tick">Luzon has ${fmt(((disp.storage||{}).assets||{}).luzon ? disp.storage.assets.luzon.total_mw : 1319)} MW today</span>
+      <span class="tick">${((disp.storage||{}).assets||{})[g] ? (g[0].toUpperCase()+g.slice(1))+" has "+fmt(disp.storage.assets[g].total_mw)+" MW today" : "No sourced storage fleet on this grid (illustrative)"}</span>
       <input type="range" id="sim-stor" min="0" max="2000" step="50" value="${SIM.stor}"></label>
   </div>
   ${couplingNote(disp)}
@@ -1165,7 +1166,9 @@ function updateSim(){
       (g === "luzon"
         ? `<div class="note" style="margin:2px 0">Luzon is the exporting grid: it sets the floor the others import from. Relieving a corridor helps the grid downstream, not Luzon.</div>`
         : `<div class="kv"><span>${feedName} link</span><span>${fmt(Math.abs(corr.flow))} MW ${corr.flow>0?"in":"reverse"}${corr.sat?", <b>saturated</b>":", open"}</span></div>` +
-          (corr.sat ? `<div class="kv"><span>Congestion rent across the binding link</span><span><b>P${fmt(corr.rent,2)}/kWh</b></span></div>` : ``));
+          (corr.sat
+            ? `<div class="kv"><span>Congestion rent across the binding link</span><span><b>P${fmt(corr.rent,2)}/kWh</b></span></div>`
+            : `<div class="note" style="margin:2px 0">The ${feedName} link is open at this load, so relieving it changes nothing until it binds. Add data-center load to bind it.</div>`));
     cread.innerHTML = rows;
   }
   window.__diag.simulate = { grid:SIM.grid, addDC:SIM.addDC, addFirm:SIM.addFirm,
@@ -1255,7 +1258,10 @@ function applyURL(){
   if (q && ["supply","choke","price","drivers","simulate"].includes(q)) setMode(q, true);
   if (fid){
     const f = FINDINGS.find(x => x.id === fid);
+    // a shared link may point at a finding no longer in this bake; still open the
+    // drawer so the list is visible rather than silently doing nothing
     if (f){ openDrawer(true); selectFinding(f); }
+    else { openDrawer(true); }
   }
 }
 

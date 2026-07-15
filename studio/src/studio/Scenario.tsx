@@ -169,6 +169,11 @@ export function ScenarioView({
 
   return (
     <div className="view" data-testid="scenario">
+      <p className="scn__how">
+        Drag a lever below and the three grids re-clear live as you move it, no Run
+        needed. Carbon price and Malampaya gas supply act on the Chronology and Emissions
+        views, not this evening-hour clear.
+      </p>
       <p className="scn__lede">
         A merit-order model, <b>not a full production-cost suite</b>: it stacks the
         sourced fleet by marginal cost against demand and clears the three grids as one
@@ -249,7 +254,12 @@ export function ScenarioView({
                 min={0}
                 max={500}
                 step={25}
-                tick="extra operating limit on the HVDC link"
+                disabled={!feedCor?.sat}
+                tick={
+                  feedCor?.sat
+                    ? 'extra operating limit on the HVDC link'
+                    : `${feedName} is open at this load; relief changes nothing until the link binds. Add load to bind it.`
+                }
                 onChange={(v) => set({ reliefMW: v })}
               />
             )}
@@ -308,7 +318,7 @@ export function ScenarioView({
               max={5000}
               step={250}
               fmt={(v) => `₱${num(v)}/tCO2`}
-              tick={`${CARBON_DISCLAIMER}. Raises each carbon-emitting fuel's Price by carbon price times its baked tCO2/MWh factor, divided by 1000, so higher-carbon fuels climb the merit order.`}
+              tick={`${CARBON_DISCLAIMER}. Raises each carbon-emitting fuel's Price by carbon price times its baked tCO2/MWh factor, divided by 1000, so higher-carbon fuels climb the merit order. It shows in the Chronology and Emissions views, not this evening-hour clear.`}
               onChange={setCarbonPrice}
               disabled={!factorsReady}
             />
@@ -335,7 +345,7 @@ export function ScenarioView({
               max={100}
               step={5}
               fmt={(v) => `${v}%`}
-              tick={`${GAS_SOURCE_NOTE}. Caps the gas fleet's daily energy to this percent of its flat-out day, a fuel budget applied in the chronology (the Malampaya supply cliff what-if).`}
+              tick={`${GAS_SOURCE_NOTE}. Caps the gas fleet's daily energy to this percent of its flat-out day, a fuel budget applied in the Chronology and Emissions views, not this evening-hour clear (the Malampaya supply cliff what-if).`}
               onChange={setGasSupply}
             />
             <button className="btn btn--ghost lever__reset" onClick={resetLevers}>
@@ -508,7 +518,7 @@ function Slider({
 }) {
   const shown = fmt ? fmt(value) : `${num(value)} MW`
   return (
-    <label className="lever">
+    <label className={`lever${disabled ? ' lever--off' : ''}`}>
       <span className="lever__label">
         {label} <b className="lever__val mono">{shown}</b>
       </span>
