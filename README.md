@@ -230,7 +230,7 @@ loss-of-load probability climbs more than tenfold to **2.1%**: a 1-in-100 draw s
 **3,431 MWh**. The point estimate said the margin turns negative; the distribution says
 how often, and how badly.
 
-Storage is the answer the wave calls for. Luzon already has **634 MW** of batteries
+Storage is how the grid shaves those peaks. Luzon already has **634 MW** of batteries
 (DOE) and **685 MW** of Kalayaan pumped hydro (CBK Power), and both are time-shifters:
 they charge off-peak near the P4.14 commitment offer and discharge at the evening peak
 at about **P5.17/kWh** after round-trip loss. At a tight evening under the DICT wave the
@@ -284,10 +284,10 @@ consumes. Run over the market window with the full fleet available, and scaling
 the Leyte-Luzon cap by the operator's own hourly corridor-availability record
 (so it binds on the **9.5%** of intervals the corridor was actually blocked and
 saturates **3.5%** of the window), the coupled model still reproduces almost
-**none** of the observed **P5.31/kWh** Visayas-Luzon spread (about **1%**). That
-is the finding, not a failure: cost stacks price the three
-islands nearly identically, and the observed spread is the scarcity and offer
-premium of the 52-day yellow-alert streak, which a cost model cannot see.
+**none** of the observed **P5.31/kWh** Visayas-Luzon spread (about **1%**). Cost
+stacks price the three islands nearly identically, so the observed spread is the
+scarcity and offer premium of the 52-day yellow-alert streak, which a cost model
+cannot see.
 
 One number to carry into every what-if below: the scenario deltas on this
 page come from the COST model, and the offer books say the true answer is

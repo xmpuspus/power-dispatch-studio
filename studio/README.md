@@ -348,14 +348,13 @@ not tuned. Every analysis that reads the dispatch (Chronology, Capture prices,
 Cross-run, Native week, Portfolio, five-minute replay) inherits this validation, so
 its credibility is the backcast's.
 
-The honest limit: the engine is a simplified zonal merit-order LP, with no
+The limit: the engine is a simplified zonal merit-order LP, with no
 security-constrained unit commitment, no ramp rates, and no nodal network. Where
 more unit-level detail was actually built and run through the same backcast, three
 additions (unit commitment with a generic minimum-stable level, each day's observed
 solar shape, and RTDHS corridor caps) made the fit to observed prices worse,
 because public Philippine data cannot support per-unit calibration; each measured
 delta is published in `market_ops.json` and the model keeps the simpler engine.
-Added detail is kept only when it earns its place against the price tape.
 
 The forward-looking analyses (Forward prices, Multi-year path, Expansion mix, and
 the Ensembles band) cannot be backcast: there is no observed future or greenfield
