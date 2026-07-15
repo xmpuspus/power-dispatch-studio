@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { Dispatch, GridKey } from '../lib/types'
 import { num, php, pct, fuelLabel } from '../lib/data'
 import { Panel, StatTile, Chip, EmptyNote } from '../ui/kit'
@@ -213,7 +214,7 @@ export function SolvedN1View({ s, grid }: { s: SolvedModel; grid: GridKey }) {
     <div className="view">
       <Panel
         title={`N-1 contingency on ${cap(grid)}`}
-        subtitle="Trip each named unit and read the price move and the load shed, solved from the current model."
+        subtitle="Trip each named plant and read the price move and the load shed, solved from the current model. Multi-unit stations (Sual, Ilijan, Masinloc) lose all their units, so their move exceeds a single-unit N-1."
       >
         <DataGrid
           columns={cols}
@@ -419,7 +420,10 @@ export function CompareView({
   objects: Record<ClassId, ObjRow[]>
   scenarios: Scenario[]
 }) {
-  const solved = scenarios.map((s) => solveModel(d, objects, s.overrides))
+  const solved = useMemo(
+    () => scenarios.map((s) => solveModel(d, objects, s.overrides)),
+    [d, objects, scenarios]
+  )
   const metrics: {
     label: string
     fmt: (s: SolvedModel) => string

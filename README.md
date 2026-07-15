@@ -80,12 +80,12 @@ of which units the grid's security constraints held and where
 
 The instruction log behind both closes the causal loop. Across the 95
 daily logs the System Operator's own dispatch instructions carry a remark
-citing a line limitation **1,561 times, and 1,534 of those name the
+citing a line limitation **1,617 times, and 1,590 of those name the
 Leyte-Cebu corridor** ("Advise to discharge under MOT Raise due to
 Leyte-Cebu Line Limitation"), the same corridor the constraint league
 ranks first by shadow-price days: one corridor carries 98 percent of
 every line-limitation instruction the operator wrote down. The full out-of-merit record rides
-beside it: **89,322 MOT-raise instructions** across the window at a **55
+beside it: **97,412 MOT-raise instructions** across the window at a **55
 MW** median, where the must-run subset the methodology measured out sits
 at 5.7 (`so_instructions` in the same file; the administered-dispatch
 overlay it sizes is a named queued build).
@@ -196,7 +196,7 @@ May 1; the suspension's administered prices are excluded), the stack over-prices
 overnight trough, because real units bid below cost to stay committed, and
 under-prices the evening peak. That evening gap is scarcity and offer behavior, not
 data-center load. On the Visayas grid, tight through the 52-day yellow-alert streak,
-the evening residual runs **P14.64/kWh** above the cost stack. The daily shape and the
+the evening residual runs **P14.83/kWh** above the cost stack. The daily shape and the
 island spread are commitment, scarcity, and offers, not new load.
 
 A minimal unit-commitment layer takes the first bite out of the overnight miss.
@@ -223,11 +223,11 @@ That reserve margin is a single number; a forced outage is a coin toss, so the m
 also runs it as a distribution. A Monte Carlo of **20,000** draws trips the 11 named
 units at their sourced forced-outage rates (NERC GADS for coal ~10% and gas ~5%; the
 rest labeled industry-typical) and draws an evening-peak load each time. Today Luzon
-loses load in only **0.15%** of tight evenings, with the worst draw shedding
-**2,223 MW** when a big unit trips into a high load. Add the DICT 1.5 GW wave and the
-loss-of-load probability climbs more than tenfold to **2.1%**: a 1-in-100 draw sheds
-**403 MW**, and the expected unserved energy over the evening-peak window is
-**3,431 MWh**. The point estimate said the margin turns negative; the distribution says
+loses load in only **0.09%** of tight evenings, with the worst draw shedding
+**922 MW** when a big unit trips into a high load. Add the DICT 1.5 GW wave and the
+loss-of-load probability climbs more than tenfold to **2.2%**: a 1-in-100 draw sheds
+**487 MW**, and the expected unserved energy over the evening-peak window is
+**3,934 MWh**. The point estimate said the margin turns negative; the distribution says
 how often, and how badly.
 
 Storage is how the grid shaves those peaks. Luzon already has **634 MW** of batteries
@@ -236,8 +236,8 @@ they charge off-peak near the P4.14 commitment offer and discharge at the evenin
 at about **P5.17/kWh** after round-trip loss. At a tight evening under the DICT wave the
 cost stack clears on oil at **P12.00/kWh**; the **1,319 MW** of storage on the grid
 shaves that back to coal at **P6.00**. It buys back most of the adequacy gap too: the
-DC-wave loss-of-load probability falls from **1.99%** to **0.1%** and the expected
-unserved energy from **3,239 MWh** to **138 MWh**. Energy is limited, so this firms the
+DC-wave loss-of-load probability falls from **2.41%** to **0.17%** and the expected
+unserved energy from **4,121 MWh** to **215 MWh**. Energy is limited, so this firms the
 peak interval, not a multi-day event, and existing storage is already inside the
 observed prices, so this is a forward scenario against the modeled wave, not a
 calibration change.
@@ -293,8 +293,8 @@ One number to carry into every what-if below: the scenario deltas on this
 page come from the COST model, and the offer books say the true answer is
 bigger. On the widest-swing market day in the window, the same DICT
 1.5 GW wave raises the Luzon daily mean by **+P4.75/kWh** on the cost
-stack but **+P9.08/kWh** replayed on the market's own bids, and the
-as-bid shock reaches the Visayas (**+P6.31**) and Mindanao (**+P3.12**)
+stack but **+P9.14/kWh** replayed on the market's own bids, and the
+as-bid shock reaches the Visayas (**+P6.37**) and Mindanao (**+P3.18**)
 where the cost stack shows no change at all (both engines' runs are
 pinned in the baked golden cases; flip the studio's Chronology engine to
 "Observed offers" to reproduce them). Read every cost-mode delta as a
@@ -315,7 +315,7 @@ corridors like the real grid: **99%** direction agreement on Visayas-Mindanao
 against a 375 MW mean observed flow, now scored against the operator's own
 per-interval HVDC schedule (RTDHS) rather than only the net-import identity
 the demand is built from, the Visayas settlement bias collapsing from
-**-P6.91** to **-P0.64/kWh**, Mindanao clearing-price correlation **0.87**.
+**-P6.95** to **-P0.60/kWh**, Mindanao clearing-price correlation **0.88**.
 The operator's congestion flags add a target the replay still misses in one
 direction, and the tables say so: the real corridors bound in 45 to 61
 percent of intervals, the offer replay binds them in 33 to 35, the cost
@@ -342,14 +342,14 @@ congestion rent of **P5.74/kWh**, and the coupled model now reproduces **87.8%**
 the observed spread endogenously: the constraint, plus the outage the operator
 itself recorded, IS most of the streak's price geography. That is a labeled
 scenario, kept out of the calibration. And the forward question the map exists to
-ask: at a typical evening, just **275 MW** of added Visayas load binds the
+ask: at a typical evening, just **250 MW** of added Visayas load binds the
 corridor, less than three of the ten data centers Meralco has committed to
 serve (1,000 MW for 10, per PCIJ) and far below the DICT 1.5 GW national
 forecast. The full decomposition is the `coupling` block in
 [`web/data/dispatch.json`](web/data/dispatch.json); the coupled solver is
 `pipeline/coupled_dispatch.py`.
 
-A forward battle-test reaches the same **275 MW** knee from the other direction.
+A forward battle-test reaches the same knee from the other direction.
 Eight what-ifs an energy analyst would run, driven through the dispatch engine
 (site a data center in Cebu versus Manila, build a gigawatt of solar, switch
 Malampaya gas to imported LNG, trip both 647 MW Sual units): six moved the way
@@ -366,7 +366,7 @@ synthetic benchmark. The studio replays every full-coverage market day and
 scores the clear two ways. The simple cost model is a floor: it clears near the
 **P6 coal baseline** and under-prices scarcity, so read its levels as a lower
 bound. Replay the operator's own offer book instead and the model tracks the
-real price shape hour by hour, reaching **0.73 to 0.87 correlation** with
+real price shape hour by hour, reaching **0.73 to 0.88 correlation** with
 observed prices across the quarter and **88 to 99 percent** of the inter-island
 flow direction. A dated event closes it: the **935 MW** Visayas outage of July 1
 reproduces **87.8 percent** of the observed island price gap, with the

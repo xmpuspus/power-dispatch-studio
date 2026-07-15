@@ -65,7 +65,14 @@ def hour_of(ti: str) -> int:
             h += 12
         return h
     m = _TIME_RE_24.search(ti or "")
-    return int(m.group(1)) % 24 if m else PEAK_HOUR
+    if m:
+        return int(m.group(1)) % 24
+    # IEMOP serializes the midnight-ending (24:00) interval as a bare date with no
+    # time part ("4/22/2026"): that interval belongs to hour 23, not the peak-hour
+    # fallback. Mirror of market_obs._interval_hour, applied at the shared helper.
+    if ti and ":" not in ti:
+        return 23
+    return PEAK_HOUR
 
 
 def _corr(xs: list[float], ys: list[float]) -> float | None:

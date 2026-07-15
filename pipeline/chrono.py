@@ -251,7 +251,8 @@ def run_chronology(dispatch: dict, profiles: dict, date: str,
         mean_req = profiles.get("reserve_req_mean_mw") or {}
         for g in GRID_KEYS:
             reserve_add[g] = round1(sum(
-                (day_req.get(g) or mean_req.get(g) or {}).values()))
+                v for k, v in (day_req.get(g) or mean_req.get(g) or {}).items()
+                if k != "Rd"))  # Rd is regulation-DOWN, not withheld up-capacity
 
     def fuel_avail_at(g: str, h: int) -> dict:
         fa = dict(fuel_base[g])

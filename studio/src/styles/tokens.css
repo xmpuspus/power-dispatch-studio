@@ -15,6 +15,7 @@
   --ring: #1e40af;
 
   /* surfaces + text (light) */
+  color-scheme: light; /* native controls (select, scrollbar, spinners) track the theme */
   --bg: #f1f5f9;
   --surface: #ffffff;
   --surface-2: #f8fafc;
@@ -72,6 +73,7 @@
 }
 
 :root[data-theme='dark'] {
+  color-scheme: dark; /* flips UA control defaults (buttonface, field, scrollbar) to dark */
   --primary: #60a5fa;
   --primary-hover: #7cb0fb;
   --on-primary: #07142e;

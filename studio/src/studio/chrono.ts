@@ -194,7 +194,9 @@ export function assembleDay(
           dayReq && Object.keys(dayReq).length > 0
             ? dayReq
             : (profiles.reserve_req_mean_mw[g] ?? {})
-        oReserve[g] = round1(Object.values(req).reduce((s, v) => s + v, 0))
+        oReserve[g] = round1(
+          Object.entries(req).reduce((s, [k, v]) => (k === 'Rd' ? s : s + v), 0)
+        )
       }
     }
     return {
@@ -261,7 +263,9 @@ export function assembleDay(
         dayReq && Object.keys(dayReq).length > 0
           ? dayReq
           : (profiles.reserve_req_mean_mw[g] ?? {})
-      reserveReq[g] = round1(Object.values(req).reduce((s, v) => s + v, 0))
+      reserveReq[g] = round1(
+        Object.entries(req).reduce((s, [k, v]) => (k === 'Rd' ? s : s + v), 0)
+      )
     }
   }
 

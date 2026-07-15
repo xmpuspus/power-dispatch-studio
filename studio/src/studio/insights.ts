@@ -41,7 +41,7 @@ export function bindingCounts(hours: ChronoHour[], grid: GridKey): BindingCount[
   const tally = new Map<string, { cause: HourBinding['cause']; n: number }>()
   for (const h of hours) {
     const b = classifyHour(h, grid)
-    const key = b.cause === 'fuel' ? b.detail : b.detail
+    const key = b.detail
     const cur = tally.get(key)
     if (cur) cur.n += 1
     else tally.set(key, { cause: b.cause, n: 1 })

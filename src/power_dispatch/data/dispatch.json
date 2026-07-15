@@ -52,7 +52,7 @@
    "reference_hour": 19,
    "installed_mw": 20968,
    "avail_mw": 15681.9,
-   "typical_evening_demand_mw": 11943,
+   "typical_evening_demand_mw": 12015,
    "peak_demand_mw": 14539,
    "fuel_avail_mw": {
     "coal": 7522.5,
@@ -113,7 +113,7 @@
    "reference_hour": 19,
    "installed_mw": 4007,
    "avail_mw": 2813.4,
-   "typical_evening_demand_mw": 2346,
+   "typical_evening_demand_mw": 2369,
    "peak_demand_mw": 2769,
    "fuel_avail_mw": {
     "coal": 1317.5,
@@ -168,7 +168,7 @@
    "reference_hour": 19,
    "installed_mw": 4878,
    "avail_mw": 3502.0,
-   "typical_evening_demand_mw": 2350,
+   "typical_evening_demand_mw": 2377,
    "peak_demand_mw": 2822,
    "fuel_avail_mw": {
     "coal": 2215.1,
@@ -225,9 +225,9 @@
     "label": "baseline typical evening",
     "input": {
      "demand": {
-      "luzon": 11943,
-      "visayas": 2346,
-      "mindanao": 2350
+      "luzon": 12015,
+      "visayas": 2369,
+      "mindanao": 2377
      },
      "removed": {},
      "caps": {
@@ -235,24 +235,24 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "b69b2a16b3f79f58af606aeabadb79516319347029ef1d0ebdaaeec7024568e3",
+    "lp_sha256": "54cebe4f616b7aab94880d3e70e5d0eb14de93ec3bf055510bf6bc42d3212621",
     "expect": {
      "price": {
       "luzon": 6.0,
-      "visayas": 6.0,
+      "visayas": 6.02,
       "mindanao": 6.0
      },
      "gen_mw": {
-      "luzon": 11943.0,
-      "visayas": 2346.0,
-      "mindanao": 2350.0
+      "luzon": 12030.6,
+      "visayas": 2353.4,
+      "mindanao": 2377.0
      },
      "shortfall_mw": {
       "luzon": 0.0,
       "visayas": 0.0,
       "mindanao": 0.0
      },
-     "flow_lv_mw": 0.0,
+     "flow_lv_mw": 15.6,
      "flow_vm_mw": 0.0,
      "leyte_saturated": false,
      "leyte_rent_php_kwh": 0.0,
@@ -264,9 +264,9 @@
     "label": "DICT 1.5 GW data centre on Luzon",
     "input": {
      "demand": {
-      "luzon": 13443,
-      "visayas": 2346,
-      "mindanao": 2350
+      "luzon": 13515,
+      "visayas": 2369,
+      "mindanao": 2377
      },
      "removed": {},
      "caps": {
@@ -274,7 +274,7 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "d193d59039be0bdf56e74c90792e71aba1f5334a4d6eadda6684b0f31ce71f8c",
+    "lp_sha256": "3cc1722ba9fffc180ef0500ed1136a63ff7ac48e9a09d4875cab69ef63e2d147",
     "expect": {
      "price": {
       "luzon": 6.04,
@@ -284,15 +284,15 @@
      "gen_mw": {
       "luzon": 13417.8,
       "visayas": 2353.4,
-      "mindanao": 2367.8
+      "mindanao": 2489.8
      },
      "shortfall_mw": {
       "luzon": 0.0,
       "visayas": 0.0,
       "mindanao": 0.0
      },
-     "flow_lv_mw": -25.2,
-     "flow_vm_mw": -17.8,
+     "flow_lv_mw": -97.2,
+     "flow_vm_mw": -112.8,
      "leyte_saturated": false,
      "leyte_rent_php_kwh": 0.0,
      "mvip_saturated": false,
@@ -303,9 +303,9 @@
     "label": "added Visayas load binds the Leyte-Luzon link",
     "input": {
      "demand": {
-      "luzon": 11943,
-      "visayas": 3246,
-      "mindanao": 2350
+      "luzon": 12015,
+      "visayas": 3269,
+      "mindanao": 2377
      },
      "removed": {},
      "caps": {
@@ -313,7 +313,7 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "11446c0e6aa51a4d5f81e32726308e6793c38366c93a491d90fb091efbed05ae",
+    "lp_sha256": "cdfa9b51e2e650c5395a785845ad2f3a836347b21c184f9728063386f990b2e8",
     "expect": {
      "price": {
       "luzon": 6.0,
@@ -321,9 +321,9 @@
       "mindanao": 6.0
      },
      "gen_mw": {
-      "luzon": 12193.0,
-      "visayas": 2546.0,
-      "mindanao": 2800.0
+      "luzon": 12265.0,
+      "visayas": 2569.0,
+      "mindanao": 2827.0
      },
      "shortfall_mw": {
       "luzon": 0.0,
@@ -342,9 +342,9 @@
     "label": "documented 935 MW Visayas coal outage",
     "input": {
      "demand": {
-      "luzon": 11943,
-      "visayas": 2346,
-      "mindanao": 2350
+      "luzon": 12015,
+      "visayas": 2369,
+      "mindanao": 2377
      },
      "removed": {
       "visayas": {
@@ -356,7 +356,7 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "4c6add36e5211148e78429781a7b0041c0b4a121283f383c1833208c25d822ba",
+    "lp_sha256": "4fdafab0af70d829618701bcee5a9f149b255c9ba37ef0175d439a8cd0b8d71a",
     "expect": {
      "price": {
       "luzon": 6.0,
@@ -364,9 +364,9 @@
       "mindanao": 6.0
      },
      "gen_mw": {
-      "luzon": 12193.0,
-      "visayas": 1646.0,
-      "mindanao": 2800.0
+      "luzon": 12265.0,
+      "visayas": 1669.0,
+      "mindanao": 2827.0
      },
      "shortfall_mw": {
       "luzon": 0.0,
@@ -385,9 +385,9 @@
     "label": "relieve the Leyte-Luzon corridor by 250 MW under the bind",
     "input": {
      "demand": {
-      "luzon": 11943,
-      "visayas": 3246,
-      "mindanao": 2350
+      "luzon": 12015,
+      "visayas": 3269,
+      "mindanao": 2377
      },
      "removed": {},
      "caps": {
@@ -395,7 +395,7 @@
       "mvip": 450
      }
     },
-    "lp_sha256": "6e58bdd7eedb846f3f82019c9ff163f3803a28df2d0b33799641aadaf67606a4",
+    "lp_sha256": "44595b0fb8cef7f44987a88f2c0383cf161e2d5b6e02d3d3456d4a978e08f2ed",
     "expect": {
      "price": {
       "luzon": 6.0,
@@ -403,9 +403,9 @@
       "mindanao": 6.0
      },
      "gen_mw": {
-      "luzon": 12443.0,
+      "luzon": 12515.0,
       "visayas": 2353.4,
-      "mindanao": 2742.6
+      "mindanao": 2792.6
      },
      "shortfall_mw": {
       "luzon": 0.0,
@@ -413,7 +413,7 @@
       "mindanao": 0.0
      },
      "flow_lv_mw": 500.0,
-     "flow_vm_mw": -392.6,
+     "flow_vm_mw": -415.6,
      "leyte_saturated": true,
      "leyte_rent_php_kwh": 0.02,
      "mvip_saturated": false,
@@ -433,7 +433,7 @@
   "observed_corridor_caps": {
    "leyte_luzon_hvdc": {
     "static_limit_mw": 250,
-    "intervals_capped_below_static": 1534,
+    "intervals_capped_below_static": 1535,
     "capped_share_pct": 9.5,
     "mean_applied_cap_mw": 237.7
    },
@@ -448,7 +448,7 @@
     "nameplate_mw": 440,
     "src": "https://www.iemop.ph/news/december-2025-power-market-luzon-prices-ease-as-supply-improves-visayas-and-mindanao-experience-tighter-conditions/",
     "saturated_pct": 3.5,
-    "mean_congestion_rent_php_kwh": -0.583,
+    "mean_congestion_rent_php_kwh": -0.585,
     "mean_abs_flow_mw": 8.0,
     "peak_abs_flow_mw": 250.0
    },
@@ -522,11 +522,11 @@
    "available": true,
    "reference_hour": 19,
    "typical_evening_demand_mw": {
-    "luzon": 11878,
-    "visayas": 2329,
-    "mindanao": 2366
+    "luzon": 11953,
+    "visayas": 2354,
+    "mindanao": 2392
    },
-   "added_visayas_load_to_bind_leyte_mw": 275,
+   "added_visayas_load_to_bind_leyte_mw": 250,
    "note": "Extra flat Visayas load at a typical evening before the 250 MW Leyte-Luzon corridor saturates and Visayas prices above Luzon. The corridor binds well below the DICT 1.5 GW national forecast."
   }
  },
@@ -1888,7 +1888,7 @@
    "modeled_mean_php_kwh": 5.99,
    "mae_php_kwh": 4.466,
    "bias_php_kwh": -1.66,
-   "evening_peak_residual_php_kwh": 7.525,
+   "evening_peak_residual_php_kwh": 7.643,
    "correlation": 0.165,
    "note": null
   },
@@ -1898,7 +1898,7 @@
    "modeled_mean_php_kwh": 6.463,
    "mae_php_kwh": 8.416,
    "bias_php_kwh": -6.5,
-   "evening_peak_residual_php_kwh": 14.635,
+   "evening_peak_residual_php_kwh": 14.829,
    "correlation": 0.356,
    "note": null
   },
@@ -1908,7 +1908,7 @@
    "modeled_mean_php_kwh": 5.932,
    "mae_php_kwh": 7.751,
    "bias_php_kwh": -5.587,
-   "evening_peak_residual_php_kwh": 12.708,
+   "evening_peak_residual_php_kwh": 12.891,
    "correlation": 0.182,
    "note": null
   }
@@ -2031,9 +2031,9 @@
    },
    {
     "hour": 19,
-    "demand_mw": 11943,
+    "demand_mw": 12015,
     "modeled_price": 6.0,
-    "observed_price": 13.13
+    "observed_price": 13.689
    },
    {
     "hour": 20,
@@ -2055,9 +2055,9 @@
    },
    {
     "hour": 23,
-    "demand_mw": 11334,
+    "demand_mw": 11315,
     "modeled_price": 6.0,
-    "observed_price": 9.065
+    "observed_price": 8.861
    }
   ],
   "visayas": [
@@ -2177,9 +2177,9 @@
    },
    {
     "hour": 19,
-    "demand_mw": 2346,
-    "modeled_price": 9.058,
-    "observed_price": 23.234
+    "demand_mw": 2369,
+    "modeled_price": 9.312,
+    "observed_price": 24.42
    },
    {
     "hour": 20,
@@ -2201,9 +2201,9 @@
    },
    {
     "hour": 23,
-    "demand_mw": 2117,
+    "demand_mw": 2113,
     "modeled_price": 6.0,
-    "observed_price": 11.486
+    "observed_price": 11.295
    }
   ],
   "mindanao": [
@@ -2323,9 +2323,9 @@
    },
    {
     "hour": 19,
-    "demand_mw": 2350,
+    "demand_mw": 2377,
     "modeled_price": 6.0,
-    "observed_price": 17.947
+    "observed_price": 18.802
    },
    {
     "hour": 20,
@@ -2347,9 +2347,9 @@
    },
    {
     "hour": 23,
-    "demand_mw": 2085,
+    "demand_mw": 2081,
     "modeled_price": 6.0,
-    "observed_price": 9.544
+    "observed_price": 9.401
    }
   ]
  },
@@ -2554,22 +2554,22 @@
   "note": "Coal (~10%) and gas (~5%) forced-outage rates are from NERC GADS; hydro, geothermal, oil, and biomass are labeled industry-typical values. Only the named units are sampled; the rest of the fleet is held at its deterministic availability, so the mean is unchanged and the draws add the outage variance.",
   "per_grid": {
    "luzon": {
-    "lolp_pct": 0.15,
-    "expected_shortfall_mw": 0.8,
+    "lolp_pct": 0.09,
+    "expected_shortfall_mw": 0.3,
     "shortfall_mw_p50": 0.0,
     "shortfall_mw_p90": 0.0,
     "shortfall_mw_p99": 0.0,
-    "shortfall_mw_max": 2222.6,
-    "eue_mwh_evening_window": 245.4
+    "shortfall_mw_max": 922.3,
+    "eue_mwh_evening_window": 91.4
    },
    "visayas": {
-    "lolp_pct": 1.67,
-    "expected_shortfall_mw": 1.7,
+    "lolp_pct": 1.81,
+    "expected_shortfall_mw": 1.8,
     "shortfall_mw_p50": 0.0,
     "shortfall_mw_p90": 0.0,
-    "shortfall_mw_p99": 53.9,
-    "shortfall_mw_max": 569.3,
-    "eue_mwh_evening_window": 541.8
+    "shortfall_mw_p99": 57.7,
+    "shortfall_mw_max": 628.2,
+    "eue_mwh_evening_window": 563.2
    },
    "mindanao": {
     "lolp_pct": 0.0,
@@ -2583,16 +2583,16 @@
   },
   "load_dist": {
    "luzon": {
-    "mean": 11880.7,
-    "std": 614.6
+    "mean": 11899.7,
+    "std": 599.4
    },
    "visayas": {
-    "mean": 2322.3,
-    "std": 108.4
+    "mean": 2328.3,
+    "std": 100.0
    },
    "mindanao": {
-    "mean": 2363.5,
-    "std": 127.6
+    "mean": 2370.0,
+    "std": 119.7
    }
   },
   "dict_2028_luzon": {
@@ -2601,13 +2601,13 @@
    "date": "2025-10",
    "src": "https://www.bworldonline.com/corporate/2025/10/23/707346/",
    "distribution": {
-    "lolp_pct": 2.1,
-    "expected_shortfall_mw": 10.5,
+    "lolp_pct": 2.24,
+    "expected_shortfall_mw": 12.3,
     "shortfall_mw_p50": 0.0,
     "shortfall_mw_p90": 0.0,
-    "shortfall_mw_p99": 403.1,
-    "shortfall_mw_max": 2525.1,
-    "eue_mwh_evening_window": 3431.4
+    "shortfall_mw_p99": 487.0,
+    "shortfall_mw_max": 2803.2,
+    "eue_mwh_evening_window": 3933.6
    }
   }
  },
@@ -2626,7 +2626,7 @@
   "note": "Batteries (634 MW, DOE) plus Kalayaan pumped hydro (685 MW, CBK Power), both on Luzon (the national BESS placed on Luzon is a labeled simplification). They charge off-peak near the P4.14 commitment offer and discharge at about P5.17/kWh after round-trip loss. Energy-limited, so this firms the evening peak interval, not a sustained multi-day shortfall.",
   "dict_wave_peak_price": {
    "reference": "95th-percentile evening demand plus the DICT 1.5 GW wave",
-   "demand_mw": 14403,
+   "demand_mw": 14422,
    "without_storage_php_kwh": 12.0,
    "with_storage_php_kwh": 6.0,
    "without_storage_marginal_fuel": "oil",
@@ -2636,27 +2636,27 @@
   },
   "reliability_buyback": {
    "luzon_baseline": {
-    "lolp_without_pct": 0.15,
+    "lolp_without_pct": 0.09,
     "lolp_with_pct": 0.0
    },
    "luzon_dict_2028": {
     "without": {
-     "lolp_pct": 1.99,
-     "expected_shortfall_mw": 9.9,
+     "lolp_pct": 2.41,
+     "expected_shortfall_mw": 12.9,
      "shortfall_mw_p50": 0.0,
      "shortfall_mw_p90": 0.0,
-     "shortfall_mw_p99": 369.6,
-     "shortfall_mw_max": 3234.0,
-     "eue_mwh_evening_window": 3238.7
+     "shortfall_mw_p99": 515.3,
+     "shortfall_mw_max": 2803.2,
+     "eue_mwh_evening_window": 4120.8
     },
     "with_storage": {
-     "lolp_pct": 0.1,
-     "expected_shortfall_mw": 0.4,
+     "lolp_pct": 0.17,
+     "expected_shortfall_mw": 0.7,
      "shortfall_mw_p50": 0.0,
      "shortfall_mw_p90": 0.0,
      "shortfall_mw_p99": 0.0,
-     "shortfall_mw_max": 1551.8,
-     "eue_mwh_evening_window": 138.0
+     "shortfall_mw_max": 1662.6,
+     "eue_mwh_evening_window": 214.8
     }
    }
   }

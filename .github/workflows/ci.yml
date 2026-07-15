@@ -21,7 +21,9 @@ jobs:
         run: |
           python3 tests/test_data.py
           python3 tests/test_lp_parity.py
+          python3 tests/test_engine_sync.py
           python3 tests/qa_gate.py
+          python3 scripts/verify_claims.py
       - name: Behavioral checks against a local server
         run: |
           sudo apt-get update -q && sudo apt-get install -y -q zsh

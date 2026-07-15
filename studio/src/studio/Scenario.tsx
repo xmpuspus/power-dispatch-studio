@@ -115,6 +115,9 @@ export function ScenarioView({
   // every chronological view (Chronology, Emissions, Runs, reports) that
   // reads this scenario's overrides inherits the effect with no extra wiring.
   const factors = em.data?.factor_map ?? {}
+  // the lever writes per-fuel Price via the baked tCO2/MWh factors; with no factors
+  // loaded it would move but change no solve, so gate it on the factors being ready
+  const factorsReady = Object.keys(factors).length > 0
   const carbonPrice = carbonPriceOf(overrides)
   const carbonRows = objects.fuel
     .map((f) => ({ fuel: f.id, delta: carbonCostDelta(carbonPrice, factors[f.id]) }))
@@ -307,8 +310,16 @@ export function ScenarioView({
               fmt={(v) => `₱${num(v)}/tCO2`}
               tick={`${CARBON_DISCLAIMER}. Raises each carbon-emitting fuel's Price by carbon price times its baked tCO2/MWh factor, divided by 1000, so higher-carbon fuels climb the merit order.`}
               onChange={setCarbonPrice}
+              disabled={!factorsReady}
             />
-            {carbonRows.length > 0 && (
+            {!factorsReady && (
+              <p className="note">
+                {em.error
+                  ? 'Emission factors failed to load, so the carbon price lever is off.'
+                  : 'Loading emission factors, the carbon price lever will enable shortly.'}
+              </p>
+            )}
+            {factorsReady && carbonRows.length > 0 && (
               <p className="note">
                 Applies now, Fuels &gt; Price:{' '}
                 {carbonRows
@@ -483,6 +494,7 @@ function Slider({
   tick,
   fmt,
   onChange,
+  disabled = false,
 }: {
   label: string
   value: number
@@ -492,6 +504,7 @@ function Slider({
   tick?: string
   fmt?: (v: number) => string
   onChange: (v: number) => void
+  disabled?: boolean
 }) {
   const shown = fmt ? fmt(value) : `${num(value)} MW`
   return (
@@ -507,6 +520,7 @@ function Slider({
         max={max}
         step={step}
         value={value}
+        disabled={disabled}
         onChange={(e) => onChange(Number(e.target.value))}
       />
     </label>

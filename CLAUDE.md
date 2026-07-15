@@ -96,10 +96,12 @@ make e2e        # behavioral suite (make serve & first)
 
 ## Status / next
 
-v1 under construction 2026-07-05 (ultrawork). Not deployed. Before any public push:
-name/domain check, og.png, hero GIF (real recording only), Vercel deploy on the
-PERSONAL account, `make e2e BASE=<deploy>` + screenshot read-back. Timing target:
-publish alongside the ~Jul 8-10 July-Meralco / June-WESM prints.
+SHIPPED and live at power-dispatch-studio.vercel.app (PERSONAL Vercel account) since
+2026-07-06; the nightly archive cron + verify_claims oracle keep the bake and the
+public prose in lockstep. Before any push that changes shipped numbers: re-run
+`make qa`, re-run `make viz` for the OG card + montage, re-record the hero GIF (real
+recording only) if a shown surface moved, then `make e2e BASE=<deploy>` + screenshot
+read-back.
 
 ## Conventions
 

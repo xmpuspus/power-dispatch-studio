@@ -1222,6 +1222,7 @@
   font-size: var(--fs-13);
   padding: 6px var(--sp-3);
   color: var(--text-muted);
+  background: transparent; /* underline tabs, not UA buttonface boxes */
   border-bottom: 2px solid transparent;
 }
 .datatabs__tab.is-active {

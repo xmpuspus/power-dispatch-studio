@@ -8735,9 +8735,9 @@
    "lv": {
     "corridor": "Luzon to Visayas",
     "n_hours": 2304,
-    "identity_mean_mw": 8.2,
+    "identity_mean_mw": 8.4,
     "record_mean_mw": 8.4,
-    "mae_mw": 0.5,
+    "mae_mw": 0.0,
     "binding_share_pct": 49.8,
     "n_intervals": 27647
    },
@@ -8746,7 +8746,7 @@
     "n_hours": 2304,
     "identity_mean_mw": -365.8,
     "record_mean_mw": -365.8,
-    "mae_mw": 0.1,
+    "mae_mw": 0.0,
     "binding_share_pct": 44.3,
     "n_intervals": 27647
    }
@@ -8808,10 +8808,10 @@
   },
   "marquee": {
    "scenario_day": "2026-06-20",
-   "uplift_php_kwh": 9.08,
+   "uplift_php_kwh": 9.14,
    "scenario_max_rolling_72h": {
     "ends": "2026-06-21 03:45:00",
-    "rolling_php_kwh": 13.572
+    "rolling_php_kwh": 13.592
    },
    "baseline_max_rolling_72h": {
     "ends": "2026-06-20 03:10:00",

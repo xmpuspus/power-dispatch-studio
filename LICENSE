@@ -28,8 +28,8 @@ Scope note (not part of the MIT text above):
   web/serve.py, scripts/, tests/, Makefile).
 - The baked data products (web/data/*.json, web/data/*.geojson) are additionally
   offered under CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/).
-  Attribution: gridbill-ph (2026), IEMOP public market data archive,
-  https://github.com/xmpuspus/gridbill-ph
+  Attribution: power-dispatch-studio (2026), IEMOP public market data archive,
+  https://github.com/xmpuspus/power-dispatch-studio
 - The mirrored upstream market files under data/raw/ belong to their publishers
   (IEMOP). They are republished as-is for research with attribution, and any
   takedown request from the publisher will be honored.

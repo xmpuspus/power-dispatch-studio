@@ -13,6 +13,7 @@ import {
   exportRuns,
   importRuns,
   isStale,
+  MAX_RUNS,
   runCsv,
   type SavedRun,
 } from './runs'
@@ -238,8 +239,8 @@ export function RunsView({
           </table>
         </div>
         <p className="note">
-          Runs live in this browser's storage, newest first, twelve at most. A run saved
-          under an older engine is flagged instead of silently re-read.
+          Runs live in this browser's storage, newest first, {MAX_RUNS} at most. A run
+          saved under an older engine is flagged instead of silently re-read.
         </p>
       </Panel>
 

@@ -1,11 +1,11 @@
 cff-version: 1.2.0
 message: "If you use this archive or the baked data products, please cite:"
-title: "gridbill-ph: an open archive and map of Philippine grid congestion, data-center siting, and WESM prices"
+title: "power-dispatch-studio: an open archive and production-cost studio for Philippine grid congestion, data-center siting, and WESM prices"
 authors:
   - family-names: Puspus
     given-names: Xavier
 year: 2026
-url: "https://github.com/xmpuspus/gridbill-ph"
+url: "https://github.com/xmpuspus/power-dispatch-studio"
 license: MIT
 keywords:
   - WESM

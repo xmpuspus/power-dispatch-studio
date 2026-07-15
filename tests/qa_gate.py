@@ -31,7 +31,8 @@ BANNED = [
     ("'ghost'/'fraud' style accusation (conservative language only)",
      r"\b(fraudulent|thieves?|plunder(ed|ing)?)\b"),
     ("capacity/wholesale % stated as a bill % (keep wholesale and bill apart)",
-     r"bill(s)?\s+(rose|up|jumped|climbed)\s+38\.5\s*%"),
+     r"bill(s)?\s+(rose|up|jumped|climbed|soared|spiked|surged|increased|went\s+up)"
+     r"\s*(by\s+)?38\.5\s*(%|percent|per\s*cent|pct)"),
 ]
 
 # US-market framing must not creep back into user-facing artifacts. This map stands

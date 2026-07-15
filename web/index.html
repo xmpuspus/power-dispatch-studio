@@ -129,6 +129,10 @@
     #head h1{ font-size:16px; padding-right:76px; margin:0; line-height:44px; }
     #side{ display:none; }
     #legend{ display:none; }
+    /* the color key has no room on the map at phone width; surface it inside the
+       Details drawer the user opens on purpose, pinned to the bottom of it */
+    body.show-side #legend{ display:block; z-index:10; left:8px; right:8px;
+      bottom:70px; top:auto; max-width:none; max-height:34vh; overflow-y:auto; }
   }
   .hovpop .maplibregl-popup-content{ padding:6px 9px; font-size:11.5px; border-radius:7px; box-shadow:0 1px 6px rgba(16,33,43,.14); max-width:260px; }
   .hovpop .maplibregl-popup-content b{ font-size:12px; } .hovpop .maplibregl-popup-tip{ display:none; }
@@ -239,7 +243,7 @@
   megawatts land, and what the spot market and the bill are doing.</p>
   <div class="scope" id="scope">Archive window loading. Corridor lines are schematic
   links between named endpoints, not route maps. Data-center pins are city-precision.</div>
-  <button id="fopen"><span>Key findings, computed from the archive</span><span>&rarr;</span></button>
+  <button id="fopen" aria-expanded="false"><span>Key findings, computed from the archive</span><span>&rarr;</span></button>
   <div id="findbox">
     <input id="findq" type="search" autocomplete="off"
       placeholder="Find your plant or data center" aria-label="Find a power plant or data center on the map">
@@ -262,14 +266,14 @@
   <div id="flist"></div>
 </div>
 
-<button id="mside" class="panel">Details</button>
+<button id="mside" class="panel" aria-expanded="false">Details</button>
 
 <div id="modebar" class="panel" role="tablist">
-  <button class="mode on" data-mode="supply" role="tab">1 Supply</button>
-  <button class="mode" data-mode="choke" role="tab">2 Choke points</button>
-  <button class="mode" data-mode="price" role="tab">3 Prices</button>
-  <button class="mode" data-mode="drivers" role="tab">Drivers</button>
-  <button class="mode" data-mode="simulate" role="tab">Simulate</button>
+  <button class="mode on" data-mode="supply" role="tab" aria-selected="true">1 Supply</button>
+  <button class="mode" data-mode="choke" role="tab" aria-selected="false">2 Choke points</button>
+  <button class="mode" data-mode="price" role="tab" aria-selected="false">3 Prices</button>
+  <button class="mode" data-mode="drivers" role="tab" aria-selected="false">Drivers</button>
+  <button class="mode" data-mode="simulate" role="tab" aria-selected="false">Simulate</button>
 </div>
 
 <div id="side" class="panel"></div>
@@ -567,7 +571,7 @@ function sideChoke(){
   <tbody>${rows || "<tr><td colspan=5>Bake pending.</td></tr>"}</tbody></table>
   ${slackline}
   ${coBlock}
-  <button class="sual-btn" id="sualbtn">What if a Sual unit trips? (-647 MW)</button>
+  <button class="sual-btn" id="sualbtn" aria-pressed="false">What if a Sual unit trips? (-647 MW)</button>
   <div class="note" id="sualread">${sualDays != null ?
     "The archive's outage files list a Sual unit out on " + fmt(sualDays) +
     " day(s) in this window. " : ""}Sual's two 647 MW units are the largest single
@@ -725,8 +729,11 @@ function legendRender(){
 
 function setMode(m, syncRail = true){
   MODE = m; window.__diag.mode = m;
-  document.querySelectorAll(".mode").forEach(b =>
-    b.classList.toggle("on", b.dataset.mode === m));
+  document.querySelectorAll(".mode").forEach(b => {
+    const active = b.dataset.mode === m;
+    b.classList.toggle("on", active);
+    b.setAttribute("aria-selected", active ? "true" : "false");
+  });
   const S = $("side");
   S.innerHTML = m === "supply" ? sideSupply() : m === "choke" ? sideChoke()
     : m === "simulate" ? sideSimulate()
@@ -778,6 +785,7 @@ document.querySelectorAll(".mode").forEach(b =>
 function sualToggle(btn){
   SUAL_ON = !SUAL_ON; window.__diag.sual = SUAL_ON;
   btn.classList.toggle("on", SUAL_ON);
+  btn.setAttribute("aria-pressed", SUAL_ON ? "true" : "false");
   const A = D["market_anchors.json"] || {};
   const read = $("sualread");
   if (!read) return;
@@ -833,6 +841,7 @@ function gridStack(g, sel){
       if (blk) blk.mw = Math.max(0, blk.mw - u.capacity_mw); }
   }
   if (sel && SIM.addFirm > 0) blocks.push({ fuel:"firm", cost:FUEL_COST_FIRM, mw:SIM.addFirm });
+  blocks.sort((a,b) => a.cost - b.cost);  // keep merit order after trip/add-firm: margJS + clearCoupledJS walk in array order
   return { mo, blocks };
 }
 function simStack(){
@@ -996,7 +1005,7 @@ function sideSimulate(){
       `${esc(u.name)} (-${fmt(u.capacity_mw)} MW ${esc(fuelLabel(u.fuel))})</option>`).join("");
   const impMax = HVDC_IMPORT_LIMIT[g] || 250;
   const gridBtn = ["luzon","visayas","mindanao"].map(k =>
-    `<button class="gsel${k===g?' on':''}" data-grid="${k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join("");
+    `<button class="gsel${k===g?' on':''}" data-grid="${k}" aria-pressed="${k===g?'true':'false'}">${k[0].toUpperCase()+k.slice(1)}</button>`).join("");
   const n1 = (disp.n1||[]).filter(n=>n.grid===g).slice(0,6);
   const n1rows = n1.map(n =>
     `<tr><td>${esc(n.unit)}</td><td class="num">${fmt(n.capacity_mw)}</td>
@@ -1025,8 +1034,11 @@ function sideSimulate(){
       <select id="sim-trip">${tripOpts}</select></label>
     <label>Add firm capacity: <b id="sim-firmv">${fmt(SIM.addFirm)}</b> MW
       <input type="range" id="sim-firm" min="0" max="1000" step="50" value="${SIM.addFirm}"></label>
-    <label>Relieve the feeding HVDC corridor (extra operating limit): <b id="sim-impv">${fmt(SIM.imp)}</b> MW
-      <input type="range" id="sim-imp" min="0" max="${impMax}" step="25" value="${SIM.imp}"></label>
+    ${g === "luzon"
+      ? `<label class="lever-off">Relieve the feeding HVDC corridor <span class="tick">Luzon is the exporter, not fed by a corridor. Pick Visayas or Mindanao to relieve its feeding link.</span>
+      <input type="range" id="sim-imp" min="0" max="${impMax}" step="25" value="0" disabled></label>`
+      : `<label>Relieve the feeding HVDC corridor (extra operating limit): <b id="sim-impv">${fmt(SIM.imp)}</b> MW
+      <input type="range" id="sim-imp" min="0" max="${impMax}" step="25" value="${SIM.imp}"></label>`}
     <label>Discharge storage at the peak: <b id="sim-storv">${fmt(SIM.stor)}</b> MW
       <span class="tick">Luzon has ${fmt(((disp.storage||{}).assets||{}).luzon ? disp.storage.assets.luzon.total_mw : 1319)} MW today</span>
       <input type="range" id="sim-stor" min="0" max="2000" step="50" value="${SIM.stor}"></label>
@@ -1051,9 +1063,14 @@ function sideSimulate(){
   level; coal is split into its committed (overnight) and marginal (peak)
   tranches.</div>` : ""}
   ${obsSettersHTML(g)}
-  <h2 style="margin-top:12px">N-1: trip each named unit</h2>
-  <table><thead><tr><th>Unit</th><th>MW</th><th>Evening price</th><th>Shed at peak</th></tr></thead>
+  <h2 style="margin-top:12px">Trip each named plant</h2>
+  <table><thead><tr><th>Plant</th><th>MW</th><th>Evening price</th><th>Shed at peak</th></tr></thead>
   <tbody>${n1rows || "<tr><td colspan=4>Bake pending.</td></tr>"}</tbody></table>
+  <div class="note">Each row trips the whole named plant at a tight evening (the grid's
+  p95 observed demand); the multi-unit stations (Sual and Ilijan 2x, Masinloc 4x)
+  lose all their units, so their move is larger than a single-unit N-1. The
+  <b>Trip a unit</b> control above re-clears at the panel's current demand, so at a
+  lighter evening the same trip reads a smaller move than this table.</div>
   <div class="note">The panel starts at a typical evening peak
   (${fmt(mo.typical_evening_demand_mw)} MW); the annual peak of
   ${fmt(mo.peak_demand_mw)} MW already clears on oil. Reserve margin now:
@@ -1183,10 +1200,15 @@ function renderFindings(){
   for (const f of FINDINGS){
     const card = document.createElement("div");
     card.className = "fcard" + (ACTIVE === f.id ? " on" : "");
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
     card.innerHTML = `<div class="ftag">${esc(f.tag)}</div><h3>${esc(f.title)}</h3>` +
       `<div class="fstat">${esc(f.stat)}</div><div class="fblurb">${esc(f.blurb)}</div>` +
       (f.source ? `<div class="fsrc">${esc(f.source)}</div>` : "");
     card.onclick = () => selectFinding(f);
+    card.onkeydown = e => {
+      if (e.key === "Enter" || e.key === " "){ e.preventDefault(); selectFinding(f); }
+    };
     list.appendChild(card);
   }
 }
@@ -1200,11 +1222,16 @@ function selectFinding(f){
 function openDrawer(o){
   $("findings").classList.toggle("open", o);
   window.__diag.drawerOpen = o;
+  const fo = $("fopen");
+  if (fo) fo.setAttribute("aria-expanded", o ? "true" : "false");
   if (o) renderFindings();
 }
 $("fopen").onclick = () => openDrawer(true);
 $("fclose").onclick = () => { openDrawer(false); };
-$("mside").onclick = () => document.body.classList.toggle("show-side");
+$("mside").onclick = () => {
+  const open = document.body.classList.toggle("show-side");
+  $("mside").setAttribute("aria-expanded", open ? "true" : "false");
+};
 $("headtoggle").onclick = () => {
   const open = document.body.classList.toggle("head-open");
   $("headtoggle").setAttribute("aria-expanded", open ? "true" : "false");

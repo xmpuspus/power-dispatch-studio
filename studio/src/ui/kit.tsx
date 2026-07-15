@@ -117,15 +117,6 @@ export function Source({
   )
 }
 
-export function Meter({ frac, tone = 'primary' }: { frac: number; tone?: string }) {
-  const w = Math.max(0, Math.min(1, frac)) * 100
-  return (
-    <div className="meter" aria-hidden="true">
-      <span className={`meter__fill meter__fill--${tone}`} style={{ width: `${w}%` }} />
-    </div>
-  )
-}
-
 export function EmptyNote({ children }: { children: ReactNode }) {
   return <p className="empty-note">{children}</p>
 }

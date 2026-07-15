@@ -148,7 +148,8 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
             mean_req = profiles.get("reserve_req_mean_mw") or {}
             o_reserve = {
                 g: round1(sum(
-                    (day_req.get(g) or mean_req.get(g) or {}).values()))
+                    v for k, v in (day_req.get(g) or mean_req.get(g) or {}).items()
+                    if k != "Rd"))  # Rd is regulation-DOWN, not withheld up-capacity
                 for g in GRID_KEYS}
         return {"stacks": o_stacks, "demand": o_demand, "caps": caps,
                 "wheel": wheel, "storage": [], "reserve_req": o_reserve,
@@ -201,7 +202,9 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
         day_req = day.get("reserve_req_mw") or {}
         mean_req = profiles.get("reserve_req_mean_mw") or {}
         reserve_req = {
-            g: round1(sum((day_req.get(g) or mean_req.get(g) or {}).values()))
+            g: round1(sum(
+                v for k, v in (day_req.get(g) or mean_req.get(g) or {}).items()
+                if k != "Rd"))  # Rd is regulation-DOWN, not withheld up-capacity
             for g in GRID_KEYS}
 
     # the day's observed hydro energy, scaled with hydro capacity so the
