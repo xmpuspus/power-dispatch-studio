@@ -70,7 +70,7 @@ export function Segmented<T extends string>({
   onChange,
   ariaLabel,
 }: {
-  options: { value: T; label: string }[]
+  options: { value: T; label: string; disabled?: boolean; title?: string }[]
   value: T
   onChange: (v: T) => void
   ariaLabel: string
@@ -82,8 +82,10 @@ export function Segmented<T extends string>({
           key={o.value}
           role="tab"
           aria-selected={o.value === value}
+          disabled={o.disabled}
+          title={o.title}
           className={`segmented__item ${o.value === value ? 'is-active' : ''}`}
-          onClick={() => onChange(o.value)}
+          onClick={() => !o.disabled && onChange(o.value)}
         >
           {o.label}
         </button>

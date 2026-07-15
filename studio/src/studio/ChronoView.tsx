@@ -84,6 +84,10 @@ export function ChronologyView({
       : days.slice(Math.max(0, idx - 6), idx + 1).map((x) => x.date)
   }, [days, date, span, engine])
 
+  // what the chart actually draws, regardless of the span toggle: the offer book is
+  // per day, and the archive can clip the week near its start
+  const effectiveSpan: 'day' | 'week' = windowDates.length > 1 ? 'week' : 'day'
+
   const offerPending = engine === 'offers' && !opts.offer_day
   const runs = useMemo(
     () =>
@@ -208,11 +212,19 @@ export function ChronologyView({
         </label>
         <Segmented
           ariaLabel="Run window"
-          value={span}
+          value={effectiveSpan}
           onChange={(v) => onSpan(v as 'day' | 'week')}
           options={[
             { value: 'day', label: 'Day' },
-            { value: 'week', label: 'Week ending' },
+            {
+              value: 'week',
+              label: 'Week ending',
+              disabled: engine === 'offers',
+              title:
+                engine === 'offers'
+                  ? 'The observed offer book is published per day; switch to the cost model for the week window.'
+                  : undefined,
+            },
           ]}
         />
         <Segmented
@@ -243,7 +255,7 @@ export function ChronologyView({
         {engine === 'offers' && (
           <span
             className="chrono__reserve"
-            title="The day's actual offer book (every resource's priced curve plus self-scheduled capacity as price-takers). The book already embodies unit behavior, so storage, reserve, water, and fleet edits are off; the added-load lever still applies."
+            title="The day's actual offer book (every resource's priced curve plus self-scheduled capacity as price-takers). The book already embodies unit behavior, so storage, water, and fleet edits are off; reserve co-clear and the added-load lever still apply."
           >
             {offer.loading
               ? 'loading the offer book'
@@ -289,7 +301,7 @@ export function ChronologyView({
       <Panel
         title="Hourly clearing price"
         subtitle={`The three grids cleared together, every hour of the ${
-          span === 'day' ? 'observed day' : 'week'
+          effectiveSpan === 'day' ? 'observed day' : 'week'
         }. Observed LWAP dashed where the archive has it.`}
       >
         <HourLines series={priceSeries} marks={marks} />

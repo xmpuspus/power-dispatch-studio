@@ -332,12 +332,33 @@ export function Studio({
     )
     setDirty(true)
   }
-  const copySummary = () => {
+  const copySummary = async () => {
     const g = (k: GridKey) =>
       `${k[0].toUpperCase() + k.slice(1)} ${php(solved.coupled.price[k])}/kWh, margin ${pct(solved.reserveMarginPct[k] / 100, 1)}, LOLP ${pct(solved.reliability[k].lolp_pct / 100, 2)}`
     const text = `Power Dispatch Studio, scenario "${active.name}"\n${GRIDS.map(g).join('\n')}`
-    void navigator.clipboard?.writeText(text)
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text)
+        return true
+      }
+    } catch {
+      // insecure origin or denied permission; fall through to the textarea path
+    }
+    try {
+      const ta = document.createElement('textarea')
+      ta.value = text
+      ta.style.position = 'fixed'
+      ta.style.opacity = '0'
+      document.body.appendChild(ta)
+      ta.select()
+      const ok = document.execCommand('copy')
+      document.body.removeChild(ta)
+      return ok
+    } catch {
+      return false
+    }
   }
+  const phaseLabel = nav.kind === 'phase' ? PHASE_LABEL[nav.id] : 'Short-term'
 
   return (
     <div className="studio" data-testid="studio">
@@ -378,6 +399,7 @@ export function Studio({
         onRevertAll={revertAll}
         onCopy={copySummary}
         onGrid={setGrid}
+        phaseLabel={phaseLabel}
       />
 
       <div className="studio__body">
@@ -386,6 +408,22 @@ export function Studio({
         <main className="studio__main">
           <Crumbs nav={nav} grid={grid} gridScoped={gridScoped} dirty={dirty} />
           <div className="studio__scroll">
+            {nav.kind === 'class' && nav.id === 'generator' && (
+              <div className="studio__start">
+                <div className="studio__start-txt">
+                  <b>New here?</b> The quickest way to simulate: open Quick scenario, drag
+                  a lever, and the three grids re-clear live as you move it. No Run
+                  needed. For deeper edits, change any value in these tables and press
+                  Run.
+                </div>
+                <button
+                  className="btn btn--primary btn--sm"
+                  onClick={() => setNav({ kind: 'quick' })}
+                >
+                  Start simulating →
+                </button>
+              </div>
+            )}
             <SolveBoundary key={`${JSON.stringify(nav)}:${editCount}:${dirty}:${grid}`}>
               <DataPane
                 d={d}
@@ -419,7 +457,7 @@ export function Studio({
 
       <footer className="studio__status mono">
         <span>
-          Phase <b>Short-term</b>
+          Phase <b>{phaseLabel}</b>
         </span>
         <span>
           Scenario <b>{active.name}</b>, {editCount} edit{editCount === 1 ? '' : 's'}
@@ -456,6 +494,7 @@ function Ribbon({
   onRevertAll,
   onCopy,
   onGrid,
+  phaseLabel,
 }: {
   scenarios: Scenario[]
   ai: number
@@ -467,10 +506,12 @@ function Ribbon({
   onPick: (i: number) => void
   onAdd: () => void
   onRevertAll: () => void
-  onCopy: () => void
+  onCopy: () => Promise<boolean>
   onGrid: (g: GridKey) => void
+  phaseLabel: string
 }) {
   const [tab, setTab] = useState<'home' | 'model' | 'solution'>('home')
+  const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle')
   const tabs = ['home', 'model', 'solution'] as const
   return (
     <div className="ribbon">
@@ -494,6 +535,12 @@ function Ribbon({
               <button
                 className={`btn btn--run${dirty ? ' is-dirty' : ''}`}
                 onClick={onRun}
+                disabled={!dirty}
+                title={
+                  dirty
+                    ? 'Re-solve the edited scenario'
+                    : 'Solved and current. Edit a value to re-run.'
+                }
                 aria-label="Run the simulation"
               >
                 <PlayIcon /> Run
@@ -559,12 +606,24 @@ function Ribbon({
           <>
             <RibbonGroup label="Phase">
               <span className="ribbon__meta">
-                Short-term <span className="tree__live">active</span>
+                {phaseLabel} <span className="tree__live">active</span>
               </span>
             </RibbonGroup>
             <RibbonGroup label="Export">
-              <button className="btn btn--ghost btn--sm" onClick={onCopy}>
-                Copy summary
+              <button
+                className="btn btn--ghost btn--sm"
+                onClick={async () => {
+                  const ok = await onCopy()
+                  setCopied(ok ? 'ok' : 'fail')
+                  window.setTimeout(() => setCopied('idle'), 1600)
+                }}
+                title="Copy the current scenario's clearing prices and adequacy to the clipboard"
+              >
+                {copied === 'ok'
+                  ? 'Copied'
+                  : copied === 'fail'
+                    ? 'Copy failed'
+                    : 'Copy summary'}
               </button>
             </RibbonGroup>
           </>
@@ -678,7 +737,10 @@ function Explorer({
                 onClick={() => setNav({ kind: 'phase', id })}
               />
             ))}
-            <div className="tree__phase is-off">
+            <div
+              className="tree__phase is-off"
+              title="Medium-term horizon is not in this open build"
+            >
               <NodeIcon group="Solution" />
               Medium-term
             </div>
