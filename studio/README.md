@@ -312,7 +312,7 @@ the flow data showed the engine was right, and one is a dated backcast.
 | +50 MW small hydro, Luzon | small, dispatchable, energy-capped | +175 MWh over the day, price flat, bounded by the water budget |
 | +600 MW gas, Visayas | local generation relieves the island | Visayas mean falls, corridor dependence drops |
 | Malampaya to imported LNG (gas P4.80 to P10.30) | price shape lifts with the fuel cost | Luzon price rises toward the gas cost |
-| Trip both 647 MW Sual units | Luzon tightens | reprices coal to oil with no unserved load on the observed evening; the reliability draw puts loss-of-load probability at 10.6% |
+| Trip both 647 MW Sual units | Luzon tightens | reprices coal to oil with no unserved load on the observed evening; the reliability draw puts loss-of-load probability at 11.7% |
 | 935 MW Visayas outage, Jul 1 (dated) | matches the observed island spread | reproduces 87.8% of the observed Visayas-over-Luzon spread |
 
 Two of these are quantitative claims that stand on their own. First, the
@@ -377,7 +377,7 @@ adequacy hit; Chronology on the stress day shows whether the evening clears on
 oil or sheds load, and its congestion-rent tile prices the corridors binding in
 the peak hours.
 
-![Recorded studio walkthrough of the single contingency: zeroing both 647 MW Sual units lifts Luzon loss-of-load probability from a 0.15% base to 10.60% (1-in-100 shed 1,234 MW) and leaves the rest of the fleet pricing coal to oil in N-1, yet the observed stress evening still clears with no unserved load at a P11.40 Luzon mean and P31.95M congestion rent: the 10.6% is the reliability draw across sampled evenings, not this day, and the binding constraint is the corridor.](docs/workflow-2-contingency.gif)
+![Recorded studio walkthrough of the single contingency: zeroing both 647 MW Sual units lifts Luzon loss-of-load probability from a 0.09% base to 11.70% (1-in-100 shed 1,293 MW) and leaves the rest of the fleet pricing coal to oil in N-1, yet the observed stress evening still clears with no unserved load at a P11.40 Luzon mean and P31.95M congestion rent: the 11.7% is the reliability draw across sampled evenings, not this day, and the binding constraint is the corridor.](docs/workflow-2-contingency.gif)
 
 **Switch gas to imported LNG.** System > Fuels, reprice natural gas from the
 Malampaya cost (P4.80/kWh) to the imported-LNG cost (P10.30/kWh), Run, and
