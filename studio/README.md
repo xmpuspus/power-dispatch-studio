@@ -13,9 +13,11 @@ window encode into the URL.
 It is free and open, built on public data, with no license, no install, and no
 account.
 
-**It works, and it says how well.** Every full-coverage market day is re-priced by
-the model and scored against the actual WESM price, error stated per grid, nothing
-tuned. That backcast is the proof, and the studio shows it:
+The model is checked against what actually happened. Every observed market day is
+re-priced by the model and compared to the real WESM price, with the error shown
+for each of the three grids and nothing tuned to make it fit. That comparison,
+called the backcast, is how you tell whether the model is worth anything, and the
+studio shows it:
 
 ![Backcast view: modeled versus observed WESM price over 56 market days, with MAE, bias, and correlation stated per grid, and the model-versus-observed table for Luzon, Visayas and Mindanao.](docs/view-backcast.gif)
 
@@ -45,11 +47,13 @@ Every surface a WESM analyst needs, browser-side on baked public data:
 | Baked JSON artifacts | Produced by the Python pipeline from archived IEMOP files; the frontend never computes a number the pipeline cannot reproduce |
 | Backcast | Every full-coverage market day replayed against observed hourly LWAP, error stated per grid, nothing tuned |
 
-What it is not: an LP, not a MILP: no unit commitment, no security
-constraints, and no nodal network. The dispatch model chooses no builds (the
-Long-term view applies the DOE's own lists); a separate Expansion mix analysis
-runs a labeled greenfield least-cost LP as a direction check, not a build
-recommendation. The scope section below states exactly what solves.
+What it does not do: it finds the cheapest way to meet demand each hour, but it
+does not decide which individual plants switch on or off (no start-up costs, no
+minimum-run rules), does not enforce transmission contingency limits, and does not
+model the grid node by node. It also does not choose what to build. The Long-term
+view just applies the DOE's own project lists, and the separate Expansion mix view
+runs a least-cost buildout as a rough direction check, not a recommendation. The
+scope table below spells out exactly what it solves.
 
 ## The model and its scope
 
