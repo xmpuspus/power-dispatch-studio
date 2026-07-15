@@ -21,6 +21,10 @@ against the real Philippine market. Formerly gridbill-ph.
 [![License: MIT (code) / CC-BY-4.0 (data)](https://img.shields.io/badge/license-MIT%20%2F%20CC--BY--4.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 
+[<img width="820" alt="One pass across the whole platform: the map's five modes and in-browser simulate, a real click through into the dispatch studio, the Start-simulating onboarding, a live data-center what-if and a Sual unit trip in the Quick scenario, the backcast against the operator's own offer books, probabilistic reliability, and a fast sweep of the deep analyses" src="docs/reel.gif">](https://power-dispatch-studio.vercel.app)
+
+The whole platform in one pass, map to studio. A [smoother MP4 is the version to share](docs/reel.mp4). The map on its own, through its five modes:
+
 [<img width="820" alt="A tour of the map through its five modes. The head panel asks whether the Philippine grid can host the announced data-center wave. Supply shows the May 2026 system margin against the announced megawatts; Choke points lists the named 230 kV equipment at a binding limit; Prices shows the three island grids fanning apart after the market reopened; Drivers is the day-by-day archive feed; and Simulate re-clears the merit-order price in the browser as a data-center load is added" src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
 
 Live: [the map](https://power-dispatch-studio.vercel.app) and
