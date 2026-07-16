@@ -1,65 +1,142 @@
-"""Record the map's five-mode tour (the README hero) with a fresh Playwright
-context, so it captures the current, scrubbed map. Outputs a webm to /tmp/map-rec.
+"""Record the map's five-mode tour (the README hero) as a real moving demo, then
+bake docs/hero.gif. The point is motion: a static tab-by-tab slideshow reads as a
+handful of stills. Here each mode moves. The map pans and zooms to the region the
+mode is about, the choke-point corridor pops its live archive receipt on hover, and
+Simulate ramps a data center onto the grid so the merit-order price re-clears on
+screen (coal to oil).
 
-Usage: python3 build/record_map_hero.py [base_url]
+    make serve                          # web/ on :8789
+    python3 build/record_map_hero.py [base_url]
+
+Self-contained: records a webm to /tmp/map-rec and bakes docs/hero.gif with the
+house ffmpeg palette recipe (fps 14, 900 wide). Reproducible from a clean clone.
 """
 
 import asyncio
+import subprocess
 import sys
 from pathlib import Path
 
-from playwright.async_api import async_playwright
+from playwright.async_api import Page, async_playwright
 
-BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8790/"
-OUT = Path("/tmp/map-rec")
-OUT.mkdir(exist_ok=True)
+BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8789/"
+ROOT = Path(__file__).resolve().parent.parent
+REC = Path("/tmp/map-rec")
+REC.mkdir(exist_ok=True)
+OUT = ROOT / "docs" / "hero.gif"
+W, H = 1280, 800
+
+# smooth slider ramp with real input events, so the price re-clears live on screen
+ANIM_JS = r"""
+(args) => { const [id, to, ms] = args; const el = document.getElementById(id); if (!el) return;
+  const from = +el.value, t0 = performance.now();
+  return new Promise(r => { function f(t){ const k = Math.min(1, (t - t0) / ms);
+    el.value = Math.round(from + (to - from) * k);
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    k < 1 ? requestAnimationFrame(f) : r(); } requestAnimationFrame(f); }); }
+"""
 
 
-async def tab(page, label: str, hold: float = 2.6):
-    await page.get_by_text(label, exact=False).first.click()
-    await asyncio.sleep(hold)
+async def mode(page: Page, m: str):
+    await page.evaluate("(m) => document.querySelector('[data-mode=' + m + ']').click()", m)
 
 
-async def set_dc(page, value: int):
+async def fly(page: Page, lng: float, lat: float, zoom: float, ms: int = 1100):
     await page.evaluate(
-        """(value) => {
-          const input = document.querySelector('input[type=range]');
-          if (input) {
-            const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-            s.call(input, String(value));
-            input.dispatchEvent(new Event('input', { bubbles: true }));
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-          }
-        }""",
-        value,
+        "(a) => map.flyTo({ center: [a.lng, a.lat], zoom: a.zoom, duration: a.ms })",
+        {"lng": lng, "lat": lat, "zoom": zoom, "ms": ms},
     )
+    await asyncio.sleep(ms / 1000 + 0.2)
+
+
+async def hover_choke(page: Page):
+    # hover a real rendered choke-line feature at its midpoint; fires the map's own
+    # mousemove handler with real properties, so the popup is live data, not a mockup
+    loc = await page.evaluate(
+        """() => {
+          const f = map.queryRenderedFeatures({ layers: ['choke-line'] });
+          if (!f.length) return null;
+          const g = f[0].geometry;
+          const line = g.type === 'MultiLineString' ? g.coordinates[0] : g.coordinates;
+          const c = line[Math.floor(line.length / 2)];
+          const p = map.project(c); const r = map.getCanvas().getBoundingClientRect();
+          return { x: r.left + p.x, y: r.top + p.y };
+        }"""
+    )
+    if loc:
+        await page.mouse.move(loc["x"], loc["y"])
+        await asyncio.sleep(0.15)
+        await page.mouse.move(loc["x"] + 1, loc["y"] + 1)  # nudge so the hover fires
 
 
 async def main():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         ctx = await browser.new_context(
-            viewport={"width": 1280, "height": 800},
-            record_video_dir=str(OUT),
-            record_video_size={"width": 1280, "height": 800},
+            viewport={"width": W, "height": H},
+            record_video_dir=str(REC),
+            record_video_size={"width": W, "height": H},
             device_scale_factor=2,
         )
         page = await ctx.new_page()
         await page.goto(BASE, wait_until="networkidle")
-        await asyncio.sleep(4.5)  # basemap tiles + baked data
-        await tab(page, "1 Supply", 2.8)
-        await tab(page, "2 Choke points", 2.6)
-        await tab(page, "3 Prices", 2.6)
-        await tab(page, "Drivers", 2.6)
-        await tab(page, "Simulate", 2.4)
-        await set_dc(page, 1500)
-        await asyncio.sleep(2.8)
+        # wait for the real ready flag, not a blind sleep, then a short settle. The
+        # blank + "Loading the baked answers" lead gets trimmed off the gif below.
+        await page.wait_for_function("() => window.__diag && window.__diag.ready", timeout=15000)
+        await asyncio.sleep(1.0)
+
+        # Supply: the announced-wave bars; ease onto the Luzon data-center cluster
+        await mode(page, "supply")
+        await asyncio.sleep(0.5)
+        await fly(page, 121.0, 14.9, 6.1, 1000)
+        await asyncio.sleep(1.0)
+
+        # Choke points: zoom to the Visayas corridor and hover its live receipt
+        await mode(page, "choke")
+        await asyncio.sleep(0.5)
+        await fly(page, 123.9, 10.8, 6.9, 1000)
+        await hover_choke(page)
+        await asyncio.sleep(1.7)
+
+        # Prices: pull back so the three island grids and the sparkline read together
+        await mode(page, "price")
+        await page.mouse.move(W / 2, 40)  # drop the hover popup
+        await fly(page, 122.2, 12.2, 5.2, 1000)
+        await asyncio.sleep(1.6)
+
+        # Drivers: the day-by-day archive feed; keep a slow drift so it stays alive
+        await mode(page, "drivers")
+        await fly(page, 122.6, 12.6, 5.5, 1700)
+        await asyncio.sleep(0.6)
+
+        # Simulate: add a data center; the merit-order price re-clears coal to oil
+        await mode(page, "simulate")
+        await asyncio.sleep(0.8)
+        await fly(page, 121.0, 14.9, 6.0, 900)
+        await page.evaluate(ANIM_JS, ["sim-dc", 3000, 3400])
+        await asyncio.sleep(1.8)
+
         await ctx.close()
         vid = await page.video.path()
         await browser.close()
-        dest = OUT / "map-hero.webm"
-        Path(vid).replace(dest)
-        print(dest)
+        webm = REC / "map-hero.webm"
+        Path(vid).replace(webm)
+
+    # bake docs/hero.gif with the house palette recipe. -ss trims the blank + load
+    # lead so the loop opens clean on the Supply view.
+    vf = "fps=13,scale=900:-1:flags=lanczos"
+    pal = REC / "hero-pal.png"
+    subprocess.run(
+        ["ffmpeg", "-y", "-ss", "1.6", "-i", str(webm), "-vf",
+         f"{vf},palettegen=max_colors=128:stats_mode=diff", str(pal)],
+        check=True, capture_output=True,
+    )
+    subprocess.run(
+        ["ffmpeg", "-y", "-ss", "1.6", "-i", str(webm), "-i", str(pal), "-lavfi",
+         f"{vf}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3", str(OUT)],
+        check=True, capture_output=True,
+    )
+    print(f"wrote {OUT} ({OUT.stat().st_size // 1024} KB)")
 
 
 asyncio.run(main())
