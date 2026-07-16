@@ -68,6 +68,8 @@
   td{ padding:3px 4px; border-bottom:1px dashed var(--line); font-variant-numeric:tabular-nums; }
   td.num{ text-align:right; }
   .note{ margin-top:9px; font-size:11px; color:var(--muted); line-height:1.45; }
+  .export-links a{ color:var(--navy,#12335c); font-weight:600; text-decoration:none; border-bottom:1px solid rgba(18,51,92,.3); }
+  .export-links a:hover{ border-bottom-color:var(--navy,#12335c); }
   .barrow{ margin:7px 0 2px; }
   .barrow .lab{ font-size:11.5px; display:flex; justify-content:space-between; color:var(--muted); }
   .barrow .lab b{ color:var(--ink); font-variant-numeric:tabular-nums; }
@@ -666,6 +668,12 @@ function sideDrivers(){
   alert advisories, and the day's binding constraints. Open a day for detail.</p>
   ${outlook}
   ${rows || '<div class="note">Drivers bake pending.</div>'}
+  <div class="note export-links">Take the archive away:
+    <a href="data/exports/market_by_day.csv" download>market_by_day.csv</a>,
+    <a href="data/exports/congestion_league.csv" download>congestion_league.csv</a>,
+    <a href="data/exports/backcast_by_grid.csv" download>backcast_by_grid.csv</a>.
+    <a href="data/exports/index.json">What is in them.</a>
+    Free to reuse under CC-BY-4.0.</div>
   <div class="note">${esc(DR.note || "")}</div>`;
 }
 function sparkSVG(P){
