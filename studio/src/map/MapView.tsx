@@ -161,7 +161,8 @@ export function MapView({ theme }: { theme: 'light' | 'dark' }) {
           </label>
         ))}
         <p className="mapview__note">
-          Corridors schematic. Generator and data-center pins are city-precision.
+          Corridors follow real routed geometry as mapped in OpenStreetMap (ODbL).
+          Generator and data-center pins are city-precision.
         </p>
       </div>
     </div>
