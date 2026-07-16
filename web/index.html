@@ -243,8 +243,8 @@
   <p>Can the Philippine grid host the announced data-center wave? Built on the market
   operator's own public files: where transmission already binds, where the announced
   megawatts land, and what the spot market and the bill are doing.</p>
-  <div class="scope" id="scope">Archive window loading. Corridor lines are schematic
-  links between named endpoints, not route maps. Data-center pins are city-precision.</div>
+  <div class="scope" id="scope">Archive window loading. Corridor and grid lines
+  follow real routes as mapped in OpenStreetMap. Data-center pins are city-precision.</div>
   <button id="fopen" aria-expanded="false"><span>Key findings, computed from the archive</span><span>&rarr;</span></button>
   <div id="findbox">
     <input id="findq" type="search" autocomplete="off"
@@ -323,7 +323,8 @@ const FILES = ["meta.json","answers.json","congestion.json","prices.json",
   "reliability.json","outages.json","market_anchors.json","demand_anchors.json",
   "congestion_premium.json","findings.json","chokepoints.geojson",
   "dc_sites.geojson","sual.geojson","generators.geojson","dispatch.json",
-  "drivers.json","market_ops.json"];
+  "drivers.json","market_ops.json","grid_lines.geojson","grid_nodes.geojson",
+  "grid.json"];
 const D = {};
 
 async function loadAll(){
@@ -363,6 +364,36 @@ function parseJSON(s){ try { return JSON.parse(s); } catch { return null; } }
 
 function addLayers(){
   let n = 0;
+  if (D["grid_lines.geojson"]){
+    map.addSource("grid", { type:"geojson", data: D["grid_lines.geojson"] });
+    map.addSource("gridsub", { type:"geojson", data: D["grid_nodes.geojson"] ||
+      { type:"FeatureCollection", features:[] } });
+    // real routed geometry, under the corridor arcs; visible in choke mode
+    map.addLayer({ id:"grid-138", type:"line", source:"grid",
+      filter:["==",["get","kind"],"ac138"], layout:{ visibility:"none" },
+      paint:{ "line-color":"#a8b8c4", "line-width":.8, "line-opacity":.7 }});
+    map.addLayer({ id:"grid-230", type:"line", source:"grid",
+      filter:["==",["get","kind"],"ac230"], layout:{ visibility:"none" },
+      paint:{ "line-color":"#7d94a6", "line-width":1.2, "line-opacity":.8 }});
+    map.addLayer({ id:"grid-500", type:"line", source:"grid",
+      filter:["==",["get","kind"],"ac500"], layout:{ visibility:"none" },
+      paint:{ "line-color":"#41586b", "line-width":2, "line-opacity":.9 }});
+    map.addLayer({ id:"grid-cable", type:"line", source:"grid",
+      filter:["==",["get","kind"],"cable"], layout:{ visibility:"none" },
+      paint:{ "line-color":"#7a5c99", "line-width":1.6,
+              "line-dasharray":[1,1.6], "line-opacity":.85 }});
+    map.addLayer({ id:"grid-bound", type:"line", source:"grid",
+      filter:["has","binding"], layout:{ visibility:"none" },
+      paint:{ "line-color":"#b3261e", "line-width":2.6, "line-opacity":.9 }});
+    map.addLayer({ id:"grid-sub", type:"circle", source:"gridsub",
+      layout:{ visibility:"none" },
+      paint:{ "circle-radius": ["case", ["has","binding"], 5,
+                ["to-boolean", ["get","hv"]], 3.4, 1.9],
+        "circle-color": ["case", ["has","binding"], "#b3261e", "#41586b"],
+        "circle-opacity": .85, "circle-stroke-width": .8,
+        "circle-stroke-color": "#fff" }});
+    n++;
+  }
   if (D["chokepoints.geojson"]){
     map.addSource("choke", { type:"geojson", data: D["chokepoints.geojson"] });
     map.addLayer({ id:"choke-line", type:"line", source:"choke",
@@ -440,7 +471,9 @@ function addLayers(){
       (p.capacity_mw ? `<br>Capacity ${fmt(p.capacity_mw)} MW` : "") +
       (p.operating_limit_mw ? `, operating limit ${fmt(p.operating_limit_mw)} MW` : "") +
       receiptLine +
-      `<br><i>Schematic link between named endpoints.</i>`;
+      (p.route === "osm-mapped"
+        ? `<br><i>Routed along the OSM-mapped lines between the named endpoints.</i>`
+        : `<br><i>Schematic link between named endpoints.</i>`);
   });
   hover("dc-pt", p => `<b>${esc(p.name)}</b><br>${esc(p.city)} &middot; ${esc(String(p.status||"").replace("_"," "))}` +
     (p.mw ? `<br>${fmt(p.mw,1)} MW (public figure)` : "<br>No public MW figure") +
@@ -453,6 +486,33 @@ function addLayers(){
     (p.owner ? `<br>${esc(p.owner)}` : "") +
     (p.note ? `<br>${esc(p.note)}` : "") +
     `<br><i>Pin is city-precision. Pick it in Simulate to trip it (N-1).</i>`);
+  const KIND_LABEL = { ac500:"500 kV line", ac230:"230 kV line",
+    ac138:"138 kV line", cable:"HV cable", hvdc:"HVDC" };
+  const gridHover = p => {
+    const b = typeof p.binding === "string" ? parseJSON(p.binding) : p.binding;
+    let bind = "";
+    if (b) bind = `<br><b>At its limit in RTD:</b> ${fmt(b.rtd_intervals)} ` +
+      `5-minute intervals across the window (as ` +
+      b.equipment.slice(0, 2).map(esc).join(", ") + `).`;
+    return `<b>${esc(p.name || KIND_LABEL[p.kind] || "Grid line")}</b>` +
+      (p.voltage ? `<br>${esc(String(p.voltage).split(";")[0]/1000)} kV` : "") +
+      (p.operator ? ` &middot; ${esc(p.operator)}` : "") +
+      (p.submarine ? `<br>Submarine section` : "") + bind +
+      `<br><i>Routed as mapped in OpenStreetMap (community data, ODbL); ` +
+      `not an NGCP document.</i>`;
+  };
+  ["grid-bound","grid-cable","grid-500","grid-230","grid-138"].forEach(id =>
+    hover(id, gridHover));
+  hover("grid-sub", p => {
+    const b = typeof p.binding === "string" ? parseJSON(p.binding) : p.binding;
+    return `<b>${esc(p.name || "Substation")}</b>` +
+      (p.voltage ? `<br>${esc(String(p.voltage).split(";").map(v=>v/1000).join("/"))} kV` : "") +
+      (p.operator ? `<br>${esc(p.operator)}` : "") +
+      (b ? `<br><b>Station equipment at its limit in RTD:</b> ` +
+        `${fmt(b.rtd_intervals)} 5-minute intervals (` +
+        b.equipment.slice(0, 2).map(esc).join(", ") + `).` : "") +
+      `<br><i>As mapped in OpenStreetMap (ODbL).</i>`;
+  });
 }
 
 /* ---------- rail ---------- */
@@ -473,7 +533,7 @@ $("r-prev").onclick = () => { if (RAIL_I > 0){ clearActive(); RAIL_I--; railRend
 $("r-next").onclick = () => { if (RAIL_I < RAIL.length - 1){ clearActive(); RAIL_I++; railRender(); } };
 
 /* ---------- side panel per mode ---------- */
-let MODE = "supply", SUAL_ON = false;
+let MODE = "supply", SUAL_ON = false, GRID138_ON = false;
 
 function esc(s){ const d = document.createElement("i"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
 
@@ -549,6 +609,23 @@ function sideChoke(){
     `<tr><td>${esc(e.equipment)}</td><td>${esc(e.station)}</td>
      <td class="num">${fmt(e.days)}</td><td class="num">${fmt(e.rtd_days)}</td>
      <td class="num">${fmt(e.rtd_intervals)}</td></tr>`).join("");
+  const G = D["grid.json"];
+  let gridBlock = "";
+  if (G && G.summary){
+    const s = G.summary;
+    gridBlock = `<p class="sub">The map now draws the grid itself: ${fmt(s.lines)}
+    line segments (500/230/138 kV, both HVDC links, the inter-island cables) and
+    ${fmt(s.nodes)} substations, real routed geometry as mapped in OpenStreetMap
+    (community data, ODbL; not an NGCP document, and geometry only, no ratings).
+    ${fmt(s.equipment_matched)} of ${fmt(s.equipment_total)} pieces of binding
+    equipment in the league resolve onto that geometry; they are drawn red.
+    The unmatched rest name stations OSM has not mapped; the full match report
+    ships in grid.json.</p>
+    <label class="note" style="display:flex;gap:6px;align-items:center;cursor:pointer">
+      <input type="checkbox" id="g138" ${GRID138_ON ? "checked" : ""}>
+      show the 138 kV network (Mindanao and the island interconnections run on it)
+    </label>`;
+  }
   const O = D["outages.json"] || {};
   const sualDays = O.sual_outage_day_count;
   const R = D["reliability.json"];
@@ -571,6 +648,7 @@ function sideChoke(){
   period at max or offline (IEMOP monthly report).</p>
   <table><thead><tr><th>Equipment</th><th>Station</th><th>Days</th><th>RT days</th><th>RT itv</th></tr></thead>
   <tbody>${rows || "<tr><td colspan=5>Bake pending.</td></tr>"}</tbody></table>
+  ${gridBlock}
   ${slackline}
   ${coBlock}
   <button class="sual-btn" id="sualbtn" aria-pressed="false">What if a Sual unit trips? (-647 MW)</button>
@@ -707,9 +785,12 @@ const LEGENDS = {
     ["sw","#fff;border:2px solid #b3261e","Sual coal plant (2 x 647 MW)"]],
     note:"Hollow dots have no public MW figure. Pins are city-precision. Not a complete inventory: Cushman counts 24 operational facilities; DataCenterMap lists 44." },
   choke: { title:"Grid choke points", keys: [
-    ["ln","#9c3d12","HVDC inter-island link (dashed = schematic)"],
-    ["ln","#3a6b8a","AC corridor named congested in primary sources"]],
-    note:"Lines connect named endpoints (converter stations, substation areas). They are not route maps." },
+    ["ln","#9c3d12","HVDC inter-island link (real route)"],
+    ["ln","#3a6b8a","AC corridor named congested in primary sources"],
+    ["ln","#b3261e","Line at its limit in the RTD record"],
+    ["ln","#41586b","500 kV backbone"],
+    ["ln","#7d94a6","230 kV (thin grey = 138 kV)"]],
+    note:"Corridors and the grid follow real routed geometry as mapped in OpenStreetMap (community data, ODbL), not NGCP documents. Red = equipment IEMOP's congestion files record at its limit; hover for the receipts." },
   price: { title:"Prices and the links", keys: [
     ["ln","#9c3d12","HVDC links: when they bind, the regional prices separate"],
     ["sw","#1a7f48","Data-center sites for reference"]],
@@ -762,6 +843,22 @@ function setMode(m, syncRail = true){
       (m === "choke" || m === "simulate") ? "none" : "visible");
   if (map.getLayer("gen-pt"))
     map.setLayoutProperty("gen-pt", "visibility", m === "simulate" ? "visible" : "none");
+  const gridVis = m === "choke" ? "visible" : "none";
+  ["grid-230","grid-500","grid-cable","grid-bound","grid-sub"].forEach(id => {
+    if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", gridVis);
+  });
+  if (map.getLayer("grid-138"))
+    map.setLayoutProperty("grid-138", "visibility",
+      (m === "choke" && GRID138_ON) ? "visible" : "none");
+  if (m === "choke"){
+    const g138 = $("g138");
+    if (g138) g138.onchange = () => {
+      GRID138_ON = g138.checked;
+      if (map.getLayer("grid-138"))
+        map.setLayoutProperty("grid-138", "visibility",
+          GRID138_ON ? "visible" : "none");
+    };
+  }
   if (syncRail){
     const idx = ["supply","choke","price"].indexOf(m);
     if (idx >= 0 && idx !== RAIL_I){ RAIL_I = idx; railRender(); }
@@ -1379,10 +1476,15 @@ loadAll().then(() => {
   if (C.window){
     const asOf = P.as_of ? `, prices through ${P.as_of}` : "";
     const built = M.built_utc ? ` Baked ${String(M.built_utc).slice(0,10)}.` : "";
+    const G = D["grid.json"];
+    const routeLine = G
+      ? "Corridor and grid lines follow real routes as mapped in " +
+        "OpenStreetMap (ODbL)."
+      : "Corridor lines are schematic.";
     $("scope").textContent =
       `IEMOP archive window ${C.window.from} to ${C.window.to} (` +
       `${fmt(C.days_covered)} days${asOf}; the public window is rolling, this repo ` +
-      `keeps the history).${built} Corridor lines are schematic. Data-center pins ` +
+      `keeps the history).${built} ${routeLine} Data-center pins ` +
       `are city-precision.`;
   }
   RAIL = A ? [
@@ -1398,6 +1500,8 @@ loadAll().then(() => {
     addLayers();
     wireFind();
     window.__diag.chokepoints = (D["chokepoints.geojson"]||{features:[]}).features.length;
+    window.__diag.gridLines = (D["grid_lines.geojson"]||{features:[]}).features.length;
+    window.__diag.gridNodes = (D["grid_nodes.geojson"]||{features:[]}).features.length;
     window.__diag.dcs = (D["dc_sites.geojson"]||{features:[]}).features.length;
     window.__diag.generators = (D["generators.geojson"]||{features:[]}).features.length;
     window.__diag.dispatch = !!(D["dispatch.json"] && D["dispatch.json"].available);

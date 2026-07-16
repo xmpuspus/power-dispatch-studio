@@ -35,15 +35,19 @@ demand = load("demand_anchors.json")
 meta = load("meta.json")
 findings = load("findings.json")
 
-# chokepoints: the five named corridors, each schematic + sourced
+# chokepoints: the five named corridors, sourced, on real routed geometry
 check("5 chokepoints", len(ck["features"]) == 5)
 ids = {f["properties"]["id"] for f in ck["features"]}
 check("chokepoint ids", ids == {"leyte_luzon_hvdc", "mvip_hvdc",
                                 "leyte_cebu_230kv", "cebu_import",
                                 "cnp_backbone"})
-check("every chokepoint has evidence + src + schematic label", all(
+check("every chokepoint has evidence + src", all(
     f["properties"].get("evidence") and f["properties"].get("src")
-    and f["properties"].get("precision") == "schematic"
+    for f in ck["features"]))
+check("every corridor rides the OSM-routed geometry", all(
+    f["properties"].get("route") == "osm-mapped"
+    and f["properties"].get("precision") == "osm-routed"
+    and len(f["geometry"]["coordinates"]) > 20
     for f in ck["features"]))
 hvdc = next(f["properties"] for f in ck["features"]
             if f["properties"]["id"] == "leyte_luzon_hvdc")
@@ -1160,6 +1164,56 @@ check("the deep negatives are structurally nodal: at the deepest interval "
       (sh.get("deep_negative_structural") or {}).get("aggregate_must_price_positive")
       is True
       and sh["deep_negative_structural"]["observed_price_php_kwh"] < -5.0)
+
+# --- real grid geometry (OSM pull) + the binding-equipment match ---------------
+gl = load("grid_lines.geojson")
+gn = load("grid_nodes.geojson")
+gj = load("grid.json")
+check("grid lines baked at scale (>= 1,200 segments)",
+      len(gl["features"]) >= 1200)
+check("grid nodes baked at scale (>= 450 substations)",
+      len(gn["features"]) >= 450)
+check("grid attribution names OpenStreetMap + ODbL on both layers", all(
+    "OpenStreetMap" in (fc.get("attribution") or "")
+    and "ODbL" in (fc.get("attribution") or "") for fc in (gl, gn)))
+kinds = {}
+for f in gl["features"]:
+    kinds[f["properties"]["kind"]] = kinds.get(f["properties"]["kind"], 0) + 1
+check("all five line classes present (500/230/138/hvdc/cable)",
+      kinds.get("ac500", 0) >= 100 and kinds.get("ac230", 0) >= 500
+      and kinds.get("ac138", 0) >= 200 and kinds.get("hvdc", 0) >= 10
+      and kinds.get("cable", 0) >= 15)
+in_ph = all(4.4 <= lat <= 21.6 and 116.4 <= lon <= 127.3
+            for f in gl["features"]
+            for lon, lat in f["geometry"]["coordinates"])
+check("every grid-line vertex inside the PH bbox (Sabah clipped)", in_ph)
+ms = gj["summary"]
+check("most binding equipment resolves onto the geometry",
+      ms["equipment_matched"] >= 40 and ms["equipment_total"] >= 60)
+top = next(r for r in gj["match_report"] if r["equipment"] == "5DAAN_4TAB2")
+check("the top binder (Cebu-Leyte crossing) is matched to its real route",
+      top["matched"] and "Daanbantayan" in str(top.get("stations")))
+bound = [f for f in gl["features"] if f["properties"].get("binding")]
+check("bound segments carry receipts (days + equipment)",
+      len(bound) >= 15 and all(
+          f["properties"]["binding"].get("days")
+          and f["properties"]["binding"].get("equipment")
+          for f in bound))
+
+# nodal dailies: the DIPCEF price side is being archived (deriver ran at
+# least once; the cron tops it up nightly)
+NODAL = os.path.join(os.path.dirname(__file__), "..", "data", "derived",
+                     "nodal_daily")
+ndays = sorted(os.listdir(NODAL)) if os.path.isdir(NODAL) else []
+check("nodal dailies derived (>= 1 day)", len(ndays) >= 1)
+if ndays:
+    with open(os.path.join(NODAL, ndays[-1])) as f:
+        nd = json.load(f)
+    check("nodal daily schema (regions + nodes with dev/mw arrays)",
+          set(nd["regions"]) == {"luzon", "visayas", "mindanao"}
+          and len(nd["nodes"]) > 1000
+          and all(len(v["dev_php_kwh"]) == 24 and len(v["mw"]) == 24
+                  for v in list(nd["nodes"].values())[:20]))
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

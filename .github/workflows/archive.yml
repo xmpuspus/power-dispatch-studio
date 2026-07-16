@@ -28,6 +28,10 @@ jobs:
         id: derive
         continue-on-error: true
         run: python3 pipeline/fuelmix.py --derive --limit 3
+      - name: Derive nodal-price dailies (per-node LMP deviations; same zips)
+        id: derive_nodal
+        continue-on-error: true
+        run: python3 pipeline/nodal_prices.py --derive --limit 3
       - name: Derive offer-stack dailies (RTDOE + RTDNE; hourly files too heavy to keep)
         id: derive_offers
         continue-on-error: true

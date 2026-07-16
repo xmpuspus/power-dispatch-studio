@@ -1,0 +1,19 @@
+{
+ "hvdc_cables.json": {
+  "bytes": 152861,
+  "elements": 208,
+  "osm3s_timestamp": "2026-07-02T16:51:45Z"
+ },
+ "license": "ODbL; data (c) OpenStreetMap contributors",
+ "lines_hv.json": {
+  "bytes": 1747241,
+  "elements": 1475,
+  "osm3s_timestamp": "2026-07-16T17:52:30Z"
+ },
+ "substations.json": {
+  "bytes": 227829,
+  "elements": 891,
+  "osm3s_timestamp": "2026-05-31T22:37:44Z"
+ },
+ "written_utc": "2026-07-16T18:13:46+00:00"
+}

@@ -1,0 +1,749 @@
+{
+ "summary": {
+  "lines": 1571,
+  "nodes": 607,
+  "kinds": {
+   "ac500": 171,
+   "ac230": 919,
+   "ac138": 427,
+   "hvdc": 21,
+   "cable": 33
+  },
+  "bound_line_features": 27,
+  "bound_stations": 18,
+  "equipment_total": 74,
+  "equipment_matched": 43
+ },
+ "match_report": [
+  {
+   "equipment": "5DAAN_4TAB2",
+   "days": 97,
+   "rtd_intervals": 100,
+   "max_overload_mw": 26.73,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Daanbantayan Cable Terminal",
+    "Tabango Substation"
+   ],
+   "path_km": 30.9,
+   "path_edges": 1
+  },
+  {
+   "equipment": "1EHVNGS_TR2",
+   "days": 96,
+   "rtd_intervals": 2809,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Nagsaag EHV Substation"
+  },
+  {
+   "equipment": "1EHVNGS_TR1",
+   "days": 96,
+   "rtd_intervals": 919,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Nagsaag EHV Substation"
+  },
+  {
+   "equipment": "LEYTE_TO_CEBU",
+   "days": 76,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Daanbantayan Cable Terminal",
+    "Tabango Substation"
+   ],
+   "path_km": 30.9,
+   "path_edges": 1
+  },
+  {
+   "equipment": "5DAAN_4TAB1",
+   "days": 71,
+   "rtd_intervals": 38,
+   "max_overload_mw": 14.06,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Daanbantayan Cable Terminal",
+    "Tabango Substation"
+   ],
+   "path_km": 30.9,
+   "path_edges": 1
+  },
+  {
+   "equipment": "1BAUA_1BPP1",
+   "days": 59,
+   "rtd_intervals": 1015,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "1SJO115_TR1",
+   "days": 52,
+   "rtd_intervals": 837,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "San Jose del Monte Substation"
+  },
+  {
+   "equipment": "1OLONG_TR2",
+   "days": 26,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Olongapo Substation"
+  },
+  {
+   "equipment": "4MAAS_7UBA1",
+   "days": 24,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Maasin_Terminal_Submerged_Lines",
+    "Ubay Substation"
+   ],
+   "path_km": 34.5,
+   "path_edges": 2
+  },
+  {
+   "equipment": "1BAUA_1LAT2",
+   "days": 22,
+   "rtd_intervals": 576,
+   "max_overload_mw": 69.11,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Bauang Substation",
+    "La Trinidad Substation"
+   ],
+   "path_km": 36.0,
+   "path_edges": 1
+  },
+  {
+   "equipment": "1BAUA_1LAT1",
+   "days": 22,
+   "rtd_intervals": 555,
+   "max_overload_mw": 69.11,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Bauang Substation",
+    "La Trinidad Substation"
+   ],
+   "path_km": 36.0,
+   "path_edges": 1
+  },
+  {
+   "equipment": "1TGERAO_TR3",
+   "days": 11,
+   "rtd_intervals": 210,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Tuguegarao Substation"
+  },
+  {
+   "equipment": "1SRAF_1SJO1",
+   "days": 9,
+   "rtd_intervals": 203,
+   "max_overload_mw": 21.1,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "San Rafael Substation",
+    "San Jose del Monte Substation"
+   ],
+   "path_km": 29.8,
+   "path_edges": 2
+  },
+  {
+   "equipment": "1MEXI_1HER2",
+   "days": 9,
+   "rtd_intervals": 189,
+   "max_overload_mw": 197.74,
+   "matched": false,
+   "why": "no plausible path in the graph"
+  },
+  {
+   "equipment": "3AMAD_3CLA1",
+   "days": 7,
+   "rtd_intervals": 156,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Amadeo Substation",
+    "Calaca Substation"
+   ],
+   "path_km": 35.8,
+   "path_edges": 1
+  },
+  {
+   "equipment": "1MEXI_2QUE1",
+   "days": 7,
+   "rtd_intervals": 0,
+   "max_overload_mw": 3.13,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Mexico Substation",
+    "Quezon Substation"
+   ],
+   "path_km": 57.6,
+   "path_edges": 4
+  },
+  {
+   "equipment": "5MNDUE_TR2",
+   "days": 7,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Mandaue Gas Insulated Substation"
+  },
+  {
+   "equipment": "8NABAS_TR1",
+   "days": 6,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Nabas Substation"
+  },
+  {
+   "equipment": "8NABAS_TR2",
+   "days": 6,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Nabas Substation"
+  },
+  {
+   "equipment": "1BING_1NGS2",
+   "days": 5,
+   "rtd_intervals": 22,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Binga Power Plant",
+    "Nagsaag EHV Substation"
+   ],
+   "path_km": 37.0,
+   "path_edges": 2
+  },
+  {
+   "equipment": "3BINA_3DAS2",
+   "days": 4,
+   "rtd_intervals": 87,
+   "max_overload_mw": 48.26,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Bi\u00f1an Substation",
+    "Dasmari\u00f1as Substation"
+   ],
+   "path_km": 13.6,
+   "path_edges": 1
+  },
+  {
+   "equipment": "3BINA_3DAS1",
+   "days": 4,
+   "rtd_intervals": 43,
+   "max_overload_mw": 48.26,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Bi\u00f1an Substation",
+    "Dasmari\u00f1as Substation"
+   ],
+   "path_km": 13.6,
+   "path_edges": 1
+  },
+  {
+   "equipment": "2SUCA_3BIN3",
+   "days": 4,
+   "rtd_intervals": 23,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "1BALI_1KDA2",
+   "days": 4,
+   "rtd_intervals": 15,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "10MRAWI_TR1",
+   "days": 4,
+   "rtd_intervals": 10,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Marawi Substation"
+  },
+  {
+   "equipment": "1HERM_1DUH1",
+   "days": 4,
+   "rtd_intervals": 1,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "no plausible path in the graph"
+  },
+  {
+   "equipment": "1MEXI_1HER1",
+   "days": 4,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "no plausible path in the graph"
+  },
+  {
+   "equipment": "1HERMO_TR2",
+   "days": 3,
+   "rtd_intervals": 139,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Hermosa Substation"
+  },
+  {
+   "equipment": "2QUEZ_2ARA1",
+   "days": 3,
+   "rtd_intervals": 39,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "11JASA_12BUT1",
+   "days": 3,
+   "rtd_intervals": 21,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Jasaan Substation",
+    "Butuan Substation"
+   ],
+   "path_km": 98.5,
+   "path_edges": 2
+  },
+  {
+   "equipment": "3DASMA_TR1",
+   "days": 3,
+   "rtd_intervals": 14,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Dasmari\u00f1as Substation"
+  },
+  {
+   "equipment": "3STRO_3CLA1",
+   "days": 3,
+   "rtd_intervals": 7,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "11VILL_11JAS1",
+   "days": 3,
+   "rtd_intervals": 3,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Villanueva Substation",
+    "Jasaan Substation"
+   ],
+   "path_km": 6.0,
+   "path_edges": 1
+  },
+  {
+   "equipment": "10BALO_11TAG1",
+   "days": 3,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Balo-i Substation",
+    "Tagoloan Substation"
+   ],
+   "path_km": 84.5,
+   "path_edges": 4
+  },
+  {
+   "equipment": "3TANAWN_TR1",
+   "days": 3,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "5SIGPIT_TR2",
+   "days": 3,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "MANOLO_TO_MARAMAG",
+   "days": 3,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "unparsed code"
+  },
+  {
+   "equipment": "1HERM_1MAL1",
+   "days": 2,
+   "rtd_intervals": 35,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "no plausible path in the graph"
+  },
+  {
+   "equipment": "1BALI_1KDA1",
+   "days": 2,
+   "rtd_intervals": 14,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "2TAYTAY_TR2",
+   "days": 2,
+   "rtd_intervals": 10,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "09AURO_09NAG1",
+   "days": 2,
+   "rtd_intervals": 8,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Aurora Substation & Relay",
+    "Naga Substation"
+   ],
+   "path_km": 118.2,
+   "path_edges": 1
+  },
+  {
+   "equipment": "11VILL_11JAS2",
+   "days": 2,
+   "rtd_intervals": 5,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Villanueva Substation",
+    "Jasaan Substation"
+   ],
+   "path_km": 6.0,
+   "path_edges": 1
+  },
+  {
+   "equipment": "14TACUR_TR2",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Tacurong Substation"
+  },
+  {
+   "equipment": "1SNTG_1BYO2",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "6CALASOL_TR2",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "8PANITA_TR1",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Panitan Substation"
+  },
+  {
+   "equipment": "8PANITA_TR2",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Panitan Substation"
+  },
+  {
+   "equipment": "8PANITA_TR3",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Panitan Substation"
+  },
+  {
+   "equipment": "8STBA_8DIN1",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "1BAUAN_TR1",
+   "days": 1,
+   "rtd_intervals": 67,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Bauang Substation"
+  },
+  {
+   "equipment": "1LBRAD_TR2",
+   "days": 1,
+   "rtd_intervals": 28,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "1MEXICO_TR1",
+   "days": 1,
+   "rtd_intervals": 9,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Mexico Substation"
+  },
+  {
+   "equipment": "1PANT_1CBN1",
+   "days": 1,
+   "rtd_intervals": 7,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "1ANGAT_TR3",
+   "days": 1,
+   "rtd_intervals": 4,
+   "max_overload_mw": 1.42,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "1HERMO_TR1",
+   "days": 1,
+   "rtd_intervals": 4,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Hermosa Substation"
+  },
+  {
+   "equipment": "1SNEST230_TR1",
+   "days": 1,
+   "rtd_intervals": 3,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "3DARAGA_TR3",
+   "days": 1,
+   "rtd_intervals": 3,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Daraga Substation"
+  },
+  {
+   "equipment": "1BAUA_1BAL1",
+   "days": 1,
+   "rtd_intervals": 2,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Bauang Substation",
+    "Balingueo Substation"
+   ],
+   "path_km": 73.6,
+   "path_edges": 4
+  },
+  {
+   "equipment": "4MAASIN_TR1",
+   "days": 1,
+   "rtd_intervals": 2,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Maasin Substation"
+  },
+  {
+   "equipment": "1ANGAT_TR4",
+   "days": 1,
+   "rtd_intervals": 1,
+   "max_overload_mw": 2.88,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "1EHVSJ_TR3",
+   "days": 1,
+   "rtd_intervals": 1,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "1SNTGO_TR1",
+   "days": 1,
+   "rtd_intervals": 1,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "2DIMELD_TR1",
+   "days": 1,
+   "rtd_intervals": 1,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "9PITOG_TR2",
+   "days": 1,
+   "rtd_intervals": 1,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Pitogo Substation"
+  },
+  {
+   "equipment": "11JASA_12NAS1",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Jasaan Substation",
+    "Nasipit Substation"
+   ],
+   "path_km": 84.3,
+   "path_edges": 2
+  },
+  {
+   "equipment": "14SARANG_TR1",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "1BOTOL_TR2",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Botolan Substation"
+  },
+  {
+   "equipment": "3BACBES_TR1",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 1.66,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "3DASMA_TR3",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Dasmari\u00f1as Substation"
+  },
+  {
+   "equipment": "7UBAY_TR2",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Ubay Substation"
+  },
+  {
+   "equipment": "9WMPC_TR1",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "BAY_TO_BATANGAS",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "unparsed code"
+  },
+  {
+   "equipment": "CALACA_OUT",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "HERMOSA__OUT_CORR",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "unparsed code"
+  }
+ ]
+}

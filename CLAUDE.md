@@ -24,8 +24,10 @@ memo ~/Desktop/next-build-20260705.md Part 3).
   observed margins on observed days, plus documented alert episodes. Never "will
   cause brownouts."
 - Every number traces to a primary source (IEMOP file, NGCP TDP, IEMOP monthly
-  report, Meralco advisory, PCIJ). Compute before narrating. Schematic map lines
-  are labeled schematic. City-precision DC pins are labeled city-precision.
+  report, Meralco advisory, PCIJ). Compute before narrating. Grid and corridor
+  lines ride real OSM-mapped routes and are labeled community-mapped (ODbL),
+  never "NGCP official"; anything unresolvable falls back to a labeled
+  schematic link. City-precision DC pins are labeled city-precision.
 - Neutral economic framing. No takedown of a named company. Data centers are also
   investment; the map shows who pays for what, not villains.
 - Plain English, short sentences, no em-dashes, no AI-jargon (tests/qa_gate.py enforces).
