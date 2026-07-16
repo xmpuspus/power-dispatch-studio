@@ -451,8 +451,9 @@ The individual what-ifs, each a recorded studio session:
   drift from data. `web/index.html` is a single-file MapLibre map with a findings
   drawer (each computed finding flies the map to its evidence) and deep-linkable
   `?q=&finding=` URLs.
-- **A sourced constants layer.** Choke-point corridors (schematic lines between named
-  converter stations and substations, with their archive receipts joined on), 14
+- **A sourced constants layer.** Choke-point corridors (drawn on the real routed
+  geometry between the named converter stations and substations, with their archive
+  receipts joined on), 14
   data-center sites with a citable source each (public MW on 11 of them, 591.3 MW
   named total), and every market anchor with its primary source, in
   `pipeline/constants_ph.py`.
@@ -469,7 +470,8 @@ The individual what-ifs, each a recorded studio session:
   the fuel-availability and per-grid-split assumptions are labeled as such.
 - Not a complete data-center inventory (Cushman counts 24 operational facilities;
   DataCenterMap lists 44; only publicly-sourced sites are pinned, at city precision).
-- Not route maps: corridor lines are schematic links between named endpoints.
+- Not NGCP's own network model: corridor and grid lines follow real routes as mapped
+  in OpenStreetMap (community data, ODbL), geometry only, no ratings.
 - Not a nodal congestion-premium layer. WESM's settlement-final files report the LMP
   congestion component as zero (the market re-prices most intervals under a
   substitution methodology and expresses inter-island congestion as regional price
@@ -549,7 +551,7 @@ Every number, source, unit conversion, and caveat:
 WESM price-determination resolution, the news sweep) is in
 [`docs/research-launch-20260705.md`](docs/research-launch-20260705.md). Working notes
 and the non-negotiable stance (no attribution claims, no prophecy, labeled forecasts,
-schematic lines, city-precision pins): [`CLAUDE.md`](CLAUDE.md).
+OSM-labeled line routes, city-precision pins): [`CLAUDE.md`](CLAUDE.md).
 
 ## License and attribution
 

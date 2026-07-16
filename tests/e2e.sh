@@ -16,7 +16,8 @@ done
 for f in meta.json answers.json congestion.json prices.json reliability.json \
          outages.json market_anchors.json demand_anchors.json \
          congestion_premium.json chokepoints.geojson dc_sites.geojson sual.geojson \
-         generators.geojson dispatch.json; do
+         generators.geojson dispatch.json grid_lines.geojson grid_nodes.geojson \
+         grid.json; do
   [ "$(code /data/$f)" = "200" ] && ok "GET /data/$f" || bad "GET /data/$f"
 done
 
@@ -32,6 +33,12 @@ ans = get("/data/answers.json")
 checks.append(("answers has q1/q2/q3", all(k in ans for k in ("q1","q2","q3"))))
 ck = get("/data/chokepoints.geojson")
 checks.append(("5 chokepoint features", len(ck["features"]) == 5))
+checks.append(("corridors ride real routes", all(
+    f["properties"].get("route") == "osm-mapped" for f in ck["features"])))
+gl = get("/data/grid_lines.geojson")
+checks.append(("grid lines served (>=1200)", len(gl["features"]) >= 1200))
+gn = get("/data/grid_nodes.geojson")
+checks.append(("grid nodes served (>=450)", len(gn["features"]) >= 450))
 dc = get("/data/dc_sites.geojson")
 checks.append(("14 dc features", len(dc["features"]) == 14))
 cong = get("/data/congestion.json")
@@ -90,6 +97,12 @@ if command -v agent-browser >/dev/null 2>&1; then
   R=$(agent-browser eval 'const d=window.__diag||{};[d.ready,d.chokepoints,d.dcs,d.league>0,d.mode].join("|")' 2>/dev/null | strip)
   echo "diag: $R"
   [[ "$R" == true\|5\|14\|true\|* ]] && ok "browser __diag ready+layers" || bad "browser __diag ($R)"
+  G=$(agent-browser eval 'const d=window.__diag||{};[d.gridLines>=1200,d.gridNodes>=450].join("|")' 2>/dev/null | strip)
+  [[ "$G" == "true|true" ]] && ok "browser grid layers loaded" || bad "browser grid layers ($G)"
+  agent-browser eval 'document.querySelector("[data-mode=choke]").click()' >/dev/null 2>&1
+  sleep 1
+  GV=$(agent-browser eval 'map.getLayoutProperty("grid-230","visibility")||"visible"' 2>/dev/null | strip)
+  [[ "$GV" == "visible" ]] && ok "grid visible in choke mode" || bad "grid visibility in choke ($GV)"
   agent-browser eval 'document.querySelector("[data-mode=price]").click()' >/dev/null 2>&1
   sleep 1
   M=$(agent-browser eval '(window.__diag||{}).mode' 2>/dev/null | strip)

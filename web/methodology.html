@@ -326,9 +326,80 @@ still unavailable that day.</td>
 <td><a href="https://www.sunstar.com.ph/cebu/visayas-grid-exits-daily-yellow-alerts">SunStar</a>;
 <a href="https://www.gmanetwork.com/news/money/economy/993308/ngcp-visayas-grid-on-yellow-alert-on-wednesday-july-1-2026/story/">GMA</a></td></tr>
 </table>
-<p class="muted">Corridor lines on the map are SCHEMATIC: straight links between
-the named endpoints above. They are not route maps and must not be read as
-tower-level geography.</p>
+<p class="muted">Corridor lines on the map follow the real routed geometry of the
+lines between the named endpoints above, taken from the OpenStreetMap grid layer
+described in the next section. A corridor that cannot be resolved onto that
+geometry would fall back to a straight schematic link and say so on hover; on the
+current bake all five corridors resolve.</p>
+
+<h2>The grid itself: real geometry from OpenStreetMap</h2>
+<p>NGCP publishes no public GIS. Its Transmission Development Plan maps are
+raster PDFs, and the network model behind WESM (impedances, ratings) is
+distributed to members only. The only public source of real routed line geometry
+is OpenStreetMap, so the map draws it and labels it what it is: community-mapped
+data under ODbL, not an NGCP document.</p>
+<ul>
+<li><b>Pull.</b> <code>pipeline/fetch_grid_geometry.py</code> pulls three raw
+Overpass extracts into <code>data/raw/OSMGRID/</code> (committed, so the bake
+reproduces without hitting Overpass): power lines tagged 500/230/138 kV inside
+the PH boundary, 350 kV HVDC lines plus all power cables, and every mapped
+substation. 138 kV is in scope because the Mindanao grid and the island
+interconnections run on it. The pull is a manual/monthly refresh, not a nightly
+cron; the grid changes slowly.</li>
+<li><b>Bake.</b> <code>pipeline/grid_geometry.py</code> filters to
+transmission-level features and writes <code>grid_lines.geojson</code> and
+<code>grid_nodes.geojson</code>. A substation with no voltage tag still counts as
+transmission when the HV network physically lands on it (Tabango, the Leyte end
+of the Cebu-Leyte crossing, is mapped with no tags at all).</li>
+<li><b>Binding equipment pinned on.</b> The RTDCV/DAPCV league names equipment in
+station code form (5DAAN_4TAB2, 1EHVNGS_TR2). Codes parse into station tokens,
+tokens resolve against normalized OSM substation names (plus a short verified
+alias table), and line constraints must find a plausible shortest path between
+their two stations in the snapped network graph; ambiguous tokens are settled by
+voltage level (transformers) or path geography (lines), never by guessing.
+Whatever fails stays in the unmatched list in <code>grid.json</code>, shown as
+unmatched. Matched segments draw red with their receipts on hover.</li>
+<li><b>Caveats.</b> Geometry only, no ratings; OSM completeness varies (several
+named binding stations, including the Bauang Power Plant switchyard, are not
+mapped at all); coverage share is reported in <code>grid.json</code> rather than
+implied.</li>
+</ul>
+
+<h2>Nodal prices: what the market publishes, and the model built on the geometry</h2>
+<p>DIPCEF (nodal LMP results, final) prices about 1,200 resource nodes per
+5-minute interval and decomposes each LMP into SMP + loss + congestion. The raw
+hourly zips are too heavy to commit and IEMOP's window rolls, so
+<code>pipeline/nodal_prices.py</code> derives one compact JSON per day into
+<code>data/derived/nodal_daily/</code> (the nightly cron tops it up): the
+regional SMP series, each node's hourly mean deviation from its regional SMP,
+each node's hourly scheduled MW, and the day's pricing-flag tally
+(OK / PSM / SEC).</p>
+<p>What the derived record shows, stated plainly: the published
+<code>LMP_CONGESTION</code> column is zero on every day sampled, including days
+with wide real nodal spread (2026-05-20 carries a median of 85 distinct nodal
+prices per interval per region). The SMP is region-constant per interval, all
+within-region locational separation rides the loss column, inter-island
+congestion appears as the regional SMPs splitting, and intra-regional congestion
+is handled administratively (price substitution, security limits, constrained-on
+payments) rather than priced into the nodal column. Administered intervals also
+carry a bimodal SMP (a base value and the same value about 2.2% higher); the
+regional reference series takes the per-interval mode and reports how many
+intervals were multimodal.</p>
+<p><code>pipeline/nodal_dcopf.py</code> is the honest tier of nodal modeling this
+data supports: a reduced backbone (class-typical reactances scaled by real routed
+length, class-default ratings, both labeled estimates) solved as B-theta linear
+programs on HiGHS. A replay mode places the day's observed per-node scheduled MW
+on the network and asks where the flows load it; the defensible validation is
+whether the equipment RTDCV actually recorded at its limit ranks among the
+model's most-loaded branches. An OPF mode re-dispatches within each unit's
+observed-day capability at grid-fuel proxy costs and reads nodal prices off the
+bus-balance duals. Resolution of DIPCEF resource codes onto buses is partial and
+reported (share of MW resolved); nothing from this model is presented as an
+observed number. The OPF's own measured finding, recorded in the artifact: at
+the current resolution the re-dispatch concentrates each grid's unresolved
+generation onto its few resolved plant buses, so modeled price LEVELS are not
+usable; the probe reports binding geography and the honest gap, and the zonal
+engine remains the price model.</p>
 
 <h2>Data-center sites</h2>
 <p>Only facilities with a citable public source are pinned; each pin carries its
@@ -853,8 +924,9 @@ in the window is driven by fuel, outages, weather, and the market restart.</li>
 reserve shortfalls, and arithmetic on published margins.</li>
 <li>It does not accuse any company. Data centers are also investment; the map
 shows where the grid binds and where the announced load lands.</li>
-<li>Corridor lines are schematic; data-center pins are city-precision; forecasts
-belong to their named owners.</li>
+<li>Corridor and grid lines follow real routes as mapped in OpenStreetMap
+(community data, ODbL; not NGCP documents); data-center pins are city-precision;
+forecasts belong to their named owners.</li>
 </ul>
 
 <div class="box muted">

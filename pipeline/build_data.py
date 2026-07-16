@@ -186,6 +186,7 @@ def build_congestion() -> dict:
         "total_rtd_intervals": sum(e["rtd_intervals"] for e in out),
         "total_dap_rows": sum(e["dap_rows"] for e in out),
         "league": out[:30],
+        "league_full": out,
         "corridor_receipts": receipts,
     }
 
@@ -742,6 +743,19 @@ def main() -> int:
     findings = build_findings(congestion, reliability, prices, outages,
                               named_mw, n_named)
 
+    # real grid geometry (OSM) with the binding constraints pinned on; also
+    # resolves each corridor's real routed path so the choke arcs stop being
+    # schematic wherever the mapped network carries them
+    from grid_geometry import build_grid
+
+    grid_summary = build_grid(congestion.pop("league_full"), OUT,
+                              chokepoints=CHOKEPOINTS)
+    grid_report = grid_summary.pop("match_report")
+    corridor_routes = grid_summary.pop("corridor_routes")
+    with open(os.path.join(OUT, "grid.json"), "w") as fh:
+        json.dump({"summary": grid_summary, "match_report": grid_report},
+                  fh, indent=1)
+
     receipts = congestion.get("corridor_receipts") or {}
     ck = []
     for c in CHOKEPOINTS:
@@ -753,9 +767,14 @@ def main() -> int:
             props["window_note"] = ("No RTD HVDC limit events recorded in "
                                     "this archive window; binding evidence is "
                                     "from IEMOP's monthly reports.")
+        coords = corridor_routes.get(c["id"], c["coords"])
+        props["route"] = ("osm-mapped" if c["id"] in corridor_routes
+                          else "schematic")
+        if c["id"] in corridor_routes:
+            props["precision"] = "osm-routed"
         ck.append({"type": "Feature",
                    "geometry": {"type": "LineString",
-                                "coordinates": c["coords"]},
+                                "coordinates": coords},
                    "properties": props})
     with open(os.path.join(OUT, "chokepoints.geojson"), "w") as fh:
         json.dump(geojson(ck), fh, indent=1)
@@ -918,10 +937,17 @@ def main() -> int:
     exp_path = os.path.join(HERE, "..", "data", "derived", "expansion.json")
     expansion = (json.load(open(exp_path)) if os.path.isfile(exp_path)
                  else {"available": False})
+    # the nodal DC power-flow validation result (pipeline/nodal_dcopf.py),
+    # passed through for methodology + analysts; absent until derived
+    nodal_path = os.path.join(HERE, "..", "data", "derived",
+                              "nodal_dcopf.json")
+    nodal = (json.load(open(nodal_path)) if os.path.isfile(nodal_path)
+             else {"available": False})
 
     for name, obj in [("congestion.json", congestion),
                       ("rtdoe5.json", rtdoe5),
                       ("expansion.json", expansion),
+                      ("nodal.json", nodal),
                       ("reliability.json", reliability),
                       ("prices.json", prices),
                       ("price_load.json", price_load), ("hvdc.json", hvdc),
