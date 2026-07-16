@@ -407,6 +407,20 @@ to each day's observed water where the archive carries the operator's
 per-resource schedules, and prices taken from the duals. The model's scope and its
 accuracy statement live in [studio/README.md](studio/README.md).
 
+The Backcast opens on the offer-book replay by default, the calibrated view, with
+the cost model one click away as the counterfactual you subtract. A companion
+**Explain a day** view takes any past market day and breaks its evening peak into
+what the fundamentals set (the cost model), the offer premium the market bid on
+top (the offer replay minus the cost model), and the named equipment the
+operator's real-time dispatch held at a limit that day, and hands the whole
+decomposition to CSV. The archive itself is take-away too: tidy CSVs of the
+congestion league, both backcast engines per grid, and the day-by-day feed bake
+to [`web/data/exports/`](web/data/exports/) every night, linked from the map's
+Drivers panel and documented in
+[`web/data/exports/index.json`](web/data/exports/index.json).
+
+![The Explain a day view: for a past market day the observed evening peak sits at P23.53, the cost model clears flat at the P6 fundamentals floor, and the offer-book replay tracks the observed evening ramp hour by hour, so the offer premium reads +P18.88; a second day is picked and the whole decomposition re-computes, with the named equipment that bound the grid listed and a CSV export button](studio/docs/view-explain.gif)
+
 The whole flow in one pass: open the studio, prove it against real prices,
 build the DICT 1.5 GW data-center wave, and trip both Sual units on top. Full
 quality for sharing is [docs/studio-e2e.mp4](docs/studio-e2e.mp4).
@@ -526,6 +540,7 @@ staleness gate that fails the cron if the archive stops growing.
 | `web/data/prices.json` | Daily regional price series, the administered-vs-market regime split, and the widest-spread day |
 | `web/data/findings.json` | The findings drawer: computed cards, each with the map focus that flies to its evidence |
 | `web/data/*.json` | The rest of the baked layers: reliability series, the three answers, choke points, data-center sites, anchors |
+| `web/data/exports/*.csv` | Analyst-ready CSVs baked every night: the congestion league, both backcast engines per grid, and the day-by-day feed (LWAP, spread, curtailment, alerts, binding equipment). Documented in `web/data/exports/index.json` |
 
 ## Methodology
 

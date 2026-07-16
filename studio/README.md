@@ -45,7 +45,9 @@ Every surface a WESM analyst needs, browser-side on baked public data:
 | Saved runs | Frozen solves (scenario snapshot, window, engine version, hourly results): diff two runs, export hourly CSV or a self-contained HTML report, restore as a scenario |
 | Emissions | Dispatched energy priced in operational tCO2 with sourced per-technology factors; biomass reported uncounted rather than assigned a contested factor |
 | Baked JSON artifacts | Produced by the Python pipeline from archived IEMOP files; the frontend never computes a number the pipeline cannot reproduce |
-| Backcast | Every full-coverage market day replayed against observed hourly LWAP, error stated per grid, nothing tuned |
+| Backcast | Every full-coverage market day replayed against observed hourly LWAP, error stated per grid, nothing tuned. Opens on the offer-book replay (the calibrated view); the cost model is the counterfactual you subtract |
+| Explain a day | Any past market day's evening peak split into fundamentals (cost model), the offer premium (offer replay minus cost model), and the named equipment that bound the grid that day; exportable to CSV |
+| Exports | Tidy CSVs baked nightly to `web/data/exports/` (congestion league, both backcast engines per grid, the day-by-day feed), plus per-view CSV download buttons |
 
 What it does not do: it finds the cheapest way to meet demand each hour, but it
 does not decide which individual plants switch on or off (no start-up costs, no
