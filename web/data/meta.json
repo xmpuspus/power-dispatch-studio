@@ -1,15 +1,15 @@
 {
- "built_utc": "2026-07-15T19:16:46+00:00",
+ "built_utc": "2026-07-15T23:51:36+00:00",
  "named_dc_mw_total": 591.3,
  "dc_sites": 14,
  "notes": [],
  "datasets": {
-  "RTDCV": 99,
-  "DAPCV": 99,
-  "RTDSUM": 99,
+  "RTDCV": 100,
+  "DAPCV": 100,
+  "RTDSUM": 100,
   "LWAPF": 80,
-  "HVDCRTD": 99,
-  "OUTRTD": 99,
+  "HVDCRTD": 100,
+  "OUTRTD": 100,
   "DIPCEF": 25,
   "RTDRS": 2
  }
