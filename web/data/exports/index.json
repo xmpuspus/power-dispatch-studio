@@ -1,0 +1,61 @@
+{
+ "built_utc": "2026-07-16T13:42:08+00:00",
+ "window": {
+  "from": "2026-04-07",
+  "to": "2026-07-15"
+ },
+ "note": "Tidy CSV exports baked from public IEMOP files. Free to reuse under CC-BY-4.0; cite Power Dispatch Studio. Regenerated on every bake.",
+ "files": [
+  {
+   "file": "congestion_league.csv",
+   "rows": 30,
+   "columns": [
+    "equipment",
+    "station",
+    "voltage_kv",
+    "days_bound",
+    "rtd_intervals",
+    "rtd_days",
+    "dap_days",
+    "max_overload_mw"
+   ],
+   "description": "Every named 230 kV equipment the operator held at a limit in the window, ranked by days bound. Source: IEMOP RTDCV + DAPCV."
+  },
+  {
+   "file": "backcast_by_grid.csv",
+   "rows": 6,
+   "columns": [
+    "engine",
+    "grid",
+    "days",
+    "observed_mean_php_kwh",
+    "modeled_mean_php_kwh",
+    "mae_php_kwh",
+    "bias_php_kwh",
+    "correlation",
+    "high_hour_hit_rate_pct"
+   ],
+   "description": "Both validation engines per grid over the market-priced window. The offer premium is the offer_replay modeled mean minus the cost_model modeled mean."
+  },
+  {
+   "file": "market_by_day.csv",
+   "rows": 80,
+   "columns": [
+    "date",
+    "market",
+    "luzon_lwap_php_kwh",
+    "visayas_lwap_php_kwh",
+    "mindanao_lwap_php_kwh",
+    "spread_php_kwh",
+    "luzon_curtailed_mwh",
+    "visayas_curtailed_mwh",
+    "mindanao_curtailed_mwh",
+    "alert_advisories",
+    "reserve_price_max_php_kwh",
+    "rtd_binding_rows",
+    "top_binding_equipment"
+   ],
+   "description": "The day-by-day archive feed: observed LWAP, island spread, curtailment, alert advisories, peak reserve price, and the day's binding equipment."
+  }
+ ]
+}

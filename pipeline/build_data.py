@@ -947,6 +947,12 @@ def main() -> int:
     }
     with open(os.path.join(OUT, "meta.json"), "w") as fh:
         json.dump(meta, fh, indent=1)
+
+    # analyst-facing CSV exports, baked from the JSON just written
+    from build_exports import export_all
+    idx = export_all()
+    print("exports:", [f"{f['file']} ({f['rows']})" for f in idx["files"]])
+
     print(json.dumps(meta, indent=1))
     print("baked:", sorted(os.listdir(OUT)))
     return 0

@@ -27,6 +27,20 @@ try {
   console.log('no offer days baked (web/data/offers absent)')
 }
 
+// analyst-facing CSV exports (baked to web/data/exports); served from the
+// studio origin too so the archive is reachable from either front door
+const exportsSrc = join(src, 'exports')
+try {
+  const exportFiles = await readdir(exportsSrc)
+  await mkdir(join(dest, 'exports'), { recursive: true })
+  await Promise.all(
+    exportFiles.map((f) => copyFile(join(exportsSrc, f), join(dest, 'exports', f)))
+  )
+  console.log(`copied ${exportFiles.length} exports -> public/data/exports`)
+} catch {
+  console.log('no exports baked (web/data/exports absent)')
+}
+
 // the HiGHS wasm binary ships as a static asset; solver.ts locateFile()
 // resolves it from the app base at runtime
 await copyFile(
