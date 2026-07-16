@@ -11,13 +11,13 @@
   },
   "bound_line_features": 27,
   "bound_stations": 18,
-  "equipment_total": 74,
+  "equipment_total": 75,
   "equipment_matched": 43
  },
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 97,
+   "days": 98,
    "rtd_intervals": 100,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -31,8 +31,8 @@
   },
   {
    "equipment": "1EHVNGS_TR2",
-   "days": 96,
-   "rtd_intervals": 2809,
+   "days": 97,
+   "rtd_intervals": 2828,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -40,8 +40,8 @@
   },
   {
    "equipment": "1EHVNGS_TR1",
-   "days": 96,
-   "rtd_intervals": 919,
+   "days": 97,
+   "rtd_intervals": 935,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -49,7 +49,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 76,
+   "days": 77,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 71,
+   "days": 72,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -77,7 +77,7 @@
   },
   {
    "equipment": "1BAUA_1BPP1",
-   "days": 59,
+   "days": 60,
    "rtd_intervals": 1015,
    "max_overload_mw": 0.0,
    "matched": false,
@@ -175,6 +175,15 @@
    "why": "no plausible path in the graph"
   },
   {
+   "equipment": "5MNDUE_TR2",
+   "days": 8,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Mandaue Gas Insulated Substation"
+  },
+  {
    "equipment": "3AMAD_3CLA1",
    "days": 7,
    "rtd_intervals": 156,
@@ -203,15 +212,6 @@
    "path_edges": 4
   },
   {
-   "equipment": "5MNDUE_TR2",
-   "days": 7,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": true,
-   "kind": "station",
-   "station": "Mandaue Gas Insulated Substation"
-  },
-  {
    "equipment": "8NABAS_TR1",
    "days": 6,
    "rtd_intervals": 0,
@@ -228,6 +228,14 @@
    "matched": true,
    "kind": "station",
    "station": "Nabas Substation"
+  },
+  {
+   "equipment": "2SUCA_3BIN3",
+   "days": 5,
+   "rtd_intervals": 43,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
   },
   {
    "equipment": "1BING_1NGS2",
@@ -270,14 +278,6 @@
    ],
    "path_km": 13.6,
    "path_edges": 1
-  },
-  {
-   "equipment": "2SUCA_3BIN3",
-   "days": 4,
-   "rtd_intervals": 23,
-   "max_overload_mw": 0.0,
-   "matched": false,
-   "why": "station token unresolved"
   },
   {
    "equipment": "1BALI_1KDA2",
@@ -686,6 +686,14 @@
    "matched": true,
    "kind": "station",
    "station": "Botolan Substation"
+  },
+  {
+   "equipment": "1SNRAFA_TR1",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
   },
   {
    "equipment": "3BACBES_TR1",

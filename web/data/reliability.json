@@ -99,7 +99,8 @@
   "2026-07-12",
   "2026-07-13",
   "2026-07-14",
-  "2026-07-15"
+  "2026-07-15",
+  "2026-07-16"
  ],
  "series": {
   "luzon": [
@@ -802,6 +803,13 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": -31.5,
     "reserve_shortfall_intervals": 1
+   },
+   {
+    "date": "2026-07-16",
+    "load_bid_peak_mw": 466.0,
+    "curtailed_mwh": 18.76,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
    }
   ],
   "visayas": [
@@ -1504,6 +1512,13 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": -116.9,
     "reserve_shortfall_intervals": 58
+   },
+   {
+    "date": "2026-07-16",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": -58.0,
+    "reserve_shortfall_intervals": 25
    }
   ],
   "mindanao": [
@@ -2206,14 +2221,21 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": -96.8,
     "reserve_shortfall_intervals": 61
+   },
+   {
+    "date": "2026-07-16",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
    }
   ]
  },
  "totals": {
   "luzon": {
-   "days": 100,
-   "curtailment_days": 51,
-   "curtailed_mwh_total": 1931.6,
+   "days": 101,
+   "curtailment_days": 52,
+   "curtailed_mwh_total": 1950.3,
    "worst_curtailment": {
     "date": "2026-07-12",
     "load_bid_peak_mw": 466.0,
@@ -2222,10 +2244,10 @@
     "reserve_shortfall_intervals": 29
    },
    "reserve_shortfall_days": 63,
-   "median_daily_min_reserve_slack_mw": -21.4
+   "median_daily_min_reserve_slack_mw": -21.2
   },
   "visayas": {
-   "days": 100,
+   "days": 101,
    "curtailment_days": 36,
    "curtailed_mwh_total": 2813.7,
    "worst_curtailment": {
@@ -2235,11 +2257,11 @@
     "reserve_slack_min_mw": -93.0,
     "reserve_shortfall_intervals": 168
    },
-   "reserve_shortfall_days": 65,
-   "median_daily_min_reserve_slack_mw": -47.2
+   "reserve_shortfall_days": 66,
+   "median_daily_min_reserve_slack_mw": -49.9
   },
   "mindanao": {
-   "days": 100,
+   "days": 101,
    "curtailment_days": 14,
    "curtailed_mwh_total": 445.8,
    "worst_curtailment": {
