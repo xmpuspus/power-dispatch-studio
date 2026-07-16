@@ -63,6 +63,15 @@ jobs:
           }
       - name: Rebake web data from the archive
         run: python3 pipeline/build_data.py
+      - name: Resync the pip package's bundled data snapshot to the fresh bake
+        # the window rolls forward nightly, so src/power_dispatch/data drifts from
+        # the bake exactly like the prose does. Without this, the package-vs-pipeline
+        # parity gate stays green here (the bake push runs under the Actions token
+        # and never triggers ci.yml) and only trips on the next human push. Mirror
+        # the data step of `make package` (no wheel build; PyPI release is separate).
+        run: |
+          cp web/data/dispatch.json web/data/profiles.json web/data/meta.json src/power_dispatch/data/
+          cp data/derived/offer_daily/OFFERD_*.json src/power_dispatch/data/offers/
       - name: Sync the public prose to the fresh bake
         # the window rolls a day forward every night; keep every rolling count in
         # README, studio/README, and methodology in lockstep with the map (incl.
@@ -73,10 +82,11 @@ jobs:
         run: |
           python3 tests/test_data.py
           python3 tests/test_lp_parity.py
+          python3 tests/test_engine_sync.py
           python3 tests/qa_gate.py
       - name: Commit rebaked web data
         run: |
-          git add web/data README.md studio/README.md web/methodology.html
+          git add web/data src/power_dispatch/data README.md studio/README.md web/methodology.html
           git diff --cached --quiet && echo "bake unchanged" || {
             git commit -m "bake: $(date -u +%Y-%m-%d)"
             git push
