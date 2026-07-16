@@ -419,8 +419,6 @@ to [`web/data/exports/`](web/data/exports/) every night, linked from the map's
 Drivers panel and documented in
 [`web/data/exports/index.json`](web/data/exports/index.json).
 
-![The Explain a day view: for a past market day the observed evening peak sits at P23.53, the cost model clears flat at the P6 fundamentals floor, and the offer-book replay tracks the observed evening ramp hour by hour, so the offer premium reads +P18.88; a second day is picked and the whole decomposition re-computes, with the named equipment that bound the grid listed and a CSV export button](studio/docs/view-explain.gif)
-
 The whole flow in one pass: open the studio, prove it against real prices,
 build the DICT 1.5 GW data-center wave, and trip both Sual units on top. Full
 quality for sharing is [docs/studio-e2e.mp4](docs/studio-e2e.mp4).
@@ -428,6 +426,8 @@ quality for sharing is [docs/studio-e2e.mp4](docs/studio-e2e.mp4).
 ![One end-to-end pass through the studio: the grid as an object model; a backcast that clears flat at the P6 cost floor then, on the operator's own offer book, tracks the observed evening price shape hour by hour; building the DICT 1.5 GW data-center wave so the Luzon evening flips coal to oil and the Leyte-Luzon HVDC saturates; then tripping both 647 MW Sual units so loss-of-load probability jumps; closing on the free, browser-based, fully-sourced framing](docs/studio-e2e.gif)
 
 The individual what-ifs, each a recorded studio session:
+
+![The Explain a day view: for a past market day the observed evening peak sits at P23.53, the cost model clears flat at the P6 fundamentals floor, and the offer-book replay tracks the observed evening ramp hour by hour, so the offer premium reads +P18.88; a second day is picked and the whole decomposition re-computes, with the named equipment that bound the grid listed and a CSV export button](studio/docs/view-explain.gif)
 
 ![Studio walkthrough: pricing the DICT 1.5 GW data-center build, the Luzon evening mean lifting from P6.01 to P11.50 and the Leyte-Luzon HVDC saturating, with the two runs compared at +P5.49/kWh and +P32.55M congestion rent](studio/docs/workflow-1-datacenter.gif)
 
