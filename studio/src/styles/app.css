@@ -538,6 +538,15 @@
   color: var(--text-muted);
   border: 1px solid var(--border);
 }
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.chip-row:empty {
+  display: none;
+}
 .chip--primary {
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 12%, transparent);

@@ -756,6 +756,27 @@ export interface BackcastSet {
   note: string
 }
 
+// drivers.json: the day-by-day archive feed (also drives the map's Drivers
+// mode). Only the fields the day-explainer reads are typed here.
+export interface DriverDay {
+  date: string
+  market: boolean
+  lwap: Partial<Record<GridKey, number>>
+  spread: number | null
+  curtailed_mwh?: Partial<Record<GridKey, number>>
+  n_alert_advisories?: number
+  reserve_price_max?: number | null
+  binding?: {
+    rtd_binding_rows: number
+    top_equipment: { name: string; rows: number }[]
+  }
+}
+export interface Drivers {
+  available: boolean
+  days: DriverDay[]
+  note?: string
+}
+
 export interface Profiles {
   unit: string
   note: string

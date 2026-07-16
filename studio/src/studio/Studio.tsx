@@ -9,6 +9,7 @@ import { BillView } from './Bill'
 import { MarketPowerView } from './MarketPower'
 import { ChronologyView } from './ChronoView'
 import { BackcastView } from './BackcastView'
+import { DayExplainerView } from './DayExplainerView'
 import { RunsView } from './RunsView'
 import { SweepView } from './SweepView'
 import { DistributionView } from './DistributionView'
@@ -65,6 +66,7 @@ type AnalysisId =
   | 'bill'
   | 'market'
   | 'backcast'
+  | 'explain'
   | 'emissions'
   | 'capture'
   | 'portfolio'
@@ -100,6 +102,7 @@ const SOL_LABEL: Record<SolId, string> = {
 }
 const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   backcast: 'Backcast',
+  explain: 'Explain a day',
   reserve: 'Reserve market',
   bill: 'Bill impact',
   market: 'Market power',
@@ -318,6 +321,7 @@ export function Studio({
     (nav.kind === 'analysis' &&
       (nav.id === 'reserve' ||
         nav.id === 'backcast' ||
+        nav.id === 'explain' ||
         nav.id === 'capture' ||
         nav.id === 'crossrun' ||
         nav.id === 'ensemble' ||
@@ -883,6 +887,11 @@ function DataPane({
       if (!profiles)
         return <div className="basecase-banner">Loading the observed day profiles.</div>
       return <BackcastView d={d} profiles={profiles} grid={grid} />
+    }
+    if (nav.id === 'explain') {
+      if (!profiles)
+        return <div className="basecase-banner">Loading the observed day profiles.</div>
+      return <DayExplainerView d={d} profiles={profiles} grid={grid} />
     }
     if (nav.id === 'emissions') {
       if (!profiles)

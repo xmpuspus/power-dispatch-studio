@@ -6,7 +6,7 @@
 
 import { useMemo, useState, type ReactNode } from 'react'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
-import { num, php, pct, useOfferDay } from '../lib/data'
+import { num, php, pct, useOfferDay, downloadCsv } from '../lib/data'
 import { Panel, Segmented, StatTile } from '../ui/kit'
 import { DataGrid, type Column } from '../ui/DataGrid'
 import { HourLines } from './charts'
@@ -24,7 +24,10 @@ export function BackcastView({
   profiles: Profiles
   grid: GridKey
 }) {
-  const [engine, setEngine] = useState<'cost' | 'offers'>('cost')
+  // Lead with the offer replay: it tracks the observed hourly price far better
+  // than the pure cost stack, so it is the calibrated view. The cost model is the
+  // counterfactual you subtract to read the offer premium.
+  const [engine, setEngine] = useState<'cost' | 'offers'>('offers')
   const offers = engine === 'offers'
   const bc = offers ? profiles.offer_backcast : profiles.backcast
 
@@ -67,8 +70,8 @@ export function BackcastView({
       value={engine}
       onChange={(v) => setEngine(v as 'cost' | 'offers')}
       options={[
-        { value: 'cost', label: 'Cost model' },
         { value: 'offers', label: 'Observed offers' },
+        { value: 'cost', label: 'Cost model' },
       ]}
     />
   )
@@ -168,8 +171,8 @@ export function BackcastView({
         {engineToggle}
         <span className="note">
           {offers
-            ? 'The same market days replayed with the operator’s published offer books, the tool’s strongest validation.'
-            : 'The base merit-order cost model against the tape. Nothing tuned; the residual is the finding.'}
+            ? 'The calibrated view: every market day replayed on the operator’s own published offer books. The correlation and error below are live from the bake.'
+            : 'The counterfactual: the pure merit-order cost model, fundamentals only, nothing tuned. The gap up to the offer replay is the measured offer premium.'}
         </span>
       </div>
 
@@ -209,6 +212,36 @@ export function BackcastView({
       <Panel
         title="Model vs observed LWAP, whole market window"
         subtitle={`Every full-coverage market day since ${bc.window?.from} replayed with ${engineLabel}.`}
+        right={
+          <button
+            className="btn btn--ghost btn--sm"
+            onClick={() => {
+              const sets: [string, typeof bc][] = [
+                ['offer_replay', profiles.offer_backcast],
+                ['cost_model', profiles.backcast],
+              ]
+              const rows = sets.flatMap(([engineName, set]) =>
+                GRIDS.map((g) => {
+                  const s = set?.per_grid?.[g]
+                  return {
+                    engine: engineName,
+                    grid: g,
+                    days: set?.days ?? '',
+                    observed_mean_php_kwh: s?.observed_mean_php_kwh ?? '',
+                    modeled_mean_php_kwh: s?.modeled_mean_php_kwh ?? '',
+                    mae_php_kwh: s?.mae_php_kwh ?? '',
+                    bias_php_kwh: s?.bias_php_kwh ?? '',
+                    correlation: s?.correlation ?? '',
+                    high_hour_hit_rate_pct: s?.high_hour_hit_rate_pct ?? '',
+                  }
+                })
+              )
+              downloadCsv(rows, 'backcast_whole_window.csv')
+            }}
+          >
+            Export CSV
+          </button>
+        }
       >
         <DataGrid columns={cols} rows={GRIDS} getKey={(g) => g} />
         {bc.high_hour_note ? <p className="note">{bc.high_hour_note}</p> : null}

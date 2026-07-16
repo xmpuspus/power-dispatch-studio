@@ -79,6 +79,9 @@ export const useDemandPath = () => useJson<DemandPath>('demand_path.json')
 export const useEmissions = () => useJson<Emissions>('emissions.json')
 export const useMeta = () => useJson<Meta>('meta.json')
 export const useMarketAnchors = () => useJson<MarketAnchors>('market_anchors.json')
+// the day-by-day archive feed (also drives the map's Drivers mode); the
+// day-explainer reads its per-day binding equipment and context
+export const useDrivers = () => useJson<import('./types').Drivers>('drivers.json')
 
 export interface FeatureCollection<P> {
   type: 'FeatureCollection'
@@ -108,6 +111,31 @@ export const pct = (frac: number | null | undefined, dp = 0): string =>
   frac == null || Number.isNaN(frac) ? '-' : `${nf(dp, dp).format(frac * 100)}%`
 
 export const fuelLabel = (f: string): string => f.replace(/_/g, ' ')
+
+// client-side CSV download: serialize a row array into a file the browser saves,
+// so any view can hand the analyst its own numbers without a server round-trip.
+// The first row's keys are the header; values are quote-escaped.
+export function downloadCsv(
+  rows: Record<string, string | number | null | undefined>[],
+  filename: string
+): void {
+  if (!rows.length) return
+  const cols = Object.keys(rows[0])
+  const esc = (v: string | number | null | undefined) => {
+    const s = v == null ? '' : String(v)
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+  }
+  const body = [
+    cols.join(','),
+    ...rows.map((r) => cols.map((c) => esc(r[c])).join(',')),
+  ].join('\n')
+  const url = URL.createObjectURL(new Blob([body], { type: 'text/csv;charset=utf-8' }))
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
 
 // fuel -> design-token color, shared by the charts and their legends
 const FUEL_VAR: Record<string, string> = {

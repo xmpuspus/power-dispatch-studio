@@ -29,6 +29,7 @@
   /* data-series colors, shared with the map so figures read the same everywhere */
   --series-modeled: #334155;
   --series-observed: #b3261e;
+  --series-offer: #1d4ed8;
   --series-flow: #0e7490;
   --series-storage: #7c3aed;
   --fuel-coal: #64748b;
@@ -96,6 +97,7 @@
 
   --series-modeled: #94a3b8;
   --series-observed: #f87171;
+  --series-offer: #60a5fa;
   --series-flow: #22d3ee;
   --series-storage: #c4b5fd;
   --fuel-coal: #94a3b8;
