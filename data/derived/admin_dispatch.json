@@ -25,11 +25,10 @@
  ],
  "n_raise_grid_hours_sampled": 210,
  "modeled_marginal_fuel_on_raise_hours_pct": {
-  "coal": 94.8,
-  "hydro": 4.8,
-  "import": 0.5
+  "coal": 95.2,
+  "hydro": 4.8
  },
- "coal_marginal_share_pct": 94.8,
+ "coal_marginal_share_pct": 95.2,
  "raised_mw_fuel_mix_pct": {
   "coal": 65.7,
   "natural_gas": 19.4,
@@ -40,6 +39,6 @@
  },
  "max_modeled_price_on_raise_hours_php_kwh": 6.041,
  "verdict": "measured_material_but_per_fuel_inert",
- "note": "The administered MOT-raise dispatch is material in MW (6 to 11 percent of dispatched generation on hours with a raise, highest on Mindanao) but price-inert in the per-fuel block engines. The raised MW is mostly coal (65.7 percent) with about a fifth on gas (19.4 percent), and coal is the modeled marginal fuel on 94.8 percent of the raise hours; every raise hour already prices at or just above coal's floor (max P6.04/kWh across all raise hours), so a per-fuel coal floor cannot lift a price coal already sets, and the only move it could make is downward (coal displacing water), which does not add the administered premium the overlay was meant to model. This is the R6 min-stable-floor outcome, one layer up. The out-of-merit effect is a per-resource fact (which named unit runs for security), which the aggregated LP drops; the engine layer it sizes is the per-resource joint energy+reserve clear, not a per-fuel overlay. Measured on the cost-proxy engine, whose coal-marginal hours price flat at the administered floor; the offer-mode leg rests on the R6 result that the same floor left the observed offer books byte-identical.",
+ "note": "The administered MOT-raise dispatch is material in MW (6 to 11 percent of dispatched generation on hours with a raise, highest on Mindanao) but price-inert in the per-fuel block engines. The raised MW is mostly coal (65.7 percent) with about a fifth on gas (19.4 percent), and coal is the modeled marginal fuel on 95.2 percent of the raise hours; every raise hour already prices at or just above coal's floor (max P6.04/kWh across all raise hours), so a per-fuel coal floor cannot lift a price coal already sets, and the only move it could make is downward (coal displacing water), which does not add the administered premium the overlay was meant to model. This is the R6 min-stable-floor outcome, one layer up. The out-of-merit effect is a per-resource fact (which named unit runs for security), which the aggregated LP drops; the engine layer it sizes is the per-resource joint energy+reserve clear, not a per-fuel overlay. Measured on the cost-proxy engine, whose coal-marginal hours price flat at the administered floor; the offer-mode leg rests on the R6 result that the same floor left the observed offer books byte-identical.",
  "src": "https://www.iemop.ph/market-data/list-of-mot-raise-re-dispatch-based-on-so-dispatch-instruction-report/"
 }
