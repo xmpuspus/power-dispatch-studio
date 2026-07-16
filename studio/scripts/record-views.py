@@ -93,8 +93,11 @@ async def save_runs(page: Page, n: int):
 
 VIEWS = [
     {"key": "backcast", "label": "Backcast", "title": "Validated on history",
-     "sub": "Every observed market day re-priced by the model against the actual WESM price, error stated per grid, nothing tuned.",
+     "sub": "Opens on the operator's own offer books, the calibrated view; the pure cost model is the counterfactual one click away.",
      "settle": 2.2},
+    {"key": "explain", "label": "Explain a day", "title": "Explain a day",
+     "sub": "Any past market day's evening peak split into fundamentals, the offer premium the market bid on top, and the equipment that bound the grid.",
+     "settle": 2.4},
     {"key": "week", "label": "Native week", "title": "Native week (168-hour LP)",
      "sub": "The battery state of charge carries across midnight; the day engine resets it.",
      "settle": 1.8},
@@ -153,6 +156,16 @@ async def record_one(spec: dict):
         # a slow scroll to reveal the table/chart below the payoff tiles
         await page.mouse.wheel(0, 260)
         await asyncio.sleep(1.8)
+        if spec["key"] == "explain":
+            # switch the market day to show any past evening peak decomposes
+            try:
+                sel = page.get_by_label("Explain day")
+                vals = [await o.get_attribute("value") for o in await sel.locator("option").all()]
+                if len(vals) > 10:
+                    await sel.select_option(value=vals[-11])
+                    await asyncio.sleep(2.4)
+            except Exception:
+                pass
         await clear_cap(page)
         await asyncio.sleep(0.3)
         await ctx.close()
