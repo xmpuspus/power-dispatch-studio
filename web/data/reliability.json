@@ -100,7 +100,8 @@
   "2026-07-13",
   "2026-07-14",
   "2026-07-15",
-  "2026-07-16"
+  "2026-07-16",
+  "2026-07-17"
  ],
  "series": {
   "luzon": [
@@ -810,6 +811,13 @@
     "curtailed_mwh": 18.76,
     "reserve_slack_min_mw": 0.0,
     "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-07-17",
+    "load_bid_peak_mw": 466.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": -1.7,
+    "reserve_shortfall_intervals": 1
    }
   ],
   "visayas": [
@@ -1519,6 +1527,13 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": -58.0,
     "reserve_shortfall_intervals": 25
+   },
+   {
+    "date": "2026-07-17",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": -12.3,
+    "reserve_shortfall_intervals": 3
    }
   ],
   "mindanao": [
@@ -2228,12 +2243,19 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": 0.0,
     "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-07-17",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
    }
   ]
  },
  "totals": {
   "luzon": {
-   "days": 101,
+   "days": 102,
    "curtailment_days": 52,
    "curtailed_mwh_total": 1950.3,
    "worst_curtailment": {
@@ -2243,11 +2265,11 @@
     "reserve_slack_min_mw": -59.8,
     "reserve_shortfall_intervals": 29
    },
-   "reserve_shortfall_days": 63,
-   "median_daily_min_reserve_slack_mw": -21.2
+   "reserve_shortfall_days": 64,
+   "median_daily_min_reserve_slack_mw": -19.9
   },
   "visayas": {
-   "days": 101,
+   "days": 102,
    "curtailment_days": 36,
    "curtailed_mwh_total": 2813.7,
    "worst_curtailment": {
@@ -2257,11 +2279,11 @@
     "reserve_slack_min_mw": -93.0,
     "reserve_shortfall_intervals": 168
    },
-   "reserve_shortfall_days": 66,
-   "median_daily_min_reserve_slack_mw": -49.9
+   "reserve_shortfall_days": 67,
+   "median_daily_min_reserve_slack_mw": -47.2
   },
   "mindanao": {
-   "days": 101,
+   "days": 102,
    "curtailment_days": 14,
    "curtailed_mwh_total": 445.8,
    "worst_curtailment": {
