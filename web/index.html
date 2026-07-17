@@ -542,6 +542,7 @@ function addLayers(){
       `<br>${sign}P${fmt(p.dev, 2)}/kWh vs the ${esc(p.grid)} regional price` +
       `<br>Mean over ${fmt(p.days)} clean market days` +
       (p.mw ? `; ~${fmt(p.mw)} MW scheduled` : "") +
+      (p.src ? `<br>Placement: ${esc(p.src)}` : "") +
       `<br><i>Observed locational deviation (DIPCEF final). WESM prices ` +
       `intra-regional congestion administratively, so this is not a ` +
       `congestion premium.</i>`;
@@ -863,7 +864,7 @@ const LEGENDS = {
     ["sw","#b3261e","Node above its regional price (persistent, observed)"],
     ["sw","#2b6a9d","Node below its regional price"],
     ["sw","#1a7f48","Data-center sites for reference"]],
-    note:"Node dots are observed per-node deviations from each region's price (DIPCEF final, clean market days; size = magnitude). Placed where the station resolves on the OSM grid; the panel lists the rest. Not a congestion premium: WESM prices intra-regional congestion administratively." },
+    note:"Node dots are observed per-node deviations from each region's price (DIPCEF final, clean market days; size = magnitude). Placed at the resolved site: stations and plants exactly, locality centroids city-precision; the panel lists the rest. Not a congestion premium: WESM prices intra-regional congestion administratively." },
   simulate: { title:"Named generators (price movers)", keys: [
     ["sw","#6b6b6b","Coal unit (size by capacity)"],
     ["sw","#4e79a7","Natural-gas unit"]],

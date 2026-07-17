@@ -36,10 +36,9 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 from collections import defaultdict
 
-from grid_geometry import Graph, _norm, _station_index, km, load_features
+from grid_geometry import Graph, _station_index, km, load_features
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 NODAL_DIR = os.path.join(HERE, "..", "data", "derived", "nodal_daily")
@@ -117,6 +116,7 @@ def build_network() -> dict:
                     "km": round(w, 1),
                     "x_pu": x_pu / ncirc,
                     "rating_mw": RATING_MW[kind] * ncirc,
+                    "rating_src": "class-default",
                     "osm_ids": [ln["osm_id"]],
                     "names": [ln["name"]] if ln.get("name") else [],
                 }
@@ -201,118 +201,31 @@ def build_network() -> dict:
 
 
 # --- observed injections: DIPCEF resource codes -> buses ---------------------
-
-_RES_TOK = re.compile(r"^\d{0,2}([A-Z][A-Z-]*)")
-
-# DIPCEF station-code aliases the prefix matcher cannot derive, hand-curated
-# from the highest-MW unresolved codes and verified against the repo's own
-# generators.geojson (the named-plant layer) and the OSM substation pull.
-# Values are normalized-name prefixes tried against substations first, then
-# the plant layer.
-RESOURCE_ALIASES = {
-    "SUAL": ["sual"],
-    "GNPD": ["gnpowerdinginin", "dinginin"],
-    "MSINLO": ["masinloc"],
-    "MARVEL": ["gnpowermariveles", "mariveles"],
-    "PAGBIL": ["pagbilao"],
-    "SBPL": ["sanbuenaventura"],
-    "QPPL": ["quezonpower", "mauban"],
-    "STA-RI": ["santarita"],
-    "STROS": ["santarosa"],
-    "SNGAB": ["sangabriel"],
-    "EERI": ["ilijan"],
-    "SNJOS": ["sanjose"],
-    "BALNT": ["balintawak"],
-    "ARANE": ["araneta"],
-    "SUCAT": ["sucat"],
-    "LEYTE": ["tongonan", "leytegeothermal", "ormoc"],
-    "ILIJAN": ["ilijan"],
-    "CALACA": ["calaca"],
-    "MKBN": ["makban"],
-    "TIWI": ["tiwi"],
-    "KAL": ["kalayaan"],
-    "CAPARI": ["caparispisan"],
-    "BURGOS": ["burgos"],
-    "TMO": ["malaya"],
-    "PGBLO": ["pagbilao"],
-}
+# Resolution lives in pipeline/resource_locate.py (OSM substations, OSM
+# plants, the named-generator layer, DOE municipality centroids; region
+# gated, ambiguity is a miss). This wrapper keeps the bus-only contract the
+# solver needs and reports the resolved-MW scoreboard.
 
 
 def map_resources(day: dict, net: dict) -> tuple[dict, dict]:
-    """Resolve each DIPCEF resource to a bus via its station token, against
-    the OSM substations first and the repo's named-plant layer second
-    (city-precision pins snap to the nearest in-grid bus). Region must
-    agree; the unresolved tail spreads across the region's resolved load
-    buses and is reported as a share of MW."""
-    index, graph = net["index"], net["graph"]
-    buses = net["buses"]
-    bus_grid = {b["id"]: b["grid"] for b in buses}
-    gen_path = os.path.join(HERE, "..", "web", "data", "generators.geojson")
-    plants = []
-    if os.path.isfile(gen_path):
-        with open(gen_path) as f:
-            for ft in json.load(f)["features"]:
-                plants.append(
-                    (
-                        _norm(ft["properties"].get("name", "")),
-                        ft["geometry"]["coordinates"],
-                        ft["properties"].get("grid"),
-                    )
-                )
+    """Resolve each DIPCEF resource to a network bus.
 
-    def nearest_bus(pt: list[float], grid: str) -> str | None:
-        best, bestd = None, 40.0
-        for b in buses:
-            if b["grid"] != grid:
-                continue
-            d = km(pt, [b["lon"], b["lat"]])
-            if d < bestd:
-                best, bestd = b["id"], d
-        return best
+    Returns (res -> bus id, stats); stats carry resolved MW share per grid
+    (the public scoreboard)."""
+    from resource_locate import resolve_all
 
-    res_bus: dict[str, str] = {}
-    stats = {"resolved_mw": 0.0, "unresolved_mw": 0.0, "resolved": 0, "unresolved": 0}
-    for res, nd in day["nodes"].items():
-        m = _RES_TOK.match(res.split("_")[0])
-        tok = m.group(1) if m else ""
-        toks = RESOURCE_ALIASES.get(tok, [tok.lower()])
-        target = None
-        # OSM substations first
-        cands: set[int] = set()
-        for t in toks:
-            if len(t) >= 3:
-                cands |= {i for n, i in index if n.startswith(t)}
-        for si in sorted(cands):
-            node = graph.node_of_sub.get(si)
-            if node and bus_grid.get(node) == nd["grid"]:
-                if target and target != node:
-                    target = None  # ambiguous across two buses in-region
-                    break
-                target = node
-        # then the named-plant layer (city-precision pins)
-        if target is None:
-            for t in toks:
-                if len(t) < 3:
-                    continue
-                for pn, pc, pg in plants:
-                    if pn.startswith(t) and pg == nd["grid"]:
-                        target = nearest_bus(pc, nd["grid"])
-                        break
-                if target:
-                    break
-        mwsum = sum(abs(v) for v in nd["mw"] if v is not None)
-        if target:
-            res_bus[res] = target
-            stats["resolved"] += 1
-            stats["resolved_mw"] += mwsum
-        else:
-            stats["unresolved"] += 1
-            stats["unresolved_mw"] += mwsum
-    total = stats["resolved_mw"] + stats["unresolved_mw"]
-    stats["resolved_mw_share"] = (
-        round(stats["resolved_mw"] / total, 3) if total else None
-    )
+    locs, stats = resolve_all(day, net)
+    res_bus = {res: loc["bus"] for res, loc in locs.items()}
+    # legacy fields some callers report
+    stats["resolved_mw_share"] = stats.pop("mw_share")
     return res_bus, stats
+
+
+def map_resources_full(day: dict, net: dict) -> tuple[dict, dict]:
+    """Full location records (lon/lat/src/label/bus) plus the scoreboard."""
+    from resource_locate import resolve_all
+
+    return resolve_all(day, net)
 
 
 def hour_injections(day: dict, res_bus: dict, net: dict, hour: int) -> dict[str, float]:
@@ -524,6 +437,28 @@ def _rtdcv_day(date: str) -> dict[str, int]:
     return dict(out)
 
 
+def observed_limits() -> dict[str, float]:
+    """Max observed BINDING_LIMIT per equipment across the whole archived
+    RTDCV/DAPCV window: the operator's own operating limit for that
+    equipment, the truth layer over the class-default ratings."""
+    import csv
+    import glob
+
+    out: dict[str, float] = defaultdict(float)
+    for key in ("RTDCV", "DAPCV"):
+        for path in sorted(glob.glob(os.path.join(RAW, key, "*.csv"))):
+            with open(path, newline="", encoding="utf-8", errors="replace") as f:
+                for r in csv.DictReader(f):
+                    name = (r.get("EQUIPMENT_NAME") or "").strip()
+                    try:
+                        lim = float(r.get("BINDING_LIMIT") or 0)
+                    except ValueError:
+                        continue
+                    if name and lim > 0:
+                        out[name] = max(out[name], lim)
+    return dict(out)
+
+
 def _gens_for_opf(day: dict, res_bus: dict) -> list[dict]:
     """One dispatchable unit per resolved GEN resource: capability = max
     observed MW that day, cost = the grid-fuel proxy from the baked merit
@@ -629,6 +564,18 @@ def run_day(date: str) -> dict:
         for hit in hits:
             eq_branches[hit["equipment"]].add(bi)
     station_eq = {hit["equipment"] for hits in sub_hits.values() for hit in hits}
+    # the operator's own operating limits, where the equipment matched:
+    # authoritative over class defaults, in either direction
+    limits = observed_limits()
+    rated_observed = 0
+    for eq, bis in eq_branches.items():
+        lim = limits.get(eq)
+        if not lim:
+            continue
+        for bi in bis:
+            branches[bi]["rating_mw"] = round(lim, 1)
+            branches[bi]["rating_src"] = "observed-rtdcv"
+            rated_observed += 1
     observed = _rtdcv_day(date)
 
     hours = list(range(24))
@@ -686,9 +633,12 @@ def run_day(date: str) -> dict:
     # where only the RELATIVE ordering is used.
     raised = 0
     for bi, br in enumerate(branches):
+        if br.get("rating_src") == "observed-rtdcv":
+            continue
         pk = max(abs(replay_load[hr][bi]) * br["rating_mw"] for hr in hours)
         if pk > br["rating_mw"]:
             br["rating_mw"] = round(1.05 * pk, 1)
+            br["rating_src"] = "replay-floor"
             raised += 1
 
     # opf at a midday hour + the evening peak
@@ -782,6 +732,11 @@ def run_day(date: str) -> dict:
         },
         "resource_mapping": res_stats,
         "opf_ratings_raised_to_replay_flow": raised,
+        "rating_provenance": {
+            "observed-rtdcv": rated_observed,
+            "replay-floor": raised,
+            "class-default": len(branches) - rated_observed - raised,
+        },
         "opf_finding": (
             "A measured probe, not a shipped price surface: at the current "
             "resource-to-bus resolution (share of MW in resource_mapping) "

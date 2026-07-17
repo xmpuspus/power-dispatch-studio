@@ -79,6 +79,30 @@ area["ISO3166-1"="PH"][admin_level=2]->.ph;
 );
 out center tags;
 """,
+    # power plants: the resource-to-bus resolution lift. DIPCEF codes name
+    # plants far more often than substations, and OSM maps plant sites the
+    # substation pull never sees.
+    "plants.json": """
+[out:json][timeout:300];
+area["ISO3166-1"="PH"][admin_level=2]->.ph;
+(
+  node["power"="plant"](area.ph);
+  way["power"="plant"](area.ph);
+  relation["power"="plant"](area.ph);
+);
+out center tags;
+""",
+    # municipality/city centroids: the geocode for DOE fleet rows, whose
+    # location columns name the municipality (placed city-precision, the
+    # same label the data-center pins carry)
+    "places.json": """
+[out:json][timeout:300];
+area["ISO3166-1"="PH"][admin_level=2]->.ph;
+(
+  node["place"~"^(city|town|municipality)$"](area.ph);
+);
+out center tags;
+""",
 }
 
 

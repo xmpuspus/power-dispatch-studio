@@ -75,7 +75,8 @@ export function NodalView({ grid }: { grid: GridKey }) {
           rides the loss column and intra-regional congestion is handled through
           administered actions (price substitution, security limits, constrained-on
           payments). The map's Prices mode draws the {d.n_placed} nodes that resolve to a
-          mapped station; this table lists every node.
+          mapped site (stations and plant sites exactly, locality centroids at city
+          precision); this table lists every node.
         </p>
       </Panel>
 

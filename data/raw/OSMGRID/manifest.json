@@ -10,10 +10,20 @@
   "elements": 1475,
   "osm3s_timestamp": "2026-07-16T17:52:30Z"
  },
+ "places.json": {
+  "bytes": 766387,
+  "elements": 1647,
+  "osm3s_timestamp": "2026-05-31T22:37:44Z"
+ },
+ "plants.json": {
+  "bytes": 79040,
+  "elements": 265,
+  "osm3s_timestamp": "2026-07-17T14:01:30Z"
+ },
  "substations.json": {
   "bytes": 227829,
   "elements": 891,
   "osm3s_timestamp": "2026-05-31T22:37:44Z"
  },
- "written_utc": "2026-07-16T18:13:46+00:00"
+ "written_utc": "2026-07-17T14:07:21+00:00"
 }

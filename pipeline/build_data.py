@@ -947,12 +947,19 @@ def main() -> int:
     from nodal_obs import build_nodal_obs
 
     nodal_obs = build_nodal_obs()
+    # the loss-surface validation (pipeline/loss_surface.py, nightly);
+    # absent until derived
+    ls_path = os.path.join(HERE, "..", "data", "derived",
+                           "loss_surface.json")
+    loss_surface = (json.load(open(ls_path)) if os.path.isfile(ls_path)
+                    else {"available": False})
 
     for name, obj in [("congestion.json", congestion),
                       ("rtdoe5.json", rtdoe5),
                       ("expansion.json", expansion),
                       ("nodal.json", nodal),
                       ("nodal_obs.json", nodal_obs),
+                      ("loss_surface.json", loss_surface),
                       ("reliability.json", reliability),
                       ("prices.json", prices),
                       ("price_load.json", price_load), ("hvdc.json", hvdc),

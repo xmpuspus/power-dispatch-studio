@@ -376,10 +376,18 @@ each node's hourly scheduled MW, and the day's pricing-flag tally
 (OK / PSM / SEC).</p>
 <p>The derived record is surfaced in the product: the map's Prices mode draws
 each node's persistent deviation from its regional price (clean market days
-only, placed where the station resolves on the OSM grid), and the studio's
-Analysis section carries a Nodal prices view with the full per-node table.
-Both label the statistic as an observed locational deviation, not a
-congestion premium, for the reason stated next.</p>
+only), and the studio's Analysis section carries a Nodal prices view with the
+full per-node table. Both label the statistic as an observed locational
+deviation, not a congestion premium, for the reason stated next.</p>
+<p>Placement resolves through a priority of public evidence, every dot tagged
+with its source: a named OSM substation on the HV network, a named OSM
+power-plant site, the repo's named-generator pin, a locality centroid for
+load and delivery codes that name their locality, and a DOE plant-list row
+whose location column names the municipality (the last two placed at the OSM
+place centroid, city-precision). Region must agree in every path and
+ambiguity is a miss, never a guess. The resolved share of scheduled MW per
+grid ships inside <code>nodal_obs.json</code> as a scoreboard, so the
+resolution number is public and its drift visible.</p>
 <p>What the derived record shows, stated plainly: the published
 <code>LMP_CONGESTION</code> column is zero on every day sampled, including days
 with wide real nodal spread (2026-05-20 carries a median of 85 distinct nodal
@@ -401,11 +409,30 @@ model's most-loaded branches. An OPF mode re-dispatches within each unit's
 observed-day capability at grid-fuel proxy costs and reads nodal prices off the
 bus-balance duals. Resolution of DIPCEF resource codes onto buses is partial and
 reported (share of MW resolved); nothing from this model is presented as an
-observed number. The OPF's own measured finding, recorded in the artifact: at
+observed number. Branch ratings carry provenance tags: the operator's own
+observed operating limits (RTDCV/DAPCV BINDING_LIMIT) where the equipment
+matched, replay-calibrated floors where the observed dispatch visibly carried
+more than the class default, and labeled class defaults for the rest. The
+public NGCP TDP attachment is the summary report and carries only grid-level
+facility aggregates, so per-line TDP ratings cannot be keyed from it; that is
+the exact boundary, not a hand-wave. The OPF's own measured finding, recorded in the artifact: at
 the current resolution the re-dispatch concentrates each grid's unresolved
 generation onto its few resolved plant buses, so modeled price LEVELS are not
 usable; the probe reports binding geography and the honest gap, and the zonal
 engine remains the price model.</p>
+<p><b>The loss-surface validation.</b> Because the market's within-region
+nodal structure is a loss surface (the congestion column is zero), network
+physics can be tested against it at scale: replay the observed injections on
+the reduced backbone, take marginal loss factors per node (class-typical
+resistances scaled by real routed length, labeled estimates), and compare the
+modeled deviation against each node's observed deviation, grid by grid. The
+comparison is Spearman rank correlation across nodes plus the error after a
+per-grid affine fit (the loss-reference convention is an affine choice, so
+slope and intercept are fitted and reported). The result recomputes nightly
+as clean days accumulate and ships in <code>loss_surface.json</code> with a
+self-computing verdict: grids where physics ranks the market's deviations are
+listed as validated, and grids that fail the test are listed as failing, not
+hidden.</p>
 
 <h2>Data-center sites</h2>
 <p>Only facilities with a citable public source are pinned; each pin carries its
