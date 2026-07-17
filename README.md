@@ -127,6 +127,23 @@ into a market-outcome claim.
 
 ![The regional price lines moving together at about 5 to 6 pesos per kWh while WESM was suspended, then fanning apart after the market reopens on May 1, with Visayas and Mindanao climbing above Luzon](docs/price-spread.gif)
 
+Under those three regional averages, DIPCEF prices about 1,200 individual nodes,
+and the map draws each node's persistent deviation from its own region's price
+(Prices mode; the studio's Nodal prices view carries the full searchable table).
+The walkthrough below runs four real decisions through that lens, every figure
+read live from the current bake at recording time: which consumers sit behind a
+radial line and persistently pay above their region; what the same 100 MW data
+center pays behind a premium delivery point versus beside generation; what the
+same MWh earns a plant behind an export constraint; and the honest nodal
+forward, the regional forward band plus the node's persistent adder, held
+constant and labeled. Deviations are labeled observed locational deviations,
+never congestion premiums: WESM prices intra-regional congestion
+administratively, and its published nodal congestion component is zero on every
+sampled day. Recipe: `python3 build/record_nodal_walkthrough.py` against the
+combined serve; a [smoother MP4 is here](docs/nodal-walkthrough.mp4).
+
+![Nodal walkthrough: the map's Prices mode with per-node deviation dots, hovering the Zamboanga radial premium and the Gamu versus Calaca siting swing with the computed peso-per-year difference, then the studio's Nodal prices table filtered to delivery points, the Leyte geothermal export discount, and the Luzon forward band with the node adder framing](docs/nodal-walkthrough.gif)
+
 That wholesale price passes into the Meralco bill monthly. The June 2026 advisory
 carried WESM at **P7.03/kWh** inside a **P9.07/kWh** generation charge on a
 **P14.48/kWh** total rate. One Sual unit (**647 MW**) equals **18% of the May system
@@ -475,8 +492,10 @@ The individual what-ifs, each a recorded studio session:
 - Not a nodal congestion-premium layer. WESM's settlement-final files report the LMP
   congestion component as zero (the market re-prices most intervals under a
   substitution methodology and expresses inter-island congestion as regional price
-  separation, not a per-node charge), so that layer stays archived, not displayed.
-  Full resolution in [`docs/research-launch-20260705.md`](docs/research-launch-20260705.md).
+  separation, not a per-node charge). What the map and studio DO display is the
+  observed locational deviation per node, labeled as such, never as a congestion
+  premium. Full resolution in
+  [`docs/research-launch-20260705.md`](docs/research-launch-20260705.md).
 
 ## Where the data comes from
 
