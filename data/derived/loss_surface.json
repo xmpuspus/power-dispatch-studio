@@ -1,0 +1,144 @@
+{
+ "available": true,
+ "clean_days": 15,
+ "n_nodes_compared": 525,
+ "validated_grids": [
+  "luzon",
+  "mindanao"
+ ],
+ "failing_grids": [
+  "visayas"
+ ],
+ "finding": "Network physics ranks the market's own per-node deviations in luzon, mindanao; visayas fails the same test at the current resolution (suspects: resolved-MW share, inter-island exchange structure) and is reported as failing, not hidden.",
+ "per_day": [
+  {
+   "date": "2026-05-01",
+   "luzon": 0.712,
+   "visayas": -0.476,
+   "mindanao": 0.775
+  },
+  {
+   "date": "2026-05-04",
+   "luzon": 0.702,
+   "visayas": -0.283,
+   "mindanao": 0.677
+  },
+  {
+   "date": "2026-05-05",
+   "luzon": 0.735,
+   "visayas": -0.436,
+   "mindanao": 0.688
+  },
+  {
+   "date": "2026-05-16",
+   "luzon": 0.726,
+   "visayas": -0.629,
+   "mindanao": 0.716
+  },
+  {
+   "date": "2026-05-17",
+   "luzon": 0.68,
+   "visayas": -0.659,
+   "mindanao": 0.716
+  },
+  {
+   "date": "2026-06-01",
+   "luzon": 0.731,
+   "visayas": -0.456,
+   "mindanao": 0.82
+  },
+  {
+   "date": "2026-06-03",
+   "luzon": 0.697,
+   "visayas": -0.563,
+   "mindanao": 0.695
+  },
+  {
+   "date": "2026-06-04",
+   "luzon": 0.677,
+   "visayas": -0.602,
+   "mindanao": 0.706
+  },
+  {
+   "date": "2026-06-05",
+   "luzon": 0.709,
+   "visayas": -0.599,
+   "mindanao": 0.717
+  },
+  {
+   "date": "2026-06-06",
+   "luzon": 0.667,
+   "visayas": -0.637,
+   "mindanao": 0.721
+  },
+  {
+   "date": "2026-06-07",
+   "luzon": 0.71,
+   "visayas": -0.615,
+   "mindanao": 0.71
+  },
+  {
+   "date": "2026-06-08",
+   "luzon": 0.713,
+   "visayas": -0.553,
+   "mindanao": 0.847
+  },
+  {
+   "date": "2026-06-14",
+   "luzon": 0.638,
+   "visayas": -0.488,
+   "mindanao": 0.86
+  },
+  {
+   "date": "2026-06-15",
+   "luzon": 0.723,
+   "visayas": -0.433,
+   "mindanao": 0.842
+  },
+  {
+   "date": "2026-06-22",
+   "luzon": 0.72,
+   "visayas": -0.42,
+   "mindanao": 0.839
+  }
+ ],
+ "window": {
+  "luzon": {
+   "n_nodes": 311,
+   "spearman": 0.716,
+   "affine_slope": 0.352,
+   "affine_intercept_php_kwh": -0.3546,
+   "mae_after_affine_php_kwh": 0.1067,
+   "observed_p5_php_kwh": -0.245,
+   "observed_p95_php_kwh": 0.446
+  },
+  "visayas": {
+   "n_nodes": 96,
+   "spearman": -0.57,
+   "affine_slope": -0.016,
+   "affine_intercept_php_kwh": 0.367,
+   "mae_after_affine_php_kwh": 0.1823,
+   "observed_p5_php_kwh": -0.559,
+   "observed_p95_php_kwh": 0.34
+  },
+  "mindanao": {
+   "n_nodes": 118,
+   "spearman": 0.829,
+   "affine_slope": 0.141,
+   "affine_intercept_php_kwh": 1.7285,
+   "mae_after_affine_php_kwh": 0.1979,
+   "observed_p5_php_kwh": -0.107,
+   "observed_p95_php_kwh": 1.745
+  }
+ },
+ "assumptions": {
+  "r_ohm_per_km": {
+   "ac500": 0.028,
+   "ac230": 0.08,
+   "ac138": 0.12,
+   "cable": 0.06
+  },
+  "note": "Resistances are class-typical per-km values scaled by real routed length: labeled estimates, like the reactances. MLFs come from the replay of observed injections on the reduced OSM backbone; the loss reference is a per-grid affine convention, so slope and intercept are fitted and reported."
+ },
+ "reading": "Spearman is the claim: does network physics rank the market's own per-node deviations? MAE after the affine fit says how far each node sits from the fitted surface, in PhP/kWh."
+}

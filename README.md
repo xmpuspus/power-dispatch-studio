@@ -139,7 +139,11 @@ forward, the regional forward band plus the node's persistent adder, held
 constant and labeled. Deviations are labeled observed locational deviations,
 never congestion premiums: WESM prices intra-regional congestion
 administratively, and its published nodal congestion component is zero on every
-sampled day. Recipe: `python3 build/record_nodal_walkthrough.py` against the
+sampled day. The network model is validated against that same record: marginal
+loss factors from the OSM-geometry backbone are compared per grid against the
+market's own per-node deviations, with rank correlations, fitted conventions,
+and the grids that pass or fail stated in `loss_surface.json` and recomputed
+nightly as clean market days accumulate. Recipe: `python3 build/record_nodal_walkthrough.py` against the
 combined serve; a [smoother MP4 is here](docs/nodal-walkthrough.mp4).
 
 ![Nodal walkthrough: the map's Prices mode with per-node deviation dots, hovering the Zamboanga radial premium and the Gamu versus Calaca siting swing with the computed peso-per-year difference, then the studio's Nodal prices table filtered to delivery points, the Leyte geothermal export discount, and the Luzon forward band with the node adder framing](docs/nodal-walkthrough.gif)

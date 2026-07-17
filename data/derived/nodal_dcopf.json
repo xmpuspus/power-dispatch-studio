@@ -8,13 +8,27 @@
   "note": "Reduced backbone from OSM geometry; reactances are class-typical per-km values scaled by real routed length, ratings are class defaults (both labeled estimates). NGCP's actual network model is not public."
  },
  "resource_mapping": {
-  "resolved_mw": 269882.57000000007,
-  "unresolved_mw": 492932.9500000001,
-  "resolved": 271,
-  "unresolved": 922,
-  "resolved_mw_share": 0.354
+  "resolved": 528,
+  "total": 1193,
+  "by_src": {
+   "doe-centroid": 74,
+   "osm-plant": 133,
+   "osm-substation": 294,
+   "place-centroid": 27
+  },
+  "per_grid_mw_share": {
+   "luzon": 0.86,
+   "visayas": 0.488,
+   "mindanao": 0.506
+  },
+  "resolved_mw_share": 0.758
  },
- "opf_ratings_raised_to_replay_flow": 32,
+ "opf_ratings_raised_to_replay_flow": 51,
+ "rating_provenance": {
+  "observed-rtdcv": 33,
+  "replay-floor": 51,
+  "class-default": 294
+ },
  "opf_finding": "A measured probe, not a shipped price surface: at the current resource-to-bus resolution (share of MW in resource_mapping) the re-dispatch concentrates each grid's unresolved generation onto its few resolved plant buses, so modeled price LEVELS are not usable; what the probe reports is the geography (which corridors the re-dispatch pushes to their estimated limits) and the honest gap. The zonal engine remains the price model.",
  "replay": {
   "top_loaded": [
@@ -23,18 +37,9 @@
      "ac138"
     ],
     "kind": "ac138",
-    "km": 11.0,
+    "km": 5.5,
     "rating_mw_est": 120.0,
-    "peak_loading": 6.28
-   },
-   {
-    "names": [
-     "ac138"
-    ],
-    "kind": "ac138",
-    "km": 14.3,
-    "rating_mw_est": 120.0,
-    "peak_loading": 4.994
+    "peak_loading": 6.943
    },
    {
     "names": [
@@ -43,7 +48,16 @@
     "kind": "ac138",
     "km": 23.9,
     "rating_mw_est": 120.0,
-    "peak_loading": 4.994
+    "peak_loading": 5.578
+   },
+   {
+    "names": [
+     "ac138"
+    ],
+    "kind": "ac138",
+    "km": 11.0,
+    "rating_mw_est": 120.0,
+    "peak_loading": 5.153
    },
    {
     "names": [
@@ -52,7 +66,7 @@
     "kind": "ac138",
     "km": 0.2,
     "rating_mw_est": 120.0,
-    "peak_loading": 4.994
+    "peak_loading": 5.138
    },
    {
     "names": [
@@ -61,7 +75,7 @@
     "kind": "ac138",
     "km": 18.3,
     "rating_mw_est": 120.0,
-    "peak_loading": 4.994
+    "peak_loading": 5.138
    },
    {
     "names": [
@@ -110,48 +124,48 @@
    },
    {
     "names": [
-     "ac138"
-    ],
-    "kind": "ac138",
-    "km": 16.3,
-    "rating_mw_est": 120.0,
-    "peak_loading": 4.994
-   },
-   {
-    "names": [
-     "ac138"
-    ],
-    "kind": "ac138",
-    "km": 1.1,
-    "rating_mw_est": 120.0,
-    "peak_loading": 4.994
-   },
-   {
-    "names": [
      "Zamboanga - Pitogo"
     ],
     "kind": "ac138",
     "km": 33.3,
     "rating_mw_est": 120.0,
-    "peak_loading": 4.332
+    "peak_loading": 4.272
    },
    {
     "names": [
      "ac138"
     ],
     "kind": "ac138",
-    "km": 34.0,
+    "km": 14.3,
     "rating_mw_est": 120.0,
-    "peak_loading": 4.292
+    "peak_loading": 4.177
    },
    {
     "names": [
-     "ac138"
+     "Davao - Bunawan 2"
     ],
     "kind": "ac138",
-    "km": 20.8,
+    "km": 12.1,
     "rating_mw_est": 120.0,
-    "peak_loading": 4.104
+    "peak_loading": 3.587
+   },
+   {
+    "names": [
+     "Davao - Bunawan 2"
+    ],
+    "kind": "ac138",
+    "km": 2.5,
+    "rating_mw_est": 120.0,
+    "peak_loading": 3.357
+   },
+   {
+    "names": [
+     "Davao - Bunawan 2"
+    ],
+    "kind": "ac138",
+    "km": 17.4,
+    "rating_mw_est": 120.0,
+    "peak_loading": 3.357
    }
   ],
   "binder_check": [
@@ -174,18 +188,18 @@
     "equipment": "5DAAN_4TAB2",
     "rtd_intervals": 2,
     "modeled": {
-     "peak_loading": 0.141,
-     "rank": 133,
-     "rank_pctile": 65.1
+     "peak_loading": 1.187,
+     "rank": 51,
+     "rank_pctile": 86.8
     }
    },
    {
     "equipment": "5DAAN_4TAB1",
     "rtd_intervals": 1,
     "modeled": {
-     "peak_loading": 0.141,
-     "rank": 133,
-     "rank_pctile": 65.1
+     "peak_loading": 1.187,
+     "rank": 51,
+     "rank_pctile": 86.8
     }
    }
   ],
@@ -222,7 +236,7 @@
     "mindanao": -390.6
    },
    {
-    "luzon": -302.7,
+    "luzon": -302.8,
     "visayas": 356.0,
     "mindanao": -292.8
    },
@@ -242,7 +256,7 @@
     "mindanao": -348.5
    },
    {
-    "luzon": -278.7,
+    "luzon": -278.8,
     "visayas": 347.7,
     "mindanao": -397.9
    },
@@ -317,20 +331,20 @@
   "11": {
    "per_grid": {
     "luzon": {
-     "modeled_mean_mwh": 43518.1,
-     "modeled_p5_mwh": 4800.0,
-     "modeled_p95_mwh": 50000.0,
+     "modeled_mean_mwh": 11770.8,
+     "modeled_p5_mwh": 4956.4,
+     "modeled_p95_mwh": 46654.3,
      "observed_smp_mwh": 1473.8
     },
     "visayas": {
-     "modeled_mean_mwh": 43848.0,
-     "modeled_p5_mwh": 4140.0,
-     "modeled_p95_mwh": 50000.0,
+     "modeled_mean_mwh": 39392.9,
+     "modeled_p5_mwh": 3974.4,
+     "modeled_p95_mwh": 49937.5,
      "observed_smp_mwh": 17970.1
     },
     "mindanao": {
-     "modeled_mean_mwh": 48643.8,
-     "modeled_p5_mwh": 50000.0,
+     "modeled_mean_mwh": 19723.3,
+     "modeled_p5_mwh": 2317.2,
      "modeled_p95_mwh": 50000.0,
      "observed_smp_mwh": 17688.3
     }
@@ -338,23 +352,15 @@
    "binding_est": [
     {
      "names": [
-      "Dasmarinas-Amadeo 230 kV line"
+      "Quezon-Tayabas 230 kV line"
      ],
      "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
+     "flow_mw": -900.5,
+     "rating_mw_est": 900.5
     },
     {
      "names": [
-      "San Jose-Antipolo"
-     ],
-     "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
-      "Sucat | Paco\u2013Araneta | Balintawak"
+      "Hermosa\u2013San Simon | Balintawak"
      ],
      "kind": "ac230",
      "flow_mw": 400.0,
@@ -362,23 +368,31 @@
     },
     {
      "names": [
-      "Malamig-Calaca"
+      "Quezon\u2013San Jose 1/2"
      ],
      "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
+     "flow_mw": -1296.0,
+     "rating_mw_est": 1296.0
+    },
+    {
+     "names": [
+      "Quezon\u2013San Jose 1/2"
+     ],
+     "kind": "ac230",
+     "flow_mw": 1296.0,
+     "rating_mw_est": 1296.0
     },
     {
      "names": [
       "Amadeo-Calaca 230 kV line"
      ],
      "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
+     "flow_mw": 597.6,
+     "rating_mw_est": 597.6
     },
     {
      "names": [
-      "Antipolo-Taytay"
+      "San Lorenzo-Calaca"
      ],
      "kind": "ac230",
      "flow_mw": -800.0,
@@ -386,83 +400,35 @@
     },
     {
      "names": [
-      "Sucat | Araneta\u2013Balintawak"
+      "Bay-Calamba"
      ],
      "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
+     "flow_mw": -909.9,
+     "rating_mw_est": 909.9
     },
     {
      "names": [
-      "Sucat | Araneta\u2013Balintawak"
+      "Quezon\u2013San Jose 3"
      ],
      "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
+     "flow_mw": -641.7,
+     "rating_mw_est": 641.8
     },
     {
      "names": [
       "ac138"
      ],
      "kind": "ac138",
-     "flow_mw": 540.8,
-     "rating_mw_est": 540.8
-    },
-    {
-     "names": [
-      "Alaminos-Ilijan"
-     ],
-     "kind": "ac500",
-     "flow_mw": 2800.0,
-     "rating_mw_est": 2800.0
-    },
-    {
-     "names": [
-      "ac138"
-     ],
-     "kind": "ac138",
-     "flow_mw": -461.7,
-     "rating_mw_est": 461.7
-    },
-    {
-     "names": [
-      "Iligan - Opol"
-     ],
-     "kind": "ac138",
-     "flow_mw": 239.8,
-     "rating_mw_est": 240.0
+     "flow_mw": -120.0,
+     "rating_mw_est": 120.0
     },
     {
      "names": [
       "Agus 2 - Kibawe"
      ],
      "kind": "ac138",
-     "flow_mw": 120.0,
-     "rating_mw_est": 120.0
-    },
-    {
-     "names": [
-      "Sucat | Taguig\u2013Paco | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Sucat | Taguig\u2013Paco | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "ac230"
-     ],
-     "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
+     "flow_mw": 236.2,
+     "rating_mw_est": 236.2
     },
     {
      "names": [
@@ -474,7 +440,39 @@
     },
     {
      "names": [
-      "Maasin-Ormoc 138 kV line"
+      "ac138"
+     ],
+     "kind": "ac138",
+     "flow_mw": -240.0,
+     "rating_mw_est": 240.0
+    },
+    {
+     "names": [
+      "Santa Barbara \u2013 Iloilo"
+     ],
+     "kind": "ac138",
+     "flow_mw": -120.0,
+     "rating_mw_est": 120.0
+    },
+    {
+     "names": [
+      "Barotac Viejo\u2013Concepcion"
+     ],
+     "kind": "ac138",
+     "flow_mw": -240.0,
+     "rating_mw_est": 240.0
+    },
+    {
+     "names": [
+      "ac230"
+     ],
+     "kind": "ac230",
+     "flow_mw": -200.0,
+     "rating_mw_est": 200.0
+    },
+    {
+     "names": [
+      "Bunawan - Maco"
      ],
      "kind": "ac138",
      "flow_mw": 120.0,
@@ -482,107 +480,42 @@
     },
     {
      "names": [
-      "Ormoc-Babatngon 138 kV line 2",
-      "Ormoc-Babatngon 138 kV line 1"
+      "Davao - Bunawan 2"
      ],
      "kind": "ac138",
-     "flow_mw": 240.0,
-     "rating_mw_est": 240.0
+     "flow_mw": 451.9,
+     "rating_mw_est": 451.9
     },
     {
      "names": [
-      "AmbuklaoDam"
+      "Davao - Toril"
      ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
+     "kind": "ac138",
+     "flow_mw": 180.7,
+     "rating_mw_est": 180.7
     },
     {
      "names": [
       "Butuan - Nasipit"
      ],
      "kind": "ac138",
-     "flow_mw": 240.0,
-     "rating_mw_est": 240.0
-    },
-    {
-     "names": [
-      "ac230"
-     ],
-     "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Villanueva - Jasaan"
-     ],
-     "kind": "ac138",
-     "flow_mw": -240.0,
-     "rating_mw_est": 240.0
-    },
-    {
-     "names": [
-      "Jasaan - Nasipit"
-     ],
-     "kind": "ac138",
-     "flow_mw": 240.0,
-     "rating_mw_est": 240.0
-    },
-    {
-     "names": [
-      "ac230"
-     ],
-     "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
-      "Maasin-Ubay 138 kV line"
-     ],
-     "kind": "ac138",
-     "flow_mw": -120.0,
-     "rating_mw_est": 120.0
+     "flow_mw": 179.0,
+     "rating_mw_est": 179.0
     },
     {
      "names": [
       "ac138"
      ],
      "kind": "ac138",
-     "flow_mw": -120.0,
+     "flow_mw": 120.0,
      "rating_mw_est": 120.0
     },
     {
      "names": [
-      "Hermosa | Duhat\u2013Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Hermosa | Duhat\u2013Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Hermosa | Duhat\u2013Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Iligan - Opol"
+      "Butuan - San Francisco"
      ],
      "kind": "ac138",
-     "flow_mw": -120.0,
+     "flow_mw": 120.0,
      "rating_mw_est": 120.0
     },
     {
@@ -595,23 +528,23 @@
     },
     {
      "names": [
-      "Sucat\u2013Taguig | Balintawak"
+      "Davao - Kibawe"
      ],
-     "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
+     "kind": "ac138",
+     "flow_mw": 387.9,
+     "rating_mw_est": 387.9
     },
     {
      "names": [
-      "Sucat\u2013Taguig | Balintawak"
+      "ac230"
      ],
      "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
+     "flow_mw": 300.0,
+     "rating_mw_est": 300.0
     },
     {
      "names": [
-      "Maasin-Ubay 138 kV line"
+      "Tacurong - Kibawe"
      ],
      "kind": "ac138",
      "flow_mw": -120.0,
@@ -619,7 +552,7 @@
     },
     {
      "names": [
-      "Sucat | Paco\u2013Araneta | Balintawak"
+      "Hermosa | San Simon\u2013Duhat | Balintawak"
      ],
      "kind": "ac230",
      "flow_mw": 400.0,
@@ -627,23 +560,7 @@
     },
     {
      "names": [
-      "Sucat | Paco\u2013Araneta | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Hermosa | Duhat\u2013Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Sucat | Paco\u2013Araneta | Balintawak"
+      "Hermosa | San Simon\u2013Duhat | Balintawak"
      ],
      "kind": "ac230",
      "flow_mw": 400.0,
@@ -651,7 +568,7 @@
     },
     {
      "names": [
-      "Sucat | Taguig\u2013Paco | Balintawak"
+      "Hermosa\u2013San Simon | Balintawak"
      ],
      "kind": "ac230",
      "flow_mw": 400.0,
@@ -659,26 +576,98 @@
     },
     {
      "names": [
-      "Sucat | Taguig\u2013Paco | Balintawak"
+      "ac138"
      ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
+     "kind": "ac138",
+     "flow_mw": 139.0,
+     "rating_mw_est": 139.0
     },
     {
      "names": [
-      "Sucat\u2013Taguig | Balintawak"
+      "Hermosa | San Simon\u2013Duhat | Balintawak"
      ],
      "kind": "ac230",
      "flow_mw": 400.0,
      "rating_mw_est": 400.0
+    },
+    {
+     "names": [
+      "Hermosa | San Simon\u2013Duhat | Balintawak"
+     ],
+     "kind": "ac230",
+     "flow_mw": 400.0,
+     "rating_mw_est": 400.0
+    },
+    {
+     "names": [
+      "Hermosa | San Simon\u2013Duhat | Balintawak"
+     ],
+     "kind": "ac230",
+     "flow_mw": 400.0,
+     "rating_mw_est": 400.0
+    },
+    {
+     "names": [
+      "Hermosa | San Simon\u2013Duhat | Balintawak"
+     ],
+     "kind": "ac230",
+     "flow_mw": 400.0,
+     "rating_mw_est": 400.0
+    },
+    {
+     "names": [
+      "Hermosa | San Simon\u2013Duhat | Balintawak"
+     ],
+     "kind": "ac230",
+     "flow_mw": 400.0,
+     "rating_mw_est": 400.0
+    },
+    {
+     "names": [
+      "Hermosa\u2013San Simon | Balintawak"
+     ],
+     "kind": "ac230",
+     "flow_mw": 400.0,
+     "rating_mw_est": 400.0
+    },
+    {
+     "names": [
+      "Hermosa | San Simon\u2013Duhat | Balintawak"
+     ],
+     "kind": "ac230",
+     "flow_mw": 400.0,
+     "rating_mw_est": 400.0
+    },
+    {
+     "names": [
+      "Hermosa | San Simon\u2013Duhat | Balintawak"
+     ],
+     "kind": "ac230",
+     "flow_mw": 400.0,
+     "rating_mw_est": 400.0
+    },
+    {
+     "names": [
+      "Hermosa | San Simon\u2013Duhat | Balintawak"
+     ],
+     "kind": "ac230",
+     "flow_mw": 400.0,
+     "rating_mw_est": 400.0
+    },
+    {
+     "names": [
+      "ac138"
+     ],
+     "kind": "ac138",
+     "flow_mw": 240.0,
+     "rating_mw_est": 240.0
     }
    ],
    "hvdc_mw": [
-    -111.6,
+    -250.0,
     -450.0
    ],
-   "unserved_mw": 5682.7,
+   "unserved_mw": 1330.9,
    "slack_mw": {
     "luzon": 0.0,
     "visayas": 0.0,
@@ -688,20 +677,20 @@
   "19": {
    "per_grid": {
     "luzon": {
-     "modeled_mean_mwh": 43534.0,
-     "modeled_p5_mwh": 4800.0,
-     "modeled_p95_mwh": 50000.0,
+     "modeled_mean_mwh": 10095.5,
+     "modeled_p5_mwh": 5766.1,
+     "modeled_p95_mwh": 36605.3,
      "observed_smp_mwh": 10900.6
     },
     "visayas": {
-     "modeled_mean_mwh": 43288.8,
-     "modeled_p5_mwh": 4140.0,
-     "modeled_p95_mwh": 50000.0,
+     "modeled_mean_mwh": 39927.4,
+     "modeled_p5_mwh": 3974.4,
+     "modeled_p95_mwh": 49937.5,
      "observed_smp_mwh": 33039.4
     },
     "mindanao": {
-     "modeled_mean_mwh": 48643.8,
-     "modeled_p5_mwh": 50000.0,
+     "modeled_mean_mwh": 19328.2,
+     "modeled_p5_mwh": 3695.4,
      "modeled_p95_mwh": 50000.0,
      "observed_smp_mwh": 24965.7
     }
@@ -709,131 +698,35 @@
    "binding_est": [
     {
      "names": [
-      "Dasmarinas-Amadeo 230 kV line"
-     ],
-     "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
-      "Mexico\u2013Hermosa | BCCPP"
-     ],
-     "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
-      "San Jose-Antipolo"
-     ],
-     "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
-      "Sucat | Paco\u2013Araneta | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Malamig-Calaca"
-     ],
-     "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
       "Amadeo-Calaca 230 kV line"
      ],
      "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
-      "Antipolo-Taytay"
-     ],
-     "kind": "ac230",
-     "flow_mw": -800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
-      "Sucat | Araneta\u2013Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Sucat | Araneta\u2013Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
+     "flow_mw": 597.6,
+     "rating_mw_est": 597.6
     },
     {
      "names": [
       "ac138"
      ],
      "kind": "ac138",
-     "flow_mw": 540.8,
-     "rating_mw_est": 540.8
-    },
-    {
-     "names": [
-      "Alaminos-Ilijan"
-     ],
-     "kind": "ac500",
-     "flow_mw": 2800.0,
-     "rating_mw_est": 2800.0
-    },
-    {
-     "names": [
-      "ac138"
-     ],
-     "kind": "ac138",
-     "flow_mw": -461.7,
-     "rating_mw_est": 461.7
+     "flow_mw": -120.0,
+     "rating_mw_est": 120.0
     },
     {
      "names": [
       "Agus 2 - Kibawe"
      ],
      "kind": "ac138",
-     "flow_mw": 120.0,
-     "rating_mw_est": 120.0
-    },
-    {
-     "names": [
-      "Sucat | Taguig\u2013Paco | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Sucat | Taguig\u2013Paco | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
+     "flow_mw": 236.2,
+     "rating_mw_est": 236.2
     },
     {
      "names": [
       "ac230"
      ],
      "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
+     "flow_mw": 728.2,
+     "rating_mw_est": 728.2
     },
     {
      "names": [
@@ -845,7 +738,31 @@
     },
     {
      "names": [
-      "Maasin-Ormoc 138 kV line"
+      "ac138"
+     ],
+     "kind": "ac138",
+     "flow_mw": -240.0,
+     "rating_mw_est": 240.0
+    },
+    {
+     "names": [
+      "Santa Barbara \u2013 Iloilo"
+     ],
+     "kind": "ac138",
+     "flow_mw": -120.0,
+     "rating_mw_est": 120.0
+    },
+    {
+     "names": [
+      "ac230"
+     ],
+     "kind": "ac230",
+     "flow_mw": -200.0,
+     "rating_mw_est": 200.0
+    },
+    {
+     "names": [
+      "Bunawan - Maco"
      ],
      "kind": "ac138",
      "flow_mw": 120.0,
@@ -853,235 +770,90 @@
     },
     {
      "names": [
-      "Ormoc-Babatngon 138 kV line 2",
-      "Ormoc-Babatngon 138 kV line 1"
+      "Davao - Bunawan 1"
      ],
      "kind": "ac138",
-     "flow_mw": 240.0,
-     "rating_mw_est": 240.0
+     "flow_mw": -120.0,
+     "rating_mw_est": 120.0
     },
     {
      "names": [
-      "AmbuklaoDam"
+      "Davao - Bunawan 2"
      ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
+     "kind": "ac138",
+     "flow_mw": 451.9,
+     "rating_mw_est": 451.9
+    },
+    {
+     "names": [
+      "Davao - Toril"
+     ],
+     "kind": "ac138",
+     "flow_mw": 180.7,
+     "rating_mw_est": 180.7
     },
     {
      "names": [
       "Butuan - Nasipit"
      ],
      "kind": "ac138",
-     "flow_mw": 240.0,
-     "rating_mw_est": 240.0
+     "flow_mw": 179.0,
+     "rating_mw_est": 179.0
+    },
+    {
+     "names": [
+      "Davao - Kibawe"
+     ],
+     "kind": "ac138",
+     "flow_mw": 387.7,
+     "rating_mw_est": 387.9
     },
     {
      "names": [
       "ac230"
      ],
      "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
+     "flow_mw": 300.0,
+     "rating_mw_est": 300.0
     },
     {
      "names": [
-      "Villanueva - Jasaan"
+      "Tacurong - Kibawe"
      ],
      "kind": "ac138",
-     "flow_mw": -240.0,
-     "rating_mw_est": 240.0
-    },
-    {
-     "names": [
-      "Jasaan - Nasipit"
-     ],
-     "kind": "ac138",
-     "flow_mw": 240.0,
-     "rating_mw_est": 240.0
+     "flow_mw": -120.0,
+     "rating_mw_est": 120.0
     },
     {
      "names": [
       "ac230"
      ],
      "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
-      "Maasin-Ubay 138 kV line"
-     ],
-     "kind": "ac138",
-     "flow_mw": -120.0,
-     "rating_mw_est": 120.0
+     "flow_mw": 728.2,
+     "rating_mw_est": 728.2
     },
     {
      "names": [
       "ac138"
      ],
      "kind": "ac138",
-     "flow_mw": -120.0,
-     "rating_mw_est": 120.0
+     "flow_mw": 139.0,
+     "rating_mw_est": 139.0
     },
     {
      "names": [
-      "Hermosa | Duhat\u2013Balintawak"
+      "Balsik\u2013Porac"
      ],
      "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Hermosa | Duhat\u2013Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Hermosa | Duhat\u2013Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Corella-Uban 138 kV line"
-     ],
-     "kind": "ac138",
-     "flow_mw": -120.0,
-     "rating_mw_est": 120.0
-    },
-    {
-     "names": [
-      "Balo-i - Tagoloan"
-     ],
-     "kind": "ac138",
-     "flow_mw": 120.0,
-     "rating_mw_est": 120.0
-    },
-    {
-     "names": [
-      "ac138"
-     ],
-     "kind": "ac138",
-     "flow_mw": 120.0,
-     "rating_mw_est": 120.0
-    },
-    {
-     "names": [
-      "Sucat\u2013Taguig | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Sucat\u2013Taguig | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Maasin-Ubay 138 kV line"
-     ],
-     "kind": "ac138",
-     "flow_mw": -120.0,
-     "rating_mw_est": 120.0
-    },
-    {
-     "names": [
-      "Sucat | Paco\u2013Araneta | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Sucat | Paco\u2013Araneta | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Hermosa | Duhat\u2013Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Mexico\u2013Hermosa | BCCPP"
-     ],
-     "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
-      "Sucat | Paco\u2013Araneta | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Mexico\u2013Hermosa | BCCPP"
-     ],
-     "kind": "ac230",
-     "flow_mw": -800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
-      "Mexico\u2013Hermosa | BCCPP"
-     ],
-     "kind": "ac230",
-     "flow_mw": 800.0,
-     "rating_mw_est": 800.0
-    },
-    {
-     "names": [
-      "Sucat | Taguig\u2013Paco | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Sucat | Taguig\u2013Paco | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": -400.0,
-     "rating_mw_est": 400.0
-    },
-    {
-     "names": [
-      "Sucat\u2013Taguig | Balintawak"
-     ],
-     "kind": "ac230",
-     "flow_mw": 400.0,
-     "rating_mw_est": 400.0
+     "flow_mw": 912.7,
+     "rating_mw_est": 912.7
     }
    ],
    "hvdc_mw": [
-    -147.6,
+    -250.0,
     -450.0
    ],
-   "unserved_mw": 5591.4,
+   "unserved_mw": 1122.5,
    "slack_mw": {
     "luzon": 0.0,
     "visayas": 0.0,

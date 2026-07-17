@@ -44,6 +44,8 @@ def build_nodal_obs() -> dict:
             "note": "no nodal dailies derived yet (pipeline/nodal_prices.py --derive)",
         }
     node_dev: dict[str, list[float]] = defaultdict(list)
+    node_dev_pk: dict[str, list[float]] = defaultdict(list)
+    node_dev_md: dict[str, list[float]] = defaultdict(list)
     node_mw: dict[str, list[float]] = defaultdict(list)
     node_grid: dict[str, str] = {}
     clean_days = []
@@ -61,6 +63,10 @@ def build_nodal_obs() -> dict:
             if not devs:
                 continue
             node_dev[res].append(sum(devs) / len(devs))
+            if nd["dev_php_kwh"][19] is not None:
+                node_dev_pk[res].append(nd["dev_php_kwh"][19])
+            if nd["dev_php_kwh"][12] is not None:
+                node_dev_md[res].append(nd["dev_php_kwh"][12])
             mws = [abs(v) for v in nd["mw"] if v]
             node_mw[res].append(sum(mws) / len(mws) if mws else 0.0)
             node_grid[res] = nd["grid"]
@@ -75,6 +81,12 @@ def build_nodal_obs() -> dict:
                 "res": res,
                 "grid": node_grid[res],
                 "dev": round(mean(vs), 3),
+                "dev_pk": round(mean(node_dev_pk[res]), 3)
+                if node_dev_pk[res]
+                else None,
+                "dev_md": round(mean(node_dev_md[res]), 3)
+                if node_dev_md[res]
+                else None,
                 "days": len(vs),
                 "mw": round(mean(node_mw[res]), 1),
             }
@@ -96,26 +108,30 @@ def build_nodal_obs() -> dict:
             "bottom": sub[:8],
         }
 
-    # place what the station matcher can place on the OSM grid
-    from nodal_dcopf import build_network, map_resources
+    # place what the locator can place: OSM substations and plant sites
+    # (exact), named-generator pins and locality centroids (city-precision),
+    # each dot tagged with its source
+    from nodal_dcopf import build_network, map_resources_full
 
     net = build_network()
     day_like = {
         "nodes": {n["res"]: {"grid": n["grid"], "mw": [n["mw"]]} for n in nodes}
     }
-    res_bus, _stats = map_resources(day_like, net)
-    sub_at: dict[str, str] = {}
-    for i, s in enumerate(net["subs"]):
-        node = net["graph"].node_of_sub.get(i)
-        if node and s.get("name") and node not in sub_at:
-            sub_at[node] = s["name"]
+    locs, resolution = map_resources_full(day_like, net)
     placed = []
     for n in nodes:
-        bus = res_bus.get(n["res"])
-        if not bus:
+        loc = locs.get(n["res"])
+        if not loc:
             continue
-        lon, lat = (round(float(x), 5) for x in bus.split(","))
-        placed.append({**n, "lon": lon, "lat": lat, "station": sub_at.get(bus)})
+        placed.append(
+            {
+                **n,
+                "lon": round(loc["lon"], 5),
+                "lat": round(loc["lat"], 5),
+                "station": loc.get("label"),
+                "src": loc["src"],
+            }
+        )
 
     return {
         "available": True,
@@ -129,6 +145,7 @@ def build_nodal_obs() -> dict:
         },
         "n_nodes": len(nodes),
         "n_placed": len(placed),
+        "resolution": resolution,
         "per_grid": per_grid,
         "nodes": nodes,
         "placed": placed,
@@ -141,8 +158,11 @@ def build_nodal_obs() -> dict:
             "intra-regional congestion is administered. Read this as "
             "persistent locational price deviation, not a congestion "
             "premium.",
-            "Map placement covers only nodes whose station token resolves "
-            "onto the OSM-mapped grid; the full table lists every node.",
+            "Map placement resolves through public evidence in priority "
+            "order (OSM substation, OSM plant site, named-generator pin, "
+            "locality centroid), each dot tagged with its source; exact "
+            "sites for stations and plants, city-precision for centroids. "
+            "The full table lists every node, placed or not.",
         ],
     }
 

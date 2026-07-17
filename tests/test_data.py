@@ -1219,6 +1219,37 @@ check("nodal_obs clean-day criterion recorded and honest framing noted",
       "OK-flagged" in (no.get("window") or {}).get("clean_criterion", "")
       and any("congestion premium" in n for n in no.get("notes", [])))
 
+# the resolution lift: placement ladder, scoreboard, hourly shape
+check("resolution lift holds (>= 450 placed, >= 60% of MW resolved)",
+      no.get("n_placed", 0) >= 450
+      and (no.get("resolution") or {}).get("mw_share", 0) >= 0.6)
+check("every placed node carries a placement source from the ladder", all(
+    p.get("src") in ("osm-substation", "osm-plant", "named-plant",
+                     "place-centroid", "doe-centroid")
+    for p in no.get("placed", [])))
+check("placement uses at least three distinct evidence sources",
+      len((no.get("resolution") or {}).get("by_src", {})) >= 3)
+check("hourly-shape stats present (evening deviation on most nodes)",
+      sum(1 for n in no.get("nodes", []) if n.get("dev_pk") is not None)
+      >= 0.9 * no.get("n_nodes", 1))
+
+# the loss-surface validation: structure + the standing claim
+lsf = load("loss_surface.json")
+check("loss surface baked and available", lsf.get("available") is True)
+check("loss surface covers all three grids with stated stats", all(
+    g in lsf.get("window", {})
+    and lsf["window"][g].get("spearman") is not None
+    and lsf["window"][g].get("mae_after_affine_php_kwh") is not None
+    for g in ("luzon", "visayas", "mindanao")))
+check("luzon stays a validated grid (rank correlation >= 0.4)",
+      "luzon" in lsf.get("validated_grids", []))
+check("the verdict is self-computing and failing grids are named, not hidden",
+      bool(lsf.get("finding"))
+      and set(lsf.get("validated_grids", []) + lsf.get("failing_grids", []))
+      == {"luzon", "visayas", "mindanao"})
+check("loss-surface assumptions labeled (resistances are estimates)",
+      "estimates" in (lsf.get("assumptions") or {}).get("note", ""))
+
 # nodal dailies: the DIPCEF price side is being archived (deriver ran at
 # least once; the cron tops it up nightly)
 NODAL = os.path.join(os.path.dirname(__file__), "..", "data", "derived",
