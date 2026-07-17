@@ -139,14 +139,28 @@ forward, the regional forward band plus the node's persistent adder, held
 constant and labeled. Deviations are labeled observed locational deviations,
 never congestion premiums: WESM prices intra-regional congestion
 administratively, and its published nodal congestion component is zero on every
-sampled day. The network model is validated against that same record: marginal
-loss factors from the OSM-geometry backbone are compared per grid against the
-market's own per-node deviations, with rank correlations, fitted conventions,
-and the grids that pass or fail stated in `loss_surface.json` and recomputed
-nightly as clean market days accumulate. Recipe: `python3 build/record_nodal_walkthrough.py` against the
+sampled day. Recipe: `python3 build/record_nodal_walkthrough.py` against the
 combined serve; a [smoother MP4 is here](docs/nodal-walkthrough.mp4).
 
 ![Nodal walkthrough: the map's Prices mode with per-node deviation dots, hovering the Zamboanga radial premium and the Gamu versus Calaca siting swing with the computed peso-per-year difference, then the studio's Nodal prices table filtered to delivery points, the Leyte geothermal export discount, and the Luzon forward band with the node adder framing](docs/nodal-walkthrough.gif)
+
+## The nodal model is validated against the market's own record
+
+WESM decomposes every published LMP into an energy, a loss, and a congestion
+part, and the congestion part is zero on every sampled day, so the entire
+within-region nodal price structure the market reports is a loss surface,
+about a thousand observed node deviations per clean day. That is a validation
+target a closed planning suite cannot match in public, because its network
+dataset is private and its per-node accuracy is unpublished. So the model is
+checked against it: marginal loss factors from the OpenStreetMap-geometry
+backbone are compared, grid by grid, against each node's observed deviation
+from its regional price. Luzon ranks at Spearman **+0.72** over 311 nodes and
+Mindanao at **+0.83** over 118; Visayas fails at the current resolution and is
+shown failing, not dropped. The comparison recomputes nightly as clean market
+days accumulate (`data/derived/loss_surface.json`), and the studio carries the
+same three panels under Analysis, Loss validation.
+
+![Loss-surface validation: three scatter panels, one per grid, of the model's marginal loss-factor deviation against the market's observed per-node deviation, each with its fitted line and Spearman rank correlation. Luzon and Mindanao trend clearly and are marked validated in green; Visayas scatters and is marked failing in red](docs/loss-surface.png)
 
 That wholesale price passes into the Meralco bill monthly. The June 2026 advisory
 carried WESM at **P7.03/kWh** inside a **P9.07/kWh** generation charge on a

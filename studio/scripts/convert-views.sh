@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 
 SRC=/tmp/studio-viewrec
 OUT=docs
-VIEWS="backcast explain week forward multiyear ensembles expansion capture portfolio crossrun rtdoe5 nodal vintage"
+VIEWS="backcast explain week forward multiyear ensembles expansion capture portfolio crossrun rtdoe5 nodal lossval vintage"
 
 for k in $VIEWS; do
   [ -f "$SRC/$k.webm" ] || { echo "missing $SRC/$k.webm (run record-views.py $k)"; continue; }

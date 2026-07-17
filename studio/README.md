@@ -443,6 +443,16 @@ same statistic as a layer.
 
 ![Nodal prices: per-grid deviation percentiles, the widest premium and discount nodes, and a searchable table of every node's deviation from its regional price.](docs/view-nodal.gif)
 
+**Loss validation.** The nodal model checked against the market's own record.
+WESM's within-region nodal structure is a loss surface (the congestion
+component is zero), so marginal loss factors from the OpenStreetMap grid are a
+testable prediction of each node's observed deviation. Three scatter panels,
+one per grid, with the Spearman rank correlation and the per-grid verdict:
+Luzon and Mindanao validate, Visayas fails at the current resolution and is
+shown failing. Recomputed nightly.
+
+![Loss validation: three scatter panels of modeled loss-factor deviation against observed per-node deviation, per grid, each with a fitted line and Spearman correlation; Luzon and Mindanao marked validated, Visayas failing.](docs/view-lossval.gif)
+
 Scenario and forward-looking, where the workflow runs on sourced inputs but there
 is no observed future or greenfield build to backcast against; each is labeled a
 scenario on one observed quarter, not a forecast:

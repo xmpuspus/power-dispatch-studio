@@ -1683,3 +1683,39 @@
   height: 3px;
   border-radius: 2px;
 }
+
+/* loss-surface validation: three small scatter panels */
+.lossgrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+@media (max-width: 820px) {
+  .lossgrid {
+    grid-template-columns: 1fr;
+  }
+}
+.losspanel {
+  border: 1px solid var(--line, #e2e2dc);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: var(--surface-1, #fcfcfb);
+}
+.losspanel__title {
+  font-weight: 650;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.losspanel__err {
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--muted, #898781);
+}
+.lossfit {
+  width: 100%;
+  height: auto;
+  margin-top: 4px;
+}

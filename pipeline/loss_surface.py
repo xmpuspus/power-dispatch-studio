@@ -262,6 +262,7 @@ def build_loss_surface() -> dict:
             mod_acc[r].append(sum(v) / len(v))
 
     window = {}
+    scatter = {}
     for g in ("luzon", "visayas", "mindanao"):
         rs = [r for r in obs_acc if node_grid.get(r) == g]
         xs = [sum(mod_acc[r]) / len(mod_acc[r]) for r in rs]
@@ -286,6 +287,11 @@ def build_loss_surface() -> dict:
             "observed_p5_php_kwh": round(spread[int(0.05 * n)], 3),
             "observed_p95_php_kwh": round(spread[int(0.95 * n)], 3),
         }
+        # the per-node points behind the stats: (modeled MLF deviation,
+        # observed deviation) per node, for the validation figure + the
+        # studio card. Both plots draw the SAME numbers the window row
+        # summarises, so a viewer can see the fit, not just the correlation.
+        scatter[g] = [[round(x, 4), round(y, 4)] for x, y in zip(xs, ys)]
 
     validated = [g for g, w in window.items() if (w["spearman"] or 0) >= 0.4]
     failing = [g for g in window if g not in validated]
@@ -310,6 +316,7 @@ def build_loss_surface() -> dict:
         "finding": finding,
         "per_day": per_day,
         "window": window,
+        "scatter": scatter,
         "assumptions": {
             "r_ohm_per_km": R_OHM_KM,
             "note": (

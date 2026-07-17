@@ -27,6 +27,7 @@ viz:
 	$(PY) scripts/constraint_league_gif.py
 	$(PY) scripts/story_montage.py
 	$(PY) scripts/stat_card.py
+	$(PY) scripts/loss_surface_fig.py
 
 # Range-capable dev server (web/), port 8789.
 serve:

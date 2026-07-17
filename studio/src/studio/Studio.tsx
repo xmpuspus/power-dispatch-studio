@@ -23,6 +23,7 @@ import { CrossRunView } from './CrossRunView'
 import { EnsembleView } from './EnsembleView'
 import { Rtdoe5View } from './Rtdoe5View'
 import { NodalView } from './NodalView'
+import { LossValidationView } from './LossValidationView'
 import { WeekView } from './WeekView'
 import { ForwardView } from './ForwardView'
 import { MultiYearView } from './MultiYearView'
@@ -80,6 +81,7 @@ type AnalysisId =
   | 'expansion'
   | 'vintage'
   | 'nodal'
+  | 'lossval'
 type PhaseId = 'lt' | 'pasa'
 type Nav =
   | { kind: 'class'; id: ClassId }
@@ -119,6 +121,7 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   week: 'Native week',
   expansion: 'Expansion mix',
   nodal: 'Nodal prices',
+  lossval: 'Loss validation',
   vintage: 'Assumptions',
 }
 const PHASE_LABEL: Record<PhaseId, string> = {
@@ -914,6 +917,7 @@ function DataPane({
       return <EnsembleView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'rtdoe5') return <Rtdoe5View grid={grid} />
     if (nav.id === 'nodal') return <NodalView grid={grid} />
+    if (nav.id === 'lossval') return <LossValidationView />
     if (nav.id === 'forward' && profiles)
       return <ForwardView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'multiyear' && profiles)

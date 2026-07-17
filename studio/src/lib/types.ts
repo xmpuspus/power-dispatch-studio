@@ -930,3 +930,25 @@ export interface NodalObs {
   nodes?: NodalObsNode[]
   notes?: string[]
 }
+
+export interface LossGridWindow {
+  n_nodes: number
+  spearman: number
+  affine_slope: number
+  affine_intercept_php_kwh: number
+  mae_after_affine_php_kwh: number
+  observed_p5_php_kwh: number
+  observed_p95_php_kwh: number
+}
+export interface LossSurface {
+  available: boolean
+  clean_days?: number
+  n_nodes_compared?: number
+  validated_grids?: string[]
+  failing_grids?: string[]
+  finding?: string
+  window?: Record<string, LossGridWindow>
+  scatter?: Record<string, [number, number][]>
+  assumptions?: { note?: string }
+  reading?: string
+}

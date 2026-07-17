@@ -432,7 +432,10 @@ slope and intercept are fitted and reported). The result recomputes nightly
 as clean days accumulate and ships in <code>loss_surface.json</code> with a
 self-computing verdict: grids where physics ranks the market's deviations are
 listed as validated, and grids that fail the test are listed as failing, not
-hidden.</p>
+hidden. Both surfaces draw it: a three-panel scatter figure in the README
+(<code>scripts/loss_surface_fig.py</code>) and the studio's Analysis, Loss
+validation view, which renders the same per-node points, fitted lines, and
+per-grid verdict from the baked artifact.</p>
 
 <h2>Data-center sites</h2>
 <p>Only facilities with a citable public source are pinned; each pin carries its

@@ -74,6 +74,8 @@ export const useFleet = () => useJson<Fleet>('fleet.json')
 export const usePasa = () => useJson<Pasa>('pasa.json')
 export const useRtdoe5 = () => useJson<import('./types').Rtdoe5>('rtdoe5.json')
 export const useNodalObs = () => useJson<import('./types').NodalObs>('nodal_obs.json')
+export const useLossSurface = () =>
+  useJson<import('./types').LossSurface>('loss_surface.json')
 export const useExpansion = () => useJson<import('./types').Expansion>('expansion.json')
 export const useProjects = () => useJson<Projects>('projects.json')
 export const useDemandPath = () => useJson<DemandPath>('demand_path.json')
