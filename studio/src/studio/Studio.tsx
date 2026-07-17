@@ -22,6 +22,7 @@ import { PortfolioView } from './PortfolioView'
 import { CrossRunView } from './CrossRunView'
 import { EnsembleView } from './EnsembleView'
 import { Rtdoe5View } from './Rtdoe5View'
+import { NodalView } from './NodalView'
 import { WeekView } from './WeekView'
 import { ForwardView } from './ForwardView'
 import { MultiYearView } from './MultiYearView'
@@ -78,6 +79,7 @@ type AnalysisId =
   | 'week'
   | 'expansion'
   | 'vintage'
+  | 'nodal'
 type PhaseId = 'lt' | 'pasa'
 type Nav =
   | { kind: 'class'; id: ClassId }
@@ -116,6 +118,7 @@ const ANALYSIS_LABEL: Record<AnalysisId, string> = {
   multiyear: 'Multi-year path',
   week: 'Native week',
   expansion: 'Expansion mix',
+  nodal: 'Nodal prices',
   vintage: 'Assumptions',
 }
 const PHASE_LABEL: Record<PhaseId, string> = {
@@ -326,6 +329,7 @@ export function Studio({
         nav.id === 'crossrun' ||
         nav.id === 'ensemble' ||
         nav.id === 'rtdoe5' ||
+        nav.id === 'nodal' ||
         nav.id === 'forward' ||
         nav.id === 'multiyear' ||
         nav.id === 'week'))
@@ -909,6 +913,7 @@ function DataPane({
     if (nav.id === 'ensemble' && profiles)
       return <EnsembleView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'rtdoe5') return <Rtdoe5View grid={grid} />
+    if (nav.id === 'nodal') return <NodalView grid={grid} />
     if (nav.id === 'forward' && profiles)
       return <ForwardView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'multiyear' && profiles)

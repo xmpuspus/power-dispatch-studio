@@ -1200,6 +1200,25 @@ check("bound segments carry receipts (days + equipment)",
           and f["properties"]["binding"].get("equipment")
           for f in bound))
 
+# observed nodal deviations (map Prices layer + studio Nodal prices view)
+no = load("nodal_obs.json")
+check("nodal_obs baked and available", no.get("available") is True)
+check("nodal_obs covers the node population (>= 1,000 nodes)",
+      no.get("n_nodes", 0) >= 1000)
+check("nodal_obs places a material subset on the mapped grid (>= 200)",
+      no.get("n_placed", 0) >= 200)
+check("nodal_obs per-grid stats for all three grids", all(
+    g in no.get("per_grid", {}) and no["per_grid"][g].get("n_nodes")
+    and no["per_grid"][g].get("top") and no["per_grid"][g].get("bottom")
+    for g in ("luzon", "visayas", "mindanao")))
+check("nodal_obs placed nodes inside the PH bbox with full fields", all(
+    4.4 <= p["lat"] <= 21.6 and 116.4 <= p["lon"] <= 127.3
+    and p.get("res") and p.get("grid") and p.get("dev") is not None
+    for p in no.get("placed", [])))
+check("nodal_obs clean-day criterion recorded and honest framing noted",
+      "OK-flagged" in (no.get("window") or {}).get("clean_criterion", "")
+      and any("congestion premium" in n for n in no.get("notes", [])))
+
 # nodal dailies: the DIPCEF price side is being archived (deriver ran at
 # least once; the cron tops it up nightly)
 NODAL = os.path.join(os.path.dirname(__file__), "..", "data", "derived",

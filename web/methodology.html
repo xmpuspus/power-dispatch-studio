@@ -374,6 +374,12 @@ hourly zips are too heavy to commit and IEMOP's window rolls, so
 regional SMP series, each node's hourly mean deviation from its regional SMP,
 each node's hourly scheduled MW, and the day's pricing-flag tally
 (OK / PSM / SEC).</p>
+<p>The derived record is surfaced in the product: the map's Prices mode draws
+each node's persistent deviation from its regional price (clean market days
+only, placed where the station resolves on the OSM grid), and the studio's
+Analysis section carries a Nodal prices view with the full per-node table.
+Both label the statistic as an observed locational deviation, not a
+congestion premium, for the reason stated next.</p>
 <p>What the derived record shows, stated plainly: the published
 <code>LMP_CONGESTION</code> column is zero on every day sampled, including days
 with wide real nodal spread (2026-05-20 carries a median of 85 distinct nodal

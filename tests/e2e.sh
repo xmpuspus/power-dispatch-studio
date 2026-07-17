@@ -17,7 +17,7 @@ for f in meta.json answers.json congestion.json prices.json reliability.json \
          outages.json market_anchors.json demand_anchors.json \
          congestion_premium.json chokepoints.geojson dc_sites.geojson sual.geojson \
          generators.geojson dispatch.json grid_lines.geojson grid_nodes.geojson \
-         grid.json; do
+         grid.json nodal_obs.json; do
   [ "$(code /data/$f)" = "200" ] && ok "GET /data/$f" || bad "GET /data/$f"
 done
 
@@ -39,6 +39,10 @@ gl = get("/data/grid_lines.geojson")
 checks.append(("grid lines served (>=1200)", len(gl["features"]) >= 1200))
 gn = get("/data/grid_nodes.geojson")
 checks.append(("grid nodes served (>=450)", len(gn["features"]) >= 450))
+no = get("/data/nodal_obs.json")
+checks.append(("nodal deviations served (>=1000 nodes, >=200 placed)",
+               no.get("available") is True and no.get("n_nodes", 0) >= 1000
+               and no.get("n_placed", 0) >= 200))
 dc = get("/data/dc_sites.geojson")
 checks.append(("14 dc features", len(dc["features"]) == 14))
 cong = get("/data/congestion.json")
@@ -107,6 +111,8 @@ if command -v agent-browser >/dev/null 2>&1; then
   sleep 1
   M=$(agent-browser eval '(window.__diag||{}).mode' 2>/dev/null | strip)
   [[ "$M" == "price" ]] && ok "mode switch to price" || bad "mode switch ($M)"
+  NP=$(agent-browser eval 'const d=window.__diag||{};[d.nodalPlaced>=200, map.getLayoutProperty("nodal-pt","visibility")||"visible"].join("|")' 2>/dev/null | strip)
+  [[ "$NP" == "true|visible" ]] && ok "nodal deviation layer live in price mode" || bad "nodal layer ($NP)"
   # findings drawer opens and a card flies to its evidence (mode + URL follow)
   agent-browser eval 'document.getElementById("fopen").click(); document.querySelectorAll("#flist .fcard")[0].click()' >/dev/null 2>&1
   sleep 1

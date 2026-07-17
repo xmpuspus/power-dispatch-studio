@@ -1,0 +1,11450 @@
+{
+ "available": true,
+ "window": {
+  "first": "2026-04-17",
+  "last": "2026-06-25",
+  "days_derived": 70,
+  "clean_days": 15,
+  "clean_criterion": "at least 90% of the day's rows OK-flagged (administered PSM/SEC days excluded)"
+ },
+ "n_nodes": 1193,
+ "n_placed": 271,
+ "per_grid": {
+  "luzon": {
+   "n_nodes": 583,
+   "p5": -0.23,
+   "p50": 0.0,
+   "p95": 0.45,
+   "top": [
+    {
+     "res": "01CAGYSOL_G01",
+     "grid": "luzon",
+     "dev": 0.629,
+     "days": 15,
+     "mw": 33.1
+    },
+    {
+     "res": "01LIMSOL_G01",
+     "grid": "luzon",
+     "dev": 0.629,
+     "days": 15,
+     "mw": 12.9
+    },
+    {
+     "res": "01MAGAPIT_BAT",
+     "grid": "luzon",
+     "dev": 0.629,
+     "days": 15,
+     "mw": 1.2
+    },
+    {
+     "res": "01MAGAPIT_BATL",
+     "grid": "luzon",
+     "dev": 0.629,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "01TGEGA_SS",
+     "grid": "luzon",
+     "dev": 0.629,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "01TGEGA_T1L1",
+     "grid": "luzon",
+     "dev": 0.629,
+     "days": 15,
+     "mw": 81.6
+    },
+    {
+     "res": "01TG_CGELCO1",
+     "grid": "luzon",
+     "dev": 0.629,
+     "days": 15,
+     "mw": 9.8
+    },
+    {
+     "res": "01TG_CGELCO2",
+     "grid": "luzon",
+     "dev": 0.629,
+     "days": 15,
+     "mw": 41.8
+    }
+   ],
+   "bottom": [
+    {
+     "res": "01MSINLO_G02",
+     "grid": "luzon",
+     "dev": -0.376,
+     "days": 15,
+     "mw": 289.4
+    },
+    {
+     "res": "01MSINLO_G03",
+     "grid": "luzon",
+     "dev": -0.376,
+     "days": 15,
+     "mw": 269.7
+    },
+    {
+     "res": "01MSINLO_G01",
+     "grid": "luzon",
+     "dev": -0.375,
+     "days": 15,
+     "mw": 261.4
+    },
+    {
+     "res": "01MSINLO_BAT",
+     "grid": "luzon",
+     "dev": -0.373,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "01MSINLO_BATL",
+     "grid": "luzon",
+     "dev": -0.373,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "01MSINLO_SS",
+     "grid": "luzon",
+     "dev": -0.373,
+     "days": 15,
+     "mw": 0.8
+    },
+    {
+     "res": "03STAR_SS1",
+     "grid": "luzon",
+     "dev": -0.31,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "03STA-RI_G01",
+     "grid": "luzon",
+     "dev": -0.309,
+     "days": 15,
+     "mw": 177.2
+    }
+   ]
+  },
+  "visayas": {
+   "n_nodes": 312,
+   "p5": -0.52,
+   "p50": 0.0,
+   "p95": 0.67,
+   "top": [
+    {
+     "res": "08GLOBAL_G01",
+     "grid": "visayas",
+     "dev": 0.98,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "08NABASDPP_U01",
+     "grid": "visayas",
+     "dev": 0.98,
+     "days": 15,
+     "mw": 1.8
+    },
+    {
+     "res": "08NABASDPP_U02",
+     "grid": "visayas",
+     "dev": 0.98,
+     "days": 15,
+     "mw": 2.5
+    },
+    {
+     "res": "08NABAS_L01",
+     "grid": "visayas",
+     "dev": 0.98,
+     "days": 15,
+     "mw": 34.0
+    },
+    {
+     "res": "08NABAS_L03",
+     "grid": "visayas",
+     "dev": 0.98,
+     "days": 15,
+     "mw": 4.0
+    },
+    {
+     "res": "08PWIND_G01",
+     "grid": "visayas",
+     "dev": 0.98,
+     "days": 15,
+     "mw": 5.7
+    },
+    {
+     "res": "08PWIND_G02",
+     "grid": "visayas",
+     "dev": 0.98,
+     "days": 15,
+     "mw": 3.5
+    },
+    {
+     "res": "08NABAS_L02",
+     "grid": "visayas",
+     "dev": 0.979,
+     "days": 15,
+     "mw": 38.0
+    }
+   ],
+   "bottom": [
+    {
+     "res": "04LGPP_G01",
+     "grid": "visayas",
+     "dev": -0.608,
+     "days": 15,
+     "mw": 90.6
+    },
+    {
+     "res": "04TONGO_BAT",
+     "grid": "visayas",
+     "dev": -0.601,
+     "days": 15,
+     "mw": 3.3
+    },
+    {
+     "res": "04TONGO_BATL",
+     "grid": "visayas",
+     "dev": -0.601,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "04TONGO_T2L2",
+     "grid": "visayas",
+     "dev": -0.601,
+     "days": 15,
+     "mw": 7.4
+    },
+    {
+     "res": "04LEYTE_A",
+     "grid": "visayas",
+     "dev": -0.559,
+     "days": 15,
+     "mw": 353.3
+    },
+    {
+     "res": "04LEYTE_S01",
+     "grid": "visayas",
+     "dev": -0.559,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "04ORMOC_SS",
+     "grid": "visayas",
+     "dev": -0.555,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "04BILGPP_G01",
+     "grid": "visayas",
+     "dev": -0.539,
+     "days": 15,
+     "mw": 0.0
+    }
+   ]
+  },
+  "mindanao": {
+   "n_nodes": 298,
+   "p5": -0.08,
+   "p50": 0.38,
+   "p95": 1.75,
+   "top": [
+    {
+     "res": "09PITOGO_SS",
+     "grid": "mindanao",
+     "dev": 1.85,
+     "days": 15,
+     "mw": 0.5
+    },
+    {
+     "res": "09PITOG_BATL",
+     "grid": "mindanao",
+     "dev": 1.85,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "09SJG_T1L1",
+     "grid": "mindanao",
+     "dev": 1.828,
+     "days": 15,
+     "mw": 12.3
+    },
+    {
+     "res": "09TMG_T1L1",
+     "grid": "mindanao",
+     "dev": 1.828,
+     "days": 15,
+     "mw": 43.5
+    },
+    {
+     "res": "09TUL_T1L1",
+     "grid": "mindanao",
+     "dev": 1.828,
+     "days": 15,
+     "mw": 21.7
+    },
+    {
+     "res": "09WMPC_S01",
+     "grid": "mindanao",
+     "dev": 1.745,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "09WMPC_U01",
+     "grid": "mindanao",
+     "dev": 1.745,
+     "days": 15,
+     "mw": 4.1
+    },
+    {
+     "res": "09WMPC_U02",
+     "grid": "mindanao",
+     "dev": 1.745,
+     "days": 15,
+     "mw": 1.9
+    }
+   ],
+   "bottom": [
+    {
+     "res": "13SMC_U02",
+     "grid": "mindanao",
+     "dev": -0.122,
+     "days": 15,
+     "mw": 106.7
+    },
+    {
+     "res": "13SMC_U01",
+     "grid": "mindanao",
+     "dev": -0.121,
+     "days": 15,
+     "mw": 106.4
+    },
+    {
+     "res": "10AGUS1_SS",
+     "grid": "mindanao",
+     "dev": -0.109,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "10AGUS2_SS",
+     "grid": "mindanao",
+     "dev": -0.108,
+     "days": 15,
+     "mw": 0.0
+    },
+    {
+     "res": "10AGUS2_U02",
+     "grid": "mindanao",
+     "dev": -0.108,
+     "days": 15,
+     "mw": 44.4
+    },
+    {
+     "res": "10MLN_T1L1",
+     "grid": "mindanao",
+     "dev": -0.108,
+     "days": 15,
+     "mw": 9.3
+    },
+    {
+     "res": "10MRW_T1L1",
+     "grid": "mindanao",
+     "dev": -0.108,
+     "days": 15,
+     "mw": 24.3
+    },
+    {
+     "res": "10AGUS2_U01",
+     "grid": "mindanao",
+     "dev": -0.107,
+     "days": 15,
+     "mw": 10.2
+    }
+   ]
+  }
+ },
+ "nodes": [
+  {
+   "res": "04LGPP_G01",
+   "grid": "visayas",
+   "dev": -0.608,
+   "days": 15,
+   "mw": 90.6
+  },
+  {
+   "res": "04TONGO_BAT",
+   "grid": "visayas",
+   "dev": -0.601,
+   "days": 15,
+   "mw": 3.3
+  },
+  {
+   "res": "04TONGO_BATL",
+   "grid": "visayas",
+   "dev": -0.601,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04TONGO_T2L2",
+   "grid": "visayas",
+   "dev": -0.601,
+   "days": 15,
+   "mw": 7.4
+  },
+  {
+   "res": "04LEYTE_A",
+   "grid": "visayas",
+   "dev": -0.559,
+   "days": 15,
+   "mw": 353.3
+  },
+  {
+   "res": "04LEYTE_S01",
+   "grid": "visayas",
+   "dev": -0.559,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04ORMOC_SS",
+   "grid": "visayas",
+   "dev": -0.555,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04BILGPP_G01",
+   "grid": "visayas",
+   "dev": -0.539,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04ORMOC_BAT",
+   "grid": "visayas",
+   "dev": -0.539,
+   "days": 15,
+   "mw": 1.4
+  },
+  {
+   "res": "04ORMOC_BATL",
+   "grid": "visayas",
+   "dev": -0.539,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04ORMOC_T2L1",
+   "grid": "visayas",
+   "dev": -0.539,
+   "days": 15,
+   "mw": 39.5
+  },
+  {
+   "res": "04ORMOC_T2L2",
+   "grid": "visayas",
+   "dev": -0.539,
+   "days": 15,
+   "mw": 37.9
+  },
+  {
+   "res": "04PHSOL_G01",
+   "grid": "visayas",
+   "dev": -0.539,
+   "days": 15,
+   "mw": 9.1
+  },
+  {
+   "res": "04SEPSOL_G01",
+   "grid": "visayas",
+   "dev": -0.539,
+   "days": 15,
+   "mw": 12.9
+  },
+  {
+   "res": "04IASMOD_G01",
+   "grid": "visayas",
+   "dev": -0.522,
+   "days": 15,
+   "mw": 2.1
+  },
+  {
+   "res": "04IASMOD_G02",
+   "grid": "visayas",
+   "dev": -0.522,
+   "days": 15,
+   "mw": 2.3
+  },
+  {
+   "res": "04IASMOD_G03",
+   "grid": "visayas",
+   "dev": -0.522,
+   "days": 15,
+   "mw": 4.8
+  },
+  {
+   "res": "04IASMOD_G04",
+   "grid": "visayas",
+   "dev": -0.522,
+   "days": 15,
+   "mw": 3.0
+  },
+  {
+   "res": "04IASMOD_G05",
+   "grid": "visayas",
+   "dev": -0.522,
+   "days": 15,
+   "mw": 4.4
+  },
+  {
+   "res": "04IASMOD_G06",
+   "grid": "visayas",
+   "dev": -0.522,
+   "days": 15,
+   "mw": 3.3
+  },
+  {
+   "res": "04ISABE_SS",
+   "grid": "visayas",
+   "dev": -0.522,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04ISABE_T2L1",
+   "grid": "visayas",
+   "dev": -0.522,
+   "days": 15,
+   "mw": 15.9
+  },
+  {
+   "res": "04ISABE_T3L1",
+   "grid": "visayas",
+   "dev": -0.522,
+   "days": 15,
+   "mw": 0.5
+  },
+  {
+   "res": "04ISABE_T4L2",
+   "grid": "visayas",
+   "dev": -0.522,
+   "days": 15,
+   "mw": 3.4
+  },
+  {
+   "res": "04ISABE_T5L2",
+   "grid": "visayas",
+   "dev": -0.485,
+   "days": 15,
+   "mw": 0.2
+  },
+  {
+   "res": "04ISIDROSOL_G01",
+   "grid": "visayas",
+   "dev": -0.467,
+   "days": 15,
+   "mw": 38.7
+  },
+  {
+   "res": "04ISABE_T1L1",
+   "grid": "visayas",
+   "dev": -0.464,
+   "days": 15,
+   "mw": 9.0
+  },
+  {
+   "res": "04TABAN_SS",
+   "grid": "visayas",
+   "dev": -0.446,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MSINLO_G02",
+   "grid": "luzon",
+   "dev": -0.376,
+   "days": 15,
+   "mw": 289.4
+  },
+  {
+   "res": "01MSINLO_G03",
+   "grid": "luzon",
+   "dev": -0.376,
+   "days": 15,
+   "mw": 269.7
+  },
+  {
+   "res": "06NASULO_G01",
+   "grid": "visayas",
+   "dev": -0.376,
+   "days": 15,
+   "mw": 47.6
+  },
+  {
+   "res": "06PAL2A_U01",
+   "grid": "visayas",
+   "dev": -0.376,
+   "days": 15,
+   "mw": 18.6
+  },
+  {
+   "res": "06PAL2A_U03",
+   "grid": "visayas",
+   "dev": -0.376,
+   "days": 15,
+   "mw": 18.7
+  },
+  {
+   "res": "01MSINLO_G01",
+   "grid": "luzon",
+   "dev": -0.375,
+   "days": 15,
+   "mw": 261.4
+  },
+  {
+   "res": "04TABAN_BAT",
+   "grid": "visayas",
+   "dev": -0.375,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04TABAN_BATL",
+   "grid": "visayas",
+   "dev": -0.375,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06PAL2A_U02",
+   "grid": "visayas",
+   "dev": -0.375,
+   "days": 15,
+   "mw": 13.9
+  },
+  {
+   "res": "01MSINLO_BAT",
+   "grid": "luzon",
+   "dev": -0.373,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MSINLO_BATL",
+   "grid": "luzon",
+   "dev": -0.373,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MSINLO_SS",
+   "grid": "luzon",
+   "dev": -0.373,
+   "days": 15,
+   "mw": 0.8
+  },
+  {
+   "res": "06PGPP2_SS",
+   "grid": "visayas",
+   "dev": -0.373,
+   "days": 15,
+   "mw": 6.8
+  },
+  {
+   "res": "06PAL1A_U02",
+   "grid": "visayas",
+   "dev": -0.366,
+   "days": 15,
+   "mw": 34.7
+  },
+  {
+   "res": "06PAL1A_U03",
+   "grid": "visayas",
+   "dev": -0.365,
+   "days": 15,
+   "mw": 35.2
+  },
+  {
+   "res": "06PAL1A_G01",
+   "grid": "visayas",
+   "dev": -0.363,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06PAL1A_SS",
+   "grid": "visayas",
+   "dev": -0.363,
+   "days": 15,
+   "mw": 6.7
+  },
+  {
+   "res": "06PAL1A_U01",
+   "grid": "visayas",
+   "dev": -0.363,
+   "days": 15,
+   "mw": 33.6
+  },
+  {
+   "res": "06SONEG_BAT",
+   "grid": "visayas",
+   "dev": -0.334,
+   "days": 15,
+   "mw": 2.7
+  },
+  {
+   "res": "06SONEG_BATL",
+   "grid": "visayas",
+   "dev": -0.334,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03STAR_SS1",
+   "grid": "luzon",
+   "dev": -0.31,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03STA-RI_G01",
+   "grid": "luzon",
+   "dev": -0.309,
+   "days": 15,
+   "mw": 177.2
+  },
+  {
+   "res": "03STA-RI_G03",
+   "grid": "luzon",
+   "dev": -0.292,
+   "days": 15,
+   "mw": 187.2
+  },
+  {
+   "res": "03STA-RI_G04",
+   "grid": "luzon",
+   "dev": -0.292,
+   "days": 15,
+   "mw": 187.2
+  },
+  {
+   "res": "03STAR_SS2",
+   "grid": "luzon",
+   "dev": -0.292,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03STAR_SS3",
+   "grid": "luzon",
+   "dev": -0.292,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03STAR_SS4",
+   "grid": "luzon",
+   "dev": -0.292,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03STA-RI_G02",
+   "grid": "luzon",
+   "dev": -0.29,
+   "days": 15,
+   "mw": 186.7
+  },
+  {
+   "res": "06AMLAN_SS",
+   "grid": "visayas",
+   "dev": -0.265,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06AMLAN_T2L2",
+   "grid": "visayas",
+   "dev": -0.261,
+   "days": 15,
+   "mw": 61.3
+  },
+  {
+   "res": "05DAANB_SS",
+   "grid": "visayas",
+   "dev": -0.26,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06AMLAN_T1L1",
+   "grid": "visayas",
+   "dev": -0.259,
+   "days": 15,
+   "mw": 24.7
+  },
+  {
+   "res": "06AMLA_G01",
+   "grid": "visayas",
+   "dev": -0.259,
+   "days": 15,
+   "mw": 0.2
+  },
+  {
+   "res": "06CABI_G01",
+   "grid": "visayas",
+   "dev": -0.259,
+   "days": 15,
+   "mw": 11.4
+  },
+  {
+   "res": "06MNTSOL_G01",
+   "grid": "visayas",
+   "dev": -0.259,
+   "days": 15,
+   "mw": 4.9
+  },
+  {
+   "res": "03SLPGC_G02",
+   "grid": "luzon",
+   "dev": -0.258,
+   "days": 15,
+   "mw": 146.5
+  },
+  {
+   "res": "03SLPGC_G01",
+   "grid": "luzon",
+   "dev": -0.256,
+   "days": 15,
+   "mw": 130.3
+  },
+  {
+   "res": "05TALIS_T1L1",
+   "grid": "visayas",
+   "dev": -0.256,
+   "days": 15,
+   "mw": 26.2
+  },
+  {
+   "res": "03CLA_BCNOT",
+   "grid": "luzon",
+   "dev": -0.253,
+   "days": 15,
+   "mw": 14.3
+  },
+  {
+   "res": "03SLTEC_SS",
+   "grid": "luzon",
+   "dev": -0.253,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03STASIA_L01",
+   "grid": "luzon",
+   "dev": -0.253,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03SLTEC_G01",
+   "grid": "luzon",
+   "dev": -0.245,
+   "days": 15,
+   "mw": 112.2
+  },
+  {
+   "res": "03SLTEC_G02",
+   "grid": "luzon",
+   "dev": -0.245,
+   "days": 15,
+   "mw": 113.3
+  },
+  {
+   "res": "03CALACA_G01",
+   "grid": "luzon",
+   "dev": -0.242,
+   "days": 15,
+   "mw": 189.1
+  },
+  {
+   "res": "03CALACA_G02",
+   "grid": "luzon",
+   "dev": -0.233,
+   "days": 15,
+   "mw": 287.6
+  },
+  {
+   "res": "03SLPGC_SS",
+   "grid": "luzon",
+   "dev": -0.232,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03LMHP_G01",
+   "grid": "luzon",
+   "dev": -0.231,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "03QPPL_SU1",
+   "grid": "luzon",
+   "dev": -0.231,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03QPPL_T5L1",
+   "grid": "luzon",
+   "dev": -0.231,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03SBPL_G01",
+   "grid": "luzon",
+   "dev": -0.231,
+   "days": 15,
+   "mw": 413.1
+  },
+  {
+   "res": "03SBPL_L01",
+   "grid": "luzon",
+   "dev": -0.231,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03QPPL_G01",
+   "grid": "luzon",
+   "dev": -0.23,
+   "days": 15,
+   "mw": 337.4
+  },
+  {
+   "res": "03ADISOL_G01",
+   "grid": "luzon",
+   "dev": -0.228,
+   "days": 15,
+   "mw": 0.5
+  },
+  {
+   "res": "03CADPI_G01",
+   "grid": "luzon",
+   "dev": -0.228,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03CALSOL_G01",
+   "grid": "luzon",
+   "dev": -0.228,
+   "days": 15,
+   "mw": 19.7
+  },
+  {
+   "res": "03CLA_BTLEC1",
+   "grid": "luzon",
+   "dev": -0.228,
+   "days": 15,
+   "mw": 22.7
+  },
+  {
+   "res": "01SMC_G04",
+   "grid": "luzon",
+   "dev": -0.224,
+   "days": 15,
+   "mw": 120.1
+  },
+  {
+   "res": "01SMC_SS4",
+   "grid": "luzon",
+   "dev": -0.224,
+   "days": 15,
+   "mw": 17.4
+  },
+  {
+   "res": "03CLA_T1L1",
+   "grid": "luzon",
+   "dev": -0.222,
+   "days": 15,
+   "mw": 39.8
+  },
+  {
+   "res": "03CLACA_SS",
+   "grid": "luzon",
+   "dev": -0.22,
+   "days": 15,
+   "mw": 1.5
+  },
+  {
+   "res": "01GNPD_U01",
+   "grid": "luzon",
+   "dev": -0.216,
+   "days": 15,
+   "mw": 617.1
+  },
+  {
+   "res": "04MAASI_SS",
+   "grid": "visayas",
+   "dev": -0.211,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MARVEL_G02",
+   "grid": "luzon",
+   "dev": -0.21,
+   "days": 15,
+   "mw": 264.1
+  },
+  {
+   "res": "01SUAL_T3L1",
+   "grid": "luzon",
+   "dev": -0.21,
+   "days": 15,
+   "mw": 69.5
+  },
+  {
+   "res": "01MARVEL_G01",
+   "grid": "luzon",
+   "dev": -0.209,
+   "days": 15,
+   "mw": 195.9
+  },
+  {
+   "res": "01MARVEL_AUX",
+   "grid": "luzon",
+   "dev": -0.207,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MARVEL_SS",
+   "grid": "luzon",
+   "dev": -0.207,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SMC_G03",
+   "grid": "luzon",
+   "dev": -0.204,
+   "days": 15,
+   "mw": 120.6
+  },
+  {
+   "res": "01SMC_SS3",
+   "grid": "luzon",
+   "dev": -0.204,
+   "days": 15,
+   "mw": 16.3
+  },
+  {
+   "res": "05SAMB_L01",
+   "grid": "visayas",
+   "dev": -0.204,
+   "days": 15,
+   "mw": 4.6
+  },
+  {
+   "res": "05SAMB_SS",
+   "grid": "visayas",
+   "dev": -0.204,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SMC_G01",
+   "grid": "luzon",
+   "dev": -0.203,
+   "days": 15,
+   "mw": 112.5
+  },
+  {
+   "res": "01SMC_SS",
+   "grid": "luzon",
+   "dev": -0.203,
+   "days": 15,
+   "mw": 16.3
+  },
+  {
+   "res": "01LAMAO_BAT",
+   "grid": "luzon",
+   "dev": -0.202,
+   "days": 15,
+   "mw": 0.2
+  },
+  {
+   "res": "01LAMAO_BATL",
+   "grid": "luzon",
+   "dev": -0.202,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01LAMAO_SS",
+   "grid": "luzon",
+   "dev": -0.201,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MARSOL_G01",
+   "grid": "luzon",
+   "dev": -0.2,
+   "days": 15,
+   "mw": 5.1
+  },
+  {
+   "res": "01MRVEL_T1L1",
+   "grid": "luzon",
+   "dev": -0.2,
+   "days": 15,
+   "mw": 32.2
+  },
+  {
+   "res": "04MAASI_T2L2",
+   "grid": "visayas",
+   "dev": -0.199,
+   "days": 15,
+   "mw": 28.6
+  },
+  {
+   "res": "01PETRON_G01",
+   "grid": "luzon",
+   "dev": -0.196,
+   "days": 15,
+   "mw": 43.0
+  },
+  {
+   "res": "01BATAAN_SS",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01LIMAY_SS",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01LIMAY_U01",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 1.9
+  },
+  {
+   "res": "01LIMAY_U02",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 3.5
+  },
+  {
+   "res": "01LIMAY_U03",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 4.3
+  },
+  {
+   "res": "01LIMAY_U04",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 0.9
+  },
+  {
+   "res": "01LIMAY_U05",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 3.8
+  },
+  {
+   "res": "01LIMAY_U06",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 5.9
+  },
+  {
+   "res": "01LIMAY_U07",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 2.2
+  },
+  {
+   "res": "01LIMAY_U08",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BPC_T1L1",
+   "grid": "luzon",
+   "dev": -0.194,
+   "days": 15,
+   "mw": 1.7
+  },
+  {
+   "res": "01BPC_T2L2",
+   "grid": "luzon",
+   "dev": -0.194,
+   "days": 15,
+   "mw": 1.6
+  },
+  {
+   "res": "01BTNSOL_G01",
+   "grid": "luzon",
+   "dev": -0.191,
+   "days": 15,
+   "mw": 1.1
+  },
+  {
+   "res": "01BTPP_T3L1",
+   "grid": "luzon",
+   "dev": -0.191,
+   "days": 15,
+   "mw": 5.8
+  },
+  {
+   "res": "01BTPP_T3L2",
+   "grid": "luzon",
+   "dev": -0.191,
+   "days": 15,
+   "mw": 31.4
+  },
+  {
+   "res": "01BTPP_T3L3",
+   "grid": "luzon",
+   "dev": -0.191,
+   "days": 15,
+   "mw": 2.7
+  },
+  {
+   "res": "01BTPP_T3L4",
+   "grid": "luzon",
+   "dev": -0.191,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BTPP_T3L5",
+   "grid": "luzon",
+   "dev": -0.191,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BTSOLEN_BAT",
+   "grid": "luzon",
+   "dev": -0.191,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BTSOLEN_BATL",
+   "grid": "luzon",
+   "dev": -0.191,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BTSOLEN_G01",
+   "grid": "luzon",
+   "dev": -0.191,
+   "days": 15,
+   "mw": 1.2
+  },
+  {
+   "res": "01PAVGSOL_G01",
+   "grid": "luzon",
+   "dev": -0.191,
+   "days": 15,
+   "mw": 5.4
+  },
+  {
+   "res": "01LIMAY_BAT",
+   "grid": "luzon",
+   "dev": -0.19,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "01LIMAY_BATL",
+   "grid": "luzon",
+   "dev": -0.19,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MPGC_U01",
+   "grid": "luzon",
+   "dev": -0.189,
+   "days": 15,
+   "mw": 127.0
+  },
+  {
+   "res": "01MPGC_U03",
+   "grid": "luzon",
+   "dev": -0.189,
+   "days": 15,
+   "mw": 123.4
+  },
+  {
+   "res": "01MPGC_U04",
+   "grid": "luzon",
+   "dev": -0.189,
+   "days": 15,
+   "mw": 125.7
+  },
+  {
+   "res": "04MAASI_T1L1",
+   "grid": "visayas",
+   "dev": -0.189,
+   "days": 15,
+   "mw": 9.9
+  },
+  {
+   "res": "01MPGC_U02",
+   "grid": "luzon",
+   "dev": -0.188,
+   "days": 15,
+   "mw": 125.2
+  },
+  {
+   "res": "01SUAL_G02",
+   "grid": "luzon",
+   "dev": -0.186,
+   "days": 15,
+   "mw": 405.5
+  },
+  {
+   "res": "01SUAL_G01",
+   "grid": "luzon",
+   "dev": -0.179,
+   "days": 15,
+   "mw": 243.1
+  },
+  {
+   "res": "03EERI_G01",
+   "grid": "luzon",
+   "dev": -0.179,
+   "days": 15,
+   "mw": 239.1
+  },
+  {
+   "res": "03EERI_G02",
+   "grid": "luzon",
+   "dev": -0.179,
+   "days": 15,
+   "mw": 240.3
+  },
+  {
+   "res": "03EERI_G03",
+   "grid": "luzon",
+   "dev": -0.179,
+   "days": 15,
+   "mw": 240.2
+  },
+  {
+   "res": "03EERI_L01",
+   "grid": "luzon",
+   "dev": -0.179,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CAYBSOL_G01",
+   "grid": "luzon",
+   "dev": -0.178,
+   "days": 15,
+   "mw": 24.6
+  },
+  {
+   "res": "01LAOSOL_G01",
+   "grid": "luzon",
+   "dev": -0.177,
+   "days": 15,
+   "mw": 43.4
+  },
+  {
+   "res": "01LAOSOL_SS",
+   "grid": "luzon",
+   "dev": -0.177,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SMC_G02",
+   "grid": "luzon",
+   "dev": -0.175,
+   "days": 15,
+   "mw": 103.7
+  },
+  {
+   "res": "01SMC_SS2",
+   "grid": "luzon",
+   "dev": -0.175,
+   "days": 15,
+   "mw": 15.1
+  },
+  {
+   "res": "03PAGBIL_G01",
+   "grid": "luzon",
+   "dev": -0.171,
+   "days": 15,
+   "mw": 295.7
+  },
+  {
+   "res": "03CALT_T1L1",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03EERI_SS",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03ILIJAN_G02",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 329.8
+  },
+  {
+   "res": "03ILIJAN_SS2",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03LUMBSOL_G01",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 11.4
+  },
+  {
+   "res": "03NASU_T1L1",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03PAGBIL_G02",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 203.2
+  },
+  {
+   "res": "03TUY1_SS",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03TUY2_SS",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03ILI500_SS",
+   "grid": "luzon",
+   "dev": -0.169,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03PGBIL_SS",
+   "grid": "luzon",
+   "dev": -0.169,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03PGBIL_SS1",
+   "grid": "luzon",
+   "dev": -0.169,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03PGBIL_SS2",
+   "grid": "luzon",
+   "dev": -0.169,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01LBRDR_SS",
+   "grid": "luzon",
+   "dev": -0.168,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MPGC_SS",
+   "grid": "luzon",
+   "dev": -0.166,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03LUNSOL_G01",
+   "grid": "luzon",
+   "dev": -0.166,
+   "days": 15,
+   "mw": 3.6
+  },
+  {
+   "res": "03PAGBIL_G03",
+   "grid": "luzon",
+   "dev": -0.166,
+   "days": 15,
+   "mw": 244.0
+  },
+  {
+   "res": "01GNPD_SS",
+   "grid": "luzon",
+   "dev": -0.165,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01GNPD_U02",
+   "grid": "luzon",
+   "dev": -0.164,
+   "days": 15,
+   "mw": 479.9
+  },
+  {
+   "res": "01LBR_DECORP",
+   "grid": "luzon",
+   "dev": -0.16,
+   "days": 15,
+   "mw": 20.7
+  },
+  {
+   "res": "01LBR_PNELC1",
+   "grid": "luzon",
+   "dev": -0.16,
+   "days": 15,
+   "mw": 40.3
+  },
+  {
+   "res": "03ILIJAN_G01",
+   "grid": "luzon",
+   "dev": -0.16,
+   "days": 15,
+   "mw": 314.3
+  },
+  {
+   "res": "03ILIJAN_SS",
+   "grid": "luzon",
+   "dev": -0.16,
+   "days": 15,
+   "mw": 13.4
+  },
+  {
+   "res": "03BACMAN_U01",
+   "grid": "luzon",
+   "dev": -0.145,
+   "days": 15,
+   "mw": 59.5
+  },
+  {
+   "res": "03BACMAN_U02",
+   "grid": "luzon",
+   "dev": -0.145,
+   "days": 15,
+   "mw": 59.6
+  },
+  {
+   "res": "01KDAM_SS",
+   "grid": "luzon",
+   "dev": -0.142,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BUGSOL_G01",
+   "grid": "luzon",
+   "dev": -0.139,
+   "days": 15,
+   "mw": 156.2
+  },
+  {
+   "res": "01LBR_CNPELC",
+   "grid": "luzon",
+   "dev": -0.136,
+   "days": 15,
+   "mw": 29.4
+  },
+  {
+   "res": "01BUGALSOL_G01",
+   "grid": "luzon",
+   "dev": -0.134,
+   "days": 15,
+   "mw": 3.1
+  },
+  {
+   "res": "03PAGEHV_SS",
+   "grid": "luzon",
+   "dev": -0.132,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "03TAYAB_T1L1",
+   "grid": "luzon",
+   "dev": -0.124,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03TAYAB_T1L2",
+   "grid": "luzon",
+   "dev": -0.124,
+   "days": 15,
+   "mw": 98.9
+  },
+  {
+   "res": "03PALAYAN_G01",
+   "grid": "luzon",
+   "dev": -0.123,
+   "days": 15,
+   "mw": 6.8
+  },
+  {
+   "res": "03TAYAB_SS",
+   "grid": "luzon",
+   "dev": -0.122,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13SMC_U02",
+   "grid": "mindanao",
+   "dev": -0.122,
+   "days": 15,
+   "mw": 106.7
+  },
+  {
+   "res": "03BACMAN_U03",
+   "grid": "luzon",
+   "dev": -0.121,
+   "days": 15,
+   "mw": 20.0
+  },
+  {
+   "res": "03TANAWON_G01",
+   "grid": "luzon",
+   "dev": -0.121,
+   "days": 15,
+   "mw": 20.6
+  },
+  {
+   "res": "13SMC_U01",
+   "grid": "mindanao",
+   "dev": -0.121,
+   "days": 15,
+   "mw": 106.4
+  },
+  {
+   "res": "03BACMAN_BAT",
+   "grid": "luzon",
+   "dev": -0.12,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "03BACMAN_BATL",
+   "grid": "luzon",
+   "dev": -0.12,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03BACMAN_SS",
+   "grid": "luzon",
+   "dev": -0.12,
+   "days": 15,
+   "mw": 12.6
+  },
+  {
+   "res": "01OLONGSOL_G01",
+   "grid": "luzon",
+   "dev": -0.117,
+   "days": 15,
+   "mw": 57.5
+  },
+  {
+   "res": "01SNMARSOL_G01",
+   "grid": "luzon",
+   "dev": -0.116,
+   "days": 15,
+   "mw": 91.0
+  },
+  {
+   "res": "01SNMAR_SS",
+   "grid": "luzon",
+   "dev": -0.116,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MSINLO_G04",
+   "grid": "luzon",
+   "dev": -0.116,
+   "days": 12,
+   "mw": 0.0
+  },
+  {
+   "res": "01CASTIL_SS1",
+   "grid": "luzon",
+   "dev": -0.111,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04TAFTSOL_G01",
+   "grid": "visayas",
+   "dev": -0.11,
+   "days": 15,
+   "mw": 5.7
+  },
+  {
+   "res": "05DMA_L01",
+   "grid": "visayas",
+   "dev": -0.11,
+   "days": 15,
+   "mw": 24.1
+  },
+  {
+   "res": "01BALSIK_SS",
+   "grid": "luzon",
+   "dev": -0.109,
+   "days": 15,
+   "mw": 0.2
+  },
+  {
+   "res": "10AGUS1_SS",
+   "grid": "mindanao",
+   "dev": -0.109,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10AGUS2_SS",
+   "grid": "mindanao",
+   "dev": -0.108,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10AGUS2_U02",
+   "grid": "mindanao",
+   "dev": -0.108,
+   "days": 15,
+   "mw": 44.4
+  },
+  {
+   "res": "10MLN_T1L1",
+   "grid": "mindanao",
+   "dev": -0.108,
+   "days": 15,
+   "mw": 9.3
+  },
+  {
+   "res": "10MRW_T1L1",
+   "grid": "mindanao",
+   "dev": -0.108,
+   "days": 15,
+   "mw": 24.3
+  },
+  {
+   "res": "10AGUS2_U01",
+   "grid": "mindanao",
+   "dev": -0.107,
+   "days": 15,
+   "mw": 10.2
+  },
+  {
+   "res": "10AGUS2_U03",
+   "grid": "mindanao",
+   "dev": -0.107,
+   "days": 15,
+   "mw": 41.9
+  },
+  {
+   "res": "07TPLPB4_U01",
+   "grid": "visayas",
+   "dev": -0.105,
+   "days": 15,
+   "mw": 4.5
+  },
+  {
+   "res": "07TPLPB4_U02",
+   "grid": "visayas",
+   "dev": -0.105,
+   "days": 15,
+   "mw": 3.8
+  },
+  {
+   "res": "07TPLPB4_U03",
+   "grid": "visayas",
+   "dev": -0.105,
+   "days": 15,
+   "mw": 2.4
+  },
+  {
+   "res": "07TPLPB4_U04",
+   "grid": "visayas",
+   "dev": -0.105,
+   "days": 15,
+   "mw": 3.3
+  },
+  {
+   "res": "07UBAY_T3L3",
+   "grid": "visayas",
+   "dev": -0.105,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05CEDC_U01",
+   "grid": "visayas",
+   "dev": -0.104,
+   "days": 15,
+   "mw": 67.3
+  },
+  {
+   "res": "05CEDC_U02",
+   "grid": "visayas",
+   "dev": -0.104,
+   "days": 15,
+   "mw": 68.9
+  },
+  {
+   "res": "05CEDC_U03",
+   "grid": "visayas",
+   "dev": -0.104,
+   "days": 15,
+   "mw": 68.9
+  },
+  {
+   "res": "01S_ENRO_G01",
+   "grid": "luzon",
+   "dev": -0.103,
+   "days": 15,
+   "mw": 29.2
+  },
+  {
+   "res": "01HERMO_SS",
+   "grid": "luzon",
+   "dev": -0.102,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05CEDC_SS",
+   "grid": "visayas",
+   "dev": -0.102,
+   "days": 15,
+   "mw": 30.4
+  },
+  {
+   "res": "01SUPSOL_G01",
+   "grid": "luzon",
+   "dev": -0.1,
+   "days": 15,
+   "mw": 15.8
+  },
+  {
+   "res": "01CAPRIS_G01",
+   "grid": "luzon",
+   "dev": -0.099,
+   "days": 15,
+   "mw": 19.7
+  },
+  {
+   "res": "01PAGCAP_L01",
+   "grid": "luzon",
+   "dev": -0.099,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01PAGUD_SS",
+   "grid": "luzon",
+   "dev": -0.099,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SUBIC_T3L1",
+   "grid": "luzon",
+   "dev": -0.099,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SUBIC_T3L2",
+   "grid": "luzon",
+   "dev": -0.099,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SUBSOL_G01",
+   "grid": "luzon",
+   "dev": -0.099,
+   "days": 15,
+   "mw": 22.4
+  },
+  {
+   "res": "01S_ENRO_SS",
+   "grid": "luzon",
+   "dev": -0.099,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05DMAN_SS",
+   "grid": "visayas",
+   "dev": -0.099,
+   "days": 15,
+   "mw": 0.7
+  },
+  {
+   "res": "10AGUS1_U01",
+   "grid": "mindanao",
+   "dev": -0.097,
+   "days": 15,
+   "mw": 15.2
+  },
+  {
+   "res": "04UTH_G01",
+   "grid": "visayas",
+   "dev": -0.096,
+   "days": 15,
+   "mw": 3.7
+  },
+  {
+   "res": "06MABIN_SS",
+   "grid": "visayas",
+   "dev": -0.096,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06MABIN_T1L1",
+   "grid": "visayas",
+   "dev": -0.096,
+   "days": 15,
+   "mw": 11.4
+  },
+  {
+   "res": "06MABIN_T2L2",
+   "grid": "visayas",
+   "dev": -0.096,
+   "days": 15,
+   "mw": 1.8
+  },
+  {
+   "res": "06URC_G01",
+   "grid": "visayas",
+   "dev": -0.096,
+   "days": 15,
+   "mw": 16.6
+  },
+  {
+   "res": "01BALSOL_G01",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 7.7
+  },
+  {
+   "res": "01BALSOL_L01",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BETASOL_G01",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 7.9
+  },
+  {
+   "res": "01BT2020_G01",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 9.5
+  },
+  {
+   "res": "01CLEANG_G01",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01HERMO_FBL",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01HERMO_T1L1",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 27.7
+  },
+  {
+   "res": "01HERMO_T1L2",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 51.2
+  },
+  {
+   "res": "01HERMO_T1L3",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 36.0
+  },
+  {
+   "res": "01HERMO_T1L4",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 52.6
+  },
+  {
+   "res": "01SAMLSOL_G01",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 12.4
+  },
+  {
+   "res": "01YHGRN_G01",
+   "grid": "luzon",
+   "dev": -0.094,
+   "days": 15,
+   "mw": 3.1
+  },
+  {
+   "res": "01MSINLO_L04",
+   "grid": "luzon",
+   "dev": -0.093,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10AGUS1_U02",
+   "grid": "mindanao",
+   "dev": -0.092,
+   "days": 15,
+   "mw": 24.4
+  },
+  {
+   "res": "04TAFT_G01",
+   "grid": "visayas",
+   "dev": -0.091,
+   "days": 15,
+   "mw": 4.0
+  },
+  {
+   "res": "04WRIGH_T2L2",
+   "grid": "visayas",
+   "dev": -0.09,
+   "days": 15,
+   "mw": 1.9
+  },
+  {
+   "res": "01EHVSM_SS",
+   "grid": "luzon",
+   "dev": -0.088,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01OLONG_SS",
+   "grid": "luzon",
+   "dev": -0.087,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01HANJI_SS",
+   "grid": "luzon",
+   "dev": -0.086,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01HANJI_T2L1",
+   "grid": "luzon",
+   "dev": -0.086,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TALAV_SS",
+   "grid": "visayas",
+   "dev": -0.086,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05CALUNG_CEP",
+   "grid": "visayas",
+   "dev": -0.085,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TALATR1_SS",
+   "grid": "visayas",
+   "dev": -0.085,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TOLEDO_BAT",
+   "grid": "visayas",
+   "dev": -0.085,
+   "days": 15,
+   "mw": 1.9
+  },
+  {
+   "res": "05TOLEDO_BATL",
+   "grid": "visayas",
+   "dev": -0.085,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TOLSOL_G01",
+   "grid": "visayas",
+   "dev": -0.085,
+   "days": 15,
+   "mw": 16.4
+  },
+  {
+   "res": "01BT2020_G02",
+   "grid": "luzon",
+   "dev": -0.084,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01HANJI_T1L1",
+   "grid": "luzon",
+   "dev": -0.084,
+   "days": 15,
+   "mw": 7.6
+  },
+  {
+   "res": "05TALAV_T1L1",
+   "grid": "visayas",
+   "dev": -0.083,
+   "days": 15,
+   "mw": 23.5
+  },
+  {
+   "res": "10AGUS6_U01",
+   "grid": "mindanao",
+   "dev": -0.083,
+   "days": 15,
+   "mw": 20.3
+  },
+  {
+   "res": "01BOTOLAN_SS",
+   "grid": "luzon",
+   "dev": -0.081,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CAPRIS_G02",
+   "grid": "luzon",
+   "dev": -0.081,
+   "days": 15,
+   "mw": 9.5
+  },
+  {
+   "res": "10AGUS7_U01",
+   "grid": "mindanao",
+   "dev": -0.08,
+   "days": 15,
+   "mw": 14.6
+  },
+  {
+   "res": "07BIDPP_G01",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 16.6
+  },
+  {
+   "res": "07BIDPP_G02",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G03",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G04",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G05",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G06",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G07",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G08",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G09",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G10",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G11",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G12",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G13",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G14",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BIDPP_G15",
+   "grid": "visayas",
+   "dev": -0.079,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BOTOL_T1L1",
+   "grid": "luzon",
+   "dev": -0.078,
+   "days": 15,
+   "mw": 16.9
+  },
+  {
+   "res": "01BOTOL_T1L2",
+   "grid": "luzon",
+   "dev": -0.078,
+   "days": 15,
+   "mw": 20.0
+  },
+  {
+   "res": "01GIGSOL_G01",
+   "grid": "luzon",
+   "dev": -0.078,
+   "days": 15,
+   "mw": 14.3
+  },
+  {
+   "res": "01SHIZEN_G01",
+   "grid": "luzon",
+   "dev": -0.078,
+   "days": 15,
+   "mw": 15.9
+  },
+  {
+   "res": "01SHIZEN_L01",
+   "grid": "luzon",
+   "dev": -0.078,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01ZAMSOL_G01",
+   "grid": "luzon",
+   "dev": -0.078,
+   "days": 15,
+   "mw": 1.1
+  },
+  {
+   "res": "01OLONG_T1L1",
+   "grid": "luzon",
+   "dev": -0.077,
+   "days": 15,
+   "mw": 31.4
+  },
+  {
+   "res": "01OLONG_T2L2",
+   "grid": "luzon",
+   "dev": -0.077,
+   "days": 15,
+   "mw": 34.3
+  },
+  {
+   "res": "01OLONG_T3L3",
+   "grid": "luzon",
+   "dev": -0.077,
+   "days": 15,
+   "mw": 7.9
+  },
+  {
+   "res": "07BDPP_U01",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 2.4
+  },
+  {
+   "res": "07BDPP_U02",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 2.5
+  },
+  {
+   "res": "07BDPP_U03",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 2.8
+  },
+  {
+   "res": "07BDPP_U04",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 1.0
+  },
+  {
+   "res": "07BOHOL_T1L1",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 19.3
+  },
+  {
+   "res": "07COREL_T1L1",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 11.3
+  },
+  {
+   "res": "07COREL_T1L2",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 8.1
+  },
+  {
+   "res": "07COREL_T1L3",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 55.3
+  },
+  {
+   "res": "07DAGSOL_G01",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 8.6
+  },
+  {
+   "res": "07JANOPO_G01",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07LOBOC_G01",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 0.6
+  },
+  {
+   "res": "07LOBOC_G02",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 0.6
+  },
+  {
+   "res": "07SEVILL_G01",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 1.5
+  },
+  {
+   "res": "07UBAY_BAT",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 2.1
+  },
+  {
+   "res": "07UBAY_BATL",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07UBAY_T1L1",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 20.2
+  },
+  {
+   "res": "07UBAY_T2L2",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 3.9
+  },
+  {
+   "res": "10AGUS6_U02",
+   "grid": "mindanao",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 32.2
+  },
+  {
+   "res": "10AGUS6_U03",
+   "grid": "mindanao",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 49.8
+  },
+  {
+   "res": "10AGUS6_U05",
+   "grid": "mindanao",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 39.1
+  },
+  {
+   "res": "10AGUS6_SS",
+   "grid": "mindanao",
+   "dev": -0.075,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10BUR_T1L1",
+   "grid": "mindanao",
+   "dev": -0.075,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10BUR_T1L2",
+   "grid": "mindanao",
+   "dev": -0.075,
+   "days": 15,
+   "mw": 8.0
+  },
+  {
+   "res": "10KIW_T1L1",
+   "grid": "mindanao",
+   "dev": -0.075,
+   "days": 15,
+   "mw": 7.2
+  },
+  {
+   "res": "10MCT_T1L1",
+   "grid": "mindanao",
+   "dev": -0.075,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10MEGC_G01",
+   "grid": "mindanao",
+   "dev": -0.075,
+   "days": 15,
+   "mw": 2.8
+  },
+  {
+   "res": "10MPL_T1L1",
+   "grid": "mindanao",
+   "dev": -0.075,
+   "days": 15,
+   "mw": 33.0
+  },
+  {
+   "res": "10NUN_T1L2",
+   "grid": "mindanao",
+   "dev": -0.075,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10PPEI_U01",
+   "grid": "mindanao",
+   "dev": -0.075,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BALWIND_G01",
+   "grid": "luzon",
+   "dev": -0.074,
+   "days": 15,
+   "mw": 20.7
+  },
+  {
+   "res": "10KAU_T1L1",
+   "grid": "mindanao",
+   "dev": -0.074,
+   "days": 15,
+   "mw": 4.6
+  },
+  {
+   "res": "10LIAN_G01",
+   "grid": "mindanao",
+   "dev": -0.074,
+   "days": 15,
+   "mw": 10.1
+  },
+  {
+   "res": "01BALNEO_SS",
+   "grid": "luzon",
+   "dev": -0.073,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10AGUS4_U01",
+   "grid": "mindanao",
+   "dev": -0.073,
+   "days": 15,
+   "mw": 24.4
+  },
+  {
+   "res": "01BURGOS_G01",
+   "grid": "luzon",
+   "dev": -0.072,
+   "days": 15,
+   "mw": 26.9
+  },
+  {
+   "res": "03TGPP_G01",
+   "grid": "luzon",
+   "dev": -0.072,
+   "days": 15,
+   "mw": 7.3
+  },
+  {
+   "res": "03TGPP_L01",
+   "grid": "luzon",
+   "dev": -0.072,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03TIWI_C",
+   "grid": "luzon",
+   "dev": -0.072,
+   "days": 15,
+   "mw": 76.8
+  },
+  {
+   "res": "03TIWIA_SS",
+   "grid": "luzon",
+   "dev": -0.071,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03TIWIC_SS",
+   "grid": "luzon",
+   "dev": -0.071,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03TIWI_A",
+   "grid": "luzon",
+   "dev": -0.071,
+   "days": 15,
+   "mw": 12.9
+  },
+  {
+   "res": "07CRA_SS",
+   "grid": "visayas",
+   "dev": -0.071,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03SNGAB_G01",
+   "grid": "luzon",
+   "dev": -0.07,
+   "days": 15,
+   "mw": 154.5
+  },
+  {
+   "res": "03SNGAB_S01",
+   "grid": "luzon",
+   "dev": -0.07,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10AGUS7_U02",
+   "grid": "mindanao",
+   "dev": -0.07,
+   "days": 15,
+   "mw": 13.8
+  },
+  {
+   "res": "10BALOI_L01",
+   "grid": "mindanao",
+   "dev": -0.07,
+   "days": 15,
+   "mw": 26.9
+  },
+  {
+   "res": "01BALNEO_L02",
+   "grid": "luzon",
+   "dev": -0.066,
+   "days": 15,
+   "mw": 51.2
+  },
+  {
+   "res": "01BARBASOL_G01",
+   "grid": "luzon",
+   "dev": -0.066,
+   "days": 15,
+   "mw": 26.6
+  },
+  {
+   "res": "03STA-RI_G05",
+   "grid": "luzon",
+   "dev": -0.066,
+   "days": 15,
+   "mw": 198.6
+  },
+  {
+   "res": "03STA-RI_G06",
+   "grid": "luzon",
+   "dev": -0.066,
+   "days": 15,
+   "mw": 200.4
+  },
+  {
+   "res": "03STAR_SS5",
+   "grid": "luzon",
+   "dev": -0.066,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03STAR_SS6",
+   "grid": "luzon",
+   "dev": -0.066,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BURGOS_SS",
+   "grid": "luzon",
+   "dev": -0.065,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03AVION_U01",
+   "grid": "luzon",
+   "dev": -0.064,
+   "days": 15,
+   "mw": 6.3
+  },
+  {
+   "res": "03AVION_U02",
+   "grid": "luzon",
+   "dev": -0.064,
+   "days": 15,
+   "mw": 15.4
+  },
+  {
+   "res": "03AVION_SS",
+   "grid": "luzon",
+   "dev": -0.063,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10AGUS4_U02",
+   "grid": "mindanao",
+   "dev": -0.063,
+   "days": 15,
+   "mw": 39.9
+  },
+  {
+   "res": "10AGUS4_U03",
+   "grid": "mindanao",
+   "dev": -0.063,
+   "days": 15,
+   "mw": 41.4
+  },
+  {
+   "res": "05CARMENDPP_U01",
+   "grid": "visayas",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 6.2
+  },
+  {
+   "res": "05CARMENDPP_U02",
+   "grid": "visayas",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 5.6
+  },
+  {
+   "res": "05CARMENDPP_U03",
+   "grid": "visayas",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 6.4
+  },
+  {
+   "res": "05CARMENDPP_U04",
+   "grid": "visayas",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TOL_CARMEN",
+   "grid": "visayas",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 52.5
+  },
+  {
+   "res": "05TPC_G01",
+   "grid": "visayas",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TPC_G02",
+   "grid": "visayas",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 73.9
+  },
+  {
+   "res": "05TPC_L01",
+   "grid": "visayas",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 29.9
+  },
+  {
+   "res": "05TPC_S01",
+   "grid": "visayas",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "05TPC_S02",
+   "grid": "visayas",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10AGUS4_SS",
+   "grid": "mindanao",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05CARMEN_BAT",
+   "grid": "visayas",
+   "dev": -0.061,
+   "days": 15,
+   "mw": 8.2
+  },
+  {
+   "res": "05CARMEN_BATL",
+   "grid": "visayas",
+   "dev": -0.061,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03AMADEO_T1L1",
+   "grid": "luzon",
+   "dev": -0.06,
+   "days": 15,
+   "mw": 230.8
+  },
+  {
+   "res": "04BABAT_SS",
+   "grid": "visayas",
+   "dev": -0.059,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03DARAG_SS",
+   "grid": "luzon",
+   "dev": -0.057,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "10AG6_T2L1",
+   "grid": "mindanao",
+   "dev": -0.057,
+   "days": 15,
+   "mw": 20.8
+  },
+  {
+   "res": "10MCN_T1L1",
+   "grid": "mindanao",
+   "dev": -0.057,
+   "days": 15,
+   "mw": 0.6
+  },
+  {
+   "res": "10MCR_T1L1",
+   "grid": "mindanao",
+   "dev": -0.057,
+   "days": 15,
+   "mw": 0.6
+  },
+  {
+   "res": "10MRW_T2L1",
+   "grid": "mindanao",
+   "dev": -0.057,
+   "days": 15,
+   "mw": 0.7
+  },
+  {
+   "res": "10SRZ_T1L1",
+   "grid": "mindanao",
+   "dev": -0.057,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01TERRASOL_G01",
+   "grid": "luzon",
+   "dev": -0.056,
+   "days": 15,
+   "mw": 113.3
+  },
+  {
+   "res": "01TERRASOL_L01",
+   "grid": "luzon",
+   "dev": -0.056,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03DARAG_T1L1",
+   "grid": "luzon",
+   "dev": -0.055,
+   "days": 15,
+   "mw": 51.6
+  },
+  {
+   "res": "11FDC_U02",
+   "grid": "mindanao",
+   "dev": -0.055,
+   "days": 15,
+   "mw": 124.4
+  },
+  {
+   "res": "01PASQSOL_G01",
+   "grid": "luzon",
+   "dev": -0.054,
+   "days": 15,
+   "mw": 32.4
+  },
+  {
+   "res": "01BALNEO_L01",
+   "grid": "luzon",
+   "dev": -0.052,
+   "days": 15,
+   "mw": 38.3
+  },
+  {
+   "res": "04BABAT_T1L1",
+   "grid": "visayas",
+   "dev": -0.051,
+   "days": 15,
+   "mw": 53.2
+  },
+  {
+   "res": "11FDC_U01",
+   "grid": "mindanao",
+   "dev": -0.051,
+   "days": 15,
+   "mw": 117.9
+  },
+  {
+   "res": "11FDC_U03",
+   "grid": "mindanao",
+   "dev": -0.051,
+   "days": 15,
+   "mw": 89.0
+  },
+  {
+   "res": "03BART_G01",
+   "grid": "luzon",
+   "dev": -0.05,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03BBEC_G01",
+   "grid": "luzon",
+   "dev": -0.05,
+   "days": 15,
+   "mw": 4.4
+  },
+  {
+   "res": "03IRIGA_SS",
+   "grid": "luzon",
+   "dev": -0.05,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03NAG_CSRCO3",
+   "grid": "luzon",
+   "dev": -0.05,
+   "days": 15,
+   "mw": 30.4
+  },
+  {
+   "res": "03NAG_CSRCO4",
+   "grid": "luzon",
+   "dev": -0.05,
+   "days": 15,
+   "mw": 27.6
+  },
+  {
+   "res": "03NAG_SS",
+   "grid": "luzon",
+   "dev": -0.05,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03CLABSOL_G01",
+   "grid": "luzon",
+   "dev": -0.049,
+   "days": 15,
+   "mw": 24.0
+  },
+  {
+   "res": "03INARI_G01",
+   "grid": "luzon",
+   "dev": -0.049,
+   "days": 15,
+   "mw": 1.1
+  },
+  {
+   "res": "03NAG_CSRC2B",
+   "grid": "luzon",
+   "dev": -0.049,
+   "days": 15,
+   "mw": 19.7
+  },
+  {
+   "res": "03NAG_CSRCO1",
+   "grid": "luzon",
+   "dev": -0.049,
+   "days": 15,
+   "mw": 21.8
+  },
+  {
+   "res": "03NAG_CSRCO2",
+   "grid": "luzon",
+   "dev": -0.049,
+   "days": 15,
+   "mw": 41.8
+  },
+  {
+   "res": "10AGUS5_SS",
+   "grid": "mindanao",
+   "dev": -0.049,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10AGUS5_U02",
+   "grid": "mindanao",
+   "dev": -0.049,
+   "days": 15,
+   "mw": 18.7
+  },
+  {
+   "res": "01MAREHV_SS",
+   "grid": "luzon",
+   "dev": -0.047,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01PASBUSOL_G01",
+   "grid": "luzon",
+   "dev": -0.047,
+   "days": 15,
+   "mw": 20.8
+  },
+  {
+   "res": "01PASBUSOL_L01",
+   "grid": "luzon",
+   "dev": -0.047,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03DAR_SRECO2",
+   "grid": "luzon",
+   "dev": -0.047,
+   "days": 15,
+   "mw": 31.2
+  },
+  {
+   "res": "03LIGAO_SS",
+   "grid": "luzon",
+   "dev": -0.047,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04STAR_SS",
+   "grid": "visayas",
+   "dev": -0.047,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03DAR_ALECO",
+   "grid": "luzon",
+   "dev": -0.046,
+   "days": 15,
+   "mw": 56.8
+  },
+  {
+   "res": "03DAR_SAL",
+   "grid": "luzon",
+   "dev": -0.046,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03DAR_STDOM",
+   "grid": "luzon",
+   "dev": -0.046,
+   "days": 15,
+   "mw": 11.3
+  },
+  {
+   "res": "11FDC_SS",
+   "grid": "mindanao",
+   "dev": -0.046,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03BATAN_SS",
+   "grid": "luzon",
+   "dev": -0.045,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04BAGLI_T1L1",
+   "grid": "visayas",
+   "dev": -0.045,
+   "days": 15,
+   "mw": 3.4
+  },
+  {
+   "res": "04BAGLI_T1L2",
+   "grid": "visayas",
+   "dev": -0.045,
+   "days": 15,
+   "mw": 7.7
+  },
+  {
+   "res": "05THVI_SS1",
+   "grid": "visayas",
+   "dev": -0.044,
+   "days": 15,
+   "mw": 4.8
+  },
+  {
+   "res": "03BATAN_T2L2",
+   "grid": "luzon",
+   "dev": -0.039,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03BAT_T2L1",
+   "grid": "luzon",
+   "dev": -0.039,
+   "days": 15,
+   "mw": 35.5
+  },
+  {
+   "res": "03RCBMI_G01",
+   "grid": "luzon",
+   "dev": -0.039,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03RCBMI_G02",
+   "grid": "luzon",
+   "dev": -0.039,
+   "days": 15,
+   "mw": 0.9
+  },
+  {
+   "res": "03BAT_LIP01",
+   "grid": "luzon",
+   "dev": -0.038,
+   "days": 15,
+   "mw": 16.4
+  },
+  {
+   "res": "03BAT_LIP02",
+   "grid": "luzon",
+   "dev": -0.038,
+   "days": 15,
+   "mw": 57.4
+  },
+  {
+   "res": "03BAT_MECO",
+   "grid": "luzon",
+   "dev": -0.038,
+   "days": 15,
+   "mw": 17.0
+  },
+  {
+   "res": "03BATAN_T1L2",
+   "grid": "luzon",
+   "dev": -0.037,
+   "days": 15,
+   "mw": 13.0
+  },
+  {
+   "res": "03BAT_T1L1",
+   "grid": "luzon",
+   "dev": -0.037,
+   "days": 15,
+   "mw": 46.3
+  },
+  {
+   "res": "05COMPS_SS",
+   "grid": "visayas",
+   "dev": -0.037,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06SACSUN_G01",
+   "grid": "visayas",
+   "dev": -0.037,
+   "days": 15,
+   "mw": 21.1
+  },
+  {
+   "res": "03DASMA_SS",
+   "grid": "luzon",
+   "dev": -0.036,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03BAT_BTLEC2",
+   "grid": "luzon",
+   "dev": -0.035,
+   "days": 15,
+   "mw": 23.2
+  },
+  {
+   "res": "03BAT_MECO1",
+   "grid": "luzon",
+   "dev": -0.035,
+   "days": 15,
+   "mw": 29.8
+  },
+  {
+   "res": "03BAT_MECO2",
+   "grid": "luzon",
+   "dev": -0.035,
+   "days": 15,
+   "mw": 29.5
+  },
+  {
+   "res": "03BAT_ROS01",
+   "grid": "luzon",
+   "dev": -0.035,
+   "days": 15,
+   "mw": 58.8
+  },
+  {
+   "res": "05COMPS_T3L3",
+   "grid": "visayas",
+   "dev": -0.035,
+   "days": 12,
+   "mw": 5.3
+  },
+  {
+   "res": "06SACASL_G02",
+   "grid": "visayas",
+   "dev": -0.031,
+   "days": 15,
+   "mw": 7.4
+  },
+  {
+   "res": "03MKBN_A",
+   "grid": "luzon",
+   "dev": -0.03,
+   "days": 15,
+   "mw": 65.2
+  },
+  {
+   "res": "06SACASL_G01",
+   "grid": "visayas",
+   "dev": -0.03,
+   "days": 15,
+   "mw": 8.0
+  },
+  {
+   "res": "06SNCARLOS_SS",
+   "grid": "visayas",
+   "dev": -0.029,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "01EHVSJ_SS",
+   "grid": "luzon",
+   "dev": -0.028,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05COMPS_T1L1",
+   "grid": "visayas",
+   "dev": -0.027,
+   "days": 15,
+   "mw": 28.1
+  },
+  {
+   "res": "05COMPS_T2L2",
+   "grid": "visayas",
+   "dev": -0.027,
+   "days": 15,
+   "mw": 14.7
+  },
+  {
+   "res": "03TIBAG_G01",
+   "grid": "luzon",
+   "dev": -0.025,
+   "days": 15,
+   "mw": 2.2
+  },
+  {
+   "res": "01SNMANSOL_G01",
+   "grid": "luzon",
+   "dev": -0.018,
+   "days": 15,
+   "mw": 27.3
+  },
+  {
+   "res": "10BALOI_SS",
+   "grid": "mindanao",
+   "dev": -0.018,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10AGUS5_U01",
+   "grid": "mindanao",
+   "dev": -0.015,
+   "days": 15,
+   "mw": 13.9
+  },
+  {
+   "res": "03DASMA_L01",
+   "grid": "luzon",
+   "dev": -0.012,
+   "days": 15,
+   "mw": 569.5
+  },
+  {
+   "res": "03MARAGSOL_G01",
+   "grid": "luzon",
+   "dev": -0.012,
+   "days": 15,
+   "mw": 16.1
+  },
+  {
+   "res": "03MEC_G01",
+   "grid": "luzon",
+   "dev": -0.012,
+   "days": 15,
+   "mw": 5.8
+  },
+  {
+   "res": "03NAICSOL_G01",
+   "grid": "luzon",
+   "dev": -0.012,
+   "days": 15,
+   "mw": 1.3
+  },
+  {
+   "res": "10GNPK_U01",
+   "grid": "mindanao",
+   "dev": -0.012,
+   "days": 15,
+   "mw": 108.4
+  },
+  {
+   "res": "10GNPK_U02",
+   "grid": "mindanao",
+   "dev": -0.012,
+   "days": 15,
+   "mw": 104.7
+  },
+  {
+   "res": "10GNPK_U03",
+   "grid": "mindanao",
+   "dev": -0.012,
+   "days": 15,
+   "mw": 107.4
+  },
+  {
+   "res": "10GNPK_U04",
+   "grid": "mindanao",
+   "dev": -0.012,
+   "days": 15,
+   "mw": 110.3
+  },
+  {
+   "res": "03MKBN_B",
+   "grid": "luzon",
+   "dev": -0.01,
+   "days": 15,
+   "mw": 84.2
+  },
+  {
+   "res": "03MKBN_D",
+   "grid": "luzon",
+   "dev": -0.009,
+   "days": 15,
+   "mw": 26.2
+  },
+  {
+   "res": "06CALASOL_G01",
+   "grid": "visayas",
+   "dev": -0.009,
+   "days": 15,
+   "mw": 67.4
+  },
+  {
+   "res": "06CAY_SS",
+   "grid": "visayas",
+   "dev": -0.009,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06CLTRAVA_SS",
+   "grid": "visayas",
+   "dev": -0.009,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "10KAUSWGN_SS",
+   "grid": "mindanao",
+   "dev": -0.009,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11STEAG_U01",
+   "grid": "mindanao",
+   "dev": -0.009,
+   "days": 15,
+   "mw": 104.5
+  },
+  {
+   "res": "11STEAG_U02",
+   "grid": "mindanao",
+   "dev": -0.009,
+   "days": 15,
+   "mw": 104.4
+  },
+  {
+   "res": "05KSPC_G02",
+   "grid": "visayas",
+   "dev": -0.008,
+   "days": 15,
+   "mw": 87.1
+  },
+  {
+   "res": "05KSPC_SS1",
+   "grid": "visayas",
+   "dev": -0.008,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05KSPC_SS2",
+   "grid": "visayas",
+   "dev": -0.008,
+   "days": 15,
+   "mw": 6.6
+  },
+  {
+   "res": "05KSPC_G01",
+   "grid": "visayas",
+   "dev": -0.007,
+   "days": 15,
+   "mw": 90.6
+  },
+  {
+   "res": "10IDP1_U01",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "10IDP1_U02",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 1.3
+  },
+  {
+   "res": "10IDP1_U03",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 1.7
+  },
+  {
+   "res": "10IDP1_U04",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 1.8
+  },
+  {
+   "res": "10IDP1_U05",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.9
+  },
+  {
+   "res": "10IDP1_U06",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.5
+  },
+  {
+   "res": "10IDP1_U07",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 1.4
+  },
+  {
+   "res": "10IDP1_U08",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 1.1
+  },
+  {
+   "res": "10IDP1_U09",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10IDP1_U10",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.6
+  },
+  {
+   "res": "10IDP1_U11",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.6
+  },
+  {
+   "res": "10IDP1_U12",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.9
+  },
+  {
+   "res": "10IDP2_U01",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.3
+  },
+  {
+   "res": "10IDP2_U02",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "10IDP2_U03",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.3
+  },
+  {
+   "res": "10IDP2_U04",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "10IDP2_U05",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "10IDP2_U06",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "10IDP2_U07",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "10IDPP_G01",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10IDPP_SS",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10PLT_T1L1",
+   "grid": "mindanao",
+   "dev": -0.006,
+   "days": 15,
+   "mw": 16.4
+  },
+  {
+   "res": "03MKBND_SS",
+   "grid": "luzon",
+   "dev": -0.005,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01ANGAT_A",
+   "grid": "luzon",
+   "dev": -0.004,
+   "days": 15,
+   "mw": 29.5
+  },
+  {
+   "res": "03MKBNB_SS",
+   "grid": "luzon",
+   "dev": -0.004,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08PEDC_U03",
+   "grid": "visayas",
+   "dev": -0.004,
+   "days": 15,
+   "mw": 23.4
+  },
+  {
+   "res": "03MKBNA_SS",
+   "grid": "luzon",
+   "dev": -0.003,
+   "days": 15,
+   "mw": 7.9
+  },
+  {
+   "res": "08PALM_G01",
+   "grid": "visayas",
+   "dev": -0.003,
+   "days": 15,
+   "mw": 128.9
+  },
+  {
+   "res": "08PALM_S01",
+   "grid": "visayas",
+   "dev": -0.003,
+   "days": 15,
+   "mw": 13.0
+  },
+  {
+   "res": "01CASECN_G01",
+   "grid": "luzon",
+   "dev": -0.002,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CASECN_SS",
+   "grid": "luzon",
+   "dev": -0.002,
+   "days": 15,
+   "mw": 48.6
+  },
+  {
+   "res": "01CASECN_U01",
+   "grid": "luzon",
+   "dev": -0.002,
+   "days": 15,
+   "mw": 20.1
+  },
+  {
+   "res": "01CASECN_U02",
+   "grid": "luzon",
+   "dev": -0.002,
+   "days": 15,
+   "mw": 29.5
+  },
+  {
+   "res": "01SROQUE_U01",
+   "grid": "luzon",
+   "dev": -0.002,
+   "days": 15,
+   "mw": 17.3
+  },
+  {
+   "res": "01SROQUE_U02",
+   "grid": "luzon",
+   "dev": -0.002,
+   "days": 15,
+   "mw": 7.8
+  },
+  {
+   "res": "01SROQUE_U03",
+   "grid": "luzon",
+   "dev": -0.002,
+   "days": 15,
+   "mw": 12.2
+  },
+  {
+   "res": "05THVI_U01",
+   "grid": "visayas",
+   "dev": -0.002,
+   "days": 15,
+   "mw": 11.3
+  },
+  {
+   "res": "01SROQUE_SS",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03ALMNOS_BAT1",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 5.3
+  },
+  {
+   "res": "03ALMNOS_BAT1L",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03ALMNOS_BAT2",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 3.0
+  },
+  {
+   "res": "03ALMNOS_BAT2L",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MAKBA_T3L1",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "03MAKBA_T3L2",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 71.7
+  },
+  {
+   "res": "03MALVAR_SS",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MKBNE_SS",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MKBN_E",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 18.9
+  },
+  {
+   "res": "03MKBN_SLACE",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03ORMAT_G01",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 1.0
+  },
+  {
+   "res": "03ORMAT_SS",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03SOLACE_G01",
+   "grid": "luzon",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 33.3
+  },
+  {
+   "res": "05THVI_SS2",
+   "grid": "visayas",
+   "dev": -0.001,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "01ANGAT_T5L1",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BTPP_T4L1",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CAPAS_G01",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CLARK_L01",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CLARK_L02",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CLARK_T2L1",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CURIM_T1L1",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01HYPGRN_G01",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01LATRI_T1L1",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01NSNMN_L01",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01NSNMN_SS",
+   "grid": "luzon",
+   "dev": -0.0,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "01NSNMN_T1L1",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SNMAN_SS",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "03CLA_STLCOR",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MALAYA_G02",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MKBNC_SS",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MKBN_C",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MLAYA_T2L2",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03TIWIC_L01",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04TABAN_T1L1",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05CDPPI_SS1",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05CDPPI_SS2",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05CEMEX_L01",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05NAGA_T1L1",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05NAGA_T2L2",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05NNAGVE_L01",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 60.7
+  },
+  {
+   "res": "05NNAGVE_L02",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 45.4
+  },
+  {
+   "res": "05SAMB_L02",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05THVI_U02",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TPVI_U01",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TPVI_U02",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TPVI_U03",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TPVI_U04",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TPVI_U05",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05TPVI_U06",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06NTNEGB_G01",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06PAL2A_U04",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06SCBIOP_G01",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06STNEGB_G01",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06VMC_G01",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "07BOHOL_T4L4",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08BARTAC_L01",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10KIW_T2L1",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 16.7
+  },
+  {
+   "res": "10LGAIT_SS",
+   "grid": "mindanao",
+   "dev": -0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10OPO_T1L1",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10PAT_T1L1",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "10PGW_T1L1",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 4.6
+  },
+  {
+   "res": "10PLT_T2L1",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 3.7
+  },
+  {
+   "res": "11SME_T1L1",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 27.7
+  },
+  {
+   "res": "11TAGOL_SS",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12SMMCI_L01",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12TBD_T1L1",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13DLP_T2L1",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01LAOAG_T1L2",
+   "grid": "luzon",
+   "dev": 0.001,
+   "days": 15,
+   "mw": 19.4
+  },
+  {
+   "res": "08CONCP_T1L1",
+   "grid": "visayas",
+   "dev": 0.001,
+   "days": 15,
+   "mw": 15.8
+  },
+  {
+   "res": "01BUTAO_G01",
+   "grid": "luzon",
+   "dev": 0.003,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01DOMSOL_G01",
+   "grid": "luzon",
+   "dev": 0.003,
+   "days": 15,
+   "mw": 18.8
+  },
+  {
+   "res": "01DOMSOL_L01",
+   "grid": "luzon",
+   "dev": 0.003,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SNMAN_BAT",
+   "grid": "luzon",
+   "dev": 0.003,
+   "days": 15,
+   "mw": 2.1
+  },
+  {
+   "res": "01SNMAN_BATL",
+   "grid": "luzon",
+   "dev": 0.003,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SNMNAN_T1L3",
+   "grid": "luzon",
+   "dev": 0.003,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SNM_PNELC3",
+   "grid": "luzon",
+   "dev": 0.003,
+   "days": 15,
+   "mw": 37.7
+  },
+  {
+   "res": "05COLON_L01",
+   "grid": "visayas",
+   "dev": 0.003,
+   "days": 15,
+   "mw": 17.3
+  },
+  {
+   "res": "10AGUS6_U04",
+   "grid": "mindanao",
+   "dev": 0.003,
+   "days": 15,
+   "mw": 6.4
+  },
+  {
+   "res": "03BINAN_SS",
+   "grid": "luzon",
+   "dev": 0.007,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11VILLA_BAT",
+   "grid": "mindanao",
+   "dev": 0.007,
+   "days": 15,
+   "mw": 1.6
+  },
+  {
+   "res": "11VILLA_BATL",
+   "grid": "mindanao",
+   "dev": 0.007,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11VILLA_L01",
+   "grid": "mindanao",
+   "dev": 0.007,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SNMAN_LYO",
+   "grid": "luzon",
+   "dev": 0.008,
+   "days": 15,
+   "mw": 20.1
+  },
+  {
+   "res": "03CALAMBA_SS",
+   "grid": "luzon",
+   "dev": 0.008,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "01SNMAN_T1L2",
+   "grid": "luzon",
+   "dev": 0.009,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06BISCOM_G01",
+   "grid": "visayas",
+   "dev": 0.011,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "06KABAN_T1L1",
+   "grid": "visayas",
+   "dev": 0.011,
+   "days": 15,
+   "mw": 15.8
+  },
+  {
+   "res": "06KABAN_T2L2",
+   "grid": "visayas",
+   "dev": 0.011,
+   "days": 15,
+   "mw": 25.4
+  },
+  {
+   "res": "03STROS_T1L1",
+   "grid": "luzon",
+   "dev": 0.012,
+   "days": 15,
+   "mw": 301.9
+  },
+  {
+   "res": "01ANGAT_M",
+   "grid": "luzon",
+   "dev": 0.015,
+   "days": 15,
+   "mw": 11.0
+  },
+  {
+   "res": "03CALAMBA_L01",
+   "grid": "luzon",
+   "dev": 0.015,
+   "days": 15,
+   "mw": 253.8
+  },
+  {
+   "res": "03TANSOL_G01",
+   "grid": "luzon",
+   "dev": 0.015,
+   "days": 15,
+   "mw": 20.3
+  },
+  {
+   "res": "01ANGAT_SS",
+   "grid": "luzon",
+   "dev": 0.016,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01LAOAG_SS",
+   "grid": "luzon",
+   "dev": 0.016,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03BINAN_T1L1",
+   "grid": "luzon",
+   "dev": 0.017,
+   "days": 15,
+   "mw": 408.9
+  },
+  {
+   "res": "11LAGUIN_SS",
+   "grid": "mindanao",
+   "dev": 0.017,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11LNI_T1L1",
+   "grid": "mindanao",
+   "dev": 0.017,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BOSUNG_G01",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 0.3
+  },
+  {
+   "res": "01BURGOS_G02",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 1.1
+  },
+  {
+   "res": "01BURGOS_G03",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 0.7
+  },
+  {
+   "res": "01LAOAG_T1L1",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01LAOAG_T2L2",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 23.3
+  },
+  {
+   "res": "01MALOL_SS",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01NWIND_G01",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 5.8
+  },
+  {
+   "res": "01NWIND_G02",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 5.7
+  },
+  {
+   "res": "01NWIND_L01",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05CEBU_SS",
+   "grid": "visayas",
+   "dev": 0.019,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01NSNMN_L02",
+   "grid": "luzon",
+   "dev": 0.02,
+   "days": 15,
+   "mw": 35.5
+  },
+  {
+   "res": "01SNJOSE_SS",
+   "grid": "luzon",
+   "dev": 0.021,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06KABAN_BAT",
+   "grid": "visayas",
+   "dev": 0.021,
+   "days": 15,
+   "mw": 6.4
+  },
+  {
+   "res": "06KABAN_BATL",
+   "grid": "visayas",
+   "dev": 0.021,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06KABAN_L01",
+   "grid": "visayas",
+   "dev": 0.021,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06KABAN_SS",
+   "grid": "visayas",
+   "dev": 0.021,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03LABO_SS",
+   "grid": "luzon",
+   "dev": 0.025,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "02ZAPOT_SS",
+   "grid": "luzon",
+   "dev": 0.026,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "01CURSOL_G02",
+   "grid": "luzon",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 29.3
+  },
+  {
+   "res": "01MAEC_G01",
+   "grid": "luzon",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 6.9
+  },
+  {
+   "res": "01MAEC_S01",
+   "grid": "luzon",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01T_ASIA_G01",
+   "grid": "luzon",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 12.6
+  },
+  {
+   "res": "11FGBPC_G01",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 1.4
+  },
+  {
+   "res": "11JASA_BAT",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 0.3
+  },
+  {
+   "res": "11JASA_BATL",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11KIRAS_G01",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 4.2
+  },
+  {
+   "res": "11KNG_T1L1",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 16.4
+  },
+  {
+   "res": "11MINBAL_G01",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 113.5
+  },
+  {
+   "res": "11MINBU_G01",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 3.3
+  },
+  {
+   "res": "11MISAMSOL_G01",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 7.6
+  },
+  {
+   "res": "11MISAMSOL_L01",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11MNCBLG_G01",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 4.2
+  },
+  {
+   "res": "11MNRGY_G01",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 3.0
+  },
+  {
+   "res": "11MNRGY_G02",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 5.7
+  },
+  {
+   "res": "11NAT_T1L1",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 159.8
+  },
+  {
+   "res": "11NAT_T2L1",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 16.9
+  },
+  {
+   "res": "03BALUG_G01",
+   "grid": "luzon",
+   "dev": 0.029,
+   "days": 15,
+   "mw": 0.9
+  },
+  {
+   "res": "03BOTOCA_G01",
+   "grid": "luzon",
+   "dev": 0.029,
+   "days": 15,
+   "mw": 8.1
+  },
+  {
+   "res": "03BOTOCA_L01",
+   "grid": "luzon",
+   "dev": 0.029,
+   "days": 15,
+   "mw": 2.1
+  },
+  {
+   "res": "03BOTOCA_SS",
+   "grid": "luzon",
+   "dev": 0.029,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03CALIRY_G01",
+   "grid": "luzon",
+   "dev": 0.029,
+   "days": 15,
+   "mw": 20.8
+  },
+  {
+   "res": "03CALIRY_SS",
+   "grid": "luzon",
+   "dev": 0.029,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03CALIRY_SS1",
+   "grid": "luzon",
+   "dev": 0.029,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MAJAY_G01",
+   "grid": "luzon",
+   "dev": 0.029,
+   "days": 15,
+   "mw": 2.2
+  },
+  {
+   "res": "01CLARK_T1L2",
+   "grid": "luzon",
+   "dev": 0.03,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03CALIR_TAL1",
+   "grid": "luzon",
+   "dev": 0.03,
+   "days": 15,
+   "mw": 9.6
+  },
+  {
+   "res": "03LABO_T1L2",
+   "grid": "luzon",
+   "dev": 0.03,
+   "days": 15,
+   "mw": 11.0
+  },
+  {
+   "res": "03LWERLAB_G01",
+   "grid": "luzon",
+   "dev": 0.03,
+   "days": 15,
+   "mw": 0.2
+  },
+  {
+   "res": "03CALI_FLECO",
+   "grid": "luzon",
+   "dev": 0.031,
+   "days": 15,
+   "mw": 12.7
+  },
+  {
+   "res": "03COLASI_G01",
+   "grid": "luzon",
+   "dev": 0.032,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03LABO_T1L1",
+   "grid": "luzon",
+   "dev": 0.032,
+   "days": 15,
+   "mw": 36.1
+  },
+  {
+   "res": "01T_ASI_T3L1",
+   "grid": "luzon",
+   "dev": 0.033,
+   "days": 15,
+   "mw": 7.7
+  },
+  {
+   "res": "03KAL_G01",
+   "grid": "luzon",
+   "dev": 0.033,
+   "days": 15,
+   "mw": 77.3
+  },
+  {
+   "res": "03KAL_G02",
+   "grid": "luzon",
+   "dev": 0.033,
+   "days": 15,
+   "mw": 79.5
+  },
+  {
+   "res": "03KAL_G04",
+   "grid": "luzon",
+   "dev": 0.033,
+   "days": 15,
+   "mw": 131.9
+  },
+  {
+   "res": "03KAL_G03",
+   "grid": "luzon",
+   "dev": 0.034,
+   "days": 15,
+   "mw": 109.5
+  },
+  {
+   "res": "03KAL_SS",
+   "grid": "luzon",
+   "dev": 0.034,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03LUMBAN_SS",
+   "grid": "luzon",
+   "dev": 0.034,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "01SNJOS_T1L3",
+   "grid": "luzon",
+   "dev": 0.035,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03KAL_E_T1L1",
+   "grid": "luzon",
+   "dev": 0.035,
+   "days": 15,
+   "mw": 24.1
+  },
+  {
+   "res": "03LUMBAN_BAT",
+   "grid": "luzon",
+   "dev": 0.035,
+   "days": 15,
+   "mw": 1.5
+  },
+  {
+   "res": "03LUMBAN_BATL",
+   "grid": "luzon",
+   "dev": 0.035,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03UPLAB_G01",
+   "grid": "luzon",
+   "dev": 0.035,
+   "days": 15,
+   "mw": 1.4
+  },
+  {
+   "res": "01SNJOS_CAM",
+   "grid": "luzon",
+   "dev": 0.036,
+   "days": 15,
+   "mw": 252.9
+  },
+  {
+   "res": "01SNJOSE_L01",
+   "grid": "luzon",
+   "dev": 0.037,
+   "days": 15,
+   "mw": 203.8
+  },
+  {
+   "res": "05NAGLES_L01",
+   "grid": "visayas",
+   "dev": 0.037,
+   "days": 15,
+   "mw": 51.8
+  },
+  {
+   "res": "01BAUANG_GS1",
+   "grid": "luzon",
+   "dev": 0.038,
+   "days": 15,
+   "mw": 10.2
+  },
+  {
+   "res": "01SNJOS_T1L1",
+   "grid": "luzon",
+   "dev": 0.038,
+   "days": 15,
+   "mw": 2.1
+  },
+  {
+   "res": "01BAUANG_GS3",
+   "grid": "luzon",
+   "dev": 0.04,
+   "days": 15,
+   "mw": 18.3
+  },
+  {
+   "res": "01BAUANG_GS2",
+   "grid": "luzon",
+   "dev": 0.041,
+   "days": 15,
+   "mw": 9.5
+  },
+  {
+   "res": "01BPPC_SS",
+   "grid": "luzon",
+   "dev": 0.041,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "02ZAPOT_T1L1",
+   "grid": "luzon",
+   "dev": 0.041,
+   "days": 15,
+   "mw": 780.4
+  },
+  {
+   "res": "01MALOL_T1L1",
+   "grid": "luzon",
+   "dev": 0.042,
+   "days": 15,
+   "mw": 186.8
+  },
+  {
+   "res": "11MAN1_S01",
+   "grid": "mindanao",
+   "dev": 0.047,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11MANFOR_G01",
+   "grid": "mindanao",
+   "dev": 0.047,
+   "days": 15,
+   "mw": 17.9
+  },
+  {
+   "res": "11MAN2_S01",
+   "grid": "mindanao",
+   "dev": 0.048,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11MANFOR_G02",
+   "grid": "mindanao",
+   "dev": 0.048,
+   "days": 15,
+   "mw": 12.4
+  },
+  {
+   "res": "03CALAU_SS",
+   "grid": "luzon",
+   "dev": 0.049,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11LUN_T1L1",
+   "grid": "mindanao",
+   "dev": 0.049,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11MANGIMA_G01",
+   "grid": "mindanao",
+   "dev": 0.049,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11MANGIMA_L01",
+   "grid": "mindanao",
+   "dev": 0.049,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11MANOLO_SS",
+   "grid": "mindanao",
+   "dev": 0.049,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11PKBUK_G01",
+   "grid": "mindanao",
+   "dev": 0.049,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11PKBUK_U01",
+   "grid": "mindanao",
+   "dev": 0.049,
+   "days": 15,
+   "mw": 1.7
+  },
+  {
+   "res": "11PKBUK_U02",
+   "grid": "mindanao",
+   "dev": 0.049,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SE_ABRECO",
+   "grid": "luzon",
+   "dev": 0.05,
+   "days": 15,
+   "mw": 9.1
+  },
+  {
+   "res": "03CALAU_T1L1",
+   "grid": "luzon",
+   "dev": 0.051,
+   "days": 15,
+   "mw": 70.8
+  },
+  {
+   "res": "03CLBATO_G01",
+   "grid": "luzon",
+   "dev": 0.051,
+   "days": 15,
+   "mw": 0.2
+  },
+  {
+   "res": "03MGI_G02",
+   "grid": "luzon",
+   "dev": 0.051,
+   "days": 15,
+   "mw": 12.0
+  },
+  {
+   "res": "03MGPP_G01",
+   "grid": "luzon",
+   "dev": 0.051,
+   "days": 15,
+   "mw": 19.9
+  },
+  {
+   "res": "03PALAK_G01",
+   "grid": "luzon",
+   "dev": 0.051,
+   "days": 15,
+   "mw": 0.9
+  },
+  {
+   "res": "03GUMAC_SS",
+   "grid": "luzon",
+   "dev": 0.052,
+   "days": 15,
+   "mw": 1.1
+  },
+  {
+   "res": "01CURIM_SS",
+   "grid": "luzon",
+   "dev": 0.053,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CURIM_T1L2",
+   "grid": "luzon",
+   "dev": 0.053,
+   "days": 15,
+   "mw": 14.6
+  },
+  {
+   "res": "05BANIL_T1L1",
+   "grid": "visayas",
+   "dev": 0.053,
+   "days": 15,
+   "mw": 42.8
+  },
+  {
+   "res": "05BANIL_T1L2",
+   "grid": "visayas",
+   "dev": 0.053,
+   "days": 15,
+   "mw": 71.3
+  },
+  {
+   "res": "05BANIL_T1L3",
+   "grid": "visayas",
+   "dev": 0.053,
+   "days": 15,
+   "mw": 60.8
+  },
+  {
+   "res": "11JASAAN_SS",
+   "grid": "mindanao",
+   "dev": 0.054,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11LBA_T1L1",
+   "grid": "mindanao",
+   "dev": 0.054,
+   "days": 15,
+   "mw": 7.1
+  },
+  {
+   "res": "11SMH_T1L1",
+   "grid": "mindanao",
+   "dev": 0.054,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11VILLA_SS",
+   "grid": "mindanao",
+   "dev": 0.054,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03GUMAC_T1L1",
+   "grid": "luzon",
+   "dev": 0.056,
+   "days": 15,
+   "mw": 5.5
+  },
+  {
+   "res": "03GUMAC_T1L2",
+   "grid": "luzon",
+   "dev": 0.057,
+   "days": 15,
+   "mw": 18.6
+  },
+  {
+   "res": "03GUMAC_T1L3",
+   "grid": "luzon",
+   "dev": 0.057,
+   "days": 15,
+   "mw": 18.0
+  },
+  {
+   "res": "03GUMAC_T1L4",
+   "grid": "luzon",
+   "dev": 0.057,
+   "days": 15,
+   "mw": 4.1
+  },
+  {
+   "res": "06HELIOS_G01",
+   "grid": "visayas",
+   "dev": 0.057,
+   "days": 15,
+   "mw": 42.7
+  },
+  {
+   "res": "06HELIOS_S01",
+   "grid": "visayas",
+   "dev": 0.057,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BAKUN_G01",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 20.8
+  },
+  {
+   "res": "01BAUAN_T2L2",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 25.1
+  },
+  {
+   "res": "03INGRID_GS1",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03INGRID_GS2",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03INGRID_GS3",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "03INGRID_GS4",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03INGRID_GS5",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.2
+  },
+  {
+   "res": "03INGRID_GS6",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MALAYA_G01",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MLAYA_L01",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MLAYA_SS",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MLAYA_SS1",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "03MLAYA_T2L1",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06CADIZL_SS",
+   "grid": "visayas",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BAKUN_SS",
+   "grid": "luzon",
+   "dev": 0.06,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "02SUCAT_T1L1",
+   "grid": "luzon",
+   "dev": 0.061,
+   "days": 15,
+   "mw": 543.5
+  },
+  {
+   "res": "06FFHC_G01",
+   "grid": "visayas",
+   "dev": 0.062,
+   "days": 15,
+   "mw": 1.4
+  },
+  {
+   "res": "06CADIZL_T1L1",
+   "grid": "visayas",
+   "dev": 0.063,
+   "days": 15,
+   "mw": 32.7
+  },
+  {
+   "res": "06CADIZL_T1L2",
+   "grid": "visayas",
+   "dev": 0.063,
+   "days": 15,
+   "mw": 10.0
+  },
+  {
+   "res": "06CADIZL_T1L3",
+   "grid": "visayas",
+   "dev": 0.063,
+   "days": 15,
+   "mw": 9.3
+  },
+  {
+   "res": "06CADIZL_T1L4",
+   "grid": "visayas",
+   "dev": 0.063,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06MANSOL_G01",
+   "grid": "visayas",
+   "dev": 0.063,
+   "days": 15,
+   "mw": 14.5
+  },
+  {
+   "res": "06SCBE_G01",
+   "grid": "visayas",
+   "dev": 0.063,
+   "days": 15,
+   "mw": 0.3
+  },
+  {
+   "res": "01BAUANG_SS",
+   "grid": "luzon",
+   "dev": 0.069,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06VMC_G03",
+   "grid": "visayas",
+   "dev": 0.071,
+   "days": 12,
+   "mw": 1.2
+  },
+  {
+   "res": "01BAUAN_T1L3",
+   "grid": "luzon",
+   "dev": 0.072,
+   "days": 15,
+   "mw": 13.9
+  },
+  {
+   "res": "01BAUAN_T1L1",
+   "grid": "luzon",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 28.8
+  },
+  {
+   "res": "01BAUAN_T1L2",
+   "grid": "luzon",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BAUAN_T2L1",
+   "grid": "luzon",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 5.9
+  },
+  {
+   "res": "05CPPC_U01",
+   "grid": "visayas",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 2.4
+  },
+  {
+   "res": "05CPPC_U02",
+   "grid": "visayas",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 1.8
+  },
+  {
+   "res": "05CPPC_U03",
+   "grid": "visayas",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 3.0
+  },
+  {
+   "res": "05CPPC_U04",
+   "grid": "visayas",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 3.4
+  },
+  {
+   "res": "05CPPC_U05",
+   "grid": "visayas",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 3.3
+  },
+  {
+   "res": "05CPPC_U06",
+   "grid": "visayas",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 3.0
+  },
+  {
+   "res": "05CPPC_U07",
+   "grid": "visayas",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 3.1
+  },
+  {
+   "res": "05CPPC_U08",
+   "grid": "visayas",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 3.1
+  },
+  {
+   "res": "05CPPC_U09",
+   "grid": "visayas",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 2.7
+  },
+  {
+   "res": "05CPPC_U10",
+   "grid": "visayas",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 2.9
+  },
+  {
+   "res": "05QUIOT_T1L1",
+   "grid": "visayas",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 125.0
+  },
+  {
+   "res": "01SNEST_SS",
+   "grid": "luzon",
+   "dev": 0.076,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CLARK_T1L1",
+   "grid": "luzon",
+   "dev": 0.078,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MEXICO_SS",
+   "grid": "luzon",
+   "dev": 0.08,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BCNOT_SS",
+   "grid": "luzon",
+   "dev": 0.081,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CNCEP_SS",
+   "grid": "luzon",
+   "dev": 0.081,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CNCEP_T1L3",
+   "grid": "luzon",
+   "dev": 0.081,
+   "days": 15,
+   "mw": 0.5
+  },
+  {
+   "res": "01PNTBNG_U01",
+   "grid": "luzon",
+   "dev": 0.081,
+   "days": 15,
+   "mw": 25.1
+  },
+  {
+   "res": "01PNTBNG_U02",
+   "grid": "luzon",
+   "dev": 0.081,
+   "days": 15,
+   "mw": 26.3
+  },
+  {
+   "res": "01BCNOT_T1L1",
+   "grid": "luzon",
+   "dev": 0.082,
+   "days": 15,
+   "mw": 11.8
+  },
+  {
+   "res": "01BCNOT_T1L2",
+   "grid": "luzon",
+   "dev": 0.082,
+   "days": 15,
+   "mw": 18.5
+  },
+  {
+   "res": "01CIP2_G01",
+   "grid": "luzon",
+   "dev": 0.082,
+   "days": 15,
+   "mw": 5.0
+  },
+  {
+   "res": "01MEX_SFLAPC",
+   "grid": "luzon",
+   "dev": 0.082,
+   "days": 15,
+   "mw": 43.7
+  },
+  {
+   "res": "01PNTBNG_SS",
+   "grid": "luzon",
+   "dev": 0.082,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MEX_AEC",
+   "grid": "luzon",
+   "dev": 0.083,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MEX_MIC",
+   "grid": "luzon",
+   "dev": 0.083,
+   "days": 15,
+   "mw": 6.4
+  },
+  {
+   "res": "01MEX_SKK",
+   "grid": "luzon",
+   "dev": 0.083,
+   "days": 15,
+   "mw": 16.6
+  },
+  {
+   "res": "01ACNPC_G01",
+   "grid": "luzon",
+   "dev": 0.084,
+   "days": 15,
+   "mw": 0.9
+  },
+  {
+   "res": "01AGROSOL_G01",
+   "grid": "luzon",
+   "dev": 0.084,
+   "days": 15,
+   "mw": 1.3
+  },
+  {
+   "res": "01ARMSOL_G01",
+   "grid": "luzon",
+   "dev": 0.084,
+   "days": 15,
+   "mw": 2.4
+  },
+  {
+   "res": "01CNCEP_TEI",
+   "grid": "luzon",
+   "dev": 0.084,
+   "days": 15,
+   "mw": 33.8
+  },
+  {
+   "res": "01CN_TRELC1",
+   "grid": "luzon",
+   "dev": 0.084,
+   "days": 15,
+   "mw": 38.1
+  },
+  {
+   "res": "01DALSOL_G01",
+   "grid": "luzon",
+   "dev": 0.084,
+   "days": 15,
+   "mw": 2.1
+  },
+  {
+   "res": "01TERASU_G01",
+   "grid": "luzon",
+   "dev": 0.084,
+   "days": 15,
+   "mw": 16.2
+  },
+  {
+   "res": "01TPCBUNK_G01",
+   "grid": "luzon",
+   "dev": 0.084,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01TRASU_L01",
+   "grid": "luzon",
+   "dev": 0.084,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11OPOL_SS",
+   "grid": "mindanao",
+   "dev": 0.084,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11CDO_T1L1",
+   "grid": "mindanao",
+   "dev": 0.087,
+   "days": 15,
+   "mw": 17.9
+  },
+  {
+   "res": "11MOR_T1L1",
+   "grid": "mindanao",
+   "dev": 0.087,
+   "days": 15,
+   "mw": 21.2
+  },
+  {
+   "res": "11OPO_T1L1",
+   "grid": "mindanao",
+   "dev": 0.087,
+   "days": 15,
+   "mw": 5.8
+  },
+  {
+   "res": "11PACERM_G01",
+   "grid": "mindanao",
+   "dev": 0.087,
+   "days": 15,
+   "mw": 1.7
+  },
+  {
+   "res": "01ARESOL_G01",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 14.0
+  },
+  {
+   "res": "01CLARK_L03",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 5.5
+  },
+  {
+   "res": "01CLARK_SS",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CLASOL_G01",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 5.1
+  },
+  {
+   "res": "01CNCEP_BAT",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "01CNCEP_BATL",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CNCEP_CAT",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 79.8
+  },
+  {
+   "res": "01CNCEP_DAP2",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 36.9
+  },
+  {
+   "res": "01CN_TRELC2",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 34.8
+  },
+  {
+   "res": "01CONSOL_G01",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 42.8
+  },
+  {
+   "res": "01PETSOL_G01",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 14.1
+  },
+  {
+   "res": "01PETSOL_G02",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 5.5
+  },
+  {
+   "res": "01AEC_L01",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 54.3
+  },
+  {
+   "res": "01ANDA_G01",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 51.0
+  },
+  {
+   "res": "01APEC_G01",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 6.7
+  },
+  {
+   "res": "01ARAYSOL_G01",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 18.9
+  },
+  {
+   "res": "01ARAYSOL_G02",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 11.2
+  },
+  {
+   "res": "01ARAYSOL_G03",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 8.7
+  },
+  {
+   "res": "01ARAYSOL_L03",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CALIBUNK_G01",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 3.8
+  },
+  {
+   "res": "01MEX_CISP",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 33.5
+  },
+  {
+   "res": "01MEX_CLARK1",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 39.1
+  },
+  {
+   "res": "01MEX_CLARK2",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 63.1
+  },
+  {
+   "res": "01MEX_CND",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 60.7
+  },
+  {
+   "res": "01MEX_L01",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 60.1
+  },
+  {
+   "res": "01MEX_PELCO1",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 51.9
+  },
+  {
+   "res": "01RASLAG_G01",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 2.6
+  },
+  {
+   "res": "01RASLAG_G02",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 3.6
+  },
+  {
+   "res": "01RASLAG_G03",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 4.9
+  },
+  {
+   "res": "01RASLAG_G04",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 9.8
+  },
+  {
+   "res": "01TRUSTBIO_G01",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01TRUSTSOL_G01",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 5.4
+  },
+  {
+   "res": "01MEX_PIMP",
+   "grid": "luzon",
+   "dev": 0.09,
+   "days": 15,
+   "mw": 69.2
+  },
+  {
+   "res": "01UPPC_G01",
+   "grid": "luzon",
+   "dev": 0.09,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13DSR_T1L1",
+   "grid": "mindanao",
+   "dev": 0.09,
+   "days": 15,
+   "mw": 6.2
+  },
+  {
+   "res": "01CLARK_L04",
+   "grid": "luzon",
+   "dev": 0.091,
+   "days": 15,
+   "mw": 32.7
+  },
+  {
+   "res": "13CULAMAN_SS",
+   "grid": "mindanao",
+   "dev": 0.091,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13MALITA_BAT",
+   "grid": "mindanao",
+   "dev": 0.091,
+   "days": 15,
+   "mw": 0.3
+  },
+  {
+   "res": "13MALITA_BATL",
+   "grid": "mindanao",
+   "dev": 0.091,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06GAHIT_SS",
+   "grid": "visayas",
+   "dev": 0.094,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08PDPP3_S01",
+   "grid": "visayas",
+   "dev": 0.098,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01SNEST_T3L1",
+   "grid": "luzon",
+   "dev": 0.1,
+   "days": 15,
+   "mw": 23.2
+  },
+  {
+   "res": "01SNEST_T3L2",
+   "grid": "luzon",
+   "dev": 0.1,
+   "days": 15,
+   "mw": 9.3
+  },
+  {
+   "res": "02BALNT_T1L1",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 720.4
+  },
+  {
+   "res": "02ECOPRK_G01",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 1.2
+  },
+  {
+   "res": "02ECOTAGA_G01",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 4.1
+  },
+  {
+   "res": "02MMPP_G01",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 1.2
+  },
+  {
+   "res": "02PNGEA_G01",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 0.3
+  },
+  {
+   "res": "02SMNRTH_G01",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "02TMOBIL_G01",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 8.1
+  },
+  {
+   "res": "02TMOBIL_G02",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "02TMOBIL_G03",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 8.6
+  },
+  {
+   "res": "02TMOBIL_G04",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "02VALSOL_G01",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 2.1
+  },
+  {
+   "res": "08BARO_SS",
+   "grid": "visayas",
+   "dev": 0.105,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08BARTAC_SS",
+   "grid": "visayas",
+   "dev": 0.105,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "02DOLOR_T1L1",
+   "grid": "luzon",
+   "dev": 0.108,
+   "days": 15,
+   "mw": 839.3
+  },
+  {
+   "res": "02PNGYSOL_G01",
+   "grid": "luzon",
+   "dev": 0.108,
+   "days": 15,
+   "mw": 35.2
+  },
+  {
+   "res": "03AWOC_G01",
+   "grid": "luzon",
+   "dev": 0.108,
+   "days": 15,
+   "mw": 7.5
+  },
+  {
+   "res": "05MNDUE_SS",
+   "grid": "visayas",
+   "dev": 0.11,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CRUZD_SS",
+   "grid": "luzon",
+   "dev": 0.111,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BULSOL_G01",
+   "grid": "luzon",
+   "dev": 0.116,
+   "days": 15,
+   "mw": 4.0
+  },
+  {
+   "res": "01CRUZD_MECO",
+   "grid": "luzon",
+   "dev": 0.116,
+   "days": 15,
+   "mw": 4.4
+  },
+  {
+   "res": "01CRUZD_T2L1",
+   "grid": "luzon",
+   "dev": 0.116,
+   "days": 15,
+   "mw": 176.2
+  },
+  {
+   "res": "01SANMIGSOL_G01",
+   "grid": "luzon",
+   "dev": 0.116,
+   "days": 15,
+   "mw": 22.3
+  },
+  {
+   "res": "01SNJOS_T1L2",
+   "grid": "luzon",
+   "dev": 0.116,
+   "days": 15,
+   "mw": 62.7
+  },
+  {
+   "res": "01SPABUL_G01",
+   "grid": "luzon",
+   "dev": 0.116,
+   "days": 15,
+   "mw": 0.6
+  },
+  {
+   "res": "05MNDUE_T1L1",
+   "grid": "visayas",
+   "dev": 0.116,
+   "days": 15,
+   "mw": 12.7
+  },
+  {
+   "res": "05MNDUE_T1L2",
+   "grid": "visayas",
+   "dev": 0.116,
+   "days": 15,
+   "mw": 50.1
+  },
+  {
+   "res": "05MNDUE_T1L4",
+   "grid": "visayas",
+   "dev": 0.116,
+   "days": 15,
+   "mw": 9.6
+  },
+  {
+   "res": "05MNDUE_T1L5",
+   "grid": "visayas",
+   "dev": 0.116,
+   "days": 15,
+   "mw": 54.0
+  },
+  {
+   "res": "01DUHAT_SS",
+   "grid": "luzon",
+   "dev": 0.117,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05LAPU_SS",
+   "grid": "visayas",
+   "dev": 0.118,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06BCL_SS",
+   "grid": "visayas",
+   "dev": 0.119,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04WRIGH_T1L1",
+   "grid": "visayas",
+   "dev": 0.12,
+   "days": 15,
+   "mw": 14.8
+  },
+  {
+   "res": "05EAUC_U01",
+   "grid": "visayas",
+   "dev": 0.123,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "05EAUC_U02",
+   "grid": "visayas",
+   "dev": 0.123,
+   "days": 15,
+   "mw": 6.6
+  },
+  {
+   "res": "05EAUC_U03",
+   "grid": "visayas",
+   "dev": 0.123,
+   "days": 15,
+   "mw": 7.7
+  },
+  {
+   "res": "05EAUC_U04",
+   "grid": "visayas",
+   "dev": 0.123,
+   "days": 15,
+   "mw": 7.9
+  },
+  {
+   "res": "05MCTAN_T1L1",
+   "grid": "visayas",
+   "dev": 0.123,
+   "days": 15,
+   "mw": 109.9
+  },
+  {
+   "res": "01BINGA_SS",
+   "grid": "luzon",
+   "dev": 0.124,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BINGA_U01",
+   "grid": "luzon",
+   "dev": 0.124,
+   "days": 15,
+   "mw": 0.6
+  },
+  {
+   "res": "01BINGA_U02",
+   "grid": "luzon",
+   "dev": 0.124,
+   "days": 15,
+   "mw": 0.8
+  },
+  {
+   "res": "01BINGA_U03",
+   "grid": "luzon",
+   "dev": 0.124,
+   "days": 15,
+   "mw": 0.8
+  },
+  {
+   "res": "01BINGA_U04",
+   "grid": "luzon",
+   "dev": 0.124,
+   "days": 15,
+   "mw": 0.6
+  },
+  {
+   "res": "01BINGA_T1L1",
+   "grid": "luzon",
+   "dev": 0.126,
+   "days": 15,
+   "mw": 6.5
+  },
+  {
+   "res": "06SLYSOL_G02",
+   "grid": "visayas",
+   "dev": 0.126,
+   "days": 15,
+   "mw": 4.2
+  },
+  {
+   "res": "06SLYSOL_G03",
+   "grid": "visayas",
+   "dev": 0.126,
+   "days": 15,
+   "mw": 1.9
+  },
+  {
+   "res": "01LATRI_SS",
+   "grid": "luzon",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06BACOL_SS",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06BACOL_T1L1",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 51.0
+  },
+  {
+   "res": "06BACOL_T1L2",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 24.8
+  },
+  {
+   "res": "06BACOL_T2L2",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 35.7
+  },
+  {
+   "res": "06BACOL_T3L3",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 54.6
+  },
+  {
+   "res": "06BBGPP_G01",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06BBGPP_L01",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06BCLBAS_LD1",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 3.0
+  },
+  {
+   "res": "06CARSOL_G01",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 10.0
+  },
+  {
+   "res": "06CENPRI_U01",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 2.8
+  },
+  {
+   "res": "06CENPRI_U02",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 3.2
+  },
+  {
+   "res": "06CENPRI_U03",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 3.4
+  },
+  {
+   "res": "06CENPRI_U04",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 5.1
+  },
+  {
+   "res": "06CENPRI_U05",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 4.5
+  },
+  {
+   "res": "06HPCO_G01",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06HPCO_G02",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 1.6
+  },
+  {
+   "res": "06SLYSOL_G01",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 7.8
+  },
+  {
+   "res": "06VISTASOL_G01",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 21.6
+  },
+  {
+   "res": "06VISTASOL_L01",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "06VMC_G02",
+   "grid": "visayas",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 3.8
+  },
+  {
+   "res": "04PARA_SS",
+   "grid": "visayas",
+   "dev": 0.131,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11PULA4_U02",
+   "grid": "mindanao",
+   "dev": 0.131,
+   "days": 15,
+   "mw": 23.4
+  },
+  {
+   "res": "01BANTAY_SS",
+   "grid": "luzon",
+   "dev": 0.137,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01AMPHAW_G01",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 3.4
+  },
+  {
+   "res": "01BAKSIP_G01",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 7.5
+  },
+  {
+   "res": "01BINENG_G01",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 3.0
+  },
+  {
+   "res": "01BINENG_G03",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 0.8
+  },
+  {
+   "res": "01DUHAT_T1L1",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 417.9
+  },
+  {
+   "res": "01LATRI_T2L1",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 10.7
+  },
+  {
+   "res": "01LATRI_T2L2",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 19.2
+  },
+  {
+   "res": "01LATRI_T2L3",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 5.5
+  },
+  {
+   "res": "01LAT_BENECO",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 78.3
+  },
+  {
+   "res": "01LAT_PHILEX",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 34.3
+  },
+  {
+   "res": "01MANSOK_G01",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 0.8
+  },
+  {
+   "res": "01NMHC_G01",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 0.8
+  },
+  {
+   "res": "01NMHC_G03",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 0.2
+  },
+  {
+   "res": "01SABANG_G01",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 3.7
+  },
+  {
+   "res": "01SLANGN_G01",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "02ARANE_T1L1",
+   "grid": "luzon",
+   "dev": 0.14,
+   "days": 15,
+   "mw": 453.3
+  },
+  {
+   "res": "01BNTAY_T1L1",
+   "grid": "luzon",
+   "dev": 0.144,
+   "days": 15,
+   "mw": 20.1
+  },
+  {
+   "res": "01BNTAY_T1L2",
+   "grid": "luzon",
+   "dev": 0.144,
+   "days": 15,
+   "mw": 13.9
+  },
+  {
+   "res": "01BNTAY_T1L3",
+   "grid": "luzon",
+   "dev": 0.144,
+   "days": 15,
+   "mw": 0.3
+  },
+  {
+   "res": "01AMBUK_U03",
+   "grid": "luzon",
+   "dev": 0.149,
+   "days": 15,
+   "mw": 3.9
+  },
+  {
+   "res": "01AMBUK_U01",
+   "grid": "luzon",
+   "dev": 0.151,
+   "days": 15,
+   "mw": 4.3
+  },
+  {
+   "res": "01AMBUK_U02",
+   "grid": "luzon",
+   "dev": 0.151,
+   "days": 15,
+   "mw": 4.0
+  },
+  {
+   "res": "02PACO_T1L1",
+   "grid": "luzon",
+   "dev": 0.152,
+   "days": 15,
+   "mw": 420.8
+  },
+  {
+   "res": "13MATAN_SS",
+   "grid": "mindanao",
+   "dev": 0.155,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01AMBUK_SS",
+   "grid": "luzon",
+   "dev": 0.156,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01AMBUK_T1L1",
+   "grid": "luzon",
+   "dev": 0.156,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "09LALA_SS",
+   "grid": "mindanao",
+   "dev": 0.168,
+   "days": 15,
+   "mw": 0.6
+  },
+  {
+   "res": "01GIFT_G01",
+   "grid": "luzon",
+   "dev": 0.18,
+   "days": 15,
+   "mw": 9.9
+  },
+  {
+   "res": "01BONGSOL_G01",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 8.6
+  },
+  {
+   "res": "01CABSOL_G01",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 2.9
+  },
+  {
+   "res": "01CBNTU_T1L1",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 63.3
+  },
+  {
+   "res": "01CBNTU_T1L3",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 23.1
+  },
+  {
+   "res": "01CBNTU_T2L1",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 50.1
+  },
+  {
+   "res": "01CBNTU_T2L2",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 33.5
+  },
+  {
+   "res": "01CBN_CELCOR",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 22.8
+  },
+  {
+   "res": "01CBN_CELCOR2",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 32.3
+  },
+  {
+   "res": "01GIFT_G02",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 5.0
+  },
+  {
+   "res": "01GRGOLD_G01",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 4.9
+  },
+  {
+   "res": "01IPOWER_G01",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 2.0
+  },
+  {
+   "res": "01IPOWER_G02",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 6.3
+  },
+  {
+   "res": "01MASIWA_G01",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 8.0
+  },
+  {
+   "res": "01MASIWA_SS",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01NUEVASOL_G01",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 12.7
+  },
+  {
+   "res": "01SJSOL_G01",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 5.6
+  },
+  {
+   "res": "01VSGRIP_G01",
+   "grid": "luzon",
+   "dev": 0.185,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "01CBNTU_SS",
+   "grid": "luzon",
+   "dev": 0.186,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08PEDC_U02",
+   "grid": "visayas",
+   "dev": 0.247,
+   "days": 15,
+   "mw": 64.3
+  },
+  {
+   "res": "08ILO_SS1",
+   "grid": "visayas",
+   "dev": 0.252,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08PEDC_SS1",
+   "grid": "visayas",
+   "dev": 0.252,
+   "days": 15,
+   "mw": 10.2
+  },
+  {
+   "res": "08PEDC_SS2",
+   "grid": "visayas",
+   "dev": 0.252,
+   "days": 15,
+   "mw": 8.9
+  },
+  {
+   "res": "08PEDC_SS3",
+   "grid": "visayas",
+   "dev": 0.252,
+   "days": 15,
+   "mw": 3.7
+  },
+  {
+   "res": "08PEDC_T1L1",
+   "grid": "visayas",
+   "dev": 0.252,
+   "days": 15,
+   "mw": 36.7
+  },
+  {
+   "res": "08PEDC_T1L2",
+   "grid": "visayas",
+   "dev": 0.252,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08PEDC_U01",
+   "grid": "visayas",
+   "dev": 0.252,
+   "days": 15,
+   "mw": 68.3
+  },
+  {
+   "res": "04CLBYOG_SS",
+   "grid": "visayas",
+   "dev": 0.262,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "04CLBYBNK_G01",
+   "grid": "visayas",
+   "dev": 0.266,
+   "days": 15,
+   "mw": 4.8
+  },
+  {
+   "res": "04CLBYOG_L02",
+   "grid": "visayas",
+   "dev": 0.266,
+   "days": 15,
+   "mw": 34.2
+  },
+  {
+   "res": "11PULA4_U01",
+   "grid": "mindanao",
+   "dev": 0.272,
+   "days": 15,
+   "mw": 33.6
+  },
+  {
+   "res": "11MARAM_SS",
+   "grid": "mindanao",
+   "dev": 0.29,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BYOMB_SS",
+   "grid": "luzon",
+   "dev": 0.321,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01BYOMB_DID",
+   "grid": "luzon",
+   "dev": 0.327,
+   "days": 15,
+   "mw": 21.0
+  },
+  {
+   "res": "01BYOMB_T1L2",
+   "grid": "luzon",
+   "dev": 0.327,
+   "days": 15,
+   "mw": 13.3
+  },
+  {
+   "res": "01MATUNO_G01",
+   "grid": "luzon",
+   "dev": 0.327,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08DINGL_T1L4",
+   "grid": "visayas",
+   "dev": 0.33,
+   "days": 15,
+   "mw": 7.3
+  },
+  {
+   "res": "01BYOMB_T1L1",
+   "grid": "luzon",
+   "dev": 0.333,
+   "days": 15,
+   "mw": 25.1
+  },
+  {
+   "res": "01BYOMB_T1L3",
+   "grid": "luzon",
+   "dev": 0.333,
+   "days": 15,
+   "mw": 11.1
+  },
+  {
+   "res": "01IBULAO_G01",
+   "grid": "luzon",
+   "dev": 0.333,
+   "days": 15,
+   "mw": 1.2
+  },
+  {
+   "res": "01SMBELL_G01",
+   "grid": "luzon",
+   "dev": 0.333,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08DINGL_T2L1",
+   "grid": "visayas",
+   "dev": 0.338,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08DINGL_T2L2",
+   "grid": "visayas",
+   "dev": 0.338,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08PDPP1_U02",
+   "grid": "visayas",
+   "dev": 0.338,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08PDPP1_U03",
+   "grid": "visayas",
+   "dev": 0.338,
+   "days": 15,
+   "mw": 3.3
+  },
+  {
+   "res": "08PDPP1_U05",
+   "grid": "visayas",
+   "dev": 0.338,
+   "days": 15,
+   "mw": 2.7
+  },
+  {
+   "res": "08PDPP3_C",
+   "grid": "visayas",
+   "dev": 0.338,
+   "days": 15,
+   "mw": 6.6
+  },
+  {
+   "res": "08PDPP3_E",
+   "grid": "visayas",
+   "dev": 0.338,
+   "days": 15,
+   "mw": 6.1
+  },
+  {
+   "res": "08PDPP3_G",
+   "grid": "visayas",
+   "dev": 0.338,
+   "days": 15,
+   "mw": 7.1
+  },
+  {
+   "res": "08PDPP3_H",
+   "grid": "visayas",
+   "dev": 0.338,
+   "days": 15,
+   "mw": 5.1
+  },
+  {
+   "res": "08DINGL_SS",
+   "grid": "visayas",
+   "dev": 0.339,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "14MTAPO_U02",
+   "grid": "mindanao",
+   "dev": 0.339,
+   "days": 15,
+   "mw": 40.3
+  },
+  {
+   "res": "08CASA_G01",
+   "grid": "visayas",
+   "dev": 0.34,
+   "days": 15,
+   "mw": 2.5
+  },
+  {
+   "res": "08CASA_G02",
+   "grid": "visayas",
+   "dev": 0.34,
+   "days": 15,
+   "mw": 0.3
+  },
+  {
+   "res": "08DINGL_T1L1",
+   "grid": "visayas",
+   "dev": 0.34,
+   "days": 15,
+   "mw": 9.0
+  },
+  {
+   "res": "08DINGL_T1L2",
+   "grid": "visayas",
+   "dev": 0.34,
+   "days": 15,
+   "mw": 7.6
+  },
+  {
+   "res": "08DINGL_T1L3",
+   "grid": "visayas",
+   "dev": 0.34,
+   "days": 15,
+   "mw": 28.8
+  },
+  {
+   "res": "08STBAR_SS1",
+   "grid": "visayas",
+   "dev": 0.34,
+   "days": 15,
+   "mw": 0.2
+  },
+  {
+   "res": "08STBAR_T2L2",
+   "grid": "visayas",
+   "dev": 0.342,
+   "days": 15,
+   "mw": 42.3
+  },
+  {
+   "res": "08SUWECO_G01",
+   "grid": "visayas",
+   "dev": 0.342,
+   "days": 15,
+   "mw": 1.9
+  },
+  {
+   "res": "13DCPP_U01",
+   "grid": "mindanao",
+   "dev": 0.342,
+   "days": 15,
+   "mw": 124.6
+  },
+  {
+   "res": "14SARANG_U02",
+   "grid": "mindanao",
+   "dev": 0.342,
+   "days": 15,
+   "mw": 90.2
+  },
+  {
+   "res": "14KAMANGA_SS",
+   "grid": "mindanao",
+   "dev": 0.344,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13DCPP_U02",
+   "grid": "mindanao",
+   "dev": 0.346,
+   "days": 15,
+   "mw": 95.9
+  },
+  {
+   "res": "08STBAR_SS3",
+   "grid": "visayas",
+   "dev": 0.35,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08STBAR_SS2",
+   "grid": "visayas",
+   "dev": 0.351,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08STBAR_T1L1",
+   "grid": "visayas",
+   "dev": 0.351,
+   "days": 15,
+   "mw": 28.0
+  },
+  {
+   "res": "08STBPB1_U01",
+   "grid": "visayas",
+   "dev": 0.351,
+   "days": 15,
+   "mw": 3.1
+  },
+  {
+   "res": "08STBPB1_U02",
+   "grid": "visayas",
+   "dev": 0.351,
+   "days": 15,
+   "mw": 3.0
+  },
+  {
+   "res": "08STBPB1_U03",
+   "grid": "visayas",
+   "dev": 0.351,
+   "days": 15,
+   "mw": 2.1
+  },
+  {
+   "res": "08STBPB1_U04",
+   "grid": "visayas",
+   "dev": 0.351,
+   "days": 15,
+   "mw": 2.8
+  },
+  {
+   "res": "13DAV_T1L1",
+   "grid": "mindanao",
+   "dev": 0.363,
+   "days": 15,
+   "mw": 44.6
+  },
+  {
+   "res": "13DIG_T3L1",
+   "grid": "mindanao",
+   "dev": 0.363,
+   "days": 15,
+   "mw": 14.5
+  },
+  {
+   "res": "13TORIL_SS",
+   "grid": "mindanao",
+   "dev": 0.369,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13BUNAW_SS",
+   "grid": "mindanao",
+   "dev": 0.374,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "11PULA4_U03",
+   "grid": "mindanao",
+   "dev": 0.376,
+   "days": 15,
+   "mw": 35.8
+  },
+  {
+   "res": "04SNAGU_L01",
+   "grid": "visayas",
+   "dev": 0.377,
+   "days": 15,
+   "mw": 6.7
+  },
+  {
+   "res": "14MTAPO_U01",
+   "grid": "mindanao",
+   "dev": 0.382,
+   "days": 15,
+   "mw": 46.3
+  },
+  {
+   "res": "11CRYSSUG_G01",
+   "grid": "mindanao",
+   "dev": 0.384,
+   "days": 15,
+   "mw": 2.0
+  },
+  {
+   "res": "11KEGMAR_G01",
+   "grid": "mindanao",
+   "dev": 0.384,
+   "days": 15,
+   "mw": 1.2
+  },
+  {
+   "res": "11KIB_T1L1",
+   "grid": "mindanao",
+   "dev": 0.384,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11KIB_T1L2",
+   "grid": "mindanao",
+   "dev": 0.384,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11MALADU_G01",
+   "grid": "mindanao",
+   "dev": 0.384,
+   "days": 15,
+   "mw": 2.6
+  },
+  {
+   "res": "11MLY_T1L1",
+   "grid": "mindanao",
+   "dev": 0.384,
+   "days": 15,
+   "mw": 49.3
+  },
+  {
+   "res": "11NBPC_G01",
+   "grid": "mindanao",
+   "dev": 0.384,
+   "days": 15,
+   "mw": 1.5
+  },
+  {
+   "res": "11PG4_T1L1",
+   "grid": "mindanao",
+   "dev": 0.384,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11PULANAI_G01",
+   "grid": "mindanao",
+   "dev": 0.384,
+   "days": 15,
+   "mw": 8.1
+  },
+  {
+   "res": "14KIDAP_SS",
+   "grid": "mindanao",
+   "dev": 0.386,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "14BGN_T1L1",
+   "grid": "mindanao",
+   "dev": 0.39,
+   "days": 15,
+   "mw": 40.2
+  },
+  {
+   "res": "14COTSUGR_G01",
+   "grid": "mindanao",
+   "dev": 0.39,
+   "days": 15,
+   "mw": 1.3
+  },
+  {
+   "res": "14MTAPO_U03",
+   "grid": "mindanao",
+   "dev": 0.39,
+   "days": 15,
+   "mw": 2.7
+  },
+  {
+   "res": "13DLP_T2L2",
+   "grid": "mindanao",
+   "dev": 0.435,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13DRA_T1L1",
+   "grid": "mindanao",
+   "dev": 0.435,
+   "days": 15,
+   "mw": 112.4
+  },
+  {
+   "res": "13DRA_T1L2",
+   "grid": "mindanao",
+   "dev": 0.435,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "09CLB_T1L1",
+   "grid": "mindanao",
+   "dev": 0.439,
+   "days": 15,
+   "mw": 48.6
+  },
+  {
+   "res": "09JIMDSL_U01",
+   "grid": "mindanao",
+   "dev": 0.439,
+   "days": 15,
+   "mw": 1.1
+  },
+  {
+   "res": "09JIMDSL_U02",
+   "grid": "mindanao",
+   "dev": 0.439,
+   "days": 15,
+   "mw": 1.2
+  },
+  {
+   "res": "09PANABNK_U01",
+   "grid": "mindanao",
+   "dev": 0.439,
+   "days": 15,
+   "mw": 1.0
+  },
+  {
+   "res": "09PANABNK_U02",
+   "grid": "mindanao",
+   "dev": 0.439,
+   "days": 15,
+   "mw": 0.9
+  },
+  {
+   "res": "09AURORA_SS",
+   "grid": "mindanao",
+   "dev": 0.441,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "09LIBPOWR_G01",
+   "grid": "mindanao",
+   "dev": 0.444,
+   "days": 15,
+   "mw": 6.0
+  },
+  {
+   "res": "01MAGAT_BAT",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 2.0
+  },
+  {
+   "res": "01MAGAT_BATL",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MAGAT_SS",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01MAGAT_U01",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 2.9
+  },
+  {
+   "res": "01MAGAT_U02",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 3.8
+  },
+  {
+   "res": "01MAGAT_U03",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 21.8
+  },
+  {
+   "res": "01MAGAT_U04",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 10.7
+  },
+  {
+   "res": "09KAP_T1L1",
+   "grid": "mindanao",
+   "dev": 0.448,
+   "days": 15,
+   "mw": 15.8
+  },
+  {
+   "res": "09MHY_T1L1",
+   "grid": "mindanao",
+   "dev": 0.448,
+   "days": 15,
+   "mw": 14.1
+  },
+  {
+   "res": "09SML_T1L1",
+   "grid": "mindanao",
+   "dev": 0.448,
+   "days": 15,
+   "mw": 37.6
+  },
+  {
+   "res": "01SNTGO_SS",
+   "grid": "luzon",
+   "dev": 0.45,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CORDONSOL_G01",
+   "grid": "luzon",
+   "dev": 0.452,
+   "days": 15,
+   "mw": 21.5
+  },
+  {
+   "res": "01IBEC_G01",
+   "grid": "luzon",
+   "dev": 0.452,
+   "days": 15,
+   "mw": 13.1
+  },
+  {
+   "res": "01MARIS_U01",
+   "grid": "luzon",
+   "dev": 0.452,
+   "days": 15,
+   "mw": 1.5
+  },
+  {
+   "res": "01MARIS_U02",
+   "grid": "luzon",
+   "dev": 0.452,
+   "days": 15,
+   "mw": 1.5
+  },
+  {
+   "res": "01NIABAL_G01",
+   "grid": "luzon",
+   "dev": 0.452,
+   "days": 15,
+   "mw": 1.5
+  },
+  {
+   "res": "01SNTGO_T1L1",
+   "grid": "luzon",
+   "dev": 0.452,
+   "days": 15,
+   "mw": 1.3
+  },
+  {
+   "res": "01SNTGO_T1L2",
+   "grid": "luzon",
+   "dev": 0.452,
+   "days": 15,
+   "mw": 27.7
+  },
+  {
+   "res": "01SNTGO_T1L3",
+   "grid": "luzon",
+   "dev": 0.452,
+   "days": 15,
+   "mw": 22.9
+  },
+  {
+   "res": "01SNTGO_T2L1",
+   "grid": "luzon",
+   "dev": 0.452,
+   "days": 15,
+   "mw": 19.3
+  },
+  {
+   "res": "01SNTGO_T2L2",
+   "grid": "luzon",
+   "dev": 0.452,
+   "days": 15,
+   "mw": 22.8
+  },
+  {
+   "res": "01LAL_L01",
+   "grid": "luzon",
+   "dev": 0.456,
+   "days": 12,
+   "mw": 0.0
+  },
+  {
+   "res": "01LAL_SS",
+   "grid": "luzon",
+   "dev": 0.456,
+   "days": 12,
+   "mw": 0.0
+  },
+  {
+   "res": "11KIBAWE_SS",
+   "grid": "mindanao",
+   "dev": 0.468,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "11KBSOL_G01",
+   "grid": "mindanao",
+   "dev": 0.47,
+   "days": 15,
+   "mw": 3.3
+  },
+  {
+   "res": "11PAL_T1L1",
+   "grid": "mindanao",
+   "dev": 0.47,
+   "days": 15,
+   "mw": 11.7
+  },
+  {
+   "res": "13BNS_T1L1",
+   "grid": "mindanao",
+   "dev": 0.488,
+   "days": 15,
+   "mw": 9.7
+  },
+  {
+   "res": "13DIGSOL_G01",
+   "grid": "mindanao",
+   "dev": 0.488,
+   "days": 15,
+   "mw": 8.0
+  },
+  {
+   "res": "13DIG_T2L1",
+   "grid": "mindanao",
+   "dev": 0.488,
+   "days": 15,
+   "mw": 26.6
+  },
+  {
+   "res": "13DSP_T1L1",
+   "grid": "mindanao",
+   "dev": 0.488,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "13MPCDIG_G01",
+   "grid": "mindanao",
+   "dev": 0.488,
+   "days": 15,
+   "mw": 3.7
+  },
+  {
+   "res": "13PMA_T1L1",
+   "grid": "mindanao",
+   "dev": 0.488,
+   "days": 15,
+   "mw": 11.5
+  },
+  {
+   "res": "08COSMO_G01",
+   "grid": "visayas",
+   "dev": 0.513,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08SNJOSE_L02",
+   "grid": "visayas",
+   "dev": 0.513,
+   "days": 15,
+   "mw": 16.6
+  },
+  {
+   "res": "08SNJOSE_L03",
+   "grid": "visayas",
+   "dev": 0.513,
+   "days": 15,
+   "mw": 4.0
+  },
+  {
+   "res": "08SNJOSE_L01",
+   "grid": "visayas",
+   "dev": 0.52,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "13BAJ_T1L1",
+   "grid": "mindanao",
+   "dev": 0.527,
+   "days": 15,
+   "mw": 124.4
+  },
+  {
+   "res": "13BAJ_T1L2",
+   "grid": "mindanao",
+   "dev": 0.527,
+   "days": 15,
+   "mw": 30.0
+  },
+  {
+   "res": "13DAVAO_SS",
+   "grid": "mindanao",
+   "dev": 0.527,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13SIBULAN_G01",
+   "grid": "mindanao",
+   "dev": 0.527,
+   "days": 15,
+   "mw": 30.2
+  },
+  {
+   "res": "13TALOM23_G01",
+   "grid": "mindanao",
+   "dev": 0.527,
+   "days": 15,
+   "mw": 2.2
+  },
+  {
+   "res": "13AGUA_G01",
+   "grid": "mindanao",
+   "dev": 0.534,
+   "days": 15,
+   "mw": 1.8
+  },
+  {
+   "res": "13DIG_T1L1",
+   "grid": "mindanao",
+   "dev": 0.534,
+   "days": 15,
+   "mw": 1.0
+  },
+  {
+   "res": "13DLP_T1L1",
+   "grid": "mindanao",
+   "dev": 0.534,
+   "days": 15,
+   "mw": 52.1
+  },
+  {
+   "res": "13DLP_T1L2",
+   "grid": "mindanao",
+   "dev": 0.534,
+   "days": 15,
+   "mw": 29.5
+  },
+  {
+   "res": "13DLP_T1L3",
+   "grid": "mindanao",
+   "dev": 0.534,
+   "days": 15,
+   "mw": 34.3
+  },
+  {
+   "res": "13TALOM1_G01",
+   "grid": "mindanao",
+   "dev": 0.534,
+   "days": 15,
+   "mw": 0.5
+  },
+  {
+   "res": "13TUDAY2_G01",
+   "grid": "mindanao",
+   "dev": 0.534,
+   "days": 15,
+   "mw": 5.1
+  },
+  {
+   "res": "08SNJOSE_SS",
+   "grid": "visayas",
+   "dev": 0.535,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01CAGBIO_G01",
+   "grid": "luzon",
+   "dev": 0.557,
+   "days": 15,
+   "mw": 6.7
+  },
+  {
+   "res": "01GAMU_SS",
+   "grid": "luzon",
+   "dev": 0.557,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01GAMU_T1L2",
+   "grid": "luzon",
+   "dev": 0.557,
+   "days": 15,
+   "mw": 20.0
+  },
+  {
+   "res": "01LASUER_U01",
+   "grid": "luzon",
+   "dev": 0.557,
+   "days": 15,
+   "mw": 1.6
+  },
+  {
+   "res": "01MEGASOL_G01",
+   "grid": "luzon",
+   "dev": 0.557,
+   "days": 15,
+   "mw": 20.1
+  },
+  {
+   "res": "01GAMU_BAT",
+   "grid": "luzon",
+   "dev": 0.57,
+   "days": 15,
+   "mw": 1.0
+  },
+  {
+   "res": "01GAMU_BATL",
+   "grid": "luzon",
+   "dev": 0.57,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01GAMU_T1L1",
+   "grid": "luzon",
+   "dev": 0.57,
+   "days": 15,
+   "mw": 40.9
+  },
+  {
+   "res": "01GFII_G01",
+   "grid": "luzon",
+   "dev": 0.57,
+   "days": 15,
+   "mw": 2.3
+  },
+  {
+   "res": "09POLAN_SS",
+   "grid": "mindanao",
+   "dev": 0.623,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "09RXS_T2L1",
+   "grid": "mindanao",
+   "dev": 0.626,
+   "days": 15,
+   "mw": 47.2
+  },
+  {
+   "res": "01CAGYSOL_G01",
+   "grid": "luzon",
+   "dev": 0.629,
+   "days": 15,
+   "mw": 33.1
+  },
+  {
+   "res": "01LIMSOL_G01",
+   "grid": "luzon",
+   "dev": 0.629,
+   "days": 15,
+   "mw": 12.9
+  },
+  {
+   "res": "01MAGAPIT_BAT",
+   "grid": "luzon",
+   "dev": 0.629,
+   "days": 15,
+   "mw": 1.2
+  },
+  {
+   "res": "01MAGAPIT_BATL",
+   "grid": "luzon",
+   "dev": 0.629,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01TGEGA_SS",
+   "grid": "luzon",
+   "dev": 0.629,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "01TGEGA_T1L1",
+   "grid": "luzon",
+   "dev": 0.629,
+   "days": 15,
+   "mw": 81.6
+  },
+  {
+   "res": "01TG_CGELCO1",
+   "grid": "luzon",
+   "dev": 0.629,
+   "days": 15,
+   "mw": 9.8
+  },
+  {
+   "res": "01TG_CGELCO2",
+   "grid": "luzon",
+   "dev": 0.629,
+   "days": 15,
+   "mw": 41.8
+  },
+  {
+   "res": "01TG_ISELCO2",
+   "grid": "luzon",
+   "dev": 0.629,
+   "days": 15,
+   "mw": 11.6
+  },
+  {
+   "res": "08PANIT_SS",
+   "grid": "visayas",
+   "dev": 0.668,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08PANIT_T1L1",
+   "grid": "visayas",
+   "dev": 0.669,
+   "days": 15,
+   "mw": 51.1
+  },
+  {
+   "res": "08PANIT_T2L2",
+   "grid": "visayas",
+   "dev": 0.669,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08BANTAP_L01",
+   "grid": "visayas",
+   "dev": 0.673,
+   "days": 15,
+   "mw": 23.2
+  },
+  {
+   "res": "12TM2_U01",
+   "grid": "mindanao",
+   "dev": 0.69,
+   "days": 15,
+   "mw": 12.6
+  },
+  {
+   "res": "08BVISTA_L01",
+   "grid": "visayas",
+   "dev": 0.692,
+   "days": 15,
+   "mw": 7.1
+  },
+  {
+   "res": "08BVISTA_L02",
+   "grid": "visayas",
+   "dev": 0.692,
+   "days": 15,
+   "mw": 4.4
+  },
+  {
+   "res": "08SLWIND_G01",
+   "grid": "visayas",
+   "dev": 0.692,
+   "days": 15,
+   "mw": 4.1
+  },
+  {
+   "res": "08SLWIND_L01",
+   "grid": "visayas",
+   "dev": 0.692,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12TM2_U02",
+   "grid": "mindanao",
+   "dev": 0.711,
+   "days": 15,
+   "mw": 15.7
+  },
+  {
+   "res": "12THERMA2_SS",
+   "grid": "mindanao",
+   "dev": 0.716,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12NASIP_SS",
+   "grid": "mindanao",
+   "dev": 0.717,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12BUT_T2L1",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 9.3
+  },
+  {
+   "res": "12KEGGIN_G01",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12SLU_T1L1",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 18.0
+  },
+  {
+   "res": "14ASTROSOL_G01",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 8.3
+  },
+  {
+   "res": "14GLA_T1L1",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 9.7
+  },
+  {
+   "res": "14KAM_L03",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "14LLE_T1L1",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 34.8
+  },
+  {
+   "res": "14PKPSOC_G01",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 6.4
+  },
+  {
+   "res": "14PTU_T1L1",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 27.8
+  },
+  {
+   "res": "14SARANG_U01",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 75.3
+  },
+  {
+   "res": "14SIGHYDRO_G01",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "14TIN_T1L1",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 30.1
+  },
+  {
+   "res": "14TIN_T1L2",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 75.5
+  },
+  {
+   "res": "14GENSAN_SS",
+   "grid": "mindanao",
+   "dev": 0.721,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13TM1_U01",
+   "grid": "mindanao",
+   "dev": 0.731,
+   "days": 15,
+   "mw": 19.1
+  },
+  {
+   "res": "13TM1_U02",
+   "grid": "mindanao",
+   "dev": 0.731,
+   "days": 15,
+   "mw": 15.8
+  },
+  {
+   "res": "13THERMA1_SS",
+   "grid": "mindanao",
+   "dev": 0.732,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13BNY_T1L1",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 35.6
+  },
+  {
+   "res": "13MACO_BAT",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 0.7
+  },
+  {
+   "res": "13MACO_BATL",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13MACO_SS",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13MAGDBNK_G01",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "13MAGDBNK_U01",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 1.8
+  },
+  {
+   "res": "13MAGDBNK_U02",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 1.3
+  },
+  {
+   "res": "13MAGDBNK_U03",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 1.5
+  },
+  {
+   "res": "13MATIBNK_G01",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 4.1
+  },
+  {
+   "res": "13TGM_T1L1",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 44.3
+  },
+  {
+   "res": "12LKMAINIT_G01",
+   "grid": "mindanao",
+   "dev": 0.856,
+   "days": 15,
+   "mw": 10.3
+  },
+  {
+   "res": "12BUTUAN_SS",
+   "grid": "mindanao",
+   "dev": 0.89,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12ASIGA_G01",
+   "grid": "mindanao",
+   "dev": 0.895,
+   "days": 15,
+   "mw": 1.3
+  },
+  {
+   "res": "12BYG_T1L1",
+   "grid": "mindanao",
+   "dev": 0.895,
+   "days": 15,
+   "mw": 22.8
+  },
+  {
+   "res": "12LMO_T1L1",
+   "grid": "mindanao",
+   "dev": 0.895,
+   "days": 15,
+   "mw": 22.2
+  },
+  {
+   "res": "12NAS_T1L1",
+   "grid": "mindanao",
+   "dev": 0.895,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12SNT_T1L1",
+   "grid": "mindanao",
+   "dev": 0.895,
+   "days": 15,
+   "mw": 28.9
+  },
+  {
+   "res": "13ASU_T1L1",
+   "grid": "mindanao",
+   "dev": 0.907,
+   "days": 15,
+   "mw": 19.9
+  },
+  {
+   "res": "13EUROH_G01",
+   "grid": "mindanao",
+   "dev": 0.907,
+   "days": 15,
+   "mw": 0.6
+  },
+  {
+   "res": "13MON_T1L1",
+   "grid": "mindanao",
+   "dev": 0.907,
+   "days": 15,
+   "mw": 21.3
+  },
+  {
+   "res": "13MSR_T1L1",
+   "grid": "mindanao",
+   "dev": 0.907,
+   "days": 15,
+   "mw": 19.6
+  },
+  {
+   "res": "13NABUN_SS",
+   "grid": "mindanao",
+   "dev": 0.907,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "14BIOMS_U01",
+   "grid": "mindanao",
+   "dev": 0.967,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "14MARBEL_U01",
+   "grid": "mindanao",
+   "dev": 0.967,
+   "days": 15,
+   "mw": 0.2
+  },
+  {
+   "res": "14TACSUR_L02",
+   "grid": "mindanao",
+   "dev": 0.967,
+   "days": 15,
+   "mw": 26.5
+  },
+  {
+   "res": "14BGN_T2L1",
+   "grid": "mindanao",
+   "dev": 0.968,
+   "days": 15,
+   "mw": 15.8
+  },
+  {
+   "res": "14BIOGS_G01",
+   "grid": "mindanao",
+   "dev": 0.968,
+   "days": 15,
+   "mw": 1.0
+  },
+  {
+   "res": "14DSA_T2L1",
+   "grid": "mindanao",
+   "dev": 0.968,
+   "days": 15,
+   "mw": 30.6
+  },
+  {
+   "res": "14GERBIO_G01",
+   "grid": "mindanao",
+   "dev": 0.968,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "14KLN_T1L1",
+   "grid": "mindanao",
+   "dev": 0.968,
+   "days": 15,
+   "mw": 11.0
+  },
+  {
+   "res": "14NVSOL_G01",
+   "grid": "mindanao",
+   "dev": 0.968,
+   "days": 15,
+   "mw": 1.9
+  },
+  {
+   "res": "14SPGI_U01",
+   "grid": "mindanao",
+   "dev": 0.968,
+   "days": 15,
+   "mw": 4.1
+  },
+  {
+   "res": "14SRL_T1L1",
+   "grid": "mindanao",
+   "dev": 0.968,
+   "days": 15,
+   "mw": 25.9
+  },
+  {
+   "res": "14SUPKOR_G01",
+   "grid": "mindanao",
+   "dev": 0.968,
+   "days": 15,
+   "mw": 1.7
+  },
+  {
+   "res": "14TACUR_SS",
+   "grid": "mindanao",
+   "dev": 0.972,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08NABAS_L02",
+   "grid": "visayas",
+   "dev": 0.979,
+   "days": 15,
+   "mw": 38.0
+  },
+  {
+   "res": "08NABAS_SS",
+   "grid": "visayas",
+   "dev": 0.979,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08TIMBA_G01",
+   "grid": "visayas",
+   "dev": 0.979,
+   "days": 15,
+   "mw": 3.9
+  },
+  {
+   "res": "08GLOBAL_G01",
+   "grid": "visayas",
+   "dev": 0.98,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "08NABASDPP_U01",
+   "grid": "visayas",
+   "dev": 0.98,
+   "days": 15,
+   "mw": 1.8
+  },
+  {
+   "res": "08NABASDPP_U02",
+   "grid": "visayas",
+   "dev": 0.98,
+   "days": 15,
+   "mw": 2.5
+  },
+  {
+   "res": "08NABAS_L01",
+   "grid": "visayas",
+   "dev": 0.98,
+   "days": 15,
+   "mw": 34.0
+  },
+  {
+   "res": "08NABAS_L03",
+   "grid": "visayas",
+   "dev": 0.98,
+   "days": 15,
+   "mw": 4.0
+  },
+  {
+   "res": "08PWIND_G01",
+   "grid": "visayas",
+   "dev": 0.98,
+   "days": 15,
+   "mw": 5.7
+  },
+  {
+   "res": "08PWIND_G02",
+   "grid": "visayas",
+   "dev": 0.98,
+   "days": 15,
+   "mw": 3.5
+  },
+  {
+   "res": "12PLACER_SS",
+   "grid": "mindanao",
+   "dev": 1.143,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12MAD_T1L1",
+   "grid": "mindanao",
+   "dev": 1.148,
+   "days": 15,
+   "mw": 27.8
+  },
+  {
+   "res": "12NACSUR_G01",
+   "grid": "mindanao",
+   "dev": 1.148,
+   "days": 15,
+   "mw": 2.6
+  },
+  {
+   "res": "12STCRUZ_L01",
+   "grid": "mindanao",
+   "dev": 1.148,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12SUR_T1L1",
+   "grid": "mindanao",
+   "dev": 1.148,
+   "days": 15,
+   "mw": 18.5
+  },
+  {
+   "res": "12BAG_T1L1",
+   "grid": "mindanao",
+   "dev": 1.223,
+   "days": 15,
+   "mw": 6.2
+  },
+  {
+   "res": "12PBA_T1L1",
+   "grid": "mindanao",
+   "dev": 1.223,
+   "days": 15,
+   "mw": 7.7
+  },
+  {
+   "res": "12TBO_T1L1",
+   "grid": "mindanao",
+   "dev": 1.223,
+   "days": 15,
+   "mw": 5.5
+  },
+  {
+   "res": "12TRE_T1L1",
+   "grid": "mindanao",
+   "dev": 1.223,
+   "days": 15,
+   "mw": 7.2
+  },
+  {
+   "res": "12BISLIG_SS",
+   "grid": "mindanao",
+   "dev": 1.224,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12ALE_T1L1",
+   "grid": "mindanao",
+   "dev": 1.26,
+   "days": 15,
+   "mw": 28.3
+  },
+  {
+   "res": "12KEGTAN_G01",
+   "grid": "mindanao",
+   "dev": 1.26,
+   "days": 15,
+   "mw": 2.0
+  },
+  {
+   "res": "12PKSFRA_U01",
+   "grid": "mindanao",
+   "dev": 1.26,
+   "days": 15,
+   "mw": 1.9
+  },
+  {
+   "res": "12PKSFRA_U02",
+   "grid": "mindanao",
+   "dev": 1.26,
+   "days": 15,
+   "mw": 1.0
+  },
+  {
+   "res": "12SFRAN_SS",
+   "grid": "mindanao",
+   "dev": 1.26,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "12TDG_T1L1",
+   "grid": "mindanao",
+   "dev": 1.26,
+   "days": 15,
+   "mw": 15.7
+  },
+  {
+   "res": "09NAGA_SS",
+   "grid": "mindanao",
+   "dev": 1.293,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "09MLS_T1L1",
+   "grid": "mindanao",
+   "dev": 1.295,
+   "days": 15,
+   "mw": 15.2
+  },
+  {
+   "res": "09SRW_T1L1",
+   "grid": "mindanao",
+   "dev": 1.295,
+   "days": 15,
+   "mw": 26.7
+  },
+  {
+   "res": "14SULTAN_SS",
+   "grid": "mindanao",
+   "dev": 1.391,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "14ALMADA_G01",
+   "grid": "mindanao",
+   "dev": 1.414,
+   "days": 15,
+   "mw": 0.9
+  },
+  {
+   "res": "14DSA_T1L1",
+   "grid": "mindanao",
+   "dev": 1.414,
+   "days": 15,
+   "mw": 36.7
+  },
+  {
+   "res": "14LAMSAN_G01",
+   "grid": "mindanao",
+   "dev": 1.414,
+   "days": 15,
+   "mw": 2.1
+  },
+  {
+   "res": "14MID_T1L1",
+   "grid": "mindanao",
+   "dev": 1.414,
+   "days": 15,
+   "mw": 21.7
+  },
+  {
+   "res": "14SKU_T1L1",
+   "grid": "mindanao",
+   "dev": 1.414,
+   "days": 15,
+   "mw": 0.1
+  },
+  {
+   "res": "14SMY_T1L1",
+   "grid": "mindanao",
+   "dev": 1.414,
+   "days": 15,
+   "mw": 7.3
+  },
+  {
+   "res": "09ZAMBO_SS",
+   "grid": "mindanao",
+   "dev": 1.708,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "09SANGALI_BAT",
+   "grid": "mindanao",
+   "dev": 1.735,
+   "days": 15,
+   "mw": 0.4
+  },
+  {
+   "res": "09SANGALI_BATL",
+   "grid": "mindanao",
+   "dev": 1.735,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "09TMG_T2L1",
+   "grid": "mindanao",
+   "dev": 1.735,
+   "days": 15,
+   "mw": 37.0
+  },
+  {
+   "res": "09ZAMSAN_L01",
+   "grid": "mindanao",
+   "dev": 1.735,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "09WMPC_S01",
+   "grid": "mindanao",
+   "dev": 1.745,
+   "days": 15,
+   "mw": 0.0
+  },
+  {
+   "res": "09WMPC_U01",
+   "grid": "mindanao",
+   "dev": 1.745,
+   "days": 15,
+   "mw": 4.1
+  },
+  {
+   "res": "09WMPC_U02",
+   "grid": "mindanao",
+   "dev": 1.745,
+   "days": 15,
+   "mw": 1.9
+  },
+  {
+   "res": "09WMPC_U03",
+   "grid": "mindanao",
+   "dev": 1.745,
+   "days": 15,
+   "mw": 1.9
+  },
+  {
+   "res": "09WMPC_U04",
+   "grid": "mindanao",
+   "dev": 1.745,
+   "days": 15,
+   "mw": 4.3
+  },
+  {
+   "res": "09WMPC_U05",
+   "grid": "mindanao",
+   "dev": 1.745,
+   "days": 15,
+   "mw": 1.9
+  },
+  {
+   "res": "09WMPC_U06",
+   "grid": "mindanao",
+   "dev": 1.745,
+   "days": 15,
+   "mw": 4.1
+  },
+  {
+   "res": "09WMPC_U07",
+   "grid": "mindanao",
+   "dev": 1.745,
+   "days": 15,
+   "mw": 4.4
+  },
+  {
+   "res": "09WMPC_U08",
+   "grid": "mindanao",
+   "dev": 1.745,
+   "days": 15,
+   "mw": 3.6
+  },
+  {
+   "res": "09WMPC_U09",
+   "grid": "mindanao",
+   "dev": 1.745,
+   "days": 15,
+   "mw": 4.9
+  },
+  {
+   "res": "09WMPC_U10",
+   "grid": "mindanao",
+   "dev": 1.745,
+   "days": 15,
+   "mw": 4.5
+  },
+  {
+   "res": "09SJG_T1L1",
+   "grid": "mindanao",
+   "dev": 1.828,
+   "days": 15,
+   "mw": 12.3
+  },
+  {
+   "res": "09TMG_T1L1",
+   "grid": "mindanao",
+   "dev": 1.828,
+   "days": 15,
+   "mw": 43.5
+  },
+  {
+   "res": "09TUL_T1L1",
+   "grid": "mindanao",
+   "dev": 1.828,
+   "days": 15,
+   "mw": 21.7
+  },
+  {
+   "res": "09PITOGO_SS",
+   "grid": "mindanao",
+   "dev": 1.85,
+   "days": 15,
+   "mw": 0.5
+  },
+  {
+   "res": "09PITOG_BATL",
+   "grid": "mindanao",
+   "dev": 1.85,
+   "days": 15,
+   "mw": 0.0
+  }
+ ],
+ "placed": [
+  {
+   "res": "04LEYTE_A",
+   "grid": "visayas",
+   "dev": -0.559,
+   "days": 15,
+   "mw": 353.3,
+   "lon": 124.641,
+   "lat": 11.088,
+   "station": "Ormoc Converter Station"
+  },
+  {
+   "res": "04LEYTE_S01",
+   "grid": "visayas",
+   "dev": -0.559,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.641,
+   "lat": 11.088,
+   "station": "Ormoc Converter Station"
+  },
+  {
+   "res": "04ORMOC_SS",
+   "grid": "visayas",
+   "dev": -0.555,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.641,
+   "lat": 11.088,
+   "station": "Ormoc Converter Station"
+  },
+  {
+   "res": "04ORMOC_BAT",
+   "grid": "visayas",
+   "dev": -0.539,
+   "days": 15,
+   "mw": 1.4,
+   "lon": 124.641,
+   "lat": 11.088,
+   "station": "Ormoc Converter Station"
+  },
+  {
+   "res": "04ORMOC_BATL",
+   "grid": "visayas",
+   "dev": -0.539,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.641,
+   "lat": 11.088,
+   "station": "Ormoc Converter Station"
+  },
+  {
+   "res": "04ORMOC_T2L1",
+   "grid": "visayas",
+   "dev": -0.539,
+   "days": 15,
+   "mw": 39.5,
+   "lon": 124.641,
+   "lat": 11.088,
+   "station": "Ormoc Converter Station"
+  },
+  {
+   "res": "04ORMOC_T2L2",
+   "grid": "visayas",
+   "dev": -0.539,
+   "days": 15,
+   "mw": 37.9,
+   "lon": 124.641,
+   "lat": 11.088,
+   "station": "Ormoc Converter Station"
+  },
+  {
+   "res": "04TABAN_SS",
+   "grid": "visayas",
+   "dev": -0.446,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.343,
+   "lat": 11.323,
+   "station": "Tabango Substation"
+  },
+  {
+   "res": "04TABAN_BAT",
+   "grid": "visayas",
+   "dev": -0.375,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.343,
+   "lat": 11.323,
+   "station": "Tabango Substation"
+  },
+  {
+   "res": "04TABAN_BATL",
+   "grid": "visayas",
+   "dev": -0.375,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.343,
+   "lat": 11.323,
+   "station": "Tabango Substation"
+  },
+  {
+   "res": "06AMLAN_SS",
+   "grid": "visayas",
+   "dev": -0.265,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.225,
+   "lat": 9.457,
+   "station": "Amlan Substation"
+  },
+  {
+   "res": "06AMLAN_T2L2",
+   "grid": "visayas",
+   "dev": -0.261,
+   "days": 15,
+   "mw": 61.3,
+   "lon": 123.225,
+   "lat": 9.457,
+   "station": "Amlan Substation"
+  },
+  {
+   "res": "05DAANB_SS",
+   "grid": "visayas",
+   "dev": -0.26,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.066,
+   "lat": 11.252,
+   "station": "Daanbantayan Cable Terminal"
+  },
+  {
+   "res": "06AMLAN_T1L1",
+   "grid": "visayas",
+   "dev": -0.259,
+   "days": 15,
+   "mw": 24.7,
+   "lon": 123.225,
+   "lat": 9.457,
+   "station": "Amlan Substation"
+  },
+  {
+   "res": "06AMLA_G01",
+   "grid": "visayas",
+   "dev": -0.259,
+   "days": 15,
+   "mw": 0.2,
+   "lon": 123.225,
+   "lat": 9.457,
+   "station": "Amlan Substation"
+  },
+  {
+   "res": "03CLA_BCNOT",
+   "grid": "luzon",
+   "dev": -0.253,
+   "days": 15,
+   "mw": 14.3,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "03CALACA_G01",
+   "grid": "luzon",
+   "dev": -0.242,
+   "days": 15,
+   "mw": 189.1,
+   "lon": 120.791,
+   "lat": 13.933,
+   "station": "Calaca Substation"
+  },
+  {
+   "res": "03CALACA_G02",
+   "grid": "luzon",
+   "dev": -0.233,
+   "days": 15,
+   "mw": 287.6,
+   "lon": 120.791,
+   "lat": 13.933,
+   "station": "Calaca Substation"
+  },
+  {
+   "res": "03CLA_BTLEC1",
+   "grid": "luzon",
+   "dev": -0.228,
+   "days": 15,
+   "mw": 22.7,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "03CLA_T1L1",
+   "grid": "luzon",
+   "dev": -0.222,
+   "days": 15,
+   "mw": 39.8,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "01MARVEL_G02",
+   "grid": "luzon",
+   "dev": -0.21,
+   "days": 15,
+   "mw": 264.1,
+   "lon": 120.529,
+   "lat": 14.451,
+   "station": "Alasasin Substation"
+  },
+  {
+   "res": "01MARVEL_G01",
+   "grid": "luzon",
+   "dev": -0.209,
+   "days": 15,
+   "mw": 195.9,
+   "lon": 120.529,
+   "lat": 14.451,
+   "station": "Alasasin Substation"
+  },
+  {
+   "res": "01MARVEL_AUX",
+   "grid": "luzon",
+   "dev": -0.207,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.529,
+   "lat": 14.451,
+   "station": "Alasasin Substation"
+  },
+  {
+   "res": "01MARVEL_SS",
+   "grid": "luzon",
+   "dev": -0.207,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.529,
+   "lat": 14.451,
+   "station": "Alasasin Substation"
+  },
+  {
+   "res": "05SAMB_L01",
+   "grid": "visayas",
+   "dev": -0.204,
+   "days": 15,
+   "mw": 4.6,
+   "lon": 123.309,
+   "lat": 9.551,
+   "station": "Samboan Substation"
+  },
+  {
+   "res": "05SAMB_SS",
+   "grid": "visayas",
+   "dev": -0.204,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.309,
+   "lat": 9.551,
+   "station": "Samboan Substation"
+  },
+  {
+   "res": "01LAMAO_BAT",
+   "grid": "luzon",
+   "dev": -0.202,
+   "days": 15,
+   "mw": 0.2,
+   "lon": 120.6,
+   "lat": 14.52,
+   "station": "Lamao Substation"
+  },
+  {
+   "res": "01LAMAO_BATL",
+   "grid": "luzon",
+   "dev": -0.202,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.6,
+   "lat": 14.52,
+   "station": "Lamao Substation"
+  },
+  {
+   "res": "01LAMAO_SS",
+   "grid": "luzon",
+   "dev": -0.201,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.6,
+   "lat": 14.52,
+   "station": "Lamao Substation"
+  },
+  {
+   "res": "01BATAAN_SS",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.598,
+   "lat": 14.545,
+   "station": "Bataan Combined Cycle Power Plant (BCCPP) Substation"
+  },
+  {
+   "res": "01LIMAY_SS",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.59,
+   "lat": 14.556,
+   "station": "Limay Power Substation"
+  },
+  {
+   "res": "01LIMAY_U01",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 1.9,
+   "lon": 120.59,
+   "lat": 14.556,
+   "station": "Limay Power Substation"
+  },
+  {
+   "res": "01LIMAY_U02",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 3.5,
+   "lon": 120.59,
+   "lat": 14.556,
+   "station": "Limay Power Substation"
+  },
+  {
+   "res": "01LIMAY_U03",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 4.3,
+   "lon": 120.59,
+   "lat": 14.556,
+   "station": "Limay Power Substation"
+  },
+  {
+   "res": "01LIMAY_U04",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 0.9,
+   "lon": 120.59,
+   "lat": 14.556,
+   "station": "Limay Power Substation"
+  },
+  {
+   "res": "01LIMAY_U05",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 3.8,
+   "lon": 120.59,
+   "lat": 14.556,
+   "station": "Limay Power Substation"
+  },
+  {
+   "res": "01LIMAY_U06",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 5.9,
+   "lon": 120.59,
+   "lat": 14.556,
+   "station": "Limay Power Substation"
+  },
+  {
+   "res": "01LIMAY_U07",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 2.2,
+   "lon": 120.59,
+   "lat": 14.556,
+   "station": "Limay Power Substation"
+  },
+  {
+   "res": "01LIMAY_U08",
+   "grid": "luzon",
+   "dev": -0.195,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.59,
+   "lat": 14.556,
+   "station": "Limay Power Substation"
+  },
+  {
+   "res": "01LIMAY_BAT",
+   "grid": "luzon",
+   "dev": -0.19,
+   "days": 15,
+   "mw": 0.4,
+   "lon": 120.59,
+   "lat": 14.556,
+   "station": "Limay Power Substation"
+  },
+  {
+   "res": "01LIMAY_BATL",
+   "grid": "luzon",
+   "dev": -0.19,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.59,
+   "lat": 14.556,
+   "station": "Limay Power Substation"
+  },
+  {
+   "res": "03EERI_G01",
+   "grid": "luzon",
+   "dev": -0.179,
+   "days": 15,
+   "mw": 239.1,
+   "lon": 121.079,
+   "lat": 13.624,
+   "station": "Ilijan Switching Station"
+  },
+  {
+   "res": "03EERI_G02",
+   "grid": "luzon",
+   "dev": -0.179,
+   "days": 15,
+   "mw": 240.3,
+   "lon": 121.079,
+   "lat": 13.624,
+   "station": "Ilijan Switching Station"
+  },
+  {
+   "res": "03EERI_G03",
+   "grid": "luzon",
+   "dev": -0.179,
+   "days": 15,
+   "mw": 240.2,
+   "lon": 121.079,
+   "lat": 13.624,
+   "station": "Ilijan Switching Station"
+  },
+  {
+   "res": "03EERI_L01",
+   "grid": "luzon",
+   "dev": -0.179,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.079,
+   "lat": 13.624,
+   "station": "Ilijan Switching Station"
+  },
+  {
+   "res": "03EERI_SS",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.079,
+   "lat": 13.624,
+   "station": "Ilijan Switching Station"
+  },
+  {
+   "res": "03ILIJAN_G02",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 329.8,
+   "lon": 121.079,
+   "lat": 13.624,
+   "station": "Ilijan Switching Station"
+  },
+  {
+   "res": "03ILIJAN_SS2",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.079,
+   "lat": 13.624,
+   "station": "Ilijan Switching Station"
+  },
+  {
+   "res": "03TUY1_SS",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.756,
+   "lat": 14.017,
+   "station": "Tuy Substation"
+  },
+  {
+   "res": "03TUY2_SS",
+   "grid": "luzon",
+   "dev": -0.17,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.756,
+   "lat": 14.017,
+   "station": "Tuy Substation"
+  },
+  {
+   "res": "03ILI500_SS",
+   "grid": "luzon",
+   "dev": -0.169,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.079,
+   "lat": 13.624,
+   "station": "Ilijan Switching Station"
+  },
+  {
+   "res": "03ILIJAN_G01",
+   "grid": "luzon",
+   "dev": -0.16,
+   "days": 15,
+   "mw": 314.3,
+   "lon": 121.079,
+   "lat": 13.624,
+   "station": "Ilijan Switching Station"
+  },
+  {
+   "res": "03ILIJAN_SS",
+   "grid": "luzon",
+   "dev": -0.16,
+   "days": 15,
+   "mw": 13.4,
+   "lon": 121.079,
+   "lat": 13.624,
+   "station": "Ilijan Switching Station"
+  },
+  {
+   "res": "03TAYAB_T1L1",
+   "grid": "luzon",
+   "dev": -0.124,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.606,
+   "lat": 14.022,
+   "station": "Tayabas Substation"
+  },
+  {
+   "res": "03TAYAB_T1L2",
+   "grid": "luzon",
+   "dev": -0.124,
+   "days": 15,
+   "mw": 98.9,
+   "lon": 121.606,
+   "lat": 14.022,
+   "station": "Tayabas Substation"
+  },
+  {
+   "res": "03TAYAB_SS",
+   "grid": "luzon",
+   "dev": -0.122,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.606,
+   "lat": 14.022,
+   "station": "Tayabas Substation"
+  },
+  {
+   "res": "01CASTIL_SS1",
+   "grid": "luzon",
+   "dev": -0.111,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.219,
+   "lat": 14.96,
+   "station": "Castillejos EHV Substation"
+  },
+  {
+   "res": "01BALSIK_SS",
+   "grid": "luzon",
+   "dev": -0.109,
+   "days": 15,
+   "mw": 0.2,
+   "lon": 120.494,
+   "lat": 14.87,
+   "station": "Balsik EHV Substation"
+  },
+  {
+   "res": "10AGUS1_SS",
+   "grid": "mindanao",
+   "dev": -0.109,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10AGUS2_SS",
+   "grid": "mindanao",
+   "dev": -0.108,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10AGUS2_U02",
+   "grid": "mindanao",
+   "dev": -0.108,
+   "days": 15,
+   "mw": 44.4,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10AGUS2_U01",
+   "grid": "mindanao",
+   "dev": -0.107,
+   "days": 15,
+   "mw": 10.2,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10AGUS2_U03",
+   "grid": "mindanao",
+   "dev": -0.107,
+   "days": 15,
+   "mw": 41.9,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "07UBAY_T3L3",
+   "grid": "visayas",
+   "dev": -0.105,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.511,
+   "lat": 10.026,
+   "station": "Ubay Substation"
+  },
+  {
+   "res": "10AGUS1_U01",
+   "grid": "mindanao",
+   "dev": -0.097,
+   "days": 15,
+   "mw": 15.2,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "06MABIN_SS",
+   "grid": "visayas",
+   "dev": -0.096,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 122.924,
+   "lat": 9.729,
+   "station": "Mabinay Substation"
+  },
+  {
+   "res": "06MABIN_T1L1",
+   "grid": "visayas",
+   "dev": -0.096,
+   "days": 15,
+   "mw": 11.4,
+   "lon": 122.924,
+   "lat": 9.729,
+   "station": "Mabinay Substation"
+  },
+  {
+   "res": "06MABIN_T2L2",
+   "grid": "visayas",
+   "dev": -0.096,
+   "days": 15,
+   "mw": 1.8,
+   "lon": 122.924,
+   "lat": 9.729,
+   "station": "Mabinay Substation"
+  },
+  {
+   "res": "10AGUS1_U02",
+   "grid": "mindanao",
+   "dev": -0.092,
+   "days": 15,
+   "mw": 24.4,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "01OLONG_SS",
+   "grid": "luzon",
+   "dev": -0.087,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.271,
+   "lat": 14.837,
+   "station": "Olongapo Substation"
+  },
+  {
+   "res": "05TOLEDO_BAT",
+   "grid": "visayas",
+   "dev": -0.085,
+   "days": 15,
+   "mw": 1.9,
+   "lon": 123.707,
+   "lat": 10.341,
+   "station": "Toledo Substation"
+  },
+  {
+   "res": "05TOLEDO_BATL",
+   "grid": "visayas",
+   "dev": -0.085,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.707,
+   "lat": 10.341,
+   "station": "Toledo Substation"
+  },
+  {
+   "res": "10AGUS6_U01",
+   "grid": "mindanao",
+   "dev": -0.083,
+   "days": 15,
+   "mw": 20.3,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "01BOTOLAN_SS",
+   "grid": "luzon",
+   "dev": -0.081,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.011,
+   "lat": 15.301,
+   "station": "Botolan Substation"
+  },
+  {
+   "res": "10AGUS7_U01",
+   "grid": "mindanao",
+   "dev": -0.08,
+   "days": 15,
+   "mw": 14.6,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "01BOTOL_T1L1",
+   "grid": "luzon",
+   "dev": -0.078,
+   "days": 15,
+   "mw": 16.9,
+   "lon": 120.011,
+   "lat": 15.301,
+   "station": "Botolan Substation"
+  },
+  {
+   "res": "01BOTOL_T1L2",
+   "grid": "luzon",
+   "dev": -0.078,
+   "days": 15,
+   "mw": 20.0,
+   "lon": 120.011,
+   "lat": 15.301,
+   "station": "Botolan Substation"
+  },
+  {
+   "res": "01OLONG_T1L1",
+   "grid": "luzon",
+   "dev": -0.077,
+   "days": 15,
+   "mw": 31.4,
+   "lon": 120.271,
+   "lat": 14.837,
+   "station": "Olongapo Substation"
+  },
+  {
+   "res": "01OLONG_T2L2",
+   "grid": "luzon",
+   "dev": -0.077,
+   "days": 15,
+   "mw": 34.3,
+   "lon": 120.271,
+   "lat": 14.837,
+   "station": "Olongapo Substation"
+  },
+  {
+   "res": "01OLONG_T3L3",
+   "grid": "luzon",
+   "dev": -0.077,
+   "days": 15,
+   "mw": 7.9,
+   "lon": 120.271,
+   "lat": 14.837,
+   "station": "Olongapo Substation"
+  },
+  {
+   "res": "07BOHOL_T1L1",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 19.3,
+   "lon": 123.79,
+   "lat": 9.739,
+   "station": "Bohol Cable Terminal"
+  },
+  {
+   "res": "07COREL_T1L1",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 11.3,
+   "lon": 123.903,
+   "lat": 9.68,
+   "station": "Corella Substation - BOHECO I"
+  },
+  {
+   "res": "07COREL_T1L2",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 8.1,
+   "lon": 123.903,
+   "lat": 9.68,
+   "station": "Corella Substation - BOHECO I"
+  },
+  {
+   "res": "07COREL_T1L3",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 55.3,
+   "lon": 123.903,
+   "lat": 9.68,
+   "station": "Corella Substation - BOHECO I"
+  },
+  {
+   "res": "07UBAY_BAT",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 2.1,
+   "lon": 124.511,
+   "lat": 10.026,
+   "station": "Ubay Substation"
+  },
+  {
+   "res": "07UBAY_BATL",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.511,
+   "lat": 10.026,
+   "station": "Ubay Substation"
+  },
+  {
+   "res": "07UBAY_T1L1",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 20.2,
+   "lon": 124.511,
+   "lat": 10.026,
+   "station": "Ubay Substation"
+  },
+  {
+   "res": "07UBAY_T2L2",
+   "grid": "visayas",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 3.9,
+   "lon": 124.511,
+   "lat": 10.026,
+   "station": "Ubay Substation"
+  },
+  {
+   "res": "10AGUS6_U02",
+   "grid": "mindanao",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 32.2,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10AGUS6_U03",
+   "grid": "mindanao",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 49.8,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10AGUS6_U05",
+   "grid": "mindanao",
+   "dev": -0.076,
+   "days": 15,
+   "mw": 39.1,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10AGUS6_SS",
+   "grid": "mindanao",
+   "dev": -0.075,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10AGUS4_U01",
+   "grid": "mindanao",
+   "dev": -0.073,
+   "days": 15,
+   "mw": 24.4,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10AGUS7_U02",
+   "grid": "mindanao",
+   "dev": -0.07,
+   "days": 15,
+   "mw": 13.8,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10BALOI_L01",
+   "grid": "mindanao",
+   "dev": -0.07,
+   "days": 15,
+   "mw": 26.9,
+   "lon": 124.206,
+   "lat": 8.156,
+   "station": "Balo-i Substation"
+  },
+  {
+   "res": "10AGUS4_U02",
+   "grid": "mindanao",
+   "dev": -0.063,
+   "days": 15,
+   "mw": 39.9,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10AGUS4_U03",
+   "grid": "mindanao",
+   "dev": -0.063,
+   "days": 15,
+   "mw": 41.4,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "05TOL_CARMEN",
+   "grid": "visayas",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 52.5,
+   "lon": 123.707,
+   "lat": 10.341,
+   "station": "Toledo Substation"
+  },
+  {
+   "res": "10AGUS4_SS",
+   "grid": "mindanao",
+   "dev": -0.062,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "03AMADEO_T1L1",
+   "grid": "luzon",
+   "dev": -0.06,
+   "days": 15,
+   "mw": 230.8,
+   "lon": 120.935,
+   "lat": 14.197,
+   "station": "Amadeo Substation"
+  },
+  {
+   "res": "04BABAT_SS",
+   "grid": "visayas",
+   "dev": -0.059,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.951,
+   "lat": 11.356,
+   "station": "Babatngon Substation"
+  },
+  {
+   "res": "03DARAG_SS",
+   "grid": "luzon",
+   "dev": -0.057,
+   "days": 15,
+   "mw": 0.1,
+   "lon": 123.708,
+   "lat": 13.128,
+   "station": "Daraga Substation"
+  },
+  {
+   "res": "03DARAG_T1L1",
+   "grid": "luzon",
+   "dev": -0.055,
+   "days": 15,
+   "mw": 51.6,
+   "lon": 123.708,
+   "lat": 13.128,
+   "station": "Daraga Substation"
+  },
+  {
+   "res": "04BABAT_T1L1",
+   "grid": "visayas",
+   "dev": -0.051,
+   "days": 15,
+   "mw": 53.2,
+   "lon": 124.951,
+   "lat": 11.356,
+   "station": "Babatngon Substation"
+  },
+  {
+   "res": "10AGUS5_SS",
+   "grid": "mindanao",
+   "dev": -0.049,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "10AGUS5_U02",
+   "grid": "mindanao",
+   "dev": -0.049,
+   "days": 15,
+   "mw": 18.7,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "03DAR_SRECO2",
+   "grid": "luzon",
+   "dev": -0.047,
+   "days": 15,
+   "mw": 31.2,
+   "lon": 123.708,
+   "lat": 13.128,
+   "station": "Daraga Substation"
+  },
+  {
+   "res": "03DAR_ALECO",
+   "grid": "luzon",
+   "dev": -0.046,
+   "days": 15,
+   "mw": 56.8,
+   "lon": 123.708,
+   "lat": 13.128,
+   "station": "Daraga Substation"
+  },
+  {
+   "res": "03DAR_SAL",
+   "grid": "luzon",
+   "dev": -0.046,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.708,
+   "lat": 13.128,
+   "station": "Daraga Substation"
+  },
+  {
+   "res": "03DAR_STDOM",
+   "grid": "luzon",
+   "dev": -0.046,
+   "days": 15,
+   "mw": 11.3,
+   "lon": 123.708,
+   "lat": 13.128,
+   "station": "Daraga Substation"
+  },
+  {
+   "res": "03BATAN_SS",
+   "grid": "luzon",
+   "dev": -0.045,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.077,
+   "lat": 13.82,
+   "station": "Batangas Substation"
+  },
+  {
+   "res": "03BATAN_T2L2",
+   "grid": "luzon",
+   "dev": -0.039,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.077,
+   "lat": 13.82,
+   "station": "Batangas Substation"
+  },
+  {
+   "res": "03BATAN_T1L2",
+   "grid": "luzon",
+   "dev": -0.037,
+   "days": 15,
+   "mw": 13.0,
+   "lon": 121.077,
+   "lat": 13.82,
+   "station": "Batangas Substation"
+  },
+  {
+   "res": "03DASMA_SS",
+   "grid": "luzon",
+   "dev": -0.036,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.952,
+   "lat": 14.312,
+   "station": "Dasmari\u00f1as Substation"
+  },
+  {
+   "res": "10BALOI_SS",
+   "grid": "mindanao",
+   "dev": -0.018,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.206,
+   "lat": 8.156,
+   "station": "Balo-i Substation"
+  },
+  {
+   "res": "10AGUS5_U01",
+   "grid": "mindanao",
+   "dev": -0.015,
+   "days": 15,
+   "mw": 13.9,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "03DASMA_L01",
+   "grid": "luzon",
+   "dev": -0.012,
+   "days": 15,
+   "mw": 569.5,
+   "lon": 120.952,
+   "lat": 14.312,
+   "station": "Dasmari\u00f1as Substation"
+  },
+  {
+   "res": "01CLARK_L01",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "01CLARK_L02",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "01CLARK_T2L1",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "01LATRI_T1L1",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.631,
+   "lat": 16.439,
+   "station": "Beckel Substation"
+  },
+  {
+   "res": "03CLA_STLCOR",
+   "grid": "luzon",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "04TABAN_T1L1",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.343,
+   "lat": 11.323,
+   "station": "Tabango Substation"
+  },
+  {
+   "res": "05NAGA_T1L1",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.759,
+   "lat": 10.223,
+   "station": "Naga Substation"
+  },
+  {
+   "res": "05NAGA_T2L2",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.759,
+   "lat": 10.223,
+   "station": "Naga Substation"
+  },
+  {
+   "res": "05SAMB_L02",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.309,
+   "lat": 9.551,
+   "station": "Samboan Substation"
+  },
+  {
+   "res": "07BOHOL_T4L4",
+   "grid": "visayas",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.79,
+   "lat": 9.739,
+   "station": "Bohol Cable Terminal"
+  },
+  {
+   "res": "10OPO_T1L1",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.534,
+   "lat": 8.486,
+   "station": "Opol Substation"
+  },
+  {
+   "res": "11TAGOL_SS",
+   "grid": "mindanao",
+   "dev": 0.0,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.774,
+   "lat": 8.531,
+   "station": "Tagoloan Substation"
+  },
+  {
+   "res": "01LAOAG_T1L2",
+   "grid": "luzon",
+   "dev": 0.001,
+   "days": 15,
+   "mw": 19.4,
+   "lon": 120.605,
+   "lat": 18.214,
+   "station": "Laoag Substation"
+  },
+  {
+   "res": "05COLON_L01",
+   "grid": "visayas",
+   "dev": 0.003,
+   "days": 15,
+   "mw": 17.3,
+   "lon": 123.761,
+   "lat": 10.223,
+   "station": "Colon Substation"
+  },
+  {
+   "res": "10AGUS6_U04",
+   "grid": "mindanao",
+   "dev": 0.003,
+   "days": 15,
+   "mw": 6.4,
+   "lon": 124.271,
+   "lat": 8.053,
+   "station": "Agus II Switchyard"
+  },
+  {
+   "res": "03BINAN_SS",
+   "grid": "luzon",
+   "dev": 0.007,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.076,
+   "lat": 14.331,
+   "station": "Bi\u00f1an Substation"
+  },
+  {
+   "res": "11VILLA_BAT",
+   "grid": "mindanao",
+   "dev": 0.007,
+   "days": 15,
+   "mw": 1.6,
+   "lon": 124.791,
+   "lat": 8.554,
+   "station": "Villanueva Substation"
+  },
+  {
+   "res": "11VILLA_BATL",
+   "grid": "mindanao",
+   "dev": 0.007,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.791,
+   "lat": 8.554,
+   "station": "Villanueva Substation"
+  },
+  {
+   "res": "11VILLA_L01",
+   "grid": "mindanao",
+   "dev": 0.007,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.791,
+   "lat": 8.554,
+   "station": "Villanueva Substation"
+  },
+  {
+   "res": "06KABAN_T1L1",
+   "grid": "visayas",
+   "dev": 0.011,
+   "days": 15,
+   "mw": 15.8,
+   "lon": 122.848,
+   "lat": 10.019,
+   "station": "Kabankalan Substation"
+  },
+  {
+   "res": "06KABAN_T2L2",
+   "grid": "visayas",
+   "dev": 0.011,
+   "days": 15,
+   "mw": 25.4,
+   "lon": 122.848,
+   "lat": 10.019,
+   "station": "Kabankalan Substation"
+  },
+  {
+   "res": "03STROS_T1L1",
+   "grid": "luzon",
+   "dev": 0.012,
+   "days": 15,
+   "mw": 301.9,
+   "lon": 121.057,
+   "lat": 14.263,
+   "station": "Santa Rosa 2 Substation"
+  },
+  {
+   "res": "01LAOAG_SS",
+   "grid": "luzon",
+   "dev": 0.016,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.605,
+   "lat": 18.214,
+   "station": "Laoag Substation"
+  },
+  {
+   "res": "03BINAN_T1L1",
+   "grid": "luzon",
+   "dev": 0.017,
+   "days": 15,
+   "mw": 408.9,
+   "lon": 121.076,
+   "lat": 14.331,
+   "station": "Bi\u00f1an Substation"
+  },
+  {
+   "res": "01LAOAG_T1L1",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.605,
+   "lat": 18.214,
+   "station": "Laoag Substation"
+  },
+  {
+   "res": "01LAOAG_T2L2",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 23.3,
+   "lon": 120.605,
+   "lat": 18.214,
+   "station": "Laoag Substation"
+  },
+  {
+   "res": "01MALOL_SS",
+   "grid": "luzon",
+   "dev": 0.018,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.823,
+   "lat": 14.872,
+   "station": "Malolos Substation"
+  },
+  {
+   "res": "05CEBU_SS",
+   "grid": "visayas",
+   "dev": 0.019,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.918,
+   "lat": 10.36,
+   "station": "Cebu City Substation"
+  },
+  {
+   "res": "06KABAN_BAT",
+   "grid": "visayas",
+   "dev": 0.021,
+   "days": 15,
+   "mw": 6.4,
+   "lon": 122.848,
+   "lat": 10.019,
+   "station": "Kabankalan Substation"
+  },
+  {
+   "res": "06KABAN_BATL",
+   "grid": "visayas",
+   "dev": 0.021,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 122.848,
+   "lat": 10.019,
+   "station": "Kabankalan Substation"
+  },
+  {
+   "res": "06KABAN_L01",
+   "grid": "visayas",
+   "dev": 0.021,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 122.848,
+   "lat": 10.019,
+   "station": "Kabankalan Substation"
+  },
+  {
+   "res": "06KABAN_SS",
+   "grid": "visayas",
+   "dev": 0.021,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 122.848,
+   "lat": 10.019,
+   "station": "Kabankalan Substation"
+  },
+  {
+   "res": "03LABO_SS",
+   "grid": "luzon",
+   "dev": 0.025,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 122.784,
+   "lat": 14.192,
+   "station": "Labo Substation"
+  },
+  {
+   "res": "02ZAPOT_SS",
+   "grid": "luzon",
+   "dev": 0.026,
+   "days": 15,
+   "mw": 0.1,
+   "lon": 120.974,
+   "lat": 14.477,
+   "station": "Las Pi\u00f1as Substation"
+  },
+  {
+   "res": "11JASA_BAT",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 0.3,
+   "lon": 124.768,
+   "lat": 8.602,
+   "station": "Jasaan Substation"
+  },
+  {
+   "res": "11JASA_BATL",
+   "grid": "mindanao",
+   "dev": 0.028,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.768,
+   "lat": 8.602,
+   "station": "Jasaan Substation"
+  },
+  {
+   "res": "01CLARK_T1L2",
+   "grid": "luzon",
+   "dev": 0.03,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "03LABO_T1L2",
+   "grid": "luzon",
+   "dev": 0.03,
+   "days": 15,
+   "mw": 11.0,
+   "lon": 122.784,
+   "lat": 14.192,
+   "station": "Labo Substation"
+  },
+  {
+   "res": "03LABO_T1L1",
+   "grid": "luzon",
+   "dev": 0.032,
+   "days": 15,
+   "mw": 36.1,
+   "lon": 122.784,
+   "lat": 14.192,
+   "station": "Labo Substation"
+  },
+  {
+   "res": "03KAL_G01",
+   "grid": "luzon",
+   "dev": 0.033,
+   "days": 15,
+   "mw": 77.3,
+   "lon": 121.474,
+   "lat": 14.319,
+   "station": "Kalayaan Switchyard"
+  },
+  {
+   "res": "03KAL_G02",
+   "grid": "luzon",
+   "dev": 0.033,
+   "days": 15,
+   "mw": 79.5,
+   "lon": 121.474,
+   "lat": 14.319,
+   "station": "Kalayaan Switchyard"
+  },
+  {
+   "res": "03KAL_G04",
+   "grid": "luzon",
+   "dev": 0.033,
+   "days": 15,
+   "mw": 131.9,
+   "lon": 121.474,
+   "lat": 14.319,
+   "station": "Kalayaan Switchyard"
+  },
+  {
+   "res": "03KAL_G03",
+   "grid": "luzon",
+   "dev": 0.034,
+   "days": 15,
+   "mw": 109.5,
+   "lon": 121.474,
+   "lat": 14.319,
+   "station": "Kalayaan Switchyard"
+  },
+  {
+   "res": "03KAL_SS",
+   "grid": "luzon",
+   "dev": 0.034,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.474,
+   "lat": 14.319,
+   "station": "Kalayaan Switchyard"
+  },
+  {
+   "res": "01SNJOS_T1L3",
+   "grid": "luzon",
+   "dev": 0.035,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.048,
+   "lat": 14.821,
+   "station": "San Jose del Monte Substation"
+  },
+  {
+   "res": "03KAL_E_T1L1",
+   "grid": "luzon",
+   "dev": 0.035,
+   "days": 15,
+   "mw": 24.1,
+   "lon": 121.474,
+   "lat": 14.319,
+   "station": "Kalayaan Switchyard"
+  },
+  {
+   "res": "01SNJOS_CAM",
+   "grid": "luzon",
+   "dev": 0.036,
+   "days": 15,
+   "mw": 252.9,
+   "lon": 121.048,
+   "lat": 14.821,
+   "station": "San Jose del Monte Substation"
+  },
+  {
+   "res": "01BAUANG_GS1",
+   "grid": "luzon",
+   "dev": 0.038,
+   "days": 15,
+   "mw": 10.2,
+   "lon": 120.327,
+   "lat": 16.557,
+   "station": "Bauang Substation"
+  },
+  {
+   "res": "01SNJOS_T1L1",
+   "grid": "luzon",
+   "dev": 0.038,
+   "days": 15,
+   "mw": 2.1,
+   "lon": 121.048,
+   "lat": 14.821,
+   "station": "San Jose del Monte Substation"
+  },
+  {
+   "res": "01BAUANG_GS3",
+   "grid": "luzon",
+   "dev": 0.04,
+   "days": 15,
+   "mw": 18.3,
+   "lon": 120.327,
+   "lat": 16.557,
+   "station": "Bauang Substation"
+  },
+  {
+   "res": "01BAUANG_GS2",
+   "grid": "luzon",
+   "dev": 0.041,
+   "days": 15,
+   "mw": 9.5,
+   "lon": 120.327,
+   "lat": 16.557,
+   "station": "Bauang Substation"
+  },
+  {
+   "res": "02ZAPOT_T1L1",
+   "grid": "luzon",
+   "dev": 0.041,
+   "days": 15,
+   "mw": 780.4,
+   "lon": 120.974,
+   "lat": 14.477,
+   "station": "Las Pi\u00f1as Substation"
+  },
+  {
+   "res": "01MALOL_T1L1",
+   "grid": "luzon",
+   "dev": 0.042,
+   "days": 15,
+   "mw": 186.8,
+   "lon": 120.823,
+   "lat": 14.872,
+   "station": "Malolos Substation"
+  },
+  {
+   "res": "03CALAU_SS",
+   "grid": "luzon",
+   "dev": 0.049,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.297,
+   "lat": 14.168,
+   "station": "Calauan Substation"
+  },
+  {
+   "res": "03CALAU_T1L1",
+   "grid": "luzon",
+   "dev": 0.051,
+   "days": 15,
+   "mw": 70.8,
+   "lon": 121.297,
+   "lat": 14.168,
+   "station": "Calauan Substation"
+  },
+  {
+   "res": "03GUMAC_SS",
+   "grid": "luzon",
+   "dev": 0.052,
+   "days": 15,
+   "mw": 1.1,
+   "lon": 122.09,
+   "lat": 13.909,
+   "station": "Gumaca Substation"
+  },
+  {
+   "res": "11JASAAN_SS",
+   "grid": "mindanao",
+   "dev": 0.054,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.768,
+   "lat": 8.602,
+   "station": "Jasaan Substation"
+  },
+  {
+   "res": "11VILLA_SS",
+   "grid": "mindanao",
+   "dev": 0.054,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.791,
+   "lat": 8.554,
+   "station": "Villanueva Substation"
+  },
+  {
+   "res": "03GUMAC_T1L1",
+   "grid": "luzon",
+   "dev": 0.056,
+   "days": 15,
+   "mw": 5.5,
+   "lon": 122.09,
+   "lat": 13.909,
+   "station": "Gumaca Substation"
+  },
+  {
+   "res": "03GUMAC_T1L2",
+   "grid": "luzon",
+   "dev": 0.057,
+   "days": 15,
+   "mw": 18.6,
+   "lon": 122.09,
+   "lat": 13.909,
+   "station": "Gumaca Substation"
+  },
+  {
+   "res": "03GUMAC_T1L3",
+   "grid": "luzon",
+   "dev": 0.057,
+   "days": 15,
+   "mw": 18.0,
+   "lon": 122.09,
+   "lat": 13.909,
+   "station": "Gumaca Substation"
+  },
+  {
+   "res": "03GUMAC_T1L4",
+   "grid": "luzon",
+   "dev": 0.057,
+   "days": 15,
+   "mw": 4.1,
+   "lon": 122.09,
+   "lat": 13.909,
+   "station": "Gumaca Substation"
+  },
+  {
+   "res": "01BAUAN_T2L2",
+   "grid": "luzon",
+   "dev": 0.059,
+   "days": 15,
+   "mw": 25.1,
+   "lon": 120.327,
+   "lat": 16.557,
+   "station": "Bauang Substation"
+  },
+  {
+   "res": "01BAUANG_SS",
+   "grid": "luzon",
+   "dev": 0.069,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.327,
+   "lat": 16.557,
+   "station": "Bauang Substation"
+  },
+  {
+   "res": "01BAUAN_T1L3",
+   "grid": "luzon",
+   "dev": 0.072,
+   "days": 15,
+   "mw": 13.9,
+   "lon": 120.327,
+   "lat": 16.557,
+   "station": "Bauang Substation"
+  },
+  {
+   "res": "01BAUAN_T1L1",
+   "grid": "luzon",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 28.8,
+   "lon": 120.327,
+   "lat": 16.557,
+   "station": "Bauang Substation"
+  },
+  {
+   "res": "01BAUAN_T1L2",
+   "grid": "luzon",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.327,
+   "lat": 16.557,
+   "station": "Bauang Substation"
+  },
+  {
+   "res": "01BAUAN_T2L1",
+   "grid": "luzon",
+   "dev": 0.074,
+   "days": 15,
+   "mw": 5.9,
+   "lon": 120.327,
+   "lat": 16.557,
+   "station": "Bauang Substation"
+  },
+  {
+   "res": "01CLARK_T1L1",
+   "grid": "luzon",
+   "dev": 0.078,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "01MEXICO_SS",
+   "grid": "luzon",
+   "dev": 0.08,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "01MEX_SFLAPC",
+   "grid": "luzon",
+   "dev": 0.082,
+   "days": 15,
+   "mw": 43.7,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "01MEX_AEC",
+   "grid": "luzon",
+   "dev": 0.083,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "01MEX_MIC",
+   "grid": "luzon",
+   "dev": 0.083,
+   "days": 15,
+   "mw": 6.4,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "01MEX_SKK",
+   "grid": "luzon",
+   "dev": 0.083,
+   "days": 15,
+   "mw": 16.6,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "11OPOL_SS",
+   "grid": "mindanao",
+   "dev": 0.084,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.534,
+   "lat": 8.486,
+   "station": "Opol Substation"
+  },
+  {
+   "res": "11OPO_T1L1",
+   "grid": "mindanao",
+   "dev": 0.087,
+   "days": 15,
+   "mw": 5.8,
+   "lon": 124.534,
+   "lat": 8.486,
+   "station": "Opol Substation"
+  },
+  {
+   "res": "01CLARK_L03",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 5.5,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "01CLARK_SS",
+   "grid": "luzon",
+   "dev": 0.088,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "01MEX_CISP",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 33.5,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "01MEX_CLARK1",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 39.1,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "01MEX_CLARK2",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 63.1,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "01MEX_CND",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 60.7,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "01MEX_L01",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 60.1,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "01MEX_PELCO1",
+   "grid": "luzon",
+   "dev": 0.089,
+   "days": 15,
+   "mw": 51.9,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "01MEX_PIMP",
+   "grid": "luzon",
+   "dev": 0.09,
+   "days": 15,
+   "mw": 69.2,
+   "lon": 120.717,
+   "lat": 15.054,
+   "station": "Mexico Substation"
+  },
+  {
+   "res": "01CLARK_L04",
+   "grid": "luzon",
+   "dev": 0.091,
+   "days": 15,
+   "mw": 32.7,
+   "lon": 120.563,
+   "lat": 15.229,
+   "station": "Clark Substation"
+  },
+  {
+   "res": "02BALNT_T1L1",
+   "grid": "luzon",
+   "dev": 0.104,
+   "days": 15,
+   "mw": 720.4,
+   "lon": 121.013,
+   "lat": 14.661,
+   "station": "Balintawak Substation"
+  },
+  {
+   "res": "02DOLOR_T1L1",
+   "grid": "luzon",
+   "dev": 0.108,
+   "days": 15,
+   "mw": 839.3,
+   "lon": 121.14,
+   "lat": 14.572,
+   "station": "Dolores Substation"
+  },
+  {
+   "res": "01SNJOS_T1L2",
+   "grid": "luzon",
+   "dev": 0.116,
+   "days": 15,
+   "mw": 62.7,
+   "lon": 121.048,
+   "lat": 14.821,
+   "station": "San Jose del Monte Substation"
+  },
+  {
+   "res": "01DUHAT_SS",
+   "grid": "luzon",
+   "dev": 0.117,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.953,
+   "lat": 14.787,
+   "station": "Santa Maria Substation"
+  },
+  {
+   "res": "05LAPU_SS",
+   "grid": "visayas",
+   "dev": 0.118,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.968,
+   "lat": 10.323,
+   "station": "Lapu-Lapu Gas Insulated Substation"
+  },
+  {
+   "res": "01BINGA_SS",
+   "grid": "luzon",
+   "dev": 0.124,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.728,
+   "lat": 16.387,
+   "station": "Binga Power Plant"
+  },
+  {
+   "res": "01BINGA_U01",
+   "grid": "luzon",
+   "dev": 0.124,
+   "days": 15,
+   "mw": 0.6,
+   "lon": 120.728,
+   "lat": 16.387,
+   "station": "Binga Power Plant"
+  },
+  {
+   "res": "01BINGA_U02",
+   "grid": "luzon",
+   "dev": 0.124,
+   "days": 15,
+   "mw": 0.8,
+   "lon": 120.728,
+   "lat": 16.387,
+   "station": "Binga Power Plant"
+  },
+  {
+   "res": "01BINGA_U03",
+   "grid": "luzon",
+   "dev": 0.124,
+   "days": 15,
+   "mw": 0.8,
+   "lon": 120.728,
+   "lat": 16.387,
+   "station": "Binga Power Plant"
+  },
+  {
+   "res": "01BINGA_U04",
+   "grid": "luzon",
+   "dev": 0.124,
+   "days": 15,
+   "mw": 0.6,
+   "lon": 120.728,
+   "lat": 16.387,
+   "station": "Binga Power Plant"
+  },
+  {
+   "res": "01BINGA_T1L1",
+   "grid": "luzon",
+   "dev": 0.126,
+   "days": 15,
+   "mw": 6.5,
+   "lon": 120.728,
+   "lat": 16.387,
+   "station": "Binga Power Plant"
+  },
+  {
+   "res": "01LATRI_SS",
+   "grid": "luzon",
+   "dev": 0.127,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.631,
+   "lat": 16.439,
+   "station": "Beckel Substation"
+  },
+  {
+   "res": "04PARA_SS",
+   "grid": "visayas",
+   "dev": 0.131,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 125.041,
+   "lat": 11.768,
+   "station": "National Grid Corporation of the Philippines"
+  },
+  {
+   "res": "01DUHAT_T1L1",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 417.9,
+   "lon": 120.953,
+   "lat": 14.787,
+   "station": "Santa Maria Substation"
+  },
+  {
+   "res": "01LATRI_T2L1",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 10.7,
+   "lon": 120.631,
+   "lat": 16.439,
+   "station": "Beckel Substation"
+  },
+  {
+   "res": "01LATRI_T2L2",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 19.2,
+   "lon": 120.631,
+   "lat": 16.439,
+   "station": "Beckel Substation"
+  },
+  {
+   "res": "01LATRI_T2L3",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 5.5,
+   "lon": 120.631,
+   "lat": 16.439,
+   "station": "Beckel Substation"
+  },
+  {
+   "res": "01LAT_BENECO",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 78.3,
+   "lon": 120.631,
+   "lat": 16.439,
+   "station": "Beckel Substation"
+  },
+  {
+   "res": "01LAT_PHILEX",
+   "grid": "luzon",
+   "dev": 0.139,
+   "days": 15,
+   "mw": 34.3,
+   "lon": 120.631,
+   "lat": 16.439,
+   "station": "Beckel Substation"
+  },
+  {
+   "res": "01AMBUK_U03",
+   "grid": "luzon",
+   "dev": 0.149,
+   "days": 15,
+   "mw": 3.9,
+   "lon": 120.741,
+   "lat": 16.458,
+   "station": "Ambuklao Substation"
+  },
+  {
+   "res": "01AMBUK_U01",
+   "grid": "luzon",
+   "dev": 0.151,
+   "days": 15,
+   "mw": 4.3,
+   "lon": 120.741,
+   "lat": 16.458,
+   "station": "Ambuklao Substation"
+  },
+  {
+   "res": "01AMBUK_U02",
+   "grid": "luzon",
+   "dev": 0.151,
+   "days": 15,
+   "mw": 4.0,
+   "lon": 120.741,
+   "lat": 16.458,
+   "station": "Ambuklao Substation"
+  },
+  {
+   "res": "02PACO_T1L1",
+   "grid": "luzon",
+   "dev": 0.152,
+   "days": 15,
+   "mw": 420.8,
+   "lon": 120.999,
+   "lat": 14.581,
+   "station": "Paco Substation"
+  },
+  {
+   "res": "13MATAN_SS",
+   "grid": "mindanao",
+   "dev": 0.155,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 125.274,
+   "lat": 6.757,
+   "station": "Matanao Substation"
+  },
+  {
+   "res": "01AMBUK_SS",
+   "grid": "luzon",
+   "dev": 0.156,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.741,
+   "lat": 16.458,
+   "station": "Ambuklao Substation"
+  },
+  {
+   "res": "01AMBUK_T1L1",
+   "grid": "luzon",
+   "dev": 0.156,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 120.741,
+   "lat": 16.458,
+   "station": "Ambuklao Substation"
+  },
+  {
+   "res": "09LALA_SS",
+   "grid": "mindanao",
+   "dev": 0.168,
+   "days": 15,
+   "mw": 0.6,
+   "lon": 123.813,
+   "lat": 7.913,
+   "station": "Lala Substation"
+  },
+  {
+   "res": "11MARAM_SS",
+   "grid": "mindanao",
+   "dev": 0.29,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 125.018,
+   "lat": 7.713,
+   "station": "Maramag Substation"
+  },
+  {
+   "res": "13DAV_T1L1",
+   "grid": "mindanao",
+   "dev": 0.363,
+   "days": 15,
+   "mw": 44.6,
+   "lon": 125.482,
+   "lat": 7.095,
+   "station": "Davao Substation"
+  },
+  {
+   "res": "13TORIL_SS",
+   "grid": "mindanao",
+   "dev": 0.369,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 125.475,
+   "lat": 6.969,
+   "station": "Toril Substation"
+  },
+  {
+   "res": "13BUNAW_SS",
+   "grid": "mindanao",
+   "dev": 0.374,
+   "days": 15,
+   "mw": 0.1,
+   "lon": 125.629,
+   "lat": 7.243,
+   "station": "Bunawan Substation"
+  },
+  {
+   "res": "11KIB_T1L1",
+   "grid": "mindanao",
+   "dev": 0.384,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.971,
+   "lat": 7.55,
+   "station": "Kibawe Substation"
+  },
+  {
+   "res": "11KIB_T1L2",
+   "grid": "mindanao",
+   "dev": 0.384,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.971,
+   "lat": 7.55,
+   "station": "Kibawe Substation"
+  },
+  {
+   "res": "09AURORA_SS",
+   "grid": "mindanao",
+   "dev": 0.441,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.591,
+   "lat": 7.93,
+   "station": "Aurora Substation & Relay"
+  },
+  {
+   "res": "01MAGAT_BAT",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 2.0,
+   "lon": 121.456,
+   "lat": 16.826,
+   "station": "Magat Switchyard"
+  },
+  {
+   "res": "01MAGAT_BATL",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.456,
+   "lat": 16.826,
+   "station": "Magat Switchyard"
+  },
+  {
+   "res": "01MAGAT_SS",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.456,
+   "lat": 16.826,
+   "station": "Magat Switchyard"
+  },
+  {
+   "res": "01MAGAT_U01",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 2.9,
+   "lon": 121.456,
+   "lat": 16.826,
+   "station": "Magat Switchyard"
+  },
+  {
+   "res": "01MAGAT_U02",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 3.8,
+   "lon": 121.456,
+   "lat": 16.826,
+   "station": "Magat Switchyard"
+  },
+  {
+   "res": "01MAGAT_U03",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 21.8,
+   "lon": 121.456,
+   "lat": 16.826,
+   "station": "Magat Switchyard"
+  },
+  {
+   "res": "01MAGAT_U04",
+   "grid": "luzon",
+   "dev": 0.446,
+   "days": 15,
+   "mw": 10.7,
+   "lon": 121.456,
+   "lat": 16.826,
+   "station": "Magat Switchyard"
+  },
+  {
+   "res": "01LAL_L01",
+   "grid": "luzon",
+   "dev": 0.456,
+   "days": 12,
+   "mw": 0.0,
+   "lon": 121.682,
+   "lat": 18.127,
+   "station": "Magapit Substation"
+  },
+  {
+   "res": "01LAL_SS",
+   "grid": "luzon",
+   "dev": 0.456,
+   "days": 12,
+   "mw": 0.0,
+   "lon": 121.682,
+   "lat": 18.127,
+   "station": "Magapit Substation"
+  },
+  {
+   "res": "11KIBAWE_SS",
+   "grid": "mindanao",
+   "dev": 0.468,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.971,
+   "lat": 7.55,
+   "station": "Kibawe Substation"
+  },
+  {
+   "res": "13DAVAO_SS",
+   "grid": "mindanao",
+   "dev": 0.527,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 125.482,
+   "lat": 7.095,
+   "station": "Davao Substation"
+  },
+  {
+   "res": "01GAMU_SS",
+   "grid": "luzon",
+   "dev": 0.557,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.819,
+   "lat": 17.048,
+   "station": "Gamu Substation"
+  },
+  {
+   "res": "01GAMU_T1L2",
+   "grid": "luzon",
+   "dev": 0.557,
+   "days": 15,
+   "mw": 20.0,
+   "lon": 121.819,
+   "lat": 17.048,
+   "station": "Gamu Substation"
+  },
+  {
+   "res": "01GAMU_BAT",
+   "grid": "luzon",
+   "dev": 0.57,
+   "days": 15,
+   "mw": 1.0,
+   "lon": 121.819,
+   "lat": 17.048,
+   "station": "Gamu Substation"
+  },
+  {
+   "res": "01GAMU_BATL",
+   "grid": "luzon",
+   "dev": 0.57,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.819,
+   "lat": 17.048,
+   "station": "Gamu Substation"
+  },
+  {
+   "res": "01GAMU_T1L1",
+   "grid": "luzon",
+   "dev": 0.57,
+   "days": 15,
+   "mw": 40.9,
+   "lon": 121.819,
+   "lat": 17.048,
+   "station": "Gamu Substation"
+  },
+  {
+   "res": "09POLAN_SS",
+   "grid": "mindanao",
+   "dev": 0.623,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 123.413,
+   "lat": 8.485,
+   "station": "Polanco Substation"
+  },
+  {
+   "res": "01MAGAPIT_BAT",
+   "grid": "luzon",
+   "dev": 0.629,
+   "days": 15,
+   "mw": 1.2,
+   "lon": 121.682,
+   "lat": 18.127,
+   "station": "Magapit Substation"
+  },
+  {
+   "res": "01MAGAPIT_BATL",
+   "grid": "luzon",
+   "dev": 0.629,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.682,
+   "lat": 18.127,
+   "station": "Magapit Substation"
+  },
+  {
+   "res": "12NASIP_SS",
+   "grid": "mindanao",
+   "dev": 0.717,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 125.326,
+   "lat": 8.977,
+   "station": "Nasipit Substation"
+  },
+  {
+   "res": "12BUT_T2L1",
+   "grid": "mindanao",
+   "dev": 0.72,
+   "days": 15,
+   "mw": 9.3,
+   "lon": 125.514,
+   "lat": 8.919,
+   "station": "Butuan Substation"
+  },
+  {
+   "res": "13MACO_BAT",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 0.7,
+   "lon": 125.853,
+   "lat": 7.404,
+   "station": "Maco Substation"
+  },
+  {
+   "res": "13MACO_BATL",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 125.853,
+   "lat": 7.404,
+   "station": "Maco Substation"
+  },
+  {
+   "res": "13MACO_SS",
+   "grid": "mindanao",
+   "dev": 0.743,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 125.853,
+   "lat": 7.404,
+   "station": "Maco Substation"
+  },
+  {
+   "res": "12BUTUAN_SS",
+   "grid": "mindanao",
+   "dev": 0.89,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 125.514,
+   "lat": 8.919,
+   "station": "Butuan Substation"
+  },
+  {
+   "res": "12NAS_T1L1",
+   "grid": "mindanao",
+   "dev": 0.895,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 125.326,
+   "lat": 8.977,
+   "station": "Nasipit Substation"
+  },
+  {
+   "res": "13NABUN_SS",
+   "grid": "mindanao",
+   "dev": 0.907,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 126.017,
+   "lat": 7.498,
+   "station": "Nabunturan Substation"
+  },
+  {
+   "res": "14TACUR_SS",
+   "grid": "mindanao",
+   "dev": 0.972,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.687,
+   "lat": 6.669,
+   "station": "Tacurong Substation"
+  },
+  {
+   "res": "12BISLIG_SS",
+   "grid": "mindanao",
+   "dev": 1.224,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 126.359,
+   "lat": 8.147,
+   "station": "Bislig Substation"
+  },
+  {
+   "res": "09NAGA_SS",
+   "grid": "mindanao",
+   "dev": 1.293,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 122.687,
+   "lat": 7.81,
+   "station": "Naga Substation"
+  },
+  {
+   "res": "14SULTAN_SS",
+   "grid": "mindanao",
+   "dev": 1.391,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 124.311,
+   "lat": 7.274,
+   "station": "Sultan Kudarat Substation"
+  },
+  {
+   "res": "09ZAMBO_SS",
+   "grid": "mindanao",
+   "dev": 1.708,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 122.215,
+   "lat": 7.08,
+   "station": "Zamboanga Substation"
+  },
+  {
+   "res": "09PITOGO_SS",
+   "grid": "mindanao",
+   "dev": 1.85,
+   "days": 15,
+   "mw": 0.5,
+   "lon": 121.992,
+   "lat": 6.94,
+   "station": "Pitogo Substation"
+  },
+  {
+   "res": "09PITOG_BATL",
+   "grid": "mindanao",
+   "dev": 1.85,
+   "days": 15,
+   "mw": 0.0,
+   "lon": 121.992,
+   "lat": 6.94,
+   "station": "Pitogo Substation"
+  }
+ ],
+ "notes": [
+  "Mean over clean days of each node's daily mean deviation from its regional SMP (DIPCEF final, PhP/kWh). Nodes need data on 80% of clean days to appear.",
+  "WESM's published nodal congestion component is zero on every sampled day; deviations are formally loss-dominated and intra-regional congestion is administered. Read this as persistent locational price deviation, not a congestion premium.",
+  "Map placement covers only nodes whose station token resolves onto the OSM-mapped grid; the full table lists every node."
+ ]
+}

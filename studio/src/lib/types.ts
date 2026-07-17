@@ -899,3 +899,34 @@ export interface Expansion {
   costs_note?: string
   src?: string
 }
+
+export interface NodalObsNode {
+  res: string
+  grid: string
+  dev: number
+  days: number
+  mw: number
+}
+export interface NodalObsGrid {
+  n_nodes: number
+  p5: number
+  p50: number
+  p95: number
+  top: NodalObsNode[]
+  bottom: NodalObsNode[]
+}
+export interface NodalObs {
+  available: boolean
+  window?: {
+    first: string
+    last: string
+    days_derived: number
+    clean_days: number
+    clean_criterion: string
+  }
+  n_nodes?: number
+  n_placed?: number
+  per_grid?: Record<string, NodalObsGrid>
+  nodes?: NodalObsNode[]
+  notes?: string[]
+}

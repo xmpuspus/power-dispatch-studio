@@ -324,7 +324,7 @@ const FILES = ["meta.json","answers.json","congestion.json","prices.json",
   "congestion_premium.json","findings.json","chokepoints.geojson",
   "dc_sites.geojson","sual.geojson","generators.geojson","dispatch.json",
   "drivers.json","market_ops.json","grid_lines.geojson","grid_nodes.geojson",
-  "grid.json"];
+  "grid.json","nodal_obs.json"];
 const D = {};
 
 async function loadAll(){
@@ -428,6 +428,28 @@ function addLayers(){
         "circle-stroke-width": 3, "circle-stroke-color": "#b3261e" }});
     n++;
   }
+  const NO = D["nodal_obs.json"];
+  if (NO && NO.available && NO.placed){
+    // observed per-node price deviations (Prices mode). Diverging poles
+    // #2b6a9d / #b3261e with a neutral midpoint, validated against the
+    // light basemap; the panel carries the full table for the rest.
+    map.addSource("nodalobs", { type:"geojson", data: {
+      type:"FeatureCollection",
+      features: NO.placed.map(nd => ({ type:"Feature",
+        geometry:{ type:"Point", coordinates:[nd.lon, nd.lat] },
+        properties:nd })),
+    }});
+    map.addLayer({ id:"nodal-pt", type:"circle", source:"nodalobs",
+      layout:{ visibility:"none" },
+      paint:{
+        "circle-radius": ["interpolate", ["linear"], ["abs", ["get","dev"]],
+          0, 3, 0.8, 8],
+        "circle-color": ["interpolate", ["linear"], ["get","dev"],
+          -0.8, "#2b6a9d", 0, "#b9b3a8", 0.8, "#b3261e"],
+        "circle-opacity": .9,
+        "circle-stroke-color": "#fff", "circle-stroke-width": 1 }});
+    n++;
+  }
   if (D["generators.geojson"]){
     map.addSource("gen", { type:"geojson", data: D["generators.geojson"] });
     map.addLayer({ id:"gen-pt", type:"circle", source:"gen",
@@ -512,6 +534,17 @@ function addLayers(){
         `${fmt(b.rtd_intervals)} 5-minute intervals (` +
         b.equipment.slice(0, 2).map(esc).join(", ") + `).` : "") +
       `<br><i>As mapped in OpenStreetMap (ODbL).</i>`;
+  });
+  hover("nodal-pt", p => {
+    const sign = p.dev > 0 ? "+" : "";
+    return `<b>${esc(p.res)}</b>` +
+      (p.station ? `<br>at ${esc(p.station)}` : "") +
+      `<br>${sign}P${fmt(p.dev, 2)}/kWh vs the ${esc(p.grid)} regional price` +
+      `<br>Mean over ${fmt(p.days)} clean market days` +
+      (p.mw ? `; ~${fmt(p.mw)} MW scheduled` : "") +
+      `<br><i>Observed locational deviation (DIPCEF final). WESM prices ` +
+      `intra-regional congestion administratively, so this is not a ` +
+      `congestion premium.</i>`;
   });
 }
 
@@ -678,6 +711,39 @@ function sideprice(){
     stayed within P${fmt(ad.max_spread,2)}/kWh of each other. After trading resumed,
     the mean daily spread was P${fmt(mk.mean_spread,2)}/kWh across ${fmt(mk.days)} days.
     The chart shows both regimes; the flat stretch is the suspension.</div>` : "";
+  const NO = D["nodal_obs.json"];
+  let nodalBlock = "";
+  if (NO && NO.available && NO.per_grid && NO.per_grid.luzon
+      && NO.per_grid.visayas && NO.per_grid.mindanao){
+    window.__diag.nodalPlaced = (NO.placed || []).length;
+    const rows = g => {
+      const pg = NO.per_grid[g];
+      if (!pg) return "";
+      const one = n => `<tr><td>${esc(n.res)}</td><td>${esc(g[0].toUpperCase())}</td>
+        <td class="num">${n.dev > 0 ? "+" : ""}${fmt(n.dev,2)}</td></tr>`;
+      return one(pg.top[0]) + one(pg.bottom[0]);
+    };
+    nodalBlock = `<h2 style="margin-top:12px">The same story, node by node</h2>
+    <p class="sub">Below the regional averages, DIPCEF prices about
+    ${fmt(NO.n_nodes)} individual nodes. The dots on the map are each node's
+    persistent deviation from its own region's price across the window's
+    ${fmt(NO.window.clean_days)} clean market days (administered days
+    excluded): red above, blue below, size is magnitude. ${fmt(NO.n_placed)}
+    of ${fmt(NO.n_nodes)} nodes resolve to a mapped station; the widest
+    per-grid spreads (5th to 95th percentile): Luzon
+    ${fmt(NO.per_grid.luzon.p5,2)} to +${fmt(NO.per_grid.luzon.p95,2)},
+    Visayas ${fmt(NO.per_grid.visayas.p5,2)} to
+    +${fmt(NO.per_grid.visayas.p95,2)}, Mindanao
+    ${fmt(NO.per_grid.mindanao.p5,2)} to
+    +${fmt(NO.per_grid.mindanao.p95,2)} P/kWh.</p>
+    <table><thead><tr><th>Extreme node</th><th>Grid</th><th>P/kWh</th></tr></thead>
+    <tbody>${rows("luzon")}${rows("visayas")}${rows("mindanao")}</tbody></table>
+    <div class="note">Observed deviations from DIPCEF final results, not a
+    congestion premium: the published nodal congestion component is zero on
+    every sampled day, and WESM handles intra-regional congestion through
+    administered actions. The full per-node table ships in nodal_obs.json
+    and in the studio's Nodal prices view.</div>`;
+  }
   return `<h2>What it does to prices</h2>
   <p class="sub">Each day's average of the load-weighted 5-minute prices per
   grid, from the archive. May 2026, the first full month after the market resumed,
@@ -688,6 +754,7 @@ function sideprice(){
   between the islands are the reason the numbers differ.</p>
   <div id="spark">${spark || '<div class="note">Price bake pending.</div>'}</div>
   ${regimeNote}
+  ${nodalBlock}
   ${P.max_spread && P.max_spread.date ? `<div class="note">Widest daily
   regional spread in the window: P${fmt(P.max_spread.php,2)}/kWh on
   ${esc(P.max_spread.date)}.</div>` : ""}
@@ -793,8 +860,10 @@ const LEGENDS = {
     note:"Corridors and the grid follow real routed geometry as mapped in OpenStreetMap (community data, ODbL), not NGCP documents. Red = equipment IEMOP's congestion files record at its limit; hover for the receipts." },
   price: { title:"Prices and the links", keys: [
     ["ln","#9c3d12","HVDC links: when they bind, the regional prices separate"],
+    ["sw","#b3261e","Node above its regional price (persistent, observed)"],
+    ["sw","#2b6a9d","Node below its regional price"],
     ["sw","#1a7f48","Data-center sites for reference"]],
-    note:"Regional price series in the panel; the spread is the geography." },
+    note:"Node dots are observed per-node deviations from each region's price (DIPCEF final, clean market days; size = magnitude). Placed where the station resolves on the OSM grid; the panel lists the rest. Not a congestion premium: WESM prices intra-regional congestion administratively." },
   simulate: { title:"Named generators (price movers)", keys: [
     ["sw","#6b6b6b","Coal unit (size by capacity)"],
     ["sw","#4e79a7","Natural-gas unit"]],
@@ -847,6 +916,9 @@ function setMode(m, syncRail = true){
   ["grid-230","grid-500","grid-cable","grid-bound","grid-sub"].forEach(id => {
     if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", gridVis);
   });
+  if (map.getLayer("nodal-pt"))
+    map.setLayoutProperty("nodal-pt", "visibility",
+      m === "price" ? "visible" : "none");
   if (map.getLayer("grid-138"))
     map.setLayoutProperty("grid-138", "visibility",
       (m === "choke" && GRID138_ON) ? "visible" : "none");

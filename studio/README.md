@@ -432,6 +432,17 @@ the hourly replay smooths.
 
 ![Five-minute replay: a 288-point intraday price line against the hourly-mean step, with the intraday range and the offer-cap share.](docs/view-rtdoe5.gif)
 
+**Nodal prices.** The observed per-node price surface under the regional
+averages: each WESM node's persistent deviation from its own region's SMP over
+the window's clean market days, from the derived DIPCEF nodal dailies, with a
+searchable per-node table. Observed, not modeled, and labeled a locational
+deviation rather than a congestion premium: WESM's published nodal congestion
+component is zero on every sampled day, so intra-regional congestion is
+administered, not priced into the nodal column. The map's Prices mode draws the
+same statistic as a layer.
+
+![Nodal prices: per-grid deviation percentiles, the widest premium and discount nodes, and a searchable table of every node's deviation from its regional price.](docs/view-nodal.gif)
+
 Scenario and forward-looking, where the workflow runs on sourced inputs but there
 is no observed future or greenfield build to backcast against; each is labeled a
 scenario on one observed quarter, not a forecast:

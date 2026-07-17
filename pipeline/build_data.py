@@ -943,11 +943,16 @@ def main() -> int:
                               "nodal_dcopf.json")
     nodal = (json.load(open(nodal_path)) if os.path.isfile(nodal_path)
              else {"available": False})
+    # observed per-node price deviations (map Prices layer + studio view)
+    from nodal_obs import build_nodal_obs
+
+    nodal_obs = build_nodal_obs()
 
     for name, obj in [("congestion.json", congestion),
                       ("rtdoe5.json", rtdoe5),
                       ("expansion.json", expansion),
                       ("nodal.json", nodal),
+                      ("nodal_obs.json", nodal_obs),
                       ("reliability.json", reliability),
                       ("prices.json", prices),
                       ("price_load.json", price_load), ("hvdc.json", hvdc),
