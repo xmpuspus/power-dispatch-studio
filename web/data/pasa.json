@@ -3003,6 +3003,49 @@
    },
    "n_out": 13,
    "n_unmatched": 9
+  },
+  {
+   "date": "2026-07-18",
+   "out": [
+    "01MAGAT_U01",
+    "01MAGAT_U02",
+    "01MAGAT_U03",
+    "01MAGAT_U04",
+    "01SMC_G01",
+    "01SROQUE_U03",
+    "03EERI_G02",
+    "07BDPP_U01",
+    "07BDPP_U02",
+    "08PDPP3_C",
+    "08PDPP3_E",
+    "08PDPP3_G",
+    "08PDPP3_H",
+    "10AGUS5_U01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "13SMC_U02",
+    "14SARANG_U02",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 134.7,
+    "visayas": 8.0,
+    "mindanao": 145.5
+   },
+   "matched_fuel_mw": {
+    "luzon": {
+     "hydro": 134.7
+    },
+    "visayas": {
+     "oil": 8.0
+    },
+    "mindanao": {
+     "hydro": 40.5,
+     "coal": 105.0
+    }
+   },
+   "n_out": 19,
+   "n_unmatched": 13
   }
  ],
  "resources": [

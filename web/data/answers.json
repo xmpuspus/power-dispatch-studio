@@ -1,7 +1,7 @@
 {
  "window": {
   "from": "2026-04-07",
-  "to": "2026-07-17"
+  "to": "2026-07-18"
  },
  "q1": {
   "title": "Can the grid handle more data centers? Is there supply?",
@@ -13,7 +13,7 @@
  "q2": {
   "title": "Is the infrastructure ready? Where would they have to sit?",
   "verdict": "The choke points are named, public, and already binding; siting that ignores them inherits them.",
-  "stat": "89 pieces of equipment hit limits across the real-time and day-ahead runs on 102 archive days; the Leyte-Luzon HVDC ran at max or offline 69% of Dec 2025",
+  "stat": "89 pieces of equipment hit limits across the real-time and day-ahead runs on 103 archive days; the Leyte-Luzon HVDC ran at max or offline 69% of Dec 2025",
   "blurb": "The inter-island links and named 230 kV corridors already bind routinely; the table lists the receipts by equipment name. Nearly every announced data-center megawatt sits in the Luzon load pocket, on the importing side of those links. One Sual unit (647 MW) equals 18% of the May system margin, which is why a single trip moves the whole grid. Luzon scheduled reserves fell below the stated requirement in at least one 5-minute interval on 64 of the window's days.",
   "src": "IEMOP congestions-manifesting files; IEMOP Dec 2025 report; IEMOP outage schedules"
  },

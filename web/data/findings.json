@@ -4,8 +4,8 @@
    "id": "corridor-named",
    "tag": "The receipts",
    "title": "The grid names its own choke point",
-   "stat": "A row literally named LEYTE_TO_CEBU appears in the day-ahead runs on 78 of 102 days",
-   "blurb": "IEMOP's congestions-manifesting files put named equipment at 100% of its binding limit. The Tabango (Leyte) to Daanbantayan (Cebu) 230 kV lines that carry this corridor top the league: at a limit on 99 of 102 archive days across the day-ahead and real-time runs, including 138 5-minute real-time intervals on 26 days. The same corridor IEMOP's December 2025 report names in prose.",
+   "stat": "A row literally named LEYTE_TO_CEBU appears in the day-ahead runs on 79 of 103 days",
+   "blurb": "IEMOP's congestions-manifesting files put named equipment at 100% of its binding limit. The Tabango (Leyte) to Daanbantayan (Cebu) 230 kV lines that carry this corridor top the league: at a limit on 100 of 103 archive days across the day-ahead and real-time runs, including 138 5-minute real-time intervals on 26 days. The same corridor IEMOP's December 2025 report names in prose.",
    "source": "IEMOP congestions-manifesting files (RTD + DAP), archive window",
    "focus": {
     "center": [
@@ -36,7 +36,7 @@
    "id": "thin-normal",
    "tag": "Thin is the normal state",
    "title": "Reserves ran below requirement on most days",
-   "stat": "Luzon scheduled reserves fell below the stated requirement on 64 of 102 archive days",
+   "stat": "Luzon scheduled reserves fell below the stated requirement on 64 of 103 archive days",
    "blurb": "In the operator's own dispatch schedules, load was curtailed on 102 grid-days in this window (5,209.8 MWh), and the Visayas ran short of scheduled reserves on 67 days. Thin margins are the observed normal state, not a forecast.",
    "source": "IEMOP RTD regional summaries, archive window",
    "focus": {

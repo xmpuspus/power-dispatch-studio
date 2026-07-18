@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 99,
+   "days": 100,
    "rtd_intervals": 100,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -31,8 +31,8 @@
   },
   {
    "equipment": "1EHVNGS_TR2",
-   "days": 98,
-   "rtd_intervals": 2861,
+   "days": 99,
+   "rtd_intervals": 2895,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -40,8 +40,8 @@
   },
   {
    "equipment": "1EHVNGS_TR1",
-   "days": 98,
-   "rtd_intervals": 942,
+   "days": 99,
+   "rtd_intervals": 956,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -49,7 +49,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 78,
+   "days": 79,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 73,
+   "days": 74,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -238,6 +238,14 @@
    "station": "Nabas Substation"
   },
   {
+   "equipment": "1HERM_1DUH1",
+   "days": 5,
+   "rtd_intervals": 35,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "no plausible path in the graph"
+  },
+  {
    "equipment": "1BING_1NGS2",
    "days": 5,
    "rtd_intervals": 22,
@@ -297,14 +305,6 @@
    "station": "Marawi Substation"
   },
   {
-   "equipment": "1HERM_1DUH1",
-   "days": 4,
-   "rtd_intervals": 1,
-   "max_overload_mw": 0.0,
-   "matched": false,
-   "why": "no plausible path in the graph"
-  },
-  {
    "equipment": "1MEXI_1HER1",
    "days": 4,
    "rtd_intervals": 0,
@@ -328,6 +328,14 @@
    "max_overload_mw": 0.0,
    "matched": false,
    "why": "station token unresolved"
+  },
+  {
+   "equipment": "1HERM_1MAL1",
+   "days": 3,
+   "rtd_intervals": 35,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "no plausible path in the graph"
   },
   {
    "equipment": "11JASA_12BUT1",
@@ -411,14 +419,6 @@
    "max_overload_mw": 0.0,
    "matched": false,
    "why": "unparsed code"
-  },
-  {
-   "equipment": "1HERM_1MAL1",
-   "days": 2,
-   "rtd_intervals": 35,
-   "max_overload_mw": 0.0,
-   "matched": false,
-   "why": "no plausible path in the graph"
   },
   {
    "equipment": "1BALI_1KDA1",
