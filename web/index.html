@@ -860,11 +860,12 @@ const LEGENDS = {
     ["ln","#7d94a6","230 kV (thin grey = 138 kV)"]],
     note:"Corridors and the grid follow real routed geometry as mapped in OpenStreetMap (community data, ODbL), not NGCP documents. Red = equipment IEMOP's congestion files record at its limit; hover for the receipts." },
   price: { title:"Prices and the links", keys: [
+    ["ln","#9aa7b3","The transmission network (faint) that the nodes sit on"],
     ["ln","#9c3d12","HVDC links: when they bind, the regional prices separate"],
     ["sw","#b3261e","Node above its regional price (persistent, observed)"],
     ["sw","#2b6a9d","Node below its regional price"],
     ["sw","#1a7f48","Data-center sites for reference"]],
-    note:"Node dots are observed per-node deviations from each region's price (DIPCEF final, clean market days; size = magnitude). Placed at the resolved site: stations and plants exactly, locality centroids city-precision; the panel lists the rest. Not a congestion premium: WESM prices intra-regional congestion administratively." },
+    note:"Each dot is one WESM node, drawn on the transmission grid it sits on, coloured by its observed deviation from its region's price (DIPCEF final, clean market days; size = magnitude). Placed at the resolved site: stations and plants exactly, locality centroids city-precision; the panel lists the rest. Not a congestion premium: WESM prices intra-regional congestion administratively." },
   simulate: { title:"Named generators (price movers)", keys: [
     ["sw","#6b6b6b","Coal unit (size by capacity)"],
     ["sw","#4e79a7","Natural-gas unit"]],
@@ -913,9 +914,22 @@ function setMode(m, syncRail = true){
       (m === "choke" || m === "simulate") ? "none" : "visible");
   if (map.getLayer("gen-pt"))
     map.setLayoutProperty("gen-pt", "visibility", m === "simulate" ? "visible" : "none");
-  const gridVis = m === "choke" ? "visible" : "none";
-  ["grid-230","grid-500","grid-cable","grid-bound","grid-sub"].forEach(id => {
-    if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", gridVis);
+  // the transmission network shows in Choke mode, and again, faint, in Price
+  // mode so the per-node price dots visibly sit ON the grid, not on a blank
+  // basemap. choke-only layers (binding lines, submarine cables, substations)
+  // stay out of Price so the price field stays legible.
+  const gridVis = (m === "choke" || m === "price") ? "visible" : "none";
+  const faint = m === "price";
+  ["grid-230","grid-500"].forEach(id => {
+    if (!map.getLayer(id)) return;
+    map.setLayoutProperty(id, "visibility", gridVis);
+    map.setPaintProperty(id, "line-opacity", faint ? 0.32 : (id === "grid-500" ? 0.9 : 0.8));
+    map.setPaintProperty(id, "line-color",
+      faint ? "#9aa7b3" : (id === "grid-500" ? "#41586b" : "#7d94a6"));
+  });
+  ["grid-cable","grid-bound","grid-sub"].forEach(id => {
+    if (map.getLayer(id))
+      map.setLayoutProperty(id, "visibility", m === "choke" ? "visible" : "none");
   });
   if (map.getLayer("nodal-pt"))
     map.setLayoutProperty("nodal-pt", "visibility",

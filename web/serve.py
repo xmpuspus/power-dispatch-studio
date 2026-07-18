@@ -18,6 +18,14 @@ PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8789
 
 
 class RangeHandler(SimpleHTTPRequestHandler):
+    def end_headers(self):
+        # never let a dev-server response be cached: recorders (agent-browser's
+        # persistent daemon, any warm browser) otherwise replay a stale bake,
+        # so a re-record silently ships old data. no-store forces the current
+        # web/data on every load.
+        self.send_header("Cache-Control", "no-store, must-revalidate")
+        super().end_headers()
+
     def do_GET(self):
         rng = self.headers.get("Range")
         path = self.translate_path(self.path)
