@@ -94,6 +94,18 @@ async def scroll_top(page: Page):
     )
 
 
+async def fly(page: Page, lon: float, lat: float, zoom: float,
+              ms: int = 2200, hold: float = 0.4):
+    """Smooth cinematic camera move; sleeps through the flight so the
+    recording captures the pan/zoom, not a hard cut."""
+    await page.evaluate(
+        "([lon,lat,z,ms]) => map.flyTo({center:[lon,lat], zoom:z, "
+        "duration:ms, essential:true})",
+        [lon, lat, zoom, ms],
+    )
+    await asyncio.sleep(ms / 1000 + hold)
+
+
 async def hover_node(page: Page, lon: float, lat: float, settle: float = 0.6):
     """Move the real mouse onto a node's projected pixel so the map's own
     hover handler pops the receipt."""
@@ -145,44 +157,63 @@ async def main():
             page,
             "Where you plug in changes what you pay",
             f"Under the three regional WESM prices, {obs['n_nodes']:,} nodes each "
-            "settle at their own. Four decisions through that lens.",
+            "settle at their own. Here is the whole field, then four decisions.",
             intro=True,
         )
-        await asyncio.sleep(3.4)
+        await asyncio.sleep(3.6)
         await clear_cap(page)
+
+        # establishing shot: switch to Prices and hold on the national field
         await click_js(page, "[data-mode=price]")
-        await asyncio.sleep(2.0)
+        await asyncio.sleep(2.4)
         await cap(
             page,
-            "Prices mode: the observed per-node layer",
-            "Red settles above its regional price, blue below; every dot is a "
-            f"mean over the window's {clean} clean market days.",
+            f"Every WESM node, priced at its own deviation ({obs['n_placed']} "
+            "placed of the whole grid)",
+            "Red settles above its region's price, blue below; size is the "
+            f"magnitude, each a mean over {clean} clean market days.",
         )
-        await asyncio.sleep(3.2)
+        await asyncio.sleep(3.6)
 
-        # consumers behind a radial
-        await page.evaluate(
-            "([lon,lat]) => map.jumpTo({center:[lon+0.9,lat-0.15], zoom:7.6})",
-            [pitogo["lon"], pitogo["lat"]],
+        # push into the Luzon field so the dots read AS a network: the price
+        # dots sit on the faint transmission grid they actually connect to
+        await fly(page, 121.15, 15.1, 6.35, ms=2600)
+        await cap(
+            page,
+            "The nodes sit on the real transmission grid",
+            "The faint grey web is the OpenStreetMap network; each price dot is "
+            "a node on it, so the price field IS the grid, coloured.",
         )
-        await asyncio.sleep(2.2)
+        await asyncio.sleep(4.4)
+        await clear_cap(page)
+
+        # sweep south to prove the field is national, not a Luzon artefact
+        await fly(page, 123.4, 9.7, 6.15, ms=2800)
+        await cap(
+            page,
+            "The whole archipelago, node by node",
+            "Visayas and Mindanao carry the same per-node structure; the widest "
+            "premiums sit at the ends of the long radial lines.",
+        )
+        await asyncio.sleep(3.8)
+        await clear_cap(page)
+
+        # decision 1, consumers behind a radial: zoom keeps the peninsula's
+        # dots and the single 138 kV line in frame, not one lonely pin
+        await fly(page, pitogo["lon"] + 0.35, pitogo["lat"] - 0.1, 7.1, ms=2400)
         await hover_node(page, pitogo["lon"], pitogo["lat"])
         await cap(
             page,
             "Consumers: who pays for a radial line",
             f"Pitogo settles +P{pitogo['dev']:.2f}/kWh and Zamboanga "
-            f"+P{zambo['dev']:.2f} above the Mindanao price, every clean day. "
-            "The choke-point layer shows the single 138 kV line behind it.",
+            f"+P{zambo['dev']:.2f} above the Mindanao price, every clean day, "
+            "at the far end of one 138 kV line.",
         )
-        await asyncio.sleep(4.2)
+        await asyncio.sleep(4.4)
         await clear_cap(page)
 
-        # siting: the same data center, two nodes
-        await page.evaluate(
-            "([lon,lat]) => map.jumpTo({center:[lon-0.5,lat-1.1], zoom:6.6})",
-            [gamu["lon"], gamu["lat"]],
-        )
-        await asyncio.sleep(2.0)
+        # decision 2, siting: the same data center at two Luzon nodes
+        await fly(page, gamu["lon"] - 0.2, gamu["lat"] - 0.3, 7.0, ms=2600)
         await hover_node(page, gamu["lon"], gamu["lat"])
         await cap(
             page,
@@ -190,12 +221,8 @@ async def main():
             f"Behind the {gamu['station']} delivery point it pays "
             f"+P{gamu['dev']:.2f}/kWh over the Luzon price.",
         )
-        await asyncio.sleep(3.8)
-        await page.evaluate(
-            "([lon,lat]) => map.jumpTo({center:[lon+0.3,lat+0.15], zoom:7.4})",
-            [calaca["lon"], calaca["lat"]],
-        )
-        await asyncio.sleep(2.0)
+        await asyncio.sleep(4.0)
+        await fly(page, calaca["lon"] + 0.15, calaca["lat"], 7.2, ms=2400)
         await hover_node(page, calaca["lon"], calaca["lat"])
         await cap(
             page,
@@ -204,7 +231,7 @@ async def main():
             f"swing is P{swing:.2f}/kWh: about P{dc_cost_m:,.0f}M per year on a "
             f"flat {dc_mw} MW load, before a single contract is negotiated.",
         )
-        await asyncio.sleep(4.6)
+        await asyncio.sleep(4.8)
         await clear_cap(page)
 
         # ---- studio: table, revenue, forward --------------------------------
@@ -267,18 +294,19 @@ async def main():
         await asyncio.sleep(4.6)
         await clear_cap(page)
 
-        # close on the honesty line
+        # close on the proof: the loss-surface validation view
         await sim_tab(page)
-        await click_text(page, "Nodal prices")
-        await asyncio.sleep(1.4)
+        await click_text(page, "Loss validation")
+        await asyncio.sleep(1.6)
+        await scroll_top(page)
         await cap(
             page,
-            "Observed, and labeled",
-            "WESM's published nodal congestion component is zero on every "
-            "sampled day, so these are locational deviations, not congestion "
-            "premiums; the modeled counterfactual stays a labeled probe.",
+            "And it is validated against the market's own record",
+            "WESM's within-region nodal structure is a loss surface, so network "
+            "physics is a testable prediction: Luzon and Mindanao rank at "
+            "Spearman +0.72 and +0.83, Visayas shown failing, recomputed nightly.",
         )
-        await asyncio.sleep(4.0)
+        await asyncio.sleep(4.8)
         await clear_cap(page)
         await asyncio.sleep(0.6)
 

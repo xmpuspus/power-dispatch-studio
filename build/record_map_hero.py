@@ -98,11 +98,15 @@ async def main():
         await hover_choke(page)
         await asyncio.sleep(1.7)
 
-        # Prices: pull back so the three island grids and the sparkline read together
+        # Prices: the per-node layer. Open national so the field reads, then push
+        # into the Luzon density where the price dots sit ON the faint grid, so it
+        # reads as a node network, not a smudge near Manila.
         await mode(page, "price")
         await page.mouse.move(W / 2, 40)  # drop the hover popup
-        await fly(page, 122.2, 12.2, 5.2, 1000)
-        await asyncio.sleep(1.6)
+        await fly(page, 122.2, 12.2, 5.2, 900)
+        await asyncio.sleep(1.3)
+        await fly(page, 121.15, 15.1, 6.35, 1400)
+        await asyncio.sleep(1.7)
 
         # Drivers: the day-by-day archive feed; keep a slow drift so it stays alive
         await mode(page, "drivers")
