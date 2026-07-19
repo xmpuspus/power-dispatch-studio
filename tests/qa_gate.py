@@ -16,6 +16,13 @@ ROOT = os.path.join(os.path.dirname(__file__), "..")
 TARGETS = (glob.glob(os.path.join(ROOT, "web", "*.html"))
            + glob.glob(os.path.join(ROOT, "web", "data", "*.json"))
            + glob.glob(os.path.join(ROOT, "docs", "*.md"))
+           # the studio's in-app React copy is user-visible too; scan it, but
+           # skip *.test.* (test fixtures carry deliberate tells like em-dashes)
+           + [p for p in glob.glob(os.path.join(ROOT, "studio", "src", "**", "*.tsx"),
+                                   recursive=True)
+              + glob.glob(os.path.join(ROOT, "studio", "src", "**", "*.ts"),
+                          recursive=True)
+              if ".test." not in os.path.basename(p)]
            + [os.path.join(ROOT, "README.md"),
               os.path.join(ROOT, "studio", "README.md")])
 
@@ -83,6 +90,19 @@ def scan(path, text):
     for label, rx in BANNED:
         if re.search(rx, text, re.I):
             fails.append(f"{base}: BANNED framing {label}")
+    # 'congestion premium'/'congestion cost' is a banned affirmative WESM framing
+    # (the published LMP_CONGESTION column is not a per-node premium); allowed
+    # only in the negated or debunking form ("not a congestion premium", the
+    # "= 0" chart that "would mislead"). Require a marker in the local window.
+    for m in re.finditer(r"congestion\s+(premium|cost)", text, re.I):
+        ctx = text[max(0, m.start() - 55):m.end() + 20].lower()
+        # a quoted mention ("congestion premium") is a term being debunked, not
+        # an assertion; otherwise require a negation/debunk marker in the window
+        quoted = bool(re.search(r"[\"']\s*$", text[max(0, m.start() - 2):m.start()]))
+        if not quoted and not re.search(
+                r"\bnot\b|\bnever\b|n't|\bno\b|rather than|=\s*0|mislead", ctx):
+            fails.append(f"{base}: BANNED affirmative 'congestion "
+                         f"{m.group(1).lower()}' (only the negated form is allowed)")
     # The DOE plant list names dozens of solar plants "<NAME> SPP" (solar power
     # plant) and Kalayaan "PSPP" (pumped storage). Scrub SPP only when it follows
     # an ALL-CAPS plant name, so the ban still catches prose about the US ISO.

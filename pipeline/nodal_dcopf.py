@@ -23,10 +23,11 @@ never touches the byte-parity day-LP text):
           grid-fuel proxy costs, flows capped at ratings: nodal LMPs from
           the bus-balance duals. Validation: regional means vs the observed
           regional SMPs; the binding set vs RTDCV. The published nodal
-          LMP_CONGESTION column is zero on every sampled day (WESM handles
-          intra-regional congestion administratively), so within-region
-          modeled congestion has no like-for-like observed target; the
-          replay's binding-set match is the defensible test.
+          LMP_CONGESTION column is zero through the market suspension window
+          and small and intermittent afterward (about one percent of
+          clean-day node-hours), so within-region modeled congestion has no
+          reliable like-for-like observed target; the replay's binding-set
+          match is the defensible test.
 
     python3 pipeline/nodal_dcopf.py --day 2026-05-20
 """

@@ -137,9 +137,9 @@ center pays behind a premium delivery point versus beside generation; what the
 same MWh earns a plant behind an export constraint; and the honest nodal
 forward, the regional forward band plus the node's persistent adder, held
 constant and labeled. Deviations are labeled observed locational deviations,
-never congestion premiums: WESM prices intra-regional congestion
-administratively, and its published nodal congestion component is zero on every
-sampled day. Recipe: `python3 build/record_nodal_walkthrough.py` against the
+never congestion premiums: the published nodal congestion component is zero
+through the market suspension window and small and intermittent after prices
+resumed on 2026-05-01, so the deviation stays loss-dominated. Recipe: `python3 build/record_nodal_walkthrough.py` against the
 combined serve; a [smoother MP4 is here](docs/nodal-walkthrough.mp4).
 
 ![Nodal walkthrough: the map's Prices mode with per-node deviation dots, hovering the Zamboanga radial premium and the Gamu versus Calaca siting swing with the computed peso-per-year difference, then the studio's Nodal prices table filtered to delivery points, the Leyte geothermal export discount, and the Luzon forward band with the node adder framing](docs/nodal-walkthrough.gif)
@@ -147,18 +147,23 @@ combined serve; a [smoother MP4 is here](docs/nodal-walkthrough.mp4).
 ## The nodal model is validated against the market's own record
 
 WESM decomposes every published LMP into an energy, a loss, and a congestion
-part, and the congestion part is zero on every sampled day, so the entire
-within-region nodal price structure the market reports is a loss surface,
-about a thousand observed node deviations per clean day. That is a validation
-target a closed planning suite cannot match in public, because its network
-dataset is private and its per-node accuracy is unpublished. So the model is
+part, and the congestion part is small and sparse (zero through the market
+suspension, about one percent of clean-day node-hours afterward), so the
+within-region nodal price structure the market reports is loss-dominated:
+about a thousand resources report per clean day, and the ones that resolve to a
+mapped bus become the validation target. That is a target a closed planning
+suite cannot match in public, because its network dataset is private and its
+per-node accuracy is unpublished. So the model is
 checked against it: marginal loss factors from the OpenStreetMap-geometry
 backbone are compared, grid by grid, against each node's observed deviation
-from its regional price. Luzon ranks at Spearman **+0.72** over 311 nodes and
-Mindanao at **+0.83** over 118; Visayas fails at the current resolution and is
-shown failing, not dropped. The comparison recomputes nightly as clean market
-days accumulate (`data/derived/loss_surface.json`), and the studio carries the
-same three panels under Analysis, Loss validation.
+from its regional price. Luzon ranks at Spearman **+0.72** over 314 nodes (72
+independent buses, 95% CI +0.58 to +0.81) and Mindanao at **+0.83** over 118
+(37 buses, +0.69 to +0.91); Visayas fails with a stable negative rank
+correlation (**-0.57**, negative on all 15 clean days) and is shown failing,
+not dropped, with the sign reversal not yet diagnosed. The comparison
+recomputes nightly as clean market days accumulate
+(`data/derived/loss_surface.json`), and the studio carries the same three
+panels under Analysis, Loss validation.
 
 ![Loss-surface validation: three scatter panels, one per grid, of the model's marginal loss-factor deviation against the market's observed per-node deviation, each with its fitted line and Spearman rank correlation. Luzon and Mindanao trend clearly and are marked validated in green; Visayas scatters and is marked failing in red](docs/loss-surface.png)
 

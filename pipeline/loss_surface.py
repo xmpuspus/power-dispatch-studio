@@ -3,9 +3,10 @@
 own per-node price deviations?
 
 WESM's published nodal record decomposes every LMP into SMP + loss +
-congestion, the congestion column is zero on every sampled day, and the
-SMP is region-constant per interval. So the entire within-region nodal
-structure the market publishes is a LOSS surface, about a thousand
+congestion, the congestion column is small and sparse (zero through the
+market suspension window, then about one percent of clean-day node-hours),
+and the SMP is region-constant per interval. So the within-region nodal
+structure the market publishes is loss-dominated, about a thousand
 observed node-deviations per clean day. That is a validation target no
 closed tool can match in public, and this module runs it nightly:
 
@@ -30,6 +31,7 @@ on a bus enter, and the artifact says how many that is.
 from __future__ import annotations
 
 import json
+import math
 import os
 from collections import defaultdict
 
@@ -51,6 +53,10 @@ OUT_PATH = os.path.join(HERE, "..", "data", "derived", "loss_surface.json")
 # around 0.03, single-conductor 230/138 kV higher, submarine cable low).
 R_OHM_KM = {"ac500": 0.028, "ac230": 0.08, "ac138": 0.12, "cable": 0.06}
 CLEAN_OK_SHARE = 0.9
+# validated/failing cutoff on the window Spearman. 0.4 is the conventional
+# moderate-correlation mark, a reporting convention, not a power calculation;
+# each grid's spearman_ci95 carries the actual uncertainty at the bus count.
+VALIDATED_SPEARMAN = 0.4
 
 
 def clean_days() -> list[str]:
@@ -198,6 +204,17 @@ def _spearman(xs: list[float], ys: list[float]) -> float | None:
     return round(sxy / (sxx * syy) ** 0.5, 3)
 
 
+def _fisher_ci(rho: float | None, n: int) -> list[float] | None:
+    """95% CI for a rank correlation via Fisher z, using the INDEPENDENT bus
+    count n (not the inflated node count). Wide when n is small: the honest
+    uncertainty on the validation verdict."""
+    if rho is None or n < 5 or abs(rho) >= 1:
+        return None
+    z = math.atanh(rho)
+    se = 1.0 / math.sqrt(n - 3)
+    return [round(math.tanh(z - 1.96 * se), 3), round(math.tanh(z + 1.96 * se), 3)]
+
+
 def build_loss_surface() -> dict:
     days = clean_days()
     if not days:
@@ -209,13 +226,15 @@ def build_loss_surface() -> dict:
     obs_acc: dict[str, list[float]] = defaultdict(list)
     mod_acc: dict[str, list[float]] = defaultdict(list)
     node_grid: dict[str, str] = {}
+    node_bus: dict[str, str] = {}
     per_day = []
-    res_bus = None
     for name in days:
         with open(os.path.join(NODAL_DIR, name)) as f:
             day = json.load(f)
-        if res_bus is None:
-            res_bus, _ = map_resources(day, net)
+        # resolve resource->bus per day, not once from the first day, so a
+        # resource that only appears in a later clean day still enters the
+        # comparison (F31)
+        res_bus, _ = map_resources(day, net)
         day_obs: dict[str, list[float]] = defaultdict(list)
         day_mod: dict[str, list[float]] = defaultdict(list)
         for hr in range(24):
@@ -242,6 +261,7 @@ def build_loss_surface() -> dict:
                 day_obs[res].append(o)
                 day_mod[res].append(m)
                 node_grid[res] = nd["grid"]
+                node_bus[res] = bus
         row = {"date": day["date"]}
         for g in ("luzon", "visayas", "mindanao"):
             xs = [
@@ -270,17 +290,32 @@ def build_loss_surface() -> dict:
         n = len(rs)
         if n < 8:
             continue
+        # DIPCEF resources sharing a substation resolve to the same bus and
+        # the same modeled value, so n_nodes overstates the independent
+        # sample; n_bus is the honest count the CI uses (F6)
+        n_bus = len({node_bus[r] for r in rs if r in node_bus})
         # affine fit y = a x + b (the loss-reference convention is a per-grid
         # affine choice; slope and intercept are REPORTED, not hidden)
         mx, my = sum(xs) / n, sum(ys) / n
         sxx = sum((x - mx) ** 2 for x in xs)
-        a = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sxx if sxx > 0 else 0.0
+        syy = sum((y - my) ** 2 for y in ys)
+        sxy = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
+        a = sxy / sxx if sxx > 0 else 0.0
         b = my - a * mx
         mae = sum(abs(y - (a * x + b)) for x, y in zip(xs, ys)) / n
+        # levels goodness-of-fit: Pearson r and R^2 report how much per-node
+        # level variance the affine model explains, which the rank Spearman
+        # does not (F13)
+        pearson = sxy / (sxx * syy) ** 0.5 if sxx > 0 and syy > 0 else None
         spread = sorted(ys)
+        sp = _spearman(xs, ys)
         window[g] = {
             "n_nodes": n,
-            "spearman": _spearman(xs, ys),
+            "n_bus": n_bus,
+            "spearman": sp,
+            "spearman_ci95": _fisher_ci(sp, n_bus),
+            "pearson_r": round(pearson, 3) if pearson is not None else None,
+            "r2": round(pearson * pearson, 3) if pearson is not None else None,
             "affine_slope": round(a, 3),
             "affine_intercept_php_kwh": round(b, 4),
             "mae_after_affine_php_kwh": round(mae, 4),
@@ -293,24 +328,35 @@ def build_loss_surface() -> dict:
         # summarises, so a viewer can see the fit, not just the correlation.
         scatter[g] = [[round(x, 4), round(y, 4)] for x, y in zip(xs, ys)]
 
-    validated = [g for g, w in window.items() if (w["spearman"] or 0) >= 0.4]
+    validated = [
+        g for g, w in window.items() if (w["spearman"] or 0) >= VALIDATED_SPEARMAN
+    ]
     failing = [g for g in window if g not in validated]
+    if failing:
+        detail = (
+            "; "
+            + ", ".join(failing)
+            + " fails the same test with a stable negative rank correlation "
+            "across the clean days, reported as failing, not hidden; the sign "
+            "reversal is not yet diagnosed (a reference-bus or PTDF-orientation "
+            "artifact is the leading suspect, unconfirmed)"
+        )
+    else:
+        detail = ""
     finding = (
         "Network physics ranks the market's own per-node deviations in "
         + ", ".join(validated)
-        + (
-            "; " + ", ".join(failing) + " fails the same test at the "
-            "current resolution (suspects: resolved-MW share, inter-island "
-            "exchange structure) and is reported as failing, not hidden"
-            if failing
-            else ""
-        )
-        + "."
+        + detail
+        + f". Validated at Spearman >= {VALIDATED_SPEARMAN}, a moderate-"
+        "correlation reporting convention rather than a power calculation; "
+        "each grid's spearman_ci95 gives the uncertainty at the independent "
+        "bus count."
     )
     return {
         "available": True,
         "clean_days": len(days),
         "n_nodes_compared": len(obs_acc),
+        "validated_spearman_threshold": VALIDATED_SPEARMAN,
         "validated_grids": validated,
         "failing_grids": failing,
         "finding": finding,

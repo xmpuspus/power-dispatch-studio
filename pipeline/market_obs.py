@@ -61,10 +61,10 @@ def _hourly_mean(acc: dict[int, list[float]], dp: int) -> list[float | None]:
     return out
 
 
-def _interval_hour(ts: str) -> int:
-    """Hour bucket for an interval-ENDING timestamp. IEMOP serializes the
-    midnight-ending interval as a bare date (no time part): that interval
-    belongs to hour 23, not to hour_of's peak-hour fallback."""
+def _interval_hour(ts: str) -> int | None:
+    """Hour bucket for an interval-ENDING timestamp, or None if unparseable.
+    IEMOP serializes the midnight-ending interval as a bare date (no time
+    part): that interval belongs to hour 23."""
     if ":" not in ts:
         return 23
     return hour_of(ts)
@@ -96,8 +96,10 @@ def mcp_hourly() -> dict[str, dict[str, list[float | None]]]:
         acc: dict[str, dict[int, list[float]]] = {g: {} for g in GRIDS_L}
         for g in GRIDS_L:
             for ts, prices in by_int[g].items():
-                acc[g].setdefault(_interval_hour(ts), []).append(
-                    sum(prices) / len(prices))
+                h = _interval_hour(ts)
+                if h is None:
+                    continue
+                acc[g].setdefault(h, []).append(sum(prices) / len(prices))
         out[day] = {g: _hourly_mean(acc[g], 3) for g in GRIDS_L}
     return out
 

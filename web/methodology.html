@@ -96,15 +96,18 @@ commit, so the compact dailies are the durable record; each day must reconcile
 to the RTDSUM regional totals within 2 percent or it is refused, and the
 administered-period days fail that gate by 3 to 5 percent, so only market days
 are derived). This is where the studio's observed hydro water budgets come
-from. (2) The LMP_CONGESTION column stays NOT displayed, on purpose: in the
-sampled hours it reads zero
-across all nodes even while nodal LMPs spread widely. Resolved against the WESM
-price-determination methodology: about 72% of the sampled intervals are re-priced
-under the price substitution methodology at the unconstrained (congestion-free)
-marginal price, and even in normal intervals WESM expresses inter-island congestion
-as one regional price per island grid, not a per-node charge, while intra-region
-soft constraints are relaxed to zero shadow price. So a "congestion premium = 0"
-chart would assert the opposite of what is true; the layer stays archived. Full
+from. (2) The LMP_CONGESTION column stays NOT displayed, on purpose: it is zero
+through the market suspension window and small and intermittent afterward,
+nonzero on 28 of 70 sampled days but touching only about one percent of
+clean-day node-hours, so a per-node congestion layer would read as near-empty
+noise rather than signal. Resolved against the WESM price-determination
+methodology: across the full derived archive the pricing flags run about 55%
+ordinary (OK), 22% administered (AP), 16% price-substitution (PSM, re-priced at
+the unconstrained congestion-free reference), and 8% security-limited (SEC), so
+a large share of intervals is priced away from a pure congestion-inclusive nodal
+price, and even in ordinary intervals WESM expresses inter-island congestion as
+one regional price per island grid, not a per-node charge. So a "congestion
+premium = 0" chart would still mislead; the layer stays archived. Full
 resolution in docs/research-launch-20260705.md.</td></tr>
 <tr><td>RTD Market Clearing Price (daily CSV; names the marginal resource and
 its price per region per 5-minute interval)</td>
@@ -391,13 +394,14 @@ ambiguity is a miss, never a guess. The resolved share of scheduled MW per
 grid ships inside <code>nodal_obs.json</code> as a scoreboard, so the
 resolution number is public and its drift visible.</p>
 <p>What the derived record shows, stated plainly: the published
-<code>LMP_CONGESTION</code> column is zero on every day sampled, including days
-with wide real nodal spread (2026-05-20 carries a median of 85 distinct nodal
-prices per interval per region). The SMP is region-constant per interval, all
-within-region locational separation rides the loss column, inter-island
-congestion appears as the regional SMPs splitting, and intra-regional congestion
-is handled administratively (price substitution, security limits, constrained-on
-payments) rather than priced into the nodal column. Administered intervals also
+<code>LMP_CONGESTION</code> column is zero through the market suspension window
+and small and intermittent after real-time pricing resumed on 2026-05-01,
+nonzero on 28 of the 70 sampled days (median 0.56 PhP/kWh where it fires, up to
+19 PhP/kWh on 2026-05-26) and touching about one percent of clean-day
+node-hours. The SMP is region-constant per interval, so most within-region
+locational separation rides the loss column, inter-island congestion appears as
+the regional SMPs splitting, and the small nodal congestion that is priced is
+sparse rather than a persistent per-node charge. Administered intervals also
 carry a bimodal SMP (a base value and the same value about 2.2% higher); the
 regional reference series takes the per-interval mode and reports how many
 intervals were multimodal.</p>
@@ -423,8 +427,9 @@ generation onto its few resolved plant buses, so modeled price LEVELS are not
 usable; the probe reports binding geography and the honest gap, and the zonal
 engine remains the price model.</p>
 <p><b>The loss-surface validation.</b> Because the market's within-region
-nodal structure is a loss surface (the congestion column is zero), network
-physics can be tested against it at scale: replay the observed injections on
+nodal structure is loss-dominated (the congestion column is small and sparse,
+about one percent of clean-day node-hours), network physics can be tested
+against it at scale: replay the observed injections on
 the reduced backbone, take marginal loss factors per node (class-typical
 resistances scaled by real routed length, labeled estimates), and compare the
 modeled deviation against each node's observed deviation, grid by grid. The
@@ -438,6 +443,15 @@ hidden. Both surfaces draw it: a three-panel scatter figure in the README
 (<code>scripts/loss_surface_fig.py</code>) and the studio's Analysis, Loss
 validation view, which renders the same per-node points, fitted lines, and
 per-grid verdict from the baked artifact.</p>
+<p>Two honest limits on that verdict. The comparison runs on the 15 clean
+market days (about 21 percent of the 70 sampled) that clear a 90-percent
+OK-flag filter, so administered PSM and SEC days are excluded; whether the
+excluded days line up with the choke-point episodes the rest of the site tracks
+is not yet checked. And because DIPCEF resources that share a substation resolve
+to the same model bus, the 314, 96, and 118 node counts collapse to 72, 25, and
+37 independent buses; the reported <code>spearman_ci95</code> uses those bus
+counts, and the 0.4 validated cutoff is a moderate-correlation reporting
+convention, not a power calculation.</p>
 
 <h2>Data-center sites</h2>
 <p>Only facilities with a citable public source are pinned; each pin carries its

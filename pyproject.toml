@@ -18,7 +18,10 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "Intended Audience :: Science/Research",
 ]
-dependencies = ["highspy>=1.7"]
+# pinned exact: the LP byte-parity claim (test_lp_parity, test_engine_sync) is a
+# determinism claim about the solver's tie-breaking, which a point release can
+# change with no code-visible signal. The CI workflows install this same pin.
+dependencies = ["highspy==1.15.1"]
 
 [project.urls]
 Homepage = "https://power-dispatch-studio.vercel.app"

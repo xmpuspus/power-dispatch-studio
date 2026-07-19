@@ -141,6 +141,8 @@ def derive_day(date: str, hour_files: list[tuple[str, str]]) -> dict:
                             if not g:
                                 continue
                             h = hour_of(ti)
+                            if h is None:
+                                continue
                             lmp = float(r.get("LMP") or 0)
                             s = float(r.get("LMP_SMP") or 0)
                             lo = float(r.get("LMP_LOSS") or 0)
@@ -205,9 +207,10 @@ def derive_day(date: str, hour_files: list[tuple[str, str]]) -> dict:
             "(LMP - SMP = loss + congestion, PhP/kWh), from DIPCEF "
             "final 5-minute results, derived at archive time because "
             "the raw hourly zips are too heavy to commit and the "
-            "public window rolls. On every day sampled to date the "
-            "published LMP_CONGESTION column is zero; congestion_php_kwh "
-            "stays sparse-empty until IEMOP populates it."
+            "public window rolls. The published LMP_CONGESTION column is "
+            "zero through the WESM suspension window and small and "
+            "intermittent after real-time pricing resumed on 2026-05-01; "
+            "congestion_php_kwh carries the nonzero node-hours."
         ),
     }
 

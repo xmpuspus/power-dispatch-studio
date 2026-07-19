@@ -10,10 +10,11 @@ Semantics, stated on every surface that shows this:
   - the statistic is the mean over CLEAN days (at least 90 percent of the
     day's rows OK-flagged; administered PSM/SEC days are excluded and
     counted) of the node's daily mean deviation from its regional SMP.
-  - WESM publishes no nodal congestion component (zero on every sampled
-    day), so the deviation is formally loss-dominated and intra-regional
-    congestion is handled administratively. The honest name is "persistent
-    locational price deviation", never "congestion premium".
+  - WESM's published nodal congestion component is zero through the market
+    suspension window and small and intermittent after real-time pricing
+    resumed on 2026-05-01 (it touches about one percent of clean-day
+    node-hours), so the deviation is loss-dominated. The honest name is
+    "persistent locational price deviation", never "congestion premium".
   - a node makes the table when it has data on at least 80 percent of the
     clean days.
   - map placement reuses the station-token matcher (nodal_dcopf.map_resources):
@@ -49,9 +50,21 @@ def build_nodal_obs() -> dict:
     node_mw: dict[str, list[float]] = defaultdict(list)
     node_grid: dict[str, str] = {}
     clean_days = []
+    cong_days_nonzero = 0
+    cong_max = 0.0
     for name in days:
         with open(os.path.join(NODAL_DIR, name)) as f:
             d = json.load(f)
+        # published-congestion summary over every sampled day (not just clean),
+        # so the "nonzero on N of M days" claim is baked and oracle-guarded (F1)
+        day_nonzero = False
+        for _hrs in (d.get("congestion_php_kwh") or {}).values():
+            for _v in _hrs.values():
+                if abs(_v) > 1e-9:
+                    day_nonzero = True
+                    cong_max = max(cong_max, abs(_v))
+        if day_nonzero:
+            cong_days_nonzero += 1
         flags = d.get("pricing_flags", {})
         tot = sum(sum(v.values()) for v in flags.values())
         ok = sum(v.get("OK", 0) for v in flags.values())
@@ -143,6 +156,11 @@ def build_nodal_obs() -> dict:
             "clean_criterion": "at least 90% of the day's rows OK-flagged "
             "(administered PSM/SEC days excluded)",
         },
+        "congestion": {
+            "days_sampled": len(days),
+            "days_nonzero": cong_days_nonzero,
+            "max_php_kwh": round(cong_max, 2),
+        },
         "n_nodes": len(nodes),
         "n_placed": len(placed),
         "resolution": resolution,
@@ -153,10 +171,11 @@ def build_nodal_obs() -> dict:
             "Mean over clean days of each node's daily mean deviation from "
             "its regional SMP (DIPCEF final, PhP/kWh). Nodes need data on "
             "80% of clean days to appear.",
-            "WESM's published nodal congestion component is zero on every "
-            "sampled day; deviations are formally loss-dominated and "
-            "intra-regional congestion is administered. Read this as "
-            "persistent locational price deviation, not a congestion "
+            "WESM's published nodal congestion component is zero through the "
+            "market suspension window and small and intermittent after "
+            "real-time pricing resumed on 2026-05-01 (about one percent of "
+            "clean-day node-hours), so deviations are loss-dominated. Read "
+            "this as persistent locational price deviation, not a congestion "
             "premium.",
             "Map placement resolves through public evidence in priority "
             "order (OSM substation, OSM plant site, named-generator pin, "

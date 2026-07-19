@@ -321,7 +321,7 @@ const fmt = (n, d=0) => n == null ? "n/a" :
 
 const FILES = ["meta.json","answers.json","congestion.json","prices.json",
   "reliability.json","outages.json","market_anchors.json","demand_anchors.json",
-  "congestion_premium.json","findings.json","chokepoints.geojson",
+  "findings.json","chokepoints.geojson",
   "dc_sites.geojson","sual.geojson","generators.geojson","dispatch.json",
   "drivers.json","market_ops.json","grid_lines.geojson","grid_nodes.geojson",
   "grid.json","nodal_obs.json"];
@@ -740,10 +740,11 @@ function sideprice(){
     <table><thead><tr><th>Extreme node</th><th>Grid</th><th>P/kWh</th></tr></thead>
     <tbody>${rows("luzon")}${rows("visayas")}${rows("mindanao")}</tbody></table>
     <div class="note">Observed deviations from DIPCEF final results, not a
-    congestion premium: the published nodal congestion component is zero on
-    every sampled day, and WESM handles intra-regional congestion through
-    administered actions. The full per-node table ships in nodal_obs.json
-    and in the studio's Nodal prices view.</div>`;
+    congestion premium: the published nodal congestion component is zero
+    through the market suspension and small and intermittent afterward (about
+    one percent of clean-day node-hours), so the deviation is loss-dominated.
+    The full per-node table ships in nodal_obs.json and in the studio's Nodal
+    prices view.</div>`;
   }
   return `<h2>What it does to prices</h2>
   <p class="sub">Each day's average of the load-weighted 5-minute prices per

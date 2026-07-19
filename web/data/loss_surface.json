@@ -1,7 +1,8 @@
 {
  "available": true,
  "clean_days": 15,
- "n_nodes_compared": 525,
+ "n_nodes_compared": 528,
+ "validated_spearman_threshold": 0.4,
  "validated_grids": [
   "luzon",
   "mindanao"
@@ -9,7 +10,7 @@
  "failing_grids": [
   "visayas"
  ],
- "finding": "Network physics ranks the market's own per-node deviations in luzon, mindanao; visayas fails the same test at the current resolution (suspects: resolved-MW share, inter-island exchange structure) and is reported as failing, not hidden.",
+ "finding": "Network physics ranks the market's own per-node deviations in luzon, mindanao; visayas fails the same test with a stable negative rank correlation across the clean days, reported as failing, not hidden; the sign reversal is not yet diagnosed (a reference-bus or PTDF-orientation artifact is the leading suspect, unconfirmed). Validated at Spearman >= 0.4, a moderate-correlation reporting convention rather than a power calculation; each grid's spearman_ci95 gives the uncertainty at the independent bus count.",
  "per_day": [
   {
    "date": "2026-05-01",
@@ -31,90 +32,104 @@
   },
   {
    "date": "2026-05-16",
-   "luzon": 0.726,
+   "luzon": 0.731,
    "visayas": -0.629,
    "mindanao": 0.716
   },
   {
    "date": "2026-05-17",
-   "luzon": 0.68,
+   "luzon": 0.684,
    "visayas": -0.659,
    "mindanao": 0.716
   },
   {
    "date": "2026-06-01",
-   "luzon": 0.731,
+   "luzon": 0.735,
    "visayas": -0.456,
    "mindanao": 0.82
   },
   {
    "date": "2026-06-03",
-   "luzon": 0.697,
+   "luzon": 0.701,
    "visayas": -0.563,
    "mindanao": 0.695
   },
   {
    "date": "2026-06-04",
-   "luzon": 0.677,
+   "luzon": 0.681,
    "visayas": -0.602,
    "mindanao": 0.706
   },
   {
    "date": "2026-06-05",
-   "luzon": 0.709,
+   "luzon": 0.714,
    "visayas": -0.599,
    "mindanao": 0.717
   },
   {
    "date": "2026-06-06",
-   "luzon": 0.667,
+   "luzon": 0.672,
    "visayas": -0.637,
    "mindanao": 0.721
   },
   {
    "date": "2026-06-07",
-   "luzon": 0.71,
+   "luzon": 0.714,
    "visayas": -0.615,
    "mindanao": 0.71
   },
   {
    "date": "2026-06-08",
-   "luzon": 0.713,
+   "luzon": 0.718,
    "visayas": -0.553,
    "mindanao": 0.847
   },
   {
    "date": "2026-06-14",
-   "luzon": 0.638,
+   "luzon": 0.641,
    "visayas": -0.488,
    "mindanao": 0.86
   },
   {
    "date": "2026-06-15",
-   "luzon": 0.723,
+   "luzon": 0.726,
    "visayas": -0.433,
    "mindanao": 0.842
   },
   {
    "date": "2026-06-22",
-   "luzon": 0.72,
+   "luzon": 0.723,
    "visayas": -0.42,
    "mindanao": 0.839
   }
  ],
  "window": {
   "luzon": {
-   "n_nodes": 311,
-   "spearman": 0.716,
-   "affine_slope": 0.352,
-   "affine_intercept_php_kwh": -0.3546,
-   "mae_after_affine_php_kwh": 0.1067,
+   "n_nodes": 314,
+   "n_bus": 72,
+   "spearman": 0.717,
+   "spearman_ci95": [
+    0.582,
+    0.814
+   ],
+   "pearson_r": 0.62,
+   "r2": 0.385,
+   "affine_slope": 0.35,
+   "affine_intercept_php_kwh": -0.3495,
+   "mae_after_affine_php_kwh": 0.1097,
    "observed_p5_php_kwh": -0.245,
-   "observed_p95_php_kwh": 0.446
+   "observed_p95_php_kwh": 0.452
   },
   "visayas": {
    "n_nodes": 96,
+   "n_bus": 25,
    "spearman": -0.57,
+   "spearman_ci95": [
+    -0.788,
+    -0.226
+   ],
+   "pearson_r": -0.612,
+   "r2": 0.375,
    "affine_slope": -0.016,
    "affine_intercept_php_kwh": 0.367,
    "mae_after_affine_php_kwh": 0.1823,
@@ -123,7 +138,14 @@
   },
   "mindanao": {
    "n_nodes": 118,
+   "n_bus": 37,
    "spearman": 0.829,
+   "spearman_ci95": [
+    0.69,
+    0.909
+   ],
+   "pearson_r": 0.89,
+   "r2": 0.791,
    "affine_slope": 0.141,
    "affine_intercept_php_kwh": 1.7285,
    "mae_after_affine_php_kwh": 0.1979,
@@ -1376,6 +1398,18 @@
    [
     1.0229,
     -0.1699
+   ],
+   [
+    1.193,
+    0.4555
+   ],
+   [
+    1.193,
+    0.4555
+   ],
+   [
+    0.0,
+    -0.1163
    ]
   ],
   "visayas": [

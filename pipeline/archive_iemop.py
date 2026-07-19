@@ -349,6 +349,9 @@ LAG_BUDGET_DAYS = {"LWAPF": 45, "GWAPF": 45, "MRU": 14, "PSMCOG": 45,
                    "MOTRD": 14, "VDSODIR": None,
                    "DIPCEF": None, "RTDRS": None}
 LAG_DEFAULT_DAYS = 4
+# the derived nodal archive rolls off the DIPCEF sample, which lags final
+# settlement by weeks; sized like LWAPF so a truly stalled deriver still trips.
+NODAL_BUDGET_DAYS = 45
 
 
 def check_staleness() -> int:
@@ -375,6 +378,24 @@ def check_staleness() -> int:
         if age > budget:
             stale.append(f"{key}: newest {newest} is {age}d old "
                          f"(budget {budget}d)")
+    # the derived nodal archive (data/derived/nodal_daily/) is not a raw
+    # DATASET and carries no manifest budget, so without its own check a
+    # stalled nodal deriver goes unseen (the flagship map/studio surface) (F9)
+    nodal_dir = os.path.join(HERE, "..", "data", "derived", "nodal_daily")
+    nodal = sorted(f for f in (os.listdir(nodal_dir) if os.path.isdir(nodal_dir) else [])
+                   if f.startswith("NODALD_") and f.endswith(".json"))
+    if not nodal:
+        stale.append("nodal_daily: no NODALD files derived")
+    else:
+        newest_nodal = nodal[-1][7:15]
+        age = (today - datetime.strptime(newest_nodal, "%Y%m%d")
+               .replace(tzinfo=PHT)).days
+        status = "STALE" if age > NODAL_BUDGET_DAYS else "ok"
+        print(f"nodal_daily: newest {newest_nodal}, {age}d old "
+              f"(budget {NODAL_BUDGET_DAYS}d) {status}")
+        if age > NODAL_BUDGET_DAYS:
+            stale.append(f"nodal_daily: newest {newest_nodal} is {age}d old "
+                         f"(budget {NODAL_BUDGET_DAYS}d)")
     for s in stale:
         print("STALE:", s)
     return 1 if stale else 0

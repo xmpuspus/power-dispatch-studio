@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
       - name: Solver (the LP engine's only dependency)
-        run: python3 -m pip install highspy
+        run: python3 -m pip install highspy==1.15.1
       - name: Fetch everything newer than the archive
         id: fetch
         # continue so a partial IEMOP failure still commits what DID arrive;
@@ -101,6 +101,11 @@ jobs:
           }
       - name: Fail red if the fetch failed
         if: steps.fetch.outcome == 'failure'
+        run: exit 1
+      - name: Fail red if the nodal derivers failed (flagship surface)
+        # these run continue-on-error so a partial IEMOP outage still commits
+        # what arrived, but a silent nodal-deriver failure must not pass green
+        if: steps.derive_nodal.outcome == 'failure' || steps.derive_loss_surface.outcome == 'failure'
         run: exit 1
       - name: Staleness gate (red when the archive stops growing)
         run: python3 pipeline/archive_iemop.py --check
