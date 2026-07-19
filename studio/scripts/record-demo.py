@@ -74,7 +74,16 @@ async def main():
         await page.mouse.wheel(0, -420)
         await asyncio.sleep(0.6)
 
-        # flip to the dark theme, then close
+        # the nodal validation proof: network physics against the market's own
+        # per-node prices, the newest analysis surface
+        await tap(page, page.get_by_role("button", name="Loss validation"),
+                  pause_after=3.4)
+        await page.mouse.wheel(0, 300)
+        await asyncio.sleep(2.2)
+        await page.mouse.wheel(0, -300)
+        await asyncio.sleep(0.6)
+
+        # flip to the dark theme (the loss-validation panels remap), then close
         await page.locator(".studio__barright .btn--icon").first.click()
         await asyncio.sleep(2.6)
         await tap(page, page.get_by_role("button", name="Close studio"),
