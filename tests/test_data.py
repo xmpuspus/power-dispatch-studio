@@ -1274,5 +1274,33 @@ if ndays:
           and all(len(v["dev_php_kwh"]) == 24 and len(v["mw"]) == 24
                   for v in list(nd["nodes"].values())[:20]))
 
+# price-model probes: the stylized-book third-engine measurement and the
+# reserve-withholding finding (pipeline/price_model_probes.py). The stylized
+# leave-one-out book must keep beating the cost stack on the Luzon LWAP
+# correlation and closing at least half the gap to the same-day replay (its
+# adoption gate), and reserve withholding must stay the measured no-op on
+# the flat cost stack, or the artifact must be re-derived and re-judged.
+PMP = os.path.join(os.path.dirname(__file__), "..", "data", "derived",
+                   "price_model_probes.json")
+check("price-model probes derived", os.path.isfile(PMP))
+if os.path.isfile(PMP):
+    with open(PMP) as f:
+        pmp = json.load(f)
+    pmp_base = pmp["variants"]["base"]["lwap"]["luzon"]
+    pmp_styl = pmp["variants"]["stylized"]["lwap"]["luzon"]
+    check("stylized book beats the cost stack (Luzon LWAP correlation)",
+          pmp_styl["correlation"] - pmp_base["correlation"] > 0.1)
+    check("stylized book closes half the gap to the same-day replay",
+          (pmp["stylized_gap_closed_frac"] or 0) >= 0.5)
+    check("stylized book lifts the within-day shape, not just the level",
+          pmp_styl["within_day_corr_median"]
+          > pmp_base["within_day_corr_median"])
+    check("reserve withholding is the measured no-op on the cost stack",
+          abs(pmp["corr_delta_vs_base"]["reserve"]["lwap"]["luzon"] or 0)
+          < 0.005)
+    check("probes state the consolidated levers rather than dropping them",
+          "fuel_price_index" in pmp["consolidated_levers"]
+          and "observed_unavailability" in pmp["consolidated_levers"])
+
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)
