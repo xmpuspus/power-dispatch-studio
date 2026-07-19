@@ -205,6 +205,8 @@ def _rtdsum_gen(date: str) -> dict[str, dict[int, float]] | None:
             except ValueError:
                 continue
             h = hour_of((r.get("TIME_INTERVAL") or "").strip())
+            if h is None:
+                continue
             acc[g].setdefault(h, []).append(gen)
     return {g: {h: sum(v) / len(v) for h, v in by_h.items()}
             for g, by_h in acc.items()}

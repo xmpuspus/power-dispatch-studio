@@ -56,8 +56,11 @@ _TIME_RE = re.compile(r"\b(\d{1,2}):(\d{2}):\d{2}\s*(AM|PM)\b", re.I)
 _TIME_RE_24 = re.compile(r"\b(\d{1,2}):(\d{2})\b")
 
 
-def hour_of(ti: str) -> int:
-    """Hour 0-23 from an IEMOP TIME_INTERVAL string (interval-ending time)."""
+def hour_of(ti: str) -> int | None:
+    """Hour 0-23 from an IEMOP TIME_INTERVAL string (interval-ending time), or
+    None if the string carries no parseable time. Callers drop the row on None:
+    an unparseable interval means the upstream format changed, and silently
+    binning it to a default hour would poison the hourly statistics (F18)."""
     m = _TIME_RE.search(ti or "")
     if m:
         h = int(m.group(1)) % 12
@@ -68,11 +71,10 @@ def hour_of(ti: str) -> int:
     if m:
         return int(m.group(1)) % 24
     # IEMOP serializes the midnight-ending (24:00) interval as a bare date with no
-    # time part ("4/22/2026"): that interval belongs to hour 23, not the peak-hour
-    # fallback. Mirror of market_obs._interval_hour, applied at the shared helper.
+    # time part ("4/22/2026"): that interval belongs to hour 23, not a default.
     if ti and ":" not in ti:
         return 23
-    return PEAK_HOUR
+    return None
 
 
 def _corr(xs: list[float], ys: list[float]) -> float | None:
@@ -718,6 +720,8 @@ def build_dispatch() -> dict:
             load = gen + f(r.get("MKT_IMPORT")) - f(r.get("MKT_EXPORT"))
             ti = (r.get("TIME_INTERVAL") or "").strip()
             hour = hour_of(ti)
+            if hour is None:
+                continue
             iv = intervals.setdefault((day, ti),
                                       {"hour": hour, "market": is_market, "dem": {}})
             iv["dem"][grid] = load

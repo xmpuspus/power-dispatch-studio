@@ -477,10 +477,10 @@ def build_outages() -> dict:
 
 # --- DIPCEF congestion premium (sample days) --------------------------------------
 
-def build_congestion_premium() -> dict:
+def build_dipcef_congestion_sample() -> dict:
     files = dataset_files("DIPCEF")
     if not files:
-        NOTES.append("DIPCEF sample absent; congestion-premium stat omitted")
+        NOTES.append("DIPCEF sample absent; congestion sample omitted")
         return {}
     agg: dict[tuple, list] = defaultdict(list)
     for path in files:
@@ -736,7 +736,7 @@ def main() -> int:
     price_load = build_price_load()
     hvdc = build_hvdc()
     outages = build_outages()
-    premium = build_congestion_premium()
+    congestion_sample = build_dipcef_congestion_sample()
     answers = build_answers(congestion, reliability, prices, outages)
     named_mw = round(sum(s["mw"] for s in DC_SITES if s.get("mw")), 1)
     n_named = sum(1 for s in DC_SITES if s.get("mw"))
@@ -964,7 +964,7 @@ def main() -> int:
                       ("prices.json", prices),
                       ("price_load.json", price_load), ("hvdc.json", hvdc),
                       ("outages.json", outages),
-                      ("congestion_premium.json", premium),
+                      ("dipcef_congestion_sample.json", congestion_sample),
                       ("demand_anchors.json", DEMAND_ANCHORS),
                       ("market_anchors.json", MARKET_ANCHORS),
                       ("market_ops.json", market_ops),

@@ -77,6 +77,8 @@ def _rtdsum_reserve(date: str) -> dict | None:
                 continue
             ival = (r.get("TIME_INTERVAL") or "").strip()
             h = hour_of(ival)
+            if h is None:
+                continue
             for field, key in (("GENERATION", "sched"), ("MKT_REQT", "req")):
                 try:
                     acc[g][c][key][h].append(float(r.get(field) or 0))

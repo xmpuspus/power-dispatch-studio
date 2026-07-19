@@ -15,7 +15,7 @@ for p in / /methodology.html; do
 done
 for f in meta.json answers.json congestion.json prices.json reliability.json \
          outages.json market_anchors.json demand_anchors.json \
-         congestion_premium.json chokepoints.geojson dc_sites.geojson sual.geojson \
+         dipcef_congestion_sample.json chokepoints.geojson dc_sites.geojson sual.geojson \
          generators.geojson dispatch.json grid_lines.geojson grid_nodes.geojson \
          grid.json nodal_obs.json; do
   [ "$(code /data/$f)" = "200" ] && ok "GET /data/$f" || bad "GET /data/$f"

@@ -91,7 +91,7 @@ CHOKEPOINTS = [
                    [122.9500, 10.6600], [122.5500, 10.7000]],
         "capacity_mw": None,
         "operating_limit_mw": None,
-        "evidence": "Backbone reinforced 2024 to relieve Region 6 constraints; the Visayas grid ran a 52-day daily yellow-alert streak that ended Jul 1, 2026",
+        "evidence": "Backbone reinforced 2024 (last stage Mar 2024) to relieve Region 6 transmission constraints; shown schematic because we hold no per-line binding record for it. Separately, the Visayas grid ran a 52-day daily yellow-alert streak that ended Jul 1, 2026, a generation-adequacy (thin reserve) signal, not a transmission binding on this corridor",
         "src": "https://www.sunstar.com.ph/cebu/visayas-grid-exits-daily-yellow-alerts",
         "precision": "schematic",
     },

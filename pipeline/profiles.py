@@ -66,6 +66,8 @@ def build_profiles(fleet: dict | None = None,
                 continue
             com = (r.get("COMMODITY_TYPE") or "").strip()
             h = hour_of((r.get("TIME_INTERVAL") or "").strip())
+            if h is None:
+                continue
             if com == "En":
                 gen = f(r.get("GENERATION"))
                 imp = f(r.get("MKT_IMPORT"))
@@ -101,6 +103,8 @@ def build_profiles(fleet: dict | None = None,
                 if not key:
                     continue
                 h = hour_of((r.get("TIME_INTERVAL") or "").strip())
+                if h is None:
+                    continue
                 acc.setdefault(key, {}).setdefault(h, []).append(
                     f(r.get("LWAP")) / 1000)
             for key, by_h in acc.items():

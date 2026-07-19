@@ -174,6 +174,8 @@ def canonical():
     bc = profiles["backcast"]
     ob = profiles["offer_backcast"]
     _cg = {c["label"]: c for c in profiles["chrono_golden"]["cases"]}
+    ls = _load("loss_surface.json")["window"]
+    noc = _load("nodal_obs.json")["congestion"]
 
     def _delta(wave_lbl, base_lbl, g):
         # DICT-wave daily-mean uplift per grid, straight from the golden cases
@@ -280,6 +282,25 @@ def canonical():
         "vis_lwap_corr": _n(bc["per_grid"]["visayas"]["correlation"], 2),
         "vis_mcp_corr": _n(bc["per_grid_mcp"]["visayas"]["correlation"], 2),
         "profiles_days": len(profiles["days"]),
+        # loss-surface validation (recomputes nightly; guards the README
+        # "validated" claim and the methodology bus-count caveat) (F4)
+        "loss_luz_spearman": _n(ls["luzon"]["spearman"], 2),
+        "loss_min_spearman": _n(ls["mindanao"]["spearman"], 2),
+        "loss_vis_spearman": _n(ls["visayas"]["spearman"], 2),
+        "loss_luz_nodes": ls["luzon"]["n_nodes"],
+        "loss_vis_nodes": ls["visayas"]["n_nodes"],
+        "loss_min_nodes": ls["mindanao"]["n_nodes"],
+        "loss_luz_bus": ls["luzon"]["n_bus"],
+        "loss_vis_bus": ls["visayas"]["n_bus"],
+        "loss_min_bus": ls["mindanao"]["n_bus"],
+        "loss_luz_ci_lo": _n(ls["luzon"]["spearman_ci95"][0], 2),
+        "loss_luz_ci_hi": _n(ls["luzon"]["spearman_ci95"][1], 2),
+        "loss_min_ci_lo": _n(ls["mindanao"]["spearman_ci95"][0], 2),
+        "loss_min_ci_hi": _n(ls["mindanao"]["spearman_ci95"][1], 2),
+        # published-congestion summary over the static DIPCEF sample (F1 guard)
+        "cong_days_nonzero": noc["days_nonzero"],
+        "cong_days_sampled": noc["days_sampled"],
+        "cong_max": _n(noc["max_php_kwh"], 0),
         "window_from": cg["window"]["from"],
         "window_to": cg["window"]["to"],
     }
@@ -488,6 +509,32 @@ REGISTRY = [
     ("studio/README.md",
      re.compile(r"rolling series past the threshold \(P(\d+\.\d+)\s*\n?\s*against P12\.413\)"),
      ["marquee_rolling"]),
+    # --- loss-surface validation numbers (recompute nightly; F4) ---
+    ("README.md",
+     re.compile(r"Spearman \*\*\+([\d.]+)\*\* over (\d+) nodes \((\d+)\s+"
+                r"independent buses, 95% CI \+([\d.]+) to \+([\d.]+)\)"),
+     ["loss_luz_spearman", "loss_luz_nodes", "loss_luz_bus",
+      "loss_luz_ci_lo", "loss_luz_ci_hi"]),
+    ("README.md",
+     re.compile(r"Mindanao at \*\*\+([\d.]+)\*\* over (\d+)\s+\((\d+) buses, "
+                r"\+([\d.]+) to \+([\d.]+)\)"),
+     ["loss_min_spearman", "loss_min_nodes", "loss_min_bus",
+      "loss_min_ci_lo", "loss_min_ci_hi"]),
+    ("README.md",
+     re.compile(r"stable negative rank\s+correlation \(\*\*(-[\d.]+)\*\*"),
+     ["loss_vis_spearman"]),
+    # --- published-congestion counts over the static DIPCEF sample (F1 guard) ---
+    ("web/methodology.html",
+     re.compile(r"nonzero on (\d+) of the (\d+) sampled days"),
+     ["cong_days_nonzero", "cong_days_sampled"]),
+    ("web/methodology.html",
+     re.compile(r"up to\s+(\d+) PhP/kWh on 2026-05-26"),
+     ["cong_max"]),
+    ("web/methodology.html",
+     re.compile(r"the (\d+), (\d+), and (\d+) node counts collapse to "
+                r"(\d+), (\d+), and\s+(\d+) independent buses"),
+     ["loss_luz_nodes", "loss_vis_nodes", "loss_min_nodes",
+      "loss_luz_bus", "loss_vis_bus", "loss_min_bus"]),
 ]
 
 

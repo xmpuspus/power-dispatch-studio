@@ -14,7 +14,7 @@ jobs:
       - name: Lint
         run: pipx run ruff check .
       - name: Solver (the LP engine's only dependency)
-        run: python3 -m pip install highspy
+        run: python3 -m pip install highspy==1.15.1
       - name: Bake from the committed archive
         run: python3 pipeline/build_data.py
       - name: Data pins + banned-framing gate
