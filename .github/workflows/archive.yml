@@ -102,7 +102,7 @@ jobs:
       - name: Fail red if the fetch failed
         if: steps.fetch.outcome == 'failure'
         run: exit 1
-      - name: Fail red if the nodal derivers failed (flagship surface)
+      - name: Fail red if the nodal derivers failed (the map and studio read them)
         # these run continue-on-error so a partial IEMOP outage still commits
         # what arrived, but a silent nodal-deriver failure must not pass green
         if: steps.derive_nodal.outcome == 'failure' || steps.derive_loss_surface.outcome == 'failure'

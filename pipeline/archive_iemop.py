@@ -380,7 +380,8 @@ def check_staleness() -> int:
                          f"(budget {budget}d)")
     # the derived nodal archive (data/derived/nodal_daily/) is not a raw
     # DATASET and carries no manifest budget, so without its own check a
-    # stalled nodal deriver goes unseen (the flagship map/studio surface) (F9)
+    # stalled nodal deriver goes unseen (the map Prices layer and the studio
+    # nodal and loss-validation views all read it) (F9)
     nodal_dir = os.path.join(HERE, "..", "data", "derived", "nodal_daily")
     nodal = sorted(f for f in (os.listdir(nodal_dir) if os.path.isdir(nodal_dir) else [])
                    if f.startswith("NODALD_") and f.endswith(".json"))

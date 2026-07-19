@@ -16,7 +16,7 @@ zero through the WESM suspension window and small and intermittent after
 real-time pricing resumed on 2026-05-01 (nonzero on 28 of the 70 sampled
 days, up to about 19 PhP/kWh, but only about one percent of clean-day
 node-hours). The SMP is region-constant per interval, so most within-region
-locational separation rides LMP_LOSS, inter-regional congestion surfaces as
+locational separation rides LMP_LOSS, inter-regional congestion appears as
 the regional SMPs splitting, and the small nodal congestion that is priced
 is sparse rather than a persistent per-node charge. The artifact
 therefore stores, per node, the hourly mean DEVIATION from the node's
