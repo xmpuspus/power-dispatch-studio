@@ -57,7 +57,7 @@ def main() -> None:
         rho = w["spearman"] if w else None
         mae = w["mae_after_affine_php_kwh"] if w else None
         n = w["n_nodes"] if w else 0
-        verdict = "validated" if validated else "fails at this resolution"
+        verdict = "validated" if validated else "fails · not diagnosed"
         ax.set_title(g.capitalize(), color=edge, fontsize=13, fontweight="bold", pad=10)
         ax.text(
             0.03,
