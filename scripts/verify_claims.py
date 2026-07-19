@@ -145,6 +145,13 @@ def _bc_rtdhs(bc, ob):
     return "\n".join(rows)
 
 
+def _ci(w, i):
+    """CI bound i for a loss-surface grid, falling back to the point estimate if
+    the Fisher CI is unavailable (guards a None subscript on a degenerate grid)."""
+    ci = w.get("spearman_ci95")
+    return ci[i] if ci else w["spearman"]
+
+
 def canonical():
     """Every rolling count the public prose carries, straight from the bake."""
     cg = _load("congestion.json")
@@ -293,10 +300,10 @@ def canonical():
         "loss_luz_bus": ls["luzon"]["n_bus"],
         "loss_vis_bus": ls["visayas"]["n_bus"],
         "loss_min_bus": ls["mindanao"]["n_bus"],
-        "loss_luz_ci_lo": _n(ls["luzon"]["spearman_ci95"][0], 2),
-        "loss_luz_ci_hi": _n(ls["luzon"]["spearman_ci95"][1], 2),
-        "loss_min_ci_lo": _n(ls["mindanao"]["spearman_ci95"][0], 2),
-        "loss_min_ci_hi": _n(ls["mindanao"]["spearman_ci95"][1], 2),
+        "loss_luz_ci_lo": _n(_ci(ls["luzon"], 0), 2),
+        "loss_luz_ci_hi": _n(_ci(ls["luzon"], 1), 2),
+        "loss_min_ci_lo": _n(_ci(ls["mindanao"], 0), 2),
+        "loss_min_ci_hi": _n(_ci(ls["mindanao"], 1), 2),
         # published-congestion summary over the static DIPCEF sample (F1 guard)
         "cong_days_nonzero": noc["days_nonzero"],
         "cong_days_sampled": noc["days_sampled"],

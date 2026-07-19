@@ -437,19 +437,20 @@ averages: each WESM node's persistent deviation from its own region's SMP over
 the window's clean market days, from the derived DIPCEF nodal dailies, with a
 searchable per-node table. Observed, not modeled, and labeled a locational
 deviation rather than a congestion premium: WESM's published nodal congestion
-component is zero on every sampled day, so intra-regional congestion is
-administered, not priced into the nodal column. The map's Prices mode draws the
+component is zero through the market suspension and small and intermittent
+afterward, so the deviation stays loss-dominated, not a per-node congestion charge. The map's Prices mode draws the
 same statistic as a layer.
 
 ![Nodal prices: per-grid deviation percentiles, the widest premium and discount nodes, and a searchable table of every node's deviation from its regional price.](docs/view-nodal.gif)
 
 **Loss validation.** The nodal model checked against the market's own record.
-WESM's within-region nodal structure is a loss surface (the congestion
-component is zero), so marginal loss factors from the OpenStreetMap grid are a
-testable prediction of each node's observed deviation. Three scatter panels,
-one per grid, with the Spearman rank correlation and the per-grid verdict:
-Luzon and Mindanao validate, Visayas fails at the current resolution and is
-shown failing. Recomputed nightly.
+WESM's within-region nodal structure is loss-dominated (the congestion
+component is small and sparse), so marginal loss factors from the OpenStreetMap
+grid are a testable prediction of each node's observed deviation. Three scatter
+panels, one per grid, with the Spearman rank correlation and the per-grid
+verdict: Luzon and Mindanao validate, Visayas fails with a stable negative rank
+correlation (the sign reversal is not yet diagnosed) and is shown failing.
+Recomputed nightly.
 
 ![Loss validation: three scatter panels of modeled loss-factor deviation against observed per-node deviation, per grid, each with a fitted line and Spearman correlation; Luzon and Mindanao marked validated, Visayas failing.](docs/view-lossval.gif)
 

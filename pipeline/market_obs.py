@@ -1208,8 +1208,10 @@ def rtdhs_hourly() -> dict[str, dict]:
             ts = (r.get("TIME_INTERVAL") or "").strip()
             if not ts:
                 continue
-            acc[key].setdefault(_interval_hour(ts), []).append(
-                -f(r.get("FLOW_FROM")))
+            h = _interval_hour(ts)
+            if h is None:
+                continue
+            acc[key].setdefault(h, []).append(-f(r.get("FLOW_FROM")))
             bind_n[key] += 1
             if (r.get("CONGESTION_FLAG") or "").strip() == "Y":
                 bind_y[key] += 1
@@ -1252,9 +1254,12 @@ def hvdc_binding_caps() -> dict[str, dict[str, list[float]]]:
             ts = (r.get("TIME_INTERVAL") or "").strip()
             if not ts:
                 continue
+            h = _interval_hour(ts)
+            if h is None:
+                continue
             flow = abs(f(r.get("FLOW_FROM")))
             flagged = (r.get("CONGESTION_FLAG") or "").strip() == "Y"
-            acc[key][_interval_hour(ts)].append((flow, flagged))
+            acc[key][h].append((flow, flagged))
         caps = {"leyte": [1.0] * 24, "mvip": [1.0] * 24}
         for key in ("lv", "vm"):
             for h in range(24):
