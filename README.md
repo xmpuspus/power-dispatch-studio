@@ -512,10 +512,10 @@ The individual what-ifs, each a recorded studio session:
   DataCenterMap lists 44; only publicly-sourced sites are pinned, at city precision).
 - Not NGCP's own network model: corridor and grid lines follow real routes as mapped
   in OpenStreetMap (community data, ODbL), geometry only, no ratings.
-- Not a nodal congestion-premium layer. WESM's settlement-final files report the LMP
-  congestion component as zero (the market re-prices most intervals under a
-  substitution methodology and expresses inter-island congestion as regional price
-  separation, not a per-node charge). What the map and studio DO display is the
+- Not a nodal congestion-premium layer. WESM's published nodal congestion component
+  is zero through the market suspension and small and intermittent afterward (the
+  market re-prices most intervals under a substitution methodology and expresses
+  inter-island congestion as regional price separation, not a per-node charge). What the map and studio DO display is the
   observed locational deviation per node, labeled as such, never as a congestion
   premium. Full resolution in
   [`docs/research-launch-20260705.md`](docs/research-launch-20260705.md).

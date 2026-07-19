@@ -1,7 +1,7 @@
 // The loss-surface validation (pipeline/loss_surface.py): does network
 // physics rank the market's own per-node price deviations? Because WESM's
-// within-region nodal structure is a loss surface (the congestion column
-// is zero), marginal loss factors from the OSM-geometry backbone are a
+// within-region nodal structure is loss-dominated (the congestion column
+// is small and sparse), marginal loss factors from the OSM-geometry backbone are a
 // testable prediction of the observed per-node deviations. One panel per
 // grid, the same numbers the figure in the README draws, recomputed
 // nightly. Validation, not a model output: the verdict per grid is stated,

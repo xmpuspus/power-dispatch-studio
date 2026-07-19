@@ -302,7 +302,7 @@ async def main():
         await cap(
             page,
             "And it is validated against the market's own record",
-            "WESM's within-region nodal structure is a loss surface, so network "
+            "WESM's within-region nodal structure is loss-dominated, so network "
             "physics is a testable prediction: Luzon and Mindanao rank at "
             "Spearman +0.72 and +0.83, Visayas shown failing, recomputed nightly.",
         )

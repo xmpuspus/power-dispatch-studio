@@ -11,15 +11,14 @@ discards the zips. The derived dailies ARE the durable nodal-price
 record; fuelmix.py keeps the energy side (SCHED_MW), this keeps the
 price side.
 
-What the sampled window shows (verified 2026-07-16 on 2026-05-20,
-2026-06-10, 2026-06-20, 2026-06-25): the published LMP_CONGESTION
-component is ZERO on every row of every sampled day, including days with
-wide real nodal spread (median 85 distinct nodal prices per interval per
-region on 2026-05-20). The SMP is region-constant per interval, so all
-within-region locational separation rides LMP_LOSS, inter-regional
-congestion surfaces as the regional SMPs splitting, and intra-regional
-congestion is handled administratively (PSM price substitution,
-security limits) rather than priced into the nodal column. The artifact
+What the sampled window shows: the published LMP_CONGESTION component is
+zero through the WESM suspension window and small and intermittent after
+real-time pricing resumed on 2026-05-01 (nonzero on 28 of the 70 sampled
+days, up to about 19 PhP/kWh, but only about one percent of clean-day
+node-hours). The SMP is region-constant per interval, so most within-region
+locational separation rides LMP_LOSS, inter-regional congestion surfaces as
+the regional SMPs splitting, and the small nodal congestion that is priced
+is sparse rather than a persistent per-node charge. The artifact
 therefore stores, per node, the hourly mean DEVIATION from the node's
 regional SMP (loss + congestion, PhP/kWh), plus the regional SMP series
 and the day's pricing-flag tally (OK / PSM / SEC), and keeps a sparse
