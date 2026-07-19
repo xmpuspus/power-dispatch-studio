@@ -1,0 +1,496 @@
+{
+  "generated_by": "pipeline/price_model_probes.py",
+  "peak_hours": [
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "mw_step": 100.0,
+  "stylized_note": "Stylized book: per grid and hour-of-day, the leave-one-out median of the observed cumulative offer curves (RTDOE + self-scheduled) across the window's other days, sampled every 100 MW while at least half the books reach the point. Estimated from bids (inputs), scored on prices (outcomes); a day is never priced by a curve that saw its own book.",
+  "consolidated_levers": {
+    "fuel_price_index": "no sourced in-repo monthly coal/gas series; the observed books already carry each day's fuel-cost level, so the lever rides the stylized book instead of a hand-built index",
+    "observed_unavailability": "blocked on a derived per-day unplanned-unavailable-MW series (PASA is scheduled-only; the NSO stream carries HVDC blocks and alert prose, not MW); the dated 935 MW July 1 case remains the one-day proof and the parser is the named unblock"
+  },
+  "variants": {
+    "base": {
+      "lwap": {
+        "luzon": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 7.645,
+          "modeled_mean_php_kwh": 6.002,
+          "mae_php_kwh": 4.35,
+          "bias_php_kwh": -1.643,
+          "correlation": 0.383,
+          "high_hour_hit_rate_pct": 42.6,
+          "smape_pct": 56.86,
+          "peak_mae_php_kwh": 7.894,
+          "within_day_corr_median": 0.194,
+          "n_days_ranked": 56
+        },
+        "visayas": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 12.954,
+          "modeled_mean_php_kwh": 6.002,
+          "mae_php_kwh": 8.698,
+          "bias_php_kwh": -6.952,
+          "correlation": 0.479,
+          "high_hour_hit_rate_pct": 49.3,
+          "smape_pct": 72.24,
+          "peak_mae_php_kwh": 17.072,
+          "within_day_corr_median": 0.45,
+          "n_days_ranked": 56
+        },
+        "mindanao": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 11.512,
+          "modeled_mean_php_kwh": 6.0,
+          "mae_php_kwh": 7.609,
+          "bias_php_kwh": -5.512,
+          "correlation": 0.071,
+          "high_hour_hit_rate_pct": 7.4,
+          "smape_pct": 68.25,
+          "peak_mae_php_kwh": 13.243,
+          "within_day_corr_median": 0.039,
+          "n_days_ranked": 56
+        }
+      },
+      "mcp": {
+        "luzon": {
+          "n_hours": 1310,
+          "observed_mean_php_kwh": 7.027,
+          "modeled_mean_php_kwh": 6.002,
+          "mae_php_kwh": 4.01,
+          "bias_php_kwh": -1.025,
+          "correlation": 0.378,
+          "high_hour_hit_rate_pct": 43.2,
+          "smape_pct": 57.14,
+          "peak_mae_php_kwh": 5.29,
+          "within_day_corr_median": 0.25,
+          "n_days_ranked": 51
+        },
+        "visayas": {
+          "n_hours": 777,
+          "observed_mean_php_kwh": 14.782,
+          "modeled_mean_php_kwh": 6.0,
+          "mae_php_kwh": 10.908,
+          "bias_php_kwh": -8.782,
+          "correlation": 0.329,
+          "high_hour_hit_rate_pct": 31.1,
+          "smape_pct": 85.0,
+          "peak_mae_php_kwh": null,
+          "within_day_corr_median": null,
+          "n_days_ranked": 0
+        },
+        "mindanao": {
+          "n_hours": 1196,
+          "observed_mean_php_kwh": 11.577,
+          "modeled_mean_php_kwh": 6.0,
+          "mae_php_kwh": 8.207,
+          "bias_php_kwh": -5.577,
+          "correlation": 0.06,
+          "high_hour_hit_rate_pct": 14.9,
+          "smape_pct": 73.08,
+          "peak_mae_php_kwh": 9.015,
+          "within_day_corr_median": -0.142,
+          "n_days_ranked": 23
+        }
+      },
+      "hydro_marginal_hours": {
+        "luzon": 49,
+        "visayas": 1,
+        "mindanao": 59
+      },
+      "n_hours_per_grid": 1344
+    },
+    "reserve": {
+      "lwap": {
+        "luzon": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 7.645,
+          "modeled_mean_php_kwh": 6.002,
+          "mae_php_kwh": 4.35,
+          "bias_php_kwh": -1.643,
+          "correlation": 0.383,
+          "high_hour_hit_rate_pct": 42.6,
+          "smape_pct": 56.86,
+          "peak_mae_php_kwh": 7.894,
+          "within_day_corr_median": 0.194,
+          "n_days_ranked": 56
+        },
+        "visayas": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 12.954,
+          "modeled_mean_php_kwh": 6.002,
+          "mae_php_kwh": 8.698,
+          "bias_php_kwh": -6.952,
+          "correlation": 0.479,
+          "high_hour_hit_rate_pct": 49.3,
+          "smape_pct": 72.24,
+          "peak_mae_php_kwh": 17.072,
+          "within_day_corr_median": 0.45,
+          "n_days_ranked": 56
+        },
+        "mindanao": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 11.512,
+          "modeled_mean_php_kwh": 6.0,
+          "mae_php_kwh": 7.609,
+          "bias_php_kwh": -5.512,
+          "correlation": 0.071,
+          "high_hour_hit_rate_pct": 7.4,
+          "smape_pct": 68.25,
+          "peak_mae_php_kwh": 13.243,
+          "within_day_corr_median": 0.039,
+          "n_days_ranked": 56
+        }
+      },
+      "mcp": {
+        "luzon": {
+          "n_hours": 1310,
+          "observed_mean_php_kwh": 7.027,
+          "modeled_mean_php_kwh": 6.002,
+          "mae_php_kwh": 4.01,
+          "bias_php_kwh": -1.025,
+          "correlation": 0.379,
+          "high_hour_hit_rate_pct": 43.2,
+          "smape_pct": 57.14,
+          "peak_mae_php_kwh": 5.29,
+          "within_day_corr_median": 0.25,
+          "n_days_ranked": 51
+        },
+        "visayas": {
+          "n_hours": 777,
+          "observed_mean_php_kwh": 14.782,
+          "modeled_mean_php_kwh": 6.0,
+          "mae_php_kwh": 10.908,
+          "bias_php_kwh": -8.782,
+          "correlation": 0.329,
+          "high_hour_hit_rate_pct": 31.1,
+          "smape_pct": 85.0,
+          "peak_mae_php_kwh": null,
+          "within_day_corr_median": null,
+          "n_days_ranked": 0
+        },
+        "mindanao": {
+          "n_hours": 1196,
+          "observed_mean_php_kwh": 11.577,
+          "modeled_mean_php_kwh": 6.0,
+          "mae_php_kwh": 8.207,
+          "bias_php_kwh": -5.577,
+          "correlation": 0.06,
+          "high_hour_hit_rate_pct": 14.9,
+          "smape_pct": 73.08,
+          "peak_mae_php_kwh": 9.015,
+          "within_day_corr_median": -0.142,
+          "n_days_ranked": 23
+        }
+      },
+      "hydro_marginal_hours": {
+        "luzon": 49,
+        "visayas": 1,
+        "mindanao": 67
+      },
+      "n_hours_per_grid": 1344
+    },
+    "stylized": {
+      "days": 56,
+      "lwap": {
+        "luzon": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 7.645,
+          "modeled_mean_php_kwh": 9.313,
+          "mae_php_kwh": 3.915,
+          "bias_php_kwh": 1.668,
+          "correlation": 0.685,
+          "high_hour_hit_rate_pct": 50.7,
+          "smape_pct": 49.17,
+          "peak_mae_php_kwh": 5.577,
+          "within_day_corr_median": 0.826,
+          "n_days_ranked": 56
+        },
+        "visayas": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 12.954,
+          "modeled_mean_php_kwh": 13.786,
+          "mae_php_kwh": 5.511,
+          "bias_php_kwh": 0.832,
+          "correlation": 0.705,
+          "high_hour_hit_rate_pct": 54.4,
+          "smape_pct": 43.83,
+          "peak_mae_php_kwh": 8.337,
+          "within_day_corr_median": 0.801,
+          "n_days_ranked": 56
+        },
+        "mindanao": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 11.512,
+          "modeled_mean_php_kwh": 12.155,
+          "mae_php_kwh": 5.579,
+          "bias_php_kwh": 0.643,
+          "correlation": 0.663,
+          "high_hour_hit_rate_pct": 34.6,
+          "smape_pct": 45.83,
+          "peak_mae_php_kwh": 9.068,
+          "within_day_corr_median": 0.778,
+          "n_days_ranked": 56
+        }
+      },
+      "mcp": {
+        "luzon": {
+          "n_hours": 1310,
+          "observed_mean_php_kwh": 7.027,
+          "modeled_mean_php_kwh": 9.258,
+          "mae_php_kwh": 4.487,
+          "bias_php_kwh": 2.231,
+          "correlation": 0.546,
+          "high_hour_hit_rate_pct": 33.3,
+          "smape_pct": 54.9,
+          "peak_mae_php_kwh": 6.908,
+          "within_day_corr_median": 0.781,
+          "n_days_ranked": 51
+        },
+        "visayas": {
+          "n_hours": 777,
+          "observed_mean_php_kwh": 14.782,
+          "modeled_mean_php_kwh": 11.507,
+          "mae_php_kwh": 6.395,
+          "bias_php_kwh": -3.275,
+          "correlation": 0.66,
+          "high_hour_hit_rate_pct": 33.6,
+          "smape_pct": 53.96,
+          "peak_mae_php_kwh": null,
+          "within_day_corr_median": null,
+          "n_days_ranked": 0
+        },
+        "mindanao": {
+          "n_hours": 1196,
+          "observed_mean_php_kwh": 11.577,
+          "modeled_mean_php_kwh": 11.299,
+          "mae_php_kwh": 5.47,
+          "bias_php_kwh": -0.279,
+          "correlation": 0.645,
+          "high_hour_hit_rate_pct": 34.7,
+          "smape_pct": 44.74,
+          "peak_mae_php_kwh": 7.445,
+          "within_day_corr_median": 0.819,
+          "n_days_ranked": 23
+        }
+      }
+    },
+    "styl_res": {
+      "days": 56,
+      "lwap": {
+        "luzon": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 7.645,
+          "modeled_mean_php_kwh": 9.313,
+          "mae_php_kwh": 3.915,
+          "bias_php_kwh": 1.668,
+          "correlation": 0.685,
+          "high_hour_hit_rate_pct": 50.7,
+          "smape_pct": 49.17,
+          "peak_mae_php_kwh": 5.577,
+          "within_day_corr_median": 0.826,
+          "n_days_ranked": 56
+        },
+        "visayas": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 12.954,
+          "modeled_mean_php_kwh": 13.799,
+          "mae_php_kwh": 5.524,
+          "bias_php_kwh": 0.844,
+          "correlation": 0.705,
+          "high_hour_hit_rate_pct": 54.4,
+          "smape_pct": 43.87,
+          "peak_mae_php_kwh": 8.394,
+          "within_day_corr_median": 0.801,
+          "n_days_ranked": 56
+        },
+        "mindanao": {
+          "n_hours": 1344,
+          "observed_mean_php_kwh": 11.512,
+          "modeled_mean_php_kwh": 12.163,
+          "mae_php_kwh": 5.587,
+          "bias_php_kwh": 0.65,
+          "correlation": 0.663,
+          "high_hour_hit_rate_pct": 34.6,
+          "smape_pct": 45.85,
+          "peak_mae_php_kwh": 9.102,
+          "within_day_corr_median": 0.778,
+          "n_days_ranked": 56
+        }
+      },
+      "mcp": {
+        "luzon": {
+          "n_hours": 1310,
+          "observed_mean_php_kwh": 7.027,
+          "modeled_mean_php_kwh": 9.258,
+          "mae_php_kwh": 4.487,
+          "bias_php_kwh": 2.231,
+          "correlation": 0.546,
+          "high_hour_hit_rate_pct": 33.3,
+          "smape_pct": 54.9,
+          "peak_mae_php_kwh": 6.908,
+          "within_day_corr_median": 0.781,
+          "n_days_ranked": 51
+        },
+        "visayas": {
+          "n_hours": 777,
+          "observed_mean_php_kwh": 14.782,
+          "modeled_mean_php_kwh": 11.529,
+          "mae_php_kwh": 6.417,
+          "bias_php_kwh": -3.253,
+          "correlation": 0.658,
+          "high_hour_hit_rate_pct": 32.8,
+          "smape_pct": 54.02,
+          "peak_mae_php_kwh": null,
+          "within_day_corr_median": null,
+          "n_days_ranked": 0
+        },
+        "mindanao": {
+          "n_hours": 1196,
+          "observed_mean_php_kwh": 11.577,
+          "modeled_mean_php_kwh": 11.307,
+          "mae_php_kwh": 5.479,
+          "bias_php_kwh": -0.27,
+          "correlation": 0.644,
+          "high_hour_hit_rate_pct": 34.7,
+          "smape_pct": 44.76,
+          "peak_mae_php_kwh": 7.445,
+          "within_day_corr_median": 0.819,
+          "n_days_ranked": 23
+        }
+      }
+    },
+    "offer": {
+      "days": 55,
+      "lwap": {
+        "luzon": {
+          "n_hours": 1320,
+          "observed_mean_php_kwh": 7.645,
+          "modeled_mean_php_kwh": 9.109,
+          "mae_php_kwh": 2.957,
+          "bias_php_kwh": 1.464,
+          "correlation": 0.726,
+          "high_hour_hit_rate_pct": 52.6,
+          "smape_pct": 34.5,
+          "peak_mae_php_kwh": 4.257,
+          "within_day_corr_median": 0.834,
+          "n_days_ranked": 55
+        },
+        "visayas": {
+          "n_hours": 1320,
+          "observed_mean_php_kwh": 12.847,
+          "modeled_mean_php_kwh": 12.245,
+          "mae_php_kwh": 5.121,
+          "bias_php_kwh": -0.603,
+          "correlation": 0.684,
+          "high_hour_hit_rate_pct": 51.1,
+          "smape_pct": 38.4,
+          "peak_mae_php_kwh": 7.815,
+          "within_day_corr_median": 0.792,
+          "n_days_ranked": 55
+        },
+        "mindanao": {
+          "n_hours": 1320,
+          "observed_mean_php_kwh": 11.335,
+          "modeled_mean_php_kwh": 10.263,
+          "mae_php_kwh": 4.314,
+          "bias_php_kwh": -1.072,
+          "correlation": 0.729,
+          "high_hour_hit_rate_pct": 46.6,
+          "smape_pct": 36.53,
+          "peak_mae_php_kwh": 5.081,
+          "within_day_corr_median": 0.782,
+          "n_days_ranked": 55
+        }
+      },
+      "mcp": {
+        "luzon": {
+          "n_hours": 1286,
+          "observed_mean_php_kwh": 7.048,
+          "modeled_mean_php_kwh": 9.014,
+          "mae_php_kwh": 2.821,
+          "bias_php_kwh": 1.966,
+          "correlation": 0.778,
+          "high_hour_hit_rate_pct": 68.5,
+          "smape_pct": 37.18,
+          "peak_mae_php_kwh": 3.256,
+          "within_day_corr_median": 0.784,
+          "n_days_ranked": 50
+        },
+        "visayas": {
+          "n_hours": 764,
+          "observed_mean_php_kwh": 14.762,
+          "modeled_mean_php_kwh": 9.445,
+          "mae_php_kwh": 6.189,
+          "bias_php_kwh": -5.317,
+          "correlation": 0.738,
+          "high_hour_hit_rate_pct": 48.8,
+          "smape_pct": 49.23,
+          "peak_mae_php_kwh": null,
+          "within_day_corr_median": null,
+          "n_days_ranked": 0
+        },
+        "mindanao": {
+          "n_hours": 1182,
+          "observed_mean_php_kwh": 11.505,
+          "modeled_mean_php_kwh": 9.076,
+          "mae_php_kwh": 3.028,
+          "bias_php_kwh": -2.429,
+          "correlation": 0.875,
+          "high_hour_hit_rate_pct": 69.2,
+          "smape_pct": 26.03,
+          "peak_mae_php_kwh": 2.873,
+          "within_day_corr_median": 0.863,
+          "n_days_ranked": 23
+        }
+      }
+    }
+  },
+  "corr_delta_vs_base": {
+    "reserve": {
+      "lwap": {
+        "luzon": 0.0,
+        "visayas": 0.0,
+        "mindanao": 0.0
+      },
+      "mcp": {
+        "luzon": 0.001,
+        "visayas": 0.0,
+        "mindanao": 0.0
+      }
+    },
+    "stylized": {
+      "lwap": {
+        "luzon": 0.302,
+        "visayas": 0.226,
+        "mindanao": 0.592
+      },
+      "mcp": {
+        "luzon": 0.168,
+        "visayas": 0.331,
+        "mindanao": 0.585
+      }
+    },
+    "styl_res": {
+      "lwap": {
+        "luzon": 0.302,
+        "visayas": 0.226,
+        "mindanao": 0.592
+      },
+      "mcp": {
+        "luzon": 0.168,
+        "visayas": 0.329,
+        "mindanao": 0.584
+      }
+    }
+  },
+  "stylized_gap_closed_frac": 0.88,
+  "verdicts": {
+    "reserve": "finding",
+    "stylized": "adopt as third engine"
+  }
+}

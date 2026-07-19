@@ -358,6 +358,29 @@ solar shape, and RTDHS corridor caps) made the fit to observed prices worse,
 because public Philippine data cannot support per-unit calibration; each measured
 delta is published in `market_ops.json` and the model keeps the simpler engine.
 
+The same measure-first gate ran on the price-model levers themselves
+(`pipeline/price_model_probes.py`; artifact
+`data/derived/price_model_probes.json`, measured 2026-07-19 on the 56-day
+window). Two findings and one adoption. Withholding the day's scheduled
+reserve MW from the cost stack moved no metric on any grid: the flat
+committed-coal tranche absorbs the withheld capacity without changing the
+marginal block, so the lever stays off and the number is the finding. The
+water budget's opportunity-cost channel priced hydro-marginal hours in under
+five percent of the window's hours, which is why hydro alone cannot rescue
+the Mindanao shape. And a STYLIZED book, the leave-one-out median of the
+operator's own offer curves per grid and hour of day (estimated from bids,
+never from prices; a day is never priced by a curve that saw its own book),
+closes 88 percent of the Luzon correlation gap between the cost stack and
+the same-day replay: pooled correlation 0.38 to 0.69, median within-day
+correlation 0.19 to 0.83, evening-peak MAE P7.89 to P5.58, and on the
+Visayas it slightly beats the same-day book (0.71 against 0.68), typical
+bidding generalizing better than one day's own curve. That earns the
+stylized book the third-engine slot: cost floor, typical bidding, actual
+day, with both gaps published as measured series. The studio's engine
+toggle for it is the named queued build; until then the artifact carries
+the full tables, including SMAPE so the fundamentals engines sit beside
+the published PyPSA-Eur par of 20.76 percent.
+
 The forward-looking analyses (Forward prices, Multi-year path, Expansion mix, and
 the Ensembles band) cannot be backcast: there is no observed future or greenfield
 build to score against. Each runs on sourced inputs (the DOE PDP demand path, NREL
