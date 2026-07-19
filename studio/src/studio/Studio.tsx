@@ -427,12 +427,20 @@ export function Studio({
                   needed. For deeper edits, change any value in these tables and press
                   Run.
                 </div>
-                <button
-                  className="btn btn--primary btn--sm"
-                  onClick={() => setNav({ kind: 'quick' })}
-                >
-                  Start simulating →
-                </button>
+                <div className="studio__start-actions">
+                  <button
+                    className="btn btn--primary btn--sm"
+                    onClick={() => setNav({ kind: 'quick' })}
+                  >
+                    Start simulating →
+                  </button>
+                  <button
+                    className="btn btn--ghost btn--sm"
+                    onClick={() => setNav({ kind: 'analysis', id: 'lossval' })}
+                  >
+                    See the nodal validation proof
+                  </button>
+                </div>
               </div>
             )}
             <SolveBoundary key={`${JSON.stringify(nav)}:${editCount}:${dirty}:${grid}`}>
@@ -610,6 +618,7 @@ function Ribbon({
               >
                 + Add object
               </button>
+              <span className="ribbon__meta">fleet is fixed to sourced units</span>
             </RibbonGroup>
           </>
         )}

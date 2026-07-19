@@ -406,6 +406,12 @@
   flex: none;
   white-space: nowrap;
 }
+.studio__start-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: none;
+}
 .view {
   display: flex;
   flex-direction: column;
@@ -634,7 +640,7 @@
 }
 .chart__ax {
   font-size: 9px;
-  fill: var(--text-faint);
+  fill: var(--text-muted);
   font-family: var(--font-mono);
 }
 .chart__rent {
@@ -1321,6 +1327,13 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+.propgrid th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+.propgrid th.sortable:hover {
+  color: var(--text);
+}
 .propgrid__unit {
   color: var(--text-faint);
   font-weight: 400;
@@ -1579,6 +1592,13 @@
   display: flex;
   gap: 4px;
   justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.runs__actions-note {
+  flex-basis: 100%;
+  text-align: right;
+  font-size: var(--fs-11);
+  color: var(--text-muted);
 }
 .runs__archive-bar {
   display: flex;

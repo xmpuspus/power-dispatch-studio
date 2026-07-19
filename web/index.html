@@ -238,7 +238,7 @@
 <div id="map" aria-label="Map of the Philippines with grid choke points and data-center sites"></div>
 
 <div id="head" class="panel">
-  <button id="headtoggle" aria-label="Show intro, search and links" aria-expanded="false">Find <span class="chev">&#9662;</span></button>
+  <button id="headtoggle" aria-label="Show intro, search, and the studio link" aria-expanded="false">Menu <span class="chev">&#9662;</span></button>
   <h1>Power Dispatch Studio</h1>
   <p>Can the Philippine grid host the announced data-center wave? Built on the market
   operator's own public files: where transmission already binds, where the announced
@@ -440,7 +440,8 @@ function addLayers(){
         properties:nd })),
     }});
     map.addLayer({ id:"nodal-pt", type:"circle", source:"nodalobs",
-      layout:{ visibility:"none" },
+      layout:{ visibility:"none",
+        "circle-sort-key": ["abs", ["get","dev"]] },
       paint:{
         "circle-radius": ["interpolate", ["linear"], ["abs", ["get","dev"]],
           0, 3, 0.8, 8],
@@ -497,9 +498,41 @@ function addLayers(){
         ? `<br><i>Routed along the OSM-mapped lines between the named endpoints.</i>`
         : `<br><i>Schematic link between named endpoints.</i>`);
   });
-  hover("dc-pt", p => `<b>${esc(p.name)}</b><br>${esc(p.city)} &middot; ${esc(String(p.status||"").replace("_"," "))}` +
-    (p.mw ? `<br>${fmt(p.mw,1)} MW (public figure)` : "<br>No public MW figure") +
-    (p.note ? `<br>${esc(p.note)}` : "") + `<br><i>Pin is city-precision.</i>`);
+  // cheap linear scan over the resolved nodal roster (a few hundred points) to
+  // find the closest priced node to a DC pin, plain lon/lat distance, no
+  // projection needed at this scale.
+  const nearestNode = (lon, lat) => {
+    const NO = D["nodal_obs.json"];
+    if (!NO || !NO.placed || !NO.placed.length) return null;
+    let best = null, bestD = Infinity;
+    for (const nd of NO.placed){
+      const dx = nd.lon - lon, dy = nd.lat - lat, d = dx * dx + dy * dy;
+      if (d < bestD){ bestD = d; best = nd; }
+    }
+    return best;
+  };
+  if (map.getLayer("dc-pt")){
+    const showDC = e => {
+      map.getCanvas().style.cursor = "pointer";
+      const p = e.features[0].properties;
+      let html = `<b>${esc(p.name)}</b><br>${esc(p.city)} &middot; ${esc(String(p.status||"").replace("_"," "))}` +
+        (p.mw ? `<br>${fmt(p.mw,1)} MW (public figure)` : "<br>No public MW figure") +
+        (p.note ? `<br>${esc(p.note)}` : "") + `<br><i>Pin is city-precision.</i>`;
+      if (MODE === "price"){
+        const [lon, lat] = e.features[0].geometry.coordinates;
+        const nn = nearestNode(lon, lat);
+        if (nn){
+          const sign = nn.dev > 0 ? "+" : "";
+          html += `<br>Nearest resolved node: ${esc(nn.res)}, ` +
+            `${sign}P${fmt(nn.dev,2)}/kWh vs the ${esc(nn.grid)} regional price.`;
+        }
+      }
+      pop.setLngLat(e.lngLat).setHTML(html).addTo(map);
+    };
+    map.on("mousemove", "dc-pt", showDC);
+    map.on("click", "dc-pt", showDC);
+    map.on("mouseleave", "dc-pt", () => { map.getCanvas().style.cursor = ""; pop.remove(); });
+  }
   hover("sual-pt", p => `<b>${esc(p.name)}</b><br>${esc(p.location)}<br>` +
     `${fmt(p.units)} x ${fmt(p.unit_mw)} MW, the largest single units on the Luzon grid.`);
   hover("gen-pt", p => `<b>${esc(p.name)}</b><br>${esc(p.city)} &middot; ${esc(p.grid)}` +
@@ -535,7 +568,7 @@ function addLayers(){
         b.equipment.slice(0, 2).map(esc).join(", ") + `).` : "") +
       `<br><i>As mapped in OpenStreetMap (ODbL).</i>`;
   });
-  hover("nodal-pt", p => {
+  const nodalHTML = p => {
     const sign = p.dev > 0 ? "+" : "";
     return `<b>${esc(p.res)}</b>` +
       (p.station ? `<br>at ${esc(p.station)}` : "") +
@@ -546,7 +579,25 @@ function addLayers(){
       `<br><i>Observed locational deviation (DIPCEF final). WESM prices ` +
       `intra-regional congestion administratively, so this is not a ` +
       `congestion premium.</i>`;
-  });
+  };
+  // stations with several priced resources stack multiple dots on the same
+  // point (Agus II Switchyard alone carries 22); query everything rendered
+  // under the cursor, not just the top hit, so a buried large deviation still
+  // shows up in the count.
+  if (map.getLayer("nodal-pt")){
+    const showNodal = e => {
+      map.getCanvas().style.cursor = "pointer";
+      const feats = map.queryRenderedFeatures(e.point, { layers: ["nodal-pt"] });
+      if (!feats.length) return;
+      let html = nodalHTML(feats[0].properties);
+      const extra = feats.length - 1;
+      if (extra > 0) html += `<br><i>+${extra} more at this station.</i>`;
+      pop.setLngLat(e.lngLat).setHTML(html).addTo(map);
+    };
+    map.on("mousemove", "nodal-pt", showNodal);
+    map.on("click", "nodal-pt", showNodal);
+    map.on("mouseleave", "nodal-pt", () => { map.getCanvas().style.cursor = ""; pop.remove(); });
+  }
 }
 
 /* ---------- rail ---------- */
@@ -744,7 +795,14 @@ function sideprice(){
     through the market suspension and small and intermittent afterward (about
     one percent of clean-day node-hours), so the deviation is loss-dominated.
     The full per-node table ships in nodal_obs.json and in the studio's Nodal
-    prices view.</div>`;
+    prices view.</div>
+    <div class="note">This is the only node-level number the tool ships:
+    capture prices, price-duration, and forward bands elsewhere are all
+    system or grid level. Treat it as a directional screen, not a capture
+    price, and never size a PPA or a bid off it alone. Visayas nodes also
+    fail the tool's own loss-surface validation, a stable mismatch not yet
+    diagnosed, so read Visayas deviations with low confidence; Luzon and
+    Mindanao validate.</div>`;
   }
   return `<h2>What it does to prices</h2>
   <p class="sub">Each day's average of the load-weighted 5-minute prices per
@@ -864,6 +922,7 @@ const LEGENDS = {
     ["ln","#9aa7b3","The transmission network (faint) that the nodes sit on"],
     ["ln","#9c3d12","HVDC links: when they bind, the regional prices separate"],
     ["sw","#b3261e","Node above its regional price (persistent, observed)"],
+    ["sw","#b9b3a8","Node near its regional price"],
     ["sw","#2b6a9d","Node below its regional price"],
     ["sw","#1a7f48","Data-center sites for reference"]],
     note:"Each dot is one WESM node, drawn on the transmission grid it sits on, coloured by its observed deviation from its region's price (DIPCEF final, clean market days; size = magnitude). Placed at the resolved site: stations and plants exactly, locality centroids city-precision; the panel lists the rest. Not a congestion premium: WESM prices intra-regional congestion administratively." },

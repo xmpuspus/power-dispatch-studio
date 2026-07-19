@@ -6,6 +6,13 @@ import { StatTile, ThemeToggle } from './ui/kit'
 const MapView = lazy(() => import('./map/MapView').then((m) => ({ default: m.MapView })))
 const Studio = lazy(() => import('./studio/Studio').then((m) => ({ default: m.Studio })))
 
+// a shared-scenario link (ChronoView's copyLink, decoded for real by
+// studio/runs.decodeShare once the studio mounts) puts its payload at this
+// hash prefix; a plain prefix test is enough to decide whether to jump
+// straight to the studio, without pulling the studio's solver bundle into
+// the main chunk just to check
+const HAS_SHARE_HASH = /#m=[A-Za-z0-9_-]+/
+
 type Theme = 'light' | 'dark'
 
 function useTheme(): [Theme, () => void] {
@@ -20,7 +27,9 @@ function useTheme(): [Theme, () => void] {
 
 export default function App() {
   const { data: d, loading, error } = useDispatch()
-  const [studio, setStudio] = useState(false)
+  // open straight to the studio for a shared-scenario link, instead of
+  // leaving the recipient at the hero with no sign a scenario is waiting
+  const [studio, setStudio] = useState(() => HAS_SHARE_HASH.test(window.location.hash))
   const [solverOk, setSolverOk] = useState(() => solverReady())
   const [solverErr, setSolverErr] = useState<string | null>(null)
   const [theme, toggleTheme] = useTheme()

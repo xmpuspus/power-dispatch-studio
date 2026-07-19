@@ -904,6 +904,8 @@ export interface NodalObsNode {
   res: string
   grid: string
   dev: number
+  dev_pk: number
+  dev_md: number
   days: number
   mw: number
 }
@@ -928,12 +930,27 @@ export interface NodalObs {
   n_placed?: number
   per_grid?: Record<string, NodalObsGrid>
   nodes?: NodalObsNode[]
+  // published DIPCEF LMP_CONGESTION tally across the sampled window: zero
+  // through the WESM suspension, small and intermittent after resumption
+  congestion?: { days_sampled: number; days_nonzero: number; max_php_kwh: number }
+  // resolved-to-network share of scheduled MW, overall and per grid
+  resolution?: {
+    resolved: number
+    total: number
+    by_src: Record<string, number>
+    per_grid_mw_share: Record<string, number>
+    mw_share: number
+  }
   notes?: string[]
 }
 
 export interface LossGridWindow {
   n_nodes: number
+  n_bus: number
   spearman: number
+  spearman_ci95: [number, number]
+  pearson_r: number
+  r2: number
   affine_slope: number
   affine_intercept_php_kwh: number
   mae_after_affine_php_kwh: number
@@ -944,6 +961,7 @@ export interface LossSurface {
   available: boolean
   clean_days?: number
   n_nodes_compared?: number
+  validated_spearman_threshold?: number
   validated_grids?: string[]
   failing_grids?: string[]
   finding?: string

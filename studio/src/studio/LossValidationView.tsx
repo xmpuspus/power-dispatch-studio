@@ -20,6 +20,10 @@ const REGION: Record<string, string> = {
   mindanao: '#1a7f48',
 }
 
+function fmtAxis(v: number): string {
+  return Math.abs(v) >= 10 ? v.toFixed(1) : v.toFixed(2)
+}
+
 function Scatter({
   pts,
   w,
@@ -33,20 +37,24 @@ function Scatter({
 }) {
   const W = 300
   const H = 220
-  const pad = 30
+  const padL = 34
+  const padB = 34
   const xs = pts.map((p) => p[0])
   const ys = pts.map((p) => p[1])
   const xlo = Math.min(...xs)
   const xhi = Math.max(...xs)
   const ylo = Math.min(...ys, 0)
   const yhi = Math.max(...ys, 0)
-  const X = (v: number) => pad + ((v - xlo) / (xhi - xlo || 1)) * (W - pad - 8)
-  const Y = (v: number) => 8 + (1 - (v - ylo) / (yhi - ylo || 1)) * (H - 8 - pad)
+  const xMid = (xlo + xhi) / 2
+  const yMid = (ylo + yhi) / 2
+  const X = (v: number) => padL + ((v - xlo) / (xhi - xlo || 1)) * (W - padL - 8)
+  const Y = (v: number) => 8 + (1 - (v - ylo) / (yhi - ylo || 1)) * (H - 8 - padB)
   const edge = validated ? GOOD : CRIT
   const fitY = (x: number) => w.affine_slope * x + w.affine_intercept_php_kwh
+  const yTitleY = (8 + (H - padB)) / 2
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="lossfit" role="img" aria-label="scatter">
-      <line x1={pad} y1={Y(0)} x2={W - 8} y2={Y(0)} className="chart__ax" />
+      <line x1={padL} y1={Y(0)} x2={W - 8} y2={Y(0)} className="chart__ax" />
       {pts.map((p, i) => (
         <circle key={i} cx={X(p[0])} cy={Y(p[1])} r={2.6} fill={color} opacity={0.45} />
       ))}
@@ -55,24 +63,51 @@ function Scatter({
         y1={Y(fitY(xlo))}
         x2={X(xhi)}
         y2={Y(fitY(xhi))}
-        stroke="#12335c"
+        stroke="var(--text)"
         strokeWidth={1.6}
       />
-      <text x={pad} y={H - 8} className="chart__ax">
+      <text x={X(xlo)} y={H - padB + 12} className="chart__ax" textAnchor="start">
+        {fmtAxis(xlo)}
+      </text>
+      <text x={X(xMid)} y={H - padB + 12} className="chart__ax" textAnchor="middle">
+        {fmtAxis(xMid)}
+      </text>
+      <text x={X(xhi)} y={H - padB + 12} className="chart__ax" textAnchor="end">
+        {fmtAxis(xhi)}
+      </text>
+      <text x={padL} y={H - 8} className="chart__ax">
         modeled loss factor
       </text>
+      <text x={padL - 4} y={Y(yhi) + 3} className="chart__ax" textAnchor="end">
+        {fmtAxis(yhi)}
+      </text>
+      <text x={padL - 4} y={Y(yMid) + 3} className="chart__ax" textAnchor="end">
+        {fmtAxis(yMid)}
+      </text>
+      <text x={padL - 4} y={Y(ylo) + 3} className="chart__ax" textAnchor="end">
+        {fmtAxis(ylo)}
+      </text>
+      <text
+        x={10}
+        y={yTitleY}
+        className="chart__ax"
+        textAnchor="middle"
+        transform={`rotate(-90 10 ${yTitleY})`}
+      >
+        observed deviation, ₱/kWh
+      </text>
       <rect
-        x={pad + 2}
+        x={padL + 2}
         y={10}
         width={116}
         height={20}
         rx={4}
-        fill="#fff"
+        fill="var(--surface)"
         stroke={edge}
         strokeWidth={1}
         opacity={0.92}
       />
-      <text x={pad + 8} y={24} fontSize={11} fill="#12335c">
+      <text x={padL + 8} y={24} fontSize={11} fill="var(--text)">
         Spearman {w.spearman >= 0 ? '+' : ''}
         {w.spearman.toFixed(2)}
       </text>
@@ -112,11 +147,9 @@ export function LossValidationView() {
                 key={g}
                 label={g[0].toUpperCase() + g.slice(1)}
                 value={`${w.spearman >= 0 ? '+' : ''}${w.spearman.toFixed(2)}`}
-                hint={
-                  validated
-                    ? `validated · ${w.n_nodes} nodes`
-                    : `fails · ${w.n_nodes} nodes`
-                }
+                hint={`${validated ? 'validated' : 'fails'} · ${w.n_nodes} nodes, ${
+                  w.n_bus
+                } independent bus · 95% CI [${w.spearman_ci95[0].toFixed(2)}, ${w.spearman_ci95[1].toFixed(2)}]`}
               />
             )
           })}
@@ -135,7 +168,8 @@ export function LossValidationView() {
                 >
                   {g[0].toUpperCase() + g.slice(1)}
                   <span className="losspanel__err">
-                    error {w.mae_after_affine_php_kwh.toFixed(2)} ₱/kWh
+                    R² {w.r2.toFixed(2)} · error {w.mae_after_affine_php_kwh.toFixed(2)}{' '}
+                    ₱/kWh
                   </span>
                 </div>
                 <Scatter pts={pts} w={w} color={REGION[g]} validated={validated} />
@@ -143,6 +177,9 @@ export function LossValidationView() {
             )
           })}
         </div>
+        <p className="note">
+          Each panel's axes are a per-grid affine reference, not comparable across panels.
+        </p>
         <p className="note">{d.finding}</p>
         <p className="note">
           The claim is the Spearman rank correlation: does the network model order the

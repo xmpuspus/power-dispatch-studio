@@ -232,6 +232,11 @@ export function RunsView({
                     >
                       Delete
                     </button>
+                    {!r.hours.length && (
+                      <span className="runs__actions-note">
+                        Hourly detail was evicted to fit storage
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}

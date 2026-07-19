@@ -26,6 +26,14 @@
   --text-muted: #475569;
   --text-faint: #94a3b8;
 
+  /* second-tier surface/line/text aliases used by the loss-validation and
+     cross-run panels; kept distinct from surface-2/border/text-muted so those
+     panels can restyle independently, but same values today */
+  --surface-1: #fbfbfa;
+  --panel-2: #eef2f7;
+  --line: #d8e0ec;
+  --muted: #475569;
+
   /* data-series colors, shared with the map so figures read the same everywhere */
   --series-modeled: #334155;
   --series-observed: #b3261e;
@@ -38,6 +46,10 @@
   --fuel-hydro: #0e7490;
   --fuel-geothermal: #7c3aed;
   --fuel-solar: #d97706;
+  /* warm/cool diverging pair for two-series charts (tornado up/down, 5-minute
+     replay fine/hourly, forward band/median) */
+  --coral: #e0603a;
+  --steel: #3b7ea1;
 
   /* type */
   --font-ui: 'Fira Sans', system-ui, -apple-system, sans-serif;
@@ -95,6 +107,11 @@
   --text-muted: #9fb0c9;
   --text-faint: #64748b;
 
+  --surface-1: #0e1626;
+  --panel-2: #16223a;
+  --line: #24314c;
+  --muted: #9fb0c9;
+
   --series-modeled: #94a3b8;
   --series-observed: #f87171;
   --series-offer: #60a5fa;
@@ -106,6 +123,8 @@
   --fuel-hydro: #22d3ee;
   --fuel-geothermal: #c4b5fd;
   --fuel-solar: #fbbf24;
+  --coral: #ef8a68;
+  --steel: #7fb8d4;
 
   --e-1: 0 1px 2px rgba(0, 0, 0, 0.4);
   --e-2: 0 2px 8px rgba(0, 0, 0, 0.45);
