@@ -42,11 +42,12 @@ def _congestion_league(cong):
     header = [
         "equipment", "station", "voltage_kv", "days_bound",
         "rtd_intervals", "rtd_days", "dap_days", "max_overload_mw",
+        "max_pct_of_limit",
     ]
     rows = [
         [e.get("equipment"), e.get("station"), e.get("voltage"), e.get("days"),
          e.get("rtd_intervals"), e.get("rtd_days"), e.get("dap_days"),
-         e.get("max_overload_mw")]
+         e.get("max_overload_mw"), e.get("max_pct_of_limit")]
         for e in cong.get("league", [])
     ]
     return header, rows

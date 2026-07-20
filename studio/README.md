@@ -82,10 +82,10 @@ inflating demand.
 | Chronological replay of observed days, with each day's scheduled-outage deviation applied (OUTRTD via the PASA mapping) | Load or price forecasting |
 | Shortage priced at the P32/kWh WESM offer cap (published rule), labeled 'shortage' | Offer-behavior pricing below the cap (per-participant strategy) |
 | Storage optimised over the day's hours (HiGHS LP); the Native week view adds inter-day carryover in a native 168-hour LP | Inter-day storage carryover in the default day mode |
-| Reserve as a withheld-capacity constraint; OBSERVED official regional reserve prices shown beside it | Reserve co-optimisation inside the LP (the observed reserve books, RTDOR, are archived as daily derived files since July 2026; the joint clear scored against RSVPR is the queued build) |
+| Reserve as a withheld-capacity constraint; OBSERVED official regional reserve prices shown beside it | Reserve co-optimisation inside the LP. The per-resource joint energy+reserve LP was prototyped from the raw RTDOE+RTDOR offer curves and located why it cannot reproduce the official RSVPR: on requirement-short hours the price is an administered scarcity value above the entire offer stack, not something the offers carry (methodology; joint_lp_probe) |
 | Monte Carlo adequacy on forced-outage rates, with the day's scheduled outages removable (PASA lite) | Maintenance-schedule optimisation |
 | DOE build pipeline as sourced candidates on a horizon (LT Plan lite) | Expansion optimisation, build-cost economics |
-| Load sweep, window band, per-hour binding classification, operational CO2 | Build-cost economics |
+| Load sweep, window band, per-hour binding classification, operational CO2 | Lifecycle or embodied emissions (only operational tCO2 from dispatched energy is counted) |
 | Energy-limited hydro: the day LP caps hydro at the day's OBSERVED water (DIPCEF per-resource schedules, derived daily; scaled with edits and the hydrology lever) | Inter-day water management (each day's budget stands alone) |
 
 The model's honesty gate is calibration against two observed targets: the
@@ -286,10 +286,15 @@ any offer) are counted per pool and excluded from the right-hand MAE.
 
 Exact hours match the official price within half a centavo: on Luzon
 dispatchable reserve the book alone reproduces the official price in four
-of five hours, and on Mindanao regulation down in six of seven. Closing
-the wedge needs a per-resource joint energy+reserve clear, and the
-compacted public artifacts drop resource identity on both sides; that
-build stays named in the methodology with its exact missing input.
+of five hours, and on Mindanao regulation down in six of seven. The
+per-resource joint energy+reserve clear that would close the wedge was
+prototyped from the raw resource-identified offers (RTDOE energy, RTDOR
+reserve), so the blocker is not a data-identity gap. It is that the
+reserve requirement clears short on the scarce hours (scheduled reserve
+at 11 to 36 percent of the requirement there) and the official price sits
+above the entire offer stack, an administered scarcity value the public
+offers do not carry. That finding, not the queued build, is what the
+methodology now records (joint_lp_probe).
 
 Read these tables before trusting any scenario: the cost model explains
 the cost floor and the congestion geometry and under-prices scarcity; the

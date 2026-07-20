@@ -103,7 +103,10 @@ This is observed curtailment in published schedules and observed reserve shortfa
 not a brownout forecast. The Visayas grid ran **52 consecutive days on
 grid alert (May 11 to July 1, 2026)**, yellow on most of them and RED on three
 (May 13, 14 and 15, in the operator advisories archived here). Red alert is the
-more severe state: reserves depleted, interruptions expected. The streak ended
+more severe state: supply itself no longer covers demand plus the regulating
+reserve, so manual load dropping is expected. (Yellow is the lesser state,
+supply still meets demand but the operating margin has fallen below the
+contingency reserve requirement.) The streak ended
 when one 150 MW unit returned, with 935.3 MW still unavailable that day.
 
 Against that thin margin, the announced data-center wave is the size of the margin
@@ -440,7 +443,7 @@ scores the clear two ways. The simple cost model is a floor: it clears near the
 **P6 coal baseline** and under-prices scarcity, so read its levels as a lower
 bound. Replay the operator's own offer book instead and the model tracks the
 real price shape hour by hour, reaching **0.68 to 0.87 correlation** with
-observed prices across the quarter and **88 to 99 percent** of the inter-island
+observed prices across the quarter and **87 to 99 percent** of the inter-island
 flow direction. A dated event closes it: the **935 MW** Visayas outage of July 1
 reproduces **87.8 percent** of the observed island price gap, with the
 constraint kept out of the calibration. The gap between the cost floor and the

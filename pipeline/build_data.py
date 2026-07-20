@@ -101,7 +101,7 @@ def build_congestion() -> dict:
     corridors = {c["id"]: {
         "days": set(), "rtd_intervals": 0, "rtd_days": set(),
         "dap_rows": 0, "dap_days": set(), "max_overload_mw": 0.0,
-        "matched": defaultdict(int),
+        "max_pct_of_limit": 0.0, "matched": defaultdict(int),
     } for c in CHOKEPOINTS if c.get("equipment_match")}
 
     def corridor_ids(name: str) -> list[str]:
@@ -131,6 +131,7 @@ def build_congestion() -> dict:
                     "days": set(), "rtd_intervals": 0, "rtd_days": set(),
                     "dap_rows": 0, "dap_days": set(),
                     "base_case_rows": 0, "max_overload_mw": 0.0,
+                    "max_pct_of_limit": 0.0,
                 })
                 e["days"].add(day)
                 if key == "RTDCV":
@@ -144,6 +145,15 @@ def build_congestion() -> dict:
                     base_days.add(day)
                 ov = f(r.get("OVERLOAD_MW"))
                 e["max_overload_mw"] = max(e["max_overload_mw"], ov)
+                # OVERLOAD_MW is how far flow was pushed PAST the limit, which is
+                # near-zero on 98% of rows because the dispatch holds flow AT the
+                # limit. A line pinned at 100% of its limit is fully bound with
+                # zero overload, so max_overload_mw alone reads the most
+                # persistently bound equipment (the Naga transformers, the
+                # Leyte-Cebu corridor) as zero severity. PCT_MW is the real
+                # how-bound signal and never drops below 100 on a congestion row.
+                pct = f(r.get("PCT_MW"))
+                e["max_pct_of_limit"] = max(e["max_pct_of_limit"], pct)
                 for cid in corridor_ids(name):
                     c = corridors[cid]
                     c["days"].add(day)
@@ -155,12 +165,15 @@ def build_congestion() -> dict:
                         c["dap_rows"] += 1
                         c["dap_days"].add(day)
                     c["max_overload_mw"] = max(c["max_overload_mw"], ov)
+                    c["max_pct_of_limit"] = max(
+                        c.get("max_pct_of_limit", 0.0), pct)
     out = []
     for e in league.values():
         e["days"] = len(e["days"])
         e["rtd_days"] = len(e["rtd_days"])
         e["dap_days"] = len(e["dap_days"])
         e["max_overload_mw"] = round(e["max_overload_mw"], 2)
+        e["max_pct_of_limit"] = round(e["max_pct_of_limit"], 1)
         out.append(e)
     out.sort(key=lambda e: (-e["days"], -e["rtd_intervals"], -e["dap_rows"],
                             e["equipment"]))
@@ -174,6 +187,7 @@ def build_congestion() -> dict:
             "rtd_days": len(c["rtd_days"]), "dap_rows": c["dap_rows"],
             "dap_days": len(c["dap_days"]),
             "max_overload_mw": round(c["max_overload_mw"], 2),
+            "max_pct_of_limit": round(c["max_pct_of_limit"], 1),
             "matched_equipment": [
                 {"name": k, "rows": v} for k, v in
                 sorted(c["matched"].items(), key=lambda kv: -kv[1])],

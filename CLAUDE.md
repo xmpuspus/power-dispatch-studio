@@ -92,7 +92,7 @@ make e2e        # behavioral suite (make serve & first)
 - Sual coal plant: 2 x 647 MW, Pangasinan, largest single units on the Luzon grid.
 - DC demand anchors: DICT 1.5 GW by 2028 (BusinessWorld Oct 2025); DOE 300-1500 MW
   added peak (PCIJ Jan 2026); Meralco 1,000 MW for 10 data centers (PCIJ);
-  DCPH alliance 473 MW (Feb 2026); Cushman 73 MW operational / 156 MW pipeline (2025).
+  DCPH alliance 473 MW (Feb 2026); Cushman 73 MW operational / 111 MW pipeline (22 under development + 89 planning, 2025).
 - NGCP TDP 2025-2050 PDF public at ngcp.ph/Attachment-Uploads/ (root 403s curl,
   attachment path serves 200).
 

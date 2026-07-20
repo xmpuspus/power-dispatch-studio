@@ -292,6 +292,10 @@ def canonical():
         # the worst observed demand rise grows with the archive, so the
         # ratios move nightly and the prose must move with them
         "ramp_luz_worst": f'{mo["ramp_probe"]["worst_observed_demand_rise_mw_per_hour"]["luzon"]:,.0f}',
+        # the inter-island flow-direction agreement range; drifted 88->87
+        # unguarded (the offer replay's per-corridor direction hit rate)
+        "flowdir_lo": f'{min(profiles["offer_backcast"]["flows"][c]["direction_agreement_pct"] for c in ("lv", "vm")):.0f}',
+        "flowdir_hi": f'{max(profiles["offer_backcast"]["flows"][c]["direction_agreement_pct"] for c in ("lv", "vm")):.0f}',
         "ramp_strict_luz": _n(mo["ramp_probe"]["strict_headroom_online_slowest_band"]["luzon"], 1),
         "ramp_strict_vis": _n(mo["ramp_probe"]["strict_headroom_online_slowest_band"]["visayas"], 1),
         "ramp_strict_min": _n(mo["ramp_probe"]["strict_headroom_online_slowest_band"]["mindanao"], 1),
@@ -586,6 +590,9 @@ REGISTRY = [
     ("web/methodology.html",
      re.compile(r"largest\s*\n?\s*hour-to-hour demand RISE anywhere in the archived observed profiles\s*\n?\s*\(([\d,]+) MW on Luzon"),
      ["ramp_luz_worst"]),
+    ("README.md",
+     re.compile(r"quarter and \*\*(\d+) to (\d+) percent\*\* of the inter-island"),
+     ["flowdir_lo", "flowdir_hi"]),
     ("web/methodology.html",
      re.compile(r"out-ramps the worst demand rise by ([\d.]+) times\s*\n?\s*on Luzon, ([\d.]+) on the Visayas and ([\d.]+) on Mindanao"),
      ["ramp_strict_luz", "ramp_strict_vis", "ramp_strict_min"]),
