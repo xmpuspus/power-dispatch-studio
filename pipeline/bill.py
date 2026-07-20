@@ -49,6 +49,10 @@ WESM_PRICE = 7.0281
 SRC_BILL = "https://www.bworldonline.com/top-stories/2026/06/12/756242/meralco-rates-climb-p0-15-kwh-in-june/"
 
 # Meralco quotes rate impact for a typical residential household at 200 kWh/month.
+# Every rate here is the CAPTIVE residential rate. Contestable customers under
+# RCOA buy from a retail electricity supplier at a contracted generation price
+# and carry a different spot exposure, so none of this bill arithmetic
+# describes them.
 HOUSEHOLD_KWH_MONTH = 200
 
 # The residual is not a constant: Meralco's own advisories put the WESM slice at
