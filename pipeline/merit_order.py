@@ -204,6 +204,38 @@ def _rtdsum_gen(date: str) -> dict:
     return out
 
 
+def _luzon_balance(date: str) -> dict:
+    """Luzon RTDSUM energy-balance terms per interval, for the residual probe
+    that measured the Luzon dispatch-vs-generation gap out (retired the
+    'untested lead is the import/export/loss columns' note). GEN+IMP should
+    equal REQT+LOSS+EXP; the amount it does not is the same ~200 MW term the
+    MOT gap carries, so those columns cannot close it."""
+    path = os.path.join(RAW, "RTDSUM", f"RTDREG_{date.replace('-', '')}.csv")
+    if not os.path.isfile(path):
+        return {}
+    out: dict = {}
+    with open(path, newline="", encoding="utf-8", errors="replace") as fh:
+        for r in csv.DictReader(fh):
+            if (r.get("COMMODITY_TYPE") or "").strip() != "En":
+                continue
+            if (r.get("REGION_NAME") or "").strip() != "CLUZ":
+                continue
+            ts = _ts((r.get("TIME_INTERVAL") or "").strip())
+            if ts is None:
+                continue
+
+            def _f(k):
+                try:
+                    return float(r.get(k) or 0)
+                except ValueError:
+                    return 0.0
+            out[ts] = {
+                "gen": _f("GENERATION"), "imp": _f("MKT_IMPORT"),
+                "reqt": _f("MKT_REQT"), "loss": _f("LOSSES"),
+                "exp": _f("MKT_EXPORT")}
+    return out
+
+
 def _read_zip(path: str, date: str) -> dict:
     """{(grid, interval): (nd rows, dp rows)} from one daily MOT zip."""
     d0 = datetime.strptime(date, "%Y-%m-%d")
@@ -260,7 +292,16 @@ def derive_day(date: str, b64: str, name: str) -> dict:
     stamps = [(d0 + timedelta(minutes=5 * i)) for i in range(INTERVALS)]
     setters = _mcp_setters(date)
     gen = _rtdsum_gen(date)
+    bal = _luzon_balance(date)
     rng = random.Random(NULL_SEED)
+
+    # the Luzon residual probe: per interval, the MOT dispatch-minus-generation
+    # gap and RTDSUM's own energy-balance residual (GEN+IMP-REQT-LOSS-EXP), so
+    # the "import/export/loss close the 2% gap" lead can be measured, not
+    # guessed. Import is far too small and the two residuals move together.
+    lz_gap: list = []
+    lz_bal_resid: list = []
+    lz_import: list = []
 
     dispatched: dict = {g: [None] * INTERVALS for g in GRIDS}
     headroom: dict = {g: [None] * INTERVALS for g in GRIDS}
@@ -290,6 +331,12 @@ def derive_day(date: str, b64: str, name: str) -> dict:
             obs = gen.get((g, ts))
             if obs and obs > 1.0:
                 ratio[g].append(cut["dispatched_mw"] / obs)
+                if g == "luzon" and ts in bal:
+                    b = bal[ts]
+                    lz_gap.append(cut["dispatched_mw"] - obs)
+                    lz_bal_resid.append(b["gen"] + b["imp"] - b["reqt"]
+                                        - b["loss"] - b["exp"])
+                    lz_import.append(b["imp"])
             named = setters.get((g, ts))
             if named and dp:
                 mset = set(cut["marginal"])
@@ -328,12 +375,21 @@ def derive_day(date: str, b64: str, name: str) -> dict:
     def _pct(pair):
         return round(100 * pair[0] / pair[1], 1) if pair[1] else None
 
+    def _mean(xs):
+        return round(sum(xs) / len(xs), 1) if xs else None
+
     return {
         "date": date,
         "schema_version": SCHEMA_VERSION,
         "intervals": INTERVALS,
         "dispatched_mw": dispatched,
         "not_dispatched_mw": headroom,
+        "luzon_residual_probe": {
+            "n": len(lz_gap),
+            "gap_mw_mean": _mean(lz_gap),
+            "balance_residual_mw_mean": _mean(lz_bal_resid),
+            "import_mw_mean": _mean(lz_import),
+        },
         "marginal": marginal,
         "next_up": next_up,
         "above_marginal_mw_mean": {

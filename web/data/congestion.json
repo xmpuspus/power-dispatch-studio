@@ -19,7 +19,8 @@
    "dap_rows": 9741,
    "dap_days": 101,
    "base_case_rows": 9817,
-   "max_overload_mw": 26.73
+   "max_overload_mw": 26.73,
+   "max_pct_of_limit": 112.5
   },
   {
    "equipment": "1EHVNGS_TR2",
@@ -31,7 +32,8 @@
    "dap_rows": 5227,
    "dap_days": 98,
    "base_case_rows": 0,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "1EHVNGS_TR1",
@@ -43,7 +45,8 @@
    "dap_rows": 5457,
    "dap_days": 98,
    "base_case_rows": 0,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "LEYTE_TO_CEBU",
@@ -55,7 +58,8 @@
    "dap_rows": 2440,
    "dap_days": 80,
    "base_case_rows": 2440,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "5DAAN_4TAB1",
@@ -67,7 +71,8 @@
    "dap_rows": 3848,
    "dap_days": 74,
    "base_case_rows": 3882,
-   "max_overload_mw": 11.89
+   "max_overload_mw": 11.89,
+   "max_pct_of_limit": 105.9
   },
   {
    "equipment": "1BAUA_1BPP1",
@@ -79,7 +84,8 @@
    "dap_rows": 2062,
    "dap_days": 60,
    "base_case_rows": 0,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "1SJO115_TR1",
@@ -91,7 +97,8 @@
    "dap_rows": 1764,
    "dap_days": 48,
    "base_case_rows": 2601,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "5DAAN_4TAB1",
@@ -103,7 +110,8 @@
    "dap_rows": 1797,
    "dap_days": 36,
    "base_case_rows": 1801,
-   "max_overload_mw": 14.06
+   "max_overload_mw": 14.06,
+   "max_pct_of_limit": 107.0
   },
   {
    "equipment": "1OLONG_TR2",
@@ -115,7 +123,8 @@
    "dap_rows": 923,
    "dap_days": 26,
    "base_case_rows": 923,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "4MAAS_7UBA1",
@@ -127,7 +136,8 @@
    "dap_rows": 475,
    "dap_days": 24,
    "base_case_rows": 475,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "1BAUA_1LAT1",
@@ -139,7 +149,8 @@
    "dap_rows": 89,
    "dap_days": 15,
    "base_case_rows": 0,
-   "max_overload_mw": 3.86
+   "max_overload_mw": 3.86,
+   "max_pct_of_limit": 101.3
   },
   {
    "equipment": "1BAUA_1LAT2",
@@ -151,7 +162,8 @@
    "dap_rows": 83,
    "dap_days": 16,
    "base_case_rows": 0,
-   "max_overload_mw": 3.86
+   "max_overload_mw": 3.86,
+   "max_pct_of_limit": 101.3
   },
   {
    "equipment": "1BAUA_1LAT2",
@@ -163,7 +175,8 @@
    "dap_rows": 269,
    "dap_days": 9,
    "base_case_rows": 0,
-   "max_overload_mw": 69.11
+   "max_overload_mw": 69.11,
+   "max_pct_of_limit": 124.8
   },
   {
    "equipment": "1BAUA_1LAT1",
@@ -175,7 +188,8 @@
    "dap_rows": 291,
    "dap_days": 9,
    "base_case_rows": 0,
-   "max_overload_mw": 69.11
+   "max_overload_mw": 69.11,
+   "max_pct_of_limit": 124.8
   },
   {
    "equipment": "1TGERAO_TR3",
@@ -187,7 +201,8 @@
    "dap_rows": 0,
    "dap_days": 0,
    "base_case_rows": 210,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "1SRAF_1SJO1",
@@ -199,7 +214,8 @@
    "dap_rows": 101,
    "dap_days": 8,
    "base_case_rows": 0,
-   "max_overload_mw": 21.1
+   "max_overload_mw": 21.1,
+   "max_pct_of_limit": 107.1
   },
   {
    "equipment": "1MEXI_1HER2",
@@ -211,7 +227,8 @@
    "dap_rows": 218,
    "dap_days": 9,
    "base_case_rows": 1,
-   "max_overload_mw": 197.74
+   "max_overload_mw": 197.74,
+   "max_pct_of_limit": 140.5
   },
   {
    "equipment": "5DAAN_4TAB2",
@@ -223,7 +240,8 @@
    "dap_rows": 287,
    "dap_days": 8,
    "base_case_rows": 311,
-   "max_overload_mw": 4.9
+   "max_overload_mw": 4.9,
+   "max_pct_of_limit": 102.1
   },
   {
    "equipment": "5MNDUE_TR2",
@@ -235,7 +253,8 @@
    "dap_rows": 111,
    "dap_days": 8,
    "base_case_rows": 111,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "3AMAD_3CLA1",
@@ -247,7 +266,8 @@
    "dap_rows": 0,
    "dap_days": 0,
    "base_case_rows": 156,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "1MEXI_2QUE1",
@@ -259,7 +279,8 @@
    "dap_rows": 212,
    "dap_days": 7,
    "base_case_rows": 19,
-   "max_overload_mw": 3.13
+   "max_overload_mw": 3.13,
+   "max_pct_of_limit": 101.1
   },
   {
    "equipment": "2SUCA_3BIN3",
@@ -271,7 +292,8 @@
    "dap_rows": 12,
    "dap_days": 4,
    "base_case_rows": 0,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "8NABAS_TR2",
@@ -283,7 +305,8 @@
    "dap_rows": 352,
    "dap_days": 6,
    "base_case_rows": 352,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "8NABAS_TR1",
@@ -295,7 +318,8 @@
    "dap_rows": 265,
    "dap_days": 6,
    "base_case_rows": 265,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "1HERM_1DUH1",
@@ -307,7 +331,8 @@
    "dap_rows": 101,
    "dap_days": 5,
    "base_case_rows": 0,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "1BING_1NGS2",
@@ -319,7 +344,8 @@
    "dap_rows": 73,
    "dap_days": 5,
    "base_case_rows": 15,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "3BINA_3DAS2",
@@ -331,7 +357,8 @@
    "dap_rows": 2,
    "dap_days": 1,
    "base_case_rows": 0,
-   "max_overload_mw": 48.26
+   "max_overload_mw": 48.26,
+   "max_pct_of_limit": 104.0
   },
   {
    "equipment": "1MEXI_1HER2",
@@ -343,7 +370,8 @@
    "dap_rows": 0,
    "dap_days": 0,
    "base_case_rows": 0,
-   "max_overload_mw": 125.71
+   "max_overload_mw": 125.71,
+   "max_pct_of_limit": 123.3
   },
   {
    "equipment": "3BINA_3DAS1",
@@ -355,7 +383,8 @@
    "dap_rows": 1,
    "dap_days": 1,
    "base_case_rows": 0,
-   "max_overload_mw": 48.26
+   "max_overload_mw": 48.26,
+   "max_pct_of_limit": 104.0
   },
   {
    "equipment": "1BALI_1KDA2",
@@ -367,7 +396,8 @@
    "dap_rows": 8,
    "dap_days": 3,
    "base_case_rows": 0,
-   "max_overload_mw": 0.0
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   }
  ],
  "corridor_receipts": {
@@ -378,6 +408,7 @@
    "dap_rows": 18113,
    "dap_days": 101,
    "max_overload_mw": 26.73,
+   "max_pct_of_limit": 112.5,
    "matched_equipment": [
     {
      "name": "5DAAN_4TAB2",
