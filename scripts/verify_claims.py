@@ -477,10 +477,10 @@ REGISTRY = [
      re.compile(r"\*\*(\d+\.\d+)%\*\* of Mindanao"),
      ["mindanao_overnight"]),
     ("README.md",
-     re.compile(r"binds on the \*\*(\d+\.\d+)%\*\* of intervals"),
+     re.compile(r"blocked for \*\*(\d+\.\d+)%\*\* of intervals"),
      ["corridor_blocked"]),
     ("README.md",
-     re.compile(r"saturates \*\*(\d+\.\d+)%\*\* of the window"),
+     re.compile(r"saturates on\s*\n?\s*\*\*(\d+\.\d+)%\*\* of the window"),
      ["corridor_saturated"]),
     ("README.md",
      re.compile(r"runs from a \*\*P(\d+)\*\* scarcity spike"),
@@ -514,7 +514,12 @@ REGISTRY = [
      re.compile(r"travels with the\s*\n?\s*\+P(\d+\.\d+):"),
      ["offer_luz_delta"]),
     ("studio/README.md",
-     re.compile(r"rolling series past the threshold \(P(\d+\.\d+)\s*\n?\s*against P12\.413\)"),
+     re.compile(r"rolling series to P(\d+\.\d+) against P12\.413"),
+     ["marquee_rolling"]),
+    # the same flag is quoted in the top-level README, so guard it there too:
+    # an unguarded copy of a nightly number is how the two drift apart
+    ("README.md",
+     re.compile(r"rolling series to P(\d+\.\d+) against\s*\n?\s*the P12\.413 trigger"),
      ["marquee_rolling"]),
     # --- loss-surface validation numbers (recompute nightly; F4) ---
     ("README.md",

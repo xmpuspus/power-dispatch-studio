@@ -312,8 +312,11 @@ def run_chronology_lp(dispatch: dict, profiles: dict, date: str,
         cap1, cap2 = m["caps"]["leyte"], m["caps"]["mvip"]
         cap1_h = cap1[h] if isinstance(cap1, list) else cap1
         cap2_h = cap2[h] if isinstance(cap2, list) else cap2
-        sat1 = abs(f1) >= cap1_h - FLOW_SAT_EPS
-        sat2 = abs(f2) >= cap2_h - FLOW_SAT_EPS
+        # a zero cap (fully blocked corridor) cannot bind in the congestion
+        # sense: with cap 0 the >= test is trivially true and the rent branch
+        # returns a NEGATIVE price difference, which is not a congestion rent
+        sat1 = cap1_h > FLOW_SAT_EPS and abs(f1) >= cap1_h - FLOW_SAT_EPS
+        sat2 = cap2_h > FLOW_SAT_EPS and abs(f2) >= cap2_h - FLOW_SAT_EPS
         rent1 = (round3(price["visayas"] - price["luzon"] if f1 > 0
                         else price["luzon"] - price["visayas"])
                  if sat1 else 0.0)
@@ -455,8 +458,11 @@ def run_week_lp(dispatch: dict, profiles: dict, dates: list[str],
             marg[g] = price_label(price[g], cost, fuel, store_marg[g],
                                   hyd_marg, shed[g] > STORE_EPS)
         cap1_h, cap2_h = caps["leyte"][h], caps["mvip"][h]
-        sat1 = abs(f1) >= cap1_h - FLOW_SAT_EPS
-        sat2 = abs(f2) >= cap2_h - FLOW_SAT_EPS
+        # a zero cap (fully blocked corridor) cannot bind in the congestion
+        # sense: with cap 0 the >= test is trivially true and the rent branch
+        # returns a NEGATIVE price difference, which is not a congestion rent
+        sat1 = cap1_h > FLOW_SAT_EPS and abs(f1) >= cap1_h - FLOW_SAT_EPS
+        sat2 = cap2_h > FLOW_SAT_EPS and abs(f2) >= cap2_h - FLOW_SAT_EPS
         rent1 = (round3(price["visayas"] - price["luzon"] if f1 > 0
                         else price["luzon"] - price["visayas"])
                  if sat1 else 0.0)
@@ -551,8 +557,11 @@ def solve_snapshot_lp(stacks: dict, demand: dict, caps: dict,
         s = G_SHORT[g]
         price[g] = round3(duals.get(f"bal_{s}_0", 0.0))
         shed[g] = max(0.0, round1(cols.get(f"u_{s}_0", 0.0)))
-    sat1 = abs(f1) >= caps["leyte"] - FLOW_SAT_EPS
-    sat2 = abs(f2) >= caps["mvip"] - FLOW_SAT_EPS
+    # zero cap cannot bind in the congestion sense (see the hourly path)
+    sat1 = (caps["leyte"] > FLOW_SAT_EPS
+            and abs(f1) >= caps["leyte"] - FLOW_SAT_EPS)
+    sat2 = (caps["mvip"] > FLOW_SAT_EPS
+            and abs(f2) >= caps["mvip"] - FLOW_SAT_EPS)
     rent1 = (round3(price["visayas"] - price["luzon"] if f1 > 0
                     else price["luzon"] - price["visayas"]) if sat1 else 0.0)
     rent2 = (round3(price["mindanao"] - price["visayas"] if f2 > 0

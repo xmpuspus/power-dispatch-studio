@@ -21,10 +21,23 @@ definitions and corroborated by the scheduled quantities, not asserted as source
   - Ru / Rd = Regulation (up / down): small (~285 MW each) and dear, the profile of
     the frequency-regulation product that corrects moment-to-moment deviations.
   - Dr = Dispatchable: cheapest and large, the reserve that replenishes contingency.
-  - Fr = Contingency: ~890 MW, close to the largest single contingency on the grid
-    (a 647 MW Sual unit plus margin), the reserve held to cover the loss of the
-    biggest unit. This last code is the least certain and is labelled as inferred in
-    the baked output.
+  - Fr = Contingency: the reserve held to cover the loss of the biggest unit.
+    Settled against the archive rather than guessed from the scheduled magnitude.
+    The market REQUIREMENT for Fr (RTDSUM MKT_REQT) sits at exactly 668.0 MW in
+    63% of Luzon intervals and never exceeds it, and 668 MW is the nameplate of a
+    GNPower Dinginin unit, the largest single unit on the grid. Contingency
+    reserve is sized to the largest unit ONLINE, so the requirement is a step
+    function: it drops to 608, 600 or 455 MW when Dinginin is out and a smaller
+    machine becomes the binding contingency. Read the mode and the max, never the
+    mean. The mean is about 646 MW, which lands close enough to a 647 MW Sual
+    unit to invite the conclusion that Sual is the largest unit on the grid. It
+    is not, and that coincidence is what an earlier read of this data got wrong.
+The quantity signatures corroborate the whole mapping, measured over the archive:
+Ru and Rd requirements are identical and symmetric in every region (Luzon 221 MW
+each, Visayas 43.1, Mindanao 44), which is the shape of a regulation product
+procured in both directions; Fr and Dr are both sized to the largest unit (Luzon
+668 MW each). Scheduled quantities run above requirement, which is why an earlier
+read of the ~890 MW SCHEDULE as "647 plus margin" pointed at the wrong unit.
 Sources (three-product structure and definitions; commercial-ops date):
   https://www.iemop.ph/news/iemop-commences-the-full-commercial-operations-of-reserve-market/
   https://www.iemop.ph/market-data/rtd-reserve-schedule/  (the RTDRS dataset)
@@ -46,13 +59,14 @@ REGION_GRID = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao"}
 
 # RTD reserve schedule commodity code -> (category key, human label, mapping basis).
 # The three published products are Regulation (up/down), Contingency, and
-# Dispatchable. The code->product mapping is inferred (see module docstring): the
-# regulation and dispatchable reads are well corroborated; the contingency code is
-# the least certain and is flagged as such in the output.
+# Dispatchable. The code->product mapping is inferred (see module docstring) and
+# every code is now corroborated against the archived MKT_REQT requirement: the
+# symmetric Ru/Rd pair is regulation, and the pair pinned at the largest unit's
+# 668 MW is contingency and dispatchable.
 COMMODITY = {
     "Ru": ("regulation_up", "Regulation (up)", "inferred_corroborated"),
     "Rd": ("regulation_down", "Regulation (down)", "inferred_corroborated"),
-    "Fr": ("contingency", "Contingency", "inferred"),
+    "Fr": ("contingency", "Contingency", "inferred_corroborated"),
     "Dr": ("dispatchable", "Dispatchable", "inferred_corroborated"),
 }
 
@@ -191,8 +205,13 @@ def build_reserve() -> dict:
                         "IEMOP does not publish a code key on the dataset, so the RTD "
                         "schedule commodity codes (Ru/Rd regulation, Dr dispatchable, "
                         "Fr contingency) are mapped by inference from those "
-                        "definitions and the scheduled quantities: contingency clears "
-                        "about 890 MW, close to the largest single unit it must cover.",
+                        "definitions, then corroborated against the archived "
+                        "REQUIREMENT column (RTDSUM MKT_REQT) rather than the "
+                        "schedule: Ru and Rd are identical and symmetric in every "
+                        "region, the shape of a product procured both ways, while Fr "
+                        "and Dr are both pinned at 668 MW in Luzon, the size of the "
+                        "grid's largest single unit and so the contingency it must "
+                        "cover.",
         "note": "The WESM Reserve Market co-optimises energy and reserves in "
                 "real-time dispatch: a unit holding reserve cannot also sell that "
                 "MW as energy, and in a tight hour the reserve clearing price "

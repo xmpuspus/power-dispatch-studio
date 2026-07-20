@@ -23,6 +23,53 @@ def load(name):
         return json.load(f)
 
 
+# --- raw-archive convention pins (upstream of every baked number) ---------------
+# These guard two conventions that are invisible in the baked output but corrupt
+# it silently when they drift: how a 5-minute interval maps to an hour, and which
+# region labels the parser is willing to see.
+_RAW = os.path.join(os.path.dirname(__file__), "..", "data", "raw")
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "pipeline"))
+try:
+    import csv
+    import glob as _glob
+    from collections import Counter as _Counter
+
+    from dispatch import hour_of as _hour_of
+
+    # IEMOP stamps the END of each 5-minute interval, so a correct hour bin puts
+    # exactly 12 intervals in all 24 hours. Binning on the stamped hour instead
+    # leaves hour 0 with 11 and hour 23 with 13.
+    _lw = sorted(_glob.glob(os.path.join(_RAW, "LWAPF", "*.csv")))
+    if _lw:
+        _bins = _Counter()
+        for _r in csv.DictReader(open(_lw[len(_lw) // 2])):
+            if (_r.get("REGION_NAME") or "").strip() != "SYSTEM":
+                continue
+            _h = _hour_of((_r.get("TIME_INTERVAL") or "").strip())
+            if _h is not None:
+                _bins[_h] += 1
+        check("every hour bins exactly 12 five-minute intervals "
+              "(interval-ending convention)",
+              sum(_bins.values()) == 288
+              and all(_bins[h] == 12 for h in range(24)))
+
+    # Every region label present in the raw archive must be mapped or knowingly
+    # ignored. GWAPF carries a fifth row, CLUZ_CVIS, the combined Luzon-Visayas
+    # pricing region, which an earlier parser dropped without noticing.
+    _KNOWN_GWAPF = {"CLUZ", "CVIS", "CMIN", "System", "CLUZ_CVIS"}
+    _gw = sorted(_glob.glob(os.path.join(_RAW, "GWAPF", "*.csv")))
+    if _gw:
+        _seen = set()
+        for _p in _gw[:5]:
+            for _r in csv.DictReader(open(_p)):
+                _rn = (_r.get("REGION_NAME") or "").strip()
+                if _rn:
+                    _seen.add(_rn)
+        check("no unmapped GWAPF region label appears in the archive",
+              _seen <= _KNOWN_GWAPF)
+except ImportError:
+    pass
+
 ck = load("chokepoints.geojson")
 dc = load("dc_sites.geojson")
 sual = load("sual.geojson")
@@ -170,7 +217,8 @@ check("May 2026 system avg 7.79 +38.5%",
       and math.isclose(anchors["wesm_may2026_vs_april_pct"], 38.5))
 check("Meralco June pins",
       math.isclose(anchors["meralco_june2026_generation_charge"], 9.0704)
-      and math.isclose(anchors["meralco_june2026_wesm_cost_php_kwh"], 7.0281))
+      and math.isclose(anchors["meralco_june2026_wesm_price_php_kwh"], 7.0281)
+      and anchors["meralco_june2026_wesm_share_pct"] == 10)
 check("HVDC Dec 2025 binding share 69", anchors["hvdc_binding_share_dec2025_pct"] == 69)
 # Visayas streak is the dated 52-day fact (ended Jul 1), not "7 straight weeks"
 check("Visayas streak is the dated 52-day fact",
@@ -321,6 +369,30 @@ check("baseline coupling explains almost none of the V-L spread (the finding: "
 leyte_stat = next(c for c in cp["corridors"] if c["id"] == "leyte_luzon_hvdc")
 check("Leyte-Luzon rarely binds on baseline demand (<5% of intervals)",
       leyte_stat["saturated_pct"] < 5)
+# A congestion rent is what a BINDING corridor earns from the price separation
+# it enforces, so it cannot be negative. It went negative once because a fully
+# blocked corridor (cap scaled to 0 by the observed unblocked fraction) passed
+# the >= saturation test trivially and then took the reversed rent branch. Scan
+# the whole shipped artifact, not just the synthetic solver cases above: the
+# earlier bug lived in the baked means, where no test was looking.
+_neg_rents = []
+
+
+def _scan_rents(o, path=""):
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if "rent" in k.lower() and isinstance(v, (int, float)) and v < 0:
+                _neg_rents.append(f"{path}.{k}={v}")
+            _scan_rents(v, f"{path}.{k}")
+    elif isinstance(o, list):
+        for i, v in enumerate(o):
+            _scan_rents(v, f"{path}[{i}]")
+
+
+_scan_rents(disp)
+check("no negative congestion rent anywhere in the bake "
+      f"(blocked corridors earn nothing){'' if not _neg_rents else ': ' + '; '.join(_neg_rents[:4])}",
+      not _neg_rents)
 # item 1 (post-convergence): the 5-minute coupled replay now scales the
 # corridor by the observed hourly availability (MPI), not a flat 250 MW
 _occ = cp["observed_corridor_caps"]["leyte_luzon_hvdc"]
@@ -508,9 +580,21 @@ check("WESM is the minority (residual) slice of the supply mix",
 check("the WESM pass-through factor equals the WESM supply share (not full spot)",
       abs(bill["pass_through_factor"] - bill["wesm_share_pct"] / 100) < 1e-9
       and bill["pass_through_factor"] < 0.5)
-check("the WESM cost sits inside the total generation charge",
-      bill["wesm_cost_in_gen_charge_php_kwh"] < bill["generation_charge_php_kwh"]
-      < bill["total_rate_php_kwh"])
+check("the WESM contribution to the generation charge is share x price",
+      math.isclose(bill["wesm_contribution_to_gen_charge_php_kwh"],
+                   bill["pass_through_factor"] * bill["wesm_price_php_kwh"],
+                   abs_tol=5e-4)
+      and bill["wesm_contribution_to_gen_charge_php_kwh"]
+      < bill["generation_charge_php_kwh"] < bill["total_rate_php_kwh"])
+# The 10x trap: treating the WESM PRICE as its slice of the bill leaves a
+# residual that implies the contracted 90% of supply cost about P2.27/kWh, which
+# no PSA or IPP in this market comes close to. Pin the residual to a price that
+# can actually exist, so the error cannot come back as a chart or a blurb.
+_contracted_php_kwh = ((bill["generation_charge_php_kwh"]
+                        - bill["wesm_contribution_to_gen_charge_php_kwh"])
+                       / (1 - bill["pass_through_factor"]))
+check("contracted generation implies a physically possible unit price",
+      4.0 < _contracted_php_kwh < 15.0)
 
 # --- market-power / concentration layer (item 5) --------------------------------
 mp = load("market_power.json")
@@ -1020,37 +1104,51 @@ check("the under-binding gap is published: the operator flagged the "
           > _ofx[k]["modeled_at_cap_share_pct"] for k in ("lv", "vm")))
 
 gt = mo.get("gwap_trigger") or {}
-check("the secondary-cap trigger series is computed on all four "
-      "published series with full-coverage windows",
+check("the secondary-cap trigger series covers all five published GWAPF "
+      "rows, including the combined Luzon-Visayas region",
       gt.get("available")
       and abs(gt["trigger_php_kwh"] - 12.413) < 1e-9
       and abs(gt["cap_php_kwh"] - 7.423) < 1e-9
       and set(gt["per_region"]) == {"luzon", "visayas", "mindanao",
-                                    "system"}
+                                    "system", "luzon_visayas"}
       and all(v["max_rolling_72h"] is not None
               for v in gt["per_region"].values()))
-check("the trigger arithmetic crossed its threshold inside the window "
-      "(the methodology's both-directions finding, first half)",
-      all(v["n_breach_windows"] > 0 for v in gt["per_region"].values()))
-check("the clamp scan found no day pinned at either cap level "
-      "(the both-directions finding, second half)",
+# The raw series carries intervals priced above the market's own offer cap
+# (violation and scarcity coefficients, not clears). Held at the cap, Luzon's
+# breach count collapses to zero and its peak falls below the threshold: the
+# entire Luzon breach story was those intervals. Pin BOTH numbers so neither
+# the raw flag nor the corrected one can drift back unnoticed.
+_lz = gt["per_region"]["luzon"]
+check("above-offer-cap intervals are counted, not silently averaged in",
+      all("n_intervals_above_offer_cap" in v
+          for v in gt["per_region"].values())
+      and _lz["n_intervals_above_offer_cap"] > 0)
+check("held at the offer cap, Luzon breaches the trigger zero times and "
+      "peaks BELOW the threshold (the finding)",
+      _lz["offer_cap_held"]["n_breach_windows"] == 0
+      and _lz["offer_cap_held"]["max_rolling_72h"]["rolling_php_kwh"]
+      < gt["trigger_php_kwh"] < _lz["max_rolling_72h"]["rolling_php_kwh"])
+check("the clamp scan found no day pinned at either cap level, which is "
+      "consistent with the offer-cap-held series never breaching in Luzon",
       gt.get("clamp_scan_days_pinned") == {"7.423": 0, "6.245": 0})
-check("the marquee as-bid day is flagged against the stated trigger "
-      "numbers, and the flag is the SCENARIO's (the same windows "
-      "unlifted stay under the threshold)",
-      (gt.get("marquee") or {}).get("trips_trigger") is True
-      and gt["marquee"]["baseline_trips"] is False
+check("the marquee as-bid scenario raises the rolling series above its own "
+      "baseline (the scenario's effect, whether or not it trips)",
+      (gt.get("marquee") or {}).get("scenario_max_rolling_72h")
       and gt["marquee"]["scenario_max_rolling_72h"]["rolling_php_kwh"]
-      > gt["trigger_php_kwh"]
-      >= gt["marquee"]["baseline_max_rolling_72h"]["rolling_php_kwh"])
-check("the trigger block disclaims its own mechanism gap",
-      "does not reproduce" in (gt.get("mechanism_note") or ""))
+      > gt["marquee"]["baseline_max_rolling_72h"]["rolling_php_kwh"]
+      and gt["marquee"]["baseline_trips"] is False)
+check("the trigger block states which row is operative and names the "
+      "ex-ante/final series difference",
+      "interconnection" in (gt.get("applies_note") or "")
+      and "EX-ANTE" in (gt.get("series_note") or ""))
 
 # the README quotes the offer-mode Visayas settlement bias at -P0.60
 # (also registered in verify_claims as offer_vis_bias so --write keeps README synced)
+# moved -0.60 -> -0.64 when the interval-ending hour binning was corrected
+# (every hourly observed cell shifted five minutes onto the operator's clock)
 check("README's quoted Visayas offer-mode settlement bias matches the bake",
       abs(prof["offer_backcast"]["per_grid"]["visayas"]["bias_php_kwh"]
-          - (-0.60)) <= 0.01)
+          - (-0.64)) <= 0.01)
 
 # --- round-8 consumption: the constrained-on roster and security limits ---
 co = mo.get("constrained_on") or {}

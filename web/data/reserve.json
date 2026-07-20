@@ -34,7 +34,7 @@
    "code": "Fr",
    "category": "contingency",
    "label": "Contingency",
-   "code_mapping": "inferred",
+   "code_mapping": "inferred_corroborated",
    "mean_php_kwh": 6.651,
    "min_php_kwh": 0.085,
    "max_php_kwh": 25.0,
@@ -151,7 +151,7 @@
   "mean_php_kwh": 17.222,
   "top_decile_mean_php_kwh": 24.988
  },
- "mapping_note": "The three reserve products (Regulation, Contingency, Dispatchable) and their definitions are sourced to IEMOP. IEMOP does not publish a code key on the dataset, so the RTD schedule commodity codes (Ru/Rd regulation, Dr dispatchable, Fr contingency) are mapped by inference from those definitions and the scheduled quantities: contingency clears about 890 MW, close to the largest single unit it must cover.",
+ "mapping_note": "The three reserve products (Regulation, Contingency, Dispatchable) and their definitions are sourced to IEMOP. IEMOP does not publish a code key on the dataset, so the RTD schedule commodity codes (Ru/Rd regulation, Dr dispatchable, Fr contingency) are mapped by inference from those definitions, then corroborated against the archived REQUIREMENT column (RTDSUM MKT_REQT) rather than the schedule: Ru and Rd are identical and symmetric in every region, the shape of a product procured both ways, while Fr and Dr are both pinned at 668 MW in Luzon, the size of the grid's largest single unit and so the contingency it must cover.",
  "note": "The WESM Reserve Market co-optimises energy and reserves in real-time dispatch: a unit holding reserve cannot also sell that MW as energy, and in a tight hour the reserve clearing price spikes with the energy price. The studio's merit order clears energy only, so it does not price this layer. These are the operator's own published RTD reserve clearing prices over a sample of recent days, not a model output.",
  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations.",
  "src_market": "https://www.iemop.ph/news/iemop-commences-the-full-commercial-operations-of-reserve-market/",

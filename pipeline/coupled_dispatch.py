@@ -231,7 +231,12 @@ def system_cost(demand: dict[str, float], hour: int, f1: float, f2: float,
 def _corridor(meta: dict, flow: float, cap: float,
               p_from: float, p_to: float, eps: float) -> dict:
     """Report one corridor's flow, saturation, and congestion rent."""
-    sat = abs(flow) >= cap - eps
+    # A zero cap means the corridor is fully blocked, not fully congested. With
+    # cap 0 the >= test is trivially true, and the rent branch then returns a
+    # NEGATIVE price difference whenever the far side is dearer. Congestion rent
+    # is the price separation a BINDING link earns and cannot be negative; a
+    # blocked link earns nothing. Mirrors the guard in chrono.py.
+    sat = cap > eps and abs(flow) >= cap - eps
     rent = 0.0
     if sat:
         rent = round(p_to - p_from if flow > 0 else p_from - p_to, 3)

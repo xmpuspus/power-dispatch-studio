@@ -14,7 +14,7 @@ const MIX_LABEL: Record<string, string> = {
 // illusion. Self-contained (sourced anchors), no dispatch solve.
 export function BillView() {
   const b = useBill()
-  const base = b.data?.wesm_cost_in_gen_charge_php_kwh ?? 7.03
+  const base = b.data?.wesm_price_php_kwh ?? 7.03
   const [wesm, setWesm] = useState<number | null>(null)
   if (b.loading) return <EmptyNote>Loading the bill layer.</EmptyNote>
   if (b.error || !b.data?.available)

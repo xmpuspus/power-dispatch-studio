@@ -98,9 +98,13 @@ CHOKEPOINTS = [
 ]
 
 # --- Sual (the fragility example) ---------------------------------------------
-# Sual coal-fired power station, Sual, Pangasinan: 2 x 647 MW, the largest
-# single generating units on the Luzon grid. Unit trips are a recurring driver
-# of yellow/red alerts (ICSC Power Outlook 2026; news record).
+# Sual coal-fired power station, Sual, Pangasinan: 2 x 647 MW, among the largest
+# units on the Luzon grid, and the worked example here because unit trips are a
+# recurring driver of yellow/red alerts (ICSC Power Outlook 2026; news record).
+# NOT the largest: GNPower Dinginin runs 2 x 668 MW (see NAMED_GENERATORS), and
+# the market says so itself. The WESM Luzon contingency reserve requirement
+# (COMMODITY_TYPE Fr in RTDSUM) sits at exactly 668 MW, because the System
+# Operator sizes contingency reserve to the largest single unit it must cover.
 # https://en.wikipedia.org/wiki/Sual_Power_Station
 # https://icsc.ngo/wp-content/uploads/2026/03/ICSC_Power-Outlook-2026.pdf
 SUAL = {
@@ -111,6 +115,18 @@ SUAL = {
     "units": 2,
     "src": "https://en.wikipedia.org/wiki/Sual_Power_Station",
     "precision": "city",
+}
+
+# The largest single unit on the Luzon grid, which is the N-1 contingency the
+# grid is actually planned against. Corroborated by the market's own Luzon
+# contingency reserve requirement of 668 MW (RTDSUM Fr), not just by the
+# nameplate. Kept beside SUAL so no surface can call 647 MW "the largest".
+LUZON_LARGEST_UNIT = {
+    "name": "GNPower Dinginin",
+    "unit_mw": 668,
+    "units": 2,
+    "location": "Mariveles, Bataan",
+    "src": "https://www.nsenergybusiness.com/projects/dinginin-coal-fired-power-project/",
 }
 
 # --- Named generators: the units that move price (contingency layer) ----------
@@ -133,7 +149,8 @@ GENERATORS = [
     {"name": "Sual", "grid": "LUZON", "fuel": "coal",
      "capacity_mw": 1294, "units": 2, "city": "Sual, Pangasinan",
      "coords": [120.0970, 16.1170], "owner": "San Miguel (SMC Global Power)",
-     "note": "2x647 MW, the largest single units on the Luzon grid",
+     "note": "2x647 MW, among the largest units on the Luzon grid and a "
+             "recurring trip driver; GNPower Dinginin's 2x668 MW are larger",
      "src": "https://en.wikipedia.org/wiki/Sual_Power_Station",
      "precision": "city"},
     {"name": "GNPower Dinginin", "grid": "LUZON", "fuel": "coal",
@@ -303,7 +320,12 @@ MARKET_ANCHORS = {
     "meralco_june2026_rate_php_kwh": 14.4833,
     "meralco_june2026_delta_php_kwh": 0.1488,
     "meralco_june2026_generation_charge": 9.0704,
-    "meralco_june2026_wesm_cost_php_kwh": 7.0281,
+    # the PRICE of WESM-bought energy, applying to the WESM share of supply
+    # only. Its contribution to the blended generation charge is share x price
+    # (0.10 x 7.0281 = about P0.70/kWh). It is NOT a slice of the bill: the
+    # generation charge is an average across all supply sources.
+    "meralco_june2026_wesm_price_php_kwh": 7.0281,
+    "meralco_june2026_wesm_share_pct": 10,
     "src_meralco_june": "https://www.bworldonline.com/top-stories/2026/06/12/756242/meralco-rates-climb-p0-15-kwh-in-june/",
     # Visayas alert streak (grid fragility in-window). The daily yellow-alert
     # streak ran May 11 to Jul 1, 2026 (52 days) and ended at 2:40 pm Jul 1 when

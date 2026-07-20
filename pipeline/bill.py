@@ -19,8 +19,9 @@ Sources:
   Meralco June 2026 supply mix (WESM 10%, PSA 69%, First Gas/Prime CoreGen 21%):
     https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-june-2026
     https://www.pna.gov.ph/articles/1277062
-  June 2026 rate and generation charge (P14.4833 total, P9.0704 generation, WESM
-  cost P7.0281 within it):
+  June 2026 rate and generation charge (P14.4833 total, P9.0704 generation; the
+  WESM PRICE was P7.0281/kWh, which on a 10% share contributes about P0.70/kWh
+  to that generation charge and is not itself a slice of the bill):
     https://www.bworldonline.com/top-stories/2026/06/12/756242/meralco-rates-climb-p0-15-kwh-in-june/
 """
 from __future__ import annotations
@@ -38,7 +39,13 @@ SRC_MIX = "https://company.meralco.com.ph/news-and-advisories/higher-residential
 # June 2026 bill anchors (BusinessWorld, 12 Jun 2026). All PhP/kWh.
 TOTAL_RATE = 14.4833
 GENERATION_CHARGE = 9.0704
-WESM_COST_IN_GEN = 7.0281
+# The PRICE Meralco paid for the energy it bought on WESM, not a slice of the
+# bill. It applies to the WESM share of energy only (10% in June 2026), so its
+# contribution to the blended generation charge is share x price, about P0.70.
+# Naming it a "cost in the generation charge" invites subtracting it from the
+# P9.0704 blended charge, which implies the other 90% of supply cost P2.27/kWh
+# and no PSA or IPP in this market is anywhere near that.
+WESM_PRICE = 7.0281
 SRC_BILL = "https://www.bworldonline.com/top-stories/2026/06/12/756242/meralco-rates-climb-p0-15-kwh-in-june/"
 
 # Meralco quotes rate impact for a typical residential household at 200 kWh/month.
@@ -94,7 +101,11 @@ def build_bill() -> dict:
         "src_mix": SRC_MIX,
         "total_rate_php_kwh": TOTAL_RATE,
         "generation_charge_php_kwh": GENERATION_CHARGE,
-        "wesm_cost_in_gen_charge_php_kwh": WESM_COST_IN_GEN,
+        "wesm_price_php_kwh": WESM_PRICE,
+        # what the WESM price actually contributes to the blended generation
+        # charge: share x price, NOT the price itself
+        "wesm_contribution_to_gen_charge_php_kwh": round(
+            wesm_share * WESM_PRICE, 4),
         "src_bill": SRC_BILL,
         "household_kwh_month": HOUSEHOLD_KWH_MONTH,
         # a WESM move of DP PhP/kWh raises the generation charge by wesm_share * DP,

@@ -69,7 +69,7 @@
    "tag": "The single contingency",
    "title": "One plant trip takes 18% of the margin with it",
    "stat": "One 647 MW Sual unit equals 18% of the May 2026 system margin",
-   "blurb": "Sual's two 647 MW units are the largest single contingencies on the Luzon grid. The archive's outage schedules list a Sual unit out on 0 day(s) in this window; the map's toggle subtracts one unit from the published margin as arithmetic, not a dispatch simulation.",
+   "blurb": "Sual's two 647 MW units are among the largest on the Luzon grid, though not the largest: GNPower Dinginin runs 2x668 MW, and the market's own Luzon contingency reserve requirement sits at that same 668 MW. The archive's outage schedules list a Sual unit out on 0 day(s) in this window; the map's toggle subtracts one unit from the published margin as arithmetic, not a dispatch simulation.",
    "source": "IEMOP outage schedules used in RTD; IEMOP May 2026 report",
    "focus": {
     "center": [
