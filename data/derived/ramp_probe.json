@@ -12,6 +12,11 @@
     "visayas": 1366.5,
     "mindanao": 2260.1
   },
+  "fleet_ramp_slowest_band_mw_per_hour": {
+    "luzon": 7144.6,
+    "visayas": 1354.5,
+    "mindanao": 2052.1
+  },
   "worst_observed_demand_rise_mw_per_hour": {
     "luzon": 1223,
     "visayas": 308,
