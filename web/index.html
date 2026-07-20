@@ -795,8 +795,9 @@ function sideprice(){
     <tbody>${rows("luzon")}${rows("visayas")}${rows("mindanao")}</tbody></table>
     <div class="note">Observed deviations from DIPCEF final results, not a
     congestion premium: the published nodal congestion component is zero
-    through the market suspension and small and intermittent afterward (about
-    one percent of clean-day node-hours), so the deviation is loss-dominated.
+    through the market suspension and small and intermittent afterward
+    (nonzero on ${fmt(NO.congestion.clean_day_nonzero_share_pct,2)} percent of
+    clean-day node-hours), so the deviation is loss-dominated.
     The full per-node table ships in nodal_obs.json and in the studio's Nodal
     prices view.</div>
     <div class="note">This is the only node-level number the tool ships:
