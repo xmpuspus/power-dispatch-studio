@@ -243,9 +243,14 @@ The raw OBSERVED series does cross the threshold, and that crossing is
 weaker than it looks: it is driven by intervals priced above the market's
 own P32/kWh offer cap, which are violation and scarcity coefficients, not
 clears. Held at the offer cap, Luzon breaches zero windows and peaks below
-the trigger. No day is pinned at the cap anywhere in the price record,
-which agrees. The full series both ways, the above-cap counts, breach
-counts, and clamp scan are in market_ops.json and the methodology.
+the trigger. It does NOT collapse everywhere: the System row still
+breaches held at the cap, as does the combined Luzon-Visayas row, while
+Visayas and Mindanao run hot either way and bind only during an
+interconnection outage (ERC Res. 26 s.2025). No day is pinned at the cap
+anywhere in the price record, so the gap between the computed trigger and
+the operational one narrows without closing. The full series both ways,
+the above-cap counts, breach counts, and clamp scan are in
+market_ops.json and the methodology.
 
 The reserve replay closes the last unconsumed archive dataset. Each
 derived reserve book (RTDOR, the hour's opening 5-minute interval, per

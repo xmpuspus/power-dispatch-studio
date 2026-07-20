@@ -368,10 +368,18 @@ The raw observed series does cross the threshold, and that finding is
 weaker than it looks. Those crossings are driven by intervals priced
 above the market's own P32/kWh offer cap, which are violation and
 scarcity coefficients rather than clears. Held at the offer cap, Luzon
-breaches zero windows and its peak falls below the trigger outright. That
-is consistent with the price record, which shows no day pinned at the cap
-anywhere. The computed series both ways, the above-cap counts, and the
-clamp scan are in the methodology.
+breaches zero windows and its peak falls below the trigger outright.
+
+That does not clear the whole board, and the honest version says so.
+Held at the same cap the System row still breaches, and so does the
+combined Luzon-Visayas row; Visayas and Mindanao run hot either way,
+and those two only bind while an interconnection is on outage, which is
+the condition ERC Res. 26 s.2025 attaches to the regional cap. So the
+correction removes the breach story for Luzon and narrows it elsewhere
+rather than ending it. The price record, which shows no day pinned at
+the cap anywhere, still sits on the other side of that gap. The computed
+series both ways, the above-cap counts, and the clamp scan are in the
+methodology.
 
 The offer books close most of the rest. IEMOP publishes every resource's
 actual offer curve (and the self-scheduled capacity that submits none), and
