@@ -284,6 +284,16 @@ def canonical():
         "offer_min_delta": _n(_delta(_WAVE_O, _BASE_O, "mindanao"), 2),
         "marquee_rolling": _n(mo["gwap_trigger"]["marquee"]["scenario_max_rolling_72h"]["rolling_php_kwh"], 2),
         "pinned_share": _n(mo["security_limits"]["pinned_share_pct"], 1),
+        # The boundaries prose carries market_ops-derived scalars that nothing
+        # guarded, and every one of them had drifted by the round-10 audit:
+        # "five of the six" days (bake said four), "about 90 percent" coal
+        # marginal share (95.2), 9,833 MW floor supply (9,834). Guard them.
+        "subhourly_neg_days": mo["subhourly_probe"]["n_days_with_observed_negatives"],
+        "subhourly_neg_days_word": ("one two three four five six seven eight"
+                                    .split()[mo["subhourly_probe"]
+                                             ["n_days_with_observed_negatives"] - 1]),
+        "coal_marginal_share": _n(mo["admin_dispatch"]["coal_marginal_share_pct"], 0),
+        "floor_supply_mw": f'{mo["subhourly_probe"]["deep_negative_structural"]["aggregate_floor_supply_mw"]:,}',
         "reserve_days": rv["days"],
         "reserve_above_pct": f'{rv["hours_model_above_pct"]:.1f}',
         "scored_hours": f"{sum(c['n_hours'] for g in rv['pools'].values() for c in g.values()):,}",
@@ -533,6 +543,15 @@ REGISTRY = [
     ("README.md",
      re.compile(r"single MW value in (\d+\.\d+) percent of windows"),
      ["pinned_share"]),
+    ("web/methodology.html",
+     re.compile(r"on (\w+) of the six closest days"),
+     ["subhourly_neg_days_word"]),
+    ("web/methodology.html",
+     re.compile(r"modeled marginal fuel on about (\d+) percent of the\s*\n?\s*raise hours"),
+     ["coal_marginal_share"]),
+    ("web/methodology.html",
+     re.compile(r"floor-priced supply \(([\d,]+) MW\)"),
+     ["floor_supply_mw"]),
     # --- loss-surface validation numbers (recompute nightly; F4) ---
     ("README.md",
      re.compile(r"Spearman \*\*\+([\d.]+)\*\* over (\d+) nodes \((\d+)\s+"

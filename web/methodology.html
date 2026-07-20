@@ -811,9 +811,15 @@ figure, later shipped from a better source: the archive's own DIPCEF
 per-resource schedules give OBSERVED daily hydro energy per grid, day
 resolution instead of monthly, no interpolation (see the hydro water budgets
 bullet above). Still not carried, and why: security-constrained unit
-commitment, ramp rates, and minimum up/down times would require per-unit data
-the Philippine sources do not publish, so modeling them would be fabricated
-fidelity.</p>
+commitment and minimum up/down times would require per-unit commitment data the
+Philippine sources do not publish, so modeling them would be fabricated
+fidelity. RAMP RATES are a different case and this page used to get it wrong:
+the operator DOES publish them. Every RTDOE offer row carries a piecewise
+ramp-rate curve (RR_BREAK_QUANTITY1-5 with RR_UP1-5 and RR_DOWN1-5, in MW per
+minute by MW band), populated on essentially every resource in the interval, in
+the same hourly file this project already downloads for the offer books. The
+absence of inter-hour ramp limits in the LP is therefore a build not yet done,
+not a missing input.</p>
 
 <h2>Boundaries and queued builds, each with its named input</h2>
 <ul>
@@ -900,7 +906,7 @@ raises are material in MW (6 to 11 percent of dispatched generation on
 hours with a raise, highest on Mindanao) but price-inert in the
 model's per-fuel block engines: the raised MW is mostly coal (about
 two thirds) with roughly a fifth on gas, and coal is already the
-modeled marginal fuel on about 90 percent of the raise hours. Every
+modeled marginal fuel on about 95 percent of the raise hours. Every
 raise hour already prices at or just above coal's administered floor
 (the modeled price tops out at P6.04/kWh across all of them), so a
 per-fuel administered floor (the form a raise takes once the named
@@ -933,7 +939,7 @@ picture is sharper than a clean resolution refinement: the crossing is a
 KNIFE-EDGE. On the crossing days the offer book's floor-priced supply
 comes within 0.54 to 2.3 percent of native load at the midday solar
 peak, and the observed regional load-weighted price does cross negative
-on five of the six closest days (down to about -P10/kWh). But it
+on four of the six closest days (down to about -P10/kWh). But it
 splits into two boundaries, neither of which a per-grid 5-minute replay
 closes. The near-zero band is a true knife-edge: the offer book clears
 at exactly zero over a wide MW range, and its own 48-block compaction
@@ -943,7 +949,7 @@ wider than the 0.5 percent margin, so whether a shallow interval reads
 The DEEP negatives are not an aggregate crossing at all: at the day's
 most negative interval the observed price is about -P10/kWh while
 physical native load (9,870 MW) sits ABOVE the entire aggregate
-floor-priced supply (9,833 MW), so the per-grid clear must price
+floor-priced supply (9,834 MW), so the per-grid clear must price
 positive there. That -10 is a load-weighted average of nodal prices
 pulled to the floor by curtailed-solar pockets, which the per-grid model
 cannot produce at any time resolution. A clean 5-minute clear on the
@@ -954,13 +960,19 @@ knife-edge over a curtailed-solar nodal floor, not a clean missing
 input.</li>
 <li><b>The rest of the public surface is triaged and named, not
 ignored</b>: the IEMOP market-data sitemap carries 58 dataset pages;
-29 now feed this archive (22 archive keys, the three offer-book pages
+30 now feed this archive (23 archive keys, the three offer-book pages
 the derived books come from, and the four settlement-side and
 reserve-results finals the post-convergence build queue consumed). Of
-the remainder, the projection series (hour-ahead and week-ahead price
-and schedule projections) project rather than record and are out of
-scope for a replay scored on the real-time record; the Original/Raw and
-interim variants duplicate final series already archived. The
+the remainder, the projection series (day-ahead, hour-ahead and
+week-ahead price and schedule projections) project rather than record
+and are out of scope for a replay scored on the real-time record; the
+Original/Raw and interim variants duplicate final series already
+archived. One page slipped both nets until a round-10 audit: the
+Regional Merit Order Table (the rtd_smerit files), a real-time dispatch
+record, neither a projection nor a duplicate, which this triage had
+counted in no class at all. It is now consumed, and the lesson is that a
+hand-maintained disposition drifts, so the count is re-derived from the
+scraped slug list rather than kept by hand. The
 settlement-side family the round-8 disposition left queued is now
 measured: the per-resource reserve results (DIPC reserve results final)
 drive a tighter reserve validation and archive the per-resource cleared

@@ -77,8 +77,8 @@ inflating demand.
 
 | Included | Excluded (by design) |
 | --- | --- |
-| Coupled zonal dispatch with congestion rent | Nodal LMPs (the public PH LMP congestion component is structurally zero) |
-| Per-unit fleet from the DOE list, unit-level N-1 | Security-constrained unit commitment, ramp rates, min up/down times |
+| Coupled zonal dispatch with congestion rent | Nodal LMPs (the published PH LMP congestion component is zero through the market suspension and small and intermittent afterward: nonzero on 28 of 70 sampled days, max P19.28/kWh) |
+| Per-unit fleet from the DOE list, unit-level N-1 | Security-constrained unit commitment and min up/down times (not published). Ramp rates ARE published per resource per interval in the RTDOE offer file, so that one is a queued build, not a missing input |
 | Chronological replay of observed days, with each day's scheduled-outage deviation applied (OUTRTD via the PASA mapping) | Load or price forecasting |
 | Shortage priced at the P32/kWh WESM offer cap (published rule), labeled 'shortage' | Offer-behavior pricing below the cap (per-participant strategy) |
 | Storage optimised over the day's hours (HiGHS LP); the Native week view adds inter-day carryover in a native 168-hour LP | Inter-day storage carryover in the default day mode |
@@ -362,7 +362,9 @@ Cross-run, Native week, Portfolio, five-minute replay) inherits this validation,
 its credibility is the backcast's.
 
 The limit: the engine is a simplified zonal merit-order LP, with no
-security-constrained unit commitment, no ramp rates, and no nodal network. Where
+security-constrained unit commitment, no inter-hour ramp limits (the operator
+publishes per-resource ramp curves in the RTDOE file, so this one is a build not
+yet done rather than an unavailable input), and no nodal network. Where
 more unit-level detail was actually built and run through the same backcast, three
 additions (unit commitment with a generic minimum-stable level, each day's observed
 solar shape, and RTDHS corridor caps) made the fit to observed prices worse,
