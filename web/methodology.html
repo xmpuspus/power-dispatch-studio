@@ -997,9 +997,15 @@ percent of the stack), 596.4 MW on Mindanao and 336.0 MW on the Visayas, where
 it falls as low as 0.1 MW: the Visayas at its tightest had essentially no
 economically offered MW left to call. That is a tighter read of the supply
 question than registered capacity, which cannot tell offered-and-unused from
-unavailable. Two checks travel with it: MOT's dispatched MW reconciles to the
-RTDSUM generation for the same interval (ratios 0.99 to 1.02), so it is CLEARED
-MW and not as-bid; and the partially-cleared resource this module reads off the
+unavailable. Two checks travel with it, one of them only partly passing. MOT's
+dispatched MW reconciles to the RTDSUM generation for the same interval, which
+is what a cleared-MW reading predicts and an as-bid one does not, but only the
+Visayas and Mindanao land inside one percent; Luzon runs about two percent high
+and that residual is open, not explained. The obvious candidate is already ruled
+out, since pumped storage and batteries charging would show as dispatched offers
+without being generation and they come to 0.2 MW on a sampled Luzon interval
+against a gap of roughly 220 MW. The untested lead is the RTDSUM import, export
+and loss columns. Second check: and the partially-cleared resource this module reads off the
 cut is the one IEMOP separately names as price setter on 98 percent of
 intervals against a 28 percent random-draw baseline. MCP and MOT come out of
 the same dispatch solve, so that agreement checks this parse rather than
