@@ -874,6 +874,33 @@ check("the not-offered screen is baked, bounded, and self-disclaiming",
               for r in no["days"] for g in r if g != "date")
       and "legitimate explanations" in no["note"])
 
+mot = mo.get("mot_dispatch_cut") or {}
+_mot_grids = ("luzon", "visayas", "mindanao")
+check("the operator's own dispatch cut is baked for all three grids (MOT: "
+      "288 five-minute intervals per grid per day)",
+      mot.get("available") and mot["days"] >= 3
+      and all(mot["per_grid"][g]["n_intervals"] == 288 * mot["days"]
+              for g in _mot_grids))
+check("published headroom is a real bounded quantity on every grid: some "
+      "MW offered and not taken, never more than the whole stack",
+      all(0 < mot["per_grid"][g]["headroom_mw"]["min"]
+          <= mot["per_grid"][g]["headroom_mw"]["mean"]
+          <= mot["per_grid"][g]["headroom_mw"]["max"]
+          and 0 < mot["per_grid"][g]["headroom_share_pct"] < 100
+          for g in _mot_grids))
+check("the cut parse reproduces the operator's named price setter well "
+      "clear of a random draw (the rate is meaningless without the null)",
+      all(mot["per_grid"][g]["mcp_agreement_pct"] >= 90
+          and mot["per_grid"][g]["mcp_agreement_pct"]
+          > 2 * mot["per_grid"][g]["mcp_null_pct"]
+          and mot["per_grid"][g]["mcp_n_intervals"] > 100
+          for g in _mot_grids))
+check("MOT dispatched MW is cleared, not as-bid: it reconciles to the "
+      "RTDSUM generation the operator reports for the same interval",
+      all(abs(mot["per_grid"][g]["rtdsum_ratio"] - 1.0) < 0.05
+          for g in _mot_grids)
+      and "legitimate explanations" in mot["disclaimer"])
+
 # profiles carry the engine-facing observed layers per day
 prof = load("profiles.json")
 mkt_days = [d for d in prof["days"] if d["market"]]

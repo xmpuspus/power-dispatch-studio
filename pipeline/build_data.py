@@ -893,7 +893,8 @@ def main() -> int:
                             build_vre_probe)
     from market_obs import (build_advisories, build_constrained_on,
                             build_drivers, build_flow_record,
-                            build_gwap_trigger, build_not_offered,
+                            build_gwap_trigger, build_mot_dispatch_cut,
+                            build_not_offered,
                             build_outlook, build_price_setters,
                             build_reserve_aware, build_reserve_prices,
                             build_reserve_registration, build_reserve_results,
@@ -925,6 +926,9 @@ def main() -> int:
         "flow_record": build_flow_record(profiles),
         "gwap_trigger": build_gwap_trigger(profiles.get("chrono_golden"),
                                            profiles),
+        # NOT dispatch.json's "merit_order", which is the MODEL's own stack.
+        # This is the OPERATOR's published dispatch cut from the MOT files.
+        "mot_dispatch_cut": build_mot_dispatch_cut(),
         "constrained_on": build_constrained_on(fleet),
         "security_limits": build_security_limits(fleet),
         "so_instructions": build_so_instructions(fleet),

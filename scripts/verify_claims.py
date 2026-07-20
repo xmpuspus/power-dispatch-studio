@@ -295,6 +295,10 @@ def canonical():
         "ramp_luz_worst": f'{mo["ramp_probe"]["worst_observed_demand_rise_mw_per_hour"]["luzon"]:,.0f}',
         # "about one percent of clean-day node-hours" rides on six public
         # surfaces and was hand-written; it is 1.18% and now computed
+        "mot_headroom_luz": _n(mo["mot_dispatch_cut"]["per_grid"]["luzon"]
+                               ["headroom_mw"]["mean"], 1),
+        "mot_headroom_vis_min": _n(mo["mot_dispatch_cut"]["per_grid"]["visayas"]
+                                   ["headroom_mw"]["min"], 1),
         "cong_clean_share": _n(_load("nodal_obs.json")["congestion"]
                                ["clean_day_nonzero_share_pct"], 2),
         "ramp_headroom_lo": _n(mo["ramp_probe"]["headroom_min"], 1),
@@ -566,6 +570,12 @@ REGISTRY = [
     ("web/methodology.html",
      re.compile(r"nonzero on ([\d.]+) percent of clean-day node-hours"),
      ["cong_clean_share"]),
+    ("web/methodology.html",
+     re.compile(r"averages ([\d,.]+) MW on Luzon"),
+     ["mot_headroom_luz"]),
+    ("web/methodology.html",
+     re.compile(r"as low as ([\d.]+) MW"),
+     ["mot_headroom_vis_min"]),
     ("web/methodology.html",
      re.compile(r"fleet can move ([\d,]+)\s*\n?\s*MW/h on Luzon"),
      ["ramp_luz_fleet"]),

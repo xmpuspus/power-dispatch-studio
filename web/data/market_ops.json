@@ -9457,6 +9457,64 @@
   "src_rule": "https://powerphilippines.com/erc-approves-higher-secondary-price-cap-thresholds-in-wesm/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
+ "mot_dispatch_cut": {
+  "available": true,
+  "days": 3,
+  "dates": [
+   "2026-07-11",
+   "2026-07-12",
+   "2026-07-13"
+  ],
+  "per_grid": {
+   "luzon": {
+    "n_intervals": 864,
+    "headroom_mw": {
+     "mean": 2758.6,
+     "min": 921.4,
+     "max": 4876.0
+    },
+    "dispatched_mw_mean": 10056.4,
+    "headroom_share_pct": 21.5,
+    "mcp_agreement_pct": 98.4,
+    "mcp_null_pct": 28.2,
+    "mcp_n_intervals": 673,
+    "rtdsum_ratio": 1.0224
+   },
+   "visayas": {
+    "n_intervals": 864,
+    "headroom_mw": {
+     "mean": 336.0,
+     "min": 0.1,
+     "max": 548.2
+    },
+    "dispatched_mw_mean": 1531.1,
+    "headroom_share_pct": 18.0,
+    "mcp_agreement_pct": 97.8,
+    "mcp_null_pct": 28.8,
+    "mcp_n_intervals": 184,
+    "rtdsum_ratio": 0.9918
+   },
+   "mindanao": {
+    "n_intervals": 864,
+    "headroom_mw": {
+     "mean": 596.4,
+     "min": 10.3,
+     "max": 1058.1
+    },
+    "dispatched_mw_mean": 2338.8,
+    "headroom_share_pct": 20.3,
+    "mcp_agreement_pct": 97.9,
+    "mcp_null_pct": 29.8,
+    "mcp_n_intervals": 373,
+    "rtdsum_ratio": 0.9988
+   }
+  },
+  "note": "The operator's own dispatch cut per region per 5-minute RTD interval, from IEMOP's Regional Merit Order Table (MOT files). Each interval's offer stack is published split into an offers-dispatched and an offers-not-dispatched section. headroom_mw is the not-dispatched total: the MW offered into the market and not taken, the operator's own published economic headroom, which is a tighter read of room to grow than registered capacity because every MW in it was actually offered. dispatched_mw is cleared MW, not as-bid: summed per region it tracks RTDSUM generation at rtdsum_ratio. MOT carries no price column and its Block index is the same tranche index as the RTDOE offer books, so it is not a finer view of supply than those books give.",
+  "validation_note": "mcp_agreement_pct is how often the marginal resource IEMOP names in the MCP dataset falls inside the partially-cleared set this module reads off the cut (the resources named on both sides at once). mcp_null_pct is the same score for the same number of names drawn at random from that interval's dispatched resources, which is what the rate has to beat to mean anything. MCP and MOT come out of the same RTD solve, so this checks the cut parse rather than confirming the setter independently.",
+  "src": "https://www.iemop.ph/market-data/regional-merit-order-table-mot-files/",
+  "src_setters": "https://www.iemop.ph/market-data/rtd-market-clearing-price/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+ },
  "constrained_on": {
   "available": true,
   "days": [

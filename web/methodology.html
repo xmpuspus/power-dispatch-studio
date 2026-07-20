@@ -986,7 +986,25 @@ Regional Merit Order Table (the rtd_smerit files), a real-time dispatch
 record, neither a projection nor a duplicate, which this triage had
 counted in no class at all. It is now consumed, and the lesson is that a
 hand-maintained disposition drifts, so the count is re-derived from the
-scraped slug list rather than kept by hand. The
+scraped slug list rather than kept by hand. What it buys is in
+market_ops.json mot_dispatch_cut: the operator publishes, per region per
+5-minute interval, its whole offer stack split into what cleared and what did
+not, so the not-dispatched total is the market's OWN published economic
+headroom. Over the derived days that averages 2,758.6 MW on Luzon (21.5
+percent of the stack), 596.4 MW on Mindanao and 336.0 MW on the Visayas, where
+it falls as low as 0.1 MW: the Visayas at its tightest had essentially no
+economically offered MW left to call. That is a tighter read of the supply
+question than registered capacity, which cannot tell offered-and-unused from
+unavailable. Two checks travel with it: MOT's dispatched MW reconciles to the
+RTDSUM generation for the same interval (ratios 0.99 to 1.02), so it is CLEARED
+MW and not as-bid; and the partially-cleared resource this module reads off the
+cut is the one IEMOP separately names as price setter on 98 percent of
+intervals against a 28 percent random-draw baseline. MCP and MOT come out of
+the same dispatch solve, so that agreement checks this parse rather than
+confirming the setter independently. MOT is not finer-grained than the offer
+books already archived, its Block column being the same tranche index as
+RTDOE's breakpoints, so the sub-hourly accounting boundary above stands
+untouched. The
 settlement-side family the round-8 disposition left queued is now
 measured: the per-resource reserve results (DIPC reserve results final)
 drive a tighter reserve validation and archive the per-resource cleared

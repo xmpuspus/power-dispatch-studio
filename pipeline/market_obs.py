@@ -2151,3 +2151,106 @@ def build_drivers(prices: dict, profiles: dict, pasa: dict,
         "disclaimer": ("Statistical indicators derived from public data. "
                        "Patterns may have legitimate explanations."),
     }
+
+
+def build_mot_dispatch_cut() -> dict:
+    """The operator's own dispatch cut (MOT), the market-data page the
+    archive's dataset triage never named. Per region per 5-minute interval
+    it publishes the offer stack split into dispatched and not-dispatched
+    sections, so the not-dispatched running total is the operator's OWN
+    economic headroom: the MW offered into the market and not taken. The
+    supply question currently answers headroom from RTDSUM and registered
+    capacity, which is availability rather than an offer actually made.
+
+    MOT is not a finer view of supply than the offer books: its Block
+    column is the same tranche index RTDOE's price and quantity
+    breakpoints carry.
+    """
+    import json as _json
+
+    src = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                       "..", "data", "derived", "merit_order_daily")
+    if not os.path.isdir(src):
+        return {"available": False,
+                "note": "no MOT days; run pipeline/merit_order.py --derive"}
+    days = []
+    for name in sorted(os.listdir(src)):
+        if name.startswith("MOTD_") and name.endswith(".json"):
+            days.append(_json.load(open(os.path.join(src, name))))
+    if not days:
+        return {"available": False,
+                "note": "no MOT days; run pipeline/merit_order.py --derive"}
+
+    per_grid = {}
+    for g in GRIDS_L:
+        head = [v for d in days for v in d["not_dispatched_mw"][g]
+                if v is not None]
+        disp = [v for d in days for v in d["dispatched_mw"][g]
+                if v is not None]
+        agree_n = sum(d["mcp_agreement"][g]["n_intervals"] for d in days)
+        # weight each day's rate by the intervals MCP actually named, so a
+        # thin day cannot swing the pooled number
+        pooled = {}
+        for field in ("agree_pct", "null_pct"):
+            num = sum((d["mcp_agreement"][g][field] or 0)
+                      * d["mcp_agreement"][g]["n_intervals"] for d in days)
+            pooled[field] = round(num / agree_n, 1) if agree_n else None
+        pairs = [(h, dd) for d in days
+                 for h, dd in zip(d["not_dispatched_mw"][g],
+                                  d["dispatched_mw"][g])
+                 if h is not None and dd is not None]
+        per_grid[g] = {
+            "n_intervals": len(head),
+            "headroom_mw": {
+                "mean": round(sum(head) / len(head), 1) if head else None,
+                "min": round(min(head), 1) if head else None,
+                "max": round(max(head), 1) if head else None,
+            },
+            "dispatched_mw_mean": (round(sum(disp) / len(disp), 1)
+                                   if disp else None),
+            "headroom_share_pct": (
+                round(100 * sum(h for h, _ in pairs)
+                      / sum(h + dd for h, dd in pairs), 1) if pairs else None),
+            "mcp_agreement_pct": pooled["agree_pct"],
+            "mcp_null_pct": pooled["null_pct"],
+            "mcp_n_intervals": agree_n,
+            "rtdsum_ratio": round(
+                sum(d["rtdsum_ratio"][g] for d in days) / len(days), 4),
+        }
+    return {
+        "available": True,
+        "days": len(days),
+        "dates": [d["date"] for d in days],
+        "per_grid": per_grid,
+        "note": ("The operator's own dispatch cut per region per 5-minute "
+                 "RTD interval, from IEMOP's Regional Merit Order Table "
+                 "(MOT files). Each interval's offer stack is published "
+                 "split into an offers-dispatched and an "
+                 "offers-not-dispatched section. headroom_mw is the "
+                 "not-dispatched total: the MW offered into the market and "
+                 "not taken, the operator's own published economic "
+                 "headroom, which is a tighter read of room to grow than "
+                 "registered capacity because every MW in it was actually "
+                 "offered. dispatched_mw is cleared MW, not as-bid: summed "
+                 "per region it tracks RTDSUM generation at rtdsum_ratio. "
+                 "MOT carries no price column and its Block index is the "
+                 "same tranche index as the RTDOE offer books, so it is "
+                 "not a finer view of supply than those books give."),
+        "validation_note": ("mcp_agreement_pct is how often the marginal "
+                            "resource IEMOP names in the MCP dataset falls "
+                            "inside the partially-cleared set this module "
+                            "reads off the cut (the resources named on both "
+                            "sides at once). mcp_null_pct is the same score "
+                            "for the same number of names drawn at random "
+                            "from that interval's dispatched resources, "
+                            "which is what the rate has to beat to mean "
+                            "anything. MCP and MOT come out of the same RTD "
+                            "solve, so this checks the cut parse rather "
+                            "than confirming the setter independently."),
+        "src": ("https://www.iemop.ph/market-data/"
+                "regional-merit-order-table-mot-files/"),
+        "src_setters": ("https://www.iemop.ph/market-data/"
+                        "rtd-market-clearing-price/"),
+        "disclaimer": ("Statistical indicators derived from public data. "
+                       "Patterns may have legitimate explanations."),
+    }
