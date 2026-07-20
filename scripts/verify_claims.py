@@ -293,6 +293,10 @@ def canonical():
         # ratios move nightly and the prose must move with them
         "ramp_luz_fleet": f'{mo["ramp_probe"]["fleet_ramp_mw_per_hour"]["luzon"]:,.0f}',
         "ramp_luz_worst": f'{mo["ramp_probe"]["worst_observed_demand_rise_mw_per_hour"]["luzon"]:,.0f}',
+        # "about one percent of clean-day node-hours" rides on six public
+        # surfaces and was hand-written; it is 1.18% and now computed
+        "cong_clean_share": _n(_load("nodal_obs.json")["congestion"]
+                               ["clean_day_nonzero_share_pct"], 2),
         "ramp_headroom_lo": _n(mo["ramp_probe"]["headroom_min"], 1),
         "ramp_headroom_hi": _n(mo["ramp_probe"]["headroom_max"], 1),
         "subhourly_neg_days": mo["subhourly_probe"]["n_days_with_observed_negatives"],
@@ -559,6 +563,9 @@ REGISTRY = [
     ("web/methodology.html",
      re.compile(r"floor-priced supply \(([\d,]+) MW\)"),
      ["floor_supply_mw"]),
+    ("web/methodology.html",
+     re.compile(r"nonzero on ([\d.]+) percent of clean-day node-hours"),
+     ["cong_clean_share"]),
     ("web/methodology.html",
      re.compile(r"fleet can move ([\d,]+)\s*\n?\s*MW/h on Luzon"),
      ["ramp_luz_fleet"]),

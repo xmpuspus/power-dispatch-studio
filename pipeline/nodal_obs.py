@@ -52,6 +52,8 @@ def build_nodal_obs() -> dict:
     clean_days = []
     cong_days_nonzero = 0
     cong_max = 0.0
+    clean_cong_nh = 0
+    clean_node_hours = 0
     for name in days:
         with open(os.path.join(NODAL_DIR, name)) as f:
             d = json.load(f)
@@ -71,6 +73,14 @@ def build_nodal_obs() -> dict:
         if not tot or ok / tot < CLEAN_OK_SHARE:
             continue
         clean_days.append(d["date"])
+        # the "about one percent of clean-day node-hours" claim, computed
+        # instead of hand-written: it rides on six public surfaces and nothing
+        # recomputed it, so it could drift with the archive unnoticed
+        clean_cong_nh += sum(
+            1 for _hrs in (d.get("congestion_php_kwh") or {}).values()
+            for _v in _hrs.values() if abs(_v) > 1e-9)
+        for _nd in d["nodes"].values():
+            clean_node_hours += len(_nd.get("dev_php_kwh") or [])
         for res, nd in d["nodes"].items():
             devs = [v for v in nd["dev_php_kwh"] if v is not None]
             if not devs:
@@ -160,6 +170,11 @@ def build_nodal_obs() -> dict:
             "days_sampled": len(days),
             "days_nonzero": cong_days_nonzero,
             "max_php_kwh": round(cong_max, 2),
+            "clean_day_node_hours": clean_node_hours,
+            "clean_day_nonzero_node_hours": clean_cong_nh,
+            "clean_day_nonzero_share_pct": (
+                round(100 * clean_cong_nh / clean_node_hours, 2)
+                if clean_node_hours else None),
         },
         "n_nodes": len(nodes),
         "n_placed": len(placed),

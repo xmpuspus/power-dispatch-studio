@@ -10,7 +10,10 @@
  "congestion": {
   "days_sampled": 70,
   "days_nonzero": 28,
-  "max_php_kwh": 19.28
+  "max_php_kwh": 19.28,
+  "clean_day_node_hours": 429192,
+  "clean_day_nonzero_node_hours": 5060,
+  "clean_day_nonzero_share_pct": 1.18
  },
  "n_nodes": 1193,
  "n_placed": 528,
