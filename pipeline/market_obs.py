@@ -1447,11 +1447,16 @@ def build_gwap_trigger(chrono_golden: dict | None = None,
         return {"available": False,
                 "note": "GWAPF dataset absent; trigger series unavailable."}
     from constants_ph import MARKET_ANCHORS
+    from fleet_ph import WESM_OFFER_CAP_PHP_KWH as OFFER_CAP
 
     trigger = MARKET_ANCHORS["wesm_secondary_cap_trigger_php_kwh"]
     cap = MARKET_ANCHORS["wesm_secondary_cap_php_kwh"]
+    # GWAPF publishes FIVE region rows. CLUZ_CVIS is the combined Luzon-Visayas
+    # pricing region, which is the operative regional entity while the
+    # interconnection is in service; dropping it silently loses the row that
+    # matters most for the regional test below.
     region_key = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao",
-                  "System": "system"}
+                  "System": "system", "CLUZ_CVIS": "luzon_visayas"}
     series: dict[str, dict] = {k: {} for k in region_key.values()}
     for path in files:
         for r in rows_of(path):
@@ -1494,18 +1499,37 @@ def build_gwap_trigger(chrono_golden: dict | None = None,
         return {"ends": best[0].isoformat(sep=" "),
                 "rolling_php_kwh": round(best[1], 3)}, breaches
 
+    # Intervals priced ABOVE the market's own P32/kWh offer cap are not market
+    # clears: they are the dispatch engine's violation/scarcity coefficients
+    # (this window tops out at P165.05/kWh, 5x the cap, with Visayas and
+    # Mindanao pinned at the identical value while Luzon sits near P6). The
+    # market's own price-substitution record (PSMCOG) caps at exactly the offer
+    # cap with no exceptions, so the operational trigger cannot be reading
+    # those intervals as prices either. Publish the rolling series BOTH ways:
+    # the raw file as-is, and with the above-cap intervals held at the cap.
     per_region = {}
     for k, vals in series.items():
         if not vals:
             continue
         peak, breaches = _roll(vals)
+        capped_vals = {t: min(v, OFFER_CAP) for t, v in vals.items()}
+        capped_peak, capped_breaches = _roll(capped_vals)
         per_region[k] = {
             "n_intervals": len(vals),
             "max_interval_php_kwh": round(max(vals.values()), 3),
+            "n_intervals_above_offer_cap": sum(1 for v in vals.values()
+                                               if v > OFFER_CAP),
             "max_rolling_72h": peak,
             "headroom_php_kwh": (round(trigger - peak["rolling_php_kwh"], 3)
                                  if peak else None),
             "n_breach_windows": breaches,
+            "offer_cap_held": {
+                "max_rolling_72h": capped_peak,
+                "headroom_php_kwh": (
+                    round(trigger - capped_peak["rolling_php_kwh"], 3)
+                    if capped_peak else None),
+                "n_breach_windows": capped_breaches,
+            },
         }
 
     # the clamp scan: if the cap had actually been imposed, hourly prices
@@ -1580,24 +1604,47 @@ def build_gwap_trigger(chrono_golden: dict | None = None,
         "note": ("The secondary price cap's own arithmetic, run on the "
                  "operator's published series: the 72-hour rolling mean of "
                  "the 5-minute generator-weighted average price (GWAPF), "
-                 "per region and for the System row as published. Only "
-                 "windows with all 864 intervals present are scored, so "
-                 "archive gaps cannot fake a calm window."),
-        "mechanism_note": ("A simple 864-interval rolling mean of the "
-                           "published series crosses the P12.413/kWh "
-                           "threshold inside the window on every series, "
-                           "yet the observed price record shows no day "
-                           "pinned at either the current (P7.423) or "
-                           "prior (P6.245) cap level (clamp_scan). The "
-                           "operational imposition therefore runs on "
-                           "arithmetic the public file alone does not "
-                           "reproduce (series designation, weighting, "
-                           "imposition and lifting mechanics, or "
-                           "in-window effectivity of ERC Res. 26 "
-                           "s.2025); the series here is the trigger's "
-                           "published INPUT, and the breach counts are "
-                           "flags on that input, not findings that the "
-                           "cap was due."),
+                 "per region, for the combined Luzon-Visayas region, and "
+                 "for the System row as published. Only windows with all "
+                 "864 intervals present are scored, so archive gaps cannot "
+                 "fake a calm window."),
+        "applies_note": ("Which row is the operative trigger is published, "
+                         "not a guess. Under ERC Res. 26 s.2025 the "
+                         "system-wide rolling average is the default "
+                         "trigger; the regional or island cap applies ONLY "
+                         "while a grid interconnection is on outage, using "
+                         "the same cap value, threshold, and 72-hour "
+                         "period. So the per-region breach counts below are "
+                         "not exposure on their own: they are exposure only "
+                         "for intervals when the interconnection was out. "
+                         "Read the system row first."),
+        "series_note": ("One named difference rather than an unknown: the "
+                        "rule monitors the EX-ANTE rolling GWAP, and GWAPF "
+                        "is the final (ex-post) series. The final series is "
+                        "the closest published proxy and is what runs here, "
+                        "but it is not byte-for-byte the series the "
+                        "operational trigger reads."),
+        "mechanism_note": ("Read the offer-cap-held numbers, not the raw "
+                           "ones. The raw file carries intervals priced far "
+                           "above the market's own P32/kWh offer cap (up to "
+                           "P165.05/kWh here), which are violation and "
+                           "scarcity coefficients rather than market "
+                           "clears; the market's own price-substitution "
+                           "record caps at exactly the offer cap with no "
+                           "exceptions. Those intervals generate the entire "
+                           "Luzon breach count: held at the cap, Luzon "
+                           "breaches zero windows and its peak falls BELOW "
+                           "the threshold. The Visayas and Mindanao series "
+                           "still run hot when held at the cap, but those "
+                           "are the rows that only bind during an "
+                           "interconnection outage (applies_note). Against "
+                           "that, the observed price record shows no day "
+                           "pinned at either the current (P7.423) or prior "
+                           "(P6.245) cap level (clamp_scan), which is "
+                           "consistent. The residual unknown is the "
+                           "weighting and the imposition and lifting "
+                           "mechanics, which the public file alone does not "
+                           "reproduce."),
         "src": "https://www.iemop.ph/market-data/generator-weighted-average-price-final/",
         "src_rule": MARKET_ANCHORS["src_secondary_cap"],
         "disclaimer": ("Statistical indicators derived from public data. "

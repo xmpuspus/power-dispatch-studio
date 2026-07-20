@@ -534,7 +534,8 @@ function addLayers(){
     map.on("mouseleave", "dc-pt", () => { map.getCanvas().style.cursor = ""; pop.remove(); });
   }
   hover("sual-pt", p => `<b>${esc(p.name)}</b><br>${esc(p.location)}<br>` +
-    `${fmt(p.units)} x ${fmt(p.unit_mw)} MW, the largest single units on the Luzon grid.`);
+    `${fmt(p.units)} x ${fmt(p.unit_mw)} MW, among the largest on the Luzon grid.` +
+    `<br>The largest single unit is GNPower Dinginin at 668 MW.`);
   hover("gen-pt", p => `<b>${esc(p.name)}</b><br>${esc(p.city)} &middot; ${esc(p.grid)}` +
     `<br>${fmt(p.capacity_mw)} MW ${esc(String(p.fuel||"").replace("_"," "))}` +
     `, ~P${fmt(p.marginal_cost_php_kwh,2)}/kWh marginal` +
@@ -739,9 +740,10 @@ function sideChoke(){
   <button class="sual-btn" id="sualbtn" aria-pressed="false">What if a Sual unit trips? (-647 MW)</button>
   <div class="note" id="sualread">${sualDays != null ?
     "The archive's outage files list a Sual unit out on " + fmt(sualDays) +
-    " day(s) in this window. " : ""}Sual's two 647 MW units are the largest single
-  contingencies on the Luzon grid; the toggle subtracts one unit from the May 2026
-  system margin as arithmetic, not a dispatch simulation.</div>`;
+    " day(s) in this window. " : ""}Sual's two 647 MW units are among the largest on
+  the Luzon grid, though GNPower Dinginin's 2x668 MW are larger, which is also the
+  contingency reserve the market holds here. The toggle subtracts one Sual unit from
+  the May 2026 system margin as arithmetic, not a dispatch simulation.</div>`;
 }
 
 function sideprice(){
@@ -753,7 +755,8 @@ function sideprice(){
     window.__diag.priceDays = P.dates.length;
   }
   const mer = `
-    <div class="kv"><span>WESM cost in Meralco June supply</span><span>P${fmt(A.meralco_june2026_wesm_cost_php_kwh,2)}/kWh</span></div>
+    <div class="kv"><span>WESM price Meralco paid in June</span><span>P${fmt(A.meralco_june2026_wesm_price_php_kwh,2)}/kWh</span></div>
+    <div class="kv"><span>on this share of its energy</span><span>${fmt(A.meralco_june2026_wesm_share_pct,0)}%</span></div>
     <div class="kv"><span>Meralco June generation charge</span><span>P${fmt(A.meralco_june2026_generation_charge,2)}/kWh</span></div>
     <div class="kv"><span>Meralco June overall rate</span><span>P${fmt(A.meralco_june2026_rate_php_kwh,2)}/kWh</span></div>
     <div class="kv"><span>June change</span><span>+P${fmt(A.meralco_june2026_delta_php_kwh,4)}/kWh</span></div>`;
@@ -821,9 +824,11 @@ function sideprice(){
   <h2 style="margin-top:12px">The bill translation</h2>
   ${mer}
   <div class="note">The generation charge is the biggest slice of a Meralco bill
-  and moves with WESM through monthly pass-through; the June advisory attributes
-  the increase to WESM at P${fmt(A.meralco_june2026_wesm_cost_php_kwh,2)}/kWh.
-  Wholesale movements are not one-for-one bill movements.</div>`;
+  and moves with WESM through monthly pass-through, but only on the share bought
+  on the spot market: June paid P${fmt(A.meralco_june2026_wesm_price_php_kwh,2)}/kWh
+  for ${fmt(A.meralco_june2026_wesm_share_pct,0)}% of its energy, about
+  P${fmt(A.meralco_june2026_wesm_share_pct/100*A.meralco_june2026_wesm_price_php_kwh,2)}/kWh
+  of the bill. Wholesale movements are not one-for-one bill movements.</div>`;
 }
 function sideDrivers(){
   const DR = D["drivers.json"] || {};
@@ -1050,9 +1055,10 @@ function sualToggle(btn){
     ${fmt(m - 1294)} MW. Arithmetic on the operator's published margin, not a
     dispatch simulation; the margin itself moves daily.`;
   } else {
-    read.innerHTML = `Sual's two 647 MW units are the largest single contingencies
-    on the Luzon grid; the toggle subtracts one unit from the May 2026 system margin
-    as arithmetic, not a dispatch simulation.`;
+    read.innerHTML = `Sual's two 647 MW units are among the largest on the Luzon
+    grid, though GNPower Dinginin's 2x668 MW are larger. The toggle subtracts one
+    Sual unit from the May 2026 system margin as arithmetic, not a dispatch
+    simulation.`;
   }
 }
 
@@ -1152,7 +1158,10 @@ function clearCoupledJS(demand, stacks, caps){
   const avail={luzon:bL.reduce((s,b)=>s+b.mw,0), visayas:availV, mindanao:bM.reduce((s,b)=>s+b.mw,0)};
   const price={luzon:margJS(bL,gen.luzon), visayas:margJS(bV,gen.visayas), mindanao:margJS(bM,gen.mindanao)};
   const shortfall={}; for (const k in gen) shortfall[k]=Math.max(0, gen[k]-avail[k]);
-  const sat1=Math.abs(f1)>=c1-0.5, sat2=Math.abs(f2)>=c2-0.5;
+  // a zero cap is a BLOCKED corridor, not a saturated one: without the c>0.5
+  // test the comparison is trivially true and the rent goes negative, which is
+  // not a thing a congestion rent can be (mirrors chrono.py / lp_dispatch.py)
+  const sat1=c1>0.5&&Math.abs(f1)>=c1-0.5, sat2=c2>0.5&&Math.abs(f2)>=c2-0.5;
   return { price, gen, shortfall, flowLV:f1, flowVM:f2,
     leyte:{ flow:f1, sat:sat1, rent: sat1 ? +(price.visayas-price.luzon).toFixed(3) : 0 },
     mvip:{ flow:f2, sat:sat2, rent: sat2 ? +(price.mindanao-price.visayas).toFixed(3) : 0 } };
@@ -1544,7 +1553,7 @@ function findIndex(){
   }
   for (const f of ((D["sual.geojson"]||{}).features)||[]){
     const p = f.properties;
-    out.push({ kind:"plant", name:p.name || "Sual coal plant", sub:"Pangasinan · largest single units on Luzon",
+    out.push({ kind:"plant", name:p.name || "Sual coal plant", sub:"Pangasinan · among the largest units on Luzon",
       c:f.geometry.coordinates, mode:"choke",
       html:`<b>${esc(p.name || "Sual coal plant")}</b><br>${esc(p.location || "Sual, Pangasinan")}<br>`
         + `${fmt(p.units || 2)} x ${fmt(p.unit_mw || 647)} MW.<br><i>Trip a unit in the Choke points view.</i>` });

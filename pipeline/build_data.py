@@ -603,8 +603,10 @@ def build_findings(cong, rel, prices, outs, named_dc_mw, n_dc) -> dict:
             f"One plant trip takes {sual_pct}% of the margin with it",
             f"One 647 MW Sual unit equals {sual_pct}% of the "
             f"May 2026 system margin",
-            f"Sual's two 647 MW units are the largest single contingencies on "
-            f"the Luzon grid. The archive's outage schedules list a Sual unit "
+            f"Sual's two 647 MW units are among the largest on the Luzon grid, "
+            f"though not the largest: GNPower Dinginin runs 2x668 MW, and the "
+            f"market's own Luzon contingency reserve requirement sits at that "
+            f"same 668 MW. The archive's outage schedules list a Sual unit "
             f"out on {sual_days} day(s) in this window; the map's toggle "
             f"subtracts one unit from the published margin as arithmetic, not "
             f"a dispatch simulation.",
@@ -692,10 +694,14 @@ def build_answers(cong, rel, prices, outs) -> dict:
     if spread.get("php") is not None:
         q3_blurb += (f" Widest daily regional spread in the archive: "
                      f"P{spread['php']}/kWh on {spread['date']}.")
-    q3_blurb += (" WESM passes into the Meralco generation charge monthly: June "
-                 f"carried WESM at P{A['meralco_june2026_wesm_cost_php_kwh']}/kWh "
-                 f"inside a P{A['meralco_june2026_generation_charge']}/kWh "
-                 "generation charge. New flat 24/7 load raises the demand the "
+    q3_blurb += (" WESM passes into the Meralco generation charge monthly, and "
+                 "only on the share of energy actually bought on the spot "
+                 f"market: June paid P{A['meralco_june2026_wesm_price_php_kwh']}"
+                 f"/kWh for the {A['meralco_june2026_wesm_share_pct']}% it drew "
+                 f"from WESM, about P{round(A['meralco_june2026_wesm_share_pct'] / 100 * A['meralco_june2026_wesm_price_php_kwh'], 2)}"
+                 f"/kWh of the P{A['meralco_june2026_generation_charge']}/kWh "
+                 "generation charge. The rest is contracted and does not move "
+                 "with the spot price. New flat 24/7 load raises the demand the "
                  "market clears against in every interval.")
     return {
         "window": win,

@@ -9227,8 +9227,8 @@
    "lv": {
     "corridor": "Luzon to Visayas",
     "n_hours": 2448,
-    "identity_mean_mw": 9.4,
-    "record_mean_mw": 9.3,
+    "identity_mean_mw": 9.5,
+    "record_mean_mw": 9.5,
     "mae_mw": 0.0,
     "binding_share_pct": 49.6,
     "n_intervals": 29375
@@ -9256,42 +9256,97 @@
    "luzon": {
     "n_intervals": 22464,
     "max_interval_php_kwh": 57.0,
+    "n_intervals_above_offer_cap": 98,
     "max_rolling_72h": {
      "ends": "2026-05-30 10:45:00",
      "rolling_php_kwh": 13.139
     },
     "headroom_php_kwh": -0.726,
-    "n_breach_windows": 302
+    "n_breach_windows": 302,
+    "offer_cap_held": {
+     "max_rolling_72h": {
+      "ends": "2026-05-30 10:45:00",
+      "rolling_php_kwh": 12.332
+     },
+     "headroom_php_kwh": 0.081,
+     "n_breach_windows": 0
+    }
    },
    "visayas": {
     "n_intervals": 22464,
     "max_interval_php_kwh": 165.05,
+    "n_intervals_above_offer_cap": 1386,
     "max_rolling_72h": {
      "ends": "2026-06-11 10:25:00",
      "rolling_php_kwh": 18.975
     },
     "headroom_php_kwh": -6.562,
-    "n_breach_windows": 9092
+    "n_breach_windows": 9092,
+    "offer_cap_held": {
+     "max_rolling_72h": {
+      "ends": "2026-06-11 10:25:00",
+      "rolling_php_kwh": 18.902
+     },
+     "headroom_php_kwh": -6.489,
+     "n_breach_windows": 8554
+    }
    },
    "mindanao": {
     "n_intervals": 22464,
     "max_interval_php_kwh": 165.05,
+    "n_intervals_above_offer_cap": 1160,
     "max_rolling_72h": {
      "ends": "2026-05-16 00:25:00",
      "rolling_php_kwh": 21.339
     },
     "headroom_php_kwh": -8.926,
-    "n_breach_windows": 6306
+    "n_breach_windows": 6306,
+    "offer_cap_held": {
+     "max_rolling_72h": {
+      "ends": "2026-06-11 10:25:00",
+      "rolling_php_kwh": 20.128
+     },
+     "headroom_php_kwh": -7.715,
+     "n_breach_windows": 5450
+    }
    },
    "system": {
     "n_intervals": 22464,
     "max_interval_php_kwh": 57.0,
+    "n_intervals_above_offer_cap": 117,
     "max_rolling_72h": {
      "ends": "2026-05-30 10:35:00",
      "rolling_php_kwh": 13.317
     },
     "headroom_php_kwh": -0.904,
-    "n_breach_windows": 813
+    "n_breach_windows": 813,
+    "offer_cap_held": {
+     "max_rolling_72h": {
+      "ends": "2026-05-30 10:35:00",
+      "rolling_php_kwh": 12.606
+     },
+     "headroom_php_kwh": -0.193,
+     "n_breach_windows": 132
+    }
+   },
+   "luzon_visayas": {
+    "n_intervals": 22464,
+    "max_interval_php_kwh": 57.0,
+    "n_intervals_above_offer_cap": 113,
+    "max_rolling_72h": {
+     "ends": "2026-05-30 10:45:00",
+     "rolling_php_kwh": 13.373
+    },
+    "headroom_php_kwh": -0.96,
+    "n_breach_windows": 332,
+    "offer_cap_held": {
+     "max_rolling_72h": {
+      "ends": "2026-05-30 10:45:00",
+      "rolling_php_kwh": 12.678
+     },
+     "headroom_php_kwh": -0.265,
+     "n_breach_windows": 143
+    }
    }
   },
   "clamp_scan_days_pinned": {
@@ -9299,22 +9354,24 @@
    "6.245": 0
   },
   "marquee": {
-   "scenario_day": "2026-06-20",
-   "uplift_php_kwh": 9.14,
+   "scenario_day": "2026-06-10",
+   "uplift_php_kwh": 12.01,
    "scenario_max_rolling_72h": {
-    "ends": "2026-06-21 03:45:00",
-    "rolling_php_kwh": 13.592
+    "ends": "2026-06-11 15:00:00",
+    "rolling_php_kwh": 12.233
    },
    "baseline_max_rolling_72h": {
-    "ends": "2026-06-20 03:10:00",
-    "rolling_php_kwh": 11.226
+    "ends": "2026-06-11 15:00:00",
+    "rolling_php_kwh": 8.229
    },
-   "trips_trigger": true,
+   "trips_trigger": false,
    "baseline_trips": false,
    "note": "The studio's widest-swing as-bid scenario adds the DICT wave's Luzon daily-mean uplift uniformly to the scenario day's observed Luzon GWAP intervals and recomputes the rolling trigger over the windows ending on that day or in the 72 hours after it, beside the same windows unlifted. An arithmetic flag under the rule's stated numbers, not a prediction: the window's own record (mechanism_note) shows the operational trigger did not clamp even above the threshold."
   },
-  "note": "The secondary price cap's own arithmetic, run on the operator's published series: the 72-hour rolling mean of the 5-minute generator-weighted average price (GWAPF), per region and for the System row as published. Only windows with all 864 intervals present are scored, so archive gaps cannot fake a calm window.",
-  "mechanism_note": "A simple 864-interval rolling mean of the published series crosses the P12.413/kWh threshold inside the window on every series, yet the observed price record shows no day pinned at either the current (P7.423) or prior (P6.245) cap level (clamp_scan). The operational imposition therefore runs on arithmetic the public file alone does not reproduce (series designation, weighting, imposition and lifting mechanics, or in-window effectivity of ERC Res. 26 s.2025); the series here is the trigger's published INPUT, and the breach counts are flags on that input, not findings that the cap was due.",
+  "note": "The secondary price cap's own arithmetic, run on the operator's published series: the 72-hour rolling mean of the 5-minute generator-weighted average price (GWAPF), per region, for the combined Luzon-Visayas region, and for the System row as published. Only windows with all 864 intervals present are scored, so archive gaps cannot fake a calm window.",
+  "applies_note": "Which row is the operative trigger is published, not a guess. Under ERC Res. 26 s.2025 the system-wide rolling average is the default trigger; the regional or island cap applies ONLY while a grid interconnection is on outage, using the same cap value, threshold, and 72-hour period. So the per-region breach counts below are not exposure on their own: they are exposure only for intervals when the interconnection was out. Read the system row first.",
+  "series_note": "One named difference rather than an unknown: the rule monitors the EX-ANTE rolling GWAP, and GWAPF is the final (ex-post) series. The final series is the closest published proxy and is what runs here, but it is not byte-for-byte the series the operational trigger reads.",
+  "mechanism_note": "Read the offer-cap-held numbers, not the raw ones. The raw file carries intervals priced far above the market's own P32/kWh offer cap (up to P165.05/kWh here), which are violation and scarcity coefficients rather than market clears; the market's own price-substitution record caps at exactly the offer cap with no exceptions. Those intervals generate the entire Luzon breach count: held at the cap, Luzon breaches zero windows and its peak falls BELOW the threshold. The Visayas and Mindanao series still run hot when held at the cap, but those are the rows that only bind during an interconnection outage (applies_note). Against that, the observed price record shows no day pinned at either the current (P7.423) or prior (P6.245) cap level (clamp_scan), which is consistent. The residual unknown is the weighting and the imposition and lifting mechanics, which the public file alone does not reproduce.",
   "src": "https://www.iemop.ph/market-data/generator-weighted-average-price-final/",
   "src_rule": "https://powerphilippines.com/erc-approves-higher-secondary-price-cap-thresholds-in-wesm/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."

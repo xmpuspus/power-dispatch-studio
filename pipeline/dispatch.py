@@ -57,19 +57,26 @@ _TIME_RE_24 = re.compile(r"\b(\d{1,2}):(\d{2})\b")
 
 
 def hour_of(ti: str) -> int | None:
-    """Hour 0-23 from an IEMOP TIME_INTERVAL string (interval-ending time), or
-    None if the string carries no parseable time. Callers drop the row on None:
-    an unparseable interval means the upstream format changed, and silently
-    binning it to a default hour would poison the hourly statistics (F18)."""
+    """Hour 0-23 from an IEMOP TIME_INTERVAL string, or None if the string
+    carries no parseable time. Callers drop the row on None: an unparseable
+    interval means the upstream format changed, and silently binning it to a
+    default hour would poison the hourly statistics (F18).
+
+    IEMOP stamps every row with the END of its 5-minute interval, so the
+    interval stamped 01:00 covers 00:55 to 01:00 and belongs to hour 0. Binning
+    on the stamped hour shifts every bucket five minutes late and leaves hour 0
+    holding 11 intervals and hour 23 holding 13. Bin on the interval's start
+    minute instead, which puts all 24 hours at 12 intervals."""
     m = _TIME_RE.search(ti or "")
     if m:
         h = int(m.group(1)) % 12
         if m.group(3).upper() == "PM":
             h += 12
-        return h
+        return ((h * 60 + int(m.group(2)) - 5) // 60) % 24
     m = _TIME_RE_24.search(ti or "")
     if m:
-        return int(m.group(1)) % 24
+        h = int(m.group(1)) % 24
+        return ((h * 60 + int(m.group(2)) - 5) // 60) % 24
     # IEMOP serializes the midnight-ending (24:00) interval as a bare date with no
     # time part ("4/22/2026"): that interval belongs to hour 23, not a default.
     if ti and ":" not in ti:

@@ -441,7 +441,8 @@ export interface Bill {
   src_mix?: string
   total_rate_php_kwh?: number
   generation_charge_php_kwh?: number
-  wesm_cost_in_gen_charge_php_kwh?: number
+  wesm_price_php_kwh?: number
+  wesm_contribution_to_gen_charge_php_kwh?: number
   src_bill?: string
   household_kwh_month?: number
   pass_through_factor?: number
