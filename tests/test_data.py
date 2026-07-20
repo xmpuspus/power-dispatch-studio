@@ -125,6 +125,18 @@ check("league non-empty", len(cong.get("league", [])) >= 10)
 check("league rows have equipment+station+day count", all(
     e.get("equipment") and e.get("station") and e.get("days", 0) > 0
     for e in cong["league"]))
+# Every bound equipment carries a real severity reading. OVERLOAD_MW is zero on
+# ~98% of rows (the dispatch holds flow AT the limit, not over it), so a league
+# that reported only overload would show its most persistent chokepoints, the
+# Naga transformers and the Leyte-Cebu corridor, as zero severity. PCT_MW never
+# drops below 100 on a congestion row, so it is the signal that stays honest.
+check("every league row carries a percent-of-limit severity at or above 100 "
+      "(so a line pinned at its limit with zero overload is not read as calm)",
+      all(e.get("max_pct_of_limit", 0) >= 100 for e in cong["league"]))
+_zero_ov = [e for e in cong["league"] if e.get("max_overload_mw", 0) == 0]
+check("chokepoints that never overloaded still show they were fully bound "
+      "(the whole point of carrying percent-of-limit beside overload)",
+      _zero_ov and all(e["max_pct_of_limit"] >= 100 for e in _zero_ov))
 # league ranks by days (a re-run cannot inflate a day), not raw row count, and
 # keeps the real-time and day-ahead counts separate (the DAP market re-prices
 # hourly, so its rows are re-run persistence, not time at the limit)
@@ -900,6 +912,17 @@ check("MOT dispatched MW is cleared, not as-bid: it reconciles to the "
       all(abs(mot["per_grid"][g]["rtdsum_ratio"] - 1.0) < 0.05
           for g in _mot_grids)
       and "legitimate explanations" in mot["disclaimer"])
+# The retired "untested lead": the RTDSUM import/export/loss columns do NOT
+# close the Luzon 2% gap. Pin the two facts the reworded prose rests on: import
+# is far too small to be the mechanism, and the gap IS RTDSUM's own unbalanced
+# energy-balance residual (so the balance columns leave it over by construction).
+_lzp = mot.get("luzon_residual_probe") or {}
+check("the Luzon MOT gap is not import (import is an order of magnitude too "
+      "small) and equals RTDSUM's own energy-balance residual",
+      _lzp.get("gap_mw_mean") and _lzp.get("import_mw_mean")
+      and _lzp["gap_mw_mean"] > 8 * _lzp["import_mw_mean"]
+      and abs(_lzp["gap_mw_mean"] - _lzp["balance_residual_mw_mean"])
+      < 0.25 * _lzp["gap_mw_mean"])
 
 # profiles carry the engine-facing observed layers per day
 prof = load("profiles.json")

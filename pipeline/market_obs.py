@@ -2224,11 +2224,28 @@ def build_mot_dispatch_cut() -> dict:
             "rtdsum_ratio": round(
                 sum(d["rtdsum_ratio"][g] for d in days) / len(days), 4),
         }
+    lz_probe = [d.get("luzon_residual_probe") for d in days
+                if d.get("luzon_residual_probe")]
+
+    def _pool(field):
+        vals = [(p[field], p["n"]) for p in lz_probe
+                if p.get(field) is not None and p.get("n")]
+        n = sum(w for _, w in vals)
+        return round(sum(v * w for v, w in vals) / n, 1) if n else None
+
     return {
         "available": True,
         "days": len(days),
         "dates": [d["date"] for d in days],
         "per_grid": per_grid,
+        # the retired "untested lead": the RTDSUM import/export/loss columns do
+        # NOT close the Luzon 2% gap. import is ~10x too small, and the gap is
+        # RTDSUM's own energy-balance residual, the part those columns leave over
+        "luzon_residual_probe": {
+            "gap_mw_mean": _pool("gap_mw_mean"),
+            "balance_residual_mw_mean": _pool("balance_residual_mw_mean"),
+            "import_mw_mean": _pool("import_mw_mean"),
+        },
         "note": ("The operator's own dispatch cut per region per 5-minute "
                  "RTD interval, from IEMOP's Regional Merit Order Table "
                  "(MOT files). Each interval's offer stack is published "
@@ -2248,8 +2265,14 @@ def build_mot_dispatch_cut() -> dict:
                  "charging would count as dispatched offers while not "
                  "being generation, but they total 0.2 MW on a sampled "
                  "Luzon interval, nowhere near the roughly 220 MW gap. "
-                 "The untested lead is the RTDSUM import, export and "
-                 "loss columns. Read the Luzon headroom knowing that "
+                 "The RTDSUM import, export and loss columns are a "
+                 "measured no-op, not an untested lead: import is about "
+                 "10x too small and the gap tracks RTDSUM's own ~1.9 "
+                 "percent energy-balance residual at a correlation near "
+                 "0.9, so it is the term those columns leave over rather "
+                 "than one they explain. The open cause is most likely a "
+                 "self-scheduled or must-run generation split IEMOP does "
+                 "not publish. Read the Luzon headroom knowing that "
                  "residual is open rather than explained. "
                  "MOT carries no price column and its Block index is the "
                  "same tranche index as the RTDOE offer books, so it is "

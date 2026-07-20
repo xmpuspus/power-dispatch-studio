@@ -70,8 +70,15 @@ via <code>wp-admin/admin-ajax.php</code> (action
 (a day counts once, so a day-ahead re-run cannot inflate it). Real-time (RTD)
 5-minute intervals and day-ahead (DAP) hourly rows are kept in separate columns,
 because the day-ahead projection re-prices through the day and its raw row count
-measures re-run persistence, not time at the limit. Plus max overload MW and the
-per-corridor receipts joined onto the Leyte-Cebu line.</td></tr>
+measures re-run persistence, not time at the limit. Two severity columns ride
+along, and reading the wrong one hides the most bound equipment. Overload MW is
+how far flow was pushed PAST the limit, and it is zero on about 98 percent of
+congestion rows because the dispatch holds flow AT the limit rather than over
+it, so the two Naga transformers and the Leyte-Cebu corridor, among the most
+persistently bound in the league, carry zero overload. Percent of limit is the
+real how-bound signal: it never drops below 100 on a congestion row and reaches
+112 on the Tabango-Daanbantayan line. Both are exported; read percent of limit
+for severity and overload only for the rare true over-limit push.</td></tr>
 <tr><td>RTD Regional Summaries (daily CSV; CLUZ/CVIS/CMIN; En/Dr/Fr/Ru/Rd)</td>
 <td><a href="https://www.iemop.ph/market-data/rtd-regional-summaries/">page</a></td>
 <td>Per grid per day: peak scheduled demand (LOAD_BID), curtailed energy
@@ -1012,8 +1019,19 @@ Visayas and Mindanao land inside one percent; Luzon runs about two percent high
 and that residual is open, not explained. The obvious candidate is already ruled
 out, since pumped storage and batteries charging would show as dispatched offers
 without being generation and they come to 0.2 MW on a sampled Luzon interval
-against a gap of roughly 220 MW. The untested lead is the RTDSUM import, export
-and loss columns. The second check: the partially-cleared resource this module reads off the
+against a gap of roughly 220 MW. The RTDSUM import, export and loss columns,
+which the earlier note flagged as the untested lead, do not close it either, and
+that is now measured rather than guessed: import averages 21 MW on Luzon, ten
+times too small; and the dispatch-minus-generation gap tracks RTDSUM's OWN
+energy-balance residual (generation plus imports minus requirement, losses and
+exports, which fails to close by about 1.9 percent of Luzon generation) at a
+correlation near 0.9. So the two are the same roughly 200 MW term, and it is the
+part the import, export and loss columns leave over by construction rather than
+anything they explain. What remains is most likely a self-scheduled or must-run
+generation split that sits in both dispatched MW and generation but not in the
+economic requirement the balance nets, and IEMOP does not publish that split, so
+the residual stays a genuine boundary with its missing input named. The second
+check: the partially-cleared resource this module reads off the
 cut is the one IEMOP separately names as price setter on 98 percent of
 intervals against a 28 percent random-draw baseline. MCP and MOT come out of
 the same dispatch solve, so that agreement checks this parse rather than

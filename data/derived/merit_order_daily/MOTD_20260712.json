@@ -1746,6 +1746,12 @@
    684.8
   ]
  },
+ "luzon_residual_probe": {
+  "n": 287,
+  "gap_mw_mean": 240.2,
+  "balance_residual_mw_mean": 194.3,
+  "import_mw_mean": 41.8
+ },
  "marginal": {
   "luzon": {
    "00": [

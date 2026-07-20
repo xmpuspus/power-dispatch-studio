@@ -6040,6 +6040,7 @@
      "dap_rows": 18113,
      "dap_days": 101,
      "max_overload_mw": 26.73,
+     "max_pct_of_limit": 112.5,
      "matched_equipment": [
       {
        "name": "5DAAN_4TAB2",
