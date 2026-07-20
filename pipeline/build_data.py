@@ -196,7 +196,13 @@ def build_congestion() -> dict:
         "window": {"from": days[0], "to": days[-1]} if days else None,
         "days_covered": len(days),
         "days_with_base_case_binding": len(base_days),
-        "distinct_equipment": len(out),
+        # A transformer is monitored under each winding voltage and a line at
+        # each terminal station, so the league keys (equipment, station,
+        # voltage) split one physical asset into several rows. Count distinct
+        # equipment NAMES for the physical-facility headline; keep the row
+        # count as the monitored-constraint total.
+        "distinct_equipment": len({e["equipment"] for e in out}),
+        "constraint_records": len(out),
         "total_rtd_intervals": sum(e["rtd_intervals"] for e in out),
         "total_dap_rows": sum(e["dap_rows"] for e in out),
         "league": out[:30],
@@ -673,9 +679,10 @@ def build_answers(cong, rel, prices, outs) -> dict:
                      f"curtailed on {curt_days} grid-day(s) in this archive "
                      f"window ({curt_mwh:,} MWh). Headroom for a wave this size "
                      f"means new firm supply, not spare change.")
-    q2_stat = (f"{cong.get('distinct_equipment', 0)} pieces of equipment hit "
-               f"limits across the real-time and day-ahead runs on "
-               f"{cong.get('days_covered', 0)} archive days; the "
+    q2_stat = (f"{cong.get('distinct_equipment', 0)} distinct pieces of "
+               f"equipment ({cong.get('constraint_records', 0)} monitored "
+               f"constraints) hit limits across the real-time and day-ahead "
+               f"runs on {cong.get('days_covered', 0)} archive days; the "
                f"Leyte-Luzon HVDC ran at max or offline "
                f"{A['hvdc_binding_share_dec2025_pct']}% of Dec 2025")
     q2_blurb = ("The inter-island links and named 230 kV corridors already bind "

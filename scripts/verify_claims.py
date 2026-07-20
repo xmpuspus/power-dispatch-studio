@@ -205,9 +205,17 @@ def canonical():
                    blurb)
     curtail_days, curtail_mwh = (int(mc.group(1)), mc.group(2)) if mc else (0, "0")
 
+    mru = mo["so_instructions"]["mru_contrast"]
     return {
         "days_covered": cg["days_covered"],
         "distinct_equipment": cg["distinct_equipment"],
+        "constraint_records": cg["constraint_records"],
+        "mru_grid_hours": _n(mru["mru_grid_hours"], 0),
+        "mru_gh_peak_median": _n(mru["mru_gh_peak_median_mw"], 0),
+        "mru_median": _n(mru["mru_median_mw"], 1),
+        "mru_n_weeks": _n(mru["mru_n_weeks"], 0),
+        "motrd_n_weeks": _n(mo["so_instructions"]["motrd"]["n_weeks"], 0),
+        "motrd_empty_weeks": _n(mo["so_instructions"]["motrd"]["n_empty_weeks"], 0),
         "leyte_cebu_dap_days": _leyte_cebu("dap_days"),
         "top_corridor_dap_days": _corridor("5DAAN_4TAB2", "dap_days"),
         "top_corridor_rtd_days": _corridor("5DAAN_4TAB2", "rtd_days"),
@@ -375,8 +383,9 @@ REGISTRY = [
      re.compile(r"the run settlement\s*\n?\s*actually sees, on \*\*(\d+) days\*\*"),
      ["top_corridor_rtd_days"]),
     ("README.md",
-     re.compile(r"Across the (\d+)-day window, \*\*(\d+) distinct pieces of equipment\*\*"),
-     ["days_covered", "distinct_equipment"]),
+     re.compile(r"Across the (\d+)-day window, \*\*(\d+) distinct pieces of equipment\*\*"
+                r" hit a limit at least\s+once, in \*\*(\d+) monitored constraints\*\*"),
+     ["days_covered", "distinct_equipment", "constraint_records"]),
     ("README.md",
      re.compile(r"below the stated requirement on (\d+) of the window's (\d+) days\*\*"),
      ["luzon_reserve_short_days", "days_covered"]),
@@ -424,6 +433,17 @@ REGISTRY = [
     ("web/methodology.html",
      re.compile(r"must-run subset: (\d+)\s*\n?\s*thousand instructions across the archived window"),
      ["motrd_thousands"]),
+    # the must-run inertness measure: per-grid-hour peak median, grid-hours,
+    # weekly-file count, and the per-interval median, all rolling with the archive
+    ("web/methodology.html",
+     re.compile(r"peaks at a median of (\d+) MW across its (\d+) instructed\s+"
+                r"grid-hours in (\d+) weekly files \(the per-interval instruction "
+                r"median is\s+(\d+\.\d) MW\)"),
+     ["mru_gh_peak_median", "mru_grid_hours", "mru_n_weeks", "mru_median"]),
+    ("web/methodology.html",
+     re.compile(r"must-run list's (\d+\.\d) per-interval; (\d+) of the (\d+) weekly\s+"
+                r"files were published empty"),
+     ["mru_median", "motrd_empty_weeks", "motrd_n_weeks"]),
     ("web/methodology.html",
      re.compile(r"re-dispatch record carries (\d+) thousand instructions across the"),
      ["motrd_thousands"]),
