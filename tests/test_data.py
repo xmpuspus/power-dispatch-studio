@@ -126,7 +126,7 @@ check("league rows have equipment+station+day count", all(
     e.get("equipment") and e.get("station") and e.get("days", 0) > 0
     for e in cong["league"]))
 # Every bound equipment carries a real severity reading. OVERLOAD_MW is zero on
-# ~98% of rows (the dispatch holds flow AT the limit, not over it), so a league
+# ~96% of real-time rows (the dispatch holds flow AT the limit, not over it), so a league
 # that reported only overload would show its most persistent chokepoints, the
 # Naga transformers and the Leyte-Cebu corridor, as zero severity. PCT_MW never
 # drops below 100 on a congestion row, so it is the signal that stays honest.
@@ -137,6 +137,16 @@ _zero_ov = [e for e in cong["league"] if e.get("max_overload_mw", 0) == 0]
 check("chokepoints that never overloaded still show they were fully bound "
       "(the whole point of carrying percent-of-limit beside overload)",
       _zero_ov and all(e["max_pct_of_limit"] >= 100 for e in _zero_ov))
+# the public CSV export must carry the severity column the league carries and the
+# methodology promises: the exporter and the artifact drifted apart once because
+# nothing checked the shipped file against the code
+_csv = os.path.join(WEB, "exports", "congestion_league.csv")
+if os.path.isfile(_csv):
+    with open(_csv) as _fh:
+        _hdr = _fh.readline().strip().split(",")
+    check("the committed congestion CSV export carries the percent-of-limit "
+          "severity column (exporter and shipped artifact in sync)",
+          "max_pct_of_limit" in _hdr and "max_overload_mw" in _hdr)
 # league ranks by days (a re-run cannot inflate a day), not raw row count, and
 # keeps the real-time and day-ahead counts separate (the DAP market re-prices
 # hourly, so its rows are re-run persistence, not time at the limit)
