@@ -1787,9 +1787,10 @@ def build_constrained_on(fleet: dict) -> dict:
 def build_security_limits(fleet: dict) -> dict:
     """Per-resource security limits used in RTD (RTDSL): the operating
     points security constraints pin resources to, per window. MAX equals
-    MIN in 99.2 percent of archived windows (regulating hydro, the Agus
-    units, is the exception), so nearly every row pair is a fixed
-    security-constrained operating point rather than a range."""
+    MIN in nearly every archived window (regulating hydro, the Agus units,
+    is the exception), so nearly every row pair is a fixed
+    security-constrained operating point rather than a range. The exact
+    pinned share is computed below and guarded in the methodology prose."""
     files = dataset_files("RTDSL")
     if not files:
         return {"available": False,
@@ -1945,8 +1946,25 @@ def build_so_instructions(fleet: dict) -> dict:
 
     # the must-run subset, measured beside it: the inertness claim is
     # scoped to THIS series and stays true; the full record is not inert
-    mru_mw = [f(r.get("SO_MW_INSTRUCTION")) for p in dataset_files("MRU")
+    mru_files = dataset_files("MRU")
+    mru_mw = [f(r.get("SO_MW_INSTRUCTION")) for p in mru_files
               for r in rows_of(p) if (r.get("RESOURCE_NAME") or "").strip()]
+    # grid-hour scale: the peak instruction in each (region, date, hour)
+    # bucket, so the median is the busiest interval of a typical instructed
+    # hour. Even that peak is tiny against the multi-GW offer books, which is
+    # why a must-take layer built from this list would be inert.
+    mru_gh_peak: dict[tuple, float] = {}
+    for p in mru_files:
+        for r in rows_of(p):
+            if not (r.get("RESOURCE_NAME") or "").strip():
+                continue
+            ts = (r.get("TIME_INTERVAL") or "").strip()
+            h = _interval_hour(ts)
+            if h is None:
+                continue
+            key = ((r.get("REGION") or "").strip(), ts[:10], h)
+            mru_gh_peak[key] = max(mru_gh_peak.get(key, 0.0),
+                                   f(r.get("SO_MW_INSTRUCTION")))
 
     # the daily per-grid instruction log: causes, named. The remarks are
     # free text, so the cause screen is a substring count (labeled), not
@@ -2019,6 +2037,8 @@ def build_so_instructions(fleet: dict) -> dict:
         "available": True,
         "motrd": {
             "weeks": weeks,
+            "n_weeks": len(weeks),
+            "n_empty_weeks": sum(1 for w in weeks if w["n_rows"] == 0),
             "n_rows": len(all_mw),
             "n_resources": len(per_res),
             "median_mw": round(_stats.median(all_mw), 1),
@@ -2033,6 +2053,10 @@ def build_so_instructions(fleet: dict) -> dict:
             "mru_median_mw": (round(_stats.median(mru_mw), 1)
                               if mru_mw else None),
             "mru_max_mw": round(max(mru_mw), 1) if mru_mw else None,
+            "mru_n_weeks": len(mru_files),
+            "mru_grid_hours": len(mru_gh_peak),
+            "mru_gh_peak_median_mw": (round(_stats.median(mru_gh_peak.values()), 1)
+                                      if mru_gh_peak else None),
             "note": ("The must-run list the methodology measured as inert "
                      "is the SUBSET; its median instruction sits at "
                      "roughly a tenth of the full MOT-raise record's, so "
@@ -2233,13 +2257,28 @@ def build_mot_dispatch_cut() -> dict:
         n = sum(w for _, w in vals)
         return round(sum(v * w for v, w in vals) / n, 1) if n else None
 
+    # Note figures interpolated from the probe so they never drift from the
+    # sample: a prior hand-typed "2 percent HIGH" went stale when the window
+    # widened from 3 to 15 days while its three sibling numbers were updated.
+    _lz = per_grid.get("luzon", {})
+    _lz_ratio = _lz.get("rtdsum_ratio") or 1.0
+    _lz_disp = _lz.get("dispatched_mw_mean") or 0.0
+    _lz_gen = _lz_disp / _lz_ratio if _lz_ratio else 0.0
+    _gap = _pool("gap_mw_mean") or 0.0
+    _residual = _pool("balance_residual_mw_mean") or 0.0
+    _import = _pool("import_mw_mean") or 0.0
+    _high_pct = round((_lz_ratio - 1) * 100, 1)
+    _gap_round = int(round(_gap / 10) * 10)
+    _import_frac = int(round(_import / _gap * 100)) if _gap else 0
+    _residual_pct = round(_residual / _lz_gen * 100, 1) if _lz_gen else 0.0
+
     return {
         "available": True,
         "days": len(days),
         "dates": [d["date"] for d in days],
         "per_grid": per_grid,
         # the retired "untested lead": the RTDSUM import/export/loss columns do
-        # NOT close the Luzon 2% gap. import is ~1/4 of the gap, and the gap is
+        # NOT close the small Luzon gap. import is a fraction of the gap, and the gap is
         # RTDSUM's own energy-balance residual, the part those columns leave over
         "luzon_residual_probe": {
             "gap_mw_mean": _pool("gap_mw_mean"),
@@ -2260,14 +2299,14 @@ def build_mot_dispatch_cut() -> dict:
                  "and that reconciliation is NOT clean everywhere. The "
                  "Visayas and Mindanao sit inside 1 percent, which is "
                  "what a cleared-MW reading predicts. Luzon runs about "
-                 "2 percent HIGH and we do not know why. The obvious "
+                 f"{_high_pct} percent HIGH and we do not know why. The obvious "
                  "candidate is ruled out: pumped storage and batteries "
                  "charging would count as dispatched offers while not "
                  "being generation, but they total 0.2 MW on a sampled "
-                 "Luzon interval, nowhere near the roughly 160 MW gap. "
+                 f"Luzon interval, nowhere near the roughly {_gap_round} MW gap. "
                  "The RTDSUM import, export and loss columns are a "
                  "measured no-op, not an untested lead: import is about "
-                 "a quarter of the gap and it tracks RTDSUM's own ~1.5 "
+                 f"{_import_frac} percent of the gap and it tracks RTDSUM's own about {_residual_pct} "
                  "percent energy-balance residual at a correlation near "
                  "0.9, so it is the term those columns leave over rather "
                  "than one they explain. The open cause is most likely a "

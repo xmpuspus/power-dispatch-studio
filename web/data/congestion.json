@@ -5,7 +5,8 @@
  },
  "days_covered": 104,
  "days_with_base_case_binding": 104,
- "distinct_equipment": 89,
+ "distinct_equipment": 75,
+ "constraint_records": 89,
  "total_rtd_intervals": 8499,
  "total_dap_rows": 37416,
  "league": [

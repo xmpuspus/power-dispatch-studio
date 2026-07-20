@@ -62,8 +62,10 @@ the real-time count how often it actually bound. The same corridor IEMOP's Decem
 
 ![The constraint league filling in bar by bar: named transmission equipment ranked by days at a binding limit over the archive window, the Leyte-Cebu corridor lines highlighted in coral topping the list by day-ahead days at a limit](docs/constraint-league.gif)
 
-Across the 104-day window, **89 distinct pieces of equipment** hit a limit at least
-once. The map ranks them by days at a limit (a day counts once, so a day-ahead
+Across the 104-day window, **75 distinct pieces of equipment** hit a limit at least
+once, in **89 monitored constraints** (a transformer is listed under each winding
+voltage and a line at each terminal, so one physical asset can hold several limits).
+The map ranks the constraints by days at a limit (a day counts once, so a day-ahead
 re-run cannot inflate it) and keeps the real-time and day-ahead counts in separate
 columns, because the day-ahead projection re-prices hourly and its raw row count
 measures re-run persistence, not time at the limit. Per-equipment receipts:

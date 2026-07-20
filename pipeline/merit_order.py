@@ -45,9 +45,10 @@ Measured, not assumed:
     agreement rate means nothing without them.
   - MOT's MW is CLEARED, not as-bid: summed per region it tracks RTDSUM
     generation at a ratio near 1.0 on the Visayas and Mindanao (a per-grid
-    rtdsum_ratio is stored and gated at 5 percent). Luzon runs about 2
-    percent high and that residual is open (see the baked note; storage
-    charging is ruled out). Resources show the cleared reading directly, a
+    rtdsum_ratio is stored and gated at 5 percent). Luzon runs a small
+    percent high and that residual is open (see the baked note for the
+    current figure; storage charging is ruled out). Resources show the
+    cleared reading directly, a
     coal unit offering a flat 600 MW all day while its dispatched MW moves
     between 349 and 600.
   - the sys region is the exact sum of the three grids on every interval
@@ -297,7 +298,7 @@ def derive_day(date: str, b64: str, name: str) -> dict:
 
     # the Luzon residual probe: per interval, the MOT dispatch-minus-generation
     # gap and RTDSUM's own energy-balance residual (GEN+IMP-REQT-LOSS-EXP), so
-    # the "import/export/loss close the 2% gap" lead can be measured, not
+    # the "import/export/loss close the gap" lead can be measured, not
     # guessed. Import is far too small and the two residuals move together.
     lz_gap: list = []
     lz_bal_resid: list = []
