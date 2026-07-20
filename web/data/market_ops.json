@@ -9220,6 +9220,87 @@
   "verdict": "commitment does not improve the price backcast; the LP stays the default engine",
   "engine_default": "lp"
  },
+ "ramp_probe": {
+  "available": true,
+  "sample_hour": "202605031000",
+  "n_resources_scored": 254,
+  "n_resources_with_published_ramp": 254,
+  "hourly_inert_resources": 173,
+  "hourly_inert_pct": 68.1,
+  "hourly_binding_resources": 81,
+  "median_hourly_range_over_capacity": 3.69,
+  "fleet_ramp_mw_per_hour": {
+   "luzon": 8209.9,
+   "visayas": 1366.5,
+   "mindanao": 2260.1
+  },
+  "worst_observed_demand_rise_mw_per_hour": {
+   "luzon": 1223,
+   "visayas": 308,
+   "mindanao": 307
+  },
+  "fleet_ramp_over_worst_demand_rise": {
+   "luzon": 6.7,
+   "visayas": 4.4,
+   "mindanao": 7.4
+  },
+  "tightest_units": [
+   {
+    "resource": "01S_ENRO_G01",
+    "capacity_mw": 110.0,
+    "ramp_mw_per_min": 0.1,
+    "pct_of_range_per_hour": 5.5
+   },
+   {
+    "resource": "01LIMAY_U08",
+    "capacity_mw": 90.0,
+    "ramp_mw_per_min": 0.1,
+    "pct_of_range_per_hour": 6.7
+   },
+   {
+    "resource": "01LIMAY_U04",
+    "capacity_mw": 87.0,
+    "ramp_mw_per_min": 0.1,
+    "pct_of_range_per_hour": 6.9
+   },
+   {
+    "resource": "03SLTEC_G01",
+    "capacity_mw": 122.0,
+    "ramp_mw_per_min": 0.2,
+    "pct_of_range_per_hour": 9.8
+   },
+   {
+    "resource": "03SLTEC_G02",
+    "capacity_mw": 123.0,
+    "ramp_mw_per_min": 0.2,
+    "pct_of_range_per_hour": 9.8
+   },
+   {
+    "resource": "03CALACA_G02",
+    "capacity_mw": 290.0,
+    "ramp_mw_per_min": 0.5,
+    "pct_of_range_per_hour": 10.3
+   },
+   {
+    "resource": "07BIDPP_G01",
+    "capacity_mw": 54.0,
+    "ramp_mw_per_min": 0.1,
+    "pct_of_range_per_hour": 11.1
+   },
+   {
+    "resource": "12TM2_U01",
+    "capacity_mw": 49.0,
+    "ramp_mw_per_min": 0.1,
+    "pct_of_range_per_hour": 12.2
+   }
+  ],
+  "verdict": "measured_inert_at_hourly_resolution",
+  "note": "Ramp rates ARE published: every RTDOE offer row carries a piecewise MW-per-minute curve by MW band, on essentially every resource. This measures whether an hourly ramp constraint would bind before building one. It would not, at this engine's resolution: the fleet's one-hour ramp capability runs several times the largest hour-to-hour demand rise anywhere in the archive, so a per-fuel hourly ramp limit is inert by construction and is measured out rather than built. Read the scope before re-using this: it is a grid and fuel-aggregate result at HOURLY resolution. A per-unit model would still see the binding minority counted here (the tightest units are oil and coal machines moving well under a tenth of their range per hour), and a 5-minute replay is a separate question this does not answer.",
+  "src": "https://www.iemop.ph/market-data/rtd-generation-offers/",
+  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations.",
+  "headroom_min": 4.4,
+  "headroom_max": 7.4
+ },
  "flow_record": {
   "available": true,
   "days": 102,
