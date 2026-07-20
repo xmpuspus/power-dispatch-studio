@@ -1,18 +1,18 @@
 {
  "available": true,
- "n_instructions": 97260,
+ "n_instructions": 97412,
  "mw_weighted_fraction_of_dispatch": {
   "luzon": {
-   "mw_weighted_pct": 6.59,
+   "mw_weighted_pct": 6.6,
    "n_raise_hours": 260
   },
   "visayas": {
    "mw_weighted_pct": 7.9,
-   "n_raise_hours": 804
+   "n_raise_hours": 805
   },
   "mindanao": {
-   "mw_weighted_pct": 11.13,
-   "n_raise_hours": 1420
+   "mw_weighted_pct": 11.15,
+   "n_raise_hours": 1421
   }
  },
  "sample_days": [
