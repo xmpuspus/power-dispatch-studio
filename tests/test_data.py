@@ -389,7 +389,13 @@ def _scan_rents(o, path=""):
             _scan_rents(v, f"{path}[{i}]")
 
 
-_scan_rents(disp)
+for _name in sorted(os.listdir(WEB)):
+    if not _name.endswith(".json"):
+        continue
+    try:
+        _scan_rents(load(_name), _name)
+    except (ValueError, OSError):
+        continue
 check("no negative congestion rent anywhere in the bake "
       f"(blocked corridors earn nothing){'' if not _neg_rents else ': ' + '; '.join(_neg_rents[:4])}",
       not _neg_rents)
@@ -1137,6 +1143,17 @@ check("the marquee as-bid scenario raises the rolling series above its own "
       and gt["marquee"]["scenario_max_rolling_72h"]["rolling_php_kwh"]
       > gt["marquee"]["baseline_max_rolling_72h"]["rolling_php_kwh"]
       and gt["marquee"]["baseline_trips"] is False)
+# Pin the DIRECTION too, not just the magnitude. Three shipped surfaces say the
+# marquee day "lands just UNDER the threshold"; if a re-bake pushed it back over,
+# the oracle would sync the number and leave that sentence false. This fails
+# instead, which is the whole point of the round that added it.
+check("the marquee day still lands UNDER the trigger, as the prose says",
+      gt["marquee"]["trips_trigger"] is False
+      and gt["marquee"]["scenario_max_rolling_72h"]["rolling_php_kwh"]
+      < gt["trigger_php_kwh"])
+check("the trigger block still discloses the mechanics it cannot reproduce",
+      "does not\nreproduce" in (gt.get("mechanism_note") or "").replace(" ", " ")
+      or "does not" in (gt.get("mechanism_note") or ""))
 check("the trigger block states which row is operative and names the "
       "ex-ante/final series difference",
       "interconnection" in (gt.get("applies_note") or "")

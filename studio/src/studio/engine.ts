@@ -218,8 +218,10 @@ export function clearCoupled(
     const m = marginal(stacks[g], gen[g])
     marginalLabel[g] = snapshotLabel(price[g], m.cost, m.fuel, shortfall[g] > 1e-3)
   }
-  const sat1 = Math.abs(f1) >= caps.leyte - FLOW_SAT_EPS
-  const sat2 = Math.abs(f2) >= caps.mvip - FLOW_SAT_EPS
+  // a zero cap is a BLOCKED corridor, not a saturated one: without the >eps
+  // test this is trivially true and the rent goes negative (mirrors chrono.py)
+  const sat1 = caps.leyte > FLOW_SAT_EPS && Math.abs(f1) >= caps.leyte - FLOW_SAT_EPS
+  const sat2 = caps.mvip > FLOW_SAT_EPS && Math.abs(f2) >= caps.mvip - FLOW_SAT_EPS
   return {
     price,
     gen: {

@@ -418,8 +418,10 @@ export function runChronology(
     }
     const cap1 = Array.isArray(m.caps.leyte) ? m.caps.leyte[h] : m.caps.leyte
     const cap2 = Array.isArray(m.caps.mvip) ? m.caps.mvip[h] : m.caps.mvip
-    const sat1 = Math.abs(f1) >= cap1 - FLOW_SAT_EPS
-    const sat2 = Math.abs(f2) >= cap2 - FLOW_SAT_EPS
+    // zero cap = blocked, not saturated (mirrors chrono.py); otherwise the
+    // test is trivially true and the rent branch returns a negative rent
+    const sat1 = cap1 > FLOW_SAT_EPS && Math.abs(f1) >= cap1 - FLOW_SAT_EPS
+    const sat2 = cap2 > FLOW_SAT_EPS && Math.abs(f2) >= cap2 - FLOW_SAT_EPS
     return {
       hour: h,
       price,
@@ -656,8 +658,10 @@ export function runWeek(
     }
     const cap1 = caps.leyte[h]
     const cap2 = caps.mvip[h]
-    const sat1 = Math.abs(f1) >= cap1 - FLOW_SAT_EPS
-    const sat2 = Math.abs(f2) >= cap2 - FLOW_SAT_EPS
+    // zero cap = blocked, not saturated (mirrors chrono.py); otherwise the
+    // test is trivially true and the rent branch returns a negative rent
+    const sat1 = cap1 > FLOW_SAT_EPS && Math.abs(f1) >= cap1 - FLOW_SAT_EPS
+    const sat2 = cap2 > FLOW_SAT_EPS && Math.abs(f2) >= cap2 - FLOW_SAT_EPS
     return {
       hour: h,
       day: dd,

@@ -544,18 +544,31 @@ published cap, and its trigger arithmetic is now computed rather than cited:
 the 72-hour rolling mean of the published 5-minute GWAP series
 (generator-weighted-average-price-final; archived here since July 2026 after
 a round-7 audit found the earlier "not published" claim false) runs per
-region in market_ops.json. The computation is a finding in both directions.
-The simple rolling mean crosses the P12.413 threshold inside the window on
-every series (Luzon peaks at P13.14 ending May 30, the System row at
-P13.32), yet the observed price record shows no day pinned at either the
-current P7.423 or the prior P6.245 cap level, so the operational imposition
-runs on arithmetic the public file alone does not reproduce: series
-designation, weighting, imposition and lifting mechanics, or in-window
-effectivity. The computed series is the trigger's published input, the
-breach counts are flags on that input rather than findings that the cap was
-due, and the widest-swing as-bid scenario day is flagged against the stated
-numbers (it crosses them). Impositions announce themselves in the archived
-advisory stream when they happen. Tiny
+region in market_ops.json, and for the combined Luzon-Visayas region the
+operator also publishes. The computation is a finding in both directions.
+Read the offer-cap-held series, not the raw one: the raw file carries
+intervals priced up to P165.05/kWh, five times the market's own P32/kWh
+offer cap, which are violation and scarcity coefficients rather than
+clears (the operator's own price-substitution record caps at exactly the
+offer cap, with no exceptions). Held at the cap, LUZON breaches zero
+windows and its peak falls below the threshold, so its entire breach
+count came from those intervals. That correction does not erase the
+finding elsewhere: the System row still breaches held at the cap, as does
+the combined Luzon-Visayas row, and Visayas and Mindanao run hot either
+way. Two things that were listed here as unknowns are in fact published:
+the rule monitors the EX-ANTE rolling GWAP while GWAPF is the final
+series, and under ERC Res. 26 s.2025 the regional or island cap applies
+only while a grid interconnection is on outage, which makes the System
+row the default trigger and the Visayas and Mindanao rows conditional.
+The observed price record shows no day pinned at either the current
+P7.423 or the prior P6.245 cap level, so the gap between the computed
+trigger and the operational one narrows but does not close; what remains
+unreproduced is the weighting and the imposition and lifting mechanics.
+The widest-swing as-bid scenario day lands just UNDER the stated
+threshold (P12.23 against P12.413); an earlier version of this page said
+it crossed, which was true of the day the old hourly binning selected.
+Impositions announce themselves in the archived advisory stream when they
+happen. Tiny
 deterministic epsilons (at most fractions of a centavo, largest on the last
 enumerated block) make the optimum unique on the model's flat cost plateaus so
 both solver builds land on the same answer. The inputs and the checks:</p>
@@ -857,8 +870,10 @@ no published price series to validate against; only sample-day DIPCEF nodal
 LMPs could check it, which makes the layer diagnostic, not scorable.</li>
 <li><b>The secondary-cap trigger is computed; its operational imposition
 is the remaining boundary</b>: the 72-hour rolling mean of the published
-per-region GWAP (GWAPF) now runs in market_ops.json, and it crosses the
-P12.413/kWh threshold inside the window on every series while the
+per-region GWAP (GWAPF) now runs in market_ops.json. Held at the market's
+own P32/kWh offer cap, which excludes the violation-priced intervals, it
+still crosses the P12.413/kWh threshold on the System, Luzon-Visayas,
+Visayas and Mindanao series, though no longer on Luzon, while the
 observed price record shows no day pinned at either the current or
 the prior cap level (the clamp scan is published beside the breach
 counts). The named missing input is the resolution's operational text:

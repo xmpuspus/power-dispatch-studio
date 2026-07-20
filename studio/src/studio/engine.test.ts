@@ -188,4 +188,30 @@ describe('lever behavior', () => {
     expect(before.coupled.leyte.sat).toBe(true)
     expect(after.coupled.price.visayas).toBeLessThanOrEqual(before.coupled.price.visayas)
   })
+
+  // A corridor whose limit is edited to 0 is BLOCKED, not congested. Without a
+  // positive-cap guard the saturation test passes trivially, the flow solves to
+  // 0, and the rent branch returns a reversed price difference: the studio then
+  // showed a negative congestion rent and summed it into window totals. A rent
+  // is what a binding link earns and can never be negative. Setting the limit
+  // to 0 is a normal thing to model here (the Leyte-Luzon HVDC is offline a
+  // large share of the time), so this is a reachable input, not a corner case.
+  it('a blocked corridor earns no congestion rent, and never a negative one', () => {
+    const stacks = {} as Record<GridKey, ReturnType<typeof buildStack>>
+    for (const gk of GRID_KEYS) {
+      stacks[gk] = buildStack(d.merit_order[gk].fuel_avail_mw, {}, [], stackParams())
+    }
+    // Visayas dear, Luzon cheap: the reversed branch would return a negative
+    const demand = { luzon: 8000, visayas: 2600, mindanao: 1500 }
+    const blocked = clearCoupled(demand, stacks, { leyte: 0, mvip: 0 }, 0)
+    expect(blocked.leyte.sat).toBe(false)
+    expect(blocked.leyte.rent).toBe(0)
+    expect(blocked.mvip.rent).toBe(0)
+    expect(blocked.leyte.rent).toBeGreaterThanOrEqual(0)
+    expect(blocked.mvip.rent).toBeGreaterThanOrEqual(0)
+
+    // and a genuinely binding corridor still reports a positive rent
+    const open = clearCoupled(demand, stacks, { leyte: 250, mvip: 250 }, 0)
+    expect(open.leyte.rent).toBeGreaterThanOrEqual(0)
+  })
 })

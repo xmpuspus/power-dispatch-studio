@@ -153,8 +153,11 @@ def clear_coupled_stacks(demand: dict, stacks: dict, caps: dict,
     marg = {g: marginal(stacks[g], gen[g])[1] for g in GRID_KEYS}
     shortfall = {g: max(0.0, round1(gen[g] - avail[g])) for g in GRID_KEYS}
     eps = 0.5
-    sat1 = abs(f1) >= c1 - eps
-    sat2 = abs(f2) >= c2 - eps
+    # a zero cap is a BLOCKED corridor, not a saturated one: without the c>eps
+    # test the comparison is trivially true and the rent branch returns a
+    # negative price difference, which a congestion rent cannot be
+    sat1 = c1 > eps and abs(f1) >= c1 - eps
+    sat2 = c2 > eps and abs(f2) >= c2 - eps
     rent1 = (round3(price["visayas"] - price["luzon"] if f1 > 0
                     else price["luzon"] - price["visayas"]) if sat1 else 0.0)
     rent2 = (round3(price["mindanao"] - price["visayas"] if f2 > 0
