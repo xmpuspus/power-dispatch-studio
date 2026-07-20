@@ -9634,63 +9634,75 @@
  },
  "mot_dispatch_cut": {
   "available": true,
-  "days": 3,
+  "days": 15,
   "dates": [
+   "2026-04-21",
+   "2026-04-28",
+   "2026-05-05",
+   "2026-05-12",
+   "2026-05-19",
+   "2026-05-26",
+   "2026-06-02",
+   "2026-06-09",
+   "2026-06-16",
+   "2026-06-23",
+   "2026-06-30",
+   "2026-07-07",
    "2026-07-11",
    "2026-07-12",
    "2026-07-13"
   ],
   "per_grid": {
    "luzon": {
-    "n_intervals": 864,
+    "n_intervals": 4320,
     "headroom_mw": {
-     "mean": 2758.6,
-     "min": 921.4,
+     "mean": 2452.0,
+     "min": 234.2,
      "max": 4876.0
     },
-    "dispatched_mw_mean": 10056.4,
-    "headroom_share_pct": 21.5,
-    "mcp_agreement_pct": 98.4,
-    "mcp_null_pct": 28.2,
-    "mcp_head_of_dispatched_pct": 9.8,
-    "mcp_n_intervals": 673,
-    "rtdsum_ratio": 1.0224
+    "dispatched_mw_mean": 11434.1,
+    "headroom_share_pct": 17.7,
+    "mcp_agreement_pct": 96.3,
+    "mcp_null_pct": 22.2,
+    "mcp_head_of_dispatched_pct": 12.9,
+    "mcp_n_intervals": 3184,
+    "rtdsum_ratio": 1.0157
    },
    "visayas": {
-    "n_intervals": 864,
+    "n_intervals": 4320,
     "headroom_mw": {
-     "mean": 336.0,
-     "min": 0.1,
-     "max": 548.2
+     "mean": 248.6,
+     "min": 0.0,
+     "max": 743.6
     },
-    "dispatched_mw_mean": 1531.1,
-    "headroom_share_pct": 18.0,
-    "mcp_agreement_pct": 97.8,
-    "mcp_null_pct": 28.8,
-    "mcp_head_of_dispatched_pct": 54.3,
-    "mcp_n_intervals": 184,
-    "rtdsum_ratio": 0.9918
+    "dispatched_mw_mean": 1739.7,
+    "headroom_share_pct": 12.5,
+    "mcp_agreement_pct": 88.2,
+    "mcp_null_pct": 27.5,
+    "mcp_head_of_dispatched_pct": 34.3,
+    "mcp_n_intervals": 756,
+    "rtdsum_ratio": 0.9899
    },
    "mindanao": {
-    "n_intervals": 864,
+    "n_intervals": 4320,
     "headroom_mw": {
-     "mean": 596.4,
-     "min": 10.3,
-     "max": 1058.1
+     "mean": 526.9,
+     "min": 0.0,
+     "max": 1240.2
     },
-    "dispatched_mw_mean": 2338.8,
-    "headroom_share_pct": 20.3,
-    "mcp_agreement_pct": 97.9,
-    "mcp_null_pct": 29.8,
-    "mcp_head_of_dispatched_pct": 37.8,
-    "mcp_n_intervals": 373,
-    "rtdsum_ratio": 0.9988
+    "dispatched_mw_mean": 2554.5,
+    "headroom_share_pct": 17.1,
+    "mcp_agreement_pct": 96.5,
+    "mcp_null_pct": 34.6,
+    "mcp_head_of_dispatched_pct": 27.3,
+    "mcp_n_intervals": 2140,
+    "rtdsum_ratio": 0.9982
    }
   },
   "luzon_residual_probe": {
-   "gap_mw_mean": 203.9,
-   "balance_residual_mw_mean": 182.4,
-   "import_mw_mean": 21.4
+   "gap_mw_mean": 159.2,
+   "balance_residual_mw_mean": 166.6,
+   "import_mw_mean": 40.1
   },
   "note": "The operator's own dispatch cut per region per 5-minute RTD interval, from IEMOP's Regional Merit Order Table (MOT files). Each interval's offer stack is published split into an offers-dispatched and an offers-not-dispatched section. headroom_mw is the not-dispatched total: the MW offered into the market and not taken, the operator's own published economic headroom, which is a tighter read of room to grow than registered capacity because every MW in it was actually offered. dispatched_mw is cleared MW, not as-bid: summed per region it tracks RTDSUM generation at rtdsum_ratio, and that reconciliation is NOT clean everywhere. The Visayas and Mindanao sit inside 1 percent, which is what a cleared-MW reading predicts. Luzon runs about 2 percent HIGH and we do not know why. The obvious candidate is ruled out: pumped storage and batteries charging would count as dispatched offers while not being generation, but they total 0.2 MW on a sampled Luzon interval, nowhere near the roughly 220 MW gap. The RTDSUM import, export and loss columns are a measured no-op, not an untested lead: import is about 10x too small and the gap tracks RTDSUM's own ~1.9 percent energy-balance residual at a correlation near 0.9, so it is the term those columns leave over rather than one they explain. The open cause is most likely a self-scheduled or must-run generation split IEMOP does not publish. Read the Luzon headroom knowing that residual is open rather than explained. MOT carries no price column and its Block index is the same tranche index as the RTDOE offer books, so it is not a finer view of supply than those books give.",
   "validation_note": "mcp_agreement_pct is how often the marginal resource IEMOP names in the MCP dataset falls inside the partially-cleared set this module reads off the cut (the resources named on both sides at once). mcp_null_pct is the same score for the same number of names drawn at random from that interval's dispatched resources, which is what the rate has to beat to mean anything. MCP and MOT come out of the same RTD solve, so this checks the cut parse rather than confirming the setter independently.",

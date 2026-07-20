@@ -1006,11 +1006,11 @@ re-check against the live sitemap rather than trust standing. What it buys is in
 market_ops.json mot_dispatch_cut: the operator publishes, per region per
 5-minute interval, its whole offer stack split into what cleared and what did
 not, so the not-dispatched total is the market's OWN published economic
-headroom. Over the three days derived so far (2026-07-11 to 07-13; the
-84-day window can be backfilled) that averages 2,758.6 MW on Luzon (21.5
-percent of the stack), 596.4 MW on Mindanao and 336.0 MW on the Visayas, where
-it falls as low as 0.1 MW: the Visayas at its tightest had essentially no
-economically offered MW left to call. That is a tighter read of the supply
+headroom. Over 15 days spread weekly across the window (2026-04-21 to 07-13)
+that averages 2,452 MW on Luzon (17.7 percent of the stack), 527 MW on Mindanao
+and 249 MW on the Visayas, where it falls to zero: on four separate days the
+Visayas cleared its entire offer stack, with no economically offered MW left to
+call at the tightest interval. That is a tighter read of the supply
 question than registered capacity, which cannot tell offered-and-unused from
 unavailable. Two checks travel with it, one of them only partly passing. MOT's
 dispatched MW reconciles to the RTDSUM generation for the same interval, which
@@ -1019,23 +1019,22 @@ Visayas and Mindanao land inside one percent; Luzon runs about two percent high
 and that residual is open, not explained. The obvious candidate is already ruled
 out, since pumped storage and batteries charging would show as dispatched offers
 without being generation and they come to 0.2 MW on a sampled Luzon interval
-against a gap of roughly 220 MW. The RTDSUM import, export and loss columns,
+against a gap of roughly 160 MW. The RTDSUM import, export and loss columns,
 which the earlier note flagged as the untested lead, do not close it either, and
-that is now measured rather than guessed: import averages 21 MW on Luzon, ten
-times too small; and the dispatch-minus-generation gap tracks RTDSUM's OWN
+that is now measured rather than guessed: import averages 40 MW on Luzon, about
+a quarter of the gap; and the dispatch-minus-generation gap tracks RTDSUM's OWN
 energy-balance residual (generation plus imports minus requirement, losses and
-exports, which fails to close by about 1.9 percent of Luzon generation) at a
-correlation near 0.9 (the MOT gap runs a little larger, 204 against 182 MW, so
-they are not identical, but they move together and are the same order of
-magnitude). So the gap is essentially RTDSUM's own unexplained balance term, the
+exports, which fails to close by about 1.5 percent of Luzon generation) at a
+correlation near 0.9 (159 against 167 MW across the 15 days, close and moving
+together). So the gap is essentially RTDSUM's own unexplained balance term, the
 part the import, export and loss columns leave over rather than anything they
 explain. What remains is most likely a self-scheduled or must-run
 generation split that sits in both dispatched MW and generation but not in the
 economic requirement the balance nets, and IEMOP does not publish that split, so
 the residual stays a genuine boundary with its missing input named. The second
 check: the partially-cleared resource this module reads off the
-cut is the one IEMOP separately names as price setter on 98 percent of
-intervals against a 28 percent random-draw baseline. MCP and MOT come out of
+cut is the one IEMOP separately names as price setter on 88 to 96 percent of
+intervals per grid against a 22 to 35 percent random-draw baseline. MCP and MOT come out of
 the same dispatch solve, so that agreement checks this parse rather than
 confirming the setter independently. MOT is not finer-grained than the offer
 books already archived, its Block column being the same tranche index as

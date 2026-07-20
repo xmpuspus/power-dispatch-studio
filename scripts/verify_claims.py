@@ -308,9 +308,7 @@ def canonical():
         # "about one percent of clean-day node-hours" rides on six public
         # surfaces and was hand-written; it is 1.18% and now computed
         "mot_headroom_luz": _n(mo["mot_dispatch_cut"]["per_grid"]["luzon"]
-                               ["headroom_mw"]["mean"], 1),
-        "mot_headroom_vis_min": _n(mo["mot_dispatch_cut"]["per_grid"]["visayas"]
-                                   ["headroom_mw"]["min"], 1),
+                               ["headroom_mw"]["mean"], 0),
         "cong_clean_share": _n(_load("nodal_obs.json")["congestion"]
                                ["clean_day_nonzero_share_pct"], 2),
 
@@ -590,9 +588,7 @@ REGISTRY = [
     ("web/methodology.html",
      re.compile(r"averages ([\d,.]+) MW on Luzon"),
      ["mot_headroom_luz"]),
-    ("web/methodology.html",
-     re.compile(r"as low as ([\d.]+) MW"),
-     ["mot_headroom_vis_min"]),
+
     ("web/methodology.html",
      re.compile(r"largest\s*\n?\s*hour-to-hour demand RISE anywhere in the archived observed profiles\s*\n?\s*\(([\d,]+) MW on Luzon"),
      ["ramp_luz_worst"]),

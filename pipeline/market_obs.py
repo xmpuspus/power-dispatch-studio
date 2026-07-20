@@ -2239,7 +2239,7 @@ def build_mot_dispatch_cut() -> dict:
         "dates": [d["date"] for d in days],
         "per_grid": per_grid,
         # the retired "untested lead": the RTDSUM import/export/loss columns do
-        # NOT close the Luzon 2% gap. import is ~10x too small, and the gap is
+        # NOT close the Luzon 2% gap. import is ~1/4 of the gap, and the gap is
         # RTDSUM's own energy-balance residual, the part those columns leave over
         "luzon_residual_probe": {
             "gap_mw_mean": _pool("gap_mw_mean"),
@@ -2264,10 +2264,10 @@ def build_mot_dispatch_cut() -> dict:
                  "candidate is ruled out: pumped storage and batteries "
                  "charging would count as dispatched offers while not "
                  "being generation, but they total 0.2 MW on a sampled "
-                 "Luzon interval, nowhere near the roughly 220 MW gap. "
+                 "Luzon interval, nowhere near the roughly 160 MW gap. "
                  "The RTDSUM import, export and loss columns are a "
                  "measured no-op, not an untested lead: import is about "
-                 "10x too small and the gap tracks RTDSUM's own ~1.9 "
+                 "a quarter of the gap and it tracks RTDSUM's own ~1.5 "
                  "percent energy-balance residual at a correlation near "
                  "0.9, so it is the term those columns leave over rather "
                  "than one they explain. The open cause is most likely a "

@@ -35,12 +35,12 @@ Measured, not assumed:
     All three scores are computed per day and stored (mcp_agreement per
     grid: agree_pct, null_pct, head_of_dispatched_pct), never asserted from
     a docstring range. The straddler set matches the operator's own named
-    price setter on 98 percent of intervals pooled. Picking only the single
-    most expensive dispatched unit (the head nearest the cut) does worse and
-    by a margin that varies sharply by grid: 9.8 percent on Luzon, where the
-    setter is usually one of several partially-cleared units, against 54 on
-    the Visayas and 38 on Mindanao. So the straddler-set rule is what earns
-    the agreement, most decisively on Luzon. The head score and the
+    price setter on 88 to 96 percent of intervals per grid (15 days spread
+    across the window). Picking only the single most expensive dispatched
+    unit (the head nearest the cut) does worse: 13 percent on Luzon, where
+    the setter is usually one of several partially-cleared units, against 34
+    on the Visayas and 27 on Mindanao. So the straddler-set rule is what
+    earns the agreement, most decisively on Luzon. The head score and the
     random-draw null are stored beside the agreement rate because the
     agreement rate means nothing without them.
   - MOT's MW is CLEARED, not as-bid: summed per region it tracks RTDSUM
