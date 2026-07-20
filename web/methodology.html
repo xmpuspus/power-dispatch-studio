@@ -98,7 +98,7 @@ administered-period days fail that gate by 3 to 5 percent, so only market days
 are derived). This is where the studio's observed hydro water budgets come
 from. (2) The LMP_CONGESTION column stays NOT displayed, on purpose: it is zero
 through the market suspension window and small and intermittent afterward,
-nonzero on a minority of sampled days and touching only about one percent of
+nonzero on a minority of sampled days and touching only 1.18 percent of
 clean-day node-hours, so a per-node congestion layer would read as near-empty
 noise rather than signal. Resolved against the WESM price-determination
 methodology: across the full derived archive the pricing flags run about 55%
@@ -429,7 +429,7 @@ usable; the probe reports binding geography and the honest gap, and the zonal
 engine remains the price model.</p>
 <p><b>The loss-surface validation.</b> Because the market's within-region
 nodal structure is loss-dominated (the congestion column is small and sparse,
-about one percent of clean-day node-hours), network physics can be tested
+1.18 percent of clean-day node-hours), network physics can be tested
 against it at scale: replay the observed injections on
 the reduced backbone, take marginal loss factors per node (class-typical
 resistances scaled by real routed length, labeled estimates), and compare the
@@ -821,21 +821,25 @@ question is not whether ramp limits could be modelled but whether they would
 bind, and that is now measured rather than asserted (market_ops.json
 ramp_probe, pipeline/ramp_probe.py). They would not, at this engine's
 resolution. Aggregate each unit's one-hour ramp capability, capped at its own
-offered range because a machine cannot exceed it, and the fleet can move 8,210
-MW/h on Luzon, 1,366 on the Visayas and 2,260 on Mindanao. The largest
-hour-to-hour demand RISE anywhere in the archived observed profiles is 1,223 MW
-on Luzon, 308 on the Visayas and 307 on Mindanao. The fleet ramps between 4.4
-and 7.4 times faster than demand has ever asked it to, and the verdict does not
-rest on the flattering read: taking each unit's SLOWEST published band instead
-of its fastest still leaves 4.4 to 6.7 times. A per-fuel hourly ramp
-constraint is therefore inert by construction, and building one would be
-fidelity theater: engine complexity for no accuracy. It is measured out, not
-skipped. Two honest qualifications travel with that: the result is a grid and
-fuel-aggregate one at HOURLY resolution, which is this engine's resolution, and
-per RESOURCE an hourly ramp limit could still bind for 32 percent of the book
-(the tightest are oil and coal machines moving under a tenth of their range per
-hour, so a per-UNIT model would need them); and the 5-minute case is a
-different question this measurement does not answer.</p>
+offered range because a machine cannot exceed it, and compare against the
+largest hour-to-hour demand RISE anywhere in the archived observed profiles
+(1,223 MW on Luzon, 308 on the Visayas, 307 on Mindanao). The margin depends on
+how the fleet is counted, so the figure reported is the conservative one:
+resources that were actually GENERATING that hour, not everything that offered;
+each unit's SLOWEST published ramp band, not its fastest; and the WORST of six
+sampled hours spanning weekday and weekend, morning pickup and evening peak. On
+that strict basis the fleet still out-ramps the worst demand rise by 3.5 times
+on Luzon, 2.4 on the Visayas and 4.3 on Mindanao. (Counting every offered
+resource at its fastest band lifts those to 6.1, 3.4 and 6.0, which is why the
+strict read is the one quoted.) A per-fuel hourly ramp constraint is therefore
+inert by construction, and building one would be fidelity theater: engine
+complexity for no accuracy. It is measured out, not skipped. Two honest
+qualifications travel with that: the result is a grid and fuel-aggregate one at
+HOURLY resolution, which is this engine's resolution, and per RESOURCE an hourly
+ramp limit could still bind for about a third of the book (the tightest are oil
+and coal machines moving under a tenth of their range per hour, so a per-UNIT
+model would need them); and the 5-minute case is a different question this
+measurement does not answer.</p>
 
 <h2>Boundaries and queued builds, each with its named input</h2>
 <ul>
@@ -976,9 +980,12 @@ knife-edge over a curtailed-solar nodal floor, not a clean missing
 input.</li>
 <li><b>The rest of the public surface is triaged and named, not
 ignored</b>: the IEMOP market-data sitemap carries 58 dataset pages;
-30 now feed this archive (23 archive keys, the three offer-book pages
-the derived books come from, and the four settlement-side and
-reserve-results finals the post-convergence build queue consumed). Of
+this archive keeps 22 of them as raw daily CSVs and fetches
+several more transiently to commit as compact derived books (the RTDOE
+and RTDOR offer books, the DIPCRF reserve-results finals, and now the
+Regional Merit Order Table). The exact split between raw and derived is
+not a number this page should assert precisely, because it is exactly the
+kind of hand-count that drifts. Of
 the remainder, the projection series (day-ahead, hour-ahead and
 week-ahead price and schedule projections) project rather than record
 and are out of scope for a replay scored on the real-time record; the
@@ -986,13 +993,14 @@ Original/Raw and interim variants duplicate final series already
 archived. One page slipped both nets until a round-10 audit: the
 Regional Merit Order Table (the rtd_smerit files), a real-time dispatch
 record, neither a projection nor a duplicate, which this triage had
-counted in no class at all. It is now consumed, and the lesson is that a
-hand-maintained disposition drifts, so the count is re-derived from the
-scraped slug list rather than kept by hand. What it buys is in
+counted in no class at all. It is now consumed. The lesson is that a
+hand-maintained disposition drifts, so this count is one to re-scrape and
+re-check against the live sitemap rather than trust standing. What it buys is in
 market_ops.json mot_dispatch_cut: the operator publishes, per region per
 5-minute interval, its whole offer stack split into what cleared and what did
 not, so the not-dispatched total is the market's OWN published economic
-headroom. Over the derived days that averages 2,758.6 MW on Luzon (21.5
+headroom. Over the three days derived so far (2026-07-11 to 07-13; the
+84-day window can be backfilled) that averages 2,758.6 MW on Luzon (21.5
 percent of the stack), 596.4 MW on Mindanao and 336.0 MW on the Visayas, where
 it falls as low as 0.1 MW: the Visayas at its tightest had essentially no
 economically offered MW left to call. That is a tighter read of the supply
@@ -1005,7 +1013,7 @@ and that residual is open, not explained. The obvious candidate is already ruled
 out, since pumped storage and batteries charging would show as dispatched offers
 without being generation and they come to 0.2 MW on a sampled Luzon interval
 against a gap of roughly 220 MW. The untested lead is the RTDSUM import, export
-and loss columns. Second check: and the partially-cleared resource this module reads off the
+and loss columns. The second check: the partially-cleared resource this module reads off the
 cut is the one IEMOP separately names as price setter on 98 percent of
 intervals against a 28 percent random-draw baseline. MCP and MOT come out of
 the same dispatch solve, so that agreement checks this parse rather than

@@ -14,7 +14,7 @@ price side.
 What the sampled window shows: the published LMP_CONGESTION component is
 zero through the WESM suspension window and small and intermittent after
 real-time pricing resumed on 2026-05-01 (nonzero on 28 of the 70 sampled
-days, up to about 19 PhP/kWh, but only about one percent of clean-day
+days, up to about 19 PhP/kWh, but only 1.18 percent of clean-day
 node-hours). The SMP is region-constant per interval, so most within-region
 locational separation rides LMP_LOSS, inter-regional congestion appears as
 the regional SMPs splitting, and the small nodal congestion that is priced

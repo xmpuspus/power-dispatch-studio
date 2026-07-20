@@ -24,7 +24,7 @@ never touches the byte-parity day-LP text):
           the bus-balance duals. Validation: regional means vs the observed
           regional SMPs; the binding set vs RTDCV. The published nodal
           LMP_CONGESTION column is zero through the market suspension window
-          and small and intermittent afterward (about one percent of
+          and small and intermittent afterward (1.18 percent of
           clean-day node-hours), so within-region modeled congestion has no
           reliable like-for-like observed target; the replay's binding-set
           match is the defensible test.

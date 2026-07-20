@@ -31,16 +31,25 @@ Measured, not assumed:
     PRICE(b+1). Reading the sections as one descending list without that
     offset makes the ordering look broken.
   - the marginal resource is the PARTIALLY CLEARED one, named in both
-    sections at once, not the head of the dispatched section. The head is
-    only the most expensive thing running, which agreed with the
-    operator's own named price setter on 25 percent of intervals; the
-    partially-cleared set carries it on 97 to 99 percent against a
-    same-size random draw of 20 to 23 percent. Both numbers are published
-    together because the first means nothing without the second.
+    sections at once, not just the single head of the dispatched section.
+    All three scores are computed per day and stored (mcp_agreement per
+    grid: agree_pct, null_pct, head_of_dispatched_pct), never asserted from
+    a docstring range. The straddler set matches the operator's own named
+    price setter on 98 percent of intervals pooled. Picking only the single
+    most expensive dispatched unit (the head nearest the cut) does worse and
+    by a margin that varies sharply by grid: 9.8 percent on Luzon, where the
+    setter is usually one of several partially-cleared units, against 54 on
+    the Visayas and 38 on Mindanao. So the straddler-set rule is what earns
+    the agreement, most decisively on Luzon. The head score and the
+    random-draw null are stored beside the agreement rate because the
+    agreement rate means nothing without them.
   - MOT's MW is CLEARED, not as-bid: summed per region it tracks RTDSUM
-    generation at a ratio of 0.998 to 1.015 (Mindanao MAE 3 to 4 MW on
-    ~2,470 MW). Resources show it directly, a coal unit offering a flat
-    600 MW all day while its dispatched MW moves between 349 and 600.
+    generation at a ratio near 1.0 on the Visayas and Mindanao (a per-grid
+    rtdsum_ratio is stored and gated at 5 percent). Luzon runs about 2
+    percent high and that residual is open (see the baked note; storage
+    charging is ruled out). Resources show the cleared reading directly, a
+    coal unit offering a flat 600 MW all day while its dispatched MW moves
+    between 349 and 600.
   - the sys region is the exact sum of the three grids on every interval
     sampled, so it is parsed past, not stored.
 
@@ -260,6 +269,7 @@ def derive_day(date: str, b64: str, name: str) -> dict:
     above: dict = {g: [] for g in GRIDS}
     agree: dict = {g: [0, 0] for g in GRIDS}
     null: dict = {g: [0, 0] for g in GRIDS}
+    head: dict = {g: [0, 0] for g in GRIDS}
     ratio: dict = {g: [] for g in GRIDS}
 
     for g in GRIDS:
@@ -294,6 +304,16 @@ def derive_day(date: str, b64: str, name: str) -> dict:
                 null[g][1] += 1
                 if draw & mset:
                     null[g][0] += 1
+                # the obvious wrong guess, scored so the design claim (the
+                # marginal is the STRADDLER set, not a single head pick) is
+                # measured and stored, not asserted in a docstring. The head is
+                # the dispatched row NEAREST the cut, dp[0]: the running total
+                # is zero-based at the cut and grows away from it, so dp[0] is
+                # the most expensive running unit and dp[-1] is cheap baseload.
+                head_name = dp[0][0]
+                head[g][1] += 1
+                if head_name in named:
+                    head[g][0] += 1
 
     for g in GRIDS:
         if not ratio[g]:
@@ -324,7 +344,8 @@ def derive_day(date: str, b64: str, name: str) -> dict:
         "mcp_agreement": {
             g: {"n_intervals": agree[g][1],
                 "agree_pct": _pct(agree[g]),
-                "null_pct": _pct(null[g])} for g in GRIDS},
+                "null_pct": _pct(null[g]),
+                "head_of_dispatched_pct": _pct(head[g])} for g in GRIDS},
         "rtdsum_ratio": {g: round(sum(ratio[g]) / len(ratio[g]), 4)
                          for g in GRIDS},
         "note": ("The operator's own dispatch cut per region per 5-minute "

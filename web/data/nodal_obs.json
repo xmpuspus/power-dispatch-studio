@@ -18104,7 +18104,7 @@
  ],
  "notes": [
   "Mean over clean days of each node's daily mean deviation from its regional SMP (DIPCEF final, PhP/kWh). Nodes need data on 80% of clean days to appear.",
-  "WESM's published nodal congestion component is zero through the market suspension window and small and intermittent after real-time pricing resumed on 2026-05-01 (about one percent of clean-day node-hours), so deviations are loss-dominated. Read this as persistent locational price deviation, not a congestion premium.",
+  "WESM's published nodal congestion component is zero through the market suspension window and small and intermittent after real-time pricing resumed on 2026-05-01 (1.18 percent of clean-day node-hours), so deviations are loss-dominated. Read this as persistent locational price deviation, not a congestion premium.",
   "Map placement resolves through public evidence in priority order (OSM substation, OSM plant site, named-generator pin, locality centroid), each dot tagged with its source; exact sites for stations and plants, city-precision for centroids. The full table lists every node, placed or not."
  ]
 }

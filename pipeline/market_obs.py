@@ -1404,21 +1404,23 @@ def build_ramp_probe(profiles: dict | None = None) -> dict:
     from ramp_probe import _worst_demand_rise
 
     worst = _worst_demand_rise(profiles)
-    fleet = out.get("fleet_ramp_mw_per_hour") or {}
     out["worst_observed_demand_rise_mw_per_hour"] = worst
-    out["fleet_ramp_over_worst_demand_rise"] = {
-        g: (round(fleet[g] / worst[g], 1) if worst.get(g) and fleet.get(g)
-            else None) for g in worst}
-    slow = out.get("fleet_ramp_slowest_band_mw_per_hour") or {}
-    out["slowest_band_over_worst_demand_rise"] = {
-        g: (round(slow[g] / worst[g], 1) if worst.get(g) and slow.get(g)
-            else None) for g in worst}
-    ratios = [v for v in out["fleet_ramp_over_worst_demand_rise"].values()
-              if v is not None]
-    out["verdict"] = ("would_bind" if any(v < 1.0 for v in ratios)
+    per_hour = out.get("per_hour_fleet_mw_per_hour") or {}
+    floors = {}
+    for basis in ("offered_best", "offered_slow", "online_best", "online_slow"):
+        floors[basis] = {
+            g: (round(min(h[basis][g] for h in per_hour.values()) / worst[g], 2)
+                if per_hour and worst.get(g) else None) for g in worst}
+    out["headroom_floors"] = floors
+    out["fleet_ramp_over_worst_demand_rise"] = floors["offered_best"]
+    out["strict_headroom_online_slowest_band"] = floors["online_slow"]
+    # the verdict rests on the STRICT basis (online units, slowest band, worst
+    # of the sampled hours), never the flattering offered-best read
+    strict = [v for v in floors["online_slow"].values() if v is not None]
+    out["verdict"] = ("would_bind" if any(v < 1.0 for v in strict)
                       else "measured_inert_at_hourly_resolution")
-    out["headroom_min"] = min(ratios) if ratios else None
-    out["headroom_max"] = max(ratios) if ratios else None
+    out["headroom_min"] = min(strict) if strict else None
+    out["headroom_max"] = max(strict) if strict else None
     return out
 
 
@@ -2195,7 +2197,7 @@ def build_mot_dispatch_cut() -> dict:
         # weight each day's rate by the intervals MCP actually named, so a
         # thin day cannot swing the pooled number
         pooled = {}
-        for field in ("agree_pct", "null_pct"):
+        for field in ("agree_pct", "null_pct", "head_of_dispatched_pct"):
             num = sum((d["mcp_agreement"][g][field] or 0)
                       * d["mcp_agreement"][g]["n_intervals"] for d in days)
             pooled[field] = round(num / agree_n, 1) if agree_n else None
@@ -2217,6 +2219,7 @@ def build_mot_dispatch_cut() -> dict:
                       / sum(h + dd for h, dd in pairs), 1) if pairs else None),
             "mcp_agreement_pct": pooled["agree_pct"],
             "mcp_null_pct": pooled["null_pct"],
+            "mcp_head_of_dispatched_pct": pooled["head_of_dispatched_pct"],
             "mcp_n_intervals": agree_n,
             "rtdsum_ratio": round(
                 sum(d["rtdsum_ratio"][g] for d in days) / len(days), 4),

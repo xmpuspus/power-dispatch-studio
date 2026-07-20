@@ -9222,22 +9222,22 @@
  },
  "ramp_probe": {
   "available": true,
-  "sample_hour": "202605031000",
-  "n_resources_scored": 254,
-  "n_resources_with_published_ramp": 254,
-  "hourly_inert_resources": 173,
-  "hourly_inert_pct": 68.1,
-  "hourly_binding_resources": 81,
-  "median_hourly_range_over_capacity": 3.69,
+  "sample_hour": "202606220800",
+  "n_resources_scored": 236,
+  "n_resources_with_published_ramp": 236,
+  "hourly_inert_resources": 170,
+  "hourly_inert_pct": 72.0,
+  "hourly_binding_resources": 66,
+  "median_hourly_range_over_capacity": 3.81,
   "fleet_ramp_mw_per_hour": {
-   "luzon": 8209.9,
-   "visayas": 1366.5,
-   "mindanao": 2260.1
+   "luzon": 8326.1,
+   "visayas": 1034.0,
+   "mindanao": 1834.1
   },
   "fleet_ramp_slowest_band_mw_per_hour": {
-   "luzon": 7144.6,
-   "visayas": 1354.5,
-   "mindanao": 2052.1
+   "luzon": 5696.0,
+   "visayas": 1022.0,
+   "mindanao": 1686.1
   },
   "worst_observed_demand_rise_mw_per_hour": {
    "luzon": 1223,
@@ -9245,9 +9245,179 @@
    "mindanao": 307
   },
   "fleet_ramp_over_worst_demand_rise": {
-   "luzon": 6.7,
-   "visayas": 4.4,
-   "mindanao": 7.4
+   "luzon": 6.1,
+   "visayas": 3.36,
+   "mindanao": 5.97
+  },
+  "n_sample_hours": 6,
+  "sample_hours": [
+   "202605031000",
+   "202605311800",
+   "202606071800",
+   "202606101900",
+   "202606220800",
+   "202607010600"
+  ],
+  "per_hour_fleet_mw_per_hour": {
+   "202606220800": {
+    "offered_best": {
+     "luzon": 8326.1,
+     "visayas": 1034.0,
+     "mindanao": 1834.1
+    },
+    "offered_slow": {
+     "luzon": 5696.0,
+     "visayas": 1022.0,
+     "mindanao": 1686.1
+    },
+    "online_best": {
+     "luzon": 6861.5,
+     "visayas": 752.8,
+     "mindanao": 1465.1
+    },
+    "online_slow": {
+     "luzon": 4231.4,
+     "visayas": 740.8,
+     "mindanao": 1317.1
+    }
+   },
+   "202606101900": {
+    "offered_best": {
+     "luzon": 9555.1,
+     "visayas": 1091.4,
+     "mindanao": 2003.8
+    },
+    "offered_slow": {
+     "luzon": 7933.3,
+     "visayas": 1079.4,
+     "mindanao": 1734.4
+    },
+    "online_best": {
+     "luzon": 8065.6,
+     "visayas": 1091.4,
+     "mindanao": 2003.8
+    },
+    "online_slow": {
+     "luzon": 6443.8,
+     "visayas": 1079.4,
+     "mindanao": 1734.4
+    }
+   },
+   "202606071800": {
+    "offered_best": {
+     "luzon": 8676.2,
+     "visayas": 1159.6,
+     "mindanao": 2219.9
+    },
+    "offered_slow": {
+     "luzon": 6142.1,
+     "visayas": 1147.6,
+     "mindanao": 2071.9
+    },
+    "online_best": {
+     "luzon": 6860.1,
+     "visayas": 1159.6,
+     "mindanao": 2029.9
+    },
+    "online_slow": {
+     "luzon": 4326.0,
+     "visayas": 1147.6,
+     "mindanao": 1881.9
+    }
+   },
+   "202607010600": {
+    "offered_best": {
+     "luzon": 7459.3,
+     "visayas": 1129.0,
+     "mindanao": 2017.2
+    },
+    "offered_slow": {
+     "luzon": 6247.3,
+     "visayas": 1117.0,
+     "mindanao": 1799.2
+    },
+    "online_best": {
+     "luzon": 7459.3,
+     "visayas": 1129.0,
+     "mindanao": 2017.2
+    },
+    "online_slow": {
+     "luzon": 6247.3,
+     "visayas": 1117.0,
+     "mindanao": 1799.2
+    }
+   },
+   "202605311800": {
+    "offered_best": {
+     "luzon": 8202.7,
+     "visayas": 1133.9,
+     "mindanao": 2266.2
+    },
+    "offered_slow": {
+     "luzon": 6790.9,
+     "visayas": 1121.9,
+     "mindanao": 2137.2
+    },
+    "online_best": {
+     "luzon": 7375.9,
+     "visayas": 1061.1,
+     "mindanao": 1740.7
+    },
+    "online_slow": {
+     "luzon": 5964.1,
+     "visayas": 1049.1,
+     "mindanao": 1611.7
+    }
+   },
+   "202605031000": {
+    "offered_best": {
+     "luzon": 8209.9,
+     "visayas": 1366.5,
+     "mindanao": 2260.1
+    },
+    "offered_slow": {
+     "luzon": 7144.6,
+     "visayas": 1354.5,
+     "mindanao": 2052.1
+    },
+    "online_best": {
+     "luzon": 6891.0,
+     "visayas": 881.6,
+     "mindanao": 1768.7
+    },
+    "online_slow": {
+     "luzon": 5825.7,
+     "visayas": 869.6,
+     "mindanao": 1560.7
+    }
+   }
+  },
+  "headroom_floors": {
+   "offered_best": {
+    "luzon": 6.1,
+    "visayas": 3.36,
+    "mindanao": 5.97
+   },
+   "offered_slow": {
+    "luzon": 4.66,
+    "visayas": 3.32,
+    "mindanao": 5.49
+   },
+   "online_best": {
+    "luzon": 5.61,
+    "visayas": 2.44,
+    "mindanao": 4.77
+   },
+   "online_slow": {
+    "luzon": 3.46,
+    "visayas": 2.41,
+    "mindanao": 4.29
+   }
+  },
+  "strict_headroom_online_slowest_band": {
+   "luzon": 3.46,
+   "visayas": 2.41,
+   "mindanao": 4.29
   },
   "tightest_units": [
    {
@@ -9270,27 +9440,27 @@
    },
    {
     "resource": "03SLTEC_G01",
-    "capacity_mw": 122.0,
+    "capacity_mw": 116.0,
     "ramp_mw_per_min": 0.2,
-    "pct_of_range_per_hour": 9.8
-   },
-   {
-    "resource": "03SLTEC_G02",
-    "capacity_mw": 123.0,
-    "ramp_mw_per_min": 0.2,
-    "pct_of_range_per_hour": 9.8
-   },
-   {
-    "resource": "03CALACA_G02",
-    "capacity_mw": 290.0,
-    "ramp_mw_per_min": 0.5,
     "pct_of_range_per_hour": 10.3
    },
    {
+    "resource": "03SLTEC_G02",
+    "capacity_mw": 116.0,
+    "ramp_mw_per_min": 0.2,
+    "pct_of_range_per_hour": 10.3
+   },
+   {
+    "resource": "03CALACA_G02",
+    "capacity_mw": 260.0,
+    "ramp_mw_per_min": 0.5,
+    "pct_of_range_per_hour": 11.5
+   },
+   {
     "resource": "07BIDPP_G01",
-    "capacity_mw": 54.0,
+    "capacity_mw": 50.0,
     "ramp_mw_per_min": 0.1,
-    "pct_of_range_per_hour": 11.1
+    "pct_of_range_per_hour": 12.0
    },
    {
     "resource": "12TM2_U01",
@@ -9303,13 +9473,8 @@
   "note": "Ramp rates ARE published: every RTDOE offer row carries a piecewise MW-per-minute curve by MW band, on essentially every resource. This measures whether an hourly ramp constraint would bind before building one. It would not, at this engine's resolution: the fleet's one-hour ramp capability runs several times the largest hour-to-hour demand rise anywhere in the archive, so a per-fuel hourly ramp limit is inert by construction and is measured out rather than built. Read the scope before re-using this: it is a grid and fuel-aggregate result at HOURLY resolution. A per-unit model would still see the binding minority counted here (the tightest units are oil and coal machines moving well under a tenth of their range per hour), and a 5-minute replay is a separate question this does not answer.",
   "src": "https://www.iemop.ph/market-data/rtd-generation-offers/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations.",
-  "slowest_band_over_worst_demand_rise": {
-   "luzon": 5.8,
-   "visayas": 4.4,
-   "mindanao": 6.7
-  },
-  "headroom_min": 4.4,
-  "headroom_max": 7.4
+  "headroom_min": 2.41,
+  "headroom_max": 4.29
  },
  "flow_record": {
   "available": true,
@@ -9487,6 +9652,7 @@
     "headroom_share_pct": 21.5,
     "mcp_agreement_pct": 98.4,
     "mcp_null_pct": 28.2,
+    "mcp_head_of_dispatched_pct": 9.8,
     "mcp_n_intervals": 673,
     "rtdsum_ratio": 1.0224
    },
@@ -9501,6 +9667,7 @@
     "headroom_share_pct": 18.0,
     "mcp_agreement_pct": 97.8,
     "mcp_null_pct": 28.8,
+    "mcp_head_of_dispatched_pct": 54.3,
     "mcp_n_intervals": 184,
     "rtdsum_ratio": 0.9918
    },
@@ -9515,6 +9682,7 @@
     "headroom_share_pct": 20.3,
     "mcp_agreement_pct": 97.9,
     "mcp_null_pct": 29.8,
+    "mcp_head_of_dispatched_pct": 37.8,
     "mcp_n_intervals": 373,
     "rtdsum_ratio": 0.9988
    }

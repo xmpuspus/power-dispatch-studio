@@ -4,7 +4,7 @@ own per-node price deviations?
 
 WESM's published nodal record decomposes every LMP into SMP + loss +
 congestion, the congestion column is small and sparse (zero through the
-market suspension window, then about one percent of clean-day node-hours),
+market suspension window, then 1.18 percent of clean-day node-hours),
 and the SMP is region-constant per interval. So the within-region nodal
 structure the market publishes is loss-dominated, about a thousand
 observed node-deviations per clean day. That is a validation target no

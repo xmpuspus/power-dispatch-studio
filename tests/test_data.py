@@ -1145,11 +1145,12 @@ rp = mo.get("ramp_probe") or {}
 check("the ramp probe measured the published curves, not asserted them",
       rp.get("available") and rp["n_resources_with_published_ramp"] > 100
       and rp["hourly_inert_pct"] is not None)
-check("the fleet still out-ramps the worst demand rise on every grid "
-      "(the reason an hourly ramp limit stays measured out, not built)",
+check("the fleet out-ramps the worst demand rise on the STRICT basis on every "
+      "grid (online units, slowest band, worst sampled hour: the read the "
+      "verdict rests on, not the flattering offered-best one)",
       rp.get("verdict") == "measured_inert_at_hourly_resolution"
       and all(v is not None and v > 1.0
-              for v in rp["fleet_ramp_over_worst_demand_rise"].values()))
+              for v in rp["strict_headroom_online_slowest_band"].values()))
 check("the ramp probe states its own scope rather than overclaiming",
       "HOURLY" in (rp.get("note") or "")
       and "per-unit" in (rp.get("note") or "").lower())

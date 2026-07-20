@@ -2971,17 +2971,20 @@
   "luzon": {
    "n_intervals": 249,
    "agree_pct": 98.4,
-   "null_pct": 40.2
+   "null_pct": 40.2,
+   "head_of_dispatched_pct": 7.2
   },
   "visayas": {
    "n_intervals": 91,
    "agree_pct": 100.0,
-   "null_pct": 27.5
+   "null_pct": 27.5,
+   "head_of_dispatched_pct": 61.5
   },
   "mindanao": {
    "n_intervals": 136,
    "agree_pct": 100.0,
-   "null_pct": 26.5
+   "null_pct": 26.5,
+   "head_of_dispatched_pct": 34.6
   }
  },
  "rtdsum_ratio": {

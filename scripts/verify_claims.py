@@ -291,8 +291,10 @@ def canonical():
         # the ramp measurement: the fleet figures are registration data but
         # the worst observed demand rise grows with the archive, so the
         # ratios move nightly and the prose must move with them
-        "ramp_luz_fleet": f'{mo["ramp_probe"]["fleet_ramp_mw_per_hour"]["luzon"]:,.0f}',
         "ramp_luz_worst": f'{mo["ramp_probe"]["worst_observed_demand_rise_mw_per_hour"]["luzon"]:,.0f}',
+        "ramp_strict_luz": _n(mo["ramp_probe"]["strict_headroom_online_slowest_band"]["luzon"], 1),
+        "ramp_strict_vis": _n(mo["ramp_probe"]["strict_headroom_online_slowest_band"]["visayas"], 1),
+        "ramp_strict_min": _n(mo["ramp_probe"]["strict_headroom_online_slowest_band"]["mindanao"], 1),
         # "about one percent of clean-day node-hours" rides on six public
         # surfaces and was hand-written; it is 1.18% and now computed
         "mot_headroom_luz": _n(mo["mot_dispatch_cut"]["per_grid"]["luzon"]
@@ -301,8 +303,7 @@ def canonical():
                                    ["headroom_mw"]["min"], 1),
         "cong_clean_share": _n(_load("nodal_obs.json")["congestion"]
                                ["clean_day_nonzero_share_pct"], 2),
-        "ramp_headroom_lo": _n(mo["ramp_probe"]["headroom_min"], 1),
-        "ramp_headroom_hi": _n(mo["ramp_probe"]["headroom_max"], 1),
+
         "subhourly_neg_days": mo["subhourly_probe"]["n_days_with_observed_negatives"],
         "subhourly_neg_days_word": ("one two three four five six seven eight"
                                     .split()[mo["subhourly_probe"]
@@ -570,6 +571,12 @@ REGISTRY = [
     ("web/methodology.html",
      re.compile(r"nonzero on ([\d.]+) percent of clean-day node-hours"),
      ["cong_clean_share"]),
+    ("README.md",
+     re.compile(r"nonzero on ([\d.]+) percent of clean-day node-hours"),
+     ["cong_clean_share"]),
+    ("web/methodology.html",
+     re.compile(r"touching only ([\d.]+) percent of\s*\n?\s*clean-day"),
+     ["cong_clean_share"]),
     ("web/methodology.html",
      re.compile(r"averages ([\d,.]+) MW on Luzon"),
      ["mot_headroom_luz"]),
@@ -577,14 +584,11 @@ REGISTRY = [
      re.compile(r"as low as ([\d.]+) MW"),
      ["mot_headroom_vis_min"]),
     ("web/methodology.html",
-     re.compile(r"fleet can move ([\d,]+)\s*\n?\s*MW/h on Luzon"),
-     ["ramp_luz_fleet"]),
-    ("web/methodology.html",
-     re.compile(r"is ([\d,]+) MW\s*\n?\s*on Luzon, 308"),
+     re.compile(r"largest\s*\n?\s*hour-to-hour demand RISE anywhere in the archived observed profiles\s*\n?\s*\(([\d,]+) MW on Luzon"),
      ["ramp_luz_worst"]),
     ("web/methodology.html",
-     re.compile(r"between (\d+\.\d+)\s*\n?\s*and (\d+\.\d+) times faster"),
-     ["ramp_headroom_lo", "ramp_headroom_hi"]),
+     re.compile(r"out-ramps the worst demand rise by ([\d.]+) times\s*\n?\s*on Luzon, ([\d.]+) on the Visayas and ([\d.]+) on Mindanao"),
+     ["ramp_strict_luz", "ramp_strict_vis", "ramp_strict_min"]),
     # --- loss-surface validation numbers (recompute nightly; F4) ---
     ("README.md",
      re.compile(r"Spearman \*\*\+([\d.]+)\*\* over (\d+) nodes \((\d+)\s+"

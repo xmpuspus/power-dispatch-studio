@@ -49,8 +49,20 @@ WEB = os.path.join(HERE, "..", "web", "data")
 OUT = os.path.join(HERE, "..", "data", "derived", "ramp_probe.json")
 REGION_GRID = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao"}
 GRIDS = ("luzon", "visayas", "mindanao")
-# a mid-morning weekday hour on a market day, inside the archived window
-SAMPLE_STAMP = "202605031000"
+# The fleet number is a sum over the resources OFFERING in that hour, and that
+# set moves hour to hour, so one sample is not a measurement. These span
+# weekdays and a weekend, morning pickup and evening peak, across the window.
+# The published floor is the WORST of them, never the best: an earlier version
+# quoted a single hour that happened to be the most favourable of six, and
+# called it a weekday when 2026-05-03 is a Sunday.
+SAMPLE_STAMPS = (
+    "202606220800",   # Mon, the hour of Luzon's worst observed demand rise
+    "202606101900",   # Wed evening peak
+    "202606071800",   # Sun evening peak
+    "202607010600",   # Wed morning pickup
+    "202605311800",   # Sun evening peak
+    "202605031000",   # Sun mid-morning (the previously published hour)
+)
 SRC = "https://www.iemop.ph/market-data/rtd-generation-offers/"
 
 
@@ -104,7 +116,59 @@ def _worst_demand_rise(profiles: dict) -> dict:
     return {g: round(worst[g], 1) for g in GRIDS}
 
 
-def derive(profiles: dict, stamp: str = SAMPLE_STAMP) -> dict:
+def _online_set(stamp: str) -> set[str]:
+    """Resources actually GENERATING in that specific hour, from the derived
+    nodal archive. The fleet that can answer a ramp inside sixty minutes is the
+    synchronised one; summing every resource that merely offered overstates it,
+    because an offline machine cannot. Returns an empty set when the day is not
+    derived, and callers then fall back to the offered basis rather than
+    reporting a fleet of zero."""
+    path = os.path.join(HERE, "..", "data", "derived", "nodal_daily",
+                        f"NODALD_{stamp[:8]}.json")
+    if not os.path.isfile(path):
+        return set()
+    try:
+        with open(path) as fh:
+            day = json.load(fh)
+    except (OSError, ValueError):
+        return set()
+    h = int(stamp[8:10])
+    online = set()
+    for res, nd in (day.get("nodes") or {}).items():
+        mw = nd.get("mw") or []
+        if h < len(mw) and mw[h]:
+            online.add(res)
+    return online
+
+
+def _fleet_for_hour(stamp: str) -> dict:
+    """One hour's fleet ramp capability, four ways: offered vs online-only,
+    each on the unit's best and slowest published band."""
+    rows = _resource_rows(stamp)
+    if not rows:
+        return {}
+    online = _online_set(stamp)
+    acc = {k: {g: 0.0 for g in GRIDS}
+           for k in ("offered_best", "offered_slow", "online_best",
+                     "online_slow")}
+    for r in rows:
+        g = REGION_GRID.get((r.get("REGION_NAME") or "").strip())
+        if not g:
+            continue
+        cap, best = _unit_ramp(r)
+        _, slow = _unit_ramp(r, slowest=True)
+        if cap <= 0 or best <= 0:
+            continue
+        name = (r.get("RESOURCE_NAME") or "").strip()
+        acc["offered_best"][g] += min(best * 60.0, cap)
+        acc["offered_slow"][g] += min(slow * 60.0, cap)
+        if not online or name in online:
+            acc["online_best"][g] += min(best * 60.0, cap)
+            acc["online_slow"][g] += min(slow * 60.0, cap)
+    return acc
+
+
+def derive(profiles: dict, stamp: str = SAMPLE_STAMPS[0]) -> dict:
     rows = _resource_rows(stamp)
     if not rows:
         return {"available": False,
@@ -143,11 +207,27 @@ def derive(profiles: dict, stamp: str = SAMPLE_STAMP) -> dict:
 
     scored = inert + binding
     worst = _worst_demand_rise(profiles)
-    headroom = {g: (round(fleet_mw_per_h[g] / worst[g], 1)
-                    if worst.get(g) else None) for g in GRIDS}
     tightest.sort(key=lambda x: x["pct_of_range_per_hour"])
 
-    binds_anywhere = any(h is not None and h < 1.0 for h in headroom.values())
+    # Sample many hours and publish the WORST, on the online-only basis. The
+    # offering set changes hour to hour, so a single hour is not a measurement,
+    # and a synchronised-fleet read is the one a ramp constraint would face.
+    per_hour = {}
+    for st in SAMPLE_STAMPS:
+        acc = _fleet_for_hour(st)
+        if acc:
+            per_hour[st] = {k: {g: round(v[g], 1) for g in GRIDS}
+                            for k, v in acc.items()}
+    bases = ("offered_best", "offered_slow", "online_best", "online_slow")
+    floors = {}
+    for basis in bases:
+        floors[basis] = {
+            g: (round(min(h[basis][g] for h in per_hour.values()) / worst[g], 2)
+                if per_hour and worst.get(g) else None) for g in GRIDS}
+    headroom = floors["offered_best"]
+    strict = floors["online_slow"]
+    strict_vals = [v for v in strict.values() if v is not None]
+    binds_anywhere = any(v < 1.0 for v in strict_vals) if strict_vals else False
     return {
         "available": True,
         "sample_hour": stamp,
@@ -164,6 +244,13 @@ def derive(profiles: dict, stamp: str = SAMPLE_STAMP) -> dict:
             g: round(fleet_slow_mw_per_h[g], 1) for g in GRIDS},
         "worst_observed_demand_rise_mw_per_hour": worst,
         "fleet_ramp_over_worst_demand_rise": headroom,
+        "n_sample_hours": len(per_hour),
+        "sample_hours": sorted(per_hour),
+        "per_hour_fleet_mw_per_hour": per_hour,
+        # the four bases, each taking the WORST sampled hour. online_slow is
+        # the conservative floor and is the one the verdict is decided on.
+        "headroom_floors": floors,
+        "strict_headroom_online_slowest_band": strict,
         "tightest_units": tightest[:8],
         "verdict": ("would_bind" if binds_anywhere
                     else "measured_inert_at_hourly_resolution"),

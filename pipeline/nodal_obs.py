@@ -12,8 +12,9 @@ Semantics, stated on every surface that shows this:
     counted) of the node's daily mean deviation from its regional SMP.
   - WESM's published nodal congestion component is zero through the market
     suspension window and small and intermittent after real-time pricing
-    resumed on 2026-05-01 (it touches about one percent of clean-day
-    node-hours), so the deviation is loss-dominated. The honest name is
+    resumed on 2026-05-01 (it touches 1.18 percent of clean-day
+    node-hours, the figure this module computes), so the deviation is
+    loss-dominated. The honest name is
     "persistent locational price deviation", never "congestion premium".
   - a node makes the table when it has data on at least 80 percent of the
     clean days.
@@ -188,7 +189,7 @@ def build_nodal_obs() -> dict:
             "80% of clean days to appear.",
             "WESM's published nodal congestion component is zero through the "
             "market suspension window and small and intermittent after "
-            "real-time pricing resumed on 2026-05-01 (about one percent of "
+            "real-time pricing resumed on 2026-05-01 (1.18 percent of "
             "clean-day node-hours), so deviations are loss-dominated. Read "
             "this as persistent locational price deviation, not a congestion "
             "premium.",

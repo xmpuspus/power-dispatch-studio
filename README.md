@@ -150,7 +150,7 @@ combined serve; a [smoother MP4 is here](docs/nodal-walkthrough.mp4).
 
 WESM decomposes every published LMP into an energy, a loss, and a congestion
 part, and the congestion part is small and sparse (zero through the market
-suspension, about one percent of clean-day node-hours afterward), so the
+suspension, nonzero on 1.18 percent of clean-day node-hours afterward), so the
 within-region nodal price structure the market reports is loss-dominated:
 about a thousand resources report per clean day, and the ones that resolve to a
 mapped bus become the validation target. That is a target a closed planning
