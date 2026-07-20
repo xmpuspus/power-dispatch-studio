@@ -22,8 +22,13 @@ data:
 # Re-cut the static share assets (OG card, constraint league, montage) from the
 # current bake. A deliberate step, not the nightly cron: these are dated
 # snapshots, so re-run when the narrative is re-cut, not every day.
+# bill_wedge and wesm_roles must run BEFORE story_montage, which embeds
+# bill-wedge.png as a panel. Both were missing from this target, so the bill
+# figure in the README went stale against the bake with nothing to catch it.
 viz:
 	$(PY) scripts/og_card.py
+	$(PY) scripts/bill_wedge.py
+	$(PY) scripts/wesm_roles.py
 	$(PY) scripts/constraint_league_gif.py
 	$(PY) scripts/story_montage.py
 	$(PY) scripts/stat_card.py

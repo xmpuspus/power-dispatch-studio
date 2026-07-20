@@ -44,7 +44,7 @@ is a shape a data center barely moves with room and jumps when full, one plant
 trip takes a fifth of the margin, and a WESM swing is only a slice of the Meralco
 bill.
 
-![Four-panel summary: a constraint league of named 230 kV lines at a binding limit on most days of the archive window with the Leyte-Cebu corridor topping it; the Luzon price-versus-load curve where a 300 MW data center adds about P0.32/kWh with room but far more when the grid is full; the May 2026 system margin of 3,629 MW with one 647 MW Sual unit marked as 18 percent of it; and the Meralco June 2026 bill split showing the WESM spot cost as roughly half the generation charge and a third of the whole rate](docs/story-montage.gif)
+![Four-panel summary: a constraint league of named 230 kV lines at a binding limit on most days of the archive window with the Leyte-Cebu corridor topping it; the Luzon price-versus-load curve where a 300 MW data center adds about P0.32/kWh with room but far more when the grid is full; the May 2026 system margin of 3,629 MW with one 647 MW Sual unit marked as 18 percent of it; and the Meralco June 2026 bill split showing the WESM spot slice at about a twentieth of the whole rate, because only a tenth of the energy behind the generation charge was bought on the spot market](docs/story-montage.gif)
 
 ## The grid names its own choke point
 
@@ -77,7 +77,7 @@ named generators**, the Visayas leading by intervals, batteries topping the
 list at the P32 offer cap (`constrained_on` in
 [`web/data/market_ops.json`](web/data/market_ops.json)). Beside it sit the
 security limits used in real-time dispatch: per-resource operating points
-the archived files pin to a single MW value in 99.2 percent of windows
+the archived files pin to a single MW value in 99.3 percent of windows
 (regulating hydro, the Agus units, is the exception), the physical record
 of which units the grid's security constraints held and where
 (`security_limits` in the same file).
@@ -100,9 +100,11 @@ In the operator's own real-time dispatch schedules, **Luzon scheduled reserves f
 below the stated requirement on 64 of the window's 104 days**, and load was curtailed
 in the dispatch schedules on **102 grid-days (5,209.8 MWh)** across the three grids.
 This is observed curtailment in published schedules and observed reserve shortfall,
-not a brownout forecast. The Visayas grid ran a **52-day daily yellow-alert streak
-(May 11 to July 1, 2026)** that ended when one 150 MW unit returned, with 935.3 MW
-still unavailable that day.
+not a brownout forecast. The Visayas grid ran **52 consecutive days on
+grid alert (May 11 to July 1, 2026)**, yellow on most of them and RED on three
+(May 13, 14 and 15, in the operator advisories archived here). Red alert is the
+more severe state: reserves depleted, interruptions expected. The streak ended
+when one 150 MW unit returned, with 935.3 MW still unavailable that day.
 
 Against that thin margin, the announced data-center wave is the size of the margin
 itself: DICT's forecast is **1,500 MW by 2028** (a labeled forecast, not a
@@ -167,14 +169,18 @@ panels under Analysis, Loss validation.
 
 ![Loss-surface validation: three scatter panels, one per grid, of the model's marginal loss-factor deviation against the market's observed per-node deviation, each with its fitted line and Spearman rank correlation. Luzon and Mindanao trend clearly and are marked validated in green; Visayas scatters and is marked failing in red](docs/loss-surface.png)
 
-That wholesale price passes into the Meralco bill monthly. The June 2026 advisory
-carried WESM at **P7.03/kWh** inside a **P9.07/kWh** generation charge on a
-**P14.48/kWh** total rate. One Sual unit (**647 MW**) equals **18% of the May system
+That wholesale price passes into the Meralco bill monthly, and only on the share
+of energy actually bought on the spot market. The June 2026 advisory paid
+**P7.03/kWh** for the **10%** of supply it drew from WESM, so about
+**P0.70/kWh** of the **P9.07/kWh** generation charge and of the **P14.48/kWh**
+total rate. The other 90% sits under bilateral contracts whose prices do not
+move with the spot market, which is why a spot spike is never a one-for-one
+bill move. One Sual unit (**647 MW**) equals **18% of the May system
 margin**, which is why the loss of one large unit is felt system-wide; the map's toggle does that
 subtraction in the open, as arithmetic on the published margin, not a dispatch
 simulation.
 
-![The Meralco June 2026 bill as a horizontal bar: the WESM spot cost at 7.03 pesos per kWh is 49 percent, the rest of the generation charge 14 percent, and transmission distribution and taxes 37 percent, with an arrow noting a WESM swing moves only the spot slice and only on the next month's bill](docs/bill-wedge.png)
+![The Meralco June 2026 bill as a horizontal bar: the WESM spot slice at 0.70 pesos per kWh is about 5 percent, contracted generation from PSAs and IPPs 58 percent, and transmission distribution and taxes 37 percent, with an arrow noting a WESM swing moves only the spot slice and only on the next month's bill](docs/bill-wedge.png)
 
 The price is a shape, not a number. The same data center draws the same power every
 hour, but what it does to the WESM price depends on how busy the grid already is:
@@ -197,13 +203,15 @@ generation-price join: [`web/data/prices.json`](web/data/prices.json) and
 
 Each island grid answers a new load differently. Luzon carries the volume and climbs
 a long way; the smaller grids stay flat until they run tight. WESM is an energy-only
-market: generators are paid for the energy they dispatch, not for standing capacity,
-so there is no capacity auction to price, which is why this project has no
-capacity-market chart.
+market: generators are paid for the energy they dispatch, and since the reserve
+market went to full commercial operations on 26 January 2024, for the reserve
+they hold. What energy-only means is that there is no forward capacity auction to
+price, which is why this project has no capacity-market chart. The reserve layer
+is modelled separately below.
 
 ![Three small-multiple panels, one per island grid, each plotting the average WESM price against dispatched generation: Luzon a long climb from 3 to 14 pesos, Visayas rising then easing, Mindanao climbing steeply past 22 pesos](docs/small-multiples.png)
 
-![Who runs the Philippine power market: IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC regulates, DOE sets policy, and the last row notes WESM is energy-only with no capacity auction](docs/wesm-roles.png)
+![Who runs the Philippine power market: IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC regulates, DOE sets policy, TransCo owns the transmission assets NGCP operates on concession, and the last row notes WESM is energy-only with no capacity auction](docs/wesm-roles.png)
 
 ## What moved prices, day by day
 
@@ -224,7 +232,7 @@ The map's Simulate mode is a simplified merit-order model of the grid. It stacks
 sourced generator fleet by marginal cost against the archive's own dispatched
 generation, per grid, and reads off the marginal clearing price.
 
-![A walkthrough of the Simulate mode on the Luzon grid: the merit-order stack sits on the coal margin at a P6 clearing price, then a data-center slider adds 1,500 MW of flat load until the demand line crosses into the oil block and the price flips to P12, then tripping the 1,294 MW Sual coal unit holds the grid on that oil margin, then the levers relieve the feeding HVDC corridor, then the grid switches to the smaller Visayas stack, which clears on its own coal margin at P6](docs/dispatch-demo.gif) Coal
+![A walkthrough of the Simulate mode on the Luzon grid: the merit-order stack sits on the coal margin at a P6 clearing price, then a data-center slider adds 1,500 MW of flat load until the demand line crosses into the oil block and the price flips to P12, then tripping both 647 MW Sual units (1,294 MW, an N-2 case, not a single contingency) holds the grid on that oil margin, then the levers relieve the feeding HVDC corridor, then the grid switches to the smaller Visayas stack, which clears on its own coal margin at P6](docs/dispatch-demo.gif) Coal
 marginal cost is the ERC administered price of **P6.00/kWh** and Malampaya gas is
 **P4.80/kWh**, both sourced; the availability derates and the split of the fleet
 across grids are labeled model assumptions, except hydro, whose split now follows
@@ -423,7 +431,7 @@ synthetic benchmark. The studio replays every full-coverage market day and
 scores the clear two ways. The simple cost model is a floor: it clears near the
 **P6 coal baseline** and under-prices scarcity, so read its levels as a lower
 bound. Replay the operator's own offer book instead and the model tracks the
-real price shape hour by hour, reaching **0.73 to 0.87 correlation** with
+real price shape hour by hour, reaching **0.68 to 0.87 correlation** with
 observed prices across the quarter and **88 to 99 percent** of the inter-island
 flow direction. A dated event closes it: the **935 MW** Visayas outage of July 1
 reproduces **87.8 percent** of the observed island price gap, with the
@@ -527,7 +535,9 @@ The individual what-ifs, each a recorded studio session:
   in OpenStreetMap (community data, ODbL), geometry only, no ratings.
 - Not a nodal congestion-premium layer. WESM's published nodal congestion component
   is zero through the market suspension and small and intermittent afterward (the
-  market re-prices most intervals under a substitution methodology and expresses
+  market re-prices a minority of intervals under a substitution methodology (16
+  percent of the derived archive, against 22 percent administered and 8 percent
+  security-limited) and expresses
   inter-island congestion as regional price separation, not a per-node charge). What the map and studio DO display is the
   observed locational deviation per node, labeled as such, never as a congestion
   premium. Full resolution in

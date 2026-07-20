@@ -232,6 +232,13 @@ def canonical():
         "rel_dict_eue": _n(rel_dc["eue_mwh_evening_window"], 0),
         # offer-book backcast Mindanao clearing-price (MCP) correlation
         "offer_min_mcp_corr": _n(ob["per_grid_mcp"]["mindanao"]["correlation"], 2),
+        # The headline range must span EVERY scored grid on both targets. It was
+        # hand-written as "0.73 to 0.88" and silently dropped the minimum, which
+        # was Visayas LWAP, the grid this project is about. Compute both ends.
+        "offer_corr_lo": _n(min(v["correlation"] for d in ("per_grid", "per_grid_mcp")
+                                for v in ob[d].values()), 2),
+        "offer_corr_hi": _n(max(v["correlation"] for d in ("per_grid", "per_grid_mcp")
+                                for v in ob[d].values()), 2),
         # layered (unit-commitment) calibration correlations + MAE per grid
         "cal_luz_corr": _n(cal["luzon"]["correlation"], 2),
         "cal_vis_corr": _n(cal["visayas"]["correlation"], 2),
@@ -276,6 +283,7 @@ def canonical():
         "offer_vis_delta": _n(_delta(_WAVE_O, _BASE_O, "visayas"), 2),
         "offer_min_delta": _n(_delta(_WAVE_O, _BASE_O, "mindanao"), 2),
         "marquee_rolling": _n(mo["gwap_trigger"]["marquee"]["scenario_max_rolling_72h"]["rolling_php_kwh"], 2),
+        "pinned_share": _n(mo["security_limits"]["pinned_share_pct"], 1),
         "reserve_days": rv["days"],
         "reserve_above_pct": f'{rv["hours_model_above_pct"]:.1f}',
         "scored_hours": f"{sum(c['n_hours'] for g in rv['pools'].values() for c in g.values()):,}",
@@ -425,8 +433,8 @@ REGISTRY = [
      re.compile(r"Mindanao clearing-price correlation \*\*(0\.\d+)\*\*"),
      ["offer_min_mcp_corr"]),
     ("README.md",
-     re.compile(r"reaching \*\*0\.73 to (0\.\d+) correlation\*\*"),
-     ["offer_min_mcp_corr"]),
+     re.compile(r"reaching \*\*(0\.\d+) to (0\.\d+) correlation\*\*"),
+     ["offer_corr_lo", "offer_corr_hi"]),
     ("README.md",
      re.compile(r"collapsing from\s*\n?\s*\*\*-P(\d+\.\d+)\*\* to \*\*-P(\d+\.\d+)/kWh\*\*"),
      ["cost_vis_bias", "offer_vis_bias"]),
@@ -521,6 +529,10 @@ REGISTRY = [
     ("README.md",
      re.compile(r"rolling series to P(\d+\.\d+) against\s*\n?\s*the P12\.413 trigger"),
      ["marquee_rolling"]),
+    # drifted 99.2 -> 99.3 unnoticed because nothing guarded it; both copies now do
+    ("README.md",
+     re.compile(r"single MW value in (\d+\.\d+) percent of windows"),
+     ["pinned_share"]),
     # --- loss-surface validation numbers (recompute nightly; F4) ---
     ("README.md",
      re.compile(r"Spearman \*\*\+([\d.]+)\*\* over (\d+) nodes \((\d+)\s+"

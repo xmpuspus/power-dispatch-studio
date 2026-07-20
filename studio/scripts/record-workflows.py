@@ -291,7 +291,7 @@ async def wf2(page: Page):
     await view(page, "Generators")
     await r.cap(
         "Trip the plant: zero both 647 MW Sual units",
-        "SPI U1 and SPI U2, the largest single units on the Luzon grid, to 0 MW.",
+        "SPI U1 and SPI U2, among the largest units on the Luzon grid, to 0 MW.",
     )
     await edit_cell(page, "SPI U1 Dependable", "0", hold=0.9)
     await edit_cell(page, "SPI U2 Dependable", "0", hold=1.3)
