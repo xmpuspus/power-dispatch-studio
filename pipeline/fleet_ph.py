@@ -98,7 +98,12 @@ FUEL_COST_PHP_KWH = {
     "geothermal": 3.50,   # steam-field O&M proxy (must-run in practice)
     "natural_gas": 4.80,  # SOURCED: Malampaya gas ~P4.80/kWh (FOI)
     "biomass": 5.00,      # feedstock proxy
-    "coal": 6.00,         # SOURCED: ERC administered coal price P6,000/MWh (2026)
+    # SOURCED: ERC Resolution No. 10, s. 2026 (effective 26 Mar 2026) fixed coal
+    # generation at P6,000/MWh during the WESM suspension. Used here as a
+    # marginal-cost PROXY: it is a regulatory settlement price for a suspended
+    # market, not a measurement of coal short-run marginal cost, and the stack
+    # it feeds is calibrated against the post-resumption market window.
+    "coal": 6.00,
     "lng": 10.30,         # SOURCED: imported LNG ~P10.30/kWh (marginal gas as
                           # Malampaya depletes; used only by the LNG scenario lever)
     "oil": 12.00,         # ASSUMPTION: bunker/diesel peaker proxy; scarcity setter

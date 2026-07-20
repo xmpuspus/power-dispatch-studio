@@ -73,7 +73,7 @@ def main():
                      fontsize=14, color=vz.NAVY, loc="left")
         vz.tufte(ax, grid="y")
         vz.caption(fig,
-                   "Sual's two 647 MW units are the largest single contingencies on "
+                   "Sual's two 647 MW units are among the largest on "
                    "the Luzon grid. This subtracts a unit from IEMOP's published May "
                    "2026 margin as arithmetic, not a dispatch simulation. The margin "
                    "itself moves daily. Source: IEMOP May 2026 report.", y=-0.03)

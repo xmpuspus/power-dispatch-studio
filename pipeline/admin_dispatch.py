@@ -32,7 +32,7 @@ import csv
 import glob
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.join(HERE, "..", "web", "data")
@@ -49,7 +49,16 @@ def _ts(s: str) -> datetime | None:
             return datetime.strptime(s.strip(), fmt)
         except ValueError:
             continue
-    return None
+    # IEMOP serializes the midnight-ending (24:00) interval as a bare date. None
+    # of the formats above match it, so these rows were being dropped silently:
+    # 152 instructions across the archive, which is why the row count here
+    # disagreed with the count published from the same file. That interval ends
+    # the printed date's previous day at hour 23.
+    try:
+        d = datetime.strptime(s.strip(), "%m/%d/%Y")
+    except ValueError:
+        return None
+    return d - timedelta(hours=1)
 
 
 def _admin_hourly() -> dict:

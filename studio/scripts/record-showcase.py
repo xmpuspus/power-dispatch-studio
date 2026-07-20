@@ -172,7 +172,7 @@ async def hero(page: Page):
     await view(page, "Generators")
     await r.cap(
         "Now stress it: trip both 647 MW Sual units",
-        "SPI U1 and U2, the largest single units on Luzon, to 0 MW.",
+        "SPI U1 and U2, among the largest units on Luzon, to 0 MW.",
     )
     await edit_cell(page, "SPI U1 Dependable", "0", hold=0.8)
     await edit_cell(page, "SPI U2 Dependable", "0", hold=1.0)

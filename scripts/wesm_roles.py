@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Who runs the Philippine power market. Five bodies split the functions of the
+"""Who runs the Philippine power market. Six bodies split the functions of the
 electricity market between them, and WESM runs an energy-only market with no
 centralized capacity auction. This figure is why Power Dispatch Studio has no capacity-market
 chart: there is no capacity market to chart.
@@ -27,6 +27,8 @@ ROWS = [
     ("Governs the market", "PEMC", "Philippine Electricity Market Corporation"),
     ("Regulates prices and rules", "ERC", "Energy Regulatory Commission"),
     ("Sets energy policy", "DOE", "Department of Energy"),
+    ("Owns the transmission assets", "TransCo",
+     "National Transmission Corporation"),
     ("Capacity market", "none", "energy-only, no capacity auction"),
 ]
 
@@ -58,13 +60,14 @@ def main():
 
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
-    ax.set_title("Five bodies run the Philippine power market",
+    ax.set_title("Six bodies run the Philippine power market",
                  fontsize=14, color=vz.NAVY, loc="left", x=0.02)
     vz.caption(fig,
                "IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC "
-               "regulates, and DOE sets policy. WESM is energy-only. Generators are "
-               "paid for the energy they dispatch, not for standing capacity, so there "
-               "is no capacity auction to price or to chart. Sources: IEMOP, NGCP, "
+               "regulates, and DOE sets policy. WESM is energy-only: generators are "
+               "paid for the energy they dispatch and for the reserve they hold, "
+               "but there is no forward capacity auction to price or to chart. "
+               "Sources: IEMOP, NGCP, "
                "PEMC, ERC, DOE.",
                y=0.02)
     fig.savefig(OUT, dpi=150, bbox_inches="tight", facecolor="white")

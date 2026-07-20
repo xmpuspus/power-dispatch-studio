@@ -291,7 +291,12 @@ DEMAND_ANCHORS = [
 
 # --- Market and bill anchors ----------------------------------------------------
 MARKET_ANCHORS = {
-    # IEMOP May 2026 report via powerphilippines (first full post-resumption month)
+    # IEMOP May 2026 report via powerphilippines. "May 2026" is the WESM BILLING
+    # PERIOD 26 Apr to 25 May, not calendar May: all four figures reproduce on
+    # that period from data/raw/LWAPF to within 0.1% and none reproduce on
+    # calendar May. Its first five days were still administered (the market
+    # resumed 1 May), so it is not a full post-resumption month; excluding them
+    # raises the system average about 5%.
     "wesm_may2026_system_avg_php_kwh": 7.79,
     "wesm_may2026_vs_april_pct": 38.5,
     "wesm_may2026_luzon": 7.02,
