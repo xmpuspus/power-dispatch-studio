@@ -9234,6 +9234,11 @@
    "visayas": 1366.5,
    "mindanao": 2260.1
   },
+  "fleet_ramp_slowest_band_mw_per_hour": {
+   "luzon": 7144.6,
+   "visayas": 1354.5,
+   "mindanao": 2052.1
+  },
   "worst_observed_demand_rise_mw_per_hour": {
    "luzon": 1223,
    "visayas": 308,
@@ -9298,6 +9303,11 @@
   "note": "Ramp rates ARE published: every RTDOE offer row carries a piecewise MW-per-minute curve by MW band, on essentially every resource. This measures whether an hourly ramp constraint would bind before building one. It would not, at this engine's resolution: the fleet's one-hour ramp capability runs several times the largest hour-to-hour demand rise anywhere in the archive, so a per-fuel hourly ramp limit is inert by construction and is measured out rather than built. Read the scope before re-using this: it is a grid and fuel-aggregate result at HOURLY resolution. A per-unit model would still see the binding minority counted here (the tightest units are oil and coal machines moving well under a tenth of their range per hour), and a 5-minute replay is a separate question this does not answer.",
   "src": "https://www.iemop.ph/market-data/rtd-generation-offers/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations.",
+  "slowest_band_over_worst_demand_rise": {
+   "luzon": 5.8,
+   "visayas": 4.4,
+   "mindanao": 6.7
+  },
   "headroom_min": 4.4,
   "headroom_max": 7.4
  },

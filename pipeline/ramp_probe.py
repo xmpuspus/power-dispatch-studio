@@ -73,13 +73,21 @@ def _resource_rows(stamp: str) -> list[dict]:
             if (r.get("TIME_INTERVAL") or "").strip() == stamps[0]]
 
 
-def _unit_ramp(r: dict) -> tuple[float, float]:
-    """(offered capacity MW, best up-ramp MW/min) for one resource. Capacity is
-    the TOP cumulative breakpoint: QUANTITYn is a cumulative offer curve, not a
-    block width, so summing them would double count."""
+def _unit_ramp(r: dict, slowest: bool = False) -> tuple[float, float]:
+    """(offered capacity MW, up-ramp MW/min) for one resource. Capacity is the
+    TOP cumulative breakpoint: QUANTITYn is a cumulative offer curve, not a
+    block width, so summing them would double count.
+
+    `slowest` takes the unit's WORST published band instead of its best. The
+    headline uses the best band, so the honest question is whether the verdict
+    survives the pessimistic read; the output reports both so a reader does not
+    have to take that on trust."""
     cap = max([_f(r.get(f"QUANTITY{i}")) for i in range(1, 12)] or [0.0])
-    up = max(_f(r.get(f"RR_UP{i}")) for i in range(1, 6))
-    return cap, up
+    bands = [_f(r.get(f"RR_UP{i}")) for i in range(1, 6)]
+    bands = [b for b in bands if b > 0]
+    if not bands:
+        return cap, 0.0
+    return cap, (min(bands) if slowest else max(bands))
 
 
 def _worst_demand_rise(profiles: dict) -> dict:
@@ -106,6 +114,7 @@ def derive(profiles: dict, stamp: str = SAMPLE_STAMP) -> dict:
     ratios: list[float] = []
     tightest: list[dict] = []
     fleet_mw_per_h: dict[str, float] = {g: 0.0 for g in GRIDS}
+    fleet_slow_mw_per_h: dict[str, float] = {g: 0.0 for g in GRIDS}
     n_with_ramp = 0
 
     for r in rows:
@@ -129,6 +138,8 @@ def derive(profiles: dict, stamp: str = SAMPLE_STAMP) -> dict:
         if g:
             # a unit cannot move more than its own range inside the hour
             fleet_mw_per_h[g] += min(hourly, cap)
+            _, slow = _unit_ramp(r, slowest=True)
+            fleet_slow_mw_per_h[g] += min(slow * 60.0, cap)
 
     scored = inert + binding
     worst = _worst_demand_rise(profiles)
@@ -149,6 +160,8 @@ def derive(profiles: dict, stamp: str = SAMPLE_STAMP) -> dict:
                                               if ratios else None),
         "fleet_ramp_mw_per_hour": {g: round(fleet_mw_per_h[g], 1)
                                    for g in GRIDS},
+        "fleet_ramp_slowest_band_mw_per_hour": {
+            g: round(fleet_slow_mw_per_h[g], 1) for g in GRIDS},
         "worst_observed_demand_rise_mw_per_hour": worst,
         "fleet_ramp_over_worst_demand_rise": headroom,
         "tightest_units": tightest[:8],

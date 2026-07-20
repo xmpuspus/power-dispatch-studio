@@ -1409,6 +1409,10 @@ def build_ramp_probe(profiles: dict | None = None) -> dict:
     out["fleet_ramp_over_worst_demand_rise"] = {
         g: (round(fleet[g] / worst[g], 1) if worst.get(g) and fleet.get(g)
             else None) for g in worst}
+    slow = out.get("fleet_ramp_slowest_band_mw_per_hour") or {}
+    out["slowest_band_over_worst_demand_rise"] = {
+        g: (round(slow[g] / worst[g], 1) if worst.get(g) and slow.get(g)
+            else None) for g in worst}
     ratios = [v for v in out["fleet_ramp_over_worst_demand_rise"].values()
               if v is not None]
     out["verdict"] = ("would_bind" if any(v < 1.0 for v in ratios)
