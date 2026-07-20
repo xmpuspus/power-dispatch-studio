@@ -1,5 +1,5 @@
 {
- "built_utc": "2026-07-20T20:21:02+00:00",
+ "built_utc": "2026-07-20T20:47:11+00:00",
  "window": {
   "from": "2026-04-07",
   "to": "2026-07-19"
@@ -17,7 +17,8 @@
     "rtd_intervals",
     "rtd_days",
     "dap_days",
-    "max_overload_mw"
+    "max_overload_mw",
+    "max_pct_of_limit"
    ],
    "description": "Every named 230 kV equipment the operator held at a limit in the window, ranked by days bound. Source: IEMOP RTDCV + DAPCV."
   },

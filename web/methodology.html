@@ -72,12 +72,12 @@ via <code>wp-admin/admin-ajax.php</code> (action
 because the day-ahead projection re-prices through the day and its raw row count
 measures re-run persistence, not time at the limit. Two severity columns ride
 along, and reading the wrong one hides the most bound equipment. Overload MW is
-how far flow was pushed PAST the limit, and it is zero on about 98 percent of
-congestion rows because the dispatch holds flow AT the limit rather than over
+how far flow was pushed PAST the limit, and it is zero on about 96 percent of
+the real-time congestion rows because the dispatch holds flow AT the limit rather than over
 it, so the two Naga transformers and the Leyte-Cebu corridor, among the most
 persistently bound in the league, carry zero overload. Percent of limit is the
 real how-bound signal: it never drops below 100 on a congestion row and reaches
-112 on the Tabango-Daanbantayan line. Both are exported; read percent of limit
+112 on the Tabango-Daanbantayan line and 140 at its archive peak. Both are exported; read percent of limit
 for severity and overload only for the rare true over-limit push.</td></tr>
 <tr><td>RTD Regional Summaries (daily CSV; CLUZ/CVIS/CMIN; En/Dr/Fr/Ru/Rd)</td>
 <td><a href="https://www.iemop.ph/market-data/rtd-regional-summaries/">page</a></td>
@@ -1025,9 +1025,11 @@ that is now measured rather than guessed: import averages 21 MW on Luzon, ten
 times too small; and the dispatch-minus-generation gap tracks RTDSUM's OWN
 energy-balance residual (generation plus imports minus requirement, losses and
 exports, which fails to close by about 1.9 percent of Luzon generation) at a
-correlation near 0.9. So the two are the same roughly 200 MW term, and it is the
-part the import, export and loss columns leave over by construction rather than
-anything they explain. What remains is most likely a self-scheduled or must-run
+correlation near 0.9 (the MOT gap runs a little larger, 204 against 182 MW, so
+they are not identical, but they move together and are the same order of
+magnitude). So the gap is essentially RTDSUM's own unexplained balance term, the
+part the import, export and loss columns leave over rather than anything they
+explain. What remains is most likely a self-scheduled or must-run
 generation split that sits in both dispatched MW and generation but not in the
 economic requirement the balance nets, and IEMOP does not publish that split, so
 the residual stays a genuine boundary with its missing input named. The second

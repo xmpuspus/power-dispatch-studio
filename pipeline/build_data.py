@@ -146,7 +146,7 @@ def build_congestion() -> dict:
                 ov = f(r.get("OVERLOAD_MW"))
                 e["max_overload_mw"] = max(e["max_overload_mw"], ov)
                 # OVERLOAD_MW is how far flow was pushed PAST the limit, which is
-                # near-zero on 98% of rows because the dispatch holds flow AT the
+                # near-zero on ~96% of real-time rows because the dispatch holds flow AT the
                 # limit. A line pinned at 100% of its limit is fully bound with
                 # zero overload, so max_overload_mw alone reads the most
                 # persistently bound equipment (the Naga transformers, the
