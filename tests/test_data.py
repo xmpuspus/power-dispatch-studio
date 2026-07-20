@@ -1109,6 +1109,24 @@ check("the under-binding gap is published: the operator flagged the "
       all(_ofx[k]["observed_binding_share_pct"]
           > _ofx[k]["modeled_at_cap_share_pct"] for k in ("lv", "vm")))
 
+rp = mo.get("ramp_probe") or {}
+# The ramp curves the operator publishes, measured against the ramp this engine
+# is ever asked for. The point of the block is that the constraint is INERT at
+# hourly resolution, so pin the thing that would falsify that: if the fleet ever
+# stops out-ramping the worst observed demand rise, the "measured out, not
+# built" conclusion in the methodology is no longer true and this fails.
+check("the ramp probe measured the published curves, not asserted them",
+      rp.get("available") and rp["n_resources_with_published_ramp"] > 100
+      and rp["hourly_inert_pct"] is not None)
+check("the fleet still out-ramps the worst demand rise on every grid "
+      "(the reason an hourly ramp limit stays measured out, not built)",
+      rp.get("verdict") == "measured_inert_at_hourly_resolution"
+      and all(v is not None and v > 1.0
+              for v in rp["fleet_ramp_over_worst_demand_rise"].values()))
+check("the ramp probe states its own scope rather than overclaiming",
+      "HOURLY" in (rp.get("note") or "")
+      and "per-unit" in (rp.get("note") or "").lower())
+
 gt = mo.get("gwap_trigger") or {}
 check("the secondary-cap trigger series covers all five published GWAPF "
       "rows, including the combined Luzon-Visayas region",

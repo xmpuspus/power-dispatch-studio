@@ -1378,6 +1378,46 @@ def build_uc_probe() -> dict:
     return _json.load(open(p))
 
 
+def build_ramp_probe(profiles: dict | None = None) -> dict:
+    """The published ramp curves measured against the ramp this engine is ever
+    asked for (pipeline/ramp_probe.py). The methodology used to call ramp rates
+    unpublished, which was false; they ride in every RTDOE offer row. Measured
+    before building: the fleet ramps several times faster than demand has ever
+    moved hour to hour, so an hourly per-fuel ramp limit is inert and is not
+    built.
+
+    The fleet side comes from the committed derivation (one fetched RTDOE hour;
+    ramp curves are registration data and do not move nightly). The demand side
+    is RECOMPUTED here against the current profiles, because the archive grows
+    every night and a committed worst-observed-rise would drift stale behind it
+    and quietly overstate the headroom."""
+    import json as _json
+
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "..", "data", "derived", "ramp_probe.json")
+    if not os.path.isfile(p):
+        return {"available": False,
+                "note": "no ramp probe; run pipeline/ramp_probe.py --derive"}
+    out = _json.load(open(p))
+    if not (out.get("available") and profiles):
+        return out
+    from ramp_probe import _worst_demand_rise
+
+    worst = _worst_demand_rise(profiles)
+    fleet = out.get("fleet_ramp_mw_per_hour") or {}
+    out["worst_observed_demand_rise_mw_per_hour"] = worst
+    out["fleet_ramp_over_worst_demand_rise"] = {
+        g: (round(fleet[g] / worst[g], 1) if worst.get(g) and fleet.get(g)
+            else None) for g in worst}
+    ratios = [v for v in out["fleet_ramp_over_worst_demand_rise"].values()
+              if v is not None]
+    out["verdict"] = ("would_bind" if any(v < 1.0 for v in ratios)
+                      else "measured_inert_at_hourly_resolution")
+    out["headroom_min"] = min(ratios) if ratios else None
+    out["headroom_max"] = max(ratios) if ratios else None
+    return out
+
+
 def build_flow_record(profiles: dict) -> dict:
     """Two observed sources, one table: the demand-identity corridor flows
     (RTDSUM net market imports/exports, what the replay demand is built

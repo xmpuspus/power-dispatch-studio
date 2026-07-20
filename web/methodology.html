@@ -817,9 +817,24 @@ fidelity. RAMP RATES are a different case and this page used to get it wrong:
 the operator DOES publish them. Every RTDOE offer row carries a piecewise
 ramp-rate curve (RR_BREAK_QUANTITY1-5 with RR_UP1-5 and RR_DOWN1-5, in MW per
 minute by MW band), populated on essentially every resource in the interval, in
-the same hourly file this project already downloads for the offer books. The
-absence of inter-hour ramp limits in the LP is therefore a build not yet done,
-not a missing input.</p>
+the same hourly file this project already downloads for the offer books. So the
+question is not whether ramp limits could be modelled but whether they would
+bind, and that is now measured rather than asserted (market_ops.json
+ramp_probe, pipeline/ramp_probe.py). They would not, at this engine's
+resolution. Aggregate each unit's one-hour ramp capability, capped at its own
+offered range because a machine cannot exceed it, and the fleet can move 8,210
+MW/h on Luzon, 1,366 on the Visayas and 2,260 on Mindanao. The largest
+hour-to-hour demand RISE anywhere in the archived observed profiles is 1,223 MW
+on Luzon, 308 on the Visayas and 307 on Mindanao. The fleet ramps between 4.4
+and 7.4 times faster than demand has ever asked it to. A per-fuel hourly ramp
+constraint is therefore inert by construction, and building one would be
+fidelity theater: engine complexity for no accuracy. It is measured out, not
+skipped. Two honest qualifications travel with that: the result is a grid and
+fuel-aggregate one at HOURLY resolution, which is this engine's resolution, and
+per RESOURCE an hourly ramp limit could still bind for 32 percent of the book
+(the tightest are oil and coal machines moving under a tenth of their range per
+hour, so a per-UNIT model would need them); and the 5-minute case is a
+different question this measurement does not answer.</p>
 
 <h2>Boundaries and queued builds, each with its named input</h2>
 <ul>

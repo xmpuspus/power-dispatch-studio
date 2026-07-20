@@ -288,6 +288,13 @@ def canonical():
         # guarded, and every one of them had drifted by the round-10 audit:
         # "five of the six" days (bake said four), "about 90 percent" coal
         # marginal share (95.2), 9,833 MW floor supply (9,834). Guard them.
+        # the ramp measurement: the fleet figures are registration data but
+        # the worst observed demand rise grows with the archive, so the
+        # ratios move nightly and the prose must move with them
+        "ramp_luz_fleet": f'{mo["ramp_probe"]["fleet_ramp_mw_per_hour"]["luzon"]:,.0f}',
+        "ramp_luz_worst": f'{mo["ramp_probe"]["worst_observed_demand_rise_mw_per_hour"]["luzon"]:,.0f}',
+        "ramp_headroom_lo": _n(mo["ramp_probe"]["headroom_min"], 1),
+        "ramp_headroom_hi": _n(mo["ramp_probe"]["headroom_max"], 1),
         "subhourly_neg_days": mo["subhourly_probe"]["n_days_with_observed_negatives"],
         "subhourly_neg_days_word": ("one two three four five six seven eight"
                                     .split()[mo["subhourly_probe"]
@@ -552,6 +559,15 @@ REGISTRY = [
     ("web/methodology.html",
      re.compile(r"floor-priced supply \(([\d,]+) MW\)"),
      ["floor_supply_mw"]),
+    ("web/methodology.html",
+     re.compile(r"fleet can move ([\d,]+)\s*\n?\s*MW/h on Luzon"),
+     ["ramp_luz_fleet"]),
+    ("web/methodology.html",
+     re.compile(r"is ([\d,]+) MW\s*\n?\s*on Luzon, 308"),
+     ["ramp_luz_worst"]),
+    ("web/methodology.html",
+     re.compile(r"between (\d+\.\d+)\s*\n?\s*and (\d+\.\d+) times faster"),
+     ["ramp_headroom_lo", "ramp_headroom_hi"]),
     # --- loss-surface validation numbers (recompute nightly; F4) ---
     ("README.md",
      re.compile(r"Spearman \*\*\+([\d.]+)\*\* over (\d+) nodes \((\d+)\s+"
