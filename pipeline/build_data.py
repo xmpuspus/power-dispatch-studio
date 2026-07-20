@@ -698,7 +698,7 @@ def build_answers(cong, rel, prices, outs) -> dict:
                  "only on the share of energy actually bought on the spot "
                  f"market: June paid P{A['meralco_june2026_wesm_price_php_kwh']}"
                  f"/kWh for the {A['meralco_june2026_wesm_share_pct']}% it drew "
-                 f"from WESM, about P{round(A['meralco_june2026_wesm_share_pct'] / 100 * A['meralco_june2026_wesm_price_php_kwh'], 2)}"
+                 f"from WESM, about P{A['meralco_june2026_wesm_share_pct'] / 100 * A['meralco_june2026_wesm_price_php_kwh']:.2f}"
                  f"/kWh of the P{A['meralco_june2026_generation_charge']}/kWh "
                  "generation charge. The rest is contracted and does not move "
                  "with the spot price. New flat 24/7 load raises the demand the "
