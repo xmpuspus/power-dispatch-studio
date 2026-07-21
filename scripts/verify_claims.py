@@ -334,6 +334,14 @@ def canonical():
                         ["gap_mw_mean"], 0),
         "resid_balance": _n(mo["mot_dispatch_cut"]["luzon_residual_probe"]
                             ["balance_residual_mw_mean"], 0),
+        # the MOT-raise share of dispatched generation, per-grid range (baked in
+        # admin_dispatch.mw_weighted_fraction_of_dispatch), lo to hi across grids
+        "raise_share_lo": _n(min(v["mw_weighted_pct"] for v in
+                                 mo["admin_dispatch"]["mw_weighted_fraction_of_dispatch"].values()
+                                 if isinstance(v, dict) and v.get("mw_weighted_pct") is not None), 0),
+        "raise_share_hi": _n(max(v["mw_weighted_pct"] for v in
+                                 mo["admin_dispatch"]["mw_weighted_fraction_of_dispatch"].values()
+                                 if isinstance(v, dict) and v.get("mw_weighted_pct") is not None), 0),
         "cong_clean_share": _n(_load("nodal_obs.json")["congestion"]
                                ["clean_day_nonzero_share_pct"], 2),
 
@@ -640,6 +648,9 @@ REGISTRY = [
      re.compile(r"averages ([\d,.]+) MW on Luzon \(([\d.]+) percent of the stack\), "
                 r"([\d,]+) MW on Mindanao\s+and ([\d,]+) MW on the Visayas"),
      ["mot_headroom_luz", "mot_headroom_share_luz", "mot_headroom_min", "mot_headroom_vis"]),
+    ("web/methodology.html",
+     re.compile(r"raises are material in MW \((\d+) to (\d+) percent of dispatched"),
+     ["raise_share_lo", "raise_share_hi"]),
     ("web/methodology.html",
      re.compile(r"import averages ([\d,]+) MW on Luzon"),
      ["resid_import"]),
