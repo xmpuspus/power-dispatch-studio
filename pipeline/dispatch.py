@@ -697,8 +697,12 @@ def build_dispatch() -> dict:
 
     # WESM was suspended (administered prices) through wesm_resumed; the price
     # calibration must be MARKET-window only, or an administered ~P6 evening sits
-    # on the modeled coal line and flatters the fit. Demand-based metrics (peak,
-    # adequacy, N-1, emissions) are physical and use the whole window.
+    # on the modeled coal line and flatters the fit. This loop is gated on price
+    # availability, so the demand-based metrics (peak, adequacy, N-1, emissions)
+    # run on the price-covered days, not literally every archived day: the most
+    # recent ~24 days await their LWAPF publication. Inert for the peaks (the
+    # evening peak lands well before that lag) and conservative for the reliability
+    # sample (the excluded recent evenings run a few percent BELOW the peak days).
     resumed = MARKET_ANCHORS.get("wesm_resumed", "2026-05-01")
     market_days: set[str] = set()
 

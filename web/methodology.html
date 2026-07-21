@@ -959,24 +959,21 @@ fleet ALREADY offers its committed tranche at the floor. Commitment
 behavior is in the bids; a floor layer would model what the market
 already models.</li>
 <li><b>The negative-price hours are a resolution limit, named and
-sized</b>: on the window's most negative day the clearing price itself
-went negative for eight midday hours (an ex-ante dispatch outcome, solar
-flooding, not a settlement artifact), and the hour's floor-priced supply
-came within 0.5 to 3 percent of native load (10,706 MW offered at or
-below zero against a 10,764 MW hour). The 5-minute market crosses that
-boundary intermittently; an hourly replay on hour-mean demand cannot,
+sized</b>: the negative clearing prices are an ex-ante dispatch outcome,
+solar flooding, not a settlement artifact. The 5-minute market crosses
+zero intermittently; an hourly replay on hour-mean demand cannot,
 it averages the intra-hour dip away. A sub-hourly replay was then
 prototyped and measured (market_ops.json subhourly_probe), and the
 picture is sharper than a clean resolution refinement: the crossing is a
 KNIFE-EDGE. On the crossing days the offer book's floor-priced supply
-comes within 0.54 to 2.3 percent of native load at the midday solar
+comes within 0.66 to 2.53 percent of native load at the midday solar
 peak, and the observed regional load-weighted price does cross negative
 on four of the six closest days (down to about -P10/kWh). But it
 splits into two boundaries, neither of which a per-grid 5-minute replay
 closes. The near-zero band is a true knife-edge: the offer book clears
 at exactly zero over a wide MW range, and its own 48-block compaction
 moves about 4 percent of the floor-priced supply across the zero line,
-wider than the 0.5 percent margin, so whether a shallow interval reads
+wider than the 0.66 percent tightest margin, so whether a shallow interval reads
 -0.001 or +0.001 turns on supply accounting finer than the offers give.
 The DEEP negatives are not an aggregate crossing at all: at the day's
 most negative interval the observed price is about -P10/kWh while
