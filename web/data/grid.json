@@ -11,13 +11,13 @@
   },
   "bound_line_features": 27,
   "bound_stations": 18,
-  "equipment_total": 75,
+  "equipment_total": 76,
   "equipment_matched": 43
  },
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 102,
+   "days": 103,
    "rtd_intervals": 100,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -31,8 +31,8 @@
   },
   {
    "equipment": "1EHVNGS_TR2",
-   "days": 101,
-   "rtd_intervals": 2936,
+   "days": 102,
+   "rtd_intervals": 2948,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -40,8 +40,8 @@
   },
   {
    "equipment": "1EHVNGS_TR1",
-   "days": 101,
-   "rtd_intervals": 969,
+   "days": 102,
+   "rtd_intervals": 975,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -49,7 +49,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 81,
+   "days": 82,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 76,
+   "days": 77,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -77,7 +77,7 @@
   },
   {
    "equipment": "1BAUA_1BPP1",
-   "days": 63,
+   "days": 64,
    "rtd_intervals": 1015,
    "max_overload_mw": 0.0,
    "matched": false,
@@ -145,8 +145,8 @@
   },
   {
    "equipment": "1TGERAO_TR3",
-   "days": 11,
-   "rtd_intervals": 210,
+   "days": 12,
+   "rtd_intervals": 230,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -198,6 +198,14 @@
    "path_edges": 1
   },
   {
+   "equipment": "2SUCA_3BIN3",
+   "days": 7,
+   "rtd_intervals": 82,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
    "equipment": "1MEXI_2QUE1",
    "days": 7,
    "rtd_intervals": 0,
@@ -210,14 +218,6 @@
    ],
    "path_km": 57.6,
    "path_edges": 4
-  },
-  {
-   "equipment": "2SUCA_3BIN3",
-   "days": 6,
-   "rtd_intervals": 66,
-   "max_overload_mw": 0.0,
-   "matched": false,
-   "why": "station token unresolved"
   },
   {
    "equipment": "8NABAS_TR1",
@@ -236,6 +236,15 @@
    "matched": true,
    "kind": "station",
    "station": "Nabas Substation"
+  },
+  {
+   "equipment": "1HERMO_TR2",
+   "days": 5,
+   "rtd_intervals": 139,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Hermosa Substation"
   },
   {
    "equipment": "1HERM_1DUH1",
@@ -258,15 +267,6 @@
    ],
    "path_km": 37.0,
    "path_edges": 2
-  },
-  {
-   "equipment": "1HERMO_TR2",
-   "days": 4,
-   "rtd_intervals": 139,
-   "max_overload_mw": 0.0,
-   "matched": true,
-   "kind": "station",
-   "station": "Hermosa Substation"
   },
   {
    "equipment": "3BINA_3DAS2",
@@ -369,6 +369,15 @@
    "why": "station token unresolved"
   },
   {
+   "equipment": "1HERMO_TR1",
+   "days": 3,
+   "rtd_intervals": 4,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Hermosa Substation"
+  },
+  {
    "equipment": "11VILL_11JAS1",
    "days": 3,
    "rtd_intervals": 3,
@@ -463,15 +472,6 @@
    ],
    "path_km": 6.0,
    "path_edges": 1
-  },
-  {
-   "equipment": "1HERMO_TR1",
-   "days": 2,
-   "rtd_intervals": 4,
-   "max_overload_mw": 0.0,
-   "matched": true,
-   "kind": "station",
-   "station": "Hermosa Substation"
   },
   {
    "equipment": "14TACUR_TR2",
@@ -686,6 +686,14 @@
    "matched": true,
    "kind": "station",
    "station": "Botolan Substation"
+  },
+  {
+   "equipment": "1KDAMEHV_TR3",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
   },
   {
    "equipment": "1SNRAFA_TR1",
