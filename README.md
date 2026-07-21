@@ -270,11 +270,16 @@ commitment takes from a flat, undefined correlation to **0.18**. After the layer
 Luzon averages a modeled **P5.99/kWh** against an observed **P7.65/kWh**. The evening-peak residual is untouched: commitment only bites at light
 load, so the scarcity signal stays exactly where it was.
 
-The adequacy number is the checkable one. At the evening peak Luzon has about
-**15,680 MW** available against a **14,539 MW** native-load peak, a **7.9%** reserve
-margin. Add the DICT forecast of **1,500 MW** of data centers by 2028 (a labeled DICT
-forecast, October 2025) and that margin falls to **-2.2%**: 99 5-minute intervals
-in the window go short, 1,296 MWh unserved.
+The adequacy number is the checkable one, and it has to keep one clock. Luzon's gross
+peak of **14,539 MW** is a mid-afternoon event, when solar is generating; the firm
+evening peak, when solar is gone, is **13,275 MW**. Against the evening (solar-out)
+stack of **15,682 MW** that is an **18.1%** reserve margin. Add the DICT forecast
+of **1,500 MW** of data centers by 2028 (a labeled DICT forecast, October 2025) and the
+firm margin falls to **6.1%**, on zero solar and one clock. Crediting the modeled
+clear-sky solar profile, the tightest 5-minute interval of the whole window (a
+late-afternoon shoulder hour, when demand is near its peak and only midday solar fills
+the gap) still holds **3.2%** with the DICT wave, and no interval goes short against
+that hour-matched stack. The headroom is thin, not negative.
 
 That reserve margin is a single number; a forced outage is a coin toss, so the model
 also runs it as a distribution. A Monte Carlo of **20,000** draws trips the 11 named
@@ -284,8 +289,8 @@ loses load in only **0.09%** of tight evenings, with the worst draw shedding
 **956 MW** when a big unit trips into a high load. Add the DICT 1.5 GW wave and the
 loss-of-load probability climbs more than tenfold to **2.2%**: a 1-in-100 draw sheds
 **481 MW**, and the expected unserved energy over the evening-peak window is
-**3,946 MWh**. The point estimate said the margin turns negative; the distribution says
-how often, and how badly.
+**3,946 MWh**. The point estimate says the margin stays thin but positive; the
+distribution says how often a forced outage lands on that thin margin, and how hard.
 
 Storage is how the grid shaves those peaks. Luzon already has **634 MW** of batteries
 (DOE) and **685 MW** of Kalayaan pumped hydro (CBK Power), and both are time-shifters:

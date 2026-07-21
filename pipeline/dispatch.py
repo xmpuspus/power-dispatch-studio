@@ -854,6 +854,13 @@ def build_dispatch() -> dict:
             "avail_mw": round(sum(b["mw"] for b in blocks), 1),
             "typical_evening_demand_mw": typical,
             "peak_demand_mw": round(peak_demand[g]),
+            # the evening (solar ~ 0) peak: firm capacity is tightest against
+            # the evening peak, not the mid-afternoon gross peak that co-occurs
+            # with solar. This is the reserve-margin denominator on a consistent
+            # clock (the studio reads it).
+            "evening_peak_demand_mw": round(max(
+                (max(hourly_dem[g][h]) for h in range(18, 22)
+                 if hourly_dem[g][h]), default=0.0)),
             "fuel_avail_mw": fuel_avail,
             # solar availability so the client scenario engine can add solar:
             # at the evening reference hour the profile is ~0 (the added-solar lever
@@ -880,13 +887,17 @@ def build_dispatch() -> dict:
     for u in GENERATORS:
         g = u["grid"]
         ref = n1_ref[g] or sum(b["mw"] for b in stack(g, PEAK_HOUR)) * 0.9
-        pk = peak_demand[g] or ref
+        # firm-capacity contingency: the evening (solar ~ 0) peak, not the
+        # mid-afternoon gross peak that co-occurs with solar. Clearing the gross
+        # peak against the solar-stripped stack was the same clock artifact the
+        # adequacy block carried, and inflated every shortfall.
+        firm_pk = merit_order[g.lower()].get("evening_peak_demand_mw") or ref
         trip_mw = min(u["capacity_mw"], avail_mw(g, u["fuel"], PEAK_HOUR))
         removed = {u["fuel"]: trip_mw}
-        # price move at a tight evening (p95); shortfall at the annual peak
+        # price move at a tight evening (p95); shortfall at the evening firm peak
         base = clear(stack(g, PEAK_HOUR), ref)
         tripped = clear(stack(g, PEAK_HOUR, removed=removed), ref)
-        at_peak = clear(stack(g, PEAK_HOUR, removed=removed), pk)
+        at_peak = clear(stack(g, PEAK_HOUR, removed=removed), firm_pk)
         n1.append({
             "unit": u["name"], "grid": g.lower(), "fuel": u["fuel"],
             "capacity_mw": u["capacity_mw"],
@@ -894,49 +905,95 @@ def build_dispatch() -> dict:
             "base_price_php_kwh": base["price"],
             "tripped_price_php_kwh": tripped["price"],
             "delta_price_php_kwh": round(tripped["price"] - base["price"], 3),
-            "peak_demand_mw": round(pk),
+            "peak_demand_mw": round(firm_pk),
             "shortfall_at_peak_mw": at_peak["shortfall_mw"],
         })
     n1.sort(key=lambda x: (-x["shortfall_at_peak_mw"],
                            -x["delta_price_php_kwh"], -x["capacity_mw"]))
 
-    # adequacy now, and against the DICT 1.5 GW by 2028 forecast (added to Luzon)
+    # adequacy on a consistent clock. The gross annual peak is a mid-afternoon
+    # event when solar is generating; pairing it against the evening (solar ~ 0)
+    # stack understated every margin (the clock artifact this replaced). Two
+    # consistent reads instead: firm capacity at the evening peak (solar out, the
+    # window the Monte Carlo stresses, and the assumption-light anchor), and the
+    # tightest interval of the day crediting the modeled clear-sky solar profile.
+    def _eve_peak(g):
+        return max((max(hourly_dem[g][h]) for h in range(18, 22)
+                    if hourly_dem[g][h]), default=0.0)
+
+    def _tightest(g, add=0.0):
+        # (margin_frac, hour, demand, avail) at the interval-hour whose margin is
+        # smallest, availability solar-aware (the modeled clear-sky profile at
+        # that hour; the archive carries no per-fuel solar to observe)
+        best = None
+        for h in range(24):
+            if not hourly_dem[g][h]:
+                continue
+            dm = max(hourly_dem[g][h])
+            av = sum(b["mw"] for b in stk(g, h))
+            m = (av - dm - add) / (dm + add) if (dm + add) else 0.0
+            if best is None or m < best[0]:
+                best = (m, h, dm, av)
+        return best
+
     adequacy = {}
     for g in GRIDS:
-        blocks = stack(g, PEAK_HOUR)
-        av = sum(b["mw"] for b in blocks)
-        pk = peak_demand[g]
+        firm_av = sum(b["mw"] for b in stk(g, PEAK_HOUR))
+        eve_pk = _eve_peak(g)
+        _tm, _th, _td, _ta = _tightest(g)
         adequacy[g.lower()] = {
             "installed_mw": sum(GRID_FUEL_MW[g].values()),
-            "avail_at_peak_mw": round(av, 1),
-            "peak_demand_mw": round(pk),
-            "reserve_margin_pct": round((av - pk) / pk * 100, 1) if pk else None,
+            "avail_at_peak_mw": round(firm_av, 1),
+            "evening_peak_demand_mw": round(eve_pk),
+            "gross_peak_mw": round(peak_demand[g]),
+            # firm-capacity reserve margin: evening (solar ~ 0) capacity vs the
+            # evening peak, the standard read and the one the studio + MC use
+            "reserve_margin_pct": round((firm_av - eve_pk) / eve_pk * 100, 1)
+            if eve_pk else None,
+            # the tightest interval of the day crediting the modeled clear-sky
+            # solar profile (observed demand, modeled hourly availability)
+            "tight_hour": _th,
+            "tight_avail_mw": round(_ta, 1),
+            "tight_demand_mw": round(_td),
+            "tight_reserve_margin_pct": round(_tm * 100, 1) if _td else None,
         }
     dict_anchor = next((a for a in DEMAND_ANCHORS
                         if a.get("owner") == "DICT" and a.get("mw") == 1500), None)
     added = 1500
-    lz_blocks = stack("LUZON", PEAK_HOUR)
-    lz_av = sum(b["mw"] for b in lz_blocks)
-    lz_pk = peak_demand["LUZON"]
+    lz_firm_av = sum(b["mw"] for b in stk("LUZON", PEAK_HOUR))
+    lz_eve_pk = _eve_peak("LUZON")
+    # hour-matched shortfall: each observed interval against ITS OWN hour's
+    # availability, with the flat DICT load added. Zero on the observed window
+    # is the honest result; the fixed-evening-availability version counted
+    # afternoon intervals short against a stack that had solar stripped out.
     short_intervals = short_eue = 0
     for h in range(24):
-        for load, _mp, _op in hourly["LUZON"][h]:
-            deficit = (load + added) - lz_av
+        av_h = sum(b["mw"] for b in stk("LUZON", h))
+        for load in hourly_dem["LUZON"][h]:
+            deficit = (load + added) - av_h
             if deficit > 0:
                 short_intervals += 1
                 short_eue += deficit * 5 / 60
+    tm_dc, th_dc, _td_dc, _ta_dc = _tightest("LUZON", added)
     adequacy["dict_2028"] = {
         "added_mw": added, "owner": "DICT", "label": "forecast: PH data-center "
         "capacity by 2028", "date": "2025-10",
         "src": dict_anchor["src"] if dict_anchor else None,
-        "luzon_avail_at_peak_mw": round(lz_av, 1),
-        "luzon_peak_now_mw": round(lz_pk),
-        "luzon_peak_plus_dc_mw": round(lz_pk + added),
-        "reserve_margin_now_pct": round((lz_av - lz_pk) / lz_pk * 100, 1)
-        if lz_pk else None,
-        "reserve_margin_with_dc_pct": round((lz_av - lz_pk - added)
-                                            / (lz_pk + added) * 100, 1)
-        if lz_pk else None,
+        "luzon_avail_at_peak_mw": round(lz_firm_av, 1),
+        "luzon_evening_peak_mw": round(lz_eve_pk),
+        "luzon_peak_plus_dc_mw": round(lz_eve_pk + added),
+        "reserve_margin_now_pct": round((lz_firm_av - lz_eve_pk) / lz_eve_pk * 100, 1)
+        if lz_eve_pk else None,
+        "reserve_margin_with_dc_pct": round((lz_firm_av - lz_eve_pk - added)
+                                            / (lz_eve_pk + added) * 100, 1)
+        if lz_eve_pk else None,
+        # the tightest interval crediting the modeled clear-sky solar profile.
+        # It is lower than the firm evening read because the afternoon shoulder
+        # carries higher demand, NOT because it is more conservative on solar:
+        # this read is the generous one on solar (clear-sky), the firm read
+        # credits none. Both stay positive.
+        "tight_reserve_margin_with_dc_pct": round(tm_dc * 100, 1) if _td_dc else None,
+        "tight_hour_with_dc": th_dc,
         "shortfall_intervals_with_dc": short_intervals,
         "eue_mwh_with_dc": round(short_eue, 1),
     }

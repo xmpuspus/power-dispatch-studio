@@ -323,6 +323,17 @@ check("DICT 1.5 GW scenario is a labeled DICT forecast with src",
       adq["owner"] == "DICT" and adq["added_mw"] == 1500 and adq.get("src"))
 check("adding the DICT wave erodes the Luzon reserve margin",
       adq["reserve_margin_with_dc_pct"] < adq["reserve_margin_now_pct"])
+check("the DICT wave leaves no interval short against the hour-matched stack (guards the prose claim)",
+      adq["shortfall_intervals_with_dc"] == 0 and adq["eue_mwh_with_dc"] == 0)
+check("adequacy keeps one clock: the solar-observed tightest interval with DICT is still positive",
+      adq["tight_reserve_margin_with_dc_pct"] > 0)
+for _g in ("luzon", "visayas", "mindanao"):
+    _a = disp["adequacy"][_g]
+    _re = round((_a["avail_at_peak_mw"] - _a["evening_peak_demand_mw"])
+                / _a["evening_peak_demand_mw"] * 100, 1)
+    check(f"{_g} reserve margin is firm evening avail vs the evening peak, not the gross peak",
+          abs(_re - _a["reserve_margin_pct"]) < 0.5
+          and _a["evening_peak_demand_mw"] < _a["gross_peak_mw"])
 
 # --- inter-island coupled dispatch (item 1) ------------------------------------
 # The coupled solver's trust gate is optimality (KKT) on a radial path, not the

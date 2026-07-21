@@ -93,7 +93,7 @@ export const CLASSES: SystemClass[] = [
     label: 'Regions',
     props: [
       { key: 'demand_mw', label: 'Load (evening)', unit: 'MW', editable: true, dp: 0 },
-      { key: 'peak_mw', label: 'Peak load', unit: 'MW', editable: false, dp: 0 },
+      { key: 'peak_mw', label: 'Evening peak', unit: 'MW', editable: false, dp: 0 },
     ],
   },
   {
@@ -199,7 +199,7 @@ export function baseObjects(
     grid: g,
     props: {
       demand_mw: d.merit_order[g].typical_evening_demand_mw,
-      peak_mw: d.merit_order[g].peak_demand_mw,
+      peak_mw: d.merit_order[g].evening_peak_demand_mw,
     },
   }))
   const storage: ObjRow[] = storageDefaults.map((s) => ({

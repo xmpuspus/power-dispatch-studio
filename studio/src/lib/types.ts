@@ -16,6 +16,7 @@ export interface MeritOrder {
   avail_mw: number
   typical_evening_demand_mw: number
   peak_demand_mw: number
+  evening_peak_demand_mw: number
   // dispatchable MW per fuel at the reference hour, before the coal commit/marginal
   // split. The scenario engine rebuilds the stack from this (see engine.ts).
   fuel_avail_mw: Record<string, number>
@@ -258,8 +259,13 @@ export interface MarginalFrequency {
 export interface Adequacy {
   installed_mw: number
   avail_at_peak_mw: number
-  peak_demand_mw: number
+  evening_peak_demand_mw: number
+  gross_peak_mw: number
   reserve_margin_pct: number | null
+  tight_hour: number
+  tight_avail_mw: number
+  tight_demand_mw: number
+  tight_reserve_margin_pct: number | null
 }
 
 export interface Dispatch {
@@ -281,6 +287,8 @@ export interface Dispatch {
       added_mw: number
       reserve_margin_now_pct: number | null
       reserve_margin_with_dc_pct: number | null
+      tight_reserve_margin_with_dc_pct: number | null
+      tight_hour_with_dc: number
       shortfall_intervals_with_dc: number
       eue_mwh_with_dc: number
       src: string | null
