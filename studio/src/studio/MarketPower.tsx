@@ -81,9 +81,9 @@ export function MarketPowerView({ d }: { d: Dispatch }) {
             tone="danger"
           />
           <StatTile
-            label="Luzon reserve margin at peak"
+            label="Luzon reserve margin (evening firm)"
             value={pct(margin / 100, 1)}
-            hint="the cushion above peak demand"
+            hint="firm capacity above the evening peak"
           />
         </div>
         <p className="note">{mp.pivotal_supplier_note}</p>

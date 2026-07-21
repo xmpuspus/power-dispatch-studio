@@ -1336,14 +1336,18 @@ function sideSimulate(){
   <b>Trip a unit</b> control above re-clears at the panel's current demand, so at a
   lighter evening the same trip reads a smaller move than this table.</div>
   <div class="note">The panel starts at a typical evening peak
-  (${fmt(mo.typical_evening_demand_mw)} MW); the annual peak of
-  ${fmt(mo.peak_demand_mw)} MW already clears on oil. Reserve margin now:
+  (${fmt(mo.typical_evening_demand_mw)} MW); the annual gross peak of
+  ${fmt(mo.peak_demand_mw)} MW is a mid-afternoon event that clears on oil with solar up.
+  Reserve margin (firm evening capacity):
   <b>${fmt(adq.reserve_margin_pct,1)}%</b>
-  (${fmt(adq.avail_at_peak_mw)} MW available at peak vs ${fmt(adq.peak_demand_mw)} MW peak).
+  (${fmt(adq.avail_at_peak_mw)} MW available vs the ${fmt(adq.evening_peak_demand_mw)} MW evening peak).
   ${g==="luzon" && dict.added_mw ? "Add the DICT forecast of " + fmt(dict.added_mw) +
-  " MW of data centers by 2028 and the Luzon margin falls to <b>" +
-  fmt(dict.reserve_margin_with_dc_pct,1) + "%</b> (" + fmt(dict.shortfall_intervals_with_dc) +
-  " intervals short, " + fmt(dict.eue_mwh_with_dc) + " MWh unserved in the window). DICT forecast, Oct 2025." : ""}</div>
+  " MW of data centers by 2028 and the firm Luzon margin falls to <b>" +
+  fmt(dict.reserve_margin_with_dc_pct,1) + "%</b> on zero solar; crediting the modeled clear-sky solar the tightest afternoon interval still holds " +
+  fmt(dict.tight_reserve_margin_with_dc_pct,1) + "%, and " +
+  (dict.shortfall_intervals_with_dc > 0 ? fmt(dict.shortfall_intervals_with_dc) +
+  " 5-minute intervals in the window go short" : "none goes short against that hour-matched stack") +
+  ". DICT forecast, Oct 2025." : ""}</div>
   ${reliabilityNote(disp, g)}`;
 }
 

@@ -125,7 +125,7 @@ export function SolvedMeritView({ s, grid }: { s: SolvedModel; grid: GridKey }) 
         <StatTile
           label="Reserve margin"
           value={pct(s.reserveMarginPct[grid] / 100, 1)}
-          hint="available vs peak"
+          hint="firm evening capacity vs the evening peak"
           tone={s.reserveMarginPct[grid] < 10 ? 'danger' : 'default'}
         />
       </div>

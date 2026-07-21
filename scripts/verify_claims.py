@@ -300,12 +300,15 @@ def canonical():
         # the worst observed demand rise grows with the archive, so the
         # ratios move nightly and the prose must move with them
         "ramp_luz_worst": f'{mo["ramp_probe"]["worst_observed_demand_rise_mw_per_hour"]["luzon"]:,.0f}',
-        # the adequacy block the prose flags as "the checkable one" and nothing
-        # guarded (README:268-272)
-        "adq_peak": f'{disp["adequacy"]["luzon"]["peak_demand_mw"]:,.0f}',
+        # the adequacy block the prose flags as "the checkable one". Kept on a
+        # consistent clock: firm evening capacity vs the evening peak, plus the
+        # solar-observed tightest interval. All rolling with the archive.
+        "adq_gross_peak": f'{disp["adequacy"]["luzon"]["gross_peak_mw"]:,.0f}',
+        "adq_eve_peak": f'{disp["adequacy"]["luzon"]["evening_peak_demand_mw"]:,.0f}',
+        "adq_firm_avail": f'{disp["adequacy"]["luzon"]["avail_at_peak_mw"]:,.0f}',
         "adq_margin": _n(disp["adequacy"]["luzon"]["reserve_margin_pct"], 1),
         "adq_dc_margin": _n(disp["adequacy"]["dict_2028"]["reserve_margin_with_dc_pct"], 1),
-        "adq_shortfall_int": disp["adequacy"]["dict_2028"]["shortfall_intervals_with_dc"],
+        "adq_tight_dc_margin": _n(disp["adequacy"]["dict_2028"]["tight_reserve_margin_with_dc_pct"], 1),
         # the inter-island flow-direction agreement range; drifted 88->87
         # unguarded (the offer replay's per-corridor direction hit rate)
         "flowdir_lo": f'{min(profiles["offer_backcast"]["flows"][c]["direction_agreement_pct"] for c in ("lv", "vm")):.0f}',
@@ -616,11 +619,20 @@ REGISTRY = [
      re.compile(r"quarter and \*\*(\d+) to (\d+) percent\*\* of the inter-island"),
      ["flowdir_lo", "flowdir_hi"]),
     ("README.md",
-     re.compile(r"against a \*\*([\d,]+) MW\*\* native-load peak, a \*\*([\d.]+)%\*\* reserve"),
-     ["adq_peak", "adq_margin"]),
+     re.compile(r"gross\s+peak\s+of\s+\*\*([\d,]+)\s+MW\*\*\s+is\s+a\s+mid-afternoon"),
+     ["adq_gross_peak"]),
     ("README.md",
-     re.compile(r"that margin falls to \*\*(-?[\d.]+)%\*\*: (\d+) 5-minute intervals"),
-     ["adq_dc_margin", "adq_shortfall_int"]),
+     re.compile(r"firm\s+evening\s+peak,\s+when\s+solar\s+is\s+gone,\s+is\s+\*\*([\d,]+)\s+MW\*\*"),
+     ["adq_eve_peak"]),
+    ("README.md",
+     re.compile(r"stack\s+of\s+\*\*([\d,]+)\s+MW\*\*\s+that\s+is\s+an\s+\*\*([\d.]+)%\*\*\s+reserve"),
+     ["adq_firm_avail", "adq_margin"]),
+    ("README.md",
+     re.compile(r"the\s+firm\s+margin\s+falls\s+to\s+\*\*([\d.]+)%\*\*"),
+     ["adq_dc_margin"]),
+    ("README.md",
+     re.compile(r"still\s+holds\s+\*\*([\d.]+)%\*\*\s+with\s+the\s+DICT\s+wave"),
+     ["adq_tight_dc_margin"]),
     ("web/methodology.html",
      re.compile(r"out-ramps the worst demand rise by ([\d.]+) times\s*\n?\s*on Luzon, ([\d.]+) on the Visayas and ([\d.]+) on Mindanao"),
      ["ramp_strict_luz", "ramp_strict_vis", "ramp_strict_min"]),
