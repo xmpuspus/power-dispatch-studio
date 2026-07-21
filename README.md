@@ -51,9 +51,9 @@ bill.
 The choke points are not inferred. IEMOP publishes a "congestions manifesting" file
 that names the exact transmission equipment sitting at its binding limit, per
 5-minute interval, and this repo archives and ranks them. A row **literally named
-`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **81 of the window's 105 days**.
+`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **82 of the window's 106 days**.
 The 230 kV lines that carry that corridor, Tabango (Leyte) to Daanbantayan (Cebu),
-top the league: at a binding limit in the hourly day-ahead runs on **102 of 105
+top the league: at a binding limit in the hourly day-ahead runs on **103 of 106
 days**, and binding in the 5-minute real-time dispatch, the run settlement
 actually sees, on **22 days** of the window. Both columns are in the table; the
 day-ahead count measures how persistently the constraint reappears across re-runs,
@@ -62,8 +62,8 @@ the real-time count how often it actually bound. The same corridor IEMOP's Decem
 
 ![The constraint league filling in bar by bar: named transmission equipment ranked by days at a binding limit over the archive window, the Leyte-Cebu corridor lines highlighted in coral topping the list by day-ahead days at a limit](docs/constraint-league.gif)
 
-Across the 105-day window, **75 distinct pieces of equipment** hit a limit at least
-once, in **89 monitored constraints** (a transformer is listed under each winding
+Across the 106-day window, **76 distinct pieces of equipment** hit a limit at least
+once, in **90 monitored constraints** (a transformer is listed under each winding
 voltage and a line at each terminal, so one physical asset can hold several limits).
 The map ranks the constraints by days at a limit (a day counts once, so a day-ahead
 re-run cannot inflate it) and keeps the real-time and day-ahead counts in separate
@@ -84,14 +84,14 @@ the archived files pin to a single MW value in 99.3 percent of windows
 of which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
-The instruction log behind both closes the causal loop. Across the 102
+The instruction log behind both closes the causal loop. Across the 103
 daily logs the System Operator's own dispatch instructions carry a remark
 citing a line limitation **1,647 times, and 1,620 of those name the
 Leyte-Cebu corridor** ("Advise to discharge under MOT Raise due to
 Leyte-Cebu Line Limitation"), the same corridor the constraint league
 ranks first by shadow-price days: one corridor carries 98 percent of
 every line-limitation instruction the operator wrote down. The full out-of-merit record rides
-beside it: **97,412 MOT-raise instructions** across the window at a **55
+beside it: **104,361 MOT-raise instructions** across the window at a **55
 MW** median, where the must-run subset the methodology measured out sits
 at 5.7 (`so_instructions` in the same file; the administered-dispatch
 overlay it sizes is a named queued build).
@@ -99,8 +99,8 @@ overlay it sizes is a named queued build).
 ## Thin is the normal state
 
 In the operator's own real-time dispatch schedules, **Luzon scheduled reserves fell
-below the stated requirement on 65 of the window's 105 days**, and load was curtailed
-in the dispatch schedules on **102 grid-days (5,209.8 MWh)** across the three grids.
+below the stated requirement on 65 of the window's 106 days**, and load was curtailed
+in the dispatch schedules on **103 grid-days (5,214.3 MWh)** across the three grids.
 This is observed curtailment in published schedules and observed reserve shortfall,
 not a brownout forecast. The Visayas grid ran **52 consecutive days on
 grid alert (May 11 to July 1, 2026)**, yellow on most of them and RED on three

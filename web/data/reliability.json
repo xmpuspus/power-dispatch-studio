@@ -104,7 +104,8 @@
   "2026-07-17",
   "2026-07-18",
   "2026-07-19",
-  "2026-07-20"
+  "2026-07-20",
+  "2026-07-21"
  ],
  "series": {
   "luzon": [
@@ -842,6 +843,13 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": -18.8,
     "reserve_shortfall_intervals": 2
+   },
+   {
+    "date": "2026-07-21",
+    "load_bid_peak_mw": 466.0,
+    "curtailed_mwh": 4.43,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
    }
   ],
   "visayas": [
@@ -1575,6 +1583,13 @@
    },
    {
     "date": "2026-07-20",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-07-21",
     "load_bid_peak_mw": 0.0,
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": 0.0,
@@ -2316,14 +2331,21 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": 0.0,
     "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-07-21",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
    }
   ]
  },
  "totals": {
   "luzon": {
-   "days": 105,
-   "curtailment_days": 52,
-   "curtailed_mwh_total": 1950.3,
+   "days": 106,
+   "curtailment_days": 53,
+   "curtailed_mwh_total": 1954.8,
    "worst_curtailment": {
     "date": "2026-07-12",
     "load_bid_peak_mw": 466.0,
@@ -2332,10 +2354,10 @@
     "reserve_shortfall_intervals": 29
    },
    "reserve_shortfall_days": 65,
-   "median_daily_min_reserve_slack_mw": -18.7
+   "median_daily_min_reserve_slack_mw": -18.6
   },
   "visayas": {
-   "days": 105,
+   "days": 106,
    "curtailment_days": 36,
    "curtailed_mwh_total": 2813.7,
    "worst_curtailment": {
@@ -2346,10 +2368,10 @@
     "reserve_shortfall_intervals": 168
    },
    "reserve_shortfall_days": 67,
-   "median_daily_min_reserve_slack_mw": -39.5
+   "median_daily_min_reserve_slack_mw": -38.2
   },
   "mindanao": {
-   "days": 105,
+   "days": 106,
    "curtailment_days": 14,
    "curtailed_mwh_total": 445.8,
    "worst_curtailment": {
