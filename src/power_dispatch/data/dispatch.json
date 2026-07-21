@@ -54,6 +54,7 @@
    "avail_mw": 15681.9,
    "typical_evening_demand_mw": 12018,
    "peak_demand_mw": 14539,
+   "evening_peak_demand_mw": 13275,
    "fuel_avail_mw": {
     "coal": 7522.5,
     "natural_gas": 3358.8,
@@ -115,6 +116,7 @@
    "avail_mw": 2813.4,
    "typical_evening_demand_mw": 2366,
    "peak_demand_mw": 2769,
+   "evening_peak_demand_mw": 2584,
    "fuel_avail_mw": {
     "coal": 1317.5,
     "oil": 460.0,
@@ -170,6 +172,7 @@
    "avail_mw": 3502.0,
    "typical_evening_demand_mw": 2372,
    "peak_demand_mw": 2822,
+   "evening_peak_demand_mw": 2632,
    "fuel_avail_mw": {
     "coal": 2215.1,
     "oil": 448.0,
@@ -2363,8 +2366,8 @@
    "base_price_php_kwh": 12.0,
    "tripped_price_php_kwh": 32.0,
    "delta_price_php_kwh": 20.0,
-   "peak_demand_mw": 2769,
-   "shortfall_at_peak_mw": 296.1
+   "peak_demand_mw": 2584,
+   "shortfall_at_peak_mw": 110.6
   },
   {
    "unit": "PEDC",
@@ -2375,8 +2378,8 @@
    "base_price_php_kwh": 12.0,
    "tripped_price_php_kwh": 32.0,
    "delta_price_php_kwh": 20.0,
-   "peak_demand_mw": 2769,
-   "shortfall_at_peak_mw": 270.1
+   "peak_demand_mw": 2584,
+   "shortfall_at_peak_mw": 84.6
   },
   {
    "unit": "CEDC",
@@ -2387,8 +2390,8 @@
    "base_price_php_kwh": 12.0,
    "tripped_price_php_kwh": 12.0,
    "delta_price_php_kwh": 0.0,
-   "peak_demand_mw": 2769,
-   "shortfall_at_peak_mw": 202.1
+   "peak_demand_mw": 2584,
+   "shortfall_at_peak_mw": 16.6
   },
   {
    "unit": "Masinloc",
@@ -2399,8 +2402,8 @@
    "base_price_php_kwh": 6.0,
    "tripped_price_php_kwh": 12.0,
    "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14539,
-   "shortfall_at_peak_mw": 196.6
+   "peak_demand_mw": 13275,
+   "shortfall_at_peak_mw": 0.0
   },
   {
    "unit": "GNPower Dinginin",
@@ -2411,20 +2414,8 @@
    "base_price_php_kwh": 6.0,
    "tripped_price_php_kwh": 12.0,
    "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14539,
-   "shortfall_at_peak_mw": 192.6
-  },
-  {
-   "unit": "KSPC (Kepco SPC)",
-   "grid": "visayas",
-   "fuel": "coal",
-   "capacity_mw": 200,
-   "tight_evening_demand_mw": 2561,
-   "base_price_php_kwh": 12.0,
-   "tripped_price_php_kwh": 12.0,
-   "delta_price_php_kwh": 0.0,
-   "peak_demand_mw": 2769,
-   "shortfall_at_peak_mw": 156.1
+   "peak_demand_mw": 13275,
+   "shortfall_at_peak_mw": 0.0
   },
   {
    "unit": "Sual",
@@ -2435,8 +2426,8 @@
    "base_price_php_kwh": 6.0,
    "tripped_price_php_kwh": 12.0,
    "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14539,
-   "shortfall_at_peak_mw": 150.6
+   "peak_demand_mw": 13275,
+   "shortfall_at_peak_mw": 0.0
   },
   {
    "unit": "Ilijan",
@@ -2447,8 +2438,8 @@
    "base_price_php_kwh": 6.0,
    "tripped_price_php_kwh": 12.0,
    "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14539,
-   "shortfall_at_peak_mw": 56.6
+   "peak_demand_mw": 13275,
+   "shortfall_at_peak_mw": 0.0
   },
   {
    "unit": "Pagbilao",
@@ -2459,8 +2450,8 @@
    "base_price_php_kwh": 6.0,
    "tripped_price_php_kwh": 12.0,
    "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14539,
-   "shortfall_at_peak_mw": 11.6
+   "peak_demand_mw": 13275,
+   "shortfall_at_peak_mw": 0.0
   },
   {
    "unit": "Quezon Power",
@@ -2471,7 +2462,7 @@
    "base_price_php_kwh": 6.0,
    "tripped_price_php_kwh": 12.0,
    "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14539,
+   "peak_demand_mw": 13275,
    "shortfall_at_peak_mw": 0.0
   },
   {
@@ -2483,7 +2474,19 @@
    "base_price_php_kwh": 6.0,
    "tripped_price_php_kwh": 12.0,
    "delta_price_php_kwh": 6.0,
-   "peak_demand_mw": 14539,
+   "peak_demand_mw": 13275,
+   "shortfall_at_peak_mw": 0.0
+  },
+  {
+   "unit": "KSPC (Kepco SPC)",
+   "grid": "visayas",
+   "fuel": "coal",
+   "capacity_mw": 200,
+   "tight_evening_demand_mw": 2561,
+   "base_price_php_kwh": 12.0,
+   "tripped_price_php_kwh": 12.0,
+   "delta_price_php_kwh": 0.0,
+   "peak_demand_mw": 2584,
    "shortfall_at_peak_mw": 0.0
   }
  ],
@@ -2491,20 +2494,35 @@
   "luzon": {
    "installed_mw": 20968,
    "avail_at_peak_mw": 15681.9,
-   "peak_demand_mw": 14539,
-   "reserve_margin_pct": 7.9
+   "evening_peak_demand_mw": 13275,
+   "gross_peak_mw": 14539,
+   "reserve_margin_pct": 18.1,
+   "tight_hour": 16,
+   "tight_avail_mw": 16293.9,
+   "tight_demand_mw": 14290,
+   "tight_reserve_margin_pct": 14.0
   },
   "visayas": {
    "installed_mw": 4007,
    "avail_at_peak_mw": 2813.4,
-   "peak_demand_mw": 2769,
-   "reserve_margin_pct": 1.6
+   "evening_peak_demand_mw": 2584,
+   "gross_peak_mw": 2769,
+   "reserve_margin_pct": 8.9,
+   "tight_hour": 18,
+   "tight_avail_mw": 2827.4,
+   "tight_demand_mw": 2584,
+   "tight_reserve_margin_pct": 9.4
   },
   "mindanao": {
    "installed_mw": 4878,
    "avail_at_peak_mw": 3502.0,
-   "peak_demand_mw": 2822,
-   "reserve_margin_pct": 24.1
+   "evening_peak_demand_mw": 2632,
+   "gross_peak_mw": 2822,
+   "reserve_margin_pct": 33.0,
+   "tight_hour": 15,
+   "tight_avail_mw": 3687.6,
+   "tight_demand_mw": 2786,
+   "tight_reserve_margin_pct": 32.4
   },
   "dict_2028": {
    "added_mw": 1500,
@@ -2513,12 +2531,14 @@
    "date": "2025-10",
    "src": "https://www.bworldonline.com/corporate/2025/10/23/707346/",
    "luzon_avail_at_peak_mw": 15681.9,
-   "luzon_peak_now_mw": 14539,
-   "luzon_peak_plus_dc_mw": 16039,
-   "reserve_margin_now_pct": 7.9,
-   "reserve_margin_with_dc_pct": -2.2,
-   "shortfall_intervals_with_dc": 99,
-   "eue_mwh_with_dc": 1296.3
+   "luzon_evening_peak_mw": 13275,
+   "luzon_peak_plus_dc_mw": 14775,
+   "reserve_margin_now_pct": 18.1,
+   "reserve_margin_with_dc_pct": 6.1,
+   "tight_reserve_margin_with_dc_pct": 3.2,
+   "tight_hour_with_dc": 16,
+   "shortfall_intervals_with_dc": 0,
+   "eue_mwh_with_dc": 0
   }
  },
  "reliability": {
