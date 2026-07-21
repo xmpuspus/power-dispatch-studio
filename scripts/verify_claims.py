@@ -320,6 +320,20 @@ def canonical():
         # surfaces and was hand-written; it is 1.18% and now computed
         "mot_headroom_luz": _n(mo["mot_dispatch_cut"]["per_grid"]["luzon"]
                                ["headroom_mw"]["mean"], 0),
+        # the MOT headroom means + Luzon stack share, and the residual-probe
+        # scalars, all rolling with the window and until now hand-typed
+        "mot_headroom_vis": _n(mo["mot_dispatch_cut"]["per_grid"]["visayas"]
+                               ["headroom_mw"]["mean"], 0),
+        "mot_headroom_min": _n(mo["mot_dispatch_cut"]["per_grid"]["mindanao"]
+                               ["headroom_mw"]["mean"], 0),
+        "mot_headroom_share_luz": _n(mo["mot_dispatch_cut"]["per_grid"]["luzon"]
+                                     ["headroom_share_pct"], 1),
+        "resid_import": _n(mo["mot_dispatch_cut"]["luzon_residual_probe"]
+                           ["import_mw_mean"], 0),
+        "resid_gap": _n(mo["mot_dispatch_cut"]["luzon_residual_probe"]
+                        ["gap_mw_mean"], 0),
+        "resid_balance": _n(mo["mot_dispatch_cut"]["luzon_residual_probe"]
+                            ["balance_residual_mw_mean"], 0),
         "cong_clean_share": _n(_load("nodal_obs.json")["congestion"]
                                ["clean_day_nonzero_share_pct"], 2),
 
@@ -623,8 +637,15 @@ REGISTRY = [
      re.compile(r"touching only ([\d.]+) percent of\s*\n?\s*clean-day"),
      ["cong_clean_share"]),
     ("web/methodology.html",
-     re.compile(r"averages ([\d,.]+) MW on Luzon"),
-     ["mot_headroom_luz"]),
+     re.compile(r"averages ([\d,.]+) MW on Luzon \(([\d.]+) percent of the stack\), "
+                r"([\d,]+) MW on Mindanao\s+and ([\d,]+) MW on the Visayas"),
+     ["mot_headroom_luz", "mot_headroom_share_luz", "mot_headroom_min", "mot_headroom_vis"]),
+    ("web/methodology.html",
+     re.compile(r"import averages ([\d,]+) MW on Luzon"),
+     ["resid_import"]),
+    ("web/methodology.html",
+     re.compile(r"\(([\d,]+) against ([\d,]+) MW across the 15 days"),
+     ["resid_gap", "resid_balance"]),
 
     ("web/methodology.html",
      re.compile(r"largest\s*\n?\s*hour-to-hour demand RISE anywhere in the archived observed profiles\s*\n?\s*\(([\d,]+) MW on Luzon"),
