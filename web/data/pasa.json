@@ -3087,6 +3087,45 @@
    },
    "n_out": 17,
    "n_unmatched": 10
+  },
+  {
+   "date": "2026-07-20",
+   "out": [
+    "01MARVEL_G01",
+    "01MARVEL_G02",
+    "01SMC_G01",
+    "01SROQUE_U03",
+    "03EERI_G02",
+    "03KAL_G03",
+    "03SLTEC_G02",
+    "03TGPP_G01",
+    "06SONEG_BAT",
+    "10AGUS4_U03",
+    "10AGUS5_U01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "13SMC_U02",
+    "14SARANG_U02",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 630.7,
+    "visayas": 0.0,
+    "mindanao": 145.5
+   },
+   "matched_fuel_mw": {
+    "luzon": {
+     "coal": 316.0,
+     "hydro": 314.7
+    },
+    "visayas": {},
+    "mindanao": {
+     "hydro": 40.5,
+     "coal": 105.0
+    }
+   },
+   "n_out": 16,
+   "n_unmatched": 9
   }
  ],
  "resources": [
@@ -3185,6 +3224,14 @@
    "fuel": "coal",
    "unit_mw": 316.0,
    "match": "verified"
+  },
+  {
+   "resource": "01MARVEL_G02",
+   "grid": "luzon",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
   },
   {
    "resource": "01MSINLO_G02",
@@ -3291,12 +3338,28 @@
    "match": "verified"
   },
   {
+   "resource": "03SLTEC_G02",
+   "grid": "luzon",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
    "resource": "03SNGAB_G01",
    "grid": "luzon",
    "plant": "SAN GABRIEL",
    "fuel": "natural_gas",
    "unit_mw": 420.1,
    "match": "verified"
+  },
+  {
+   "resource": "03TGPP_G01",
+   "grid": "luzon",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
   },
   {
    "resource": "05CARMEN_BAT",
@@ -3755,12 +3818,12 @@
    "match": "verified"
   }
  ],
- "n_resources": 83,
+ "n_resources": 86,
  "n_verified": 50,
- "n_unmatched": 27,
+ "n_unmatched": 30,
  "n_storage": 6,
  "grid_mapping_note": "Grid per resource comes from the WESM code's numeric area prefix (01-03 Luzon, 04-08 Visayas, 09-14 Mindanao), an INFERRED mapping spot-checked against named plants; IEMOP does not publish a code key on this dataset.",
- "coverage_note": "50 of 83 outage codes in this window map to a DOE-fleet plant with a dependable MW; 27 stay unmatched and carry no MW (their outage is listed, not sized), and 6 are grid batteries outside the generation list. Matched MW is therefore a floor on the true scheduled-outage MW.",
+ "coverage_note": "50 of 86 outage codes in this window map to a DOE-fleet plant with a dependable MW; 30 stay unmatched and carry no MW (their outage is listed, not sized), and 6 are grid batteries outside the generation list. Matched MW is therefore a floor on the true scheduled-outage MW.",
  "note": "The operator's own outage schedules used in real-time dispatch (IEMOP OUTRTD), one row per resource out per day. This is the observed maintenance-plus-forced outage state, not a forecast.",
  "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/",
  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."

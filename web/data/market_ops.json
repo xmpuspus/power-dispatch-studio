@@ -1,121 +1,121 @@
 {
  "price_setters": {
   "available": true,
-  "days": 102,
+  "days": 103,
   "per_grid": {
    "luzon": {
-    "n_intervals": 23224,
+    "n_intervals": 23433,
     "n_setters": 112,
-    "fuel_matched_share_pct": 64.4,
+    "fuel_matched_share_pct": 64.5,
     "top": [
      {
       "resource": "03STA-RI_G06",
       "fuel": "natural_gas",
-      "share_pct": 6.2,
-      "mean_price_php_kwh": 3.211
-     },
-     {
-      "resource": "03STA-RI_G02",
-      "fuel": "natural_gas",
-      "share_pct": 6.0,
-      "mean_price_php_kwh": 5.495
+      "share_pct": 6.1,
+      "mean_price_php_kwh": 3.212
      },
      {
       "resource": "03STA-RI_G04",
       "fuel": "natural_gas",
       "share_pct": 6.0,
-      "mean_price_php_kwh": 5.486
+      "mean_price_php_kwh": 5.51
+     },
+     {
+      "resource": "03STA-RI_G02",
+      "fuel": "natural_gas",
+      "share_pct": 6.0,
+      "mean_price_php_kwh": 5.499
      },
      {
       "resource": "03STA-RI_G05",
       "fuel": "natural_gas",
-      "share_pct": 5.8,
-      "mean_price_php_kwh": 3.585
+      "share_pct": 5.7,
+      "mean_price_php_kwh": 3.586
      },
      {
       "resource": "03STA-RI_G03",
       "fuel": "natural_gas",
       "share_pct": 5.6,
-      "mean_price_php_kwh": 5.273
+      "mean_price_php_kwh": 5.278
      },
      {
       "resource": "03PAGBIL_G03",
       "fuel": "coal",
-      "share_pct": 5.2,
-      "mean_price_php_kwh": 0.983
+      "share_pct": 5.3,
+      "mean_price_php_kwh": 1.022
      },
      {
       "resource": "03SNGAB_G01",
       "fuel": "natural_gas",
       "share_pct": 4.5,
-      "mean_price_php_kwh": 1.434
+      "mean_price_php_kwh": 1.523
      },
      {
       "resource": "03STA-RI_G01",
       "fuel": "natural_gas",
       "share_pct": 4.4,
-      "mean_price_php_kwh": 5.236
+      "mean_price_php_kwh": 5.249
      },
      {
       "resource": "03PAGBIL_G01",
       "fuel": "coal",
       "share_pct": 4.4,
-      "mean_price_php_kwh": 2.371
+      "mean_price_php_kwh": 2.391
      },
      {
       "resource": "03EERI_G02",
       "fuel": null,
-      "share_pct": 4.4,
+      "share_pct": 4.3,
       "mean_price_php_kwh": 13.019
      },
      {
       "resource": "03PAGBIL_G02",
       "fuel": "coal",
       "share_pct": 4.0,
-      "mean_price_php_kwh": 2.379
+      "mean_price_php_kwh": 2.398
      },
      {
       "resource": "03EERI_G03",
       "fuel": null,
       "share_pct": 3.8,
-      "mean_price_php_kwh": 12.049
+      "mean_price_php_kwh": 12.048
      }
     ]
    },
    "visayas": {
-    "n_intervals": 6042,
+    "n_intervals": 6092,
     "n_setters": 72,
-    "fuel_matched_share_pct": 75.7,
+    "fuel_matched_share_pct": 75.8,
     "top": [
      {
       "resource": "05CEDC_U02",
       "fuel": "coal",
       "share_pct": 9.5,
-      "mean_price_php_kwh": 0.603
+      "mean_price_php_kwh": 0.616
      },
      {
       "resource": "05CEDC_U01",
       "fuel": "coal",
       "share_pct": 9.1,
-      "mean_price_php_kwh": 0.555
+      "mean_price_php_kwh": 0.569
      },
      {
       "resource": "05CEDC_U03",
       "fuel": "coal",
-      "share_pct": 9.1,
-      "mean_price_php_kwh": 0.503
+      "share_pct": 9.0,
+      "mean_price_php_kwh": 0.514
      },
      {
       "resource": "08PEDC_U01",
       "fuel": "coal",
-      "share_pct": 6.9,
-      "mean_price_php_kwh": 1.128
+      "share_pct": 7.0,
+      "mean_price_php_kwh": 1.172
      },
      {
       "resource": "08PEDC_U02",
       "fuel": "coal",
-      "share_pct": 6.2,
-      "mean_price_php_kwh": 1.155
+      "share_pct": 6.3,
+      "mean_price_php_kwh": 1.201
      },
      {
       "resource": "07BIDPP_G01",
@@ -127,7 +127,7 @@
       "resource": "05TPC_G02",
       "fuel": null,
       "share_pct": 4.4,
-      "mean_price_php_kwh": -0.587
+      "mean_price_php_kwh": -0.533
      },
      {
       "resource": "06KABAN_BAT",
@@ -138,39 +138,39 @@
      {
       "resource": "08PEDC_U03",
       "fuel": "coal",
-      "share_pct": 3.9,
-      "mean_price_php_kwh": -2.385
+      "share_pct": 4.0,
+      "mean_price_php_kwh": -2.273
      },
      {
       "resource": "05CARMENDPP_U03",
       "fuel": "oil",
       "share_pct": 3.7,
-      "mean_price_php_kwh": 23.163
+      "mean_price_php_kwh": 23.209
      },
      {
       "resource": "05CARMENDPP_U01",
       "fuel": "oil",
       "share_pct": 3.0,
-      "mean_price_php_kwh": 23.117
+      "mean_price_php_kwh": 23.169
      },
      {
       "resource": "05CARMENDPP_U02",
       "fuel": "oil",
       "share_pct": 2.5,
-      "mean_price_php_kwh": 22.789
+      "mean_price_php_kwh": 22.84
      }
     ]
    },
    "mindanao": {
-    "n_intervals": 17190,
+    "n_intervals": 17311,
     "n_setters": 97,
-    "fuel_matched_share_pct": 76.8,
+    "fuel_matched_share_pct": 76.6,
     "top": [
      {
       "resource": "10GNPK_U03",
       "fuel": "coal",
       "share_pct": 8.9,
-      "mean_price_php_kwh": 5.259
+      "mean_price_php_kwh": 5.265
      },
      {
       "resource": "14SARANG_U02",
@@ -182,61 +182,61 @@
       "resource": "10GNPK_U02",
       "fuel": "coal",
       "share_pct": 8.2,
-      "mean_price_php_kwh": 4.313
+      "mean_price_php_kwh": 4.322
      },
      {
       "resource": "10GNPK_U01",
       "fuel": "coal",
       "share_pct": 8.2,
-      "mean_price_php_kwh": 4.07
+      "mean_price_php_kwh": 4.089
      },
      {
       "resource": "10GNPK_U04",
       "fuel": "coal",
       "share_pct": 7.8,
-      "mean_price_php_kwh": 4.584
+      "mean_price_php_kwh": 4.579
      },
      {
       "resource": "14SARANG_U01",
       "fuel": "coal",
-      "share_pct": 7.6,
-      "mean_price_php_kwh": 3.246
+      "share_pct": 7.5,
+      "mean_price_php_kwh": 3.248
      },
      {
       "resource": "11FDC_U02",
       "fuel": "coal",
-      "share_pct": 4.2,
-      "mean_price_php_kwh": 1.611
+      "share_pct": 4.1,
+      "mean_price_php_kwh": 1.616
      },
      {
       "resource": "11FDC_U03",
       "fuel": "coal",
       "share_pct": 3.9,
-      "mean_price_php_kwh": 1.588
+      "mean_price_php_kwh": 1.596
      },
      {
       "resource": "14PKPSOC_G01",
       "fuel": null,
       "share_pct": 3.4,
-      "mean_price_php_kwh": 31.945
+      "mean_price_php_kwh": 31.946
      },
      {
       "resource": "11FDC_U01",
       "fuel": "coal",
-      "share_pct": 3.2,
-      "mean_price_php_kwh": 1.174
+      "share_pct": 3.1,
+      "mean_price_php_kwh": 1.185
      },
      {
       "resource": "12TM2_U01",
       "fuel": null,
       "share_pct": 1.7,
-      "mean_price_php_kwh": 16.532
+      "mean_price_php_kwh": 16.583
      },
      {
       "resource": "12PKSFRA_U01",
       "fuel": null,
       "share_pct": 1.6,
-      "mean_price_php_kwh": 26.545
+      "mean_price_php_kwh": 26.512
      }
     ]
    }
@@ -350,7 +350,8 @@
    "2026-07-16",
    "2026-07-17",
    "2026-07-18",
-   "2026-07-19"
+   "2026-07-19",
+   "2026-07-20"
   ],
   "series": {
    "luzon": {
@@ -456,7 +457,8 @@
      8.2735,
      7.9805,
      4.766,
-     2.7249
+     2.7249,
+     5.8079
     ],
     "Fr": [
      2.436,
@@ -560,7 +562,8 @@
      15.1011,
      14.0447,
      5.4632,
-     4.2925
+     4.2925,
+     4.2332
     ],
     "Rd": [
      0.0873,
@@ -664,7 +667,8 @@
      12.1647,
      13.4511,
      14.0765,
-     10.2656
+     10.2656,
+     9.0228
     ],
     "Ru": [
      0.0,
@@ -768,7 +772,8 @@
      13.1801,
      15.2621,
      14.7353,
-     13.2513
+     13.2513,
+     12.9584
     ]
    },
    "visayas": {
@@ -874,7 +879,8 @@
      8.6074,
      6.6312,
      3.1014,
-     3.1769
+     3.1769,
+     2.8481
     ],
     "Fr": [
      6.1939,
@@ -978,7 +984,8 @@
      12.7954,
      11.3505,
      10.6567,
-     9.3006
+     9.3006,
+     12.4566
     ],
     "Rd": [
      4.4712,
@@ -1082,7 +1089,8 @@
      19.6162,
      19.5702,
      19.2898,
-     18.6024
+     18.6024,
+     19.0636
     ],
     "Ru": [
      8.1036,
@@ -1186,7 +1194,8 @@
      20.0626,
      19.7949,
      19.2504,
-     18.8766
+     18.8766,
+     19.8484
     ]
    },
    "mindanao": {
@@ -1292,7 +1301,8 @@
      0.4694,
      0.1465,
      0.0669,
-     0.0269
+     0.0269,
+     0.4983
     ],
     "Fr": [
      6.6338,
@@ -1396,7 +1406,8 @@
      6.0817,
      5.0512,
      3.5206,
-     2.7478
+     2.7478,
+     5.6427
     ],
     "Rd": [
      0.0063,
@@ -1500,7 +1511,8 @@
      21.294,
      24.5984,
      24.8532,
-     24.6456
+     24.6456,
+     24.0762
     ],
     "Ru": [
      0.0,
@@ -1604,62 +1616,63 @@
      23.5034,
      23.6864,
      24.984,
-     24.6456
+     24.6456,
+     24.0762
     ]
    }
   },
   "stats": {
    "luzon": {
     "Dr": {
-     "mean": 2.7242,
+     "mean": 2.7542,
      "max": 10.3749
     },
     "Fr": {
-     "mean": 6.7681,
+     "mean": 6.7435,
      "max": 20.4703
     },
     "Rd": {
-     "mean": 9.301,
+     "mean": 9.2983,
      "max": 19.7541
     },
     "Ru": {
-     "mean": 10.0638,
+     "mean": 10.0919,
      "max": 22.13
     }
    },
    "visayas": {
     "Dr": {
-     "mean": 5.0446,
+     "mean": 5.0233,
      "max": 13.3738
     },
     "Fr": {
-     "mean": 10.9056,
+     "mean": 10.9206,
      "max": 20.1901
     },
     "Rd": {
-     "mean": 14.0577,
+     "mean": 14.1063,
      "max": 20.3632
     },
     "Ru": {
-     "mean": 15.8789,
+     "mean": 15.9175,
      "max": 22.7975
     }
    },
    "mindanao": {
     "Dr": {
-     "mean": 0.936,
+     "mean": 0.9318,
      "max": 6.4042
     },
     "Fr": {
-     "mean": 5.7018,
+     "mean": 5.7013,
      "max": 15.2078
     },
     "Rd": {
-     "mean": 15.1116,
+     "mean": 15.1986,
      "max": 24.9999
     },
     "Ru": {
-     "mean": 16.6794,
+     "mean": 16.7512,
      "max": 24.9999
     }
    }
@@ -1671,7 +1684,7 @@
  },
  "reserve_validation": {
   "available": true,
-  "days": 94,
+  "days": 95,
   "n_short_books": 0,
   "n_nonopen_hours_skipped": 0,
   "hours_model_above_pct": 8.4,
@@ -1679,140 +1692,140 @@
   "pools": {
    "luzon": {
     "Fr": {
-     "n_hours": 2256,
-     "observed_mean_php_kwh": 6.497,
-     "modeled_mean_php_kwh": 2.307,
-     "mae_php_kwh": 4.19,
-     "bias_php_kwh": -4.19,
-     "correlation": 0.538,
-     "exact_hours_pct": 45.8,
+     "n_hours": 2280,
+     "observed_mean_php_kwh": 6.475,
+     "modeled_mean_php_kwh": 2.296,
+     "mae_php_kwh": 4.179,
+     "bias_php_kwh": -4.179,
+     "correlation": 0.537,
+     "exact_hours_pct": 45.9,
      "n_scarcity_hours": 519,
-     "mae_nonscarcity_php_kwh": 3.748
+     "mae_nonscarcity_php_kwh": 3.74
     },
     "Dr": {
-     "n_hours": 2253,
-     "observed_mean_php_kwh": 2.555,
-     "modeled_mean_php_kwh": 1.754,
-     "mae_php_kwh": 0.8,
-     "bias_php_kwh": -0.8,
-     "correlation": 0.661,
-     "exact_hours_pct": 79.9,
+     "n_hours": 2277,
+     "observed_mean_php_kwh": 2.579,
+     "modeled_mean_php_kwh": 1.774,
+     "mae_php_kwh": 0.805,
+     "bias_php_kwh": -0.805,
+     "correlation": 0.668,
+     "exact_hours_pct": 79.8,
      "n_scarcity_hours": 429,
-     "mae_nonscarcity_php_kwh": 0.546
+     "mae_nonscarcity_php_kwh": 0.555
     },
     "Ru": {
-     "n_hours": 2256,
-     "observed_mean_php_kwh": 9.712,
-     "modeled_mean_php_kwh": 6.352,
-     "mae_php_kwh": 3.359,
-     "bias_php_kwh": -3.359,
-     "correlation": 0.688,
-     "exact_hours_pct": 64.1,
+     "n_hours": 2280,
+     "observed_mean_php_kwh": 9.74,
+     "modeled_mean_php_kwh": 6.403,
+     "mae_php_kwh": 3.337,
+     "bias_php_kwh": -3.337,
+     "correlation": 0.69,
+     "exact_hours_pct": 64.2,
      "n_scarcity_hours": 976,
-     "mae_nonscarcity_php_kwh": 2.717
+     "mae_nonscarcity_php_kwh": 2.69
     },
     "Rd": {
-     "n_hours": 2256,
-     "observed_mean_php_kwh": 9.066,
-     "modeled_mean_php_kwh": 6.463,
-     "mae_php_kwh": 2.603,
-     "bias_php_kwh": -2.603,
-     "correlation": 0.829,
-     "exact_hours_pct": 55.0,
+     "n_hours": 2280,
+     "observed_mean_php_kwh": 9.075,
+     "modeled_mean_php_kwh": 6.477,
+     "mae_php_kwh": 2.599,
+     "bias_php_kwh": -2.599,
+     "correlation": 0.831,
+     "exact_hours_pct": 54.7,
      "n_scarcity_hours": 967,
-     "mae_nonscarcity_php_kwh": 3.016
+     "mae_nonscarcity_php_kwh": 3.002
     }
    },
    "visayas": {
     "Fr": {
-     "n_hours": 2250,
-     "observed_mean_php_kwh": 10.808,
-     "modeled_mean_php_kwh": 4.201,
-     "mae_php_kwh": 6.607,
-     "bias_php_kwh": -6.607,
-     "correlation": 0.375,
+     "n_hours": 2274,
+     "observed_mean_php_kwh": 10.83,
+     "modeled_mean_php_kwh": 4.244,
+     "mae_php_kwh": 6.586,
+     "bias_php_kwh": -6.586,
+     "correlation": 0.38,
      "exact_hours_pct": 47.8,
      "n_scarcity_hours": 297,
-     "mae_nonscarcity_php_kwh": 6.052
+     "mae_nonscarcity_php_kwh": 6.036
     },
     "Dr": {
-     "n_hours": 2213,
-     "observed_mean_php_kwh": 5.205,
-     "modeled_mean_php_kwh": 1.707,
-     "mae_php_kwh": 3.499,
-     "bias_php_kwh": -3.498,
-     "correlation": 0.293,
-     "exact_hours_pct": 66.5,
-     "n_scarcity_hours": 313,
-     "mae_nonscarcity_php_kwh": 1.025
+     "n_hours": 2237,
+     "observed_mean_php_kwh": 5.214,
+     "modeled_mean_php_kwh": 1.711,
+     "mae_php_kwh": 3.504,
+     "bias_php_kwh": -3.503,
+     "correlation": 0.291,
+     "exact_hours_pct": 66.4,
+     "n_scarcity_hours": 316,
+     "mae_nonscarcity_php_kwh": 1.027
     },
     "Ru": {
-     "n_hours": 2256,
-     "observed_mean_php_kwh": 15.545,
-     "modeled_mean_php_kwh": 9.848,
-     "mae_php_kwh": 5.697,
-     "bias_php_kwh": -5.697,
-     "correlation": 0.559,
-     "exact_hours_pct": 45.4,
+     "n_hours": 2280,
+     "observed_mean_php_kwh": 15.577,
+     "modeled_mean_php_kwh": 9.842,
+     "mae_php_kwh": 5.734,
+     "bias_php_kwh": -5.734,
+     "correlation": 0.556,
+     "exact_hours_pct": 45.3,
      "n_scarcity_hours": 306,
-     "mae_nonscarcity_php_kwh": 5.354
+     "mae_nonscarcity_php_kwh": 5.402
     },
     "Rd": {
-     "n_hours": 2256,
-     "observed_mean_php_kwh": 13.49,
-     "modeled_mean_php_kwh": 11.025,
-     "mae_php_kwh": 2.465,
-     "bias_php_kwh": -2.465,
-     "correlation": 0.807,
+     "n_hours": 2280,
+     "observed_mean_php_kwh": 13.527,
+     "modeled_mean_php_kwh": 11.058,
+     "mae_php_kwh": 2.469,
+     "bias_php_kwh": -2.469,
+     "correlation": 0.806,
      "exact_hours_pct": 60.6,
      "n_scarcity_hours": 305,
-     "mae_nonscarcity_php_kwh": 2.381
+     "mae_nonscarcity_php_kwh": 2.387
     }
    },
    "mindanao": {
     "Fr": {
-     "n_hours": 2256,
-     "observed_mean_php_kwh": 5.413,
-     "modeled_mean_php_kwh": 1.263,
-     "mae_php_kwh": 4.15,
-     "bias_php_kwh": -4.15,
-     "correlation": 0.429,
-     "exact_hours_pct": 53.1,
+     "n_hours": 2280,
+     "observed_mean_php_kwh": 5.431,
+     "modeled_mean_php_kwh": 1.268,
+     "mae_php_kwh": 4.163,
+     "bias_php_kwh": -4.163,
+     "correlation": 0.43,
+     "exact_hours_pct": 52.8,
      "n_scarcity_hours": 313,
-     "mae_nonscarcity_php_kwh": 3.463
+     "mae_nonscarcity_php_kwh": 3.486
     },
     "Dr": {
-     "n_hours": 2256,
-     "observed_mean_php_kwh": 0.96,
-     "modeled_mean_php_kwh": 0.066,
-     "mae_php_kwh": 0.895,
-     "bias_php_kwh": -0.895,
-     "correlation": 0.279,
-     "exact_hours_pct": 88.5,
-     "n_scarcity_hours": 374,
-     "mae_nonscarcity_php_kwh": 0.234
+     "n_hours": 2280,
+     "observed_mean_php_kwh": 0.99,
+     "modeled_mean_php_kwh": 0.072,
+     "mae_php_kwh": 0.918,
+     "bias_php_kwh": -0.918,
+     "correlation": 0.301,
+     "exact_hours_pct": 88.3,
+     "n_scarcity_hours": 376,
+     "mae_nonscarcity_php_kwh": 0.248
     },
     "Ru": {
-     "n_hours": 2256,
-     "observed_mean_php_kwh": 16.276,
-     "modeled_mean_php_kwh": 12.461,
-     "mae_php_kwh": 3.815,
-     "bias_php_kwh": -3.814,
-     "correlation": 0.773,
-     "exact_hours_pct": 70.2,
+     "n_hours": 2280,
+     "observed_mean_php_kwh": 16.335,
+     "modeled_mean_php_kwh": 12.518,
+     "mae_php_kwh": 3.817,
+     "bias_php_kwh": -3.817,
+     "correlation": 0.772,
+     "exact_hours_pct": 70.1,
      "n_scarcity_hours": 271,
-     "mae_nonscarcity_php_kwh": 3.819
+     "mae_nonscarcity_php_kwh": 3.822
     },
     "Rd": {
-     "n_hours": 2256,
-     "observed_mean_php_kwh": 14.466,
-     "modeled_mean_php_kwh": 13.655,
-     "mae_php_kwh": 0.812,
-     "bias_php_kwh": -0.812,
-     "correlation": 0.941,
-     "exact_hours_pct": 86.5,
+     "n_hours": 2280,
+     "observed_mean_php_kwh": 14.548,
+     "modeled_mean_php_kwh": 13.745,
+     "mae_php_kwh": 0.803,
+     "bias_php_kwh": -0.803,
+     "correlation": 0.942,
+     "exact_hours_pct": 86.7,
      "n_scarcity_hours": 266,
-     "mae_nonscarcity_php_kwh": 0.74
+     "mae_nonscarcity_php_kwh": 0.731
     }
    }
   },
@@ -1828,24 +1841,24 @@
   "by_grid": {
    "luzon": {
     "energy_php_kwh": 7.047,
-    "reserve_offer_clear_php_kwh": 4.219,
-    "reserve_scarcity_wedge_php_kwh": 2.739,
-    "reserve_total_php_kwh": 6.958,
-    "reserve_aware_php_kwh": 14.005
+    "reserve_offer_clear_php_kwh": 4.237,
+    "reserve_scarcity_wedge_php_kwh": 2.73,
+    "reserve_total_php_kwh": 6.967,
+    "reserve_aware_php_kwh": 14.014
    },
    "visayas": {
     "energy_php_kwh": 10.766,
-    "reserve_offer_clear_php_kwh": 6.695,
-    "reserve_scarcity_wedge_php_kwh": 4.567,
-    "reserve_total_php_kwh": 11.262,
-    "reserve_aware_php_kwh": 22.028
+    "reserve_offer_clear_php_kwh": 6.714,
+    "reserve_scarcity_wedge_php_kwh": 4.573,
+    "reserve_total_php_kwh": 11.287,
+    "reserve_aware_php_kwh": 22.053
    },
    "mindanao": {
     "energy_php_kwh": 9.756,
-    "reserve_offer_clear_php_kwh": 6.861,
-    "reserve_scarcity_wedge_php_kwh": 2.418,
-    "reserve_total_php_kwh": 9.279,
-    "reserve_aware_php_kwh": 19.035
+    "reserve_offer_clear_php_kwh": 6.901,
+    "reserve_scarcity_wedge_php_kwh": 2.425,
+    "reserve_total_php_kwh": 9.326,
+    "reserve_aware_php_kwh": 19.082
    }
   },
   "note": "The reserve-aware price is the energy price plus the reserve price. The reserve price splits into what the reserve offer stack itself clears (the pool-level joint clear, which reproduces the official RSVPR on requirement-met hours) and the administered scarcity wedge on short hours (observed minus modeled), an empirical adder that is not in the public offers. The wedge is reported here, not tuned away: capacity holding reserve cannot also sell energy, and scarce hours price on an administered curve the offers do not carry.",
@@ -8573,82 +8586,151 @@
       "not_offered_mw": 286.6
      }
     }
+   },
+   {
+    "date": "2026-07-14",
+    "luzon": {
+     "Fr": {
+      "registered_mw": 2465.4,
+      "book_max_mw": 960.2,
+      "not_offered_mw": 1505.2
+     },
+     "Dr": {
+      "registered_mw": 2657.0,
+      "book_max_mw": 1390.3,
+      "not_offered_mw": 1266.7
+     },
+     "Ru": {
+      "registered_mw": 2205.8,
+      "book_max_mw": 456.6,
+      "not_offered_mw": 1749.2
+     },
+     "Rd": {
+      "registered_mw": 2205.8,
+      "book_max_mw": 456.6,
+      "not_offered_mw": 1749.2
+     }
+    },
+    "visayas": {
+     "Fr": {
+      "registered_mw": 373.5,
+      "book_max_mw": 202.4,
+      "not_offered_mw": 171.1
+     },
+     "Dr": {
+      "registered_mw": 400.0,
+      "book_max_mw": 281.5,
+      "not_offered_mw": 118.5
+     },
+     "Ru": {
+      "registered_mw": 368.0,
+      "book_max_mw": 161.5,
+      "not_offered_mw": 206.5
+     },
+     "Rd": {
+      "registered_mw": 368.0,
+      "book_max_mw": 161.5,
+      "not_offered_mw": 206.5
+     }
+    },
+    "mindanao": {
+     "Fr": {
+      "registered_mw": 712.6,
+      "book_max_mw": 448.7,
+      "not_offered_mw": 263.9
+     },
+     "Dr": {
+      "registered_mw": 906.9,
+      "book_max_mw": 591.7,
+      "not_offered_mw": 315.2
+     },
+     "Ru": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     },
+     "Rd": {
+      "registered_mw": 414.3,
+      "book_max_mw": 127.7,
+      "not_offered_mw": 286.6
+     }
+    }
    }
   ],
   "stats": {
    "luzon": {
     "Fr": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 2465.4,
      "median_not_offered_mw": 1389.3,
      "median_share_of_registered_pct": 56.5
     },
     "Dr": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 2657.0,
      "median_not_offered_mw": 1208.4,
      "median_share_of_registered_pct": 45.5
     },
     "Ru": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 2266.9,
-     "median_not_offered_mw": 1776.5,
+     "median_not_offered_mw": 1774.6,
      "median_share_of_registered_pct": 78.3
     },
     "Rd": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 2266.9,
-     "median_not_offered_mw": 1776.5,
+     "median_not_offered_mw": 1774.6,
      "median_share_of_registered_pct": 78.3
     }
    },
    "visayas": {
     "Fr": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 373.5,
      "median_not_offered_mw": 178.1,
      "median_share_of_registered_pct": 47.7
     },
     "Dr": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 410.0,
      "median_not_offered_mw": 60.1,
      "median_share_of_registered_pct": 14.8
     },
     "Ru": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 393.0,
-     "median_not_offered_mw": 244.0,
-     "median_share_of_registered_pct": 61.3
+     "median_not_offered_mw": 242.5,
+     "median_share_of_registered_pct": 60.9
     },
     "Rd": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 393.0,
-     "median_not_offered_mw": 244.0,
-     "median_share_of_registered_pct": 61.3
+     "median_not_offered_mw": 242.5,
+     "median_share_of_registered_pct": 60.9
     }
    },
    "mindanao": {
     "Fr": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 752.6,
-     "median_not_offered_mw": 337.6,
-     "median_share_of_registered_pct": 45.3
+     "median_not_offered_mw": 335.8,
+     "median_share_of_registered_pct": 45.1
     },
     "Dr": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 947.7,
      "median_not_offered_mw": 357.8,
      "median_share_of_registered_pct": 38.3
     },
     "Ru": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 452.9,
      "median_not_offered_mw": 326.6,
      "median_share_of_registered_pct": 73.6
     },
     "Rd": {
-     "days": 94,
+     "days": 95,
      "median_registered_mw": 452.9,
      "median_not_offered_mw": 326.6,
      "median_share_of_registered_pct": 73.6
@@ -8742,19 +8824,19 @@
  },
  "admin_dispatch": {
   "available": true,
-  "n_instructions": 97260,
+  "n_instructions": 97412,
   "mw_weighted_fraction_of_dispatch": {
    "luzon": {
-    "mw_weighted_pct": 6.59,
+    "mw_weighted_pct": 6.6,
     "n_raise_hours": 260
    },
    "visayas": {
     "mw_weighted_pct": 7.9,
-    "n_raise_hours": 804
+    "n_raise_hours": 805
    },
    "mindanao": {
-    "mw_weighted_pct": 11.13,
-    "n_raise_hours": 1420
+    "mw_weighted_pct": 11.15,
+    "n_raise_hours": 1421
    }
   },
   "sample_days": [
@@ -8863,51 +8945,51 @@
   "available": true,
   "crossing_days": [
    {
-    "date": "2026-05-03",
-    "closest_hour": 12,
-    "floor_supply_vs_load_margin_pct": 0.54,
-    "observed_negative_lwap_intervals": 50,
-    "observed_min_lwap_php_kwh": -10.5
-   },
-   {
     "date": "2026-07-12",
-    "closest_hour": 16,
-    "floor_supply_vs_load_margin_pct": 0.68,
+    "closest_hour": 15,
+    "floor_supply_vs_load_margin_pct": 0.66,
     "observed_negative_lwap_intervals": 0,
     "observed_min_lwap_php_kwh": 0.0
    },
    {
+    "date": "2026-05-03",
+    "closest_hour": 12,
+    "floor_supply_vs_load_margin_pct": 0.78,
+    "observed_negative_lwap_intervals": 50,
+    "observed_min_lwap_php_kwh": -10.5
+   },
+   {
     "date": "2026-06-21",
     "closest_hour": 9,
-    "floor_supply_vs_load_margin_pct": 1.37,
+    "floor_supply_vs_load_margin_pct": 1.79,
     "observed_negative_lwap_intervals": 5,
     "observed_min_lwap_php_kwh": -10.2
    },
    {
     "date": "2026-05-10",
     "closest_hour": 14,
-    "floor_supply_vs_load_margin_pct": 1.75,
+    "floor_supply_vs_load_margin_pct": 1.81,
     "observed_negative_lwap_intervals": 27,
     "observed_min_lwap_php_kwh": -10.26
    },
    {
     "date": "2026-06-28",
     "closest_hour": 12,
-    "floor_supply_vs_load_margin_pct": 2.03,
+    "floor_supply_vs_load_margin_pct": 2.12,
     "observed_negative_lwap_intervals": 0,
     "observed_min_lwap_php_kwh": 0.0
    },
    {
-    "date": "2026-05-31",
+    "date": "2026-06-06",
     "closest_hour": 13,
-    "floor_supply_vs_load_margin_pct": 2.29,
-    "observed_negative_lwap_intervals": 26,
-    "observed_min_lwap_php_kwh": -10.4
+    "floor_supply_vs_load_margin_pct": 2.53,
+    "observed_negative_lwap_intervals": 7,
+    "observed_min_lwap_php_kwh": -10.43
    }
   ],
   "n_crossing_days": 6,
   "n_days_with_observed_negatives": 4,
-  "min_margin_pct": 0.54,
+  "min_margin_pct": 0.66,
   "deep_negative_structural": {
    "date": "2026-05-03",
    "interval": "09:25",
@@ -8917,7 +8999,7 @@
    "aggregate_must_price_positive": true
   },
   "verdict": "sign_flips_are_a_knife_edge_needing_finer_supply_than_offers",
-  "note": "The negative clearing prices the hourly replay drops were prototyped at 5-minute resolution and measured, and split into two boundaries neither of which a per-grid 5-minute replay closes. Near zero it is a true knife-edge: on the crossing days the offer book's floor-priced supply (self-scheduled solar and must-run at the WESM floor plus zero-priced offers) comes within 0.54 percent of native load at the midday peak, and the book's own 48-block compaction moves about 4 percent of that supply across the zero line, wider than the margin, so a shallow interval's sign turns on supply accounting finer than the offers give. The DEEP negatives are not an aggregate crossing at all: at the day's most negative interval the observed price is about -P10/kWh while physical native load sits above the entire aggregate floor-priced supply, so the per-grid clear must price positive there; that -10 is a load-weighted average of nodal prices pulled to the floor by curtailed-solar pockets, which no per-grid replay reproduces at any time resolution. A clean 5-minute clear on the model's own demand basis reproduces none of the day's observed negative intervals (4 of the six days show observed negatives). Sub-hourly granularity is necessary but not sufficient; the sign flips stay a named boundary, a near-zero resolution knife-edge over a curtailed-solar nodal floor, and the model keeps its stated approximation.",
+  "note": "The negative clearing prices the hourly replay drops were prototyped at 5-minute resolution and measured, and split into two boundaries neither of which a per-grid 5-minute replay closes. Near zero it is a true knife-edge: on the crossing days the offer book's floor-priced supply (self-scheduled solar and must-run at the WESM floor plus zero-priced offers) comes within 0.66 percent of native load at the midday peak, and the book's own 48-block compaction moves about 4 percent of that supply across the zero line, wider than the margin, so a shallow interval's sign turns on supply accounting finer than the offers give. The DEEP negatives are not an aggregate crossing at all: at the day's most negative interval the observed price is about -P10/kWh while physical native load sits above the entire aggregate floor-priced supply, so the per-grid clear must price positive there; that -10 is a load-weighted average of nodal prices pulled to the floor by curtailed-solar pockets, which no per-grid replay reproduces at any time resolution. A clean 5-minute clear on the model's own demand basis reproduces none of the day's observed negative intervals (4 of the six days show observed negatives). Sub-hourly granularity is necessary but not sufficient; the sign flips stay a named boundary, a near-zero resolution knife-edge over a curtailed-solar nodal floor, and the model keeps its stated approximation.",
   "src": "https://www.iemop.ph/market-data/load-weighted-average-prices-final/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
@@ -9478,25 +9560,25 @@
  },
  "flow_record": {
   "available": true,
-  "days": 102,
+  "days": 103,
   "corridors": {
    "lv": {
     "corridor": "Luzon to Visayas",
-    "n_hours": 2448,
-    "identity_mean_mw": 9.5,
-    "record_mean_mw": 9.5,
+    "n_hours": 2472,
+    "identity_mean_mw": 9.8,
+    "record_mean_mw": 9.8,
     "mae_mw": 0.0,
     "binding_share_pct": 49.6,
-    "n_intervals": 29375
+    "n_intervals": 29663
    },
    "vm": {
     "corridor": "Visayas to Mindanao",
-    "n_hours": 2448,
-    "identity_mean_mw": -363.8,
-    "record_mean_mw": -363.8,
+    "n_hours": 2472,
+    "identity_mean_mw": -363.1,
+    "record_mean_mw": -363.1,
     "mae_mw": 0.0,
-    "binding_share_pct": 42.8,
-    "n_intervals": 29375
+    "binding_share_pct": 42.4,
+    "n_intervals": 29663
    }
   },
   "note": "The corridor flows the replay's demand construction implies (net market imports and exports in the RTD regional summaries) against the flows the operator itself scheduled per 5-minute interval (RTDHS): two independent published records of the same wire. The binding share is the fraction of intervals the operator flagged the corridor CONGESTION_FLAG=Y, per-interval binding truth the advisory-window inference never had.",
@@ -10817,53 +10899,58 @@
     "date": "2026-07-19",
     "n_windows": 840,
     "n_resources": 12
+   },
+   {
+    "date": "2026-07-20",
+    "n_windows": 1367,
+    "n_resources": 16
    }
   ],
-  "n_days": 101,
-  "n_resources": 121,
-  "n_windows": 90968,
+  "n_days": 102,
+  "n_resources": 122,
+  "n_windows": 92335,
   "pinned_share_pct": 99.3,
   "top": [
    {
     "resource": "03LUMBSOL_G01",
     "grid": "luzon",
     "fuel": null,
-    "n_windows": 16482,
+    "n_windows": 16674,
     "max_mw": 56.0
    },
    {
     "resource": "01BUGSOL_G01",
     "grid": "luzon",
     "fuel": null,
-    "n_windows": 15004,
+    "n_windows": 15160,
     "max_mw": 400.0
    },
    {
     "resource": "01BARBASOL_G01",
     "grid": "luzon",
     "fuel": null,
-    "n_windows": 12956,
+    "n_windows": 13027,
     "max_mw": 85.6
    },
    {
     "resource": "01CONSOL_G01",
     "grid": "luzon",
     "fuel": null,
-    "n_windows": 12570,
+    "n_windows": 12738,
     "max_mw": 115.4
    },
    {
     "resource": "03LUNSOL_G01",
     "grid": "luzon",
     "fuel": null,
-    "n_windows": 10474,
+    "n_windows": 10624,
     "max_mw": 43.3
    },
    {
     "resource": "01TERRASOL_G01",
     "grid": "luzon",
     "fuel": null,
-    "n_windows": 8521,
+    "n_windows": 8546,
     "max_mw": 600.0
    },
    {
@@ -10874,25 +10961,25 @@
     "max_mw": 17.3
    },
    {
-    "resource": "01PASBUSOL_G01",
-    "grid": "luzon",
-    "fuel": null,
-    "n_windows": 1213,
-    "max_mw": 58.5
-   },
-   {
     "resource": "03STA-RI_G06",
     "grid": "luzon",
     "fuel": "natural_gas",
-    "n_windows": 1126,
+    "n_windows": 1319,
     "max_mw": 274.0
    },
    {
     "resource": "03STA-RI_G05",
     "grid": "luzon",
     "fuel": "natural_gas",
-    "n_windows": 1072,
+    "n_windows": 1265,
     "max_mw": 274.0
+   },
+   {
+    "resource": "01PASBUSOL_G01",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 1227,
+    "max_mw": 58.5
    },
    {
     "resource": "01MARSOL_G01",
@@ -10902,18 +10989,18 @@
     "max_mw": 13.4
    },
    {
+    "resource": "01MSINLO_G04",
+    "grid": "luzon",
+    "fuel": null,
+    "n_windows": 883,
+    "max_mw": 350.5
+   },
+   {
     "resource": "06SLYSOL_G02",
     "grid": "visayas",
     "fuel": null,
     "n_windows": 854,
     "max_mw": 20.6
-   },
-   {
-    "resource": "01MSINLO_G04",
-    "grid": "luzon",
-    "fuel": null,
-    "n_windows": 848,
-    "max_mw": 350.5
    },
    {
     "resource": "03ALMNOS_BAT1",
@@ -10926,7 +11013,7 @@
     "resource": "01BUGALSOL_G01",
     "grid": "luzon",
     "fuel": null,
-    "n_windows": 549,
+    "n_windows": 556,
     "max_mw": 18.4
    }
   ],
@@ -11138,21 +11225,21 @@
    "note": "The must-run list the methodology measured as inert is the SUBSET; its median instruction sits at roughly a tenth of the full MOT-raise record's, so the inertness finding is scoped to must-run and does not extend to this layer."
   },
   "sodir": {
-   "n_files": 303,
-   "n_weekly_files_archived": 39,
-   "n_days": 101,
-   "n_instructions": 61816,
+   "n_files": 306,
+   "n_weekly_files_archived": 42,
+   "n_days": 102,
+   "n_instructions": 62425,
    "categories": {
-    "RTD": 17595,
+    "RTD": 17835,
     "MARKET INTERVENTION/SUSPENSION": 11798,
-    "CONTINGENCY RESERVE": 7838,
-    "MOT RAISE": 7221,
-    "MOT LOWER": 5331,
-    "DISPATCHABLE RESERVE": 4735,
-    "REGULATING RESERVE": 1806,
-    "GENERATOR START-UP": 1558,
-    "GENERATOR SHUTDOWN": 1235,
-    "GENERATOR PROBLEM/TROUBLE/TRIPPING": 1042
+    "CONTINGENCY RESERVE": 7936,
+    "MOT RAISE": 7253,
+    "MOT LOWER": 5426,
+    "DISPATCHABLE RESERVE": 4799,
+    "REGULATING RESERVE": 1815,
+    "GENERATOR START-UP": 1590,
+    "GENERATOR SHUTDOWN": 1249,
+    "GENERATOR PROBLEM/TROUBLE/TRIPPING": 1057
    },
    "n_limitation_remarks": 1647,
    "limitation_causes": {
@@ -11780,6 +11867,12 @@
     "date": "2026-07-19",
     "n": 57,
     "n_hvdc": 14,
+    "n_alert": 0
+   },
+   {
+    "date": "2026-07-20",
+    "n": 54,
+    "n_hvdc": 22,
     "n_alert": 0
    }
   ],
@@ -15539,16 +15632,8 @@
  },
  "outlook": {
   "available": true,
-  "as_of": "2026-07-20",
+  "as_of": "2026-07-21",
   "scheduled_out": [
-   {
-    "resource": "01SROQUE_U03",
-    "grid": "luzon",
-    "fuel": "hydro",
-    "mw": 134.7,
-    "from": "6/1/2026 12:01:00 AM",
-    "until": "7/25/2026 11:59:00 PM"
-   },
    {
     "resource": "14SARANG_U02",
     "grid": "mindanao",
@@ -15590,6 +15675,14 @@
     "until": "7/21/2026"
    },
    {
+    "resource": "06SONEG_BAT",
+    "grid": "visayas",
+    "fuel": "storage",
+    "mw": null,
+    "from": "7/20/2026",
+    "until": "7/22/2026 11:59:00 PM"
+   },
+   {
     "resource": "10AGUS4_U03",
     "grid": "mindanao",
     "fuel": null,
@@ -15623,11 +15716,11 @@
    }
   ],
   "matched_mw": {
-   "luzon": 134.7,
-   "visayas": 0,
+   "luzon": 0.0,
+   "visayas": 0.0,
    "mindanao": 145.5
   },
-  "n_unmatched": 6,
+  "n_unmatched": 7,
   "note": "The operator's week-ahead projection outage schedule (WAPOS), the archive's only forward-looking file: what is scheduled out for the coming days, matched to DOE-fleet MW where the alias is confident. A schedule, not a forecast of forced outages.",
   "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-wap/",
   "must_run": {

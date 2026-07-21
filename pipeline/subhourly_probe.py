@@ -165,6 +165,13 @@ def derive() -> dict:
             "observed_min_lwap_php_kwh": mn,
         })
     n_days_neg = sum(1 for r in rows if r["observed_negative_lwap_intervals"] > 0)
+    # the deep-negative structural case needs a day that actually HAS observed
+    # negatives (so LWAPF exists and the interval is real); the tightest
+    # offer-margin crossing day can be recent, still inside LWAPF's publish lag,
+    # with zero observed negatives. Pick the deepest observed negative instead.
+    _neg = [r for r in rows if r["observed_negative_lwap_intervals"] > 0]
+    _deep = (min(_neg, key=lambda r: r["observed_min_lwap_php_kwh"])["date"]
+             if _neg else None)
     return {
         "available": True,
         "crossing_days": rows,
@@ -172,8 +179,7 @@ def derive() -> dict:
         "n_days_with_observed_negatives": n_days_neg,
         "min_margin_pct": rows[0]["floor_supply_vs_load_margin_pct"]
         if rows else None,
-        "deep_negative_structural": _deepest_structural(rows[0]["date"])
-        if rows else None,
+        "deep_negative_structural": _deepest_structural(_deep) if _deep else None,
         "verdict": "sign_flips_are_a_knife_edge_needing_finer_supply_than_offers",
         "note": ("The negative clearing prices the hourly replay drops were "
                  "prototyped at 5-minute resolution and measured, and split "
