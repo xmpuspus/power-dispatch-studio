@@ -6034,25 +6034,25 @@
     "src": "https://www.iemop.ph/news/december-2025-power-market-luzon-prices-ease-as-supply-improves-visayas-and-mindanao-experience-tighter-conditions/",
     "precision": "osm-routed",
     "receipts": {
-     "days": 103,
+     "days": 104,
      "rtd_intervals": 138,
      "rtd_days": 26,
-     "dap_rows": 18498,
-     "dap_days": 103,
+     "dap_rows": 18672,
+     "dap_days": 104,
      "max_overload_mw": 26.73,
      "max_pct_of_limit": 112.5,
      "matched_equipment": [
       {
        "name": "5DAAN_4TAB2",
-       "rows": 10363
+       "rows": 10472
       },
       {
        "name": "5DAAN_4TAB1",
-       "rows": 5792
+       "rows": 5847
       },
       {
        "name": "LEYTE_TO_CEBU",
-       "rows": 2481
+       "rows": 2491
       }
      ]
     },
