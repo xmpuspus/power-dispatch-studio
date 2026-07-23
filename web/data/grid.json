@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 104,
+   "days": 105,
    "rtd_intervals": 100,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -31,8 +31,8 @@
   },
   {
    "equipment": "1EHVNGS_TR2",
-   "days": 103,
-   "rtd_intervals": 2978,
+   "days": 104,
+   "rtd_intervals": 2991,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -40,8 +40,8 @@
   },
   {
    "equipment": "1EHVNGS_TR1",
-   "days": 103,
-   "rtd_intervals": 981,
+   "days": 104,
+   "rtd_intervals": 986,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -49,7 +49,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 83,
+   "days": 84,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 78,
+   "days": 79,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -145,8 +145,8 @@
   },
   {
    "equipment": "1TGERAO_TR3",
-   "days": 13,
-   "rtd_intervals": 255,
+   "days": 14,
+   "rtd_intervals": 260,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -406,6 +406,14 @@
    "path_edges": 4
   },
   {
+   "equipment": "1SNRAFA_TR1",
+   "days": 3,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
    "equipment": "3TANAWN_TR1",
    "days": 3,
    "rtd_intervals": 0,
@@ -474,6 +482,14 @@
    "path_edges": 1
   },
   {
+   "equipment": "1EHVSJ_TR3",
+   "days": 2,
+   "rtd_intervals": 1,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
    "equipment": "14TACUR_TR2",
    "days": 2,
    "rtd_intervals": 0,
@@ -481,14 +497,6 @@
    "matched": true,
    "kind": "station",
    "station": "Tacurong Substation"
-  },
-  {
-   "equipment": "1SNRAFA_TR1",
-   "days": 2,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": false,
-   "why": "station token unresolved"
   },
   {
    "equipment": "1SNTG_1BYO2",
@@ -628,14 +636,6 @@
    "days": 1,
    "rtd_intervals": 1,
    "max_overload_mw": 2.88,
-   "matched": false,
-   "why": "station token unresolved"
-  },
-  {
-   "equipment": "1EHVSJ_TR3",
-   "days": 1,
-   "rtd_intervals": 1,
-   "max_overload_mw": 0.0,
    "matched": false,
    "why": "station token unresolved"
   },
