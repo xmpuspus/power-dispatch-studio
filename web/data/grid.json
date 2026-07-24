@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 105,
+   "days": 106,
    "rtd_intervals": 100,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -49,7 +49,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 84,
+   "days": 85,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 79,
+   "days": 80,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -550,6 +550,14 @@
    "why": "station token unresolved"
   },
   {
+   "equipment": "HERMOSA__OUT_CORR",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "unparsed code"
+  },
+  {
    "equipment": "1BAUAN_TR1",
    "days": 1,
    "rtd_intervals": 67,
@@ -752,14 +760,6 @@
    "max_overload_mw": 0.0,
    "matched": false,
    "why": "station token unresolved"
-  },
-  {
-   "equipment": "HERMOSA__OUT_CORR",
-   "days": 1,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": false,
-   "why": "unparsed code"
   }
  ]
 }
