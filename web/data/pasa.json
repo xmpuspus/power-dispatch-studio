@@ -3274,6 +3274,45 @@
    },
    "n_out": 13,
    "n_unmatched": 7
+  },
+  {
+   "date": "2026-07-25",
+   "out": [
+    "01MARVEL_G01",
+    "01MARVEL_G02",
+    "01SROQUE_U03",
+    "03STA-RI_G01",
+    "05CEDC_U01",
+    "10AGUS2_U02",
+    "10AGUS4_U03",
+    "10AGUS5_U01",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "13SMC_U02",
+    "14SARANG_U02",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 711.3,
+    "visayas": 82.0,
+    "mindanao": 185.5
+   },
+   "matched_fuel_mw": {
+    "luzon": {
+     "coal": 316.0,
+     "hydro": 134.7,
+     "natural_gas": 260.6
+    },
+    "visayas": {
+     "coal": 82.0
+    },
+    "mindanao": {
+     "hydro": 80.5,
+     "coal": 105.0
+    }
+   },
+   "n_out": 13,
+   "n_unmatched": 5
   }
  ],
  "resources": [
@@ -3499,6 +3538,14 @@
    "plant": "SAN GABRIEL",
    "fuel": "natural_gas",
    "unit_mw": 420.1,
+   "match": "verified"
+  },
+  {
+   "resource": "03STA-RI_G01",
+   "grid": "luzon",
+   "plant": "SANTA RITA",
+   "fuel": "natural_gas",
+   "unit_mw": 260.6,
    "match": "verified"
   },
   {
@@ -3990,12 +4037,12 @@
    "match": "verified"
   }
  ],
- "n_resources": 89,
- "n_verified": 52,
+ "n_resources": 90,
+ "n_verified": 53,
  "n_unmatched": 31,
  "n_storage": 6,
  "grid_mapping_note": "Grid per resource comes from the WESM code's numeric area prefix (01-03 Luzon, 04-08 Visayas, 09-14 Mindanao), an INFERRED mapping spot-checked against named plants; IEMOP does not publish a code key on this dataset.",
- "coverage_note": "52 of 89 outage codes in this window map to a DOE-fleet plant with a dependable MW; 31 stay unmatched and carry no MW (their outage is listed, not sized), and 6 are grid batteries outside the generation list. Matched MW is therefore a floor on the true scheduled-outage MW.",
+ "coverage_note": "53 of 90 outage codes in this window map to a DOE-fleet plant with a dependable MW; 31 stay unmatched and carry no MW (their outage is listed, not sized), and 6 are grid batteries outside the generation list. Matched MW is therefore a floor on the true scheduled-outage MW.",
  "note": "The operator's own outage schedules used in real-time dispatch (IEMOP OUTRTD), one row per resource out per day. This is the observed maintenance-plus-forced outage state, not a forecast.",
  "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/",
  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
