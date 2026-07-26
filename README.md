@@ -329,6 +329,31 @@ the N-1 table, and the full model: [`web/data/dispatch.json`](web/data/dispatch.
 and [`web/data/generators.geojson`](web/data/generators.geojson); the engine is
 `pipeline/dispatch.py` on the sourced fleet in `pipeline/fleet_ph.py`.
 
+### Pax Silica needs more power than the whole Visayas grid and up to twice as much water as everyone in Makati
+
+[![A scroll through the page: the whole grid tiled as one rectangle with a dashed campus square covering all of the Visayas piece; the solar day as 24 nearly-empty hour columns; land areas nested at true scale; a river of power hitting a dam with only two thin circuit ribbons through; the merit-order ladder where adding the campus moves the price-setter from coal to oil; the own-station plan losing 331 MW when one unit trips; water as countable drops against Makati and Angat; and the closing ledger of what BCDA announced against what this page worked out](docs/pax-silica-scale.gif)](web/pax-silica.html)
+
+BCDA's own figures for the campus at New Clark City: **3,000 MW** of power at full
+development and **65 to 90 million liters** of water a day. Numbers that size mean
+nothing on their own, so [a companion page](web/pax-silica.html) draws each one
+against something checkable: the campus alone out-demands every island grid's
+highest recorded 5-minute peak in this project's 105-day archive, including
+Visayas at **2,744 MW**; the signed 500 MW solar farm covers **4.1%** of a day on
+a cloudless model and nothing at the 7pm peak, and running the campus on sun
+alone would need **122 km²** of panels, more than six times the area of
+Makati; the two 230 kV
+lines into the site carry about **770 MW** of the 3,000 in this project's own
+model, and NGCP's most recent 500 kV and HVDC builds each took years between
+first power and full service; served from the market anyway, the campus as flat
+load flips the Luzon marginal block from coal to oil in all 24 hours of the
+same replayed day, **P6.00 to P12.00 per kWh** on the calibrated cost stack,
+with the inter-island links earning **P38 million** of congestion rent in that
+single modeled day; and the announced fix, an on-site power station,
+still loses **331 MW** to no source the moment a single 600 MW unit trips,
+because the backup runs down the same two lines. Every number is either BCDA's
+own, or computed here from a stated source, with the full ledger and every
+caveat on the page itself.
+
 ### Coupling the three grids
 
 The single-grid model clears each island alone. The next step couples them: cheap

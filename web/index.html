@@ -143,10 +143,11 @@
     color:var(--ink); border-radius:7px; padding:7px 10px; cursor:pointer; font-size:12.5px; font-weight:600;
     text-align:left; display:flex; justify-content:space-between; align-items:center; }
   #fopen:hover{ background:#f5f8f9; }
-  #studiolink{ display:block; margin-top:7px; border:1px solid var(--ac); background:#f2f7fa;
+  #studiolink, #paxlink{ display:block; margin-top:7px; border:1px solid var(--ac); background:#f2f7fa;
     color:var(--ac); border-radius:7px; padding:7px 10px; font-size:12px; font-weight:600;
     text-decoration:none; line-height:1.35; }
-  #studiolink:hover{ background:#e7f0f5; }
+  #studiolink:hover, #paxlink:hover{ background:#e7f0f5; }
+  #paxlink{ border-color:#d98a74; }
   #findbox{ margin-top:9px; position:relative; }
   #findq{ width:100%; box-sizing:border-box; border:1px solid var(--line); border-radius:7px;
     padding:7px 10px; font-size:12.5px; color:var(--ink); background:#fff; }
@@ -192,11 +193,11 @@
   @media(max-width:640px){
     /* full-screen map; head collapses to a title bar, modes dock to the bottom */
     #headtoggle{ display:inline-flex; }
-    #head p, #head #scope, #head #fopen, #head #findbox, #head #studiolink{ display:none; }
+    #head p, #head #scope, #head #fopen, #head #findbox, #head #studiolink, #head #paxlink{ display:none; }
     body.head-open #head{ max-height:82vh; overflow-y:auto; }
     body.head-open #head p, body.head-open #head #scope,
     body.head-open #head #fopen, body.head-open #head #findbox,
-    body.head-open #head #studiolink{ display:block; }
+    body.head-open #head #studiolink, body.head-open #head #paxlink{ display:block; }
 
     /* search results flow inline so they never clip inside the head */
     #findres{ position:static; margin-top:6px; max-height:190px; overflow-y:auto; box-shadow:none; }
@@ -258,6 +259,7 @@
     </div>
   </div>
   <a id="studiolink" href="studio/">Open the dispatch studio: edit the fleet, replay observed days, read the backcast &rarr;</a>
+  <a id="paxlink" href="pax-silica.html">Pax Silica to scale: more power than the Visayas grid, twice as much water as everyone in Makati &rarr;</a>
 </div>
 
 <div id="banner" role="alert"></div>
@@ -808,7 +810,7 @@ function sideprice(){
     diagnosed, so read Visayas deviations with low confidence; Luzon and
     Mindanao validate.</div>`;
   }
-  return `<h2>What it does to prices</h2>
+  return `<h2>What each of the three grids paid</h2>
   <p class="sub">Each day's average of the load-weighted 5-minute prices per
   grid, from the archive. May 2026, meaning the WESM billing period of 26 April
   to 25 May (whose first five days were still administered),

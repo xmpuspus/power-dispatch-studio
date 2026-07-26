@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pax Silica to scale: more power than the Visayas grid, twice as much water as everyone in Makati</title>
+<meta name="description" content="BCDA says the Pax Silica campus will need 3,000 MW and 65 to 90 million liters of water a day. This page draws those numbers against things you already know." />
+<style>
+  :root{
+    /* measured from informationisbeautiful.net (site CSS + graphics pixels) */
+    --ink:#02000D; --body:#3d3d47; --muted:#7d7d85; --line:#e3d9cc;
+    --bg:#f4ede4; --pink:#f06292;
+    --red:#A65E46; --blue:#07203F; --navy:#07203F; --gold:#A65E46;
+    --steel:#4e79a7; --coral:#e2664b; --green:#1a7f48; --fill:#eef1f4;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{ margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    color:var(--body); background:var(--bg); line-height:1.55; }
+  h1, h2, .figtitle, .payoff{ font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-weight:700; letter-spacing:-.015em; color:var(--ink); }
+  a{ color:#07203F; text-decoration-color:rgba(7,32,63,.35); }
+  a:hover{ color:#A65E46; }
+  main{ max-width:840px; margin:0 auto; padding:38px 20px 90px; }
+  .back{ display:inline-block; margin-bottom:26px; font-size:13px; }
+  h1{ font-size:30px; line-height:1.22; letter-spacing:-.4px; margin:0 0 10px; }
+  .lede{ color:var(--muted); font-size:16px; margin:0 0 8px; max-width:56ch; }
+  .beat{ margin:90px 0 0; }
+  .beat h2{ font-size:21.5px; line-height:1.3; margin:0 0 12px; letter-spacing:-.2px; }
+  .beat p{ font-size:15px; max-width:62ch; margin:10px 0; }
+  .kicker{ font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    margin:0 0 6px; }
+  .fig{ background:#fff; border:1px solid var(--line); border-radius:24px;
+    position:relative; padding:24px 28px 18px; margin:22px 0 8px;
+    box-shadow:0 1px 3px rgba(42,42,46,.05); }
+  .figtitle{ font-size:21px; font-weight:700; margin:0 46px 4px 0; line-height:1.25; }
+  .figtitle .pop{ font-style:normal; color:var(--accent, var(--red)); }
+  .figsub{ font-size:12.5px; color:var(--cardmute, var(--muted)); margin:0 0 16px; }
+  .srcline{ font-size:11.5px; color:var(--cardmute, var(--muted)); margin:14px 2px 0; }
+  .fignote{ color:var(--cardmute, var(--muted)); font-size:12.5px; margin:10px 2px 0; max-width:70ch; }
+  .payoff{ position:absolute; top:52px; right:26px; font-size:30px; font-weight:700;
+    color:var(--accent, var(--red)); }
+  /* plain white cards, the corpus's classic regime: flat color encodes data */
+  .whence{ color:var(--muted); font-size:12.5px; margin:6px 2px 0; }
+  .replay{ position:absolute; top:16px; right:18px; font-size:12px; color:#0d5c8c;
+    background:none; border:none; cursor:pointer; padding:2px 4px; font-family:inherit; }
+
+
+  /* stacked bar (wires / own-station beats) */
+  .stack{ position:relative; height:34px; background:var(--fill); border-radius:10px;
+    overflow:hidden; }
+  .seg{ position:absolute; top:0; bottom:0; width:0; transition:width 1s cubic-bezier(.22,.9,.35,1);
+    border-right:2px solid #fff; }
+  .seg span{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    color:#fff; font-size:12.5px; white-space:nowrap; opacity:0; transition:opacity .4s .9s; }
+  .on .seg span{ opacity:1; }
+  .seg-legend{ display:flex; flex-wrap:wrap; gap:7px 18px; margin:9px 0 0; font-size:12.5px; }
+  .seg-legend .chip{ white-space:nowrap; }
+  .seg-legend .chip i{ display:inline-block; width:9px; height:9px; border-radius:2px;
+    margin-right:5px; vertical-align:-1px; }
+
+  /* the wires river reveals left to right */
+  #wires-flow{ clip-path:inset(0 100% 0 0); transition:clip-path 1.2s cubic-bezier(.22,.9,.35,1); }
+  .on #wires-flow{ clip-path:inset(0 0 0 0); }
+
+  /* one-canvas area blocks (power beat): area is proportional to MW */
+  .blocks{ position:relative; }
+  .block{ position:absolute; border-radius:12px; overflow:hidden;
+    transform:scale(0); transform-origin:bottom left;
+    transition:transform .9s cubic-bezier(.22,.9,.35,1); }
+  .on .block{ transform:scale(1); }
+  .on .blocks .saxis{ opacity:1 !important; }
+  .block .blabel{ position:absolute; top:8px; left:10px; right:8px;
+    font-size:12.5px; line-height:1.3; }
+  .block .blabel b{ display:block; font-size:13.5px; }
+
+  /* one day as 24 hour cells (solar beat) */
+  .daycells{ display:flex; gap:3px; align-items:flex-end; height:84px;
+    border-bottom:1px solid var(--line); }
+  .daycells .cell{ flex:1; position:relative; height:100%; background:#EBDED4;
+    border-radius:6px 6px 0 0; }
+  .daycells .cell i{ position:absolute; left:0; right:0; bottom:0; display:block;
+    background:#A65E46; border-radius:0 0 3px 3px; height:0;
+    transition:height .8s cubic-bezier(.22,.9,.35,1); }
+  .dayaxis{ display:flex; justify-content:space-between; font-size:11.5px;
+    color:var(--muted); margin-top:4px; }
+  .cellnote{ position:relative; font-size:12px; margin-top:6px; color:var(--ink); }
+
+  /* merit-order ladder (price beat) */
+  .steps{ position:relative; }
+  .steps .step{ position:absolute; bottom:26px; background:#EBDED4;
+    border-radius:8px 8px 0 0; opacity:0; transition:opacity .6s; }
+  .on .steps .step{ opacity:1; }
+  .steps .step.hot{ background:#A65E46; }
+  .steps .step.base{ background:#07203F; }
+  .steps .dline{ position:absolute; bottom:26px; width:0; border-left:2px solid var(--ink);
+    opacity:0; transition:opacity .5s .8s; }
+  .steps .dline.coral{ border-left-color:#181818; }
+  .on .steps .dline{ opacity:1; }
+  .steps .slabel{ position:absolute; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .steps .saxis{ position:absolute; bottom:6px; font-size:11px; color:var(--muted); }
+
+  /* water drops (1 drop = 5 million liters a day) */
+  .droprow{ display:flex; align-items:center; gap:10px; margin:12px 0; flex-wrap:wrap; }
+  .droprow .dlabel{ flex:0 0 100%; font-size:13px; margin-bottom:-4px; }
+  .drop{ width:18px; height:18px; border-radius:0 50% 50% 50%; transform:rotate(45deg) scale(0);
+    display:inline-block; margin:1px 5px 1px 0; transition:transform .4s cubic-bezier(.22,.9,.35,1); }
+  .on .drop{ transform:rotate(45deg) scale(1); }
+  .drop.solid{ background:#A65E46; } .drop.range{ border:2.5px solid #A65E46; }
+  .drop.anchor{ background:#07203F; } .drop.promise{ border:2.5px solid #07203F;
+    background:#EBDED4; }
+  .waffle100{ display:grid; grid-template-columns:repeat(20, 10px); gap:3px; margin:8px 0 2px; }
+  .waffle100 i{ width:10px; height:10px; border-radius:3px; background:#EBDED4; display:block; }
+  .waffle100 i.hit{ background:#A65E46; }
+
+  /* concentric land squares */
+  .land{ position:relative; height:430px; }
+  .sq{ position:absolute; left:12px; bottom:12px; border:1.8px solid #9aa4ad;
+    background:transparent; opacity:0; transition:opacity .6s; }
+  .sq.filled{ background:#f0f0d8; border-color:#c8b060; }
+  .sq.signed{ background:#A65E46; border-color:#A65E46; }
+  .sq .tag{ position:absolute; font-size:12px; white-space:nowrap; color:var(--ink);
+    background:#fff; border:1px solid var(--line); border-radius:4px; padding:0 5px; top:-9px; left:8px; }
+  .on .sq{ opacity:1; }
+
+
+  /* timeline strips */
+  .strip{ margin:16px 0 30px; }
+  .strip .name{ font-size:13px; margin-bottom:4px; }
+  .tl{ position:relative; height:20px; background:#EBDED4; border-radius:10px; }
+  .tl .span{ position:absolute; top:0; bottom:0; background:#07203F; border-radius:10px; }
+  .tl .stall{ position:absolute; top:0; bottom:0; background:#A65E46; border-radius:6px; }
+  .tl .tick{ position:absolute; top:23px; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .tlwrap{ padding-bottom:26px; }
+
+  table.ledger{ width:100%; border-collapse:collapse; font-size:13.5px; margin:14px 0; }
+  .ledger th{ text-align:left; border-bottom:1px solid var(--line); padding:6px 8px;
+    color:var(--muted); font-weight:600; }
+  .ledger td{ border-bottom:1px dashed var(--line); padding:6px 8px; vertical-align:top; }
+  .sources{ font-size:12.5px; color:var(--muted); }
+  .sources li{ margin:4px 0; }
+  .cavebox{ background:#fff; border:1px solid var(--line); border-left:3px solid var(--coral);
+    border-radius:8px; padding:14px 18px; margin:18px 0; font-size:14px; max-width:66ch; }
+  @media (prefers-reduced-motion: reduce){
+    .seg,.sq,.block,.drop,.daycells .cell i,.steps .step,.steps .dline,#wires-flow{
+      transition:none !important; }
+    .seg span{ transition:none !important; opacity:1; }
+  }
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="index.html">&#8249; back to the map</a>
+<p class="kicker">Pax Silica, New Clark City, Capas, Tarlac</p>
+<h1>The campus would draw more power than the whole Visayas grid, and use up to twice as much water as everyone in Makati. Every day.</h1>
+<p class="lede">In July 2026 BCDA put numbers on the Pax Silica campus:
+<a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">3,000 MW of power at full development</a>, and
+<a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">65 to 90 million liters of water a day</a>.
+Numbers that size mean nothing on their own. This page draws each one against
+something you already know, and then follows what it would actually take to
+supply.</p>
+<p class="lede" style="font-size:13.5px">Announced figures are labeled with their owner.
+Everything else is arithmetic you can check, or a result from
+<a href="methodology.html">this project's grid model</a>.</p>
+
+<!-- ============================ BEAT 1: POWER ============================ -->
+<section class="beat" id="b-power">
+<h2>3,000 MW is more than the entire Visayas grid asked for at its highest recorded moment</h2>
+<p>Start with the number itself.
+<a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">BCDA's
+figure for the campus at full development is 3,000 MW</a> ("at full development,
+mga three gigawatts po iyan" was the exact quote), held around the clock,
+because chip plants and data centers do not sleep. Put it beside the three
+island grids on one scale.
+<a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">NGCP's
+own June 2026 bulletins</a> agree on the Visayas number: evening peaks of
+2,384 to 2,482 MW against 2,581 to 2,691 MW available.</p>
+
+<div class="fig" id="fig-grids" style="--accent:#A65E46">
+  <button class="replay" data-replay="fig-grids">replay</button>
+  <div class="figtitle">This one campus would use more power than the <em class="pop">entire Visayas</em></div>
+  <div class="figsub">Each block's area is its power draw. Grids at their highest 5-minute demand in 105 archived days (7 Apr to 20 Jul 2026), MW</div>
+  <div class="blocks" id="grid-blocks"></div>
+  <p class="srcline">Grid peaks: computed from the market operator IEMOP's
+  published 5-minute dispatch files, 7 Apr to 20 Jul 2026, archived and
+  documented <a href="methodology.html">in this project's methodology</a>;
+  the grid operator NGCP's own
+  <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">June 2026
+  bulletins</a> put Visayas evening peaks at 2,384 to 2,482 MW, in line with
+  the 2,744 shown. Campus figure: BCDA president Joshua Bingcang via
+  <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">GMA
+  News, 23 Jul 2026</a>; ceiling 5,000 MW via
+  <a href="https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest">Inquirer
+  Business</a>. Homes: division by the 200 kWh a month typical household in
+  <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">Meralco's
+  July 2026 rate advisory</a>.</p>
+</div>
+</section>
+
+<!-- ============================ BEAT 2: SUN ============================== -->
+<section class="beat" id="b-sun">
+<h2>The announced solar farm covers 4 percent of a day. Running on sun alone would take panels covering more than six times the area of Makati.</h2>
+<p>The first answer anyone reaches for is solar, and one is actually signed:
+<a href="https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html">ACWA
+Power leased 500 hectares in June 2026 for a farm of up to 500 MW with
+batteries</a>. So give it the best possible day, cloudless from sunrise to
+sunset, and count what it covers of the campus's 72,000 MWh day.</p>
+
+<div class="fig" id="fig-acwa" style="--accent:#A65E46">
+  <div class="figtitle">The solar farm they signed covers <em class="pop">4.1%</em> of one day</div>
+  <div class="figsub">The campus's day as 24 hours. The rust is the share of
+  each hour the 500 MW farm covers on a cloudless day; a full column would be an
+  hour fully covered.</div>
+  <div class="daycells" id="acwa-cells"></div>
+  <div class="dayaxis"><span>midnight</span><span>6am</span><span>noon</span><span>6pm</span><span>11pm</span></div>
+  <div class="cellnote" id="acwa-note"></div>
+  <p class="srcline">Lease: <a href="https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html">ACWA-BCDA
+  via Enerdata, 2 Jun 2026</a>. Solar day: this project's model, which flatters solar.</p>
+</div>
+
+<p>So scale the answer up. To average 3,000 MW across a cloudless model day you
+need at least 12,200 MW of panels. On the land density of a real Philippine
+build, <a href="https://en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm">MTerra
+Solar's 3,500 MW on 3,500 hectares one province over</a>, that is
+122 square kilometers of panels. Now draw that on places you know.</p>
+
+<div class="fig" id="fig-land" style="--accent:#A65E46">
+  <button class="replay" data-replay="fig-land">replay</button>
+  <div class="figtitle">Running the campus on solar alone would take <em class="pop">122 km&#178;</em> of panels</div>
+  <div class="figsub">Laid over Metro Manila at true map scale, on MTerra Solar's
+  measured density (1 hectare per MW); clouds only make it bigger. Makati sits
+  entirely inside the square.</div>
+  <div class="land" id="land-map"></div>
+  <p class="fignote">For scale: all of New Clark City is 94.5 km², MTerra Solar,
+  the biggest solar build anywhere, is 35. And the 11 dark hours still need
+  about 33 GWh of batteries, 7 times the storage of MTerra Solar.</p>
+  <p class="srcline">MTerra Solar:
+  <a href="https://www.meralcopowergen.com.ph/mterra-solar-project-breaks-ground-a-monumental-milestone-in-the-philippines-renewable-energy-transition/">Meralco PowerGen</a>,
+  <a href="https://www.pv-magazine-australia.com/2024/11/22/worlds-largest-3-5-gw-terra-solar-project-breaks-ground-in-the-philippines/">pv-magazine</a>,
+  <a href="https://en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm">Wikipedia</a>.
+  Areas: PSA via Wikipedia
+  (<a href="https://en.wikipedia.org/wiki/Makati">Makati</a>,
+  <a href="https://en.wikipedia.org/wiki/Bonifacio_Global_City">BGC</a>,
+  <a href="https://en.wikipedia.org/wiki/New_Clark_City">New Clark City</a>).</p>
+</div>
+</section>
+
+<!-- ============================ BEAT 3: WIRES ============================ -->
+<section class="beat" id="b-wires">
+<h2>The two power lines into the site carry 770 of the 3,000</h2>
+<p>The second answer is the grid: generate elsewhere, deliver over wires. The
+site connects to the rest of Luzon through two 230 kV circuits of one
+Concepcion to Clark route. Solving one recorded day on the public grid map, the
+most the campus could draw through them at the 7pm peak is about 770 MW, and
+one of the two circuits is its only route in. Lose that one and the map shows
+no path at all.</p>
+
+<div class="fig" id="fig-wires" style="--accent:#07203F">
+  <button class="replay" data-replay="fig-wires">replay</button>
+  <div class="figtitle">Today's lines can bring in only <em class="pop">a quarter</em> of what the campus needs</div>
+  <div class="figsub">A tank the grid must fill every hour. The water line is all
+  today's two circuits can deliver, modeled at 7pm, 25 Jun 2026.</div>
+  <div id="wires-flow" style="margin-bottom:2px"></div>
+  <p class="srcline">NGCP does not publish ratings; the model uses the 230 kV
+  class standard (limit 699 to 776 MW by hour), on
+  <a href="methodology.html">the public grid map</a>.</p>
+</div>
+
+<p>The announced fix is real but modest against the ask:
+<a href="https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city">a
+dedicated 230 kV substation for New Clark City, P6.95 billion, targeted for
+end-2028</a>, in the same voltage class as the corridor that is already the
+bottleneck. And the recent record says the last kilometers of big grid builds
+are the slow part:</p>
+
+<div class="fig tlwrap" id="fig-record" style="--accent:#A65E46">
+  <div class="figtitle">The last two big grid projects took <em class="pop">years</em> to finish</div>
+  <div class="figsub">NGCP's two most recent big builds; the rust band is a nine-month court stop over nine towers</div>
+  <div class="strip">
+    <div class="name"><a href="https://ngcp.ph/article?cid=16897">Hermosa-San
+    Jose 500 kV</a>, P10.2 billion, 8,000 MW</div>
+    <div class="tl" id="tl-hsj"></div>
+  </div>
+  <div class="strip">
+    <div class="name"><a href="https://www.ngcp.ph/article?cid=16636">Mindanao-Visayas
+    link</a>, P52 billion, 450 MW</div>
+    <div class="tl" id="tl-mvip"></div>
+  </div>
+  <div class="strip">
+    <div class="name">The campus substation's promised window, on its own 2026 to 2029 axis</div>
+    <div class="tl" id="tl-substation"></div>
+  </div>
+  <p class="srcline">Right-of-way is the delay NGCP itself names. The campus's
+  substation (<a href="https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city">Manila
+  Bulletin, 25 May 2026</a>) is due end-2028; campus construction starts Q1 2028.
+  Island populations on the first chart: 2020 census via Wikipedia.</p>
+</div>
+</section>
+
+<!-- ======================= BEAT 3.5: PRICE =============================== -->
+<section class="beat" id="b-priceb">
+<h2>Ask the market to serve it anyway, and the modeled price of Luzon power doubles, all day</h2>
+<p>Suppose the wires were not the problem. Serving 3,000 MW more means running
+plants that cost more, and the marginal plant is what sets the price for
+everyone. This project's <a href="methodology.html">calibrated cost model</a>
+replays the same recorded day, 25 June 2026, with and without the campus.
+Without it, coal sets the Luzon price in all 24 hours, at the ERC-administered
+coal cost of P6.00 per kWh (<a href="methodology.html">sourced in the model's
+cost stack</a>). With it, oil is the marginal plant in all 24 hours and the
+price is P12.00. Not a spike at the evening peak. The whole day, doubled, for
+every buyer on the grid.</p>
+
+<div class="fig" id="fig-priceb" style="--accent:#A65E46">
+  <button class="replay" data-replay="fig-priceb">replay</button>
+  <div class="figtitle">Serving the campus from the grid would <em class="pop">double the price</em> of power in this model</div>
+  <div class="figsub">Every Luzon plant lined up cheapest to priciest (width = its megawatts, height = its cost).
+  The last plant needed sets the price for everyone.</div>
+  <div class="steps" id="price-steps"></div>
+  <p class="fignote">If generation cost were passed through, P6.00 more per kWh
+  is P1,200 a month more for the 200 kWh typical home (a model figure, not a
+  forecast). The links between islands go from about zero to P38 million of
+  congestion rent in the modeled day, and pull Visayas's evening peak up to
+  P11.98.</p>
+  <p class="srcline">A cost-stack what-if, not a forecast: flat 3,000 MW, the
+  770 MW delivery limit ignored, and observed evenings already clear above
+  <a href="methodology.html">this stack</a>.</p>
+</div>
+<p>The market as it runs now prices congestion small and sparse: WESM's
+published nodal congestion component fires on 28 of 70 sampled days, a median
+of P0.56 per kWh, at most P19 on 26 May 2026
+(<a href="methodology.html">the sweep and its caveats</a>).</p>
+</section>
+
+<!-- ======================= BEAT 4: OWN STATION =========================== -->
+<section class="beat" id="b-own">
+<h2>Its own power station is the actual plan, and the plan still leans on those two lines</h2>
+<p>Which is why BCDA says the campus will build its own power rather than take
+3,000 MW from the grid. Follow that plan at 7pm: say it builds 2,500 MW of its
+own and draws the last 500 over the lines. The bar fills. It works.</p>
+<p>Then one 600 MW unit trips, a generator about the size of one of Sual's
+two, the most ordinary event in a power system. The
+lines are already asked for everything they carry, and 331 MW of campus has no
+source. Building your own station does not remove the grid, it turns the grid
+into your backup, and the backup comes down the same two circuits.</p>
+
+<div class="fig" id="fig-own" style="--accent:#A65E46">
+  <button class="replay" data-replay="fig-own">replay</button>
+  <div class="figtitle" id="own-caption">The plan works. 2,500 MW of its own, the last 500 over the lines</div>
+  <div class="stack" id="own-stack"></div>
+  <p class="srcline">The 2,500 MW station is a chosen size, not an announced
+  project. Full working in
+  <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/pax-silica-embedded.md">the deliverability note</a>;
+  run any variant in the <a href="studio/">studio's siting view</a>.</p>
+</div>
+</section>
+
+<!-- ============================ BEAT 5: WATER ============================ -->
+<section class="beat" id="b-water">
+<h2>At 65 to 90 million liters a day, the campus would use up to twice as much water as everyone living in Makati</h2>
+<p>Power is only half the announcement. Water arrives with the campus no matter
+who generates its electricity: cooling for the data centers, ultrapure water
+for the chip plants.
+<a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">BCDA's
+own projection is 65 to 90 million liters a day</a>. Take BCDA at their word
+and the division is simple. Here is that number three ways.</p>
+
+<div class="fig" id="fig-water" style="--accent:#07203F">
+  <button class="replay" data-replay="fig-water">replay</button>
+  <div class="figtitle">The water they asked for would serve up to <em class="pop">twice Makati's population</em></div>
+  <div class="figsub">One drop is 5 million liters a day. An outlined drop is the
+  top of the announced range, or a promise not yet built. Rust is the campus,
+  navy is everything already real.</div>
+  <div class="droprow">
+    <div class="dlabel"><b>What the campus would drink</b> (BCDA's own figure)</div>
+    <span id="drops-campus"></span>
+  </div>
+  <div class="droprow">
+    <div class="dlabel"><b>What everyone living in Makati drinks</b></div>
+    <span id="drops-makati"></span>
+  </div>
+  <div class="droprow">
+    <div class="dlabel"><b>What the
+    <a href="https://www.manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub/2390193">rainwater
+    pond BCDA promises</a> would supply</b></div>
+    <span id="drops-harvest"></span>
+  </div>
+  <div class="droprow">
+    <div class="dlabel"><b>Of every 100 liters Metro Manila draws from
+    <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">Angat
+    dam</a>, the campus would take about 2</b></div>
+    <div class="waffle100" id="angat-waffle"></div>
+  </div>
+  <p class="fignote">The small print, exactly: the campus's announced 65 to 90
+  million liters a day is the tap water of 433,000 to 600,000 people at
+  <a href="https://esmart.nhrc.upd.edu.ph/?p=1422">Metro Manila's 150 liters
+  per person a day</a>; Makati counts
+  <a href="https://en.wikipedia.org/wiki/Makati">309,770 people (2024 census)</a>,
+  about 46 million liters; the pond is sized at 120; the Angat
+  share is 1.6 to 2.2 percent; an Olympic
+  pool holds 2.5 million liters; and as
+  <a href="https://www.fao.org/4/u5835e/u5835e04.htm">irrigation</a> the same
+  water would keep 520 to 900 hectares of rice flooded for a 120-day season.</p>
+</div>
+
+<p>Both sides of the argument are on the record.
+<a href="https://businessmirror.com.ph/2026/07/22/local-water-source-enough-to-supply-pax-silica-operation-water-board/">The
+national water board says</a> local sources can supply the campus "without
+adversely affecting the local water requirement." Farmer and environmental
+groups, and Aeta communities on the land, dispute it;
+<a href="https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/">coverage
+puts potentially affected residents near 20,000 while BCDA counters that only
+about 10 farmers are directly affected</a>. No independent water balance for
+the site has been published. That absence is the finding.</p>
+<p class="whence">Sources:
+<a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">BCDA via BusinessMirror, 23 Jul 2026</a>;
+<a href="https://businessmirror.com.ph/2026/07/22/local-water-source-enough-to-supply-pax-silica-operation-water-board/">NWRB, 22 Jul</a>;
+<a href="https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/">GMA explainer</a>;
+<a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">Philstar, 20 Jul</a>
+(Angat at a record low that same week);
+<a href="https://www.fao.org/4/u5835e/u5835e04.htm">FAO</a> and IRRI.</p>
+</section>
+
+<!-- ============================ BEAT 6: CLOSE ============================ -->
+<section class="beat" id="b-close">
+<h2>Every number below has a source. None of it has been independently checked.</h2>
+<table class="ledger">
+<tr><th>Announced, with an owner and a date</th><th>Worked out on this page</th></tr>
+<tr><td>3,000 MW at full development, ceiling "at least 5 GW" (BCDA, Jul 2026)</td>
+    <td>More than any Visayas or Mindanao 5-minute peak in 105 archived days; about a fifth of Luzon's</td></tr>
+<tr><td>65 to 90 million liters of water a day (BCDA, Jul 2026)</td>
+    <td>The daily tap water of 433,000 to 600,000 people, or 520 to 900 hectares of rice in season</td></tr>
+<tr><td>500 MW solar with storage on 500 hectares (ACWA lease, Jun 2026)</td>
+    <td>4.1% of the campus's day, on a cloudless day, and nothing at the 7pm peak</td></tr>
+<tr><td>P6.95B dedicated 230 kV substation by end-2028 (NGCP plan, May 2026)</td>
+    <td>The existing two 230 kV circuits deliver about 770 MW of the 3,000 at 7pm</td></tr>
+<tr><td>Grid supply is the alternative BCDA rejected (BCDA, Jul 2026)</td>
+    <td>Modeled on the cost stack, that alternative doubles the Luzon price: oil sets all 24 hours at P12.00 instead of coal at P6.00</td></tr>
+<tr><td>An on-site power station instead of grid supply (BCDA, Jul 2026)</td>
+    <td>Lose one 600 MW unit and 331 MW has no source, because the backup is the same two lines</td></tr>
+</table>
+
+<div class="cavebox"><b>What this page cannot know.</b> NGCP does not publish
+what the two circuits are rated to carry, so 770 rests on the standard rating
+for 230 kV lines and moves if the real rating differs. The grid model snaps the
+campus to a bus 8.6 km away, on community-mapped routes, not the connection
+anyone will build. Campus demand is held flat at 3,000 MW and the solar day is
+cloudless, both of which flatter the supply side. The water equivalences are
+arithmetic on a planning standard, not a hydrological study, and no independent
+study of the site's water has been published. Every number above moves with
+these choices; none of them moves enough to change which bars are longer.</div>
+
+<p class="sources" style="margin-top:22px"><b>Sources.</b></p>
+<ul class="sources">
+<li>BCDA on 3 GW: <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">GMA News, 23 Jul 2026</a>. Ceiling: <a href="https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest">Inquirer Business</a>.</li>
+<li>BCDA on water and the 120 MLD harvesting facility: <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">BusinessMirror, 23 Jul 2026</a>; <a href="https://www.manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub/2390193">Manila Times, 24 Jul 2026</a>.</li>
+<li>NWRB sufficiency statement: <a href="https://businessmirror.com.ph/2026/07/22/local-water-source-enough-to-supply-pax-silica-operation-water-board/">BusinessMirror, 22 Jul 2026</a>. Dispute and displacement figures: <a href="https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/">GMA News explainer</a>.</li>
+<li>ACWA Power 500 MW on 500 ha: <a href="https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html">Enerdata daily energy news, 2 Jun 2026</a>.</li>
+<li>NGCP Capas-area 230 kV substation, P6.95B, end-2028: <a href="https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city">Manila Bulletin, 25 May 2026</a>, from the NGCP transmission development plan.</li>
+<li>Hermosa-San Jose 500 kV record: <a href="https://ngcp.ph/article?cid=16897">ngcp.ph article 16897</a>. Mindanao-Visayas link: <a href="https://www.ngcp.ph/article?cid=16636">ngcp.ph article 16636</a>.</li>
+<li>MTerra Solar 3,500 MW / 3,500 ha / 4,500 MWh: <a href="https://www.meralcopowergen.com.ph/mterra-solar-project-breaks-ground-a-monumental-milestone-in-the-philippines-renewable-energy-transition/">Meralco PowerGen</a>, <a href="https://www.pv-magazine-australia.com/2024/11/22/worlds-largest-3-5-gw-terra-solar-project-breaks-ground-in-the-philippines/">pv-magazine</a>, and <a href="https://en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm">Wikipedia</a>.</li>
+<li>Meralco 200 kWh typical household: <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">Meralco July 2026 rate advisory</a>. Makati 2024 census and area: PSA via <a href="https://en.wikipedia.org/wiki/Makati">Wikipedia</a>, after the Embo transfer to Taguig. Other areas: <a href="https://en.wikipedia.org/wiki/Bonifacio_Global_City">BGC</a>, <a href="https://en.wikipedia.org/wiki/New_Clark_City">New Clark City</a>.</li>
+<li>Angat allocation about 4,000 MLD at 46 CMS: <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">Philstar, 20 Jul 2026</a>. Metro per-person standard: MWSS via <a href="https://esmart.nhrc.upd.edu.ph/?p=1422">UP e-SMART</a>.</li>
+<li>NGCP Visayas alert bulletins, June 2026: <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">GMA News</a>.</li>
+<li>Rice season water, 1,200 to 1,500 mm: <a href="https://www.fao.org/4/u5835e/u5835e04.htm">FAO irrigation manual</a>; IRRI.</li>
+<li>Grid peaks and the 770 MW limit: this project's archived IEMOP files and grid model; method and caveats in <a href="methodology.html">the methodology</a>.</li>
+</ul>
+<p class="sources">Community-mapped grid routes are OpenStreetMap data (ODbL),
+not NGCP official geometry. Announced figures may change; this page is dated
+25 Jul 2026 and its numbers are baked from
+<a href="data/perspective.json">data/perspective.json</a>.</p>
+</section>
+</main>
+
+<script>
+(function(){
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var P = null;
+  window.__pxdiag = { ready:false, beats:0 };
+
+  function el(tag, cls, parent){ var e = document.createElement(tag);
+    if (cls) e.className = cls; if (parent) parent.appendChild(e); return e; }
+  function fmt(n){ return Math.round(n).toLocaleString("en-US"); }
+
+  // ---- beat 1: one-canvas area blocks; every block's area = its MW ----
+  function buildGrids(){
+    // one rectangle = the whole Philippine grid at its peaks, tiled like a
+    // jigsaw (area = megawatts); the campus is a dashed square laid on top
+    var wrap = document.getElementById("grid-blocks"); wrap.innerHTML = "";
+    var pk = P.power.archive_peaks_mw;
+    var W = (wrap.clientWidth || 700);
+    var H = W < 480 ? Math.round(W * 0.52) : 330;
+    var total = pk.luzon + pk.mindanao + pk.visayas;
+    var k = (W * H) / total;                    // px^2 per MW
+    var narrow = W < 480;
+
+    function tile(x, bottom, w, h, css, delay){
+      var b = el("div", "block", wrap);
+      b.style.cssText += "left:" + x + "px; bottom:" + bottom + "px; width:" + w
+        + "px; height:" + h + "px; border:1px solid #dccfc0;" + css
+        + "transition-delay:" + delay + "s;";
+      return b;
+    }
+    function label(b, html, color){
+      var l = el("div", "blabel", b); l.innerHTML = html; l.style.color = color;
+      if (narrow){ l.style.fontSize = "10.5px"; l.style.top = "5px"; l.style.left = "7px"; }
+      return l;
+    }
+
+    var luzonW = Math.round(W * pk.luzon / total) - 2;
+    var colX = luzonW + 4, colW = W - colX;
+    var hM = Math.round((H - 4) * pk.mindanao / (pk.mindanao + pk.visayas));
+    var hV = H - 4 - hM;
+
+    var pop = P.power.island_pop_m;
+    // the small right-column tiles cannot fit a third line on a phone
+    var roomy = colW >= 120;
+    label(tile(0, 0, luzonW, H, "background:#EBDED4;", 0),
+      "<b>Luzon</b>" + fmt(pk.luzon) + " MW<br>~" + pop.luzon + "M people", "var(--ink)");
+    label(tile(colX, hV + 4, colW, hM, "background:#EBDED4;", 0.15),
+      "<b>Mindanao</b>" + fmt(pk.mindanao) + " MW"
+      + (roomy ? "<br>~" + pop.mindanao + "M people" : ""), "var(--ink)");
+    label(tile(colX, 0, colW, hV, "background:#EBDED4;", 0.3),
+      "<b>Visayas</b>" + fmt(pk.visayas) + " MW"
+      + (roomy ? "<br>~" + pop.visayas + "M people" : ""), "var(--ink)");
+
+    // the campus, superimposed at the same scale over the Visayas corner;
+    // its dashed square pokes past the whole Visayas tile
+    var s = Math.sqrt(k * P.campus.mw);
+    var sq = el("div", "block", wrap);
+    sq.style.cssText += "left:" + (W - s - 6) + "px; bottom:6px; width:" + s
+      + "px; height:" + s + "px; border:3.5px dashed #A65E46;"
+      + "transition-delay:.6s; z-index:3;";
+    var chip = el("div", "saxis", wrap);
+    // on a narrow screen the chip drops below the canvas so it never covers
+    // the Visayas tile or the dashed square it explains; it fades in WITH
+    // the dashed square it labels, never before it
+    chip.style.cssText = "position:absolute; right:6px; z-index:4;"
+      + "opacity:0; transition:opacity .5s ease .8s;"
+      + (narrow ? "top:0; background:none; padding:0;"
+                : "bottom:12px; background:#fff; border:1px solid var(--line); border-radius:4px; padding:3px 7px;")
+      + "text-align:right; font-size:" + (narrow ? 11 : 12)
+      + "px; line-height:1.35; color:#A65E46;";
+    chip.innerHTML = "<b>Pax Silica, " + fmt(P.campus.mw) + " MW announced</b><br>"
+      + "<span style='color:var(--ink)'>= the electricity of "
+      + P.power.homes_million + "M homes</span>";
+    wrap.style.height = (H + (narrow ? 48 : 4)) + "px";
+  }
+  function runGrids(fig){ fig.classList.add("on"); }
+
+  // ---- beat 2: the day as 24 hour cells + land squares ----
+  function buildSun(){
+    var cells = document.getElementById("acwa-cells"); cells.innerHTML = "";
+    cells.style.position = "relative";
+    P.sun.hourly_cover_pct.forEach(function(pct, h){
+      var c = el("div", "cell", cells);
+      var f = el("i", "", c);
+      f.dataset.h = pct + "%";
+      c.title = pct + "% of this hour covered";
+      if (h === 12) c.dataset.tag = "noon";
+      if (h === 19) c.dataset.tag = "7pm";
+    });
+    // the gray is the point: name it on the chart
+    var gap = el("div", "saxis", cells);
+    gap.style.cssText = "position:absolute; top:10px; left:10px; font-size:12px;"
+      + "color:var(--muted);";
+    gap.textContent = "the empty height is what must come from somewhere else";
+    var noonTag = el("div", "saxis", cells);
+    noonTag.style.cssText = "position:absolute; bottom:16px; left:" + (12.5 / 24 * 100)
+      + "%; transform:translateX(-50%); font-size:11px; color:var(--ink);"
+      + "background:#fff; padding:0 4px; border-radius:3px; white-space:nowrap;";
+    noonTag.innerHTML = "noon: <b>13%</b>";
+    var pmTag = el("div", "saxis", cells);
+    pmTag.style.cssText = "position:absolute; bottom:16px; left:" + (19.5 / 24 * 100)
+      + "%; transform:translateX(-50%); font-size:11px; color:#A65E46;"
+      + "background:#fff; padding:0 4px; border-radius:3px; white-space:nowrap;";
+    pmTag.innerHTML = "7pm: <b>0%</b>";
+    var note = document.getElementById("acwa-note");
+    note.innerHTML = "Whole day, on the cloudless model: <b style='color:#A65E46'>" +
+      P.sun.acwa_share_pct + "%</b> of the campus's energy.";
+
+    // the map projection: the panel area laid over Metro Manila at true
+    // scale, on the same no-key Carto basemap the project's map page uses
+    var land = document.getElementById("land-map"); land.innerHTML = "";
+    var LW = Math.min(660, land.clientWidth - 4), LH = Math.min(430, Math.round(LW * 0.68));
+    land.style.cssText += "position:relative; width:" + LW + "px; height:" + LH
+      + "px; margin:0 auto; border-radius:14px; overflow:hidden; background:#dfe8ee;";
+    var Z = 11, TILE = 256;
+    var lat = 14.565, lon = 121.02;                    // over Makati, the anchor
+    var mpp = 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, Z);
+    var n = Math.pow(2, Z);
+    var xt = (lon + 180) / 360 * n;
+    var latr = lat * Math.PI / 180;
+    var yt = (1 - Math.log(Math.tan(latr) + 1 / Math.cos(latr)) / Math.PI) / 2 * n;
+    var cx = LW / 2, cy = LH / 2;
+    var x0 = Math.floor(xt - cx / TILE), x1 = Math.floor(xt + cx / TILE);
+    var y0 = Math.floor(yt - cy / TILE), y1 = Math.floor(yt + cy / TILE);
+    for (var tx = x0; tx <= x1; tx++){
+      for (var ty = y0; ty <= y1; ty++){
+        var img = el("img", "", land);
+        img.src = "https://basemaps.cartocdn.com/light_all/" + Z + "/" + tx + "/" + ty + ".png";
+        img.alt = "";
+        img.style.cssText = "position:absolute; width:" + TILE + "px; height:" + TILE
+          + "px; left:" + Math.round(cx + (tx - xt) * TILE) + "px; top:"
+          + Math.round(cy + (ty - yt) * TILE) + "px;";
+      }
+    }
+    // the 122 km2 of panels, drawn at this map's true scale
+    var side = Math.sqrt(P.sun.sun_alone_km2) * 1000 / mpp;
+    var ov = el("div", "block", land);
+    ov.style.cssText += "left:" + (cx - side / 2) + "px; bottom:" + (LH - cy - side / 2)
+      + "px; width:" + side + "px; height:" + side + "px;"
+      + "background:rgba(166,94,70,.3); border:3px solid #A65E46; border-radius:6px; z-index:3;";
+    var ol = el("div", "saxis", land);
+    ol.style.cssText = "position:absolute; z-index:4; left:" + (cx - side / 2 + 8)
+      + "px; top:" + (cy - side / 2 + 6) + "px; font-size:12.5px; font-weight:600;"
+      + "color:#A65E46; background:rgba(255,255,255,.92); border-radius:4px; padding:2px 7px;";
+    ol.textContent = "the panels a sun-only campus needs, " + P.sun.sun_alone_km2 + " km²";
+    // the one signed farm at the same true scale, for contrast
+    var fs = Math.sqrt(P.sun.acwa_ha / 100) * 1000 / mpp;
+    var mapNarrow = LW < 480;
+    var fx = mapNarrow ? (cx + side / 2 - fs - 8) : (cx + side / 2 + 16);
+    var fb = mapNarrow ? (LH - cy + side / 2 - fs - 8) : (LH - cy + side / 2 - fs);
+    var fv = el("div", "block", land);
+    fv.style.cssText += "left:" + fx + "px; bottom:" + fb + "px; width:" + fs
+      + "px; height:" + fs + "px; background:#A65E46; border-radius:4px;"
+      + "z-index:3; transition-delay:.5s;";
+    if (mapNarrow){
+      var fig = document.getElementById("land-map").parentNode;
+      var fl2 = document.createElement("div");
+      fig.insertBefore(fl2, fig.querySelector(".fignote"));
+      fl2.style.cssText = "font-size:11.5px; color:var(--ink); margin-top:6px; text-align:center;";
+      fl2.innerHTML = "<span style='display:inline-block;width:10px;height:10px;"
+        + "background:#A65E46;border-radius:3px;vertical-align:-1px;'></span> "
+        + "the small solid square is the one signed farm, 5 km²";
+    } else {
+      var fl = el("div", "saxis", land);
+      fl.style.cssText = "position:absolute; z-index:4; left:" + (fx + fs + 6)
+        + "px; top:" + (cy - side / 2 + 2) + "px; font-size:11.5px;"
+        + "color:var(--ink); background:rgba(255,255,255,.92); border-radius:4px; padding:1px 6px;";
+      fl.innerHTML = "&#8592; the signed farm, 5 km²";
+    }
+    var att = el("div", "saxis", land);
+    att.style.cssText = "position:absolute; z-index:4; right:4px; bottom:2px;"
+      + "font-size:9.5px; color:#8a939b;";
+    att.innerHTML = "&copy; OpenStreetMap contributors &copy; CARTO";
+  }
+  function runSun(fig){ fig.classList.add("on"); }
+  function runCells(){
+    document.querySelectorAll("#acwa-cells .cell i").forEach(function(f, i){
+      f.style.transitionDelay = (i * 0.03) + "s";
+      f.style.height = f.dataset.h;
+    });
+  }
+
+  // ---- beat 3: wires stack + record strips ----
+  function buildWires(){
+    // a tank the wires must fill: the campus needs 3,000 MW every hour, and
+    // today's two circuits can raise the level only a quarter of the way
+    var wrap = document.getElementById("wires-flow"); wrap.innerHTML = "";
+    wrap.style.position = "relative";
+    var need = P.campus.mw, lim = P.wires.limit_7pm_mw;
+    var W = wrap.clientWidth || 700, narrow = W < 480;
+    var tankH = narrow ? 230 : 270, tankW = narrow ? Math.min(W - 24, 260) : 330;
+    var tankX = narrow ? (W - tankW) / 2 : Math.round(W * 0.42);
+    var tankTop = narrow ? 44 : 26;
+    wrap.style.height = (tankTop + tankH + 40) + "px";
+
+    var head = el("div", "saxis", wrap);
+    head.style.cssText = "position:absolute; top:0; left:" + tankX
+      + "px; width:" + tankW + "px; text-align:center; font-size:13px;"
+      + "color:var(--ink); font-weight:600;";
+    head.textContent = narrow
+      ? "the campus needs " + fmt(need) + " MW every hour"
+      : "what the campus needs every hour: " + fmt(need) + " MW";
+    if (narrow) head.style.fontSize = "12px";
+
+    var tank = el("div", "", wrap);
+    tank.style.cssText = "position:absolute; top:" + tankTop + "px; left:" + tankX
+      + "px; width:" + tankW + "px; height:" + tankH + "px;"
+      + "border:2.5px solid #303030; border-radius:18px; overflow:hidden;"
+      + "background:#F6F1EA;";
+    var fill = el("div", "tankfill", tank);
+    fill.style.cssText = "position:absolute; left:0; right:0; bottom:0; height:0;"
+      + "background:#07203F; transition:height 1.4s cubic-bezier(.22,.9,.35,1);";
+    fill.dataset.h = (lim / need * 100).toFixed(1) + "%";
+    var fl = el("div", "", fill);
+    fl.style.cssText = "position:absolute; top:8px; left:0; right:0; text-align:center;"
+      + "color:#fff; font-size:13px; font-weight:600;";
+    fl.innerHTML = fmt(lim) + " MW arrives";
+    var emp = el("div", "", tank);
+    emp.style.cssText = "position:absolute; left:0; right:0; top:26%;"
+      + "text-align:center; color:#A65E46;";
+    emp.innerHTML = "<div style='font-size:26px; font-weight:700; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif'>"
+      + fmt(P.wires.gap_mw) + " MW</div>"
+      + "<div style='font-size:12.5px'>no way to deliver this today</div>";
+
+    // the two circuits, the only pipes into the tank
+    var px = tankX - (narrow ? 0 : 96), py0 = tankTop + tankH - 34;
+    if (!narrow){
+      [0, 16].forEach(function(dy){
+        var pipe = el("div", "", wrap);
+        pipe.style.cssText = "position:absolute; left:" + px + "px; top:" + (py0 + dy)
+          + "px; width:92px; height:10px; background:#07203F; border-radius:5px;";
+      });
+      var pl = el("div", "saxis", wrap);
+      pl.style.cssText = "position:absolute; left:0px; top:" + (py0 - 40)
+        + "px; width:" + (tankX - 12) + "px; text-align:right; font-size:11.5px;"
+        + "color:var(--muted); line-height:1.35;";
+      pl.innerHTML = "the two 230 kV circuits,<br>the only pipes into the site";
+    } else {
+      var pl2 = el("div", "saxis", wrap);
+      pl2.style.cssText = "position:absolute; left:0; right:0; top:" + (tankTop + tankH + 8)
+        + "px; text-align:center; font-size:11.5px; color:var(--muted);";
+      pl2.textContent = "filled by the two 230 kV circuits, the only pipes in";
+    }
+    if (!narrow){
+      var pay = el("div", "payoff", wrap);
+      pay.style.cssText = "position:absolute; left:10px; top:30px; right:auto; font-size:28px;";
+      pay.textContent = fmt(lim) + " of " + fmt(need);
+    }
+  }
+  function runWires(fig){ fig.classList.add("on");
+    var f = document.querySelector("#wires-flow .tankfill");
+    if (f) f.style.height = f.dataset.h;
+  }
+
+  // ---- beat 3b: the build record, three timeline strips ----
+  function buildRecord(){
+    function strip(id, spans, ticks){
+      var tl = document.getElementById(id); tl.innerHTML = "";
+      var total = 24;                       // months, Jan 2023 .. Dec 2024
+      spans.forEach(function(sp){
+        var e = el("div", sp.cls, tl);
+        e.style.left = (sp.a / total * 100) + "%";
+        e.style.width = ((sp.b - sp.a) / total * 100) + "%";
+      });
+      ticks.forEach(function(tk){
+        var e = el("div", "tick", tl); e.textContent = tk.t;
+        e.style.left = "clamp(0%, calc(" + (tk.m / total * 100) + "% - 24px), calc(100% - 118px))";
+      });
+    }
+    strip("tl-hsj",
+      [{cls:"span", a:4.8, b:17.7}, {cls:"stall", a:6.0, b:15.0}],
+      [{m:4.8, t:"May 2023: 2,000 MW"}, {m:17.7, t:"Jun 2024: 8,000 MW"}]);
+    strip("tl-mvip",
+      [{cls:"span", a:3.9, b:12.8}],
+      [{m:3.9, t:"Apr 2023: first load"}, {m:12.8, t:"Jan 2024: commercial"}]);
+    // the campus substation's promised window, with today marked so the
+    // remaining runway is visible
+    var t3 = document.getElementById("tl-substation"); t3.innerHTML = "";
+    var SPAN = 36;                          // months, Jan 2026 .. Dec 2028
+    function m3(y, m){ return ((y - 2026) * 12 + m) / SPAN * 100; }
+    var promised = el("div", "span", t3);
+    promised.style.left = m3(2028, 0) + "%";
+    promised.style.width = (m3(2028, 11.9) - m3(2028, 0)) + "%";
+    promised.style.background = "rgba(7,32,63,.12)";
+    promised.style.border = "2px dashed #07203F";
+    var today = el("div", "stall", t3);
+    today.style.left = m3(2026, 6.8) + "%"; today.style.width = "3px";
+    var subTicks = (t3.clientWidth || 700) < 480
+      ? [{m:m3(2026, 6.8), t:"today", max: 110}]
+      : [{m:m3(2026, 6.8), t:"today", max: 110},
+         {m:m3(2028, 0), t:"Q1 2028: construction starts", max: 330},
+         {m:m3(2028, 11.9), t:"end-2028: due", max: 110}];
+    subTicks.forEach(function(tk){
+      var e = el("div", "tick", t3); e.textContent = tk.t;
+      e.style.left = "clamp(0%, calc(" + tk.m + "% - 24px), calc(100% - " + tk.max + "px))";
+    });
+    if ((t3.clientWidth || 700) < 480){
+      var due = el("div", "tick", t3); due.textContent = "end-2028: due";
+      due.style.left = "auto"; due.style.right = "0";
+    }
+  }
+
+  // ---- beat 3.5: modeled price, with and without the campus ----
+  function buildPrice(){
+    // the supply curve itself: plant blocks left to right by cost, and two
+    // demand lines showing which block ends up setting everyone's price
+    var wrap = document.getElementById("price-steps"); wrap.innerHTML = "";
+    var m = P.price.merit;
+    var W = wrap.clientWidth || 700, chartH = 150, axisH = 26;
+    wrap.style.height = (chartH + axisH + 104) + "px";
+    var xs = W / m.avail_mw;                 // px per MW
+    var ys = chartH / 13.0;                  // px per peso, headroom over P12
+    var landBase = null, landWave = null;
+    m.blocks.forEach(function(b, i){
+      var s = el("div", "step", wrap);
+      s.style.left = (b.cum_from * xs) + "px";
+      s.style.width = Math.max(1.5, (b.cum_to - b.cum_from) * xs - 2) + "px";
+      s.style.height = Math.max(2, b.cost * ys) + "px";
+      s.style.transitionDelay = (i * 0.08) + "s";
+      s.title = b.fuel.replace("_", " ") + ": " + fmt(b.mw) + " MW at P" + b.cost.toFixed(2);
+      if (m.evening_demand_mw > b.cum_from && m.evening_demand_mw <= b.cum_to) landBase = b;
+      if (m.demand_with_campus_mw > b.cum_from && m.demand_with_campus_mw <= b.cum_to){
+        landWave = b; s.classList.add("hot");
+      }
+      // name the two price-setting blocks right on the mark
+      if (b.cost === 6.0 || b.cost === 12.0){
+        var bn = el("div", "saxis", s);
+        bn.style.cssText = "position:absolute; bottom:6px; left:8px; font-size:11.5px;"
+          + "font-weight:600; color:#fff;";
+        bn.textContent = b.fuel;
+      }
+    });
+    // mark the block demand lands on today
+    wrap.querySelectorAll(".step").forEach(function(s, i){
+      if (m.blocks[i] === landBase) s.classList.add("base");
+    });
+    function dline(mw, cls, labelHtml, row){
+      var d = el("div", "dline " + cls, wrap);
+      d.style.left = (mw * xs) + "px";
+      d.style.height = (chartH + (row === 0 ? 46 : 2)) + "px";
+      var l = el("div", "slabel", wrap);
+      l.innerHTML = labelHtml;
+      // each label right-aligned to its own line, in its own vertical band,
+      // so the two can never collide
+      l.style.right = (W - mw * xs + 8) + "px";
+      l.style.textAlign = "right";
+      l.style.background = "#fff";
+      l.style.padding = "1px 5px";
+      l.style.borderRadius = "3px";
+      l.style.bottom = (axisH + chartH + 4 + (row === 0 ? 40 : 0)) + "px";
+    }
+    dline(m.evening_demand_mw, "",
+      "<b style='color:var(--ink)'>evening demand today, " +
+      fmt(m.evening_demand_mw) + " MW</b><br>coal sets it: <b style='color:var(--ink)'>P" +
+      P.price.luzon_mean[0].toFixed(2) + "</b>", 0);
+    dline(m.demand_with_campus_mw, "coral",
+      "<b style='color:#A65E46'>+ Pax Silica, " +
+      fmt(m.demand_with_campus_mw) + " MW</b><br>oil sets it: <b style='color:#A65E46'>P" +
+      P.price.luzon_mean[1].toFixed(2) + "</b>", 1);
+    // x axis ticks
+    [0, 5000, 10000, 15000].forEach(function(mw){
+      var t = el("div", "saxis", wrap);
+      t.textContent = mw ? fmt(mw) : "0 MW";
+      t.style.left = (mw * xs) + "px";
+    });
+    // the cheap-end label and the big 2x only fit when the chart is wide;
+    // on a phone the on-block names and the title carry both
+    if (W >= 480){
+      var lab = el("div", "slabel", wrap);
+      lab.innerHTML = "hydro, geothermal, gas, coal, P0.50 to P6.00<br>each step up, a pricier plant";
+      lab.style.left = "8px"; lab.style.bottom = (axisH + 58) + "px";
+      var pay = el("div", "payoff", wrap);
+      pay.style.cssText = "position:absolute; left:14px; top:2px; right:auto;"
+        + "font-size:46px;";
+      pay.textContent = "2x";
+    }
+  }
+  function runPrice(fig){ fig.classList.add("on"); }
+
+  // ---- beat 4: own-station two-state ----
+  function buildOwn(){ var s = document.getElementById("own-stack"); s.innerHTML = "";
+    var paint = { steel: "#D9AA90", navy: "#07203F", coral: "#A65E46" };
+    var inkfor = { steel: "var(--ink)", navy: "#fff", coral: "#fff" };
+    ["steel","navy","coral"].forEach(function(c){
+      var e = el("div", "seg", s); e.style.background = paint[c];
+      e.dataset.role = c; el("span", "", e).style.color = inkfor[c];
+    });
+  }
+  function runOwn(fig){
+    fig.classList.add("on");
+    var s = document.getElementById("own-stack"), need = P.campus.mw;
+    var segs = {}, cap = document.getElementById("own-caption");
+    s.querySelectorAll(".seg").forEach(function(e){ segs[e.dataset.role] = e; });
+    function set(role, from, w, label){
+      var e = segs[role]; e.style.left = (from/need*100) + "%";
+      e.style.width = (w/need*100) + "%";
+      e.querySelector("span").textContent = w > 0 ? label : "";
+    }
+    cap.innerHTML = "The plan works. 2,500 MW of its own, the last 500 over the lines";
+    set("steel", 0, 500, "500 over the lines");
+    set("navy", 500, 2500, "2,500 MW of its own");
+    set("coral", 3000, 0, "");
+    setTimeout(function(){ fitSegLabels(s); }, reduced ? 0 : 1080);
+    if (reduced) { stateB(); return; }
+    clearTimeout(fig._t); fig._t = setTimeout(stateB, 2600);
+    function stateB(){
+      var lim = P.wires.limit_7pm_mw;
+      cap.innerHTML = "Then one generator breaks, and <em class='pop'>331 MW</em> of the campus has no power";
+      set("navy", 0, 1900, "1,900 MW of its own");
+      set("steel", 1900, lim, fmt(lim) + " over the lines");
+      set("coral", 1900 + lim, need - 1900 - lim, fmt(need - 1900 - lim)
+        + " MW: no source (the electricity of " + P.wires.own_gap_homes_million
+        + "M homes)");
+      setTimeout(function(){ fitSegLabels(s); }, 1080);
+    }
+  }
+
+  // ---- beat 5: water ----
+  function buildWater(){
+    var UNIT = 5; // million liters a day per drop
+    function drops(id, solid, outlined, solidCls, outlineCls, endnote){
+      var host = document.getElementById(id); host.innerHTML = "";
+      var n = 0;
+      for (var i = 0; i < solid; i++){
+        el("i", "drop " + solidCls, host).style.transitionDelay = (n++ * 0.05) + "s";
+      }
+      for (var j = 0; j < outlined; j++){
+        el("i", "drop " + outlineCls, host).style.transitionDelay = (n++ * 0.05) + "s";
+      }
+      if (endnote){
+        var e = el("span", "saxis", host);
+        e.style.cssText = "font-size:11.5px; color:var(--muted); margin-left:6px;"
+          + "vertical-align:2px; white-space:nowrap;";
+        e.textContent = endnote;
+      }
+    }
+    var lo = Math.round(P.water.mld[0] / UNIT);                  // 13
+    var hi = Math.round((P.water.mld[1] - P.water.mld[0]) / UNIT); // +5
+    var makati = Math.round(P.water.makati_pop_2024 *
+      P.water.liters_per_person_day / 1e6 / UNIT);               // 9
+    var pond = Math.round(P.water.harvest_mld / UNIT);           // 24
+    drops("drops-campus", lo, hi, "solid", "range",
+      "65 to 90 million liters = " + P.water.pools_per_day[0] + " to "
+      + P.water.pools_per_day[1] + " Olympic pools");
+    drops("drops-makati", makati, 0, "anchor", "", "about 46");
+    drops("drops-harvest", 0, pond, "", "promise", "120, promised");
+    var w = document.getElementById("angat-waffle"); w.innerHTML = "";
+    for (var q = 0; q < 100; q++){ el("i", q < 2 ? "hit" : "", w); }
+  }
+  function runWater(fig){ fig.classList.add("on"); }
+
+  // a segment too narrow for its own label moves that label to a small
+  // legend under the bar instead of letting it clip or spill into the next
+  // segment; runs after the width transition (1s) has settled
+  function fitSegLabels(stackEl){
+    var legend = stackEl.nextElementSibling;
+    if (!legend || !legend.classList.contains("seg-legend")){
+      legend = el("div", "seg-legend");
+      stackEl.parentNode.insertBefore(legend, stackEl.nextSibling);
+    }
+    legend.innerHTML = "";
+    // read the label set() just wrote, before deciding whether it fits, so a
+    // second call (the own-station beat's state B) never reuses stale text
+    Array.prototype.forEach.call(stackEl.querySelectorAll(".seg"), function(seg){
+      var span = seg.querySelector("span"), text = span.textContent;
+      if (!text) return;
+      var segW = seg.getBoundingClientRect().width, needW = span.scrollWidth + 20;
+      if (segW < needW || segW < 46){
+        span.textContent = "";
+        var chip = el("span", "chip", legend);
+        var dot = el("i", "", chip); dot.style.background = getComputedStyle(seg).backgroundColor;
+        chip.appendChild(document.createTextNode(text));
+      }
+    });
+  }
+
+  // ---- wiring ----
+  var runners = { "fig-grids": runGrids, "fig-land": runSun, "fig-wires": runWires,
+                  "fig-priceb": runPrice, "fig-own": runOwn, "fig-water": runWater };
+  function reset(fig){
+    fig.classList.remove("on");
+    // wires and own-station rebuild their segments from scratch, so a label
+    // fitSegLabels moved into the legend on the previous run comes back as an
+    // inline label if this replay lands on a wider viewport
+    if (fig.id === "fig-wires") buildWires();
+    if (fig.id === "fig-own") buildOwn();
+    fig.querySelectorAll(".seg").forEach(function(e){ e.style.width = "0"; });
+    var legend = fig.querySelector(".seg-legend");
+    if (legend) legend.innerHTML = "";
+  }
+  function arm(){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting && !en.target.dataset.done){
+          en.target.dataset.done = "1";
+          runners[en.target.id](en.target);
+          window.__pxdiag.beats++;
+        }
+      });
+    }, { threshold: 0.35 });
+    Object.keys(runners).forEach(function(id){
+      var f = document.getElementById(id);
+      io.observe(f);
+    });
+    // the hour-cell card sits above fig-land and animates on its own entry
+    var io2 = new IntersectionObserver(function(es){
+      es.forEach(function(en){ if (en.isIntersecting) runCells(); });
+    }, { threshold: 0.5 });
+    io2.observe(document.getElementById("acwa-cells"));
+    document.querySelectorAll(".replay").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var fig = document.getElementById(btn.dataset.replay);
+        reset(fig); delete fig.dataset.done;
+        setTimeout(function(){ runners[fig.id](fig); fig.dataset.done = "1"; }, 60);
+      });
+    });
+  }
+
+  fetch("data/perspective.json").then(function(r){ return r.json(); })
+    .then(function(d){
+      P = d;
+      buildGrids(); buildSun(); buildWires(); buildRecord(); buildPrice(); buildOwn(); buildWater();
+      arm();
+      window.__pxdiag.ready = true;
+    })
+    .catch(function(e){
+      document.body.insertAdjacentHTML("beforeend",
+        "<p style='max-width:840px;margin:0 auto;padding:0 20px;color:#e2664b'>" +
+        "The baked numbers failed to load (data/perspective.json). " +
+        "The prose above still carries every figure with its source.</p>");
+    });
+})();
+</script>
+<noscript><p style="max-width:840px;margin:0 auto;padding:0 20px;color:#7d8896">
+The animated figures need JavaScript; every number and source is in the text.</p></noscript>
+</body>
+</html>
