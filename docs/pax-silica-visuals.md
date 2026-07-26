@@ -28,8 +28,8 @@ piece's area is the most power that grid actually used in any 5-minute
 stretch of 105 days of the market operator IEMOP's published files, and
 each piece names the people it serves (about 62 million on Luzon, 26 on
 Mindanao, 21 in the Visayas, 2020 census). Luzon is the giant piece, and
-Mindanao and Visayas share the right column. The dashed rust block is Pax
-Silica on its own, drawn inside the Luzon block because New Clark City sits on
+Mindanao and Visayas share the right column. The rust block is Pax Silica on its own, dashed because it is
+announced and not built, drawn inside the Luzon block because New Clark City sits on
 Luzon and that is the grid it would join. It is not part of the 14,232 MW
 already there. It takes the Visayas block's own shape and is scaled by area,
 at the same baseline, so you can see that Pax Silica alone is bigger than that
@@ -84,7 +84,7 @@ cannot is the 3,000 MW Pax Silica needs every hour. This form answers the questi
 actually asks, which is not how full a tank is but the number of circuits
 missing. The answer is three.
 
-## The last two big Philippine grid builds each took about a year between first power and full service
+## The last two big Philippine grid builds took 13 and 9 months between first power and full service
 
 ![Three timelines. Two finished builds from 2023 to 2024, one with a rust stretch marking a court stop, then the Pax Silica substation's own 2026-to-2028 window](pax-silica-figs/record.png)
 
@@ -94,12 +94,13 @@ actually went. On top, the Hermosa-San Jose line turned on in May 2023 at a
 quarter of its capacity and reached full capacity only in June 2024, because
 a court order over nine towers stopped work for nine months (the rust
 stretch), which is most of why that build took 13 months. Below it, the
-Mindanao-Visayas undersea link, first test power April 2023, full service
-January 2024, nine months. The third strip is the Pax Silica substation's
+Mindanao-Visayas undersea link, first power April 2023, full service
+January 2024, nine months. Both bars sit on one 24-month axis, so the first
+bar being visibly longer is the 13 against the 9. The third strip is the Pax Silica substation's
 own promised window on its own 2026-to-2028 axis, with today marked. Pax
 Silica's construction starts in the first quarter of 2028 and the substation is due at
-the end of it, which leaves nine months against the year each build above
-took.
+the end of it. Depending where in that quarter it starts, that leaves nine to
+twelve months against the 13 and 9 months the two builds above took.
 
 ## Serving Pax Silica from the grid would double the modeled price of Luzon electricity
 
@@ -108,8 +109,9 @@ took.
 This is the actual price mechanism, drawn. Every Luzon plant is lined up
 cheapest to priciest. Each block's width is its megawatts, its height is
 its cost, and the most expensive plant that has to run sets the price for
-everyone. The dark line is this evening's demand, 12,018 MW. It lands on
-the navy coal block, so coal sets the price at P6.00 per kWh. The white line
+everyone. Coal appears twice, at P4.14 and at P6.00, because two coal plants
+are not equally cheap, so each block carries its own cost. The first line is this evening's demand, 12,018 MW. It lands inside
+the navy coal block, so coal sets the price at P6.00 per kWh. The second line
 adds Pax Silica, 15,018 MW. It lands on the rust oil block, so oil sets the
 price at P12.00, for every buyer on Luzon, all 24 hours of the replayed day.
 The small print adds what that means at home. If generation cost were
