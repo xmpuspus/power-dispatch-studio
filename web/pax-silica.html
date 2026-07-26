@@ -66,9 +66,12 @@
   .seg-legend .chip i{ flex:0 0 auto; width:9px; height:9px; border-radius:2px;
     margin-top:4px; }
 
-  /* the wires river reveals left to right */
-  #wires-flow{ clip-path:inset(0 100% 0 0); transition:clip-path 1.2s cubic-bezier(.22,.9,.35,1); }
-  .on #wires-flow{ clip-path:inset(0 0 0 0); }
+  /* the existing circuits draw in, then the missing ones fade up behind them */
+  #wires-flow .wire{ opacity:0; transition:opacity .5s ease; }
+  #wires-flow .wire.live{ transform:translateX(-14px); transition:opacity .5s ease, transform .7s cubic-bezier(.22,.9,.35,1); }
+  .on #wires-flow .wire{ opacity:1; }
+  .on #wires-flow .wire.live{ transform:none; }
+  .on #wires-flow .wire.ghost{ opacity:.95; }
 
   /* one-canvas area blocks (power beat): area is proportional to MW */
   .blocks{ position:relative; }
@@ -292,9 +295,10 @@ no path at all.</p>
   <button class="replay" data-replay="fig-wires">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">Today's power lines can deliver only <em class="pop">a quarter</em> of what Pax Silica needs</div>
-  <div class="figsub">A tank the power grid must fill every hour, measured in
-  megawatts (MW). The navy fill is everything the site's two existing power lines
-  can deliver, worked out by this project's grid model for 7pm on 25 Jun 2026.</div>
+  <div class="figsub">Pax Silica would need 3,000 megawatts (MW) every hour. Every
+  line here is one circuit into the site. The solid ones exist. The dashed ones do
+  not, and are how many more of the same kind the rest of the campus would take.
+  Worked out by this project's grid model for 7pm on 25 Jun 2026.</div>
   <div id="wires-flow" style="margin-bottom:2px"></div>
   <p class="srcline">NGCP, the National Grid Corporation of the Philippines, does
   not publish what its
@@ -736,78 +740,122 @@ not NGCP official geometry. Announced figures may change; this page is dated
 
   // ---- beat 3: wires stack + record strips ----
   function buildWires(){
-    // a tank the wires must fill: the campus needs 3,000 MW every hour, and
-    // today's two circuits can raise the level only a quarter of the way
+    // the subject is transmission, so the picture is the lines themselves:
+    // the circuits that exist, then the ones that would have to be built
     var wrap = document.getElementById("wires-flow"); wrap.innerHTML = "";
-    wrap.style.position = "relative";
-    var need = P.campus.mw, lim = P.wires.limit_7pm_mw;
-    var W = wrap.clientWidth || 700, narrow = W < 480;
-    var tankH = narrow ? 230 : 270, tankW = narrow ? Math.min(W - 24, 260) : 330;
-    var tankX = narrow ? (W - tankW) / 2 : Math.round(W * 0.42);
-    var tankTop = narrow ? 44 : 26;
-    wrap.style.height = (tankTop + tankH + 40) + "px";
-
-    var head = el("div", "saxis", wrap);
-    head.style.cssText = "position:absolute; top:0; left:" + tankX
-      + "px; width:" + tankW + "px; text-align:center; font-size:13px;"
-      + "color:var(--ink); font-weight:600;";
-    head.textContent = narrow
-      ? "the campus needs " + fmt(need) + " MW every hour"
-      : "what the campus needs every hour: " + fmt(need) + " MW";
-    if (narrow) head.style.fontSize = "12px";
-
-    var tank = el("div", "", wrap);
-    tank.style.cssText = "position:absolute; top:" + tankTop + "px; left:" + tankX
-      + "px; width:" + tankW + "px; height:" + tankH + "px;"
-      + "border:2.5px solid #303030; border-radius:18px; overflow:hidden;"
-      + "background:#F6F1EA;";
-    var fill = el("div", "tankfill", tank);
-    fill.style.cssText = "position:absolute; left:0; right:0; bottom:0; height:0;"
-      + "background:#07203F; transition:height 1.4s cubic-bezier(.22,.9,.35,1);";
-    fill.dataset.h = (lim / need * 100).toFixed(1) + "%";
-    var fl = el("div", "", fill);
-    fl.style.cssText = "position:absolute; top:8px; left:0; right:0; text-align:center;"
-      + "color:#fff; font-size:13px; font-weight:600;";
-    fl.innerHTML = fmt(lim) + " MW arrives";
-    var emp = el("div", "", tank);
-    emp.style.cssText = "position:absolute; left:0; right:0; top:26%;"
-      + "text-align:center; color:#A65E46;";
-    emp.innerHTML = "<div style='font-size:26px; font-weight:700; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif'>"
-      + fmt(P.wires.gap_mw) + " MW</div>"
-      + "<div style='font-size:12.5px'>no way to deliver this today</div>";
-
-    // the two circuits, the only pipes into the tank
-    var px = tankX - (narrow ? 0 : 96), py0 = tankTop + tankH - 34;
-    if (!narrow){
-      [0, 16].forEach(function(dy){
-        var pipe = el("div", "", wrap);
-        pipe.style.cssText = "position:absolute; left:" + px + "px; top:" + (py0 + dy)
-          + "px; width:92px; height:10px; background:#07203F; border-radius:5px;";
-      });
-      var pl = el("div", "saxis", wrap);
-      pl.style.cssText = "position:absolute; left:0px; top:" + (py0 - 40)
-        + "px; width:" + (tankX - 12) + "px; text-align:right; font-size:11.5px;"
-        + "color:var(--muted); line-height:1.35;";
-      pl.innerHTML = "the site's only two power lines<br>(230 kilovolt circuits)";
-    } else {
-      var pl2 = el("div", "saxis", wrap);
-      pl2.style.cssText = "position:absolute; left:0; right:0; top:" + (tankTop + tankH + 8)
-        + "px; text-align:center; font-size:11.5px; color:var(--muted);";
-      pl2.textContent = "filled by the site's only two power lines";
+    var need = P.campus.mw, lim = P.wires.limit_7pm_mw, gap = P.wires.gap_mw;
+    var have = P.wires.n_circuits, more = P.wires.more_circuits;
+    var W = wrap.clientWidth || 700, narrow = W < 560;
+    var rows = have + more;
+    var rowH = narrow ? 40 : 48, headH = narrow ? 22 : 0;
+    var padTop = 16, groupGap = narrow ? 34 : 26;
+    var footH = narrow ? 34 : 30;
+    var H = padTop + rows * rowH + groupGap + headH * 2 + 12 + footH;
+    var labW = narrow ? 0 : 176, valW = narrow ? 0 : 150;
+    var x0 = labW + 8, x1 = W - valW - 14;
+    var ns = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("width", W); svg.setAttribute("height", H);
+    svg.setAttribute("aria-label",
+      have + " circuits carry " + fmt(lim) + " MW of the " + fmt(need)
+      + " MW the campus needs; about " + more + " more would be needed for the "
+      + fmt(gap) + " MW that has no path");
+    wrap.appendChild(svg);
+    function node(kind, attrs, cls){
+      var e = document.createElementNS(ns, kind);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      if (cls) e.setAttribute("class", cls);
+      svg.appendChild(e); return e;
     }
-    if (!narrow){
-      var pay = el("div", "payoff", wrap);
-      pay.style.cssText = "position:absolute; left:10px; top:30px; right:auto; font-size:28px;";
-      pay.textContent = fmt(lim) + " of " + fmt(need);
+    function txt(x, y, s, fill, size, anchor, weight){
+      var e = node("text", {x: x, y: y, fill: fill, "font-size": size || 12.5});
+      if (anchor) e.setAttribute("text-anchor", anchor);
+      if (weight) e.setAttribute("font-weight", weight);
+      e.textContent = s; return e;
     }
+    // one circuit: a wire with pylons on it, solid if it exists
+    function circuit(y, exists, delay){
+      var g = node("g", {}, exists ? "wire live" : "wire ghost");
+      g.style.transitionDelay = delay + "s";
+      var col = exists ? "#07203F" : "#A65E46";
+      var w = document.createElementNS(ns, "line");
+      w.setAttribute("x1", x0); w.setAttribute("x2", x1);
+      w.setAttribute("y1", y); w.setAttribute("y2", y);
+      w.setAttribute("stroke", col); w.setAttribute("stroke-width", exists ? 3 : 2);
+      if (!exists) w.setAttribute("stroke-dasharray", "7 6");
+      g.appendChild(w);
+      var n = narrow ? 3 : 4;
+      for (var i = 0; i < n; i++){
+        var px = x0 + (x1 - x0) * (i + 0.5) / n;
+        var pl = document.createElementNS(ns, "path");
+        // a pylon: mast, two crossarms, splayed feet
+        // a lattice tower: two rails tapering from a wide base up to the peak,
+        // with the conductors hanging off two crossarms
+        pl.setAttribute("d",
+          "M" + (px - 9) + " " + (y + 22) + " L" + (px - 1.5) + " " + (y - 15)
+          + " M" + (px + 9) + " " + (y + 22) + " L" + (px + 1.5) + " " + (y - 15)
+          + " M" + (px - 11) + " " + (y - 2) + " H" + (px + 11)
+          + " M" + (px - 7) + " " + (y - 9) + " H" + (px + 7)
+          + " M" + (px - 6) + " " + (y + 10) + " H" + (px + 6));
+        pl.setAttribute("stroke", col);
+        pl.setAttribute("stroke-width", exists ? 1.8 : 1.4);
+        pl.setAttribute("fill", "none");
+        if (!exists) pl.setAttribute("opacity", ".75");
+        g.appendChild(pl);
+      }
+      return g;
+    }
+    var y = padTop + headH;
+    if (narrow){
+      txt(0, y - 8, "the " + have + " circuits that exist, " + fmt(lim) + " MW of room",
+          "var(--ink)", 12, null, "600");
+    }
+    for (var i = 0; i < have; i++) circuit(y + i * rowH + rowH / 2, true, 0.15 * i);
+    var yHave = y + rowH * have;
+    var yMore = yHave + groupGap + headH;
+    if (narrow){
+      txt(0, yMore - 8, "about " + more + " more for the other " + fmt(gap) + " MW",
+          "#A65E46", 12, null, "600");
+    }
+    for (var j = 0; j < more; j++)
+      circuit(yMore + j * rowH + rowH / 2, false, 0.5 + 0.12 * j);
+
+    if (!narrow){
+      // left column names each group, right column carries its megawatts
+      txt(0, y + rowH * have / 2 - 4, "the " + have + " power lines", "var(--ink)", 13, null, "600");
+      txt(0, y + rowH * have / 2 + 13, "into the site today", "var(--ink)", 13);
+      txt(W - 8, y + rowH * have / 2 - 4, fmt(lim) + " MW", "#07203F", 15, "end", "700");
+      txt(W - 8, y + rowH * have / 2 + 14, "of room at 7pm", "var(--cardmute, var(--muted))", 12, "end");
+      txt(0, yMore + rowH * more / 2 - 12, "about " + more + " more like them,", "#A65E46", 13, null, "600");
+      txt(0, yMore + rowH * more / 2 + 5, "or one 500 kilovolt line,", "#A65E46", 13);
+      txt(0, yMore + rowH * more / 2 + 22, "would have to be built", "#A65E46", 13);
+      txt(W - 8, yMore + rowH * more / 2 - 4, fmt(gap) + " MW", "#A65E46", 15, "end", "700");
+      txt(W - 8, yMore + rowH * more / 2 + 14, "with no path today", "var(--cardmute, var(--muted))", 12, "end");
+    }
+    // close the arithmetic on the card: the two groups add to the whole need
+    var fy = yMore + rowH * more + (narrow ? 26 : 22);
+    txt(narrow ? 0 : x0, fy,
+        fmt(lim) + " that can arrive + " + fmt(gap) + " that cannot = the "
+        + fmt(need) + " MW Pax Silica needs every hour",
+        "var(--ink)", narrow ? 11.5 : 12.5);
   }
-  function runWires(fig){ fig.classList.add("on");
-    var f = document.querySelector("#wires-flow .tankfill");
-    if (f) f.style.height = f.dataset.h;
-  }
+  function runWires(fig){ fig.classList.add("on"); }
 
   // ---- beat 3b: the build record, three timeline strips ----
   function buildRecord(){
+    var tnarrow = (document.getElementById("tl-hsj").clientWidth || 700) < 480;
+    function period(id, text){
+      // on a phone two ticks under a short bar collide into mush, so the
+      // span is written into the strip's own name line instead
+      var nm = document.getElementById(id).previousElementSibling;
+      if (!nm || nm.dataset.p) return;
+      nm.dataset.p = "1";
+      var s = document.createElement("span");
+      s.style.cssText = "display:block; font-weight:400; color:var(--cardmute,"
+        + "var(--muted)); font-size:12px; margin-top:2px;";
+      s.textContent = text;
+      nm.appendChild(s);
+    }
     function strip(id, spans, ticks){
       var tl = document.getElementById(id); tl.innerHTML = "";
       var total = 24;                       // months, Jan 2023 .. Dec 2024
@@ -816,6 +864,7 @@ not NGCP official geometry. Announced figures may change; this page is dated
         e.style.left = (sp.a / total * 100) + "%";
         e.style.width = ((sp.b - sp.a) / total * 100) + "%";
       });
+      if (tnarrow) return;
       ticks.forEach(function(tk){
         var e = el("div", "tick", tl); e.textContent = tk.t;
         e.style.left = "clamp(0%, calc(" + (tk.m / total * 100) + "% - 24px), calc(100% - 118px))";
@@ -829,6 +878,11 @@ not NGCP official geometry. Announced figures may change; this page is dated
       [{cls:"span", a:3.9, b:12.8}],
       [{m:3.9, t:"Apr 2023: first test power"},
        {m:12.8, t:"Jan 2024: full service"}]);
+    if (tnarrow){
+      period("tl-hsj", "First circuit May 2023, full capacity Jun 2024, 13 months.");
+      period("tl-mvip", "First test power Apr 2023, full service Jan 2024, 9 months.");
+      period("tl-substation", "Construction starts early 2028, substation due at the end of it.");
+    }
     // the campus substation's promised window, with today marked so the
     // remaining runway is visible
     var t3 = document.getElementById("tl-substation"); t3.innerHTML = "";
@@ -843,15 +897,17 @@ not NGCP official geometry. Announced figures may change; this page is dated
     today.style.left = m3(2026, 6.8) + "%"; today.style.width = "3px";
     // the window's own dates ride inside the dashed bar, so the bar and the
     // labels cannot disagree about which end is which
-    var wl = el("div", "saxis", t3);
-    wl.style.cssText = "position:absolute; left:calc(" + m3(2028, 0) + "% + 10px);"
-      + "top:2px; font-size:10.5px; font-weight:600; color:var(--ink);";
-    wl.textContent = "early 2028";
-    var wr = el("div", "saxis", t3);
-    wr.style.cssText = "position:absolute; right:10px; top:2px; font-size:10.5px;"
-      + "font-weight:600; color:var(--ink);";
-    wr.textContent = "end 2028";
-    var subTicks = [{m:m3(2026, 6.8), t:"today", max: 110}];
+    if (!tnarrow){
+      var wl = el("div", "saxis", t3);
+      wl.style.cssText = "position:absolute; left:calc(" + m3(2028, 0) + "% + 10px);"
+        + "top:2px; font-size:10.5px; font-weight:600; color:var(--ink);";
+      wl.textContent = "early 2028";
+      var wr = el("div", "saxis", t3);
+      wr.style.cssText = "position:absolute; right:10px; top:2px; font-size:10.5px;"
+        + "font-weight:600; color:var(--ink);";
+      wr.textContent = "end 2028";
+    }
+    var subTicks = tnarrow ? [] : [{m:m3(2026, 6.8), t:"today", max: 110}];
     subTicks.forEach(function(tk){
       var e = el("div", "tick", t3); e.textContent = tk.t;
       e.style.left = "clamp(0%, calc(" + tk.m + "% - 24px), calc(100% - " + tk.max + "px))";

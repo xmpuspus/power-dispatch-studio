@@ -279,6 +279,13 @@ def main() -> None:
             "limit_max_mw": pax["limit_max_mw"],
             "gap_mw": round(CAMPUS_MW - limit_7pm, 0),
             "radially_fed": pax["radially_fed"],
+            "n_circuits": len(pax["circuits"]),
+            "class_rating_mw": pax["circuits"][0]["rating_mw"],
+            # how many more circuits of the same class the shortfall would take.
+            # The rating is a class default, so this is an order-of-size answer,
+            # not an engineering design.
+            "more_circuits": int(
+                -(-(CAMPUS_MW - limit_7pm) // pax["circuits"][0]["rating_mw"])),
             "own_gap_homes_million": round(
                 (CAMPUS_MW - 1900 - limit_7pm) * 24 * 1000
                 / (HOME_KWH_MONTH / DAYS_PER_MONTH) / 1e6, 1),

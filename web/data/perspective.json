@@ -138,6 +138,9 @@
   "limit_max_mw": 775.7,
   "gap_mw": 2231.0,
   "radially_fed": true,
+  "n_circuits": 2,
+  "class_rating_mw": 800.0,
+  "more_circuits": 3,
   "own_gap_homes_million": 1.2,
   "day": "2026-06-25",
   "substation": {

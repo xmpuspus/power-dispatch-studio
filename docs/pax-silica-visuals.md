@@ -72,14 +72,18 @@ uses.
 
 ## Today's power lines can deliver only a quarter of what Pax Silica needs
 
-![A tank labeled with the campus's 3,000 MW need, filled only a quarter of the way in navy, fed by two small pipes](pax-silica-figs/wires.png)
+![Transmission towers in two bands. Two solid navy lines exist and carry 769 MW. Three dashed rust lines do not exist yet](pax-silica-figs/wires.png)
 
-The need drawn as a tank the grid must fill every hour. The water line is
-everything today's two circuits can deliver, 769 MW at the modeled 7pm on
-a real day (25 June 2026), so the tank sits a quarter full. The empty
-three quarters, 2,231 MW, has no way to arrive at all. The two small
-pipes feeding the tank are the two 230 kV circuits, the only lines into
-the site. It reads like a fuel gauge. One look says how short the supply falls.
+The chart is the transmission itself. Every line drawn is one circuit into
+the site, with towers on it. The two solid navy lines are the circuits that
+exist, and together they have 769 MW of room at the modeled 7pm on a real day
+(25 June 2026). The three dashed rust lines do not exist. They are how many
+more circuits of the same kind the remaining 2,231 MW would take, at the
+standard rating for a 230 kilovolt line, or one 500 kilovolt line instead. The
+line at the bottom closes the arithmetic. 769 that can arrive plus 2,231 that
+cannot is the 3,000 MW the campus needs every hour. This form answers the question a grid
+planner would actually ask, which is not how full a tank is but how many
+circuits are missing: three.
 
 ## The last two big Philippine grid builds each took about a year between first power and full service
 
