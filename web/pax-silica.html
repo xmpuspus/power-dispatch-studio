@@ -39,6 +39,11 @@
   .figtitle .pop{ font-style:normal; color:var(--accent, var(--red)); }
   .figsub{ font-size:12.5px; color:var(--cardmute, var(--muted)); margin:0 0 16px; }
   .srcline{ font-size:11.5px; color:var(--cardmute, var(--muted)); margin:14px 2px 0; }
+  /* the raw files behind the card, named so anyone can open them */
+  /* long source URLs must wrap inside the card, not push it wider */
+  .rawline{ font-size:10.5px; color:var(--cardmute, var(--muted)); margin:9px 2px 0;
+    line-height:1.6; overflow-wrap:anywhere; word-break:break-word; }
+  .rawline a{ overflow-wrap:anywhere; }
   .fignote{ color:var(--cardmute, var(--muted)); font-size:12.5px; margin:10px 2px 0; }
   /* prose inside a card fills the card: the reading-width cap on .beat p is for
      body text, and under a full-width chart it just leaves the box half empty */
@@ -59,6 +64,8 @@
   .seg span{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     color:#fff; font-size:12.5px; white-space:nowrap; opacity:0; transition:opacity .4s .9s; }
   .on .seg span{ opacity:1; }
+  .rowname{ font-size:13px; font-weight:600; color:var(--ink); margin:14px 0 5px; }
+  .rowname:first-child{ margin-top:4px; }
   .seg-legend{ display:flex; flex-wrap:wrap; gap:7px 18px; margin:9px 0 0; font-size:12.5px; }
   /* the chip text wraps: a no-wrap chip long enough to name its number will
      run past a phone-width card */
@@ -84,17 +91,11 @@
     font-size:12.5px; line-height:1.3; }
   .block .blabel b{ display:block; font-size:13.5px; }
 
-  /* one day as 24 hour cells (solar beat) */
-  .daycells{ display:flex; gap:3px; align-items:flex-end; height:84px;
-    border-bottom:1px solid var(--line); }
-  .daycells .cell{ flex:1; position:relative; height:100%; background:#EBDED4;
-    border-radius:6px 6px 0 0; }
-  .daycells .cell i{ position:absolute; left:0; right:0; bottom:0; display:block;
-    background:#A65E46; border-radius:0 0 3px 3px; height:0;
-    transition:height .8s cubic-bezier(.22,.9,.35,1); }
-  .dayaxis{ display:flex; justify-content:space-between; font-size:11.5px;
-    color:var(--muted); margin-top:4px; }
-  .cellnote{ position:relative; font-size:12px; margin-top:6px; color:var(--ink); }
+  /* the solar day: the gold band grows up out of the axis */
+  #acwa-day .solarband{ transform:scaleY(0); transform-origin:bottom;
+    transition:transform 1s cubic-bezier(.22,.9,.35,1); }
+  #acwa-day.on .solarband{ transform:none; }
+  .cellnote{ position:relative; font-size:12.5px; margin-top:8px; color:var(--ink); }
 
   /* merit-order ladder (price beat) */
   .steps{ position:relative; }
@@ -172,8 +173,8 @@ Numbers that size mean nothing on their own. This page draws each one against
 something you already know, and then follows what it would actually take to
 supply.</p>
 <p class="lede" style="font-size:13.5px">Announced figures are labeled with their owner.
-Everything else is arithmetic you can check, or a result from
-<a href="methodology.html">this project's grid model</a>.</p>
+Everything else is arithmetic you can check, or a result from <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/nodal_dcopf.py">this project's
+grid model</a>, whose own sources sit on every chart below.</p>
 
 <!-- ============================ BEAT 1: POWER ============================ -->
 <section class="beat" id="b-power">
@@ -200,12 +201,11 @@ own June 2026 bulletins</a> agree on the Visayas number: evening peaks of
   the 14,232 MW already there, and it is bigger than the whole Visayas block, and
   bigger than Mindanao's too.</div>
   <div class="blocks" id="grid-blocks"></div>
-  <p class="srcline">Grid peaks: computed from the published 5-minute dispatch
-  files of IEMOP, the Independent Electricity Market Operator of the Philippines,
-  7 Apr to 20 Jul 2026,
-  archived and documented <a href="methodology.html">in this project's
-  methodology</a>; the grid operator NGCP, the National Grid Corporation of the
-  Philippines, in its own
+  <p class="srcline">Grid peaks: computed from the
+  <a href="https://www.iemop.ph/market-data/rtd-regional-summaries/">5-minute regional dispatch files</a> that IEMOP, the
+  Independent Electricity Market Operator of the Philippines, publishes, 7 Apr to
+  20 Jul 2026, <a href="https://github.com/xmpuspus/power-dispatch-studio/tree/main/data/raw/RTDSUM">archived day by day in this repo</a>;
+  the grid operator NGCP, the National Grid Corporation of the Philippines, in its own
   <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">June 2026
   bulletins</a> put Visayas evening peaks at 2,384 to 2,482 MW, in line with
   the 2,744 shown. Campus figure: BCDA president Joshua Bingcang via
@@ -217,7 +217,11 @@ own June 2026 bulletins</a> agree on the Visayas number: evening peaks of
   division by the 200 kilowatt-hours a month that Meralco, the utility serving
   Metro Manila, calls a typical household
   (<a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">its
-  July 2026 rate advisory</a>). Island populations: 2020 census via Wikipedia.</p>
+  July 2026 rate advisory</a>). Island populations, 2020 census:
+  <a href="https://en.wikipedia.org/wiki/Luzon">Luzon</a>,
+  <a href="https://en.wikipedia.org/wiki/Mindanao">Mindanao</a>,
+  <a href="https://en.wikipedia.org/wiki/Visayas">Visayas</a>.</p>
+  <p class="rawline">Sources: <a href="https://www.iemop.ph/market-data/rtd-regional-summaries/">iemop.ph/market-data/rtd-regional-summaries</a> &middot; <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">gmanetwork.com/news/money/economy/995915</a> &middot; <a href="https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest">business.inquirer.net/596398</a> &middot; <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">gmanetwork.com/news/money/economy/991469</a> &middot; <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026</a> &middot; <a href="https://en.wikipedia.org/wiki/Luzon">en.wikipedia.org/wiki/Luzon</a></p>
 </div>
 </section>
 
@@ -233,18 +237,18 @@ sunset, and count what it covers of the campus's 72,000 MWh day.</p>
 <div class="fig" id="fig-acwa" style="--accent:#A65E46">
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">Pax Silica's signed solar farm covers <em class="pop">4.1%</em> of the campus's electricity for a day</div>
-  <div class="figsub">The campus's day as 24 hourly columns. Its day takes about
-  72 million kilowatt-hours (3,000 MW around the clock). Rust is the share of each
-  hour that the 500 MW solar farm leased to the campus could cover, on a cloudless
-  model day that is generous to solar. A full column would be an hour fully
-  covered.</div>
-  <div class="daycells" id="acwa-cells"></div>
-  <div class="dayaxis"><span>midnight</span><span>6am</span><span>noon</span><span>6pm</span><span>11pm</span></div>
+  <div class="figsub">One day, hour by hour, in megawatts (MW). The dashed line is
+  what the campus draws every hour of the day and night. The gold shape is what the
+  500 MW solar farm leased to it would make, on a cloudless model day that is
+  generous to solar.</div>
+  <div id="acwa-day"></div>
   <div class="cellnote" id="acwa-note"></div>
   <p class="srcline">The lease, signed by the Saudi developer ACWA Power with BCDA, the
   Bases Conversion and Development Authority that is building the site:
   <a href="https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html">Enerdata,
-  2 Jun 2026</a>. The solar shape is this project's cloudless model day.</p>
+  2 Jun 2026</a>. The solar shape is this project's cloudless model day, the
+  <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/web/data/profiles.json">day-shape this project publishes</a>.</p>
+  <p class="rawline">Sources: <a href="https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html">enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html</a> &middot; <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">gmanetwork.com/news/money/economy/995915</a></p>
 </div>
 
 <p>So scale the answer up. To average 3,000 MW across a cloudless model day you
@@ -278,6 +282,7 @@ Solar's 3,500 MW on 3,500 hectares one province over</a>, that is
   <a href="https://en.wikipedia.org/wiki/Bonifacio_Global_City">Bonifacio Global
   City</a>, <a href="https://en.wikipedia.org/wiki/New_Clark_City">New Clark
   City</a>). PSA is the Philippine Statistics Authority.</p>
+  <p class="rawline">Sources: <a href="https://en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm">en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm</a> &middot; <a href="https://www.pv-magazine-australia.com/2024/11/22/worlds-largest-3-5-gw-terra-solar-project-breaks-ground-in-the-philippines/">pv-magazine-australia.com/2024/11/22/worlds-largest-3-5-gw-terra-solar-project-breaks-ground-in-the-philippines</a> &middot; <a href="https://en.wikipedia.org/wiki/Makati">en.wikipedia.org/wiki/Makati</a> &middot; <a href="https://en.wikipedia.org/wiki/New_Clark_City">en.wikipedia.org/wiki/New_Clark_City</a> &middot; <a href="https://www.openstreetmap.org/copyright">openstreetmap.org/copyright</a></p>
 </div>
 </section>
 
@@ -304,8 +309,10 @@ no path at all.</p>
   not publish what its
   lines carry, so this model uses the standard rating for a 230 kV line. The limit
   moves between 699 and 776 MW through the day, because other power sharing the same
-  lines rises and falls. Method and map in
-  <a href="methodology.html">the methodology</a>.</p>
+  lines rises and falls. The routes come from
+  <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> and the solver is
+  <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/nodal_dcopf.py">the model that solves the network</a>.</p>
+  <p class="rawline">Sources: <a href="https://www.iemop.ph/market-data/rtd-regional-summaries/">iemop.ph/market-data/rtd-regional-summaries</a> &middot; <a href="https://www.openstreetmap.org/copyright">openstreetmap.org/copyright</a> &middot; <a href="https://ngcp.ph/article?cid=16897">ngcp.ph/article?cid=16897</a></p>
 </div>
 
 <p>The announced fix is real but modest against the ask:
@@ -345,6 +352,7 @@ are the slow part:</p>
   Bulletin, 25 May 2026</a>) is due at the end of 2028 while campus construction
   starts in the first quarter of 2028. That leaves nine months, against the year
   each build above took.</p>
+  <p class="rawline">Sources: <a href="https://ngcp.ph/article?cid=16897">ngcp.ph/article?cid=16897</a> &middot; <a href="https://www.ngcp.ph/article?cid=16636">ngcp.ph/article?cid=16636</a> &middot; <a href="https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city">mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city</a></p>
 </div>
 </section>
 
@@ -353,11 +361,11 @@ are the slow part:</p>
 <h2>Ask the market to serve it anyway, and the modeled price of Luzon power doubles, all day</h2>
 <p>Suppose the wires were not the problem. Serving 3,000 MW more means running
 plants that cost more, and the marginal plant is what sets the price for
-everyone. This project's <a href="methodology.html">calibrated cost model</a>
+everyone. This project's <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py">cost model</a>
 replays the same recorded day, 25 June 2026, with and without the campus.
 Without it, coal sets the Luzon price in all 24 hours, at the ERC-administered
-coal cost of P6.00 per kWh (<a href="methodology.html">sourced in the model's
-cost stack</a>). With it, oil is the marginal plant in all 24 hours and the
+coal cost of P6.00 per kWh (<a href="https://www.iemop.ph/market-data/indicative-administered-prices/">the administered price
+IEMOP publishes</a>). With it, oil is the marginal plant in all 24 hours and the
 price is P12.00. Not a spike at the evening peak. The whole day, doubled, for
 every buyer on the grid.</p>
 
@@ -376,14 +384,19 @@ every buyer on the grid.</p>
   cable is money someone pays: about P38 million in this one modeled day, with the
   Visayas evening price pulled up to P11.98.</p>
   <p class="srcline">A what-if on the cost model, not a forecast. It holds the
-  campus at a flat 3,000 MW and ignores delivery: only about 770 MW can physically
-  reach the site over its two existing power lines. Real evening prices already run
-  above <a href="methodology.html">this cost model</a>.</p>
+  campus at a flat 3,000 MW and ignores delivery. Only about 770 MW can physically
+  reach the site over its two existing power lines, and real evening prices already
+  run above this stack. Coal at P6.00 is
+  <a href="https://www.iemop.ph/market-data/indicative-administered-prices/">the administered price IEMOP publishes</a> and gas is
+  <a href="https://www.foi.gov.ph/requests/malampaya-natural-gas-price/">a freedom-of-information answer</a>, but the P12.00 oil
+  price is a labelled assumption, a peaker proxy in
+  <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/fleet_ph.py">the fuel-cost table, where it is labelled as one</a>.</p>
+  <p class="rawline">Sources: <a href="https://www.iemop.ph/market-data/indicative-administered-prices/">iemop.ph/market-data/indicative-administered-prices</a> &middot; <a href="https://www.foi.gov.ph/requests/malampaya-natural-gas-price/">foi.gov.ph/requests/malampaya-natural-gas-price</a> &middot; <a href="https://www.iemop.ph/market-data/dipc-energy-results-final/">iemop.ph/market-data/dipc-energy-results-final</a> &middot; <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026</a></p>
 </div>
 <p>The market as it runs now prices congestion small and sparse: WESM's
 published nodal congestion component fires on 28 of 70 sampled days, a median
 of P0.56 per kWh, at most P19 on 26 May 2026
-(<a href="methodology.html">the sweep and its caveats</a>).</p>
+(<a href="https://www.iemop.ph/market-data/dipc-energy-results-final/">IEMOP's nodal price files</a>).</p>
 </section>
 
 <!-- ======================= BEAT 4: OWN STATION =========================== -->
@@ -401,16 +414,22 @@ into your backup, and the backup comes down the same two circuits.</p>
 <div class="fig" id="fig-own" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-own">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
-  <div class="figtitle" id="own-caption">Pax Silica's plan works. 2,500 MW of its own power, the last 500 over the power lines</div>
-  <div class="figsub">The bar is the 3,000 megawatts (MW) the campus needs every
-  hour. This is its announced plan to build its own power station, modeled at 7pm on
-  25 Jun 2026 against the site's two existing power lines.</div>
-  <div class="stack" id="own-stack"></div>
+  <div class="figtitle">One generator down leaves <em class="pop">331 MW</em> of Pax Silica with no power</div>
+  <div class="figsub">Both bars are the 3,000 megawatts (MW) the campus needs every
+  hour, split by where each megawatt would come from. This is its announced plan to
+  build its own power station, modeled at 7pm on 25 Jun 2026 against the site's two
+  existing power lines.</div>
+  <div id="own-rows"></div>
   <div class="cellnote" id="own-note"></div>
   <p class="srcline">The 2,500 MW station is a chosen size, not an announced
-  project. Full working in
+  project, and the 600 MW unit is a normal size for one, close to one of the two
+  647 MW units at Sual. The outage counts come from
+  <a href="https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/">IEMOP's
+  outage schedules</a> and cover planned maintenance as well as breakdowns, because
+  the published status does not separate them. Full working in
   <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/pax-silica-embedded.md">the deliverability note</a>;
   run any variant in the <a href="studio/">studio's siting view</a>.</p>
+  <p class="rawline">Sources: <a href="https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/">iemop.ph/market-data/outage-schedules-used-in-rtd</a> &middot; <a href="https://www.iemop.ph/market-data/registered-capacity-generation/">iemop.ph/market-data/registered-capacity-generation</a> &middot; <a href="https://www.gem.wiki/Sual_power_station">gem.wiki/Sual_power_station</a></p>
 </div>
 </section>
 
@@ -467,6 +486,7 @@ and the division is simple. Here is that number three ways.</p>
   pool holds 2.5 million liters; and as
   <a href="https://www.fao.org/4/u5835e/u5835e04.htm">irrigation</a> the same
   water would keep 520 to 900 hectares of rice flooded for a 120-day season.</p>
+  <p class="rawline">Sources: <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed</a> &middot; <a href="https://www.manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub/2390193">manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub</a> &middot; <a href="https://esmart.nhrc.upd.edu.ph/?p=1422">esmart.nhrc.upd.edu.ph/?p=1422</a> &middot; <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">philstar.com/nation/2026/07/20/2543243</a> &middot; <a href="https://www.fao.org/4/u5835e/u5835e04.htm">fao.org/4/u5835e/u5835e04.htm</a></p>
 </div>
 
 <p>Both sides of the argument are on the record.
@@ -529,7 +549,7 @@ these choices; none of them moves enough to change which bars are longer.</div>
 <li>Angat allocation about 4,000 MLD at 46 CMS: <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">Philstar, 20 Jul 2026</a>. Metro per-person standard: MWSS via <a href="https://esmart.nhrc.upd.edu.ph/?p=1422">UP e-SMART</a>.</li>
 <li>NGCP Visayas alert bulletins, June 2026: <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">GMA News</a>.</li>
 <li>Rice season water, 1,200 to 1,500 mm: <a href="https://www.fao.org/4/u5835e/u5835e04.htm">FAO irrigation manual</a>; IRRI.</li>
-<li>Grid peaks and the 770 MW limit: this project's archived IEMOP files and grid model; method and caveats in <a href="methodology.html">the methodology</a>.</li>
+<li>Grid peaks: IEMOP's <a href="https://www.iemop.ph/market-data/rtd-regional-summaries/">regional dispatch files</a>, <a href="https://github.com/xmpuspus/power-dispatch-studio/tree/main/data/raw/RTDSUM">archived here</a>. The 770 MW delivery limit: <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/nodal_dcopf.py">the model that solves the network</a> on <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> routes. Prices: <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py">dispatch.py</a> on <a href="https://www.iemop.ph/market-data/indicative-administered-prices/">IEMOP's administered prices</a>, <a href="https://www.foi.gov.ph/requests/malampaya-natural-gas-price/">the gas FOI answer</a>, and a labelled oil assumption. Nodal congestion: <a href="https://www.iemop.ph/market-data/dipc-energy-results-final/">IEMOP's nodal price files</a>.</li>
 </ul>
 <p class="sources">Community-mapped grid routes are OpenStreetMap data (ODbL),
 not NGCP official geometry. Announced figures may change; this page is dated
@@ -621,37 +641,71 @@ not NGCP official geometry. Announced figures may change; this page is dated
 
   // ---- beat 2: the day as 24 hour cells + land squares ----
   function buildSun(){
-    var cells = document.getElementById("acwa-cells"); cells.innerHTML = "";
-    cells.style.position = "relative";
-    P.sun.hourly_cover_pct.forEach(function(pct, h){
-      var c = el("div", "cell", cells);
-      var f = el("i", "", c);
-      f.dataset.h = pct + "%";
-      c.title = pct + "% of this hour covered";
-      if (h === 12) c.dataset.tag = "noon";
-      if (h === 19) c.dataset.tag = "7pm";
+    // the solar day in absolute megawatts against the campus's flat draw: the
+    // share-of-each-hour version hid how small 500 MW of panels is next to
+    // 3,000 MW of demand
+    var day = document.getElementById("acwa-day"); day.innerHTML = "";
+    var DW = day.clientWidth || 700, dnarrow = DW < 560;
+    var DH = dnarrow ? 200 : 250, padL = dnarrow ? 46 : 62, padR = 12;
+    var padT = dnarrow ? 30 : 26, padB = 26;
+    var ns2 = "http://www.w3.org/2000/svg";
+    var s2 = document.createElementNS(ns2, "svg");
+    s2.setAttribute("width", DW); s2.setAttribute("height", DH);
+    var need2 = P.campus.mw, yMax = need2 * 1.12;
+    var prof = P.sun.profile, farm = P.sun.acwa_mw;
+    var peak = Math.max.apply(null, prof) * farm;
+    function px(h){ return padL + (DW - padL - padR) * h / 23; }
+    function py(v){ return DH - padB - (DH - padT - padB) * v / yMax; }
+    function add(kind, attrs, cls){
+      var e = document.createElementNS(ns2, kind);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      if (cls) e.setAttribute("class", cls);
+      s2.appendChild(e); return e;
+    }
+    function lab(x, y, s, fill, size, anchor, weight){
+      var e = add("text", {x: x, y: y, fill: fill, "font-size": size || 12});
+      if (anchor) e.setAttribute("text-anchor", anchor);
+      if (weight) e.setAttribute("font-weight", weight);
+      e.textContent = s; return e;
+    }
+    [0, 1000, 2000, 3000].forEach(function(v){
+      add("line", {x1: padL, x2: DW - padR, y1: py(v), y2: py(v),
+                   stroke: "#e3d9cc", "stroke-width": 1});
+      lab(padL - 8, py(v) + 4, v ? fmt(v) : "0", "var(--cardmute, var(--muted))",
+          dnarrow ? 10.5 : 11.5, "end");
     });
-    // the gray is the point: name it on the chart
-    var gap = el("div", "saxis", cells);
-    gap.style.cssText = "position:absolute; top:10px; left:10px; font-size:12px;"
-      + "color:var(--muted);";
-    gap.textContent = "the empty height is what must come from somewhere else";
-    var noonTag = el("div", "saxis", cells);
-    noonTag.style.cssText = "position:absolute; bottom:16px; left:" + (12.5 / 24 * 100)
-      + "%; transform:translateX(-50%); font-size:11px; color:var(--ink);"
-      + "background:#fff; padding:0 4px; border-radius:3px; white-space:nowrap;";
-    noonTag.innerHTML = "noon: <b>13%</b>";
-    var pmTag = el("div", "saxis", cells);
-    pmTag.style.cssText = "position:absolute; bottom:16px; left:" + (19.5 / 24 * 100)
-      + "%; transform:translateX(-50%); font-size:11px; color:#A65E46;"
-      + "background:#fff; padding:0 4px; border-radius:3px; white-space:nowrap;";
-    pmTag.innerHTML = "7pm: <b>0%</b>";
+    // what the solar farm makes, hour by hour
+    var pts = prof.map(function(f, h){ return px(h) + "," + py(f * farm); });
+    add("polygon", {points: px(0) + "," + py(0) + " " + pts.join(" ") + " "
+                    + px(23) + "," + py(0), fill: "#A65E46", opacity: ".9"},
+        "solarband");
+    // what the campus draws, every hour
+    add("line", {x1: padL, x2: DW - padR, y1: py(need2), y2: py(need2),
+                 stroke: "#07203F", "stroke-width": 2.5,
+                 "stroke-dasharray": "8 5"});
+    lab(padL + 4, py(need2) - 8, "Pax Silica draws " + fmt(need2)
+        + " MW, every hour", "#07203F", dnarrow ? 11 : 12.5, null, "700");
+    // the noon best and the evening zero, named on the marks
+    var hPeak = prof.indexOf(Math.max.apply(null, prof));
+    add("line", {x1: px(hPeak), x2: px(hPeak), y1: py(peak), y2: py(peak) - 22,
+                 stroke: "#A65E46", "stroke-width": 1.4});
+    lab(px(hPeak), py(peak) - 27, "at noon, its best: " + fmt(peak) + " MW",
+        "#A65E46", dnarrow ? 11 : 12.5, "middle", "700");
+    add("line", {x1: px(19), x2: px(19), y1: py(0), y2: py(0) - 34,
+                 stroke: "#A65E46", "stroke-width": 1.4, "stroke-dasharray": "3 3"});
+    lab(px(19) + (dnarrow ? -4 : 6), py(0) - 38, "from 7pm, nothing", "#A65E46",
+        dnarrow ? 11 : 12.5, dnarrow ? "end" : "start", "700");
+    [[0, "midnight"], [6, "6am"], [12, "noon"], [18, "6pm"], [23, "11pm"]]
+      .forEach(function(tk){
+        lab(px(tk[0]), DH - 8, tk[1], "var(--cardmute, var(--muted))",
+            dnarrow ? 10.5 : 11.5, tk[0] === 0 ? "start" : (tk[0] === 23 ? "end" : "middle"));
+      });
+    day.appendChild(s2);
     var note = document.getElementById("acwa-note");
-    note.innerHTML = "Whole day, on the cloudless model: <b style='color:#A65E46'>" +
-      P.sun.acwa_share_pct + "%</b> of the campus's energy.";
+    note.innerHTML = "Added up over the whole day, the farm covers <b style="
+      + "'color:#A65E46'>" + P.sun.acwa_share_pct + "%</b> of the electricity "
+      + "the campus would use.";
 
-    // the map projection: the panel area laid over Metro Manila at true
-    // scale, on the same no-key Carto basemap the project's map page uses
     var land = document.getElementById("land-map"); land.innerHTML = "";
     var LW = Math.max(280, land.clientWidth - 4);
     var LH = Math.min(460, Math.round(LW * 0.55));
@@ -732,10 +786,8 @@ not NGCP official geometry. Announced figures may change; this page is dated
   }
   function runSun(fig){ fig.classList.add("on"); }
   function runCells(){
-    document.querySelectorAll("#acwa-cells .cell i").forEach(function(f, i){
-      f.style.transitionDelay = (i * 0.03) + "s";
-      f.style.height = f.dataset.h;
-    });
+    var c = document.getElementById("acwa-day");
+    if (c) c.classList.add("on");
   }
 
   // ---- beat 3: wires stack + record strips ----
@@ -1007,44 +1059,57 @@ not NGCP official geometry. Announced figures may change; this page is dated
   function runPrice(fig){ fig.classList.add("on"); }
 
   // ---- beat 4: own-station two-state ----
-  function buildOwn(){ var s = document.getElementById("own-stack"); s.innerHTML = "";
-    var paint = { steel: "#D9AA90", navy: "#07203F", coral: "#A65E46" };
-    var inkfor = { steel: "var(--ink)", navy: "#fff", coral: "#fff" };
-    ["steel","navy","coral"].forEach(function(c){
-      var e = el("div", "seg", s); e.style.background = paint[c];
-      e.dataset.role = c; el("span", "", e).style.color = inkfor[c];
+  function buildOwn(){
+    // both states at once: a screenshot of one animated state cannot carry the
+    // story, and the story IS the difference between the two nights
+    var host = document.getElementById("own-rows"); host.innerHTML = "";
+    var need = P.campus.mw, lim = P.wires.limit_7pm_mw;
+    var gap = need - 1900 - lim;
+    var paint = { own: "#07203F", lines: "#D9AA90", dark: "#A65E46" };
+    var ink = { own: "#fff", lines: "var(--ink)", dark: "#fff" };
+    var rows = [
+      {name: "A normal night", segs: [
+        {k: "own", mw: 2500, t: "2,500 MW from its own power station"},
+        {k: "lines", mw: 500, t: "500 MW over the power lines"}]},
+      {name: "One 600 MW generator down, about the size of one of Sual's two", segs: [
+        {k: "own", mw: 1900, t: "1,900 MW from its own station"},
+        {k: "lines", mw: lim, t: fmt(lim) + " MW over the power lines"},
+        {k: "dark", mw: gap, t: fmt(gap) + " MW dark"}]},
+    ];
+    rows.forEach(function(r, ri){
+      var nm = el("div", "rowname", host);
+      nm.textContent = r.name;
+      var st = el("div", "stack", host);
+      var left = 0;
+      r.segs.forEach(function(sg, si){
+        var e = el("div", "seg", st);
+        e.style.background = paint[sg.k];
+        e.style.left = (left / need * 100) + "%";
+        e.dataset.w = (sg.mw / need * 100) + "%";
+        e.style.transitionDelay = (ri * 0.5 + si * 0.12) + "s";
+        var sp = el("span", "", e);
+        sp.textContent = sg.t; sp.style.color = ink[sg.k];
+        left += sg.mw;
+      });
     });
+    var o = P.wires.outages, worst = o.units[0];
+    document.getElementById("own-note").innerHTML =
+      "The <b style='color:#A65E46'>" + fmt(gap) + " MW</b> in rust has no source at "
+      + "all. That is the electricity of " + P.wires.own_gap_homes_million
+      + " million Philippine homes. Its own station covers most of the campus, but "
+      + "the backup for it comes down the same two power lines."
+      + "<br><b>A unit being out is routine, not a freak event.</b> In the same "
+      + o.days_in_window + " archived days, " + worst.label + " of "
+      + fmt(worst.mw) + " MW was listed out on <b>" + worst.days_out
+      + " of them</b>, and " + o.units[1].label + " on " + o.units[1].days_out + ".";
   }
   function runOwn(fig){
     fig.classList.add("on");
-    var s = document.getElementById("own-stack"), need = P.campus.mw;
-    var segs = {}, cap = document.getElementById("own-caption");
-    s.querySelectorAll(".seg").forEach(function(e){ segs[e.dataset.role] = e; });
-    function set(role, from, w, label){
-      var e = segs[role]; e.style.left = (from/need*100) + "%";
-      e.style.width = (w/need*100) + "%";
-      e.querySelector("span").textContent = w > 0 ? label : "";
-    }
-    cap.innerHTML = "Pax Silica's plan works. 2,500 MW of its own power, the last 500 over the power lines";
-    document.getElementById("own-note").textContent = "";
-    set("steel", 0, 500, "500 MW over the power lines");
-    set("navy", 500, 2500, "2,500 MW of its own");
-    set("coral", 3000, 0, "");
-    setTimeout(function(){ fitSegLabels(s); }, reduced ? 0 : 1080);
-    if (reduced) { stateB(); return; }
-    clearTimeout(fig._t); fig._t = setTimeout(stateB, 2600);
-    function stateB(){
-      var lim = P.wires.limit_7pm_mw;
-      cap.innerHTML = "Then one generator breaks, and <em class='pop'>331 MW</em> of Pax Silica has no power";
-      set("navy", 0, 1900, "1,900 MW of its own");
-      set("steel", 1900, lim, fmt(lim) + " MW over the power lines");
-      set("coral", 1900 + lim, need - 1900 - lim, fmt(need - 1900 - lim) + " MW");
-      document.getElementById("own-note").innerHTML =
-        "The <b style='color:#A65E46'>" + fmt(need - 1900 - lim) + " MW</b> in rust "
-        + "has no source at all. That is the electricity of "
-        + P.wires.own_gap_homes_million + " million Philippine homes.";
-      setTimeout(function(){ fitSegLabels(s); }, 1080);
-    }
+    var stacks = fig.querySelectorAll(".stack");
+    fig.querySelectorAll(".seg").forEach(function(e){ e.style.width = e.dataset.w; });
+    setTimeout(function(){
+      Array.prototype.forEach.call(stacks, function(s){ fitSegLabels(s); });
+    }, reduced ? 0 : 1500);
   }
 
   // ---- beat 5: water ----
@@ -1142,7 +1207,7 @@ not NGCP official geometry. Announced figures may change; this page is dated
     var io2 = new IntersectionObserver(function(es){
       es.forEach(function(en){ if (en.isIntersecting) runCells(); });
     }, { threshold: 0.5 });
-    io2.observe(document.getElementById("acwa-cells"));
+    io2.observe(document.getElementById("acwa-day"));
     document.querySelectorAll(".replay").forEach(function(btn){
       btn.addEventListener("click", function(){
         var fig = document.getElementById(btn.dataset.replay);

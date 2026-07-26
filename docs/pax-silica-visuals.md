@@ -41,16 +41,15 @@ and BCDA has said it could go as high as 5,000 MW.
 
 ## Pax Silica's signed solar farm covers 4.1% of the campus's electricity for a day
 
-![Twenty-four tall columns, one per hour, almost empty, with small rust slivers rising around noon and vanishing by evening](pax-silica-figs/acwa.png)
+![One day in megawatts. A flat dashed line at 3,000 for the campus. A low gold hump for the solar farm, peaking at 390 at noon](pax-silica-figs/acwa.png)
 
 A real solar deal exists. ACWA Power leased 500 hectares in June 2026 to
-build up to 500 MW of solar with batteries. This chart draws the campus's
-day as 24 columns, one per hour, and fills each with rust up to the share
-of that hour the farm would cover on a perfect cloudless day. The columns
-stay almost empty. Even at noon the farm covers 13 percent of the hour, and
-from 7pm, exactly when the grid is busiest, it covers nothing. The gray is
-named right on the chart as what still has to come from somewhere else, and
-the whole day adds up to 4.1 percent.
+build up to 500 MW of solar with batteries. The chart draws one day in
+megawatts, so the sizes are the point rather than a percentage. The dashed
+line is the campus drawing 3,000 MW every hour of the day and night. The gold
+hump is the farm on a perfect cloudless day, and at its noon best it reaches
+390 MW. From 7pm it makes nothing at all, which is when the grid is busiest.
+Added over the whole day it covers 4.1 percent of the campus's electricity.
 
 ## Running Pax Silica on solar power alone would need 122 km² of panels
 
@@ -81,9 +80,9 @@ exist, and together they have 769 MW of room at the modeled 7pm on a real day
 more circuits of the same kind the remaining 2,231 MW would take, at the
 standard rating for a 230 kilovolt line, or one 500 kilovolt line instead. The
 line at the bottom closes the arithmetic. 769 that can arrive plus 2,231 that
-cannot is the 3,000 MW the campus needs every hour. This form answers the question a grid
-planner would actually ask, which is not how full a tank is but how many
-circuits are missing. Three.
+cannot is the 3,000 MW the campus needs every hour. This form answers the question a grid planner
+actually asks, which is not how full a tank is but the number of circuits
+missing. The answer is three.
 
 ## The last two big Philippine grid builds each took about a year between first power and full service
 
@@ -123,18 +122,20 @@ cap out at 770 MW in the first place.
 
 ## Then one generator breaks, and 331 MW of Pax Silica has no power
 
-![A bar showing 1,900 MW of its own, 769 over the lines, and a rust 331 MW gap](pax-silica-figs/own.png)
+![Two bars of 3,000 MW. On a normal night the campus's own station plus the lines cover it. With one generator down, a rust block of 331 MW is left over](pax-silica-figs/own.png)
 
 BCDA's actual plan is for the campus to build its own power station instead
-of drawing from the grid. The chart plays that plan through an ordinary bad
-day. Say the campus builds 2,500 MW of its own and takes the last 500 over
-the lines. It works. Then one 600 MW generator breaks, a unit about the
-size of one of Sual's two, the most routine thing that happens in a power
-system. The lines are already carrying everything they
-can, so 331 MW of the campus has nothing behind it, the electricity of
-1.2 million homes. Building your own
-power does not remove the grid. It turns the grid into your backup, and
-the backup runs down the same two lines.
+of drawing from the grid. Both bars are the same 3,000 MW, so the two nights sit
+side by side and one screenshot carries the whole story. On a normal night,
+2,500 MW from its own station plus 500 over the power lines covers everything.
+On the second bar one 600 MW generator is down, about the size of one of Sual's
+two units, and the lines are already carrying everything they can, so 331 MW
+has nothing behind it, the electricity of 1.2 million homes. Building your own
+power does not remove the grid. It turns the grid into your backup, and the
+backup runs down the same two lines. The card makes one more point, that a unit
+being out is routine rather than freak. Across the same 105 archived days, San Gabriel, a
+417 MW gas unit in Batangas, was listed out on 33 of them, and Masinloc's
+second unit on 9.
 
 ## The water Pax Silica asked for would serve 1.4 to 2 times Makati's population
 
