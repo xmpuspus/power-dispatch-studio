@@ -33,6 +33,8 @@
   .fig{ background:#fff; border:1px solid var(--line); border-radius:24px;
     position:relative; padding:24px 28px 18px; margin:22px 0 8px;
     box-shadow:0 1px 3px rgba(42,42,46,.05); }
+  .figkick{ font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+    color:var(--muted); margin:0 46px 7px 0; }
   .figtitle{ font-size:21px; font-weight:700; margin:0 46px 4px 0; line-height:1.25; }
   .figtitle .pop{ font-style:normal; color:var(--accent, var(--red)); }
   .figsub{ font-size:12.5px; color:var(--cardmute, var(--muted)); margin:0 0 16px; }
@@ -178,22 +180,30 @@ own June 2026 bulletins</a> agree on the Visayas number: evening peaks of
 
 <div class="fig" id="fig-grids" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-grids">replay</button>
-  <div class="figtitle">This one campus would use more power than the <em class="pop">entire Visayas</em></div>
-  <div class="figsub">Each block's area is its power draw. Grids at their highest 5-minute demand in 105 archived days (7 Apr to 20 Jul 2026), MW</div>
+  <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
+  <div class="figtitle">The campus would use more power than the <em class="pop">entire Visayas grid</em></div>
+  <div class="figsub">Each block's area is the electricity used, in megawatts (MW).
+  The three pale blocks are the Philippines' three island power grids, each at its
+  busiest recorded moment across 105 archived days (7 Apr to 20 Jul 2026). The
+  dashed block is the campus on its own at the same scale, laid over the Visayas
+  block for comparison, not added to it. It is bigger than the Mindanao block
+  too.</div>
   <div class="blocks" id="grid-blocks"></div>
-  <p class="srcline">Grid peaks: computed from the market operator IEMOP's
-  published 5-minute dispatch files, 7 Apr to 20 Jul 2026, archived and
-  documented <a href="methodology.html">in this project's methodology</a>;
-  the grid operator NGCP's own
+  <p class="srcline">Grid peaks: computed from the published 5-minute dispatch
+  files of IEMOP, the Philippine electricity market operator, 7 Apr to 20 Jul 2026,
+  archived and documented <a href="methodology.html">in this project's
+  methodology</a>; the Philippine grid operator NGCP's own
   <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">June 2026
   bulletins</a> put Visayas evening peaks at 2,384 to 2,482 MW, in line with
   the 2,744 shown. Campus figure: BCDA president Joshua Bingcang via
   <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">GMA
-  News, 23 Jul 2026</a>; ceiling 5,000 MW via
+  News, 23 Jul 2026</a>, with BCDA's own upper figure of 5,000 MW via
   <a href="https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest">Inquirer
-  Business</a>. Homes: division by the 200 kWh a month typical household in
-  <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">Meralco's
-  July 2026 rate advisory</a>.</p>
+  Business</a>. BCDA is the government agency developing the site. Homes:
+  division by the 200 kilowatt-hours a month that Meralco, the utility serving
+  Metro Manila, calls a typical household
+  (<a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">its
+  July 2026 rate advisory</a>). Island populations: 2020 census via Wikipedia.</p>
 </div>
 </section>
 
@@ -207,15 +217,20 @@ batteries</a>. So give it the best possible day, cloudless from sunrise to
 sunset, and count what it covers of the campus's 72,000 MWh day.</p>
 
 <div class="fig" id="fig-acwa" style="--accent:#A65E46">
-  <div class="figtitle">The solar farm they signed covers <em class="pop">4.1%</em> of one day</div>
-  <div class="figsub">The campus's day as 24 hours. The rust is the share of
-  each hour the 500 MW farm covers on a cloudless day; a full column would be an
-  hour fully covered.</div>
+  <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
+  <div class="figtitle">The solar farm signed for the campus covers <em class="pop">4.1%</em> of its electricity for a day</div>
+  <div class="figsub">The campus's day as 24 hourly columns. Its day takes about
+  72 million kilowatt-hours (3,000 MW around the clock). Rust is the share of each
+  hour that the 500 MW solar farm leased to the campus could cover, on a cloudless
+  model day that is generous to solar. A full column would be an hour fully
+  covered.</div>
   <div class="daycells" id="acwa-cells"></div>
   <div class="dayaxis"><span>midnight</span><span>6am</span><span>noon</span><span>6pm</span><span>11pm</span></div>
   <div class="cellnote" id="acwa-note"></div>
-  <p class="srcline">Lease: <a href="https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html">ACWA-BCDA
-  via Enerdata, 2 Jun 2026</a>. Solar day: this project's model, which flatters solar.</p>
+  <p class="srcline">The lease, signed by the developer ACWA Power with the
+  government agency BCDA:
+  <a href="https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html">Enerdata,
+  2 Jun 2026</a>. The solar shape is this project's cloudless model day.</p>
 </div>
 
 <p>So scale the answer up. To average 3,000 MW across a cloudless model day you
@@ -226,14 +241,20 @@ Solar's 3,500 MW on 3,500 hectares one province over</a>, that is
 
 <div class="fig" id="fig-land" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-land">replay</button>
-  <div class="figtitle">Running the campus on solar alone would take <em class="pop">122 km&#178;</em> of panels</div>
-  <div class="figsub">Laid over Metro Manila at true map scale, on MTerra Solar's
-  measured density (1 hectare per MW); clouds only make it bigger. Makati sits
-  entirely inside the square.</div>
+  <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
+  <div class="figtitle">Running the campus on solar power alone would need <em class="pop">122 km&#178;</em> of panels</div>
+  <div class="figsub">Covering the campus's 3,000 MW around the clock from sunlight
+  alone would take about 12,200 MW of panels, which is 122 km&#178; at the land a real
+  Philippine solar farm uses (MTerra Solar, 1 hectare per megawatt). The square is
+  that area at true scale over Metro Manila, the Philippine capital region. The
+  panels would not go here: the campus is about 95 km north, and the map is only a
+  place to see the size against. Makati, marked, fits inside the square. Clouds
+  only make it bigger.</div>
   <div class="land" id="land-map"></div>
-  <p class="fignote">For scale: all of New Clark City is 94.5 km², MTerra Solar,
-  the biggest solar build anywhere, is 35. And the 11 dark hours still need
-  about 33 GWh of batteries, 7 times the storage of MTerra Solar.</p>
+  <p class="fignote">For scale, all of New Clark City covers 94.5 km² and MTerra
+  Solar, the biggest solar-and-battery build anywhere, covers 35 km². The 11 dark
+  hours would also need about 33 million kilowatt-hours of batteries, 7 times the
+  4,500 MWh MTerra Solar is building.</p>
   <p class="srcline">MTerra Solar:
   <a href="https://www.meralcopowergen.com.ph/mterra-solar-project-breaks-ground-a-monumental-milestone-in-the-philippines-renewable-energy-transition/">Meralco PowerGen</a>,
   <a href="https://www.pv-magazine-australia.com/2024/11/22/worlds-largest-3-5-gw-terra-solar-project-breaks-ground-in-the-philippines/">pv-magazine</a>,
@@ -257,13 +278,17 @@ no path at all.</p>
 
 <div class="fig" id="fig-wires" style="--accent:#07203F">
   <button class="replay" data-replay="fig-wires">replay</button>
-  <div class="figtitle">Today's lines can bring in only <em class="pop">a quarter</em> of what the campus needs</div>
-  <div class="figsub">A tank the grid must fill every hour. The water line is all
-  today's two circuits can deliver, modeled at 7pm, 25 Jun 2026.</div>
+  <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
+  <div class="figtitle">Today's power lines can deliver only <em class="pop">a quarter</em> of what the campus needs</div>
+  <div class="figsub">A tank the power grid must fill every hour, measured in
+  megawatts (MW). The navy fill is everything the site's two existing power lines
+  can deliver, worked out by this project's grid model for 7pm on 25 Jun 2026.</div>
   <div id="wires-flow" style="margin-bottom:2px"></div>
-  <p class="srcline">NGCP does not publish ratings; the model uses the 230 kV
-  class standard (limit 699 to 776 MW by hour), on
-  <a href="methodology.html">the public grid map</a>.</p>
+  <p class="srcline">NGCP, the Philippine grid operator, does not publish what its
+  lines carry, so this model uses the standard rating for a 230 kV line. The limit
+  moves between 699 and 776 MW through the day, because other power sharing the same
+  lines rises and falls. Method and map in
+  <a href="methodology.html">the methodology</a>.</p>
 </div>
 
 <p>The announced fix is real but modest against the ask:
@@ -274,26 +299,35 @@ bottleneck. And the recent record says the last kilometers of big grid builds
 are the slow part:</p>
 
 <div class="fig tlwrap" id="fig-record" style="--accent:#A65E46">
-  <div class="figtitle">The last two big grid projects took <em class="pop">years</em> to finish</div>
-  <div class="figsub">NGCP's two most recent big builds; the rust band is a nine-month court stop over nine towers</div>
+  <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
+  <div class="figtitle">The last two big Philippine grid builds each took <em class="pop">about a year</em> between first power and full service</div>
+  <div class="figsub">The two most recent big builds by NGCP, the Philippine grid
+  operator, measured in calendar time from the day each first carried power to the
+  day it ran at full service. The rust band inside the first bar is a nine-month
+  court order that stopped the work, which is most of why that one took 13 months.
+  Amounts are in Philippine pesos.</div>
   <div class="strip">
-    <div class="name"><a href="https://ngcp.ph/article?cid=16897">Hermosa-San
-    Jose 500 kV</a>, P10.2 billion, 8,000 MW</div>
+    <div class="name"><a href="https://ngcp.ph/article?cid=16897">Hermosa-San Jose
+    500 kilovolt transmission line</a>, P10.2 billion, carries 8,000 MW</div>
     <div class="tl" id="tl-hsj"></div>
   </div>
   <div class="strip">
     <div class="name"><a href="https://www.ngcp.ph/article?cid=16636">Mindanao-Visayas
-    link</a>, P52 billion, 450 MW</div>
+    undersea power link</a>, P52 billion, carries 450 MW</div>
     <div class="tl" id="tl-mvip"></div>
   </div>
   <div class="strip">
-    <div class="name">The campus substation's promised window, on its own 2026 to 2029 axis</div>
+    <div class="name">The power substation promised for the campus, on its own
+    2026-to-2028 axis. The dashed bar runs from campus construction starting
+    (Q1 2028) to the substation being due (end 2028).</div>
     <div class="tl" id="tl-substation"></div>
   </div>
-  <p class="srcline">Right-of-way is the delay NGCP itself names. The campus's
-  substation (<a href="https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city">Manila
-  Bulletin, 25 May 2026</a>) is due end-2028; campus construction starts Q1 2028.
-  Island populations on the first chart: 2020 census via Wikipedia.</p>
+  <p class="srcline">Buying the right of way across private land is the delay NGCP
+  itself names most often. The campus substation
+  (<a href="https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city">Manila
+  Bulletin, 25 May 2026</a>) is due at the end of 2028 while campus construction
+  starts in the first quarter of 2028. That leaves nine months, against the year
+  each build above took.</p>
 </div>
 </section>
 
@@ -312,18 +346,22 @@ every buyer on the grid.</p>
 
 <div class="fig" id="fig-priceb" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-priceb">replay</button>
-  <div class="figtitle">Serving the campus from the grid would <em class="pop">double the price</em> of power in this model</div>
-  <div class="figsub">Every Luzon plant lined up cheapest to priciest (width = its megawatts, height = its cost).
-  The last plant needed sets the price for everyone.</div>
+  <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
+  <div class="figtitle">Serving the campus from the grid would <em class="pop">double the modeled price</em> of Luzon electricity</div>
+  <div class="figsub">Every power plant on Luzon, the Philippines' biggest grid,
+  lined up cheapest to priciest. A block's width is its megawatts and its height is
+  its cost in pesos per kilowatt-hour. The last plant needed sets the price everyone
+  pays.</div>
   <div class="steps" id="price-steps"></div>
-  <p class="fignote">If generation cost were passed through, P6.00 more per kWh
-  is P1,200 a month more for the 200 kWh typical home (a model figure, not a
-  forecast). The links between islands go from about zero to P38 million of
-  congestion rent in the modeled day, and pull Visayas's evening peak up to
-  P11.98.</p>
-  <p class="srcline">A cost-stack what-if, not a forecast: flat 3,000 MW, the
-  770 MW delivery limit ignored, and observed evenings already clear above
-  <a href="methodology.html">this stack</a>.</p>
+  <p class="fignote">If that cost reached households, P6.00 more per kilowatt-hour
+  is P1,200 a month more on a 200 kWh bill (a model figure, not a forecast). The
+  cables to the other Philippine grids also fill up, and the price gap across a full
+  cable is money someone pays: about P38 million in this one modeled day, with the
+  Visayas evening price pulled up to P11.98.</p>
+  <p class="srcline">A what-if on the cost model, not a forecast. It holds the
+  campus at a flat 3,000 MW and ignores delivery: only about 770 MW can physically
+  reach the site over its two existing power lines. Real evening prices already run
+  above <a href="methodology.html">this cost model</a>.</p>
 </div>
 <p>The market as it runs now prices congestion small and sparse: WESM's
 published nodal congestion component fires on 28 of 70 sampled days, a median
@@ -345,8 +383,10 @@ into your backup, and the backup comes down the same two circuits.</p>
 
 <div class="fig" id="fig-own" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-own">replay</button>
-  <div class="figtitle" id="own-caption">The plan works. 2,500 MW of its own, the last 500 over the lines</div>
-  <div class="figsub">Modeled at 7pm on 25 Jun 2026, against the same two circuits.</div>
+  <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
+  <div class="figtitle" id="own-caption">The plan works. 2,500 MW of the campus's own power, the last 500 over the power lines</div>
+  <div class="figsub">The campus's announced plan to build its own power station,
+  modeled at 7pm on 25 Jun 2026 against the site's two existing power lines.</div>
   <div class="stack" id="own-stack"></div>
   <p class="srcline">The 2,500 MW station is a chosen size, not an announced
   project. Full working in
@@ -367,12 +407,15 @@ and the division is simple. Here is that number three ways.</p>
 
 <div class="fig" id="fig-water" style="--accent:#07203F">
   <button class="replay" data-replay="fig-water">replay</button>
-  <div class="figtitle">The water they asked for would serve up to <em class="pop">twice Makati's population</em></div>
-  <div class="figsub">One drop is 5 million liters a day. An outlined drop is the
-  top of the announced range, or a promise not yet built. Rust is the campus,
-  navy is everything already real.</div>
+  <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
+  <div class="figtitle">The water the campus asked for would serve <em class="pop">1.4 to 2 times Makati's population</em></div>
+  <div class="figsub">One drop is 5 million liters a day, and the drops are grouped
+  in fives so they can be counted. A rust outline is the top of the announced range.
+  A navy outline is a promise not built yet. Rust is the campus, navy is water people
+  already use. Makati is a city in Metro Manila.</div>
   <div class="droprow">
-    <div class="dlabel"><b>What the campus would drink</b> (BCDA's own figure)</div>
+    <div class="dlabel"><b>What the campus would drink</b>, the figure from BCDA,
+    the government agency building the site</div>
     <span id="drops-campus"></span>
   </div>
   <div class="droprow">
@@ -382,13 +425,14 @@ and the division is simple. Here is that number three ways.</p>
   <div class="droprow">
     <div class="dlabel"><b>What the
     <a href="https://www.manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub/2390193">rainwater
-    pond BCDA promises</a> would supply</b></div>
+    pond BCDA promises</a> would supply</b>, if it is built and if the rain
+    arrives. It does not exist yet.</div>
     <span id="drops-harvest"></span>
   </div>
   <div class="droprow">
     <div class="dlabel"><b>Of every 100 liters Metro Manila draws from
     <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">Angat
-    dam</a>, the campus would take about 2</b></div>
+    dam</a>, its main water source, the campus would take about 2</b></div>
     <div class="waffle100" id="angat-waffle"></div>
   </div>
   <p class="fignote">The small print, exactly: the campus's announced 65 to 90
@@ -412,7 +456,8 @@ groups, and Aeta communities on the land, dispute it;
 puts potentially affected residents near 20,000 while BCDA counters that only
 about 10 farmers are directly affected</a>. No independent water balance for
 the site has been published. That absence is the finding.</p>
-<p class="whence">Sources:
+<p class="whence">BCDA is the Bases Conversion and Development Authority, the
+Philippine government agency developing New Clark City. Sources:
 <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">BCDA via BusinessMirror, 23 Jul 2026</a>;
 <a href="https://businessmirror.com.ph/2026/07/22/local-water-source-enough-to-supply-pax-silica-operation-water-board/">NWRB, 22 Jul</a>;
 <a href="https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/">GMA explainer</a>;
@@ -516,20 +561,21 @@ not NGCP official geometry. Announced figures may change; this page is dated
     // the small right-column tiles cannot fit a third line on a phone
     var roomy = colW >= 120;
     label(tile(0, 0, luzonW, H, "background:#EBDED4;", 0),
-      "<b>Luzon</b>" + fmt(pk.luzon) + " MW<br>~" + pop.luzon + "M people", "var(--ink)");
+      "<b>Luzon grid</b>" + fmt(pk.luzon) + " MW<br>~" + pop.luzon + "M people", "var(--ink)");
     label(tile(colX, hV + 4, colW, hM, "background:#EBDED4;", 0.15),
-      "<b>Mindanao</b>" + fmt(pk.mindanao) + " MW"
+      "<b>Mindanao grid</b>" + fmt(pk.mindanao) + " MW"
       + (roomy ? "<br>~" + pop.mindanao + "M people" : ""), "var(--ink)");
     label(tile(colX, 0, colW, hV, "background:#EBDED4;", 0.3),
-      "<b>Visayas</b>" + fmt(pk.visayas) + " MW"
+      "<b>Visayas grid</b>" + fmt(pk.visayas) + " MW"
       + (roomy ? "<br>~" + pop.visayas + "M people" : ""), "var(--ink)");
 
-    // the campus, superimposed at the same scale over the Visayas corner;
-    // its dashed square pokes past the whole Visayas tile
-    var s = Math.sqrt(k * P.campus.mw);
+    // the campus block copies the Visayas block's shape and is scaled by area,
+    // so the reader compares like with like: it overhangs by exactly the ratio
+    var f = Math.sqrt(P.campus.mw / pk.visayas);
+    var cwd = colW * f, chd = hV * f;
     var sq = el("div", "block", wrap);
-    sq.style.cssText += "left:" + (W - s - 6) + "px; bottom:6px; width:" + s
-      + "px; height:" + s + "px; border:3.5px dashed #A65E46;"
+    sq.style.cssText += "left:" + (colX + colW - cwd) + "px; bottom:0px; width:"
+      + cwd + "px; height:" + chd + "px; border:3.5px dashed #A65E46;"
       + "transition-delay:.6s; z-index:3;";
     var chip = el("div", "saxis", wrap);
     // on a narrow screen the chip drops below the canvas so it never covers
@@ -541,9 +587,9 @@ not NGCP official geometry. Announced figures may change; this page is dated
                 : "bottom:12px; background:#fff; border:1px solid var(--line); border-radius:4px; padding:3px 7px;")
       + "text-align:right; font-size:" + (narrow ? 11 : 12)
       + "px; line-height:1.35; color:#A65E46;";
-    chip.innerHTML = "<b>Pax Silica, " + fmt(P.campus.mw) + " MW announced</b><br>"
+    chip.innerHTML = "<b>Pax Silica alone, " + fmt(P.campus.mw) + " MW announced</b><br>"
       + "<span style='color:var(--ink)'>= the electricity of "
-      + P.power.homes_million + "M homes</span>";
+      + P.power.homes_million + "M Philippine homes</span>";
     wrap.style.height = (H + (narrow ? 48 : 4)) + "px";
   }
   function runGrids(fig){ fig.classList.add("on"); }
@@ -642,6 +688,17 @@ not NGCP official geometry. Announced figures may change; this page is dated
         + "color:var(--ink); background:rgba(255,255,255,.92); border-radius:4px; padding:1px 6px;";
       fl.innerHTML = "&#8592; the signed farm, 5 km²";
     }
+    // Makati marked at the map centre, so the subtitle's claim about it can be
+    // checked against the picture instead of taken on trust
+    var dot = el("div", "", land);
+    dot.style.cssText = "position:absolute; z-index:5; left:" + (cx - 4) + "px; top:"
+      + (cy - 4) + "px; width:9px; height:9px; border-radius:50%;"
+      + "background:var(--ink); border:2px solid #fff;";
+    var mk = el("div", "saxis", land);
+    mk.style.cssText = "position:absolute; z-index:5; left:" + (cx + 10) + "px; top:"
+      + (cy - 10) + "px; font-size:11.5px; font-weight:600; color:var(--ink);"
+      + "background:rgba(255,255,255,.92); border-radius:3px; padding:0 5px;";
+    mk.textContent = "Makati";
     var att = el("div", "saxis", land);
     att.style.cssText = "position:absolute; z-index:4; right:4px; bottom:2px;"
       + "font-size:9.5px; color:#8a939b;";
@@ -709,12 +766,12 @@ not NGCP official geometry. Announced figures may change; this page is dated
       pl.style.cssText = "position:absolute; left:0px; top:" + (py0 - 40)
         + "px; width:" + (tankX - 12) + "px; text-align:right; font-size:11.5px;"
         + "color:var(--muted); line-height:1.35;";
-      pl.innerHTML = "the two 230 kV circuits,<br>the only pipes into the site";
+      pl.innerHTML = "the site's only two power lines<br>(230 kV circuits)";
     } else {
       var pl2 = el("div", "saxis", wrap);
       pl2.style.cssText = "position:absolute; left:0; right:0; top:" + (tankTop + tankH + 8)
         + "px; text-align:center; font-size:11.5px; color:var(--muted);";
-      pl2.textContent = "filled by the two 230 kV circuits, the only pipes in";
+      pl2.textContent = "filled by the site's only two power lines (230 kV)";
     }
     if (!narrow){
       var pay = el("div", "payoff", wrap);
@@ -744,10 +801,12 @@ not NGCP official geometry. Announced figures may change; this page is dated
     }
     strip("tl-hsj",
       [{cls:"span", a:4.8, b:17.7}, {cls:"stall", a:6.0, b:15.0}],
-      [{m:4.8, t:"May 2023: 2,000 MW"}, {m:17.7, t:"Jun 2024: 8,000 MW"}]);
+      [{m:4.8, t:"May 2023: first circuit, 2,000 MW"},
+       {m:17.7, t:"Jun 2024: full 8,000 MW"}]);
     strip("tl-mvip",
       [{cls:"span", a:3.9, b:12.8}],
-      [{m:3.9, t:"Apr 2023: first load"}, {m:12.8, t:"Jan 2024: commercial"}]);
+      [{m:3.9, t:"Apr 2023: first test power"},
+       {m:12.8, t:"Jan 2024: full service"}]);
     // the campus substation's promised window, with today marked so the
     // remaining runway is visible
     var t3 = document.getElementById("tl-substation"); t3.innerHTML = "";
@@ -760,11 +819,17 @@ not NGCP official geometry. Announced figures may change; this page is dated
     promised.style.border = "2px dashed #07203F";
     var today = el("div", "stall", t3);
     today.style.left = m3(2026, 6.8) + "%"; today.style.width = "3px";
-    var subTicks = (t3.clientWidth || 700) < 480
-      ? [{m:m3(2026, 6.8), t:"today", max: 110}]
-      : [{m:m3(2026, 6.8), t:"today", max: 110},
-         {m:m3(2028, 0), t:"Q1 2028: construction starts", max: 330},
-         {m:m3(2028, 11.9), t:"end-2028: due", max: 110}];
+    // the window's own dates ride inside the dashed bar, so the bar and the
+    // labels cannot disagree about which end is which
+    var wl = el("div", "saxis", t3);
+    wl.style.cssText = "position:absolute; left:calc(" + m3(2028, 0) + "% + 10px);"
+      + "top:2px; font-size:10.5px; font-weight:600; color:var(--ink);";
+    wl.textContent = "Q1 2028";
+    var wr = el("div", "saxis", t3);
+    wr.style.cssText = "position:absolute; right:10px; top:2px; font-size:10.5px;"
+      + "font-weight:600; color:var(--ink);";
+    wr.textContent = "end 2028";
+    var subTicks = [{m:m3(2026, 6.8), t:"today", max: 110}];
     subTicks.forEach(function(tk){
       var e = el("div", "tick", t3); e.textContent = tk.t;
       e.style.left = "clamp(0%, calc(" + tk.m + "% - 24px), calc(100% - " + tk.max + "px))";
@@ -825,24 +890,35 @@ not NGCP official geometry. Announced figures may change; this page is dated
       l.style.bottom = (axisH + chartH + 4 + (row === 0 ? 40 : 0)) + "px";
     }
     dline(m.evening_demand_mw, "",
-      "<b style='color:var(--ink)'>evening demand today, " +
+      "<b style='color:var(--ink)'>this evening's demand, " +
       fmt(m.evening_demand_mw) + " MW</b><br>coal sets it: <b style='color:var(--ink)'>P" +
-      P.price.luzon_mean[0].toFixed(2) + "</b>", 0);
+      P.price.luzon_mean[0].toFixed(2) + " per kWh</b>", 0);
     dline(m.demand_with_campus_mw, "coral",
-      "<b style='color:#A65E46'>+ Pax Silica, " +
+      "<b style='color:#A65E46'>plus the campus's 3,000 MW, " +
       fmt(m.demand_with_campus_mw) + " MW</b><br>oil sets it: <b style='color:#A65E46'>P" +
-      P.price.luzon_mean[1].toFixed(2) + "</b>", 1);
+      P.price.luzon_mean[1].toFixed(2) + " per kWh</b>", 1);
+    // cost axis, so a block's height is readable as pesos per kWh
+    [0, 6, 12].forEach(function(php){
+      var g = el("div", "saxis", wrap);
+      g.style.cssText = "position:absolute; left:0; right:0; bottom:"
+        + (axisH + php * ys) + "px; border-top:1px solid #e3d9cc; height:0;";
+      var lb = el("div", "saxis", wrap);
+      lb.textContent = php ? "P" + php.toFixed(2) : "P0";
+      lb.style.cssText = "position:absolute; left:0; bottom:"
+        + (axisH + php * ys + 2) + "px; font-size:10.5px; color:var(--muted);"
+        + "background:#fff; padding:0 3px;";
+    });
     // x axis ticks
     [0, 5000, 10000, 15000].forEach(function(mw){
       var t = el("div", "saxis", wrap);
-      t.textContent = mw ? fmt(mw) : "0 MW";
+      t.textContent = mw ? fmt(mw) : "0 MW of supply";
       t.style.left = (mw * xs) + "px";
     });
     // the cheap-end label and the big 2x only fit when the chart is wide;
     // on a phone the on-block names and the title carry both
     if (W >= 480){
       var lab = el("div", "slabel", wrap);
-      lab.innerHTML = "hydro, geothermal, gas, coal, P0.50 to P6.00<br>each step up, a pricier plant";
+      lab.innerHTML = "cheap plants first: hydro, geothermal, gas, coal<br>each step up is a pricier plant";
       lab.style.left = "8px"; lab.style.bottom = (axisH + 58) + "px";
       var pay = el("div", "payoff", wrap);
       pay.style.cssText = "position:absolute; left:14px; top:2px; right:auto;"
@@ -872,7 +948,7 @@ not NGCP official geometry. Announced figures may change; this page is dated
       e.querySelector("span").textContent = w > 0 ? label : "";
     }
     cap.innerHTML = "The plan works. 2,500 MW of its own, the last 500 over the lines";
-    set("steel", 0, 500, "500 over the lines");
+    set("steel", 0, 500, "500 over the power lines");
     set("navy", 500, 2500, "2,500 MW of its own");
     set("coral", 3000, 0, "");
     setTimeout(function(){ fitSegLabels(s); }, reduced ? 0 : 1080);
@@ -882,7 +958,7 @@ not NGCP official geometry. Announced figures may change; this page is dated
       var lim = P.wires.limit_7pm_mw;
       cap.innerHTML = "Then one generator breaks, and <em class='pop'>331 MW</em> of the campus has no power";
       set("navy", 0, 1900, "1,900 MW of its own");
-      set("steel", 1900, lim, fmt(lim) + " over the lines");
+      set("steel", 1900, lim, fmt(lim) + " over the power lines");
       set("coral", 1900 + lim, need - 1900 - lim, fmt(need - 1900 - lim)
         + " MW: no source (the electricity of " + P.wires.own_gap_homes_million
         + "M homes)");
@@ -902,6 +978,10 @@ not NGCP official geometry. Announced figures may change; this page is dated
       for (var j = 0; j < outlined; j++){
         el("i", "drop " + outlineCls, host).style.transitionDelay = (n++ * 0.05) + "s";
       }
+      // a gap every fifth drop: 24 identical drops in a row cannot be counted
+      Array.prototype.forEach.call(host.querySelectorAll(".drop"), function(d, i){
+        if (i && i % 5 === 0) d.style.marginLeft = "12px";
+      });
       if (endnote){
         var e = el("span", "saxis", host);
         e.style.cssText = "font-size:11.5px; color:var(--muted); margin-left:6px;"
@@ -917,7 +997,7 @@ not NGCP official geometry. Announced figures may change; this page is dated
     drops("drops-campus", lo, hi, "solid", "range",
       "65 to 90 million liters = " + P.water.pools_per_day[0] + " to "
       + P.water.pools_per_day[1] + " Olympic pools");
-    drops("drops-makati", makati, 0, "anchor", "", "about 46");
+    drops("drops-makati", makati, 0, "anchor", "", "about 46 million liters");
     drops("drops-harvest", 0, pond, "", "promise", "120, promised");
     var w = document.getElementById("angat-waffle"); w.innerHTML = "";
     for (var q = 0; q < 100; q++){ el("i", q < 2 ? "hit" : "", w); }
