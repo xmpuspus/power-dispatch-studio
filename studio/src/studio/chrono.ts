@@ -26,8 +26,29 @@ export const LABEL_EPS = 0.025
 const STORE_EPS = 1e-3
 const FLOW_SAT_EPS = 0.5
 
+/** Added demand for one grid at one hour. A number is a flat block, which is
+ * what every scenario before this used, and it keeps the LP text identical.
+ * 24 values are an hourly shape. This mirrors delta_at in pipeline/chrono.py,
+ * and the two must always change together. */
+export function deltaAt(
+  delta: Partial<Record<GridKey, number | number[]>> | undefined,
+  grid: GridKey,
+  hour: number
+): number {
+  const v = delta?.[grid]
+  if (v === undefined) return 0
+  if (typeof v === 'number') return v
+  if (v.length !== 24)
+    throw new Error(
+      `demand_delta[${grid}] must be a number or 24 hourly values, got ${v.length}`
+    )
+  return v[hour]
+}
+
 export interface ChronoOpts {
-  demand_delta?: Partial<Record<GridKey, number>>
+  // a number is a flat round-the-clock block, 24 numbers are an hourly shape
+  // for a load that varies through the day (mirrors delta_at in chrono.py)
+  demand_delta?: Partial<Record<GridKey, number | number[]>>
   solar_delta_mw?: Partial<Record<GridKey, number>>
   fuel_avail_delta?: Partial<Record<GridKey, Record<string, number>>>
   fuel_cost?: Record<string, number>
@@ -180,7 +201,7 @@ export function assembleDay(
         blocks.sort((a, b) => a.cost - b.cost)
         for (const b of blocks) if (b.cost > dearest) dearest = b.cost
         oStacks[g].push(blocks)
-        oDemand[g].push(day.demand[g][h] + (opts.demand_delta?.[g] ?? 0))
+        oDemand[g].push(day.demand[g][h] + deltaAt(opts.demand_delta, g, h))
       }
     }
     // the reserve toggle stays available on the book (withheld from the
@@ -237,7 +258,7 @@ export function assembleDay(
       const fa = { ...fuelBase[g] }
       fa.solar = round1(Math.max(0, solarInst[g]) * solarProfile[h])
       stacks[g].push(buildStack(fa, {}, [], params))
-      demand[g].push(day.demand[g][h] + (opts.demand_delta?.[g] ?? 0))
+      demand[g].push(day.demand[g][h] + deltaAt(opts.demand_delta, g, h))
     }
   }
 

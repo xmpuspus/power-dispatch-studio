@@ -438,6 +438,29 @@ the current resolution the re-dispatch concentrates each grid's unresolved
 generation onto its few resolved plant buses, so modeled price LEVELS are not
 usable; the probe reports binding geography and the honest gap, and the zonal
 engine remains the price model.</p>
+<p><b>Putting an announced load on a bus.</b> The same module can place a named
+site's load on the nearest modelled bus and solve again
+(<code>--site pax-silica --site-mw 3000</code>). That is the only way to ask
+where one announced campus would have to sit, rather than how many megawatts a
+whole region can absorb. Everything it reports is a difference between two
+solves of the same network on the same day, never a level, because the warning
+about levels above still applies and both solves carry the same resolution
+bias. It reports three things. First, which circuits carry the new load. The
+load is paid for out of the island's own observed generation, shared across
+buses in proportion to what each was already producing, so the answer does not
+depend on where the reference bus happens to sit. Second, which lines the
+re-dispatch pushes to their estimated limits that were not there before.
+Third, how many megawatts reach the bus before the solve starts shedding, found
+by halving the interval, with an option to raise ratings around the site to
+stand in for a dedicated connection. What it does not report is a price at that
+bus. Once the delivery circuits are at their limits, the bus prices at the cost
+of unserved energy, which is a penalty for shedding rather than a market price,
+and those hours are marked instead of being printed as prices. The
+deliverable-megawatt figure compares scenarios that share one reference solve.
+It is not a rating of the site, because that reference already sheds over a
+gigawatt on a typical hour, for the resolution reason above. The site
+coordinate is the middle of the campus, and the distance from there to the
+modelled bus is reported with the result.</p>
 <p><b>The loss-surface validation.</b> Because the market's within-region
 nodal structure is loss-dominated (the congestion column is small and sparse,
 1.18 percent of clean-day node-hours), network physics can be tested

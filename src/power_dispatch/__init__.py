@@ -38,7 +38,8 @@ _BUNDLED = os.path.join(_HERE, "data")
 
 # the scenario override keys the engine honors (see engine/lp_dispatch._assemble)
 OPT_KEYS = (
-    "demand_delta",       # {grid: MW} load added/removed
+    "demand_delta",       # {grid: MW} flat load added/removed, or
+                          # {grid: [24 MW]} for a load with an hourly shape
     "fuel_cost",          # {fuel: PhP/kWh} marginal-cost override
     "fuel_avail_delta",   # {grid: {fuel: MW}} availability edit
     "solar_delta_mw",     # {grid: MW} installed solar edit

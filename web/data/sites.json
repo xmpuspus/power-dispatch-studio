@@ -1,0 +1,1387 @@
+{
+ "available": true,
+ "day": "2026-06-25",
+ "n_sites": 12,
+ "sites": [
+  {
+   "id": "pax-silica",
+   "name": "Pax Silica ESZ, New Clark City (Capas, Tarlac)",
+   "lon": 120.534,
+   "lat": 15.32,
+   "mw": 3000.0,
+   "mw_range": [
+    3000.0,
+    5000.0
+   ],
+   "precision": "site-precision (campus centroid, not a connection point)",
+   "src": "BCDA (Bingcang) about 3 GW at full development, https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/ ; at least 5 GW, https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest",
+   "kind": "announced zone",
+   "bus": "120.608,15.290",
+   "grid": "luzon",
+   "snap_km": 8.6,
+   "circuits": [
+    {
+     "names": [
+      "Concepcion-Clark Transmission Line"
+     ],
+     "kind": "ac230",
+     "km": 6.7,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Concepcion-Clark Transmission Line"
+     ],
+     "kind": "ac230",
+     "km": 0.5,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    764.1,
+    763.8,
+    766.8,
+    768.5,
+    766.4,
+    762.3,
+    757.6,
+    750.0,
+    742.7,
+    726.0,
+    703.6,
+    704.7,
+    699.4,
+    718.2,
+    750.5,
+    760.7,
+    765.4,
+    772.0,
+    774.7,
+    768.8,
+    769.1,
+    769.1,
+    775.7,
+    765.4
+   ],
+   "limit_min_mw": 699.4,
+   "limit_max_mw": 775.7,
+   "outages": [
+    {
+     "circuit": [
+      "Concepcion-Clark Transmission Line"
+     ],
+     "km": 6.7,
+     "limit_mw": null,
+     "cuts_site_off": true,
+     "buses_still_reached": 5,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Concepcion-Clark Transmission Line"
+     ],
+     "km": 0.5,
+     "limit_mw": null,
+     "cuts_site_off": false,
+     "buses_still_reached": 185,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": true,
+   "already_over_rating": false,
+   "worst_base_loading": 0.126,
+   "linearity_max_error": 0.0
+  },
+  {
+   "id": "epldt-vitro-sta-rosa",
+   "name": "ePLDT VITRO Sta. Rosa",
+   "city": "Santa Rosa, Laguna",
+   "lon": 121.1114,
+   "lat": 14.3122,
+   "mw": 50,
+   "precision": "city",
+   "src": "https://www.datacenterdynamics.com/en/news/pldt-subsidiary-vitro-tops-off-50mw-data-center-in-sta-rosa-philippines/",
+   "status": "operational",
+   "kind": "data centre",
+   "bus": "121.076,14.331",
+   "grid": "luzon",
+   "snap_km": 4.3,
+   "circuits": [
+    {
+     "names": [
+      "Bi\u00f1an-Calamba"
+     ],
+     "kind": "ac230",
+     "km": 18.0,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Bi\u00f1an-Malamig"
+     ],
+     "kind": "ac230",
+     "km": 8.0,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Bi\u00f1an-Muntinlupa 1/2"
+     ],
+     "kind": "ac230",
+     "km": 10.4,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Bi\u00f1an-Dasmari\u00f1as 230 kV line"
+     ],
+     "kind": "ac230",
+     "km": 13.6,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Muntinlupa-Bi\u00f1an 3",
+      "Muntinlupa-Bi\u00f1an 4"
+     ],
+     "kind": "ac230",
+     "km": 14.0,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    332.3,
+    359.5,
+    320.8,
+    199.2,
+    228.4,
+    169.8,
+    133.3,
+    220.8,
+    277.1,
+    164.9,
+    123.4,
+    247.5,
+    269.1,
+    223.4,
+    194.8,
+    201.8,
+    289.7,
+    273.5,
+    294.3,
+    398.1,
+    402.2,
+    318.0,
+    183.1,
+    146.6
+   ],
+   "limit_min_mw": 123.4,
+   "limit_max_mw": 402.2,
+   "outages": [
+    {
+     "circuit": [
+      "Bi\u00f1an-Calamba"
+     ],
+     "km": 18.0,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Bi\u00f1an-Malamig"
+     ],
+     "km": 8.0,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Bi\u00f1an-Muntinlupa 1/2"
+     ],
+     "km": 10.4,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Bi\u00f1an-Dasmari\u00f1as 230 kV line"
+     ],
+     "km": 13.6,
+     "limit_mw": 644.9,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Muntinlupa-Bi\u00f1an 3",
+      "Muntinlupa-Bi\u00f1an 4"
+     ],
+     "km": 14.0,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": false,
+   "already_over_rating": false,
+   "worst_base_loading": 0.922,
+   "linearity_max_error": 0.0
+  },
+  {
+   "id": "stt-gdc-fairview-campus",
+   "name": "STT GDC Fairview campus",
+   "city": "Quezon City",
+   "lon": 121.061,
+   "lat": 14.734,
+   "mw": 124,
+   "precision": "city",
+   "src": "https://www.bworldonline.com/corporate/2026/04/23/744800/",
+   "status": "under_construction",
+   "kind": "data centre",
+   "bus": "121.010,14.711",
+   "grid": "luzon",
+   "snap_km": 6.1,
+   "circuits": [
+    {
+     "names": [
+      "Quezon\u2013San Jose 1/2"
+     ],
+     "kind": "ac230",
+     "km": 12.6,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Quezon\u2013San Jose 1/2"
+     ],
+     "kind": "ac230",
+     "km": 6.7,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "limit_min_mw": 0.0,
+   "limit_max_mw": 0.0,
+   "outages": [
+    {
+     "circuit": [
+      "Quezon\u2013San Jose 1/2"
+     ],
+     "km": 12.6,
+     "limit_mw": 800.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Quezon\u2013San Jose 1/2"
+     ],
+     "km": 6.7,
+     "limit_mw": 800.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": false,
+   "already_over_rating": true,
+   "worst_base_loading": 1.438,
+   "linearity_max_error": null
+  },
+  {
+   "id": "stt-gdc-makati",
+   "name": "STT GDC Makati",
+   "city": "Makati",
+   "lon": 121.024,
+   "lat": 14.554,
+   "mw": 3,
+   "precision": "city",
+   "src": "https://www.datacenterdynamics.com/en/news/stt-gdc-philippines-to-expand-three-data-centers/",
+   "status": "operational",
+   "kind": "data centre",
+   "bus": "121.016,14.564",
+   "grid": "luzon",
+   "snap_km": 1.4,
+   "circuits": [
+    {
+     "names": [
+      "Sucat | Taguig\u2013Paco | Balintawak"
+     ],
+     "kind": "ac230",
+     "km": 7.6,
+     "rating_mw": 400.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Sucat | Taguig\u2013Paco | Balintawak"
+     ],
+     "kind": "ac230",
+     "km": 0.9,
+     "rating_mw": 400.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    595.4,
+    643.8,
+    720.8,
+    796.9,
+    781.1,
+    794.5,
+    725.2,
+    730.3,
+    737.5,
+    722.1,
+    633.8,
+    688.9,
+    735.9,
+    777.1,
+    744.3,
+    761.7,
+    721.5,
+    704.8,
+    690.2,
+    573.1,
+    553.4,
+    664.6,
+    720.8,
+    776.3
+   ],
+   "limit_min_mw": 553.4,
+   "limit_max_mw": 796.9,
+   "outages": [
+    {
+     "circuit": [
+      "Sucat | Taguig\u2013Paco | Balintawak"
+     ],
+     "km": 7.6,
+     "limit_mw": 400.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Sucat | Taguig\u2013Paco | Balintawak"
+     ],
+     "km": 0.9,
+     "limit_mw": 400.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": false,
+   "already_over_rating": false,
+   "worst_base_loading": 0.482,
+   "linearity_max_error": 0.0
+  },
+  {
+   "id": "stt-gdc-quezon-city",
+   "name": "STT GDC Quezon City",
+   "city": "Quezon City",
+   "lon": 121.043,
+   "lat": 14.676,
+   "mw": 5.5,
+   "precision": "city",
+   "src": "https://www.datacenterdynamics.com/en/news/stt-gdc-philippines-to-expand-three-data-centers/",
+   "status": "operational",
+   "kind": "data centre",
+   "bus": "121.013,14.661",
+   "grid": "luzon",
+   "snap_km": 3.6,
+   "circuits": [
+    {
+     "names": [
+      "Quezon\u2013San Jose 1/2"
+     ],
+     "kind": "ac230",
+     "km": 6.7,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Quezon\u2013San Jose 3"
+     ],
+     "kind": "ac230",
+     "km": 19.5,
+     "rating_mw": 400.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Sucat | Araneta\u2013Balintawak"
+     ],
+     "kind": "ac230",
+     "km": 2.4,
+     "rating_mw": 400.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Quezon\u2013Mexico"
+     ],
+     "kind": "ac230",
+     "km": 41.3,
+     "rating_mw": 400.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Hermosa | Duhat\u2013Balintawak"
+     ],
+     "kind": "ac230",
+     "km": 1.6,
+     "rating_mw": 400.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "limit_min_mw": 0.0,
+   "limit_max_mw": 0.0,
+   "outages": [
+    {
+     "circuit": [
+      "Quezon\u2013San Jose 1/2"
+     ],
+     "km": 6.7,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Quezon\u2013San Jose 3"
+     ],
+     "km": 19.5,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Sucat | Araneta\u2013Balintawak"
+     ],
+     "km": 2.4,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Quezon\u2013Mexico"
+     ],
+     "km": 41.3,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Hermosa | Duhat\u2013Balintawak"
+     ],
+     "km": 1.6,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": false,
+   "already_over_rating": true,
+   "worst_base_loading": 1.438,
+   "linearity_max_error": null
+  },
+  {
+   "id": "stt-gdc-cavite-1-and-2",
+   "name": "STT GDC Cavite 1 and 2",
+   "city": "Cavite",
+   "lon": 120.982,
+   "lat": 14.348,
+   "mw": 10.8,
+   "precision": "city",
+   "src": "https://www.datacenterdynamics.com/en/news/stt-gdc-philippines-to-expand-three-data-centers/",
+   "status": "operational",
+   "kind": "data centre",
+   "bus": "120.952,14.312",
+   "grid": "luzon",
+   "snap_km": 5.1,
+   "circuits": [
+    {
+     "names": [
+      "Bi\u00f1an-Dasmari\u00f1as 230 kV line"
+     ],
+     "kind": "ac230",
+     "km": 13.6,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Dasmari\u00f1as-Alaminos 500 kV line"
+     ],
+     "kind": "ac500",
+     "km": 48.5,
+     "rating_mw": 2800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Dasmari\u00f1as\u2013Las Pi\u00f1as"
+     ],
+     "kind": "ac230",
+     "km": 20.2,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Dasmarinas-Amadeo 230 kV line"
+     ],
+     "kind": "ac230",
+     "km": 14.7,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Tuy-Dasmari\u00f1as"
+     ],
+     "kind": "ac500",
+     "km": 14.0,
+     "rating_mw": 2800.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    0.0,
+    1919.5,
+    1981.8,
+    1918.4,
+    1863.2,
+    1750.1,
+    1764.6,
+    1891.2,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "limit_min_mw": 0.0,
+   "limit_max_mw": 1981.8,
+   "outages": [
+    {
+     "circuit": [
+      "Bi\u00f1an-Dasmari\u00f1as 230 kV line"
+     ],
+     "km": 13.6,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Dasmari\u00f1as-Alaminos 500 kV line"
+     ],
+     "km": 48.5,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Dasmari\u00f1as\u2013Las Pi\u00f1as"
+     ],
+     "km": 20.2,
+     "limit_mw": null,
+     "cuts_site_off": false,
+     "buses_still_reached": 188,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Dasmarinas-Amadeo 230 kV line"
+     ],
+     "km": 14.7,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Tuy-Dasmari\u00f1as"
+     ],
+     "km": 14.0,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 187,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": false,
+   "already_over_rating": true,
+   "worst_base_loading": 1.272,
+   "linearity_max_error": 0.0
+  },
+  {
+   "id": "digital-edge-narra1",
+   "name": "Digital Edge NARRA1",
+   "city": "Metro Manila",
+   "lon": 121.0,
+   "lat": 14.55,
+   "mw": 10,
+   "precision": "city",
+   "src": "https://www.datacentermap.com/philippines/manila/digital-edge-manila-narra1/",
+   "status": "operational",
+   "kind": "data centre",
+   "bus": "120.994,14.566",
+   "grid": "luzon",
+   "snap_km": 1.9,
+   "circuits": [
+    {
+     "names": [
+      "Sucat | Taguig\u2013Paco | Balintawak"
+     ],
+     "kind": "ac230",
+     "km": 1.8,
+     "rating_mw": 400.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Sucat | Taguig\u2013Paco | Balintawak"
+     ],
+     "kind": "ac230",
+     "km": 0.9,
+     "rating_mw": 400.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    625.0,
+    675.9,
+    756.8,
+    775.6,
+    789.3,
+    773.1,
+    705.8,
+    710.7,
+    717.8,
+    702.8,
+    617.0,
+    670.5,
+    716.3,
+    756.4,
+    724.5,
+    741.3,
+    757.4,
+    739.5,
+    724.3,
+    601.2,
+    580.6,
+    697.4,
+    757.1,
+    791.8
+   ],
+   "limit_min_mw": 580.6,
+   "limit_max_mw": 791.8,
+   "outages": [
+    {
+     "circuit": [
+      "Sucat | Taguig\u2013Paco | Balintawak"
+     ],
+     "km": 1.8,
+     "limit_mw": 400.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Sucat | Taguig\u2013Paco | Balintawak"
+     ],
+     "km": 0.9,
+     "limit_mw": 400.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": false,
+   "already_over_rating": false,
+   "worst_base_loading": 0.482,
+   "linearity_max_error": 0.0
+  },
+  {
+   "id": "yco-malvar-one",
+   "name": "YCO Malvar One",
+   "city": "Malvar, Batangas",
+   "lon": 121.158,
+   "lat": 14.045,
+   "mw": 12,
+   "precision": "city",
+   "src": "https://www.datacenterdynamics.com/en/news/cloud-centers-developing-12mw-data-center-in-batangas-the-philippines/",
+   "status": "under_construction",
+   "kind": "data centre",
+   "bus": "121.226,14.035",
+   "grid": "luzon",
+   "snap_km": 7.4,
+   "circuits": [
+    {
+     "names": [
+      "Alaminos-Tayabas 500 kV line"
+     ],
+     "kind": "ac500",
+     "km": 47.9,
+     "rating_mw": 2800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Dasmari\u00f1as-Alaminos 500 kV line"
+     ],
+     "kind": "ac500",
+     "km": 48.5,
+     "rating_mw": 2800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Alaminos-Ilijan"
+     ],
+     "kind": "ac500",
+     "km": 54.0,
+     "rating_mw": 2800.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    4399.5,
+    4599.9,
+    4692.7,
+    4610.5,
+    4544.3,
+    4377.7,
+    4399.3,
+    4594.2,
+    4292.5,
+    4076.3,
+    3757.6,
+    4069.0,
+    4162.5,
+    3982.5,
+    3620.5,
+    3665.3,
+    3889.8,
+    3957.7,
+    4009.2,
+    4211.9,
+    4250.5,
+    3985.3,
+    3791.3,
+    3823.0
+   ],
+   "limit_min_mw": 3620.5,
+   "limit_max_mw": 4692.7,
+   "outages": [
+    {
+     "circuit": [
+      "Alaminos-Tayabas 500 kV line"
+     ],
+     "km": 47.9,
+     "limit_mw": 4719.4,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Dasmari\u00f1as-Alaminos 500 kV line"
+     ],
+     "km": 48.5,
+     "limit_mw": 4719.4,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Alaminos-Ilijan"
+     ],
+     "km": 54.0,
+     "limit_mw": null,
+     "cuts_site_off": false,
+     "buses_still_reached": 186,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": false,
+   "already_over_rating": false,
+   "worst_base_loading": 0.731,
+   "linearity_max_error": 0.0001
+  },
+  {
+   "id": "evolution-dc-+-megawide-campus",
+   "name": "Evolution DC + Megawide campus",
+   "city": "Cavite",
+   "lon": 120.95,
+   "lat": 14.3,
+   "mw": 69,
+   "precision": "city",
+   "src": "https://www.datacenterdynamics.com/en/news/megawide-partners-with-evolution-data-centres-for-69mw-campus-outside-manila-philippines/",
+   "status": "planned",
+   "kind": "data centre",
+   "bus": "120.952,14.312",
+   "grid": "luzon",
+   "snap_km": 1.4,
+   "circuits": [
+    {
+     "names": [
+      "Bi\u00f1an-Dasmari\u00f1as 230 kV line"
+     ],
+     "kind": "ac230",
+     "km": 13.6,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Dasmari\u00f1as-Alaminos 500 kV line"
+     ],
+     "kind": "ac500",
+     "km": 48.5,
+     "rating_mw": 2800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Dasmari\u00f1as\u2013Las Pi\u00f1as"
+     ],
+     "kind": "ac230",
+     "km": 20.2,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Dasmarinas-Amadeo 230 kV line"
+     ],
+     "kind": "ac230",
+     "km": 14.7,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Tuy-Dasmari\u00f1as"
+     ],
+     "kind": "ac500",
+     "km": 14.0,
+     "rating_mw": 2800.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    0.0,
+    1919.5,
+    1981.8,
+    1918.4,
+    1863.2,
+    1750.1,
+    1764.6,
+    1891.2,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "limit_min_mw": 0.0,
+   "limit_max_mw": 1981.8,
+   "outages": [
+    {
+     "circuit": [
+      "Bi\u00f1an-Dasmari\u00f1as 230 kV line"
+     ],
+     "km": 13.6,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Dasmari\u00f1as-Alaminos 500 kV line"
+     ],
+     "km": 48.5,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Dasmari\u00f1as\u2013Las Pi\u00f1as"
+     ],
+     "km": 20.2,
+     "limit_mw": null,
+     "cuts_site_off": false,
+     "buses_still_reached": 188,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Dasmarinas-Amadeo 230 kV line"
+     ],
+     "km": 14.7,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Tuy-Dasmari\u00f1as"
+     ],
+     "km": 14.0,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 187,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": false,
+   "already_over_rating": true,
+   "worst_base_loading": 1.272,
+   "linearity_max_error": 0.0
+  },
+  {
+   "id": "converge-caloocan",
+   "name": "Converge Caloocan",
+   "city": "Caloocan",
+   "lon": 120.983,
+   "lat": 14.657,
+   "mw": 3,
+   "precision": "city",
+   "src": "https://baxtel.com/data-center/philippines",
+   "status": "operational",
+   "kind": "data centre",
+   "bus": "121.001,14.639",
+   "grid": "luzon",
+   "snap_km": 2.8,
+   "circuits": [
+    {
+     "names": [
+      "Sucat | Araneta\u2013Balintawak"
+     ],
+     "kind": "ac230",
+     "km": 2.4,
+     "rating_mw": 400.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Sucat | Araneta\u2013Balintawak"
+     ],
+     "kind": "ac230",
+     "km": 0.1,
+     "rating_mw": 400.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    168.1,
+    165.4,
+    158.7,
+    142.0,
+    153.0,
+    148.7,
+    105.6,
+    99.9,
+    58.2,
+    53.7,
+    0.0,
+    32.0,
+    59.2,
+    59.2,
+    23.3,
+    44.4,
+    95.0,
+    110.0,
+    118.2,
+    152.2,
+    155.7,
+    94.5,
+    63.5,
+    70.2
+   ],
+   "limit_min_mw": 0.0,
+   "limit_max_mw": 168.1,
+   "outages": [
+    {
+     "circuit": [
+      "Sucat | Araneta\u2013Balintawak"
+     ],
+     "km": 2.4,
+     "limit_mw": 400.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Sucat | Araneta\u2013Balintawak"
+     ],
+     "km": 0.1,
+     "limit_mw": 400.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": false,
+   "already_over_rating": true,
+   "worst_base_loading": 1.04,
+   "linearity_max_error": 0.0
+  },
+  {
+   "id": "equinix-mn2",
+   "name": "Equinix MN2",
+   "city": "Carmona, Cavite",
+   "lon": 121.057,
+   "lat": 14.316,
+   "mw": 4,
+   "precision": "city",
+   "src": "https://baxtel.com/data-center/equinix-carmona-1",
+   "status": "operational",
+   "kind": "data centre",
+   "bus": "121.076,14.331",
+   "grid": "luzon",
+   "snap_km": 2.6,
+   "circuits": [
+    {
+     "names": [
+      "Bi\u00f1an-Calamba"
+     ],
+     "kind": "ac230",
+     "km": 18.0,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Bi\u00f1an-Malamig"
+     ],
+     "kind": "ac230",
+     "km": 8.0,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Bi\u00f1an-Muntinlupa 1/2"
+     ],
+     "kind": "ac230",
+     "km": 10.4,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Bi\u00f1an-Dasmari\u00f1as 230 kV line"
+     ],
+     "kind": "ac230",
+     "km": 13.6,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Muntinlupa-Bi\u00f1an 3",
+      "Muntinlupa-Bi\u00f1an 4"
+     ],
+     "kind": "ac230",
+     "km": 14.0,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    332.3,
+    359.5,
+    320.8,
+    199.2,
+    228.4,
+    169.8,
+    133.3,
+    220.8,
+    277.1,
+    164.9,
+    123.4,
+    247.5,
+    269.1,
+    223.4,
+    194.8,
+    201.8,
+    289.7,
+    273.5,
+    294.3,
+    398.1,
+    402.2,
+    318.0,
+    183.1,
+    146.6
+   ],
+   "limit_min_mw": 123.4,
+   "limit_max_mw": 402.2,
+   "outages": [
+    {
+     "circuit": [
+      "Bi\u00f1an-Calamba"
+     ],
+     "km": 18.0,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Bi\u00f1an-Malamig"
+     ],
+     "km": 8.0,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Bi\u00f1an-Muntinlupa 1/2"
+     ],
+     "km": 10.4,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Bi\u00f1an-Dasmari\u00f1as 230 kV line"
+     ],
+     "km": 13.6,
+     "limit_mw": 644.9,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Muntinlupa-Bi\u00f1an 3",
+      "Muntinlupa-Bi\u00f1an 4"
+     ],
+     "km": 14.0,
+     "limit_mw": 0.0,
+     "cuts_site_off": false,
+     "buses_still_reached": 189,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": false,
+   "already_over_rating": false,
+   "worst_base_loading": 0.922,
+   "linearity_max_error": 0.0
+  },
+  {
+   "id": "narra-technology-park",
+   "name": "Narra Technology Park",
+   "city": "New Clark City, Capas, Tarlac",
+   "lon": 120.556,
+   "lat": 15.319,
+   "mw": 300,
+   "precision": "city",
+   "src": "https://www.datacenterdynamics.com/en/news/300mw-data-center-campus-proposed-in-the-philippines/",
+   "status": "planned",
+   "kind": "data centre",
+   "bus": "120.608,15.290",
+   "grid": "luzon",
+   "snap_km": 6.4,
+   "circuits": [
+    {
+     "names": [
+      "Concepcion-Clark Transmission Line"
+     ],
+     "kind": "ac230",
+     "km": 6.7,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    },
+    {
+     "names": [
+      "Concepcion-Clark Transmission Line"
+     ],
+     "kind": "ac230",
+     "km": 0.5,
+     "rating_mw": 800.0,
+     "rating_src": "class-default"
+    }
+   ],
+   "limit_mw_by_hour": [
+    764.1,
+    763.8,
+    766.8,
+    768.5,
+    766.4,
+    762.3,
+    757.6,
+    750.0,
+    742.7,
+    726.0,
+    703.6,
+    704.7,
+    699.4,
+    718.2,
+    750.5,
+    760.7,
+    765.4,
+    772.0,
+    774.7,
+    768.8,
+    769.1,
+    769.1,
+    775.7,
+    765.4
+   ],
+   "limit_min_mw": 699.4,
+   "limit_max_mw": 775.7,
+   "outages": [
+    {
+     "circuit": [
+      "Concepcion-Clark Transmission Line"
+     ],
+     "km": 6.7,
+     "limit_mw": null,
+     "cuts_site_off": true,
+     "buses_still_reached": 5,
+     "buses_on_island": 189
+    },
+    {
+     "circuit": [
+      "Concepcion-Clark Transmission Line"
+     ],
+     "km": 0.5,
+     "limit_mw": null,
+     "cuts_site_off": false,
+     "buses_still_reached": 185,
+     "buses_on_island": 189
+    }
+   ],
+   "radially_fed": true,
+   "already_over_rating": false,
+   "worst_base_loading": 0.126,
+   "linearity_max_error": 0.0
+  }
+ ],
+ "note": "How much more each site could draw before a circuit on its own bus reaches its rating, solved for every hour of one recorded day on the reduced network built from the public map. NGCP does not publish what its lines are rated to carry, so those ratings are standard figures for the voltage except where the market record named an operating limit, and every number moves with them. Site coordinates are city or campus precision and are moved to the nearest modelled bus, which is not the connection anyone will build. Read snap_km before trusting a site.",
+ "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
+}

@@ -164,6 +164,41 @@ if budgeted:
     check("hydro dispatch respects the day water budget",
           got <= budgeted["hydro_budget_mwh"]["luzon"] + 0.5)
 
+# the hourly-shape demand channel. The contract that matters is that a flat
+# shape and the scalar it equals are the SAME run: the scalar path is what
+# every baked golden and every saved studio run was produced with, so a shape
+# channel that perturbs it would invalidate them silently.
+flat_scalar = run_chronology_lp(dispatch, profiles, date,
+                                {"demand_delta": {"luzon": 1500}})
+flat_shape = run_chronology_lp(dispatch, profiles, date,
+                               {"demand_delta": {"luzon": [1500.0] * 24}})
+check("a flat 24-hour shape is byte-identical to the scalar it equals",
+      flat_scalar["lp_sha256"] == flat_shape["lp_sha256"])
+
+# a real shape has to actually reach the solve: load only in the evening must
+# raise evening demand and leave the morning alone
+evening = [0.0] * 24
+for _h in range(18, 22):
+    evening[_h] = 2000.0
+shaped = run_chronology_lp(dispatch, profiles, date,
+                           {"demand_delta": {"luzon": evening}})
+plain = run_chronology_lp(dispatch, profiles, date, {})
+check("an evening-only shape lifts evening demand",
+      shaped["hours"][19]["demand"]["luzon"]
+      - plain["hours"][19]["demand"]["luzon"] > 1999.0)
+check("an evening-only shape leaves the morning untouched",
+      abs(shaped["hours"][6]["demand"]["luzon"]
+          - plain["hours"][6]["demand"]["luzon"]) < 1e-6)
+
+# a wrong-length shape is a caller error, never a silently flattened run
+_bad = False
+try:
+    run_chronology_lp(dispatch, profiles, date,
+                      {"demand_delta": {"luzon": [1500.0] * 12}})
+except ValueError:
+    _bad = True
+check("a 12-value shape raises instead of silently flattening", _bad)
+
 # the baked goldens must be reproducible from the current pipeline
 golden = profiles["chrono_golden"]
 res = run_chronology_lp(dispatch, profiles, golden["date"],
