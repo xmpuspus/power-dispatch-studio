@@ -83,7 +83,7 @@ standard rating for a 230 kilovolt line, or one 500 kilovolt line instead. The
 line at the bottom closes the arithmetic. 769 that can arrive plus 2,231 that
 cannot is the 3,000 MW the campus needs every hour. This form answers the question a grid
 planner would actually ask, which is not how full a tank is but how many
-circuits are missing: three.
+circuits are missing. Three.
 
 ## The last two big Philippine grid builds each took about a year between first power and full service
 
