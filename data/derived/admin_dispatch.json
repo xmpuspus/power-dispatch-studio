@@ -27,8 +27,9 @@
  "modeled_marginal_fuel_on_raise_hours_pct": {
   "coal": 92.8,
   "export": 3.3,
-  "biomass": 2.9,
-  "hydro": 1.0
+  "biomass": 2.4,
+  "hydro": 1.0,
+  "import": 0.5
  },
  "coal_marginal_share_pct": 92.8,
  "raised_mw_fuel_mix_pct": {
