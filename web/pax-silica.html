@@ -39,7 +39,10 @@
   .figtitle .pop{ font-style:normal; color:var(--accent, var(--red)); }
   .figsub{ font-size:12.5px; color:var(--cardmute, var(--muted)); margin:0 0 16px; }
   .srcline{ font-size:11.5px; color:var(--cardmute, var(--muted)); margin:14px 2px 0; }
-  .fignote{ color:var(--cardmute, var(--muted)); font-size:12.5px; margin:10px 2px 0; max-width:70ch; }
+  .fignote{ color:var(--cardmute, var(--muted)); font-size:12.5px; margin:10px 2px 0; }
+  /* prose inside a card fills the card: the reading-width cap on .beat p is for
+     body text, and under a full-width chart it just leaves the box half empty */
+  .fig p{ max-width:none; }
   .payoff{ position:absolute; top:52px; right:26px; font-size:30px; font-weight:700;
     color:var(--accent, var(--red)); }
   /* plain white cards, the corpus's classic regime: flat color encodes data */
@@ -114,6 +117,8 @@
   .drop.anchor{ background:#07203F; } .drop.promise{ border:2.5px solid #07203F;
     background:#EBDED4; }
   .waffle100{ display:grid; grid-template-columns:repeat(20, 10px); gap:3px; margin:8px 0 2px; }
+  .wafnote{ flex:1 1 220px; font-size:12.5px; color:var(--cardmute, var(--muted));
+    align-self:center; }
   .waffle100 i{ width:10px; height:10px; border-radius:3px; background:#EBDED4; display:block; }
   .waffle100 i.hit{ background:#A65E46; }
 
@@ -187,9 +192,10 @@ own June 2026 bulletins</a> agree on the Visayas number: evening peaks of
   <div class="figsub">Each block's area is the electricity used, in megawatts (MW).
   The three pale blocks are the Philippines' three island power grids, each at its
   busiest recorded moment across 105 archived days (7 Apr to 20 Jul 2026). The
-  dashed block is the campus on its own at the same scale, laid over the Visayas
-  block for comparison, not added to it. It is bigger than the Mindanao block
-  too.</div>
+  dashed rust block is Pax Silica on its own, drawn inside the Luzon block because
+  New Clark City sits on Luzon and that is the grid it would join. It is not part of
+  the 14,232 MW already there, and it is bigger than the whole Visayas block just
+  across the gap, and bigger than Mindanao's too.</div>
   <div class="blocks" id="grid-blocks"></div>
   <p class="srcline">Grid peaks: computed from the published 5-minute dispatch
   files of IEMOP, the Independent Electricity Market Operator of the Philippines,
@@ -443,6 +449,9 @@ and the division is simple. Here is that number three ways.</p>
     <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">Angat
     dam</a>, its main water source, the campus would take about 2</b></div>
     <div class="waffle100" id="angat-waffle"></div>
+    <div class="wafnote">The two rust squares are Pax Silica's share of the
+    4,000 million liters a day Metro Manila draws from the dam, which is
+    1.6 to 2.2 percent of it.</div>
   </div>
   <p class="fignote">The small print, exactly: the campus's announced 65 to 90
   million liters a day is the tap water of 433,000 to 600,000 people at
@@ -577,27 +586,31 @@ not NGCP official geometry. Announced figures may change; this page is dated
       "<b>Visayas grid</b>" + fmt(pk.visayas) + " MW"
       + (roomy ? "<br>~" + pop.visayas + "M people" : ""), "var(--ink)");
 
-    // the campus block copies the Visayas block's shape and is scaled by area,
-    // so the reader compares like with like: it overhangs by exactly the ratio
+    // New Clark City is on Luzon, so the campus block is drawn INSIDE the Luzon
+    // block, which is the grid it would actually join. It copies the Visayas
+    // block's shape and is scaled by area, and it sits at the same baseline just
+    // across the gutter from it, so the size comparison is still read directly.
     var f = Math.sqrt(P.campus.mw / pk.visayas);
     var cwd = colW * f, chd = hV * f;
     var sq = el("div", "block", wrap);
-    sq.style.cssText += "left:" + (colX + colW - cwd) + "px; bottom:0px; width:"
-      + cwd + "px; height:" + chd + "px; border:3.5px dashed #A65E46;"
-      + "transition-delay:.6s; z-index:3;";
-    var chip = el("div", "saxis", wrap);
-    // on a narrow screen the chip drops below the canvas so it never covers
-    // the Visayas tile or the dashed square it explains; it fades in WITH
-    // the dashed square it labels, never before it
-    chip.style.cssText = "position:absolute; right:6px; z-index:4;"
-      + "opacity:0; transition:opacity .5s ease .8s;"
-      + (narrow ? "top:0; background:none; padding:0;"
-                : "bottom:12px; background:#fff; border:1px solid var(--line); border-radius:4px; padding:3px 7px;")
-      + "text-align:right; font-size:" + (narrow ? 11 : 12)
-      + "px; line-height:1.35; color:#A65E46;";
+    sq.style.cssText += "left:" + (luzonW - cwd - 10) + "px; bottom:2px; width:"
+      + cwd + "px; height:" + chd + "px; border:3px dashed #A65E46;"
+      + "background:rgba(166,94,70,.13); transition-delay:.6s; z-index:3;";
+    // wide: the label rides inside the campus block it names, so the two can
+    // never be read apart. narrow: the block is too small to hold text, so the
+    // label goes to the free strip above the canvas. Either way it fades in
+    // with the block it labels.
+    var chip = el("div", "saxis", narrow ? wrap : sq);
+    chip.style.cssText = "position:absolute; z-index:4; line-height:1.35;"
+      + "opacity:0; transition:opacity .5s ease .8s; color:#A65E46;"
+      + (narrow
+         ? "right:6px; top:0; text-align:right; font-size:11px;"
+         : "left:8px; top:8px; right:8px; font-size:12px;"
+           + "background:rgba(255,255,255,.9); border-radius:4px; padding:4px 6px;");
     chip.innerHTML = "<b>Pax Silica alone, " + fmt(P.campus.mw) + " MW announced</b><br>"
       + "<span style='color:var(--ink)'>= the electricity of "
-      + P.power.homes_million + "M Philippine homes</span>";
+      + P.power.homes_million + "M Philippine homes</span>"
+      + (narrow ? "" : "<br>bigger than the whole Visayas grid, just right of it &rarr;");
     wrap.style.height = (H + (narrow ? 48 : 4)) + "px";
   }
   function runGrids(fig){ fig.classList.add("on"); }
@@ -636,7 +649,8 @@ not NGCP official geometry. Announced figures may change; this page is dated
     // the map projection: the panel area laid over Metro Manila at true
     // scale, on the same no-key Carto basemap the project's map page uses
     var land = document.getElementById("land-map"); land.innerHTML = "";
-    var LW = Math.min(660, land.clientWidth - 4), LH = Math.min(430, Math.round(LW * 0.68));
+    var LW = Math.max(280, land.clientWidth - 4);
+    var LH = Math.min(460, Math.round(LW * 0.55));
     land.style.cssText += "position:relative; width:" + LW + "px; height:" + LH
       + "px; margin:0 auto; border-radius:14px; overflow:hidden; background:#dfe8ee;";
     var Z = 11, TILE = 256;

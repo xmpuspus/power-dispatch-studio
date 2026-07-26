@@ -21,17 +21,20 @@ re-make it after a page change, run `make serve`, then
 
 ## Pax Silica would use more power than the entire Visayas grid
 
-![One rectangle tiled by the three grids. Luzon is the giant piece, and a dashed rust block in the Visayas block's shape overhangs it](pax-silica-figs/grids.png)
+![One rectangle tiled by the three grids. Luzon is the giant piece, holding a dashed rust block for the campus that is slightly bigger than the whole Visayas block beside it](pax-silica-figs/grids.png)
 
 The whole Philippine grid as one rectangle, tiled like a jigsaw. Every
 piece's area is the most power that grid actually used in any 5-minute
 stretch of 105 days of the market operator IEMOP's published files, and
 each piece names the people it serves (about 62 million on Luzon, 26 on
 Mindanao, 21 in the Visayas, 2020 census). Luzon is the giant piece, and
-Mindanao and Visayas share the right column. The dashed rust block is the
-campus on its own, drawn in the Visayas block's own shape and scaled by area,
-laid over it for comparison rather than added to it. It overhangs the whole
-Visayas block, and it is bigger than the Mindanao block too. The chip carries the translation, since 3,000 MW around the
+Mindanao and Visayas share the right column. The dashed rust block is Pax
+Silica on its own, drawn inside the Luzon block because New Clark City sits on
+Luzon and that is the grid it would join. It is not part of the 14,232 MW
+already there. It takes the Visayas block's own shape and is scaled by area,
+and it sits at the same baseline just across the gap from it, so you can see
+that one campus is bigger than that whole grid, and bigger than Mindanao's
+too. The chip carries the translation, since 3,000 MW around the
 clock is the electricity of 10.9 million homes at Meralco's 200 kWh a
 month typical household. One thing to remember when reading it is that the
 grid pieces were measured while the dashed square is a promise on paper,
