@@ -8,8 +8,8 @@ from, and the one thing worth double-checking.
 
 ![A montage. A title card first, then each chart in turn, animating from empty and holding while it finishes, with a hard cut to the next](pax-silica-scale.gif)
 
-A montage rather than a page scroll. It opens on a title card, because a feed
-renders frame one as the thumbnail, then gives each chart its own beat. The
+A montage rather than a page scroll. It opens on a title card naming Pax Silica and both announced figures,
+because a feed renders frame one as the thumbnail, then gives each chart its own beat. The
 recorder drives the live page. It lifts one card onto a centered stage,
 magnifies it to fill the frame, rebuilds it at that size, plays it from
 empty, holds while it finishes, then cuts to the next. The own-station card
@@ -21,7 +21,7 @@ re-make it after a page change, run `make serve`, then
 
 ## Pax Silica would use more power than the entire Visayas grid
 
-![One rectangle tiled by the three grids. Luzon is the giant piece, holding a dashed rust block for the campus that is slightly bigger than the whole Visayas block](pax-silica-figs/grids.png)
+![One rectangle tiled by the three grids. Luzon is the giant piece, holding a dashed rust block for Pax Silica that is slightly bigger than the whole Visayas block](pax-silica-figs/grids.png)
 
 The whole Philippine grid as one rectangle, tiled like a jigsaw. Every
 piece's area is the most power that grid actually used in any 5-minute
@@ -32,24 +32,24 @@ Mindanao and Visayas share the right column. The dashed rust block is Pax
 Silica on its own, drawn inside the Luzon block because New Clark City sits on
 Luzon and that is the grid it would join. It is not part of the 14,232 MW
 already there. It takes the Visayas block's own shape and is scaled by area,
-at the same baseline, so you can see that one campus is bigger than that whole
-grid, and bigger than Mindanao's too. The chip carries the translation, since 3,000 MW around the
+at the same baseline, so you can see that Pax Silica alone is bigger than that
+whole grid, and bigger than Mindanao's too. The chip carries the translation, since 3,000 MW around the
 clock is the electricity of 10.9 million homes at Meralco's 200 kWh a
 month typical household. One thing to remember when reading it is that the
 grid pieces were measured while the dashed square is a promise on paper,
 and BCDA has said it could go as high as 5,000 MW.
 
-## Pax Silica's signed solar farm covers 4.1% of the campus's electricity for a day
+## Pax Silica's signed solar farm covers 4.1% of the electricity it needs for a day
 
-![One day in megawatts. A flat dashed line at 3,000 for the campus. A low gold hump for the solar farm, peaking at 390 at noon](pax-silica-figs/acwa.png)
+![One day in megawatts. A flat dashed line at 3,000 for Pax Silica. A low gold hump for the solar farm, peaking at 390 at noon](pax-silica-figs/acwa.png)
 
 A real solar deal exists. ACWA Power leased 500 hectares in June 2026 to
 build up to 500 MW of solar with batteries. The chart draws one day in
 megawatts, so the sizes are the point rather than a percentage. The dashed
-line is the campus drawing 3,000 MW every hour of the day and night. The gold
+line is Pax Silica drawing 3,000 MW every hour of the day and night. The gold
 hump is the farm on a perfect cloudless day, and at its noon best it reaches
 390 MW. From 7pm it makes nothing at all, which is when the grid is busiest.
-Added over the whole day it covers 4.1 percent of the campus's electricity.
+Added over the whole day it covers 4.1 percent of the electricity Pax Silica needs.
 
 ## Running Pax Silica on solar power alone would need 122 km² of panels
 
@@ -60,12 +60,12 @@ would need at least 12,200 MW of panels. At the land density of a real
 Philippine solar farm (MTerra Solar, 3,500 MW on 3,500 hectares) that is
 122 square kilometers. The rust square is that area at true map scale,
 laid over Metro Manila, and it swallows Manila, Pasay, all of Makati (marked
-with a dot) and part of Taguig. The panels would not actually go there. The
-campus sits about 95 km north, and the map is only a place to see the size
+with a dot) and part of Taguig. The panels would not actually go there. Pax
+Silica sits about 95 km north, and the map is only a place to see the size
 against. The small solid rust square beside it is the farm they actually
 signed, 5 km². For scale, all of New Clark City is 94.5 km² and MTerra
 Solar itself, the biggest solar build anywhere, is 35. After sunset you
-would still need about 33 GWh of batteries, 7 times MTerra Solar's. The
+would still need about 33 million kilowatt-hours of batteries, 7 times MTerra Solar's. The
 basemap is OpenStreetMap and CARTO, the same one the project's grid map
 uses.
 
@@ -80,24 +80,24 @@ exist, and together they have 769 MW of room at the modeled 7pm on a real day
 more circuits of the same kind the remaining 2,231 MW would take, at the
 standard rating for a 230 kilovolt line, or one 500 kilovolt line instead. The
 line at the bottom closes the arithmetic. 769 that can arrive plus 2,231 that
-cannot is the 3,000 MW the campus needs every hour. This form answers the question a grid planner
+cannot is the 3,000 MW Pax Silica needs every hour. This form answers the question a grid planner
 actually asks, which is not how full a tank is but the number of circuits
 missing. The answer is three.
 
 ## The last two big Philippine grid builds each took about a year between first power and full service
 
-![Three timelines. Two finished builds from 2023 to 2024, one with a rust stretch marking a court stop, then the campus substation's own 2026-to-2028 window](pax-silica-figs/record.png)
+![Three timelines. Two finished builds from 2023 to 2024, one with a rust stretch marking a court stop, then the Pax Silica substation's own 2026-to-2028 window](pax-silica-figs/record.png)
 
-The promised fix for the campus is a P6.95 billion substation due by the end
+The promised fix for Pax Silica is a P6.95 billion substation due by the end
 of 2028. These two timelines show how NGCP's two most recent big builds
 actually went. On top, the Hermosa-San Jose line turned on in May 2023 at a
 quarter of its capacity and reached full capacity only in June 2024, because
 a court order over nine towers stopped work for nine months (the rust
 stretch), which is most of why that build took 13 months. Below it, the
 Mindanao-Visayas undersea link, first test power April 2023, full service
-January 2024, nine months. The third strip is the campus substation's own
-promised window on its own 2026-to-2028 axis, with today marked. Campus
-construction starts in the first quarter of 2028 and the substation is due at
+January 2024, nine months. The third strip is the Pax Silica substation's
+own promised window on its own 2026-to-2028 axis, with today marked. Pax
+Silica's construction starts in the first quarter of 2028 and the substation is due at
 the end of it, which leaves nine months against the year each build above
 took.
 
@@ -122,14 +122,14 @@ cap out at 770 MW in the first place.
 
 ## Then one generator breaks, and 331 MW of Pax Silica has no power
 
-![Two bars of 3,000 MW. On a normal night the campus's own station plus the lines cover it. With one generator down, a rust block of 331 MW is left over](pax-silica-figs/own.png)
+![Two bars of 3,000 MW. On a normal night Pax Silica's own station plus the lines cover it. With one generator down, a rust block of 331 MW is left over](pax-silica-figs/own.png)
 
-BCDA's actual plan is for the campus to build its own power station instead
+BCDA's actual plan is for Pax Silica to build its own power station instead
 of drawing from the grid. Both bars are the same 3,000 MW, so the two nights sit
 side by side and one screenshot carries the whole story. On a normal night,
 2,500 MW from its own station plus 500 over the power lines covers everything.
-On the second bar one 600 MW generator is down, about the size of one of Sual's
-two units, and the lines are already carrying everything they can, so 331 MW
+On the second bar one 600 MW generator is down, about the size of one of the two
+units at the Sual coal plant in Pangasinan, and the lines are already carrying everything they can, so 331 MW
 has nothing behind it, the electricity of 1.2 million homes. Building your own
 power does not remove the grid. It turns the grid into your backup, and the
 backup runs down the same two lines. The card makes one more point, that a unit
@@ -139,19 +139,19 @@ second unit on 9.
 
 ## The water Pax Silica asked for would serve 1.4 to 2 times Makati's population
 
-![Rows of water drops. Rust drops for the campus, fewer navy for Makati, outlined for the promised pond, and a 100-square grid with 2 colored](pax-silica-figs/water.png)
+![Rows of water drops. Rust drops for Pax Silica, fewer navy for Makati, outlined for the promised pond, and a 100-square grid with 2 colored](pax-silica-figs/water.png)
 
-No model needed here. BCDA itself said the campus will use 65 to 90 million
+No model needed here. BCDA itself said Pax Silica will use 65 to 90 million
 liters of water a day, which is 26 to 36 Olympic pools every single day,
-and the chart makes it countable. One drop is 5 million liters a day. The drops are grouped in fives so they can be counted. The campus's row has
+and the chart makes it countable. One drop is 5 million liters a day. The drops are grouped in fives so they can be counted. Pax Silica's row has
 13 solid rust drops and 5 rust-outlined ones (the top of BCDA's own range).
 Everyone living in Makati is 9 navy drops. The rainwater pond BCDA promises is
-24 navy-outlined drops, more than the campus asks for, but it does not exist
+24 navy-outlined drops, more than Pax Silica asks for, but it does not exist
 yet and it depends on the rain. And the last row zooms out. Of every 100 liters
-Metro Manila draws from Angat dam, the campus would take about 2, the two
+Metro Manila draws from Angat dam, Pax Silica would take about 2, the two
 colored squares in the grid. The small print carries the exact figures,
 including that the same water would keep 520 to 900 hectares of rice
-flooded. The government's water board says local sources are enough. Farmer
+flooded. The National Water Resources Board says local sources are enough. Farmer
 groups and Aeta communities on the land dispute that, and nobody has
 published an independent study of the site's water.
 
@@ -159,13 +159,13 @@ published an independent study of the site's water.
 
 NGCP does not publish what its lines can carry, so the 770 MW limit is a
 standard assumption and everything built on it moves with it. The map puts
-the campus 8.6 km from the real site, because the real connection point is
-not public. The solar day is cloudless and the campus's demand is held
+Pax Silica 8.6 km from the real site, because the real connection point is
+not public. The solar day is cloudless and Pax Silica's demand is held
 flat, both of which are generous to the supply side. The water arithmetic
 uses a per-person standard rather than a study of the site. And every announced
 number is one side's announcement. Nobody has independently checked BCDA's
 power or water figures, including us.
 
-An earlier, deeper look at the supply question (four ways of powering the
-campus, each checked against the whole Luzon grid) is described in
+An earlier, deeper look at the supply question (four ways of powering Pax
+Silica, each checked against the whole Luzon grid) is described in
 `docs/pax-silica-embedded.md`.

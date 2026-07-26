@@ -85,7 +85,7 @@ def check_html_static_text(c, p, s, w, wa, pr):
     has("own-station shortfall (paragraph + ledger)", f"{missing} MW")
     pin("own-station shortfall appears exactly twice (paragraph, ledger)",
         static.count(f"{missing} MW has no source"
-                     ) + static.count(f"{missing} MW of campus has no") == 2)
+                     ) + static.count(f"{missing} MW of Pax Silica\nhas no") == 2)
 
     # every source URL the bake carries must appear as a link on the page, so
     # a claim can never outlive the citation it was built on
@@ -116,6 +116,41 @@ def check_html_static_text(c, p, s, w, wa, pr):
             bad.append(cid + ":repo-path-in-footnote")
     pin(f"all {len(cards)} cards footnote citable public sources",
         len(cards) == 8 and not bad, ", ".join(bad))
+
+    # a card gets screenshotted on its own, so a definition sitting on another
+    # card is no definition at all: every acronym a card uses is spelled out on
+    # that same card, between its <div class="fig"> and its own Sources line
+    gloss = {
+        "BCDA": "Bases Conversion and Development Authority",
+        "NGCP": "National Grid Corporation of the Philippines",
+        "IEMOP": "Independent Electricity Market Operator",
+        "PSA": "Philippine Statistics Authority",
+        "NWRB": "National Water Resources Board",
+        "ERC": "Energy Regulatory Commission",
+        "MW": "megawatt", "MWh": "megawatt-hour", "GW": "gigawatt",
+        "kV": "kilovolt", "kWh": "kilowatt-hour",
+        "MLD": "million liters", "CMS": "cubic meters per second",
+    }
+    undefined = []
+    for m in re.finditer(r'<div class="fig[^"]*" id="(fig-[a-z]+)"', html):
+        stop = html.index("</p>", html.index('class="rawline"', m.start()))
+        # URLs carry acronyms nobody reads as words
+        seen = re.sub(r"https?://\S+", " ",
+                      re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ",
+                                                 html[m.start():stop])))
+        for acr, full in gloss.items():
+            used = re.search(r"(?<![A-Za-z])" + acr + r"(?![A-Za-z])", seen)
+            if used and full.lower() not in seen.lower():
+                undefined.append(f"{m.group(1)}:{acr}")
+    pin("every acronym is spelled out on the card that uses it",
+        not undefined, ", ".join(undefined))
+
+    # the subject is named, never pointed at: "the campus" reads fine in place
+    # and means nothing in a screenshot, a link preview, or a shared card
+    body = html.split("<body>", 1)[1].split("<script>", 1)[0]
+    vague = re.findall(r"\bthe campus\b", re.sub(r"\s+", " ", body))
+    pin("no reader-facing line leans on 'the campus' instead of naming it",
+        not vague, f"{len(vague)} left")
     # the failure scenario cites the measured outage record
     orec = w["outages"]
     pin("outage record: named units with measured days out",
