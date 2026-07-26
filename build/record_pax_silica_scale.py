@@ -104,9 +104,10 @@ TITLE = """
   <div style="font-size:13px; letter-spacing:.14em; text-transform:uppercase;
     color:#7d7d85; margin-bottom:14px">Pax Silica, New Clark City, Tarlac</div>
   <div style="font-size:44px; font-weight:700; line-height:1.18;
-    letter-spacing:-.02em; color:#02000D">BCDA says the campus needs
-    <span style="color:#A65E46">3,000 MW</span> and
-    <span style="color:#A65E46">90 million liters</span> of water a day.</div>
+    letter-spacing:-.02em; color:#02000D">The Bases Conversion and Development
+    Authority says its Pax Silica campus will need
+    <span style="color:#A65E46">3,000 MW</span> of power and
+    <span style="color:#A65E46">65 to 90 million liters</span> of water a day.</div>
   <div style="font-size:20px; color:#3d3d47; margin-top:18px">Eight charts, drawn
     against things you already know.</div>
 </div>
@@ -163,8 +164,10 @@ async def main():
     mp4 = os.path.join(DOCS, "pax-silica-scale.mp4")
     gif = os.path.join(DOCS, "pax-silica-scale.gif")
     pal = "/tmp/pax_montage_pal.png"
-    run = lambda a: subprocess.run(a, check=True, stdout=subprocess.DEVNULL,
-                                   stderr=subprocess.DEVNULL)
+    def run(a):
+        subprocess.run(a, check=True, stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL)
+
     run(["ffmpeg", "-y", "-i", src, "-vf", "format=yuv420p",
          "-c:v", "libx264", "-preset", "slow", "-crf", "18",
          "-tune", "stillimage", mp4])
