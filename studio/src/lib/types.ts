@@ -979,3 +979,55 @@ export interface LossSurface {
   assumptions?: { note?: string }
   reading?: string
 }
+
+export interface SiteCircuit {
+  names: string[]
+  kind: string
+  km: number
+  rating_mw: number
+  rating_src?: string
+}
+
+export interface SiteOutage {
+  circuit: string[]
+  km: number
+  limit_mw: number | null
+  cuts_site_off: boolean
+  buses_still_reached: number
+  buses_on_island: number
+}
+
+export interface Site {
+  id: string
+  name: string
+  city?: string
+  kind: string
+  lon: number
+  lat: number
+  mw: number
+  mw_range?: number[]
+  precision?: string
+  status?: string
+  src?: string
+  bus: string
+  grid: GridKey
+  snap_km: number
+  circuits: SiteCircuit[]
+  limit_mw_by_hour: (number | null)[]
+  limit_min_mw: number | null
+  limit_max_mw: number | null
+  outages: SiteOutage[]
+  radially_fed: boolean
+  already_over_rating?: boolean
+  worst_base_loading?: number | null
+  linearity_max_error: number | null
+}
+
+export interface Sites {
+  available: boolean
+  day: string
+  n_sites: number
+  sites: Site[]
+  note: string
+  disclaimer: string
+}

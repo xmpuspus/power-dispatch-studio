@@ -30,7 +30,7 @@ import hashlib
 import os
 import tempfile
 
-from .chrono import (GRID_KEYS, build_stack, marginal, round1, round3)
+from .chrono import (GRID_KEYS, build_stack, delta_at, marginal, round1, round3)
 from .constants_ph import MARKET_ANCHORS
 from .lp_model import G_SHORT, build_day_lp
 
@@ -134,8 +134,7 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
                           for p, mw in (offer_day["hours"][g][h] or [])]
                 o_stacks[g].append(sorted(blocks, key=lambda b: b["cost"]))
                 o_demand[g].append(day["demand"][g][h]
-                                   + ((opts.get("demand_delta") or {})
-                                      .get(g) or 0.0))
+                                   + delta_at(opts.get("demand_delta"), g, h))
         dearest = max((b["cost"] for g in GRID_KEYS
                        for hb in o_stacks[g] for b in hb), default=12.0)
         # the reserve toggle stays available on the book: capacity holding
@@ -185,8 +184,7 @@ def _assemble(dispatch: dict, profiles: dict, date: str, opts: dict) -> dict:
             fa["solar"] = round1(max(0.0, solar_inst[g]) * solar_profile[h])
             stacks[g].append(build_stack(fa, {}, [], params))
             demand[g].append(day["demand"][g][h]
-                             + ((opts.get("demand_delta") or {}).get(g)
-                                or 0.0))
+                             + delta_at(opts.get("demand_delta"), g, h))
 
     eff = profiles.get("storage_round_trip_eff", 0.8)
     storage = [{"grid": s["grid"], "power_mw": float(s["power_mw"]),

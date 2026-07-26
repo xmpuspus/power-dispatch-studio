@@ -176,6 +176,28 @@ def _pctl_low(sorted_vals: list[float], q: float) -> float:
     return sorted_vals[math.floor(q * (len(sorted_vals) - 1))]
 
 
+def delta_at(delta: dict | None, grid: str, hour: int) -> float:
+    """A per-grid demand delta at one hour.
+
+    A number is a flat block, exactly as every scenario before this one used,
+    and it produces an identical LP. A list of 24 values is an hourly shape,
+    which is what a load that varies through the day needs. A data centre that
+    ramps with its workload, a factory on one shift, a site filling up as it
+    opens. Anything else, including a list of the wrong length, is a mistake by
+    the caller and raises an error rather than quietly flattening."""
+    v = (delta or {}).get(grid)
+    if v is None:
+        return 0.0
+    if isinstance(v, (int, float)):
+        return float(v)
+    if len(v) != 24:
+        raise ValueError(
+            f"demand_delta[{grid}] must be a number or 24 hourly values, "
+            f"got {len(v)}"
+        )
+    return float(v[hour])
+
+
 def _fuel_dispatch(blocks: list[dict], served: float) -> dict:
     out: dict[str, float] = {}
     remaining = served
@@ -195,7 +217,8 @@ def run_chronology(dispatch: dict, profiles: dict, date: str,
     """Replay one observed day, hour by hour, on the (optionally edited) model.
 
     opts (all optional, defaults = the base model):
-      demand_delta:     {grid: MW} flat 24/7 load added per grid
+      demand_delta:     {grid: MW} flat 24/7 load added per grid, or
+                        {grid: [24 MW values]} for a load with a shape
       solar_delta_mw:   {grid: MW} installed solar added (follows the 24h shape)
       fuel_avail_delta: {grid: {fuel: MW}} availability change (a trip is negative)
       fuel_cost:        {fuel: PhP/kWh} cost overrides (LNG switch, coal price)
@@ -267,7 +290,7 @@ def run_chronology(dispatch: dict, profiles: dict, date: str,
 
     def demand_at(h: int) -> dict:
         return {g: (day["demand"][g][h]
-                    + ((opts.get("demand_delta") or {}).get(g) or 0.0)
+                    + delta_at(opts.get("demand_delta"), g, h)
                     + reserve_add[g])
                 for g in GRID_KEYS}
 

@@ -63,6 +63,28 @@ KV = {"ac500": 500.0, "ac230": 230.0, "ac138": 138.0, "cable": 230.0}
 # 250 MW Luzon-import limit; MVIP 450 MW design capacity.
 HVDC_CAP_MW = {"leyte": 250.0, "mvip": 450.0}
 
+# Announced load sites a scenario can place on the network, with the coordinate
+# each one is measured from. These are campus locations, at the same precision
+# as the map's data-centre pins. They are not the connection points NGCP will
+# build, which are not public.
+SITES = {
+    "pax-silica": {
+        "label": "Pax Silica ESZ, New Clark City (Capas, Tarlac)",
+        "lon": 120.5340,
+        "lat": 15.3200,
+        "mw_range": [3000.0, 5000.0],
+        "mw_src": (
+            "BCDA (Bingcang) about 3 GW at full development, "
+            "https://www.gmanetwork.com/news/money/economy/995915/"
+            "pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/"
+            " ; at least 5 GW, "
+            "https://business.inquirer.net/596398/"
+            "pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest"
+        ),
+        "precision": "site-precision (campus centroid, not a connection point)",
+    },
+}
+
 
 def _hvdc_cap(name: str | None, lat: float) -> float:
     n = (name or "").lower()
@@ -260,6 +282,22 @@ def hour_injections(day: dict, res_bus: dict, net: dict, hour: int) -> dict[str,
 
 
 # --- B-theta linear programs on HiGHS ----------------------------------------
+
+
+def resolve_site(net: dict, lon: float, lat: float) -> dict:
+    """Move a site coordinate to the nearest modelled bus. The distance is
+    returned and reported rather than hidden. The reduced network only carries
+    the lines OpenStreetMap knows about, so a site can sit tens of km from its
+    nearest modelled bus, and a reader needs to see that before trusting
+    anything built on it."""
+    best = min(net["buses"], key=lambda b: km((lon, lat), (b["lon"], b["lat"])))
+    return {
+        "bus": best["id"],
+        "grid": best["grid"],
+        "bus_lon": best["lon"],
+        "bus_lat": best["lat"],
+        "snap_km": round(km((lon, lat), (best["lon"], best["lat"])), 1),
+    }
 
 
 def _islands(net: dict) -> dict[str, list[str]]:
@@ -539,11 +577,217 @@ def _loads_only(
     return dict(inj), dict(unres_gen)
 
 
-def run_day(date: str) -> dict:
+_SOLAR_PROFILE: list[float] | None = None
+
+
+def solar_profile() -> list[float]:
+    """The baked 24-hour PH solar shape (fleet_ph.SOLAR_PROFILE via
+    web/data/profiles.json). A labeled clear-sky-ish model assumption, not
+    measured irradiance, so anything built on it is an optimistic bound on
+    what solar delivers."""
+    global _SOLAR_PROFILE
+    if _SOLAR_PROFILE is None:
+        path = os.path.join(HERE, "..", "web", "data", "profiles.json")
+        with open(path) as f:
+            _SOLAR_PROFILE = json.load(f)["solar_profile"]
+    return _SOLAR_PROFILE
+
+
+def _net_draw(site: dict, hour: int) -> float:
+    """What the site actually pulls from the grid in this hour.
+
+    A campus that builds its own generation still meets the network at one
+    point, and what crosses that point is load minus whatever its own plant
+    is producing right then. Firm embedded capacity produces around the
+    clock; embedded solar follows the baked shape and is zero for eleven
+    hours of it, which is the whole reason the split matters. A negative
+    result means the site is sending power out."""
+    solar = site.get("embedded_solar_mw", 0.0) * solar_profile()[hour]
+    return site["mw"] - site.get("embedded_firm_mw", 0.0) - solar
+
+
+def _plant_load(inj: dict[str, float], net: dict, bus: str, mw: float) -> dict[str, float]:
+    """Add `mw` of load at `bus` and pay for it from the island's own observed
+    generation, scaled pro-rata to what each bus was already producing.
+
+    Sharing it out this way is what makes the change in flows mean anything.
+    Letting the island's slack cover it would supply every added megawatt from
+    the reference bus, so the route that lit up would only reflect where that
+    bus happens to sit. Scaling the observed injections leaves the island's net
+    position exactly as it was, so the only thing that moves is the delivery of
+    the new load."""
+    grid = next(b["grid"] for b in net["buses"] if b["id"] == bus)
+    island = {b["id"] for b in net["buses"] if b["grid"] == grid}
+    pos = {b: v for b, v in inj.items() if v > 0 and b in island}
+    tot = sum(pos.values())
+    out = dict(inj)
+    out[bus] = out.get(bus, 0.0) - mw
+    if tot > 0:
+        for b, v in pos.items():
+            out[b] += mw * v / tot
+    return out
+
+
+def _headroom_gens(
+    gens: list[dict], net: dict, grid: str, mw: float, margin: float = 1.25
+) -> list[dict]:
+    """Capacity the island does not have on the observed day, added so the OPF
+    can actually serve a multi-GW site instead of pinning every dual to the
+    unserved-energy cost.
+
+    Shared across the island's existing generation buses at the island's median
+    observed cost, the same way run_day already handles generation it could not
+    match to a bus. This is an assumption, and the biggest one in the scenario.
+    It says the megawatts get built where megawatts already are, at today's
+    median cost. It answers where the power has to travel and what the network
+    does to its price. It does not answer whether anyone will build it, which
+    is what the zonal engine and the DOE project list are for."""
+    from statistics import median
+
+    bus_grid = {b["id"]: b["grid"] for b in net["buses"]}
+    caps: dict[str, float] = defaultdict(float)
+    costs = []
+    for gen in gens:
+        if bus_grid[gen["bus"]] != grid:
+            continue
+        caps[gen["bus"]] += gen["cap_mw"]
+        costs.append(gen["cost_mwh"])
+    tot = sum(caps.values())
+    if not tot:
+        return []
+    cost = round(median(costs), 1) if costs else 5000.0
+    return [
+        {
+            "res": f"headroom-{grid}",
+            "bus": b,
+            "cap_mw": round(margin * mw * share / tot, 1),
+            "cost_mwh": cost,
+            "fuel": "headroom-assumed",
+        }
+        for b, share in caps.items()
+    ]
+
+
+def reinforce_site(net: dict, bus: str, mw: float, radius_km: float = 0.0) -> list[dict]:
+    """Raise the rating of the branches around the site bus to at least `mw`,
+    standing in for the dedicated connection NGCP says it is building (target
+    end-2028 for New Clark City).
+
+    radius_km = 0 reinforces only the branches touching the bus. Anything
+    larger reinforces every branch with an endpoint inside that radius, which
+    is what the measured behaviour calls for: upgrading only the site's own
+    circuits moves the binding constraint one hop out into the corridor
+    instead of clearing it.
+
+    Deliberately crude. The real upgrade is a specific set of circuits at
+    specific voltages on a route nobody has published, so anything more
+    detailed would be invented. What this supports is the bounding question,
+    which is how much delivery capacity over how wide an area before the load
+    can actually arrive."""
+    pos = {b["id"]: (b["lon"], b["lat"]) for b in net["buses"]}
+    here = pos[bus]
+
+    def near(bid: str) -> bool:
+        return bid == bus or (radius_km > 0 and km(here, pos[bid]) <= radius_km)
+
+    touched = []
+    for br in net["branches"]:
+        if not (near(br["a"]) or near(br["b"])):
+            continue
+        if br["rating_mw"] >= mw:
+            continue
+        touched.append(
+            {
+                "names": br["names"] or [br["kind"]],
+                "kind": br["kind"],
+                "km": br["km"],
+                "rating_mw_before": br["rating_mw"],
+                "rating_mw_after": round(mw, 1),
+                "rating_src_before": br.get("rating_src"),
+            }
+        )
+        br["rating_mw"] = round(mw, 1)
+        br["rating_src"] = "scenario-reinforced"
+    return touched
+
+
+def _deliverable_mw(
+    net: dict,
+    inj: dict[str, float],
+    gens: list[dict],
+    site: dict,
+    cap_mw: float,
+    base_unserved: float,
+    tol_mw: float = 1.0,
+    iters: int = 8,
+) -> dict:
+    """The largest load the network can actually deliver to the site bus
+    before the OPF starts shedding, found by bisection on MW.
+
+    The change in price cannot give you this number. Once the lines into a bus
+    are at their limits, the bus prices at the cost of unserved energy, which
+    is a penalty for shedding rather than a market price. Asking how many
+    megawatts fit before that happens is the same question put in units that
+    survive the model's own warnings.
+
+    The headroom capacity is sized once, for the FULL site load, and held
+    fixed across the search. Re-sizing it per probe made the thing being
+    measured move with the probe (a small probe got a small supply increase,
+    so its shedding could be worse than a large probe's), which is not a
+    quantity bisection can find."""
+    fixed = gens + _headroom_gens(gens, net, site["grid"], cap_mw)
+    # the reference has to carry the same headroom, or the search scores the
+    # site's load against a base that was short of supply for other reasons
+    ref = solve_hour(net, inj, "opf", gens=fixed)
+    ref_unserved = ref["unserved_mw"] if ref else base_unserved
+    lo, hi = 0.0, cap_mw
+    for _ in range(iters):
+        mid = (lo + hi) / 2
+        probe = dict(inj)
+        probe[site["bus"]] = probe.get(site["bus"], 0.0) - mid
+        sol = solve_hour(net, probe, "opf", gens=fixed)
+        short = sol is None or (sol["unserved_mw"] - ref_unserved) > tol_mw
+        if short:
+            hi = mid
+        else:
+            lo = mid
+    return {
+        "deliverable_mw": round(lo, 0),
+        "searched_to_mw": round(cap_mw, 0),
+        "reference_unserved_mw": round(ref_unserved, 1),
+    }
+
+
+def run_day(date: str, sited: dict | None = None) -> dict:
+    """One observed day on the reduced backbone.
+
+    sited (optional) plants an announced load on the network and returns the
+    counterfactual as a DELTA against the same day's base solve:
+        {"site": <key in SITES, or {"label","lon","lat"}>, "mw": float}
+    Everything the scenario reports is a difference between two solves of the
+    same network at the same resolution on the same day. That is deliberate:
+    this model's price LEVELS are not usable (see opf_finding), and a paired
+    difference cancels most of what makes them unusable. Cancels most, not
+    all, and that is an argument rather than a validated result, so the
+    scenario block says so in its own note."""
     net = build_network()
     day = _load_day(date)
     res_bus, res_stats = map_resources(day, net)
     branches = net["branches"]
+
+    site = None
+    if sited:
+        spec = sited["site"]
+        if isinstance(spec, str):
+            spec = SITES[spec]
+        site = dict(spec)
+        site.update(resolve_site(net, spec["lon"], spec["lat"]))
+        site["mw"] = float(sited["mw"])
+        site["reinforce_mw"] = float(sited.get("reinforce_mw") or 0.0)
+        site["reinforce_km"] = float(sited.get("reinforce_km") or 0.0)
+        site["embedded_firm_mw"] = float(sited.get("embedded_firm_mw") or 0.0)
+        site["embedded_solar_mw"] = float(sited.get("embedded_solar_mw") or 0.0)
+        site["net_draw_mw"] = [round(_net_draw(site, h), 1) for h in range(24)]
 
     # equipment RTDCV says bound that day, pinned to branch geometry with
     # the same matcher the map layer uses (line-feature hits bridge to the
@@ -581,6 +825,7 @@ def run_day(date: str) -> dict:
 
     hours = list(range(24))
     replay_load = [[0.0] * len(branches) for _ in hours]
+    sited_load = [[0.0] * len(branches) for _ in hours]
     slack_series = []
     for hr in hours:
         inj = hour_injections(day, res_bus, net, hr)
@@ -590,6 +835,15 @@ def run_day(date: str) -> dict:
         for bi, f in enumerate(sol["flows_mw"]):
             replay_load[hr][bi] = abs(f) / branches[bi]["rating_mw"]
         slack_series.append(sol["slack_mw"])
+        if site:
+            s2 = solve_hour(
+                net,
+                _plant_load(inj, net, site["bus"], _net_draw(site, hr)),
+                "replay",
+            )
+            if s2 is not None:
+                for bi, f in enumerate(s2["flows_mw"]):
+                    sited_load[hr][bi] = abs(f) / branches[bi]["rating_mw"]
 
     peak = [max(replay_load[hr][bi] for hr in hours) for bi in range(len(branches))]
     ranked = sorted(range(len(branches)), key=lambda bi: -peak[bi])
@@ -632,6 +886,11 @@ def run_day(date: str) -> dict:
     # floors (class defaults badly under-rate multi-circuit delivery
     # corridors); the binder ranking above stays on raw class ratings,
     # where only the RELATIVE ordering is used.
+    # the replay loading fractions above were divided by the ratings as they
+    # stood BEFORE this block raises them, so anything reporting those
+    # fractions has to quote the same vintage or the divisor and the printed
+    # rating come from two different networks
+    replay_ratings = [(br["rating_mw"], br.get("rating_src")) for br in branches]
     raised = 0
     for bi, br in enumerate(branches):
         if br.get("rating_src") == "observed-rtdcv":
@@ -660,6 +919,7 @@ def run_day(date: str) -> dict:
         grid_costs[g].append(gen["cost_mwh"])
     opf_hours = [11, 19]
     opf_out = {}
+    sited_opf = {}
     for hr in opf_hours:
         inj, unres_gen = _loads_only(day, res_bus, net, hr)
         hour_gens = list(gens)
@@ -716,6 +976,166 @@ def run_day(date: str) -> dict:
             "slack_mw": sol["slack_mw"],
         }
 
+        if not site:
+            continue
+        # the counterfactual: same hour, same network, same resolution, with
+        # the site's load placed on its bus and assumed spare capacity to serve it.
+        # Reinforcement (if asked for) applies only to the scenario solves and
+        # is rolled back afterwards, so the base it is compared against is
+        # always the unreinforced network.
+        # the base binding set has to be read off the ORIGINAL ratings, before
+        # any reinforcement touches them, or the comparison silently scores
+        # base flows against upgraded lines
+        base_binding = {
+            bi
+            for bi in range(len(branches))
+            if abs(sol["flows_mw"][bi]) >= 0.999 * branches[bi]["rating_mw"]
+        }
+        saved = [(br, br["rating_mw"], br.get("rating_src")) for br in net["branches"]]
+        reinforced = (
+            reinforce_site(
+                net, site["bus"], site["reinforce_mw"], site["reinforce_km"]
+            )
+            if site["reinforce_mw"] > 0
+            else []
+        )
+        draw = _net_draw(site, hr)
+        s_inj = dict(inj)
+        s_inj[site["bus"]] = s_inj.get(site["bus"], 0.0) - draw
+        s_gens = hour_gens + _headroom_gens(
+            hour_gens, net, site["grid"], max(draw, 0.0)
+        )
+        s_sol = solve_hour(net, s_inj, "opf", gens=s_gens)
+        if s_sol is None:
+            for br, rating, src in saved:
+                br["rating_mw"], br["rating_src"] = rating, src
+            continue
+        s_lmps = s_sol["lmp_mwh"]
+        island = [b["id"] for b in net["buses"] if b["grid"] == site["grid"]]
+        base_mean = sum(lmps[b] for b in island) / len(island)
+        s_mean = sum(s_lmps[b] for b in island) / len(island)
+        base_site_dev = lmps[site["bus"]] - base_mean
+        s_site_dev = s_lmps[site["bus"]] - s_mean
+        s_binding = {
+            bi
+            for bi in range(len(branches))
+            if abs(s_sol["flows_mw"][bi]) >= 0.999 * branches[bi]["rating_mw"]
+        }
+        # shedding at the site turns every price at that bus into the
+        # unserved-energy cost, which is a penalty parameter and not a
+        # price. When that happens the deltas below are reported but
+        # explicitly marked not-a-price, and the deliverable-MW search is
+        # the number to read instead.
+        added_unserved = round(s_sol["unserved_mw"] - sol["unserved_mw"], 1)
+        shed = added_unserved > 1.0
+        sited_opf[str(hr)] = {
+            # what the whole island's price does: the system effect
+            "island_mean_lmp_delta_mwh": round(s_mean - base_mean, 1),
+            # what the site's own bus does relative to its island: the
+            # network effect, which is the part a region model cannot see
+            "site_lmp_delta_mwh": round(s_lmps[site["bus"]] - lmps[site["bus"]], 1),
+            "site_deviation_base_mwh": round(base_site_dev, 1),
+            "site_deviation_sited_mwh": round(s_site_dev, 1),
+            "site_deviation_change_mwh": round(s_site_dev - base_site_dev, 1),
+            "price_delta_is_a_price": not shed,
+            "price_note": (
+                "The network cannot deliver the full site load to this bus, "
+                "so the site bus prices at the cost of unserved energy. The "
+                "LMP deltas above are that penalty, NOT a market price. Read "
+                "deliverable_mw instead."
+                if shed else
+                "The site load is delivered without shedding, so the LMP "
+                "deltas are the model's marginal costs."
+            ),
+            "site_unserved_mw": added_unserved,
+            "net_draw_mw": round(draw, 1),
+            **_deliverable_mw(
+                net, inj, hour_gens, site, max(draw, 0.0), sol["unserved_mw"]
+            ),
+            "unserved_mw": s_sol["unserved_mw"],
+            "newly_binding": [
+                {
+                    "names": branches[bi]["names"] or [branches[bi]["kind"]],
+                    "kind": branches[bi]["kind"],
+                    "km": branches[bi]["km"],
+                    "flow_mw": s_sol["flows_mw"][bi],
+                    "rating_mw_est": branches[bi]["rating_mw"],
+                    "rating_src": branches[bi].get("rating_src"),
+                }
+                for bi in sorted(s_binding - base_binding)
+            ],
+            "n_binding_base": len(base_binding),
+            "n_binding_sited": len(s_binding),
+            "reinforced_branches": reinforced,
+        }
+        for br, rating, src in saved:
+            br["rating_mw"], br["rating_src"] = rating, src
+
+    sited_out = None
+    if site:
+        peak_base = [max(replay_load[hr][bi] for hr in hours)
+                     for bi in range(len(branches))]
+        peak_sited = [max(sited_load[hr][bi] for hr in hours)
+                      for bi in range(len(branches))]
+        delta = [peak_sited[bi] - peak_base[bi] for bi in range(len(branches))]
+        moved = sorted(range(len(branches)), key=lambda bi: -delta[bi])[:15]
+        sited_out = {
+            "site": site,
+            "replay_delta": {
+                "most_loaded_by_the_site": [
+                    {
+                        "names": branches[bi]["names"] or [branches[bi]["kind"]],
+                        "kind": branches[bi]["kind"],
+                        "km": branches[bi]["km"],
+                        # the rating the loading fractions were divided by,
+                        # not the later replay-floor value
+                        "rating_mw_est": replay_ratings[bi][0],
+                        "rating_src": replay_ratings[bi][1],
+                        "peak_loading_base": round(peak_base[bi], 3),
+                        "peak_loading_sited": round(peak_sited[bi], 3),
+                        "loading_delta": round(delta[bi], 3),
+                    }
+                    for bi in moved
+                    if delta[bi] > 0.001
+                ],
+                "n_branches_over_rating_base": sum(1 for v in peak_base if v > 1.0),
+                "n_branches_over_rating_sited": sum(1 for v in peak_sited if v > 1.0),
+            },
+            "opf_delta": sited_opf,
+            "supply_assumption": (
+                "The replay pays for the site out of the island's own "
+                "observed generation, sharing the extra across buses in "
+                "proportion to what each was already producing that hour. "
+                "The OPF adds assumed spare capacity across the island's "
+                "existing generation buses at the island's median observed "
+                "cost. Neither one says that capacity will ever be built. "
+                "The DOE project list and the zonal engine answer that."
+            ),
+            "read_this_as": (
+                "Differences between two solves of the same network on the "
+                "same day, never levels. The warning about levels in "
+                "opf_finding still applies. A paired difference cancels much "
+                "of it, because both solves carry the same resolution bias. "
+                "Much, but not all. That cancellation is an argument rather "
+                "than a tested result, and there is no observed equivalent "
+                "to score it against. The site coordinate is the middle of "
+                "the campus, moved to the nearest modelled bus (see "
+                "snap_km), which is not the connection NGCP will build."
+            ),
+            "deliverable_mw_caveat": (
+                "deliverable_mw compares scenarios. It is not a rating of "
+                "the site. Its reference solve already fails to serve the "
+                "megawatts in reference_unserved_mw, over a gigawatt on a "
+                "typical hour, because the OPF puts each grid's unmatched "
+                "generation on its few matched plant buses and leaves "
+                "pockets of load short. So compare it only across scenarios "
+                "sharing one reference, such as one width of line upgrade "
+                "against another. Never read it as 'the site can take N MW'. "
+                "Closing that gap needs more of the published resource codes "
+                "matched to buses, and no extra option will do it."
+            ),
+        }
+
     return {
         "date": date,
         "network": {
@@ -747,6 +1167,7 @@ def run_day(date: str) -> dict:
             "corridors the re-dispatch pushes to their estimated limits) "
             "and the honest gap. The zonal engine remains the price model."
         ),
+        "sited_scenario": sited_out,
         "replay": {
             "top_loaded": top,
             "binder_check": binder_check,
@@ -765,8 +1186,28 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--day", required=True, help="YYYY-MM-DD (must be derived)")
     ap.add_argument("--out", default=OUT_PATH)
+    ap.add_argument("--site", choices=sorted(SITES), help="plant an announced load site")
+    ap.add_argument("--site-mw", type=float, help="site load (MW), flat")
+    ap.add_argument("--reinforce-mw", type=float, default=0.0,
+                    help="raise the ratings of the site bus's branches to this "
+                         "MW (the announced dedicated connection)")
+    ap.add_argument("--reinforce-km", type=float, default=0.0,
+                    help="reinforce every branch with an endpoint within this "
+                         "radius of the site bus, not just the incident ones")
+    ap.add_argument("--embedded-firm-mw", type=float, default=0.0,
+                    help="the site's own round-the-clock generation (MW)")
+    ap.add_argument("--embedded-solar-mw", type=float, default=0.0,
+                    help="the site's own solar (MW), follows the baked shape")
     a = ap.parse_args()
-    result = run_day(a.day)
+    sited = None
+    if a.site:
+        if not a.site_mw:
+            ap.error("--site needs --site-mw")
+        sited = {"site": a.site, "mw": a.site_mw,
+                 "reinforce_mw": a.reinforce_mw, "reinforce_km": a.reinforce_km,
+                 "embedded_firm_mw": a.embedded_firm_mw,
+                 "embedded_solar_mw": a.embedded_solar_mw}
+    result = run_day(a.day, sited=sited)
     with open(a.out, "w") as f:
         json.dump(result, f, indent=1)
     slim = {k: v for k, v in result.items() if k not in ("replay", "opf")}
@@ -776,3 +1217,30 @@ if __name__ == "__main__":
         print(f"  {t['peak_loading']:5.2f}  {t['kind']:6s} {t['names'][:2]}")
     for hr, o in result["opf"].items():
         print(f"opf h{hr}:", json.dumps(o["per_grid"], indent=1)[:400])
+    sc = result.get("sited_scenario")
+    if sc:
+        s = sc["site"]
+        print(f"\nsited: {s['label']} {s['mw']:,.0f} MW -> bus {s['bus']} "
+              f"({s['grid']}, snapped {s['snap_km']} km)")
+        if s["embedded_firm_mw"] or s["embedded_solar_mw"]:
+            nd = s["net_draw_mw"]
+            print(f"  embedded: {s['embedded_firm_mw']:,.0f} MW firm + "
+                  f"{s['embedded_solar_mw']:,.0f} MW solar -> net grid draw "
+                  f"{min(nd):,.0f} to {max(nd):,.0f} MW over the day")
+        for r in sc["replay_delta"]["most_loaded_by_the_site"][:8]:
+            print(f"  +{r['loading_delta']:5.2f} loading  {r['kind']:6s} "
+                  f"{r['names'][:2]}  ({r['peak_loading_base']:.2f} -> "
+                  f"{r['peak_loading_sited']:.2f} of rating)")
+        for hr, o in sc["opf_delta"].items():
+            if o["price_delta_is_a_price"]:
+                print(f"  opf h{hr}: island mean "
+                      f"{o['island_mean_lmp_delta_mwh']:+.1f} PhP/MWh, site bus "
+                      f"{o['site_lmp_delta_mwh']:+.1f}, site-vs-island deviation "
+                      f"{o['site_deviation_change_mwh']:+.1f}, newly binding "
+                      f"{len(o['newly_binding'])}")
+            else:
+                print(f"  opf h{hr}: network sheds {o['site_unserved_mw']:,.0f} MW "
+                      f"at the site, so no price. Deliverable to this bus: "
+                      f"{o['deliverable_mw']:,.0f} MW of the "
+                      f"{o['net_draw_mw']:,.0f} MW it draws. "
+                      f"Newly binding {len(o['newly_binding'])}")

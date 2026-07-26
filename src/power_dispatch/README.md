@@ -53,7 +53,7 @@ engine honors:
 
 | key | type | meaning |
 | --- | --- | --- |
-| `demand_delta` | `{grid: MW}` | load added or removed |
+| `demand_delta` | `{grid: MW}` or `{grid: [24 MW]}` | load added or removed, flat or with an hourly shape |
 | `fuel_cost` | `{fuel: PhP/kWh}` | marginal-cost override |
 | `fuel_avail_delta` | `{grid: {fuel: MW}}` | availability edit |
 | `solar_delta_mw` | `{grid: MW}` | installed solar edit |
