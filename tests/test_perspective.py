@@ -74,7 +74,7 @@ def check_html_static_text(c, p, s, w, wa, pr):
     has("DIPCEF median", f"P{pr['dipcef']['median_php_kwh']} per kWh")
     has("passthrough peso line", f"P{pr['passthrough_php_month']:,} a month")
     has("olympic pool basis", "an Olympic pool holds 2.5 million liters")
-    has("island population source", "2020 census via Wikipedia")
+    has("island population source", "Island populations, 2020 census")
     has("substation cost", f"P{w['substation']['php_b']} billion")
     has("Hermosa-San Jose cost", f"P{w['hsj']['php_b']} billion")
     has("Mindanao-Visayas cost", f"P{w['mvip']['php_b']:.0f} billion")
@@ -90,12 +90,39 @@ def check_html_static_text(c, p, s, w, wa, pr):
     # every source URL the bake carries must appear as a link on the page, so
     # a claim can never outlive the citation it was built on
     urls = set()
-    for section in (c, p, s, w, wa):
+    for section in (c, p, s, w, wa, pr):
         for v in section["src"].values():
             urls.update(re.findall(r"https?://[^\s;)]+", v))
     unlinked = sorted(u for u in urls if u not in html)
     pin(f"all {len(urls)} baked source URLs are linked on the page",
         not unlinked, "; ".join(unlinked[:3]))
+
+    # no card may fall back to the methodology page instead of naming the source
+    pin("no chart leans on a methodology link instead of a real source",
+        "methodology.html" not in html)
+    # every card footnotes the public sources a reader can open, and that
+    # footnote carries citable URLs, never a path inside this repo
+    cards = re.findall(r'id="(fig-[a-z]+)"(.*?)\n</div>', html, re.S)
+    bad = []
+    for cid, body in cards:
+        m = re.search(r'<p class="rawline">Sources:(.*?)</p>', body, re.S)
+        if not m:
+            bad.append(cid + ":no-sources-footnote")
+            continue
+        links = re.findall(r'href="(https?://[^"]+)"', m.group(1))
+        if len(links) < 2:
+            bad.append(cid + ":under-2-links")
+        if any("github.com" in u for u in links):
+            bad.append(cid + ":repo-path-in-footnote")
+    pin(f"all {len(cards)} cards footnote citable public sources",
+        len(cards) == 8 and not bad, ", ".join(bad))
+    # the failure scenario cites the measured outage record
+    orec = w["outages"]
+    pin("outage record: named units with measured days out",
+        orec["days_in_window"] == 105 and len(orec["units"]) >= 2
+        and all(u["days_out"] > 0 and u["mw"] > 300 for u in orec["units"]),
+        f"{[(u['mw'], u['days_out']) for u in orec['units']]}")
+    has("outage evidence on the card", "archived days")
 
 
 def main():

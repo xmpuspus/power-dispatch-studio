@@ -139,6 +139,55 @@ def archive_peaks() -> dict:
             "at": when}
 
 
+def outage_record() -> dict:
+    """Which big units were on outage, and on how many of the archived days.
+
+    IEMOP's outage schedules used in real-time dispatch (OUTRTD) list every
+    resource marked OUT per day; capacities come from the registered-capacity
+    files (CAPEG). This mixes planned maintenance with forced outages, because
+    the published status column does not separate them, so the wording on the
+    page says "on outage" and never "tripped".
+    """
+    import collections
+
+    days: dict[str, set] = collections.defaultdict(set)
+    files = sorted(glob.glob(os.path.join(ROOT, "data", "raw", "OUTRTD",
+                                          "RTDOS_*.csv")))
+    for path in files:
+        day = os.path.basename(path)[6:14]
+        with open(path, newline="") as fh:
+            for row in csv.DictReader(fh):
+                if (row.get("STATUS") or "").strip().upper() == "OUT":
+                    days[(row.get("RESOURCE_NAME") or "").strip()].add(day)
+    cap: dict[str, float] = {}
+    cfiles = sorted(glob.glob(os.path.join(ROOT, "data", "raw", "CAPEG", "*.csv")))
+    if cfiles:
+        with open(cfiles[-1], newline="") as fh:
+            for row in csv.DictReader(fh):
+                try:
+                    cap[(row.get("RESOURCE_NAME") or "").strip()] = float(
+                        row["MAXIMUM_CAPACITY"])
+                except (TypeError, ValueError, KeyError):
+                    pass
+    # the resource codes the page is allowed to name, with the plant each one
+    # belongs to (checked against web/data/generators.geojson)
+    NAMED = {
+        "03SNGAB_G01": "San Gabriel, a gas unit in Batangas",
+        "01MSINLO_G02": "the second unit at Masinloc, a coal plant in Zambales",
+        "01MARVEL_G01": "a unit at GNPower Dinginin, a coal plant in Bataan",
+    }
+    out = []
+    for code, label in NAMED.items():
+        if code in days:
+            out.append({"code": code, "label": label,
+                        "mw": round(cap.get(code, 0)),
+                        "days_out": len(days[code])})
+    out.sort(key=lambda r: -r["days_out"])
+    return {"days_in_window": len(files), "units": out,
+            "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/"
+                   " and https://www.iemop.ph/market-data/registered-capacity-generation/"}
+
+
 def merit_ladder() -> dict:
     """The baked Luzon supply curve at the 7pm reference hour, plus where
     evening demand lands with and without the campus. Same source the map's
@@ -184,8 +233,8 @@ def price_effect(day: str) -> dict:
                          wave["unserved_mwh"]["luzon"]],
         "dipcef": DIPCEF,
         "src": {
-            "engine": "web/data/dispatch.json + methodology.html (calibrated cost stack; P6.00 coal is the ERC administered price, P12.00 is the sourced oil cost)",
-            "dipcef": "methodology.html (LMP_CONGESTION sweep over the archived DIPCEF sample)",
+            "engine": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py (the cost stack; P6.00 coal is the administered price IEMOP publishes at https://www.iemop.ph/market-data/indicative-administered-prices/ , gas is https://www.foi.gov.ph/requests/malampaya-natural-gas-price/ , and P12.00 oil is a labelled assumption in https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/fleet_ph.py)",
+            "dipcef": "https://www.iemop.ph/market-data/dipc-energy-results-final/ (the LMP_CONGESTION column, swept over the archived sample)",
         },
     }
 
@@ -242,7 +291,8 @@ def main() -> None:
             "home_kwh_month": HOME_KWH_MONTH,
             "island_pop_m": ISLAND_POP_M,
             "src": {
-                "peaks": "data/raw/RTDSUM (IEMOP RTD regional summaries, archived here)",
+                "peaks": "https://www.iemop.ph/market-data/rtd-regional-summaries/ (archived at https://github.com/xmpuspus/power-dispatch-studio/tree/main/data/raw/RTDSUM)",
+                "island_pop": "https://en.wikipedia.org/wiki/Luzon ; https://en.wikipedia.org/wiki/Visayas ; https://en.wikipedia.org/wiki/Mindanao",
                 "bulletin": "https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/",
                 "home_kwh": "https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026",
             },
@@ -269,7 +319,7 @@ def main() -> None:
             "src": {
                 "acwa": "https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html",
                 "terra": "https://en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm",
-                "profile": "web/data/profiles.json (cloudless model day, favourable to solar)",
+                "profile": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/web/data/profiles.json (cloudless model day, favourable to solar)",
                 "areas": "https://en.wikipedia.org/wiki/Makati ; https://en.wikipedia.org/wiki/Bonifacio_Global_City ; https://en.wikipedia.org/wiki/New_Clark_City",
             },
         },
@@ -286,6 +336,7 @@ def main() -> None:
             # not an engineering design.
             "more_circuits": int(
                 -(-(CAMPUS_MW - limit_7pm) // pax["circuits"][0]["rating_mw"])),
+            "outages": outage_record(),
             "own_gap_homes_million": round(
                 (CAMPUS_MW - 1900 - limit_7pm) * 24 * 1000
                 / (HOME_KWH_MONTH / DAYS_PER_MONTH) / 1e6, 1),
@@ -294,7 +345,7 @@ def main() -> None:
                            "year": SUBSTATION_YEAR},
             "hsj": HSJ, "mvip": MVIP,
             "src": {
-                "limit": "web/data/sites.json (solved on the public grid map; ratings are class defaults, NGCP does not publish them)",
+                "limit": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/nodal_dcopf.py (solved on OpenStreetMap-mapped routes, https://www.openstreetmap.org/copyright ; ratings are class defaults, NGCP does not publish them)",
                 "substation": "https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city",
                 "hsj": "https://ngcp.ph/article?cid=16897",
                 "mvip": "https://www.ngcp.ph/article?cid=16636",

@@ -46,7 +46,8 @@
    "mindanao": 26.3
   },
   "src": {
-   "peaks": "data/raw/RTDSUM (IEMOP RTD regional summaries, archived here)",
+   "peaks": "https://www.iemop.ph/market-data/rtd-regional-summaries/ (archived at https://github.com/xmpuspus/power-dispatch-studio/tree/main/data/raw/RTDSUM)",
+   "island_pop": "https://en.wikipedia.org/wiki/Luzon ; https://en.wikipedia.org/wiki/Visayas ; https://en.wikipedia.org/wiki/Mindanao",
    "bulletin": "https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/",
    "home_kwh": "https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026"
   }
@@ -128,7 +129,7 @@
   "src": {
    "acwa": "https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html",
    "terra": "https://en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm",
-   "profile": "web/data/profiles.json (cloudless model day, favourable to solar)",
+   "profile": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/web/data/profiles.json (cloudless model day, favourable to solar)",
    "areas": "https://en.wikipedia.org/wiki/Makati ; https://en.wikipedia.org/wiki/Bonifacio_Global_City ; https://en.wikipedia.org/wiki/New_Clark_City"
   }
  },
@@ -141,6 +142,30 @@
   "n_circuits": 2,
   "class_rating_mw": 800.0,
   "more_circuits": 3,
+  "outages": {
+   "days_in_window": 105,
+   "units": [
+    {
+     "code": "03SNGAB_G01",
+     "label": "San Gabriel, a gas unit in Batangas",
+     "mw": 417,
+     "days_out": 33
+    },
+    {
+     "code": "01MSINLO_G02",
+     "label": "the second unit at Masinloc, a coal plant in Zambales",
+     "mw": 323,
+     "days_out": 9
+    },
+    {
+     "code": "01MARVEL_G01",
+     "label": "a unit at GNPower Dinginin, a coal plant in Bataan",
+     "mw": 316,
+     "days_out": 8
+    }
+   ],
+   "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/ and https://www.iemop.ph/market-data/registered-capacity-generation/"
+  },
   "own_gap_homes_million": 1.2,
   "day": "2026-06-25",
   "substation": {
@@ -163,7 +188,7 @@
    "commercial": "2024-01-26"
   },
   "src": {
-   "limit": "web/data/sites.json (solved on the public grid map; ratings are class defaults, NGCP does not publish them)",
+   "limit": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/nodal_dcopf.py (solved on OpenStreetMap-mapped routes, https://www.openstreetmap.org/copyright ; ratings are class defaults, NGCP does not publish them)",
    "substation": "https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city",
    "hsj": "https://ngcp.ph/article?cid=16897",
    "mvip": "https://www.ngcp.ph/article?cid=16636"
@@ -259,8 +284,8 @@
    "max_day": "2026-05-26"
   },
   "src": {
-   "engine": "web/data/dispatch.json + methodology.html (calibrated cost stack; P6.00 coal is the ERC administered price, P12.00 is the sourced oil cost)",
-   "dipcef": "methodology.html (LMP_CONGESTION sweep over the archived DIPCEF sample)"
+   "engine": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py (the cost stack; P6.00 coal is the administered price IEMOP publishes at https://www.iemop.ph/market-data/indicative-administered-prices/ , gas is https://www.foi.gov.ph/requests/malampaya-natural-gas-price/ , and P12.00 oil is a labelled assumption in https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/fleet_ph.py)",
+   "dipcef": "https://www.iemop.ph/market-data/dipc-energy-results-final/ (the LMP_CONGESTION column, swept over the archived sample)"
   }
  },
  "water": {
