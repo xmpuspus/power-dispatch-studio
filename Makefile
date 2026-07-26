@@ -18,6 +18,7 @@ archive:
 # Bake the static data from the archive + verified constants into web/data/.
 data:
 	$(PY) pipeline/build_data.py
+	$(PY) pipeline/sites.py
 
 # Re-cut the static share assets (OG card, constraint league, montage) from the
 # current bake. A deliberate step, not the nightly cron: these are dated
@@ -60,6 +61,9 @@ package: sync-engine
 qa:
 	$(PY) tests/test_data.py
 	$(PY) tests/test_lp_parity.py
+	$(PY) tests/test_nodal_scenario.py
+	$(PY) tests/test_sites.py
+	$(PY) tests/test_perspective.py
 	$(PY) tests/test_engine_sync.py
 	$(PY) tests/qa_gate.py
 	$(PY) scripts/verify_claims.py
