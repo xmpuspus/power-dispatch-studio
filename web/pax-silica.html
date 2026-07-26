@@ -346,6 +346,7 @@ into your backup, and the backup comes down the same two circuits.</p>
 <div class="fig" id="fig-own" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-own">replay</button>
   <div class="figtitle" id="own-caption">The plan works. 2,500 MW of its own, the last 500 over the lines</div>
+  <div class="figsub">Modeled at 7pm on 25 Jun 2026, against the same two circuits.</div>
   <div class="stack" id="own-stack"></div>
   <p class="srcline">The 2,500 MW station is a chosen size, not an announced
   project. Full working in
@@ -610,9 +611,11 @@ not NGCP official geometry. Announced figures may change; this page is dated
     ov.style.cssText += "left:" + (cx - side / 2) + "px; bottom:" + (LH - cy - side / 2)
       + "px; width:" + side + "px; height:" + side + "px;"
       + "background:rgba(166,94,70,.3); border:3px solid #A65E46; border-radius:6px; z-index:3;";
+    // the label is wider than the square it names, so it rides UNDER the
+    // square: at the top it collides with the signed-farm label top-right
     var ol = el("div", "saxis", land);
-    ol.style.cssText = "position:absolute; z-index:4; left:" + (cx - side / 2 + 8)
-      + "px; top:" + (cy - side / 2 + 6) + "px; font-size:12.5px; font-weight:600;"
+    ol.style.cssText = "position:absolute; z-index:4; left:" + (cx - side / 2)
+      + "px; top:" + (cy + side / 2 + 6) + "px; font-size:12.5px; font-weight:600;"
       + "color:#A65E46; background:rgba(255,255,255,.92); border-radius:4px; padding:2px 7px;";
     ol.textContent = "the panels a sun-only campus needs, " + P.sun.sun_alone_km2 + " km²";
     // the one signed farm at the same true scale, for contrast
@@ -987,6 +990,26 @@ not NGCP official geometry. Announced figures may change; this page is dated
       });
     });
   }
+
+  // rebuild one card at its current width and play its animation from zero.
+  // The montage recorder moves a card into a centered stage, which changes its
+  // width, and every chart sizes its marks in pixels at build time, so a
+  // replay has to rebuild before it runs.
+  var builders = { "fig-grids": buildGrids, "fig-acwa": buildSun, "fig-land": buildSun,
+                   "fig-wires": buildWires, "fig-record": buildRecord,
+                   "fig-priceb": buildPrice, "fig-own": buildOwn, "fig-water": buildWater };
+  window.__pxplay = function(id){
+    var fig = document.getElementById(id);
+    if (!fig) return false;
+    if (builders[id]) builders[id]();
+    fig.classList.remove("on");
+    delete fig.dataset.done;
+    void fig.offsetWidth;                       // flush, so the transition restarts
+    fig.classList.add("on");
+    if (id === "fig-acwa"){ runCells(); return true; }
+    if (runners[id]) runners[id](fig);
+    return true;
+  };
 
   fetch("data/perspective.json").then(function(r){ return r.json(); })
     .then(function(d){

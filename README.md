@@ -331,7 +331,7 @@ and [`web/data/generators.geojson`](web/data/generators.geojson); the engine is
 
 ### Pax Silica needs more power than the whole Visayas grid and up to twice as much water as everyone in Makati
 
-[![A scroll through the page: the whole grid tiled as one rectangle with a dashed campus square covering all of the Visayas piece; the solar day as 24 nearly-empty hour columns; land areas nested at true scale; a river of power hitting a dam with only two thin circuit ribbons through; the merit-order ladder where adding the campus moves the price-setter from coal to oil; the own-station plan losing 331 MW when one unit trips; water as countable drops against Makati and Angat; and the closing ledger of what BCDA announced against what this page worked out](docs/pax-silica-scale.gif)](web/pax-silica.html)
+[![A montage of the eight charts, each animating in turn: the whole grid tiled as one rectangle with a dashed campus square covering all of the Visayas piece; the solar day as 24 nearly-empty hour columns; the 122 km2 of panels laid over a real Metro Manila map; a tank the two circuits fill only a quarter of; the announce-to-energize record of the last two big grid builds; the merit-order ladder where adding the campus moves the price-setter from coal to oil; the own-station plan losing 331 MW when one generator trips; and the water drawn as countable drops against Makati and Angat](docs/pax-silica-scale.gif)](web/pax-silica.html)
 
 BCDA's own figures for the campus at New Clark City: **3,000 MW** of power at full
 development and **65 to 90 million liters** of water a day. Numbers that size mean

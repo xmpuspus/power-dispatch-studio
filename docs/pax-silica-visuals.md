@@ -4,14 +4,20 @@ The live page is `web/pax-silica.html`. Below, first the moving version, then
 every chart on the page, each with what it shows, where its numbers came
 from, and the one thing worth double-checking.
 
-## The whole page in 27 seconds
+## All eight charts animating, in 31 seconds
 
-![A screen recording scrolling through the whole page, each chart animating as it arrives](pax-silica-scale.gif)
+![A montage. A title card first, then each chart in turn, animating from empty and holding while it finishes, with a hard cut to the next](pax-silica-scale.gif)
 
-This is a real screen recording of the page, top to bottom. Nothing is
-staged or drawn separately. The smoother file to share is
-`docs/pax-silica-scale.mp4`. If the page changes, re-make it with
-`make serve` then `python3 build/record_pax_silica_scale.py`.
+A montage rather than a page scroll. It opens on a title card, because a feed
+renders frame one as the thumbnail, then gives each chart its own beat. The
+recorder drives the live page. It lifts one card onto a centered stage,
+magnifies it to fill the frame, rebuilds it at that size, plays it from
+empty, holds while it finishes, then cuts to the next. The own-station card
+gets the longest beat because it flips to its broken-generator state partway
+through. Nothing is drawn separately, so the clip cannot show a figure the
+site does not. The smoother file to share is `docs/pax-silica-scale.mp4`. To
+re-make it after a page change, run `make serve`, then
+`python3 build/record_pax_silica_scale.py`.
 
 ## This one campus would use more power than the entire Visayas
 
