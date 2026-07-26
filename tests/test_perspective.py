@@ -66,8 +66,9 @@ def check_html_static_text(c, p, s, w, wa, pr):
     has("modeled base price", f"P{pr['luzon_mean'][0]:.2f} per kWh")
     has("modeled with-campus price", f"P{pr['luzon_mean'][1]:.2f}")
     has("modeled Visayas peak pulled up", f"P{pr['visayas_peak'][1]:.2f}")
+    # the card says this in plain words now, so the pin follows the number
     has("modeled congestion rent",
-        f"P{round(pr['links_rent_m_php'][1])} million of congestion rent")
+        f"about P{round(pr['links_rent_m_php'][1])} million in this one modeled day")
     has("DIPCEF sample size",
         f"{pr['dipcef']['days_nonzero']} of {pr['dipcef']['days_sampled']} sampled days")
     has("DIPCEF median", f"P{pr['dipcef']['median_php_kwh']} per kWh")
