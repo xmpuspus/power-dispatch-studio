@@ -57,9 +57,11 @@
     color:#fff; font-size:12.5px; white-space:nowrap; opacity:0; transition:opacity .4s .9s; }
   .on .seg span{ opacity:1; }
   .seg-legend{ display:flex; flex-wrap:wrap; gap:7px 18px; margin:9px 0 0; font-size:12.5px; }
-  .seg-legend .chip{ white-space:nowrap; }
-  .seg-legend .chip i{ display:inline-block; width:9px; height:9px; border-radius:2px;
-    margin-right:5px; vertical-align:-1px; }
+  /* the chip text wraps: a no-wrap chip long enough to name its number will
+     run past a phone-width card */
+  .seg-legend .chip{ display:flex; align-items:flex-start; gap:6px; max-width:100%; }
+  .seg-legend .chip i{ flex:0 0 auto; width:9px; height:9px; border-radius:2px;
+    margin-top:4px; }
 
   /* the wires river reveals left to right */
   #wires-flow{ clip-path:inset(0 100% 0 0); transition:clip-path 1.2s cubic-bezier(.22,.9,.35,1); }
@@ -181,7 +183,7 @@ own June 2026 bulletins</a> agree on the Visayas number: evening peaks of
 <div class="fig" id="fig-grids" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-grids">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
-  <div class="figtitle">The campus would use more power than the <em class="pop">entire Visayas grid</em></div>
+  <div class="figtitle">Pax Silica would use more power than the <em class="pop">entire Visayas grid</em></div>
   <div class="figsub">Each block's area is the electricity used, in megawatts (MW).
   The three pale blocks are the Philippines' three island power grids, each at its
   busiest recorded moment across 105 archived days (7 Apr to 20 Jul 2026). The
@@ -190,16 +192,19 @@ own June 2026 bulletins</a> agree on the Visayas number: evening peaks of
   too.</div>
   <div class="blocks" id="grid-blocks"></div>
   <p class="srcline">Grid peaks: computed from the published 5-minute dispatch
-  files of IEMOP, the Philippine electricity market operator, 7 Apr to 20 Jul 2026,
+  files of IEMOP, the Independent Electricity Market Operator of the Philippines,
+  7 Apr to 20 Jul 2026,
   archived and documented <a href="methodology.html">in this project's
-  methodology</a>; the Philippine grid operator NGCP's own
+  methodology</a>; the grid operator NGCP, the National Grid Corporation of the
+  Philippines, in its own
   <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">June 2026
   bulletins</a> put Visayas evening peaks at 2,384 to 2,482 MW, in line with
   the 2,744 shown. Campus figure: BCDA president Joshua Bingcang via
   <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">GMA
   News, 23 Jul 2026</a>, with BCDA's own upper figure of 5,000 MW via
   <a href="https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest">Inquirer
-  Business</a>. BCDA is the government agency developing the site. Homes:
+  Business</a>. BCDA is the Bases Conversion and Development Authority, the
+  Philippine government agency developing the site. Homes:
   division by the 200 kilowatt-hours a month that Meralco, the utility serving
   Metro Manila, calls a typical household
   (<a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">its
@@ -218,7 +223,7 @@ sunset, and count what it covers of the campus's 72,000 MWh day.</p>
 
 <div class="fig" id="fig-acwa" style="--accent:#A65E46">
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
-  <div class="figtitle">The solar farm signed for the campus covers <em class="pop">4.1%</em> of its electricity for a day</div>
+  <div class="figtitle">Pax Silica's signed solar farm covers <em class="pop">4.1%</em> of the campus's electricity for a day</div>
   <div class="figsub">The campus's day as 24 hourly columns. Its day takes about
   72 million kilowatt-hours (3,000 MW around the clock). Rust is the share of each
   hour that the 500 MW solar farm leased to the campus could cover, on a cloudless
@@ -227,8 +232,8 @@ sunset, and count what it covers of the campus's 72,000 MWh day.</p>
   <div class="daycells" id="acwa-cells"></div>
   <div class="dayaxis"><span>midnight</span><span>6am</span><span>noon</span><span>6pm</span><span>11pm</span></div>
   <div class="cellnote" id="acwa-note"></div>
-  <p class="srcline">The lease, signed by the developer ACWA Power with the
-  government agency BCDA:
+  <p class="srcline">The lease, signed by the Saudi developer ACWA Power with BCDA, the
+  Bases Conversion and Development Authority that is building the site:
   <a href="https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html">Enerdata,
   2 Jun 2026</a>. The solar shape is this project's cloudless model day.</p>
 </div>
@@ -242,7 +247,7 @@ Solar's 3,500 MW on 3,500 hectares one province over</a>, that is
 <div class="fig" id="fig-land" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-land">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
-  <div class="figtitle">Running the campus on solar power alone would need <em class="pop">122 km&#178;</em> of panels</div>
+  <div class="figtitle">Running Pax Silica on solar power alone would need <em class="pop">122 km&#178;</em> of panels</div>
   <div class="figsub">Covering the campus's 3,000 MW around the clock from sunlight
   alone would take about 12,200 MW of panels, which is 122 km&#178; at the land a real
   Philippine solar farm uses (MTerra Solar, 1 hectare per megawatt). The square is
@@ -254,15 +259,16 @@ Solar's 3,500 MW on 3,500 hectares one province over</a>, that is
   <p class="fignote">For scale, all of New Clark City covers 94.5 km² and MTerra
   Solar, the biggest solar-and-battery build anywhere, covers 35 km². The 11 dark
   hours would also need about 33 million kilowatt-hours of batteries, 7 times the
-  4,500 MWh MTerra Solar is building.</p>
+  4,500 megawatt-hours MTerra Solar is building.</p>
   <p class="srcline">MTerra Solar:
   <a href="https://www.meralcopowergen.com.ph/mterra-solar-project-breaks-ground-a-monumental-milestone-in-the-philippines-renewable-energy-transition/">Meralco PowerGen</a>,
   <a href="https://www.pv-magazine-australia.com/2024/11/22/worlds-largest-3-5-gw-terra-solar-project-breaks-ground-in-the-philippines/">pv-magazine</a>,
   <a href="https://en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm">Wikipedia</a>.
   Areas: PSA via Wikipedia
   (<a href="https://en.wikipedia.org/wiki/Makati">Makati</a>,
-  <a href="https://en.wikipedia.org/wiki/Bonifacio_Global_City">BGC</a>,
-  <a href="https://en.wikipedia.org/wiki/New_Clark_City">New Clark City</a>).</p>
+  <a href="https://en.wikipedia.org/wiki/Bonifacio_Global_City">Bonifacio Global
+  City</a>, <a href="https://en.wikipedia.org/wiki/New_Clark_City">New Clark
+  City</a>). PSA is the Philippine Statistics Authority.</p>
 </div>
 </section>
 
@@ -279,12 +285,13 @@ no path at all.</p>
 <div class="fig" id="fig-wires" style="--accent:#07203F">
   <button class="replay" data-replay="fig-wires">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
-  <div class="figtitle">Today's power lines can deliver only <em class="pop">a quarter</em> of what the campus needs</div>
+  <div class="figtitle">Today's power lines can deliver only <em class="pop">a quarter</em> of what Pax Silica needs</div>
   <div class="figsub">A tank the power grid must fill every hour, measured in
   megawatts (MW). The navy fill is everything the site's two existing power lines
   can deliver, worked out by this project's grid model for 7pm on 25 Jun 2026.</div>
   <div id="wires-flow" style="margin-bottom:2px"></div>
-  <p class="srcline">NGCP, the Philippine grid operator, does not publish what its
+  <p class="srcline">NGCP, the National Grid Corporation of the Philippines, does
+  not publish what its
   lines carry, so this model uses the standard rating for a 230 kV line. The limit
   moves between 699 and 776 MW through the day, because other power sharing the same
   lines rises and falls. Method and map in
@@ -301,8 +308,8 @@ are the slow part:</p>
 <div class="fig tlwrap" id="fig-record" style="--accent:#A65E46">
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">The last two big Philippine grid builds each took <em class="pop">about a year</em> between first power and full service</div>
-  <div class="figsub">The two most recent big builds by NGCP, the Philippine grid
-  operator, measured in calendar time from the day each first carried power to the
+  <div class="figsub">The two most recent big builds by NGCP, the National Grid
+  Corporation of the Philippines, measured in calendar time from the day each first carried power to the
   day it ran at full service. The rust band inside the first bar is a nine-month
   court order that stopped the work, which is most of why that one took 13 months.
   Amounts are in Philippine pesos.</div>
@@ -318,12 +325,12 @@ are the slow part:</p>
   </div>
   <div class="strip">
     <div class="name">The power substation promised for the campus, on its own
-    2026-to-2028 axis. The dashed bar runs from campus construction starting
-    (Q1 2028) to the substation being due (end 2028).</div>
+    2026-to-2028 axis. The dashed bar runs from campus construction starting, in
+    the first quarter of 2028, to the substation being due at the end of 2028.</div>
     <div class="tl" id="tl-substation"></div>
   </div>
-  <p class="srcline">Buying the right of way across private land is the delay NGCP
-  itself names most often. The campus substation
+  <p class="srcline">Buying the right of way across private land is the delay the
+  grid operator itself names most often. The campus substation
   (<a href="https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city">Manila
   Bulletin, 25 May 2026</a>) is due at the end of 2028 while campus construction
   starts in the first quarter of 2028. That leaves nine months, against the year
@@ -347,7 +354,7 @@ every buyer on the grid.</p>
 <div class="fig" id="fig-priceb" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-priceb">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
-  <div class="figtitle">Serving the campus from the grid would <em class="pop">double the modeled price</em> of Luzon electricity</div>
+  <div class="figtitle">Serving Pax Silica from the grid would <em class="pop">double the modeled price</em> of Luzon electricity</div>
   <div class="figsub">Every power plant on Luzon, the Philippines' biggest grid,
   lined up cheapest to priciest. A block's width is its megawatts and its height is
   its cost in pesos per kilowatt-hour. The last plant needed sets the price everyone
@@ -384,10 +391,12 @@ into your backup, and the backup comes down the same two circuits.</p>
 <div class="fig" id="fig-own" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-own">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
-  <div class="figtitle" id="own-caption">The plan works. 2,500 MW of the campus's own power, the last 500 over the power lines</div>
-  <div class="figsub">The campus's announced plan to build its own power station,
-  modeled at 7pm on 25 Jun 2026 against the site's two existing power lines.</div>
+  <div class="figtitle" id="own-caption">Pax Silica's plan works. 2,500 MW of its own power, the last 500 over the power lines</div>
+  <div class="figsub">The bar is the 3,000 megawatts (MW) the campus needs every
+  hour. This is its announced plan to build its own power station, modeled at 7pm on
+  25 Jun 2026 against the site's two existing power lines.</div>
   <div class="stack" id="own-stack"></div>
+  <div class="cellnote" id="own-note"></div>
   <p class="srcline">The 2,500 MW station is a chosen size, not an announced
   project. Full working in
   <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/pax-silica-embedded.md">the deliverability note</a>;
@@ -408,14 +417,14 @@ and the division is simple. Here is that number three ways.</p>
 <div class="fig" id="fig-water" style="--accent:#07203F">
   <button class="replay" data-replay="fig-water">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
-  <div class="figtitle">The water the campus asked for would serve <em class="pop">1.4 to 2 times Makati's population</em></div>
+  <div class="figtitle">The water Pax Silica asked for would serve <em class="pop">1.4 to 2 times Makati's population</em></div>
   <div class="figsub">One drop is 5 million liters a day, and the drops are grouped
   in fives so they can be counted. A rust outline is the top of the announced range.
   A navy outline is a promise not built yet. Rust is the campus, navy is water people
   already use. Makati is a city in Metro Manila.</div>
   <div class="droprow">
-    <div class="dlabel"><b>What the campus would drink</b>, the figure from BCDA,
-    the government agency building the site</div>
+    <div class="dlabel"><b>What Pax Silica would drink</b>, the figure from BCDA,
+    the Bases Conversion and Development Authority, which is building the site</div>
     <span id="drops-campus"></span>
   </div>
   <div class="droprow">
@@ -456,8 +465,7 @@ groups, and Aeta communities on the land, dispute it;
 puts potentially affected residents near 20,000 while BCDA counters that only
 about 10 farmers are directly affected</a>. No independent water balance for
 the site has been published. That absence is the finding.</p>
-<p class="whence">BCDA is the Bases Conversion and Development Authority, the
-Philippine government agency developing New Clark City. Sources:
+<p class="whence">Sources:
 <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">BCDA via BusinessMirror, 23 Jul 2026</a>;
 <a href="https://businessmirror.com.ph/2026/07/22/local-water-source-enough-to-supply-pax-silica-operation-water-board/">NWRB, 22 Jul</a>;
 <a href="https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/">GMA explainer</a>;
@@ -504,7 +512,7 @@ these choices; none of them moves enough to change which bars are longer.</div>
 <li>NGCP Capas-area 230 kV substation, P6.95B, end-2028: <a href="https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city">Manila Bulletin, 25 May 2026</a>, from the NGCP transmission development plan.</li>
 <li>Hermosa-San Jose 500 kV record: <a href="https://ngcp.ph/article?cid=16897">ngcp.ph article 16897</a>. Mindanao-Visayas link: <a href="https://www.ngcp.ph/article?cid=16636">ngcp.ph article 16636</a>.</li>
 <li>MTerra Solar 3,500 MW / 3,500 ha / 4,500 MWh: <a href="https://www.meralcopowergen.com.ph/mterra-solar-project-breaks-ground-a-monumental-milestone-in-the-philippines-renewable-energy-transition/">Meralco PowerGen</a>, <a href="https://www.pv-magazine-australia.com/2024/11/22/worlds-largest-3-5-gw-terra-solar-project-breaks-ground-in-the-philippines/">pv-magazine</a>, and <a href="https://en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm">Wikipedia</a>.</li>
-<li>Meralco 200 kWh typical household: <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">Meralco July 2026 rate advisory</a>. Makati 2024 census and area: PSA via <a href="https://en.wikipedia.org/wiki/Makati">Wikipedia</a>, after the Embo transfer to Taguig. Other areas: <a href="https://en.wikipedia.org/wiki/Bonifacio_Global_City">BGC</a>, <a href="https://en.wikipedia.org/wiki/New_Clark_City">New Clark City</a>.</li>
+<li>Meralco 200 kWh typical household: <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">Meralco July 2026 rate advisory</a>. Makati 2024 census and area: PSA via <a href="https://en.wikipedia.org/wiki/Makati">Wikipedia</a>, after the Embo transfer to Taguig. Other areas: <a href="https://en.wikipedia.org/wiki/Bonifacio_Global_City">Bonifacio Global City</a>, <a href="https://en.wikipedia.org/wiki/New_Clark_City">New Clark City</a>.</li>
 <li>Angat allocation about 4,000 MLD at 46 CMS: <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">Philstar, 20 Jul 2026</a>. Metro per-person standard: MWSS via <a href="https://esmart.nhrc.upd.edu.ph/?p=1422">UP e-SMART</a>.</li>
 <li>NGCP Visayas alert bulletins, June 2026: <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">GMA News</a>.</li>
 <li>Rice season water, 1,200 to 1,500 mm: <a href="https://www.fao.org/4/u5835e/u5835e04.htm">FAO irrigation manual</a>; IRRI.</li>
@@ -766,12 +774,12 @@ not NGCP official geometry. Announced figures may change; this page is dated
       pl.style.cssText = "position:absolute; left:0px; top:" + (py0 - 40)
         + "px; width:" + (tankX - 12) + "px; text-align:right; font-size:11.5px;"
         + "color:var(--muted); line-height:1.35;";
-      pl.innerHTML = "the site's only two power lines<br>(230 kV circuits)";
+      pl.innerHTML = "the site's only two power lines<br>(230 kilovolt circuits)";
     } else {
       var pl2 = el("div", "saxis", wrap);
       pl2.style.cssText = "position:absolute; left:0; right:0; top:" + (tankTop + tankH + 8)
         + "px; text-align:center; font-size:11.5px; color:var(--muted);";
-      pl2.textContent = "filled by the site's only two power lines (230 kV)";
+      pl2.textContent = "filled by the site's only two power lines";
     }
     if (!narrow){
       var pay = el("div", "payoff", wrap);
@@ -824,7 +832,7 @@ not NGCP official geometry. Announced figures may change; this page is dated
     var wl = el("div", "saxis", t3);
     wl.style.cssText = "position:absolute; left:calc(" + m3(2028, 0) + "% + 10px);"
       + "top:2px; font-size:10.5px; font-weight:600; color:var(--ink);";
-    wl.textContent = "Q1 2028";
+    wl.textContent = "early 2028";
     var wr = el("div", "saxis", t3);
     wr.style.cssText = "position:absolute; right:10px; top:2px; font-size:10.5px;"
       + "font-weight:600; color:var(--ink);";
@@ -947,8 +955,9 @@ not NGCP official geometry. Announced figures may change; this page is dated
       e.style.width = (w/need*100) + "%";
       e.querySelector("span").textContent = w > 0 ? label : "";
     }
-    cap.innerHTML = "The plan works. 2,500 MW of its own, the last 500 over the lines";
-    set("steel", 0, 500, "500 over the power lines");
+    cap.innerHTML = "Pax Silica's plan works. 2,500 MW of its own power, the last 500 over the power lines";
+    document.getElementById("own-note").textContent = "";
+    set("steel", 0, 500, "500 MW over the power lines");
     set("navy", 500, 2500, "2,500 MW of its own");
     set("coral", 3000, 0, "");
     setTimeout(function(){ fitSegLabels(s); }, reduced ? 0 : 1080);
@@ -956,12 +965,14 @@ not NGCP official geometry. Announced figures may change; this page is dated
     clearTimeout(fig._t); fig._t = setTimeout(stateB, 2600);
     function stateB(){
       var lim = P.wires.limit_7pm_mw;
-      cap.innerHTML = "Then one generator breaks, and <em class='pop'>331 MW</em> of the campus has no power";
+      cap.innerHTML = "Then one generator breaks, and <em class='pop'>331 MW</em> of Pax Silica has no power";
       set("navy", 0, 1900, "1,900 MW of its own");
-      set("steel", 1900, lim, fmt(lim) + " over the power lines");
-      set("coral", 1900 + lim, need - 1900 - lim, fmt(need - 1900 - lim)
-        + " MW: no source (the electricity of " + P.wires.own_gap_homes_million
-        + "M homes)");
+      set("steel", 1900, lim, fmt(lim) + " MW over the power lines");
+      set("coral", 1900 + lim, need - 1900 - lim, fmt(need - 1900 - lim) + " MW");
+      document.getElementById("own-note").innerHTML =
+        "The <b style='color:#A65E46'>" + fmt(need - 1900 - lim) + " MW</b> in rust "
+        + "has no source at all. That is the electricity of "
+        + P.wires.own_gap_homes_million + " million Philippine homes.";
       setTimeout(function(){ fitSegLabels(s); }, 1080);
     }
   }

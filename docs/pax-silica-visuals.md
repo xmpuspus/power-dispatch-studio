@@ -19,7 +19,7 @@ site does not. The smoother file to share is `docs/pax-silica-scale.mp4`. To
 re-make it after a page change, run `make serve`, then
 `python3 build/record_pax_silica_scale.py`.
 
-## The campus would use more power than the entire Visayas grid
+## Pax Silica would use more power than the entire Visayas grid
 
 ![One rectangle tiled by the three grids. Luzon is the giant piece, and a dashed rust block in the Visayas block's shape overhangs it](pax-silica-figs/grids.png)
 
@@ -37,7 +37,7 @@ month typical household. One thing to remember when reading it is that the
 grid pieces were measured while the dashed square is a promise on paper,
 and BCDA has said it could go as high as 5,000 MW.
 
-## The solar farm signed for the campus covers 4.1% of its electricity for a day
+## Pax Silica's signed solar farm covers 4.1% of the campus's electricity for a day
 
 ![Twenty-four tall columns, one per hour, almost empty, with small rust slivers rising around noon and vanishing by evening](pax-silica-figs/acwa.png)
 
@@ -50,7 +50,7 @@ from 7pm, exactly when the grid is busiest, it covers nothing. The gray is
 named right on the chart as what still has to come from somewhere else, and
 the whole day adds up to 4.1 percent.
 
-## Running the campus on solar power alone would need 122 km² of panels
+## Running Pax Silica on solar power alone would need 122 km² of panels
 
 ![A real map of Metro Manila with a large translucent rust square covering Manila, Makati, Pasay, and part of Taguig](pax-silica-figs/land.png)
 
@@ -68,7 +68,7 @@ would still need about 33 GWh of batteries, 7 times MTerra Solar's. The
 basemap is OpenStreetMap and CARTO, the same one the project's grid map
 uses.
 
-## Today's power lines can deliver only a quarter of what the campus needs
+## Today's power lines can deliver only a quarter of what Pax Silica needs
 
 ![A tank labeled with the campus's 3,000 MW need, filled only a quarter of the way in navy, fed by two small pipes](pax-silica-figs/wires.png)
 
@@ -96,7 +96,7 @@ construction starts in the first quarter of 2028 and the substation is due at
 the end of it, which leaves nine months against the year each build above
 took.
 
-## Serving the campus from the grid would double the modeled price of Luzon electricity
+## Serving Pax Silica from the grid would double the modeled price of Luzon electricity
 
 ![Plant blocks lined up cheapest to priciest. A dark demand line lands on the navy coal block, a white one on the rust oil block](pax-silica-figs/priceb.png)
 
@@ -115,7 +115,7 @@ modeled day. A what-if inside
 a model rather than a forecast, and it ignores that the wires to the site
 cap out at 770 MW in the first place.
 
-## Then one generator breaks, and 331 MW of the campus has no power
+## Then one generator breaks, and 331 MW of Pax Silica has no power
 
 ![A bar showing 1,900 MW of its own, 769 over the lines, and a rust 331 MW gap](pax-silica-figs/own.png)
 
@@ -130,7 +130,7 @@ can, so 331 MW of the campus has nothing behind it, the electricity of
 power does not remove the grid. It turns the grid into your backup, and
 the backup runs down the same two lines.
 
-## The water the campus asked for would serve 1.4 to 2 times Makati's population
+## The water Pax Silica asked for would serve 1.4 to 2 times Makati's population
 
 ![Rows of water drops. Rust drops for the campus, fewer navy for Makati, outlined for the promised pond, and a 100-square grid with 2 colored](pax-silica-figs/water.png)
 
