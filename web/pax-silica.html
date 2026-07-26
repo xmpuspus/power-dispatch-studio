@@ -194,8 +194,8 @@ own June 2026 bulletins</a> agree on the Visayas number: evening peaks of
   busiest recorded moment across 105 archived days (7 Apr to 20 Jul 2026). The
   dashed rust block is Pax Silica on its own, drawn inside the Luzon block because
   New Clark City sits on Luzon and that is the grid it would join. It is not part of
-  the 14,232 MW already there, and it is bigger than the whole Visayas block just
-  across the gap, and bigger than Mindanao's too.</div>
+  the 14,232 MW already there, and it is bigger than the whole Visayas block, and
+  bigger than Mindanao's too.</div>
   <div class="blocks" id="grid-blocks"></div>
   <p class="srcline">Grid peaks: computed from the published 5-minute dispatch
   files of IEMOP, the Independent Electricity Market Operator of the Philippines,
@@ -610,7 +610,7 @@ not NGCP official geometry. Announced figures may change; this page is dated
     chip.innerHTML = "<b>Pax Silica alone, " + fmt(P.campus.mw) + " MW announced</b><br>"
       + "<span style='color:var(--ink)'>= the electricity of "
       + P.power.homes_million + "M Philippine homes</span>"
-      + (narrow ? "" : "<br>bigger than the whole Visayas grid, just right of it &rarr;");
+      + (narrow ? "" : "<br>bigger than the whole Visayas grid");
     wrap.style.height = (H + (narrow ? 48 : 4)) + "px";
   }
   function runGrids(fig){ fig.classList.add("on"); }
