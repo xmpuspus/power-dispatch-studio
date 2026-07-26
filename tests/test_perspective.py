@@ -12,6 +12,7 @@ leave the static text quietly wrong while the bars above it are correct.
 check_html_static_text() catches that: it strips the page's <script> block
 and asserts the bake's formatted values still appear in what is left.
 """
+import html as html_lib
 import json
 import math
 import os
@@ -148,9 +149,30 @@ def check_html_static_text(c, p, s, w, wa, pr):
     # the subject is named, never pointed at: "the campus" reads fine in place
     # and means nothing in a screenshot, a link preview, or a shared card
     body = html.split("<body>", 1)[1].split("<script>", 1)[0]
-    vague = re.findall(r"\bthe campus\b", re.sub(r"\s+", " ", body))
-    pin("no reader-facing line leans on 'the campus' instead of naming it",
+    vague = re.findall(r"\bthe (?:campus|site)\b", re.sub(r"\s+", " ", body))
+    pin("no reader-facing line leans on 'the campus' or 'the site' instead of naming it",
         not vague, f"{len(vague)} left")
+
+    # the walkthrough doc's headings are the chart titles, verbatim and in order,
+    # because Xavier reads the doc as the map of what each chart says
+    def flat_title(s):
+        s = re.sub(r"<[^>]+>", "", s)
+        s = html_lib.unescape(s)          # the page writes km&#178;
+        return re.sub(r"\s+", " ", s).strip()
+
+    titles = [flat_title(m) for m in
+              re.findall(r'<div class="figtitle">(.*?)</div>', html, re.S)]
+    doc_path = os.path.join(ROOT, "docs", "pax-silica-visuals.md")
+    if os.path.exists(doc_path):
+        heads = re.findall(r"^## (.+)$", open(doc_path).read(), re.M)
+        # the doc opens on the montage and closes on the limitations, neither of
+        # which is a chart
+        chart_heads = [h.strip() for h in heads if h.strip() in titles]
+        missing = [t for t in titles if t not in [h.strip() for h in heads]]
+        pin(f"all {len(titles)} chart titles appear verbatim as doc headings",
+            len(titles) == 8 and not missing, "; ".join(missing[:2]))
+        pin("doc headings carry the chart titles in the page's own order",
+            chart_heads == [t for t in titles if t in chart_heads])
     # the failure scenario cites the measured outage record
     orec = w["outages"]
     pin("outage record: named units with measured days out",

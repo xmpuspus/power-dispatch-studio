@@ -61,6 +61,9 @@
     overflow:hidden; }
   .seg{ position:absolute; top:0; bottom:0; width:0; transition:width 1s cubic-bezier(.22,.9,.35,1);
     border-right:2px solid #fff; }
+  /* the pale segment sits on white, so without an edge the bar reads as ending
+     early and the two bars stop looking like the same 3,000 MW */
+  .seg.pale{ box-shadow:inset 0 0 0 1px #b9977f; }
   .seg span{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     color:#fff; font-size:12.5px; white-space:nowrap; opacity:0; transition:opacity .4s .9s; }
   .on .seg span{ opacity:1; }
@@ -167,7 +170,7 @@
 <a class="back" href="index.html">&#8249; back to the map</a>
 <p class="kicker">Pax Silica, New Clark City, Capas, Tarlac</p>
 <h1>Pax Silica would draw more power than the whole Visayas grid, and use up to twice as much water as everyone in Makati. Every day.</h1>
-<p class="lede">In July 2026 the Bases Conversion and Development Authority, the government agency developing the site, put numbers on its Pax Silica campus:
+<p class="lede">In July 2026 the Bases Conversion and Development Authority, the government agency developing Pax Silica, put numbers on its Pax Silica campus:
 <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">3,000 MW of power at full development</a>, and
 <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">65 to 90 million liters of water a day</a>.
 Numbers that size mean nothing on their own. This page draws each one against
@@ -201,8 +204,9 @@ own June 2026 bulletins</a> agree on the Visayas number: evening peaks of
   built, and drawn inside the Luzon block because New Clark City sits on Luzon
   and that is the grid it would join. It is not part of
   the 14,232 MW already there, and it is bigger than the whole Visayas block, and
-  bigger than Mindanao's too. The same agency has since named a ceiling of at
-  least 5,000 MW for the finished campus, which would be larger again.</div>
+  bigger than Mindanao's too. Inquirer Business separately reports the project's
+  demand could reach at least 5,000 MW. Neither report says how that figure and
+  the announced 3,000 MW fit together.</div>
   <div class="blocks" id="grid-blocks"></div>
   <p class="srcline">Grid peaks: computed from the
   <a href="https://www.iemop.ph/market-data/rtd-regional-summaries/">5-minute regional dispatch files</a> that IEMOP, the
@@ -213,10 +217,13 @@ own June 2026 bulletins</a> agree on the Visayas number: evening peaks of
   bulletins</a> put Visayas evening peaks at 2,384 to 2,482 MW, in line with
   the 2,744 shown. Campus figure: BCDA president Joshua Bingcang via
   <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">GMA
-  News, 23 Jul 2026</a>, with the same agency's ceiling of at least 5,000 MW for the finished campus via
-  <a href="https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest">Inquirer
-  Business</a>. BCDA is the Bases Conversion and Development Authority, the
-  Philippine government agency developing the site. Homes:
+  News, 23 Jul 2026</a>, who put it at 3,000 MW at full development. The higher
+  figure is the reporting's own: "projected electricity demand could reach at
+  least 5 gigawatts"
+  (<a href="https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest">Inquirer
+  Business</a>), not attributed there to the agency and not reconciled with the
+  3,000. BCDA is the Bases Conversion and Development Authority, the
+  Philippine government agency developing Pax Silica. Homes:
   the 3,000 MW held around the clock for a month, divided by
   the 200 kilowatt-hours a month that Meralco, the utility serving Metro Manila,
   calls a typical household
@@ -242,13 +249,13 @@ sunset, and count what it covers of Pax Silica's 72,000 megawatt-hour (MWh) day.
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">Pax Silica's signed solar farm covers <em class="pop">4.1%</em> of the electricity it needs for a day</div>
   <div class="figsub">One day, hour by hour, in megawatts (MW). The dashed line is
-  what Pax Silica draws every hour of the day and night. The gold shape is what the
-  500 MW solar farm leased to Pax Silica would make, on a cloudless model day that is
-  generous to solar.</div>
+  what Pax Silica draws every hour of the day and night. The filled shape under it is what the
+  500 MW solar farm leased to Pax Silica would make, on a cloudless model day, the
+  best case for solar.</div>
   <div id="acwa-day"></div>
   <div class="cellnote" id="acwa-note"></div>
   <p class="srcline">The lease, signed by the Saudi developer ACWA Power with BCDA, the
-  Bases Conversion and Development Authority that is building the site:
+  Bases Conversion and Development Authority that is building Pax Silica:
   <a href="https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html">Enerdata,
   2 Jun 2026</a>. The solar shape is this project's cloudless model day, the
   <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/web/data/profiles.json">day-shape this project publishes</a>.</p>
@@ -275,7 +282,7 @@ Solar's 3,500 MW on 3,500 hectares one province over</a>, that is
   <div class="land" id="land-map"></div>
   <p class="fignote">For scale, all of New Clark City covers 94.5 km² and MTerra
   Solar, the biggest solar-and-battery build anywhere, covers 35 km². The 11 dark
-  hours would also need about 33 million kilowatt-hours of batteries, 7 times the
+  hours would also need about 33,000 megawatt-hours of batteries, 7 times the
   4,500 megawatt-hours MTerra Solar is building.</p>
   <p class="srcline">MTerra Solar:
   <a href="https://www.meralcopowergen.com.ph/mterra-solar-project-breaks-ground-a-monumental-milestone-in-the-philippines-renewable-energy-transition/">Meralco PowerGen</a>,
@@ -305,9 +312,12 @@ no path at all.</p>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">Today's power lines can deliver only <em class="pop">a quarter</em> of what Pax Silica needs</div>
   <div class="figsub">Pax Silica would need 3,000 megawatts (MW) every hour. Every
-  line here is one circuit into Pax Silica. The solid ones exist. The dashed ones do
+  row here is one circuit into Pax Silica, and the towers drawn along it only say
+  that it is a power line: they are not a count of anything. The solid ones exist. The dashed ones do
   not, and are how many more of the same kind the rest of Pax Silica would take.
-  Worked out by this project's grid model for 7pm on 25 Jun 2026.</div>
+  The 769 MW is what is left over on lines that already carry other power; the
+  2,231 MW is capacity that does not exist at all. Worked out by this project's
+  grid model for 7pm on 25 Jun 2026.</div>
   <div id="wires-flow" style="margin-bottom:2px"></div>
   <p class="srcline">NGCP, the National Grid Corporation of the Philippines, does
   not publish what its
@@ -428,11 +438,14 @@ into your backup, and the backup comes down the same two circuits.</p>
 <div class="fig" id="fig-own" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-own">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
-  <div class="figtitle">One generator down leaves <em class="pop">331 MW</em> of Pax Silica with no power</div>
+  <div class="figtitle">Even with its own 2,500 MW power station, one generator
+  down leaves <em class="pop">331 MW</em> of Pax Silica with no power</div>
   <div class="figsub">Both bars are the 3,000 megawatts (MW) Pax Silica needs every
-  hour, split by where each megawatt would come from. This is its announced plan to
-  build its own power station, modeled at 7pm on 25 Jun 2026 against Pax Silica's two
-  existing power lines.</div>
+  hour, split by where each megawatt would come from. Building its own power
+  station is its announced plan; the 2,500 MW size is a chosen illustration,
+  modeled at 7pm on 25 Jun 2026. Its two existing power lines can carry at most
+  769 MW at that hour, which is why they cannot make up the whole 600 MW a tripped
+  generator takes away.</div>
   <div id="own-rows"></div>
   <div class="cellnote" id="own-note"></div>
   <p class="srcline">The 2,500 MW station is a chosen size, not an announced
@@ -464,12 +477,13 @@ and the division is simple. Here is that number three ways.</p>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">The water Pax Silica asked for would serve <em class="pop">1.4 to 2 times Makati's population</em></div>
   <div class="figsub">One drop is 5 million liters a day, and the drops are grouped
-  in fives so they can be counted. A rust outline is the top of the announced range.
-  A navy outline is a promise not built yet. Rust is Pax Silica, navy is water people
-  already use. Makati is a city in Metro Manila.</div>
+  in fives so they can be counted. Solid rust is the low end of what Pax Silica
+  asked for; hollow rust carries it to the top of that range. Solid navy is water
+  people already use. Navy with a pale fill is a pond that has been promised and
+  not built. Makati is a city in Metro Manila.</div>
   <div class="droprow">
     <div class="dlabel"><b>What Pax Silica would drink</b>, the figure from BCDA,
-    the Bases Conversion and Development Authority, which is building the site</div>
+    the Bases Conversion and Development Authority, which is building Pax Silica</div>
     <span id="drops-campus"></span>
   </div>
   <div class="droprow">
@@ -488,9 +502,10 @@ and the division is simple. Here is that number three ways.</p>
     <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">Angat
     dam</a>, its main water source, Pax Silica would take about 2</b></div>
     <div class="waffle100" id="angat-waffle"></div>
-    <div class="wafnote">The two rust squares are Pax Silica's share of the
-    4,000 million liters a day Metro Manila draws from the dam, which is
-    1.6 to 2.2 percent of it.</div>
+    <div class="wafnote">Each square is one liter in a hundred. The two rust squares
+    are Pax Silica's share and the other 98 are the rest of the 4,000 million liters
+    a day Metro Manila draws from the dam. Pax Silica's exact share is 1.6 to
+    2.2 percent.</div>
   </div>
   <p class="fignote">The small print, exactly: Pax Silica's announced 65 to 90
   million liters a day is the tap water of 433,000 to 600,000 people at
@@ -528,7 +543,7 @@ Pax Silica has been published. That absence is the finding.</p>
 <h2>Every Pax Silica number here has a source. None of it has been independently checked.</h2>
 <table class="ledger">
 <tr><th>Announced, with an owner and a date</th><th>Worked out on this page</th></tr>
-<tr><td>3,000 MW at full development, ceiling "at least 5 GW", meaning 5,000 MW (BCDA, Jul 2026)</td>
+<tr><td>3,000 MW at full development (BCDA, Jul 2026); reporting separately projects at least 5,000 MW (Inquirer, Jul 2026)</td>
     <td>More than any Visayas or Mindanao 5-minute peak in 105 archived days; about a fifth of Luzon's</td></tr>
 <tr><td>65 to 90 million liters of water a day (BCDA, Jul 2026)</td>
     <td>The daily tap water of 433,000 to 600,000 people, or 520 to 900 hectares of rice in season</td></tr>
@@ -767,7 +782,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
       + "px; top:" + (cy + side / 2 + 6) + "px; font-size:12.5px; font-weight:600;"
       + "color:#A65E46; background:rgba(255,255,255,.92); border-radius:4px; padding:2px 7px;";
     ol.textContent = "the panels Pax Silica would need on sunlight alone, "
-      + P.sun.sun_alone_km2 + " km\u00b2";
+      + P.sun.sun_alone_km2 + " km\u00b2, drawn here for size, not as a location";
     // the one signed farm at the same true scale, for contrast
     var fs = Math.sqrt(P.sun.acwa_ha / 100) * 1000 / mpp;
     var mapNarrow = LW < 480;
@@ -793,13 +808,14 @@ this page is dated 26 Jul 2026 and its numbers are baked from
         + P.sun.sun_alone_km2 + " km\u00b2</span>"
         + "<span style='display:block; margin-top:2px'>" + swatch("#A65E46", "#A65E46")
         + "the small square is the one signed farm, " + (P.sun.acwa_ha / 100)
-        + " km\u00b2</span>";
+        + " km\u00b2. Both are drawn for size, not as locations.</span>";
     } else {
       var fl = el("div", "saxis", land);
       fl.style.cssText = "position:absolute; z-index:4; left:" + (fx + fs + 6)
         + "px; top:" + (cy - side / 2 + 2) + "px; font-size:11.5px;"
         + "color:var(--ink); background:rgba(255,255,255,.92); border-radius:4px; padding:1px 6px;";
-      fl.innerHTML = "\u2190 the signed farm, " + (P.sun.acwa_ha / 100) + " km\u00b2";
+      fl.innerHTML = "\u2190 the signed farm at the same scale, "
+        + (P.sun.acwa_ha / 100) + " km\u00b2, also not its real location";
     }
     // Makati marked at the map centre, so the subtitle's claim about it can be
     // checked against the picture instead of taken on trust
@@ -1134,7 +1150,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
       var st = el("div", "stack", host);
       var left = 0;
       r.segs.forEach(function(sg, si){
-        var e = el("div", "seg", st);
+        var e = el("div", "seg" + (sg.k === "lines" ? " pale" : ""), st);
         e.style.background = paint[sg.k];
         e.style.left = (left / need * 100) + "%";
         e.dataset.w = (sg.mw / need * 100) + "%";
@@ -1182,9 +1198,12 @@ this page is dated 26 Jul 2026 and its numbers are baked from
         if (i && i % 5 === 0) d.style.marginLeft = "12px";
       });
       if (endnote){
+        // a nowrap note long enough to name its unit pushed the page 74px wide on
+        // a phone, so it wraps and drops to its own line when the drops fill the row
         var e = el("span", "saxis", host);
-        e.style.cssText = "font-size:11.5px; color:var(--muted); margin-left:6px;"
-          + "vertical-align:2px; white-space:nowrap;";
+        e.style.cssText = "font-size:11.5px; color:var(--muted);"
+          + "display:inline-block; margin:2px 0 0 6px; max-width:100%;"
+          + "overflow-wrap:anywhere;";
         e.textContent = endnote;
       }
     }
@@ -1194,10 +1213,11 @@ this page is dated 26 Jul 2026 and its numbers are baked from
       P.water.liters_per_person_day / 1e6 / UNIT);               // 9
     var pond = Math.round(P.water.harvest_mld / UNIT);           // 24
     drops("drops-campus", lo, hi, "solid", "range",
-      "65 to 90 million liters = " + P.water.pools_per_day[0] + " to "
-      + P.water.pools_per_day[1] + " Olympic pools");
-    drops("drops-makati", makati, 0, "anchor", "", "about 46 million liters");
-    drops("drops-harvest", 0, pond, "", "promise", "120, promised");
+      "65 to 90 million liters a day = " + P.water.pools_per_day[0] + " to "
+      + P.water.pools_per_day[1] + " Olympic pools of 2.5 million liters each");
+    drops("drops-makati", makati, 0, "anchor", "",
+      "about 46 million liters a day");
+    drops("drops-harvest", 0, pond, "", "promise", "120 million liters a day, promised");
     var w = document.getElementById("angat-waffle"); w.innerHTML = "";
     for (var q = 0; q < 100; q++){ el("i", q < 2 ? "hit" : "", w); }
   }
@@ -1218,7 +1238,10 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     Array.prototype.forEach.call(stackEl.querySelectorAll(".seg"), function(seg){
       var span = seg.querySelector("span"), text = span.textContent;
       if (!text) return;
-      var segW = seg.getBoundingClientRect().width, needW = span.scrollWidth + 20;
+      // offsetWidth, not getBoundingClientRect: the montage magnifies the card
+      // with a CSS transform, and a scaled rect compared against an unscaled
+      // scrollWidth let a label stay inside a segment it did not fit
+      var segW = seg.offsetWidth, needW = span.scrollWidth + 20;
       if (segW < needW || segW < 46){
         span.textContent = "";
         var chip = el("span", "chip", legend);

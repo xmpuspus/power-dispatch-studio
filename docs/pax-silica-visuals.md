@@ -36,18 +36,19 @@ at the same baseline, so you can see that Pax Silica alone is bigger than that
 whole grid, and bigger than Mindanao's too. The chip carries the translation, since 3,000 MW around the
 clock is the electricity of 10.9 million homes at Meralco's 200 kWh a
 month typical household. One thing to remember when reading it is that the
-grid pieces were measured while the dashed square is a promise on paper,
-and BCDA has said it could go as high as 5,000 MW.
+grid pieces were measured while the dashed square is a promise on paper.
+Reporting on the project separately projects demand of at least 5,000 MW, and
+neither report says how that fits with the announced 3,000.
 
 ## Pax Silica's signed solar farm covers 4.1% of the electricity it needs for a day
 
-![One day in megawatts. A flat dashed line at 3,000 for Pax Silica. A low gold hump for the solar farm, peaking at 390 at noon](pax-silica-figs/acwa.png)
+![One day in megawatts. A flat dashed line at 3,000 for Pax Silica. A low filled hump for the solar farm, peaking at 390 at noon](pax-silica-figs/acwa.png)
 
 A real solar deal exists. ACWA Power leased 500 hectares in June 2026 to
 build up to 500 MW of solar with batteries. The chart draws one day in
 megawatts, so the sizes are the point rather than a percentage. The dashed
-line is Pax Silica drawing 3,000 MW every hour of the day and night. The gold
-hump is the farm on a perfect cloudless day, and at its noon best it reaches
+line is Pax Silica drawing 3,000 MW every hour of the day and night. The filled
+shape is the farm on a perfect cloudless day, and at its noon best it reaches
 390 MW. From 7pm it makes nothing at all, which is when the grid is busiest.
 Added over the whole day it covers 4.1 percent of the electricity Pax Silica needs.
 
@@ -65,7 +66,7 @@ Silica sits about 95 km north, and the map is only a place to see the size
 against. The small solid rust square beside it is the farm they actually
 signed, 5 km². For scale, all of New Clark City is 94.5 km² and MTerra
 Solar itself, the biggest solar build anywhere, is 35. After sunset you
-would still need about 33 million kilowatt-hours of batteries, 7 times MTerra Solar's. The
+would still need about 33,000 megawatt-hours of batteries, 7 times MTerra Solar's. The
 basemap is OpenStreetMap and CARTO, the same one the project's grid map
 uses.
 
@@ -122,12 +123,14 @@ modeled day. A what-if inside
 a model rather than a forecast, and it ignores that the wires to the site
 cap out at 770 MW in the first place.
 
-## Then one generator breaks, and 331 MW of Pax Silica has no power
+## Even with its own 2,500 MW power station, one generator down leaves 331 MW of Pax Silica with no power
 
 ![Two bars of 3,000 MW. On a normal night Pax Silica's own station plus the lines cover it. With one generator down, a rust block of 331 MW is left over](pax-silica-figs/own.png)
 
 BCDA's actual plan is for Pax Silica to build its own power station instead
-of drawing from the grid. Both bars are the same 3,000 MW, so the two nights sit
+of drawing from the grid. The 2,500 MW size is one this page chose to
+illustrate the plan. No station size has been announced. The 769 MW is all the two existing lines have left at
+that hour, which is why they cannot cover the whole 600 MW loss. Both bars are the same 3,000 MW, so the two nights sit
 side by side and one screenshot carries the whole story. On a normal night,
 2,500 MW from its own station plus 500 over the power lines covers everything.
 On the second bar one 600 MW generator is down, about the size of one of the two
@@ -146,7 +149,8 @@ second unit on 9.
 No model needed here. BCDA itself said Pax Silica will use 65 to 90 million
 liters of water a day, which is 26 to 36 Olympic pools every single day,
 and the chart makes it countable. One drop is 5 million liters a day. The drops are grouped in fives so they can be counted. Pax Silica's row has
-13 solid rust drops and 5 rust-outlined ones (the top of BCDA's own range).
+13 solid rust drops for the low end and 5 hollow rust ones carrying it to the
+top of BCDA's own range.
 Everyone living in Makati is 9 navy drops. The rainwater pond BCDA promises is
 24 navy-outlined drops, more than Pax Silica asks for, but it does not exist
 yet and it depends on the rain. And the last row zooms out. Of every 100 liters
