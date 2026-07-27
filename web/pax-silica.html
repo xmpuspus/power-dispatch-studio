@@ -214,13 +214,19 @@
 <main>
 <a class="back" href="index.html">&#8249; back to the map</a>
 <p class="kicker">Pax Silica, New Clark City, Capas, Tarlac</p>
-<h1>Pax Silica would draw more power than the whole Visayas grid, and use up to twice as much water as everyone in Makati. Every day.</h1>
+<h1>Pax Silica would draw more power than the whole Visayas grid, and use up to twice the daily water planned for everyone living in Makati. Every day.</h1>
 <p class="lede">In July 2026 the Bases Conversion and Development Authority, the government agency developing Pax Silica, put numbers on its Pax Silica campus:
 <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">3,000 MW of power at full development</a>, and
 <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">65 to 90 million liters of water a day</a>.
+Both are full-development figures. BCDA puts initial site development in the
+first quarter of 2028 and says
+<a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">full
+development takes another 10 to 15 years</a> after that, so every comparison on
+this page sets a figure for the 2040s against a grid and a city measured in 2026.
 Numbers that size mean nothing on their own. This page draws each one against
 something you already know, and then follows what it would actually take to
-supply.</p>
+supply. BCDA also puts 130,000 to 190,000 direct jobs on the same project. This
+page counts what Pax Silica would draw, not what it would return.</p>
 <p class="lede" style="font-size:13.5px">Announced figures are labeled with their owner.
 Everything else is arithmetic you can check, or a result from <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/nodal_dcopf.py">this project's
 grid model</a>, whose own sources sit on every chart below.</p>
@@ -230,48 +236,64 @@ grid model</a>, whose own sources sit on every chart below.</p>
 <h2>Pax Silica's 3,000 MW is more than the entire Visayas grid asked for at its highest recorded moment</h2>
 <p>Start with the number itself.
 <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">BCDA's
-figure for Pax Silica at full development is 3,000 MW</a> ("at full development,
-mga three gigawatts po iyan" was the exact quote), held around the clock,
-because chip plants and data centers do not sleep. Put it beside the three
+figure for Pax Silica at full development is 3,000 MW</a> ("Initial assessment
+is to be conservative, around, at full development, mga three gigawatts po
+iyan" was the exact quote), held around the clock here, because chip plants and
+data centers do not sleep. Full development is 10 to 15 years after
+construction starts in 2028, so this is a 2040s figure. Put it beside the three
 island grids on one scale.
-<a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">NGCP's
-own June 2026 bulletins</a> agree on the Visayas number: evening peaks of
-2,384 to 2,482 MW against 2,581 to 2,691 MW available.</p>
+Two NGCP bulletins bracket the same Visayas grid a different way: evening peak
+demand of
+<a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">2,482 MW
+on 15 June 2026</a> and
+<a href="https://www.gmanetwork.com/news/money/economy/991590/ngcp-visayas-grid-yellow-alert-june-16-2026/story/">2,384 MW
+on 16 June</a>, against 2,581 and 2,587 MW available.</p>
 
 <div class="fig" id="fig-grids" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-grids">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">Pax Silica would use more power than the <em class="pop">entire Visayas grid</em></div>
-  <div class="figsub">Each block's area is the electricity used, in megawatts (MW).
-  The three pale blocks are the Philippines' three island power grids, each at its
-  busiest recorded moment across 105 archived days (7 Apr to 20 Jul 2026). The
+  <div class="figsub">Each block's area is power, in megawatts (MW). The three
+  pale blocks are the Philippines' three island power grids, each at the highest
+  5-minute energy requirement the market recorded for it across 105 archived days
+  (7 Apr to 20 Jul 2026). The
   rust block is Pax Silica on its own, dashed because it is announced and not
   built, and drawn inside the Luzon block because New Clark City sits on Luzon
   and that is the grid it would join. It is not part of
   the 14,232 MW already there, and it is bigger than the whole Visayas block, and
-  bigger than Mindanao's too. Inquirer Business separately reports the project's
-  demand could reach at least 5,000 MW. Neither report says how that figure and
-  the announced 3,000 MW fit together.</div>
+  bigger than Mindanao's too. The two are not the same kind of number: the grids
+  are single recorded moments in 2026, while Pax Silica's 3,000 MW is an
+  announced draw held around the clock at a full development BCDA puts 10 to 15
+  years after construction starts in 2028. Inquirer Business separately reported
+  in June 2026 that demand could reach at least 5,000 MW. Neither report says how
+  that figure and the announced 3,000 MW fit together.</div>
   <div class="blocks" id="grid-blocks"></div>
   <p class="srcline">Grid peaks: computed from the
   <a href="https://www.iemop.ph/market-data/rtd-regional-summaries/">5-minute regional dispatch files</a> that IEMOP, the
   Independent Electricity Market Operator of the Philippines, publishes, 7 Apr to
   20 Jul 2026, <a href="https://github.com/xmpuspus/power-dispatch-studio/tree/main/data/raw/RTDSUM">archived day by day in this repo</a>;
   the grid operator NGCP, the National Grid Corporation of the Philippines, in its own
-  <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">June 2026
-  bulletins</a> put Visayas evening peaks at 2,384 to 2,482 MW, in line with
-  the 2,744 shown. Campus figure: BCDA president Joshua Bingcang via
+  <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">15 June
+  2026</a> and
+  <a href="https://www.gmanetwork.com/news/money/economy/991590/ngcp-visayas-grid-yellow-alert-june-16-2026/story/">16 June
+  2026</a> bulletins put Visayas evening peak demand at 2,482 and 2,384 MW,
+  against 2,581 and 2,587 MW available. Those are two different quantities from
+  the 2,744 shown, which is the highest 5-minute market energy requirement in
+  105 archived days and sits 11 to 15 percent above the bulletin peaks. The
+  point of putting them side by side is that they bracket the same grid, not
+  that they agree. Campus figure: BCDA president Joshua Bingcang via
   <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">GMA
-  News, 23 Jul 2026</a>, who put it at 3,000 MW at full development. The higher
-  figure is the reporting's own: "projected electricity demand could reach at
-  least 5 gigawatts"
+  News, 23 Jul 2026</a>, who put it at 3,000 MW at full development, which the
+  same agency puts 10 to 15 years after construction starts in 2028. The higher
+  figure is a reporter's own sentence, a month earlier: "projected electricity
+  demand could reach at least 5 gigawatts"
   (<a href="https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest">Inquirer
-  Business</a>), not attributed there to the agency and not reconciled with the
-  3,000. BCDA is the Bases Conversion and Development Authority, the
-  Philippine government agency developing Pax Silica. Homes:
+  Business, 22 Jun 2026</a>), not attributed there to the agency and not
+  reconciled with the 3,000. BCDA is the Bases Conversion and Development
+  Authority, the Philippine government agency developing Pax Silica. Homes:
   the 3,000 MW held around the clock for a month, divided by
   the 200 kilowatt-hours a month that Meralco, the utility serving Metro Manila,
-  calls a typical household
+  works its own example bill on
   (<a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">its
   July 2026 rate advisory</a>). Island populations, 2020 census:
   <a href="https://en.wikipedia.org/wiki/Luzon">Luzon</a>,
@@ -344,29 +366,34 @@ Solar's 3,500 MW on 3,500 hectares one province over</a>, that is
 
 <!-- ============================ BEAT 3: WIRES ============================ -->
 <section class="beat" id="b-wires">
-<h2>The two power lines into Pax Silica can carry 770 of the 3,000 MW it needs</h2>
+<h2>The two power routes into Pax Silica can carry 770 of the 3,000 MW it needs</h2>
 <p>The second answer is the grid: generate elsewhere, deliver over wires. Pax
-Silica connects to the rest of Luzon through two 230 kilovolt (kV) circuits of one
-Concepcion to Clark route. Solving one recorded day on the public grid map, the
-most Pax Silica could draw through them at the 7pm peak is about 770 MW, and
-one of the two circuits is its only route in. Lose that one and the map shows
-no path at all.</p>
+Silica connects to the rest of Luzon through two 230 kilovolt (kV) routes off
+one Concepcion to Clark corridor, each route carrying a pair of circuits on the
+same towers. Solving one recorded day on the public grid map, the most Pax
+Silica could draw through them at the 7pm peak is about 770 MW, and only one of
+the two routes actually feeds it. Lose that whole route, both of its circuits at
+once, and the map shows no path at all. Losing a single circuit leaves its
+partner standing, so this is the two-circuit case, not the one-circuit case.</p>
 
 <div class="fig" id="fig-wires" style="--accent:#07203F">
   <button class="replay" data-replay="fig-wires">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">Today's power lines can deliver only <em class="pop">a quarter</em> of what Pax Silica needs</div>
   <div class="figsub">Pax Silica would need 3,000 megawatts (MW) every hour. Every
-  row here is one circuit into Pax Silica, and the towers drawn along it only say
+  row here is one 230 kilovolt (kV) route into Pax Silica, carrying two circuits
+  on shared towers, and the towers drawn along it only say
   that it is a power line: they are not a count of anything. The solid ones exist. The dashed ones do
   not, and are how many more of the same kind the rest of Pax Silica would take.
   The 769 MW is what is left over on lines that already carry other power; the
-  2,231 MW is capacity that does not exist at all. Worked out by this project's
-  grid model for 7pm on 25 Jun 2026.</div>
+  2,231 MW is capacity that does not exist at all, and three more routes of the
+  same class would cover it with about 170 MW to spare. Worked out by this
+  project's grid model for 7pm on 25 Jun 2026.</div>
   <div id="wires-flow" style="margin-bottom:2px"></div>
   <p class="srcline">NGCP, the National Grid Corporation of the Philippines, does
   not publish what its
-  lines carry, so this model uses the standard rating for a 230 kilovolt (kV) line. The limit
+  lines carry, so this model rates each 230 kilovolt (kV) circuit at a class default of
+  400 MW, which makes 800 MW for a two-circuit route. The limit
   moves between 699 and 776 MW through the day, because other power sharing the same
   lines rises and falls. The routes come from
   <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> and the solver is
@@ -394,26 +421,34 @@ are the slow part:</p>
   pesos.</div>
   <div class="strip">
     <div class="name"><a href="https://ngcp.ph/article?cid=16897">Hermosa-San Jose
-    500 kilovolt transmission line</a>, P10.2 billion, carries 8,000 megawatts (MW)</div>
+    500 kilovolt transmission line</a>,
+    <a href="https://www.ngcp.ph/article?cid=16649">P10.2 billion</a>, carries 8,000 megawatts (MW)</div>
     <div class="tl" id="tl-hsj"></div>
   </div>
   <div class="strip">
     <div class="name"><a href="https://www.ngcp.ph/article?cid=16636">Mindanao-Visayas
-    undersea power link</a>, P52 billion, carries 450 MW</div>
+    undersea power link</a>, P52 billion,
+    <a href="https://www.ngcp.ph/article?cid=16899">carries 450 MW</a></div>
     <div class="tl" id="tl-mvip"></div>
   </div>
   <div class="strip">
     <div class="name">The power substation promised for Pax Silica, on its own
-    2026-to-2028 axis. The dashed bar runs from Pax Silica's construction
-    starting, in the first quarter of 2028, to the substation being due at the
-    end of 2028.</div>
+    2026-to-2028 axis. The dashed bar runs from Pax Silica's initial site
+    development starting, in the first quarter of 2028, to the substation being
+    due at the end of 2028.</div>
     <div class="tl" id="tl-substation"></div>
   </div>
-  <p class="srcline">Buying the right of way across private land is the delay the
-  grid operator itself names most often. The Pax Silica substation
+  <p class="srcline">Right of way across private land is what stretched the first
+  bar: a Supreme Court order froze towers 170 to 178 for nine of its 13 months.
+  Pax Silica may not face that one. BCDA says it is offering land along the
+  Subic-Clark-Tarlac Expressway so the line into New Clark City has an
+  unimpeded route, and NGCP turned down the offer from BCDA, the Bases
+  Conversion and Development Authority, to prefund the work because
+  the substation already sits in its capital plan. What the two bars still show
+  is how long the last kilometers take once building starts. The Pax Silica substation
   (<a href="https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city">Manila
   Bulletin, 25 May 2026</a>) is due at the end of 2028 while Pax Silica's
-  construction starts in the first quarter of 2028. Depending where in that quarter it starts,
+  initial site development starts in the first quarter of 2028. Depending where in that quarter it starts,
   that leaves nine to twelve months, against the 13 and 9 months the two builds
   above took.</p>
   <p class="rawline">Sources: <a href="https://ngcp.ph/article?cid=16897">ngcp.ph/article?cid=16897</a> &middot; <a href="https://www.ngcp.ph/article?cid=16636">ngcp.ph/article?cid=16636</a> &middot; <a href="https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city">mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city</a></p>
@@ -427,59 +462,76 @@ are the slow part:</p>
 plants that cost more, and the marginal plant is what sets the price for
 everyone, in pesos per kilowatt-hour (kWh). This project's <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py">cost model</a>
 replays the same recorded day, 25 June 2026, with and without Pax Silica.
-Without it, coal sets the Luzon price in all 24 hours, at the coal cost the Energy Regulatory Commission
-administers, P6.00 per kWh (<a href="https://www.iemop.ph/market-data/indicative-administered-prices/">the administered price
-IEMOP publishes</a>). With it, oil is the marginal plant in all 24 hours and the
-price is P12.00. Not a spike at the evening peak. The whole day, doubled, for
-every buyer on the grid.</p>
+Without it, coal sets the Luzon price in all 24 hours, at the administered coal cost of
+P6.00 per kWh (<a href="https://www.iemop.ph/market-data/indicative-administered-prices/">the
+indicative administered price IEMOP publishes</a>, set by the Energy Regulatory
+Commission). With it the price is P12.00 in all 24 hours, and oil is the plant
+that sets it in 16 of those hours, with power pulled from the other island grids
+setting 6 and hydro setting 2. Not a spike at the evening peak. The whole day,
+doubled, for every buyer on the grid. The doubling is exactly P12.00 over P6.00,
+and the P12.00 is a labelled assumption, so that one number sets the size of the
+claim: at P9.00 the same run reads 1.5 times, at P15.00 it reads 2.5.</p>
 
 <div class="fig" id="fig-priceb" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-priceb">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">Serving Pax Silica from the grid would <em class="pop">double the modeled price</em> of Luzon electricity</div>
-  <div class="figsub">Every power plant on Luzon, the Philippines' biggest grid,
-  lined up cheapest to priciest, on one recorded evening, 25 June 2026. A block's
+  <div class="figsub">Luzon's whole fleet, the Philippines' biggest grid, grouped
+  into eight fuel-and-cost blocks and lined up cheapest to priciest. A block's
   width is its megawatts and its height is its cost in Philippine pesos per
-  kilowatt-hour. The last plant needed sets the price everyone pays, so each line
-  stops inside that plant rather than at its edge: only part of it runs. The same
-  fuel appears twice at two costs, because two plants burning it are not equally
-  cheap.</div>
+  kilowatt-hour. Each block holds many plants, which is why coal appears twice at
+  two costs. The last block needed sets the price everyone pays, so each line
+  stops inside that block rather than at its edge: only part of it runs. The two
+  demand lines are the typical evening, the average 7pm demand across the 105
+  archived days, not one dated evening. Adding 3,000 MW leaves 664 MW of the
+  stack unused, so the grid clears, barely.</div>
   <div class="steps" id="price-steps"></div>
-  <p class="fignote">If that cost reached households, P6.00 more per kilowatt-hour
-  is P1,200 a month more on a 200 kWh bill (a model figure, not a forecast). The
+  <p class="fignote">If that cost reached households in full, P6.00 more per
+  kilowatt-hour
+  is P1,200 a month more on a 200 kWh bill (a model figure, not a forecast, and
+  the spot price is only one part of a generation charge). The
   cables to the other Philippine grids also fill up, and the price gap across a full
   cable is money someone pays: about P38 million in this one modeled day, with the
   Visayas evening price pulled up to P11.98.</p>
-  <p class="srcline">A what-if on the cost model, not a forecast. It holds Pax
+  <p class="srcline">A what-if on the cost model, not a forecast, and BCDA, the
+  Bases Conversion and Development Authority developing Pax Silica, does
+  not ask for this. It holds Pax
   Silica at a flat 3,000 MW and ignores delivery. Only about 770 MW can physically
-  reach Pax Silica over its two existing power lines, and real evening prices already
+  reach Pax Silica over its two existing power routes, and real evening prices already
   run above this stack. Coal at P6.00 is
-  <a href="https://www.iemop.ph/market-data/indicative-administered-prices/">the price
-  administered by IEMOP</a>, the Independent Electricity Market Operator of the
-  Philippines, and gas is
+  <a href="https://www.iemop.ph/market-data/indicative-administered-prices/">the
+  indicative administered price published by IEMOP</a>, the Independent
+  Electricity Market Operator of the Philippines, and set by the Energy
+  Regulatory Commission; gas is
   <a href="https://www.foi.gov.ph/requests/malampaya-natural-gas-price/">a freedom-of-information answer</a>, but the P12.00 oil
   price is a labelled assumption, a peaker proxy in
   <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/fleet_ph.py">the fuel-cost table, where it is labelled an assumption</a>.</p>
   <p class="rawline">Sources: <a href="https://www.iemop.ph/market-data/indicative-administered-prices/">iemop.ph/market-data/indicative-administered-prices</a> &middot; <a href="https://www.foi.gov.ph/requests/malampaya-natural-gas-price/">foi.gov.ph/requests/malampaya-natural-gas-price</a> &middot; <a href="https://www.iemop.ph/market-data/dipc-energy-results-final/">iemop.ph/market-data/dipc-energy-results-final</a> &middot; <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026</a></p>
 </div>
 <p>The market as it runs now prices congestion small and sparse. The published
-nodal congestion component of the Wholesale Electricity Spot Market (WESM) fires on 28 of 70 sampled days, a median
-of P0.56 per kWh, at most P19 on 26 May 2026
+nodal congestion component of the Wholesale Electricity Spot Market (WESM) fires
+on 28 of 70 sampled days. Across the node-hours where it does fire the median is
+P0.56 per kWh, and the largest single value in the sample is P19.28 on 26 May
+2026. Over all 70 sampled days the median is zero
 (<a href="https://www.iemop.ph/market-data/dipc-energy-results-final/">IEMOP's nodal price files</a>).</p>
 </section>
 
 <!-- ======================= BEAT 4: OWN STATION =========================== -->
 <section class="beat" id="b-own">
-<h2>Pax Silica's own power station is the actual plan, and it still leans on the same two power lines</h2>
-<p>Which is why BCDA says Pax Silica will build its own power rather than take
-3,000 MW from the grid. Follow that plan at 7pm: say it builds 2,500 MW of its
-own and draws the last 500 over the lines. The bar fills. It works.</p>
-<p>Then one 600 MW unit trips, a generator about the size of one of the
-two units at the Sual coal plant in Pangasinan, the most ordinary event in a
-power system. The
+<h2>Pax Silica's own power station is the actual plan, and it still leans on the same two power routes</h2>
+<p>Which is why BCDA says Pax Silica will build its own power on site rather
+than lean on the grid for the whole 3,000 MW. It has not turned grid supply
+down: BCDA also says it is looking outside New Clark City for power, and NGCP is
+building the dedicated substation. Follow the on-site plan at 7pm: say Pax
+Silica builds 2,500 MW of its own and draws the last 500 over the lines. The bar
+fills. It works.</p>
+<p>Then one 600 MW unit goes out, a generator about the size of one of the
+two units at the Sual coal plant in Pangasinan. The
 lines are already asked for everything they carry, and 331 MW of Pax Silica
 has no source. Building your own station does not remove the grid, it turns the grid
-into your backup, and the backup comes down the same two circuits.</p>
+into your backup, and the backup comes down the same two routes. The 331 MW is
+set by the unit size chosen: at 417 MW, the largest unit in the outage record
+below, the gap is 148 MW instead.</p>
 
 <div class="fig" id="fig-own" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-own">replay</button>
@@ -488,20 +540,24 @@ into your backup, and the backup comes down the same two circuits.</p>
   down leaves <em class="pop">331 MW</em> of Pax Silica with no power</div>
   <div class="figsub">Both bars are the 3,000 megawatts (MW) Pax Silica needs every
   hour, split by where each megawatt would come from. Building its own power
-  station is its announced plan; the 2,500 MW size is a chosen illustration,
-  modeled at 7pm on 25 Jun 2026. Its two existing power lines can carry at most
-  769 MW at that hour, which is why they cannot make up the whole 600 MW a tripped
-  generator takes away.</div>
+  station on site is its announced plan; the 2,500 MW station size and the 600 MW
+  unit are both chosen illustrations, not announced figures, modeled at 7pm on
+  25 Jun 2026. Its two existing power routes can carry at most
+  769 MW at that hour, which is why they cannot make up the whole 600 MW an
+  out-of-service generator takes away.</div>
   <div id="own-rows"></div>
   <div class="cellnote" id="own-note"></div>
   <p class="srcline">The 2,500 MW station is a chosen size, not an announced
   project, and the 600 MW unit is a normal size for one, close to one of the two
-  647 MW units at the Sual coal plant in Pangasinan. The outage counts come from
+  647 MW units at the Sual coal plant in Pangasinan. Both choices move the
+  answer: the largest unit in the outage record below is 417 MW, which would
+  leave 148 MW rather than 331. The outage counts come from
   the
   <a href="https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/">outage
   schedules</a> that IEMOP, the Independent Electricity Market Operator of the
   Philippines, publishes, and they cover planned maintenance as well as breakdowns, because
-  the published status does not separate them. Full working in
+  the published status does not separate them, which is why nothing here says a
+  unit tripped. Full working in
   <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/pax-silica-embedded.md">the deliverability note</a>;
   run any variant in the <a href="studio/">studio's siting view</a>.</p>
   <p class="rawline">Sources: <a href="https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/">iemop.ph/market-data/outage-schedules-used-in-rtd</a> &middot; <a href="https://www.iemop.ph/market-data/registered-capacity-generation/">iemop.ph/market-data/registered-capacity-generation</a> &middot; <a href="https://www.gem.wiki/Sual_power_station">gem.wiki/Sual_power_station</a></p>
@@ -510,7 +566,7 @@ into your backup, and the backup comes down the same two circuits.</p>
 
 <!-- ============================ BEAT 5: WATER ============================ -->
 <section class="beat" id="b-water">
-<h2>At 65 to 90 million liters a day, Pax Silica would use up to twice as much water as everyone living in Makati</h2>
+<h2>At 65 to 90 million liters a day, Pax Silica would use up to twice the daily water planned for everyone living in Makati</h2>
 <p>Power is only half the announcement. Water arrives with Pax Silica no matter
 who generates its electricity: cooling for the data centers, ultrapure water
 for the chip plants.
@@ -522,14 +578,17 @@ and the division is simple. Here is that number three ways.</p>
   <button class="replay" data-replay="fig-water">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">The water Pax Silica asked for is <em class="pop">1.4 to 1.9 times</em>
-  what everyone in Makati uses</div>
+  the daily water planned for everyone in Makati</div>
   <div class="figsub">One drop is 5 million liters a day, and the drops are grouped
   in fives so they can be counted. Solid rust is the low end of what Pax Silica
   asked for and hollow rust carries it to the top of that range. The navy bracket
-  underneath is everyone in Makati's whole day, drawn inside the same run so the
-  two are compared without arithmetic. The outlined bar below is a pond that has
-  been promised and not built, on that same scale. Makati is a city in Metro
-  Manila, population 309,770.</div>
+  underneath is the day's household water planned for Makati's 309,770 residents,
+  drawn inside the same run so the
+  two are compared without arithmetic. It is a residential planning figure and
+  not Makati's metered draw, which would also count its offices, malls and
+  factories, so the ratio above is a ceiling. The outlined bar below is a pond
+  BCDA has proposed and not built, on that same scale. Makati is a city in Metro
+  Manila.</div>
   <div class="droprow">
     <div class="dlabel"><b>What Pax Silica asked for, 65 to 90 million liters a
     day</b>, the figure from BCDA,
@@ -538,42 +597,56 @@ and the division is simple. Here is that number three ways.</p>
   </div>
   <div class="droprow">
     <div class="dlabel"><b>What the
-    <a href="https://www.manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub/2390193">rainwater
-    pond BCDA promises</a> would supply</b>, if it is built and if the rain
-    arrives. It does not exist yet.</div>
+    <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">surface
+    water harvesting facility BCDA describes</a> would supply</b>, if it is built
+    and if the rain arrives. BCDA
+    <a href="https://www.manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub/2390193">says
+    it is evaluating a proposal</a>. It does not exist yet.</div>
     <div id="pond-bar"></div>
   </div>
   <div class="droprow">
-    <div class="dlabel"><b>Of every 100 liters Metro Manila draws from
+    <div class="dlabel"><b>Pax Silica's water would be about 2 liters in every 100
+    that
     <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">Angat
-    dam</a>, its main water source, Pax Silica would take about 2</b></div>
+    dam</a> is allocated for Metro Manila, a reservoir Pax Silica does not draw
+    from</b></div>
     <div class="waffle100" id="angat-waffle"></div>
     <div class="wafnote">Each square is one liter in a hundred. The two rust squares
-    are Pax Silica's share and the other 98 are the rest of the 4,000 million liters
-    a day Metro Manila draws from the dam. Pax Silica's exact share is 1.6 to
-    2.2 percent.</div>
+    are Pax Silica's water and the other 98 the rest of the 4,000 million liters a
+    day the National Water Resources Board allocates to the Metro Manila
+    waterworks from that dam. Pax Silica sits about 95 km north in Tarlac and
+    would draw on local sources, so this is a size comparison against a number
+    people know, not a shared tap. New Clark City's own main water source is the
+    Sacobia watershed, which reporting says has shown strain since 2020. The 4,000
+    is the allocation of 46 cubic meters a second, cut from 48 for 16 to 30 July
+    2026 while the dam sat at a record low; Pax Silica's share of it works out at
+    1.6 to 2.2 percent.</div>
   </div>
   <p class="fignote">The small print, exactly: Pax Silica's announced 65 to 90
   million liters a day is the tap water of 433,000 to 600,000 people at
-  <a href="https://esmart.nhrc.upd.edu.ph/?p=1422">Metro Manila's 150 liters
+  <a href="https://web.archive.org/web/20251231151725/https://esmart.nhrc.upd.edu.ph/?p=1422">Metro Manila's household planning figure of 150 liters
   per person a day</a>; Makati counts
   <a href="https://en.wikipedia.org/wiki/Makati">309,770 people (2024 census)</a>,
-  about 46 million liters; the pond is sized at 120 million liters a day; the Angat
+  about 46 million liters, which is what those residents are planned for at home
+  and not what the city as a whole draws, because it leaves out every office,
+  mall and factory in the district; the harvesting pond is sized at 120 million
+  liters a day; the Angat
   share is 1.6 to 2.2 percent; an Olympic
   pool holds 2.5 million liters; and as
   <a href="https://www.fao.org/4/u5835e/u5835e04.htm">irrigation</a> the same
   water would keep 520 to 900 hectares of rice flooded for a 120-day season.</p>
-  <p class="rawline">Sources: <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed</a> &middot; <a href="https://www.manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub/2390193">manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub</a> &middot; <a href="https://esmart.nhrc.upd.edu.ph/?p=1422">esmart.nhrc.upd.edu.ph/?p=1422</a> &middot; <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">philstar.com/nation/2026/07/20/2543243</a> &middot; <a href="https://www.fao.org/4/u5835e/u5835e04.htm">fao.org/4/u5835e/u5835e04.htm</a></p>
+  <p class="rawline">Sources: <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed</a> &middot; <a href="https://www.manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub/2390193">manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub</a> &middot; <a href="https://web.archive.org/web/20251231151725/https://esmart.nhrc.upd.edu.ph/?p=1422">web.archive.org/web/20251231151725/esmart.nhrc.upd.edu.ph/?p=1422</a> &middot; <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">philstar.com/nation/2026/07/20/2543243</a> &middot; <a href="https://www.fao.org/4/u5835e/u5835e04.htm">fao.org/4/u5835e/u5835e04.htm</a></p>
 </div>
 
 <p>Both sides of the argument are on the record.
 <a href="https://businessmirror.com.ph/2026/07/22/local-water-source-enough-to-supply-pax-silica-operation-water-board/">The
-National Water Resources Board says</a> local sources can supply Pax Silica "without
-adversely affecting the local water requirement." Farmer and environmental
-groups, and Aeta communities on the land, dispute it;
-<a href="https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/">coverage
-puts potentially affected residents near 20,000 while BCDA counters that only
-about 10 farmers are directly affected</a>. No independent water balance for
+National Water Resources Board</a> says the water inside the project area is
+enough to meet the project's whole demand without adversely affecting the local
+water supply, and that community needs stay the priority "at any stage of
+implementation and operation." Farmer and environmental
+groups, and Aeta communities on the land, dispute that. The counts of who is
+affected are on the land card below, kept apart because they cover different
+ground. No independent water balance for
 Pax Silica has been published. That absence is the finding.</p>
 <p class="whence">Sources:
 <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">BCDA via BusinessMirror, 23 Jul 2026</a>;
@@ -586,15 +659,18 @@ Pax Silica has been published. That absence is the finding.</p>
 
 <!-- ============================ BEAT 6: LAND ============================= -->
 <section class="beat" id="b-site">
-<h2>The designated site is 1,620 hectares of what reporting calls rice and coconut land, and no tree count for it has been published</h2>
+<h2>The designated site is 1,620 hectares, farmland that critics say grows rice and coconut, and no tree count for it has been published</h2>
 <p>Power and water are what Pax Silica would consume. The land is what it would
 occupy.
 <a href="https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda">BCDA
 president Joshua Bingcang put the designated industrial area at 1,620 hectares</a>,
 and the Manila Bulletin describes the same footprint as
-<a href="https://mb.com.ph/2026/07/22/pax-silica-explained">a 4,000-acre economic
-security zone where "much of the land under discussion supports rice, coconut, and
-other food production"</a>. Hectares are as hard to picture as megawatts, so draw
+<a href="https://mb.com.ph/2026/07/22/pax-silica-explained">a 4,000-acre
+Economic Security Zone</a>. What grows on it is contested rather than surveyed.
+Listing the objections to the project, the same Manila Bulletin piece reports
+that critics say "much of the land under discussion supports rice, coconut, and
+other food production", a description of the wider land at issue and not a
+survey of these 1,620 hectares. Hectares are as hard to picture as megawatts, so draw
 them against the city they sit in and two places whose size people know.</p>
 
 <div class="fig" id="fig-site" style="--accent:#A65E46">
@@ -602,29 +678,42 @@ them against the city they sit in and two places whose size people know.</p>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">The site is <em class="pop">1,620 hectares</em>, about nine tenths
   of Makati's land area</div>
-  <div class="figsub">One square is 50 hectares. The first grid is all of New Clark
+  <div class="figsub">One square is 50 hectares, and every run on this card uses
+  that same square, so their lengths can be compared directly. Squares are whole,
+  so each run is its area rounded to the nearest 50 hectares and the exact ratios
+  are in the labels. The first grid is all of New Clark
   City, 9,450 hectares, with the 1,620 designated for Pax Silica marked in rust,
-  which is 17.1 percent of the city. The runs below use squares of the same size, so
-  their lengths can be compared directly, to the nearest square. Rust is Pax
+  17.1 percent of the city by area and 32 of the 189 squares drawn.
+  Rust is Pax
   Silica, hollow rust is land already leased to it, navy is a place its size is
   measured against, and pale is the rest of New Clark City. Makati is a city in
   Metro Manila, and Bonifacio Global City is a business district in Taguig, the city
-  next to it. The Manila Bulletin describes the land as rice, coconut and other food
-  production. How many trees stand on it is not public, because no inventory has been
-  published.</div>
+  next to it. Critics quoted by the Manila Bulletin describe the land at issue as
+  rice, coconut and other food production. How many trees stand on it is not
+  public, because no inventory has been published.</div>
   <div id="site-grid"></div>
-  <p class="fignote"><b>The tree count does not exist.</b> No environmental
-  compliance certificate has been issued, the Department of Environment and Natural
-  Resources says it is still assessing the project, and no tree inventory or
-  tree-cutting permit has been published. Any number of trees felled would be invented.
-  <br><b>The two counts of people do not cover the same ground.</b> BCDA, the Bases
+  <p class="fignote"><b>The tree count does not exist.</b> No tree inventory and no
+  tree-cutting permit for Pax Silica has been published, and no authoritative
+  count of trees per hectare exists for this land cover. Any number of trees
+  felled would be invented. The environmental review is further along: BCDA says
+  the Department of Environment and Natural Resources issued an environmental
+  compliance certificate for the project masterplan, and that each company
+  locating inside Pax Silica must still get its own.
+  <br><b>The counts of people do not cover the same ground.</b> BCDA, the Bases
   Conversion and Development Authority building Pax Silica, says about 10 farmers are
-  directly affected by Pax Silica's 1,620 hectares. Kalikasan, an environmental network, puts
+  directly affected. BCDA has also published an initial list of Project Affected
+  Persons that reaches residents of three Capas barangays, O'Donnell, Aranguren
+  and Santa Lucia, so the 10 is BCDA's count of directly affected farmers and not
+  a count of everyone on its own list. Kalikasan, an environmental network, puts
   displacement from the whole New Clark City project at 20,000 Indigenous people and
-  15,000 farmers. One counts Pax Silica's own hectares, the other the whole
-  city around it, so the two cannot be subtracted.
-  <br>For the wider setting, 30 percent of Capas, the Tarlac town holding Pax Silica, is
-  productive agricultural land, on the municipal government's own data.</p>
+  15,000 farmers. Those cover Pax Silica's own hectares and the whole
+  city around it, so they cannot be subtracted. BCDA's answer on the Indigenous
+  question is that the land is public and carries no ancestral domain title;
+  Kalikasan's answer is that the Aeta community there sought titles for decades
+  and was refused.
+  <br>For the wider setting, over 30 percent of Capas, the Tarlac town holding Pax
+  Silica, is productive agricultural land, on the municipal government's own data.
+  BCDA puts the project at 130,000 to 190,000 direct jobs.</p>
   <p class="srcline">Site area: Joshua Bingcang, president of BCDA, the Bases
   Conversion and Development Authority, via
   <a href="https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda">Philstar,
@@ -634,9 +723,15 @@ them against the city they sit in and two places whose size people know.</p>
   rounding of one area rather than three different scopes. Farmland share of Capas:
   Capas municipal government data cited by the scientists' group Agham via
   <a href="https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project">Philstar,
-  27 Jul 2026</a>. Environmental review status:
-  <a href="https://businessmirror.com.ph/2026/07/20/denr-assesses-pax-silicas-environmental-impact/">BusinessMirror,
-  20 Jul 2026</a>. Displacement figures: BCDA via
+  27 Jul 2026</a>, which also reports BCDA's Project Affected Persons list.
+  Environmental review status: the masterplan environmental compliance certificate
+  and the per-locator requirement come from BCDA via
+  <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">BusinessMirror,
+  23 Jul 2026</a>, which also carries the jobs figure and BCDA's statement that no
+  Indigenous people will be removed if the project is not on ancestral land;
+  three days earlier the department was still running the impact assessment
+  (<a href="https://businessmirror.com.ph/2026/07/20/denr-assesses-pax-silicas-environmental-impact/">BusinessMirror,
+  20 Jul 2026</a>). Displacement figures: BCDA via
   <a href="https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/">GMA
   News</a>, and Kalikasan via
   <a href="https://philstarlife.com/news-and-views/314814-what-exactly-is-pax-silica">PhilSTAR
@@ -654,48 +749,58 @@ them against the city they sit in and two places whose size people know.</p>
 <h2>Every Pax Silica number here has a source. None of it has been independently checked.</h2>
 <table class="ledger">
 <tr><th>Announced, with an owner and a date</th><th>Worked out on this page</th></tr>
-<tr><td>3,000 MW at full development (BCDA, Jul 2026); reporting separately projects at least 5,000 MW (Inquirer, Jul 2026)</td>
+<tr><td>3,000 MW at full development, which BCDA puts 10 to 15 years after construction starts in 2028 (BCDA, 23 Jul 2026). A reporter's own earlier projection put demand at "at least 5 gigawatts" (Inquirer Business, 22 Jun 2026), which BCDA has not adopted</td>
     <td>More than any Visayas or Mindanao 5-minute peak in 105 archived days; about a fifth of Luzon's</td></tr>
 <tr><td>65 to 90 million liters of water a day (BCDA, Jul 2026)</td>
     <td>The daily tap water of 433,000 to 600,000 people, or 520 to 900 hectares of rice in season</td></tr>
 <tr><td>500 MW solar with storage on 500 hectares (ACWA lease, Jun 2026)</td>
     <td>4.1% of Pax Silica's day, on a cloudless day, and nothing at the 7pm peak</td></tr>
 <tr><td>P6.95B dedicated 230 kV substation by end-2028 (NGCP plan, May 2026)</td>
-    <td>The existing two 230 kV circuits deliver about 770 MW of the 3,000 at 7pm</td></tr>
-<tr><td>Grid supply is the alternative BCDA rejected (BCDA, Jul 2026)</td>
-    <td>Modeled on the cost stack, that alternative doubles the Luzon price: oil sets all 24 hours at P12.00 instead of coal at P6.00</td></tr>
-<tr><td>An on-site power station instead of grid supply (BCDA, Jul 2026)</td>
-    <td>Lose one 600 MW unit and 331 MW has no source, because the backup is the same two lines</td></tr>
+    <td>The two existing 230 kV routes deliver about 770 MW of the 3,000 at 7pm</td></tr>
+<tr><td>An on-site power station is BCDA's plan, and it is also looking outside New Clark City for power (BCDA, Jun and Jul 2026)</td>
+    <td>Serving the whole 3,000 MW from the grid instead doubles the modeled Luzon price to P12.00 from P6.00, on a P12.00 oil cost this page labels an assumption</td></tr>
+<tr><td>BCDA puts 130,000 to 190,000 direct jobs on the project (BCDA, 24 Jul 2026)</td>
+    <td>Not costed here. This page counts what Pax Silica would draw, not what it would return</td></tr>
+<tr><td>An on-site power station of unannounced size (BCDA, Jul 2026)</td>
+    <td>On a chosen 2,500 MW station, losing a chosen 600 MW unit leaves 331 MW with no source, because the backup is the same two routes</td></tr>
 </table>
 
 <div class="cavebox"><b>What this page cannot know.</b> The grid operator NGCP, the National Grid Corporation of the Philippines, does not publish
-what the two circuits are rated to carry, so 770 rests on the standard rating
-for 230 kV lines and moves if the real rating differs. The grid model snaps Pax
+what its lines are rated to carry, so 770 rests on a class default of 400 MW per
+230 kV circuit and moves if the real rating differs. The grid model snaps Pax
 Silica to a bus 8.6 km away, on community-mapped routes, not the connection
-anyone will build. Pax Silica's demand is held flat at 3,000 MW and the solar day is
-cloudless, both of which flatter the supply side. The water equivalences are
-arithmetic on a planning standard, not a hydrological study, and no independent
-study of Pax Silica's water has been published. Every number above moves with
-these choices; none of them moves enough to change which bars are longer.</div>
+anyone will build, and losing "a route" there means losing both circuits on it at
+once. Pax Silica's demand is held flat at 3,000 MW from the first day, when BCDA
+puts full development 10 to 15 years out, and the solar day is
+cloudless: both flatter the supply side. The price doubling is P12.00 over
+P6.00, and the P12.00 is an assumption, so it sets the size of that claim. The
+water equivalences are
+arithmetic on a household planning figure, not a hydrological study, and no
+independent study of Pax Silica's water has been published. The 46 million
+liters shown for Makati is what its 309,770 residents are planned for at home,
+not the city's whole draw, so it is a floor and the 1.4 to 1.9 times is a
+ceiling. Nothing here was independently checked, and this page takes no view on
+what Pax Silica would be worth.</div>
 
 <p class="sources" style="margin-top:22px"><b>Sources.</b></p>
 <ul class="sources">
 <li>BCDA on 3 GW: <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">GMA News, 23 Jul 2026</a>. Ceiling: <a href="https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest">Inquirer Business</a>.</li>
 <li>BCDA on water and the 120-million-liter-a-day harvesting facility: <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">BusinessMirror, 23 Jul 2026</a>; <a href="https://www.manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub/2390193">Manila Times, 24 Jul 2026</a>.</li>
 <li>National Water Resources Board sufficiency statement: <a href="https://businessmirror.com.ph/2026/07/22/local-water-source-enough-to-supply-pax-silica-operation-water-board/">BusinessMirror, 22 Jul 2026</a>. Dispute and displacement figures: <a href="https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/">GMA News explainer</a>.</li>
-<li>ACWA Power 500 MW on 500 ha: <a href="https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html">Enerdata daily energy news, 2 Jun 2026</a>.</li>
+<li>ACWA Power's lease of a 500-hectare site for up to 500 MW, signed with BCDA on 2 June 2026: <a href="https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html">Enerdata daily energy news, 5 Jun 2026</a>, which names New Clark City and not Pax Silica. BCDA ties the same 500 MW to Pax Silica in <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">GMA News, 23 Jul 2026</a>.</li>
 <li>NGCP Capas-area 230 kV substation, P6.95B, end-2028: <a href="https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city">Manila Bulletin, 25 May 2026</a>, from the NGCP transmission development plan.</li>
-<li>Hermosa-San Jose 500 kV record: <a href="https://ngcp.ph/article?cid=16897">ngcp.ph article 16897</a>. Mindanao-Visayas link: <a href="https://www.ngcp.ph/article?cid=16636">ngcp.ph article 16636</a>.</li>
+<li>Hermosa-San Jose 500 kV milestones and the Supreme Court order: <a href="https://ngcp.ph/article?cid=16897">ngcp.ph article 16897</a>, which names the wider facility Mariveles-Hermosa-San Jose; its P10.2 billion is the Energy Regulatory Commission's provisional approval for the Hermosa-San Jose line, <a href="https://www.ngcp.ph/article?cid=16649">ngcp.ph article 16649</a>. Mindanao-Visayas link, P52 billion and 450 MW and the 30 April 2023 energisation at an initial 22.5 MW: <a href="https://www.ngcp.ph/article?cid=16636">ngcp.ph article 16636</a>; full commercial operation on 26 January 2024: <a href="https://www.ngcp.ph/article?cid=16899">ngcp.ph article 16899</a>.</li>
 <li>MTerra Solar 3,500 MW / 3,500 ha / 4,500 MWh: <a href="https://www.meralcopowergen.com.ph/mterra-solar-project-breaks-ground-a-monumental-milestone-in-the-philippines-renewable-energy-transition/">Meralco PowerGen</a>, <a href="https://www.pv-magazine-australia.com/2024/11/22/worlds-largest-3-5-gw-terra-solar-project-breaks-ground-in-the-philippines/">pv-magazine</a>, and <a href="https://en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm">Wikipedia</a>.</li>
-<li>Meralco 200 kWh typical household: <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">Meralco July 2026 rate advisory</a>. Makati 2024 census and area: PSA via <a href="https://en.wikipedia.org/wiki/Makati">Wikipedia</a>, after the Embo transfer to Taguig. Other areas: <a href="https://en.wikipedia.org/wiki/Bonifacio_Global_City">Bonifacio Global City</a>, <a href="https://en.wikipedia.org/wiki/New_Clark_City">New Clark City</a>.</li>
-<li>Angat allocation about 4,000 million liters a day at 46 cubic meters per second: <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">Philstar, 20 Jul 2026</a>. Metro per-person standard: MWSS via <a href="https://esmart.nhrc.upd.edu.ph/?p=1422">UP e-SMART</a>.</li>
-<li>NGCP Visayas alert bulletins, June 2026: <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">GMA News</a>.</li>
+<li>The 200 kWh a month Meralco works its own example bill on: <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">Meralco July 2026 rate advisory</a>. Makati 2024 census and area: PSA via <a href="https://en.wikipedia.org/wiki/Makati">Wikipedia</a>, after the Embo transfer to Taguig. Other areas: <a href="https://en.wikipedia.org/wiki/Bonifacio_Global_City">Bonifacio Global City</a>, <a href="https://en.wikipedia.org/wiki/New_Clark_City">New Clark City</a>.</li>
+<li>Angat allocation of 46 cubic meters per second, about 4,000 million liters a day, cut from 48 for 16 to 30 July 2026: <a href="https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew">Philstar, 20 Jul 2026</a>. The 150 liters per person a day is a household demand projection for Metro Manila from UP's National Hydraulic Research Center, <a href="https://web.archive.org/web/20251231151725/https://esmart.nhrc.upd.edu.ph/?p=1422">project e-SMART</a>, archived because the live page stopped answering. New Clark City's own Sacobia watershed: <a href="https://mb.com.ph/2026/07/22/pax-silica-explained">Manila Bulletin, 22 Jul 2026</a>.</li>
+<li>NGCP Visayas alert bulletins: <a href="https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/">15 June 2026</a> and <a href="https://www.gmanetwork.com/news/money/economy/991590/ngcp-visayas-grid-yellow-alert-june-16-2026/story/">16 June 2026</a>, via GMA News.</li>
+<li>BCDA on jobs, the 99-year lease and the 1,620 hectares: <a href="https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda">Philstar, 24 Jul 2026</a>. BCDA's Project Affected Persons list and the Capas farmland share, both via the scientists' group Agham: <a href="https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project">Philstar, 27 Jul 2026</a>.</li>
 <li>Rice season water, 1,200 to 1,500 mm: <a href="https://www.fao.org/4/u5835e/u5835e04.htm">FAO irrigation manual</a>; IRRI.</li>
 <li>Grid peaks: IEMOP's <a href="https://www.iemop.ph/market-data/rtd-regional-summaries/">regional dispatch files</a>, <a href="https://github.com/xmpuspus/power-dispatch-studio/tree/main/data/raw/RTDSUM">archived here</a>. The 770 MW delivery limit: <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/nodal_dcopf.py">the model that solves the network</a> on <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> routes. Prices: <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py">dispatch.py</a> on <a href="https://www.iemop.ph/market-data/indicative-administered-prices/">IEMOP's administered prices</a>, <a href="https://www.foi.gov.ph/requests/malampaya-natural-gas-price/">the freedom-of-information answer on gas</a>, and a labelled oil assumption. Nodal congestion: <a href="https://www.iemop.ph/market-data/dipc-energy-results-final/">IEMOP's nodal price files</a>.</li>
 </ul>
 <p class="sources">Community-mapped grid routes are OpenStreetMap data, under its Open
 Database Licence, not NGCP official geometry. Announced figures may change;
-this page is dated 26 Jul 2026 and its numbers are baked from
+this page is dated 27 Jul 2026 and its numbers are baked from
 <a href="data/perspective.json">data/perspective.json</a>.</p>
 </section>
 </main>
@@ -991,7 +1096,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     // the circuits that exist, then the ones that would have to be built
     var wrap = document.getElementById("wires-flow"); wrap.innerHTML = "";
     var need = P.campus.mw, lim = P.wires.limit_7pm_mw, gap = P.wires.gap_mw;
-    var have = P.wires.n_circuits, more = P.wires.more_circuits;
+    var have = P.wires.n_routes, more = P.wires.more_routes;
     var W = wrap.clientWidth || 700, narrow = W < 560;
     var rows = have + more;
     var rowH = narrow ? 40 : 48, headH = narrow ? 22 : 0;
@@ -1068,14 +1173,14 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     }
     var y = padTop + headH;
     if (narrow){
-      txt(0, y - 8, "the " + have + " circuits that exist, " + fmt(lim) + " MW of room",
+      txt(0, y - 8, "the " + have + " routes that exist, " + fmt(lim) + " MW of room",
           "var(--ink)", 12, null, "600");
     }
     for (var i = 0; i < have; i++) circuit(y + i * rowH + rowH / 2, true, 0.15 * i);
     var yHave = y + rowH * have;
     var yMore = yHave + groupGap + headH;
     if (narrow){
-      txt(0, yMore - 8, "about " + more + " more for the other " + fmt(gap) + " MW",
+      txt(0, yMore - 8, "about " + more + " more routes for the other " + fmt(gap) + " MW",
           "#A65E46", 12, null, "600");
     }
     for (var j = 0; j < more; j++)
@@ -1083,11 +1188,12 @@ this page is dated 26 Jul 2026 and its numbers are baked from
 
     if (!narrow){
       // left column names each group, right column carries its megawatts
-      txt(0, y + rowH * have / 2 - 4, "the " + have + " power lines", "var(--ink)", 13, null, "600");
-      txt(0, y + rowH * have / 2 + 13, "into Pax Silica today", "var(--ink)", 13);
+      txt(0, y + rowH * have / 2 - 4, "the " + have + " power routes", "var(--ink)", 13, null, "600");
+      txt(0, y + rowH * have / 2 + 13, "into Pax Silica today,", "var(--ink)", 13);
+      txt(0, y + rowH * have / 2 + 30, "two circuits each", "var(--cardmute, var(--muted))", 12);
       txt(W - 8, y + rowH * have / 2 - 4, fmt(lim) + " MW", "#07203F", 15, "end", "700");
       txt(W - 8, y + rowH * have / 2 + 14, "of room at 7pm", "var(--cardmute, var(--muted))", 12, "end");
-      txt(0, yMore + rowH * more / 2 - 12, "about " + more + " more like them,", "#A65E46", 13, null, "600");
+      txt(0, yMore + rowH * more / 2 - 12, "about " + more + " more routes like them,", "#A65E46", 13, null, "600");
       txt(0, yMore + rowH * more / 2 + 5, "or one 500 kilovolt line,", "#A65E46", 13);
       txt(0, yMore + rowH * more / 2 + 22, "would have to be built", "#A65E46", 13);
       txt(W - 8, yMore + rowH * more / 2 - 4, fmt(gap) + " MW", "#A65E46", 15, "end", "700");
@@ -1249,12 +1355,14 @@ this page is dated 26 Jul 2026 and its numbers are baked from
       l.style.bottom = (axisH + chartH + 4 + (row === 0 ? 40 : 0)) + "px";
     }
     dline(m.evening_demand_mw, "",
-      "<b style='color:var(--ink)'>this evening's demand, " +
-      fmt(m.evening_demand_mw) + " MW</b><br>coal sets it: <b style='color:var(--ink)'>P" +
+      "<b style='color:var(--ink)'>a typical evening's demand, " +
+      fmt(m.evening_demand_mw) + " MW</b><br>coal sets the price, all 24 hours: "
+      + "<b style='color:var(--ink)'>P" +
       P.price.luzon_mean[0].toFixed(2) + " per kWh</b>", 0);
     dline(m.demand_with_campus_mw, "coral",
       "<b style='color:#A65E46'>plus Pax Silica's 3,000 MW, " +
-      fmt(m.demand_with_campus_mw) + " MW</b><br>oil sets it: <b style='color:#A65E46'>P" +
+      fmt(m.demand_with_campus_mw) + " MW</b><br>oil sets it in " +
+      P.price.marginal_wave.top_hours + " of 24 hours: <b style='color:#A65E46'>P" +
       P.price.luzon_mean[1].toFixed(2) + " per kWh</b>", 1);
     // cost axis, so a block's height is readable as pesos per kWh
     [0, 6, 12].forEach(function(php){
@@ -1314,17 +1422,21 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     // story, and the story IS the difference between the two nights
     var host = document.getElementById("own-rows"); host.innerHTML = "";
     var need = P.campus.mw, lim = P.wires.limit_7pm_mw;
-    var gap = need - 1900 - lim;
+    // the station size and the unit that goes out are chosen illustrations, and
+    // they live in the bake so this chart, the prose and the pins cannot drift
+    var own = P.wires.own_station_mw, trip = P.wires.trip_unit_mw;
+    var left = own - trip, gap = need - left - lim;
     var paint = { own: "#07203F", lines: "#D9AA90", dark: "#A65E46" };
     var ink = { own: "#fff", lines: "var(--ink)", dark: "#fff" };
     var rows = [
       {name: "A normal night", segs: [
-        {k: "own", mw: 2500, t: "2,500 MW from its own power station"},
-        {k: "lines", mw: 500, t: "500 MW over the power lines"}]},
-      {name: "One 600 MW generator down, about the size of one of the two units "
-       + "at the Sual coal plant in Pangasinan", segs: [
-        {k: "own", mw: 1900, t: "1,900 MW from its own station"},
-        {k: "lines", mw: lim, t: fmt(lim) + " MW over the power lines"},
+        {k: "own", mw: own, t: fmt(own) + " MW from its own power station"},
+        {k: "lines", mw: need - own,
+         t: fmt(need - own) + " MW over the power routes"}]},
+      {name: "One " + fmt(trip) + " MW generator down, about the size of one of "
+       + "the two units at the Sual coal plant in Pangasinan", segs: [
+        {k: "own", mw: left, t: fmt(left) + " MW from its own station"},
+        {k: "lines", mw: lim, t: fmt(lim) + " MW over the power routes"},
         {k: "dark", mw: gap, t: fmt(gap) + " MW with no source"}]},
     ];
     rows.forEach(function(r, ri){
@@ -1352,7 +1464,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
       + "all. That is the electricity of " + P.wires.own_gap_homes_million
       + " million Philippine homes. Pax Silica's own station covers most of its "
       + "own demand, but "
-      + "the backup for it comes down the same two power lines."
+      + "the backup for it comes down the same two power routes."
       + "<br><b>A unit being out is routine, not a freak event.</b> In the same "
       + o.days_in_window + " archived days, " + worst.label + " of "
       + fmt(worst.mw) + " MW was listed out on <b>" + worst.days_out
@@ -1434,7 +1546,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
       var note = el("div", "saxis", host.parentNode);
       note.style.cssText = "font-size:11.5px; color:var(--ink); margin-top:6px;"
         + "line-height:1.45;";
-      note.innerHTML = "The navy line is where everyone in Makati's whole day ends, "
+      note.innerHTML = "The navy line is where Makati's planned household day ends, "
         + mld + " million liters. Every drop past it is water Pax Silica asked for "
         + "on top of that, " + r0 + " to " + r1 + " times Makati in all.";
       return;
@@ -1466,7 +1578,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
       return l;
     }
     bracket(0, xMakati, "#07203F", false,
-            "everyone in Makati's whole day, " + mld + " million liters");
+            "Makati's planned household day, " + mld + " million liters");
     // a single bracket over the hollow drops reads as if that stretch alone were
     // 1.4 to 1.9x, so each ratio is ticked at the point where it is actually true
     function tick(x, label, lift){
@@ -1515,7 +1627,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     var l = el("div", "saxis", host);
     l.style.cssText = "position:absolute; left:9px; top:0; height:22px;"
       + "line-height:22px; font-size:11.5px; color:var(--ink);";
-    l.textContent = P.water.harvest_mld + " million liters a day, promised";
+    l.textContent = P.water.harvest_mld + " million liters a day, proposed";
     // the bar runs past the drop run above it, which is the whole point
     var more = el("div", "saxis", host);
     more.style.cssText = "position:absolute; right:0; top:0; height:22px;"
@@ -1565,8 +1677,8 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     var siteSq = Math.round(s.ha / PER);
     run("<b>All of New Clark City, " + fmt(s.ncc_ha) + " hectares.</b> The rust "
         + "squares are the " + fmt(s.ha) + " designated for Pax Silica, "
-        + siteSq + " of the " + nccSq + " squares, " + s.share_of_ncc_pct
-        + " percent of the city.",
+        + siteSq + " of the " + nccSq + " squares here and "
+        + s.share_of_ncc_pct + " percent of the city by area.",
         nccSq, {n: siteSq, k: "hit"}, null, true);
     run("<b>Pax Silica's designated site, " + fmt(s.ha) + " hectares</b>",
         siteSq, {n: siteSq, k: "hit"});
@@ -1580,7 +1692,8 @@ this page is dated 26 Jul 2026 and its numbers are baked from
         "Pax Silica's site is " + s.vs_makati + " times this.");
     run("<b>Bonifacio Global City, " + fmt(s.bgc_ha) + " hectares</b>",
         Math.round(s.bgc_ha / PER), {n: 999, k: "ref"},
-        "Pax Silica's site is " + s.vs_bgc + " times this.");
+        "Pax Silica's site is " + s.vs_bgc + " times this by area. This is the "
+        + "one run the squares round hardest: 240 hectares draws as 5 squares.");
 
   }
   function runSite(fig){ fig.classList.add("on"); }

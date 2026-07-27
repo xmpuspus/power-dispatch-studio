@@ -82,11 +82,42 @@ def check_html_static_text(c, p, s, w, wa, pr, SITE):
     # the own-station scenario's uncovered MW is arithmetic on the same line
     # limit the dashboard bar reads live; the static paragraph and the ledger
     # table both name it in prose, so both must track it by hand
-    missing = round(c["mw"] - 1900 - w["limit_7pm_mw"])
+    missing = round(c["mw"] - (w["own_station_mw"] - w["trip_unit_mw"])
+                    - w["limit_7pm_mw"])
+    pin("own-station shortfall is derived in the bake, not typed here",
+        w["own_gap_mw"] == missing)
     has("own-station shortfall (paragraph + ledger)", f"{missing} MW")
-    pin("own-station shortfall appears exactly twice (paragraph, ledger)",
-        static.count(f"{missing} MW has no source"
-                     ) + static.count(f"{missing} MW of Pax Silica\nhas no") == 2)
+    pin("own-station shortfall appears in the paragraph, the title and the ledger",
+        static.count(f"{missing} MW") >= 3)
+    has("own-station size is named as a choice", f"{w['own_station_mw']:,.0f} MW station")
+    has("tripped-unit size is named as a choice", f"{w['trip_unit_mw']:,.0f} MW unit")
+
+    # the delivery limit is the page's most-quoted model output and it moves with
+    # every re-bake, so both the exact figure and the rounded one it is written as
+    has("line limit, exact", f"{w['limit_7pm_mw']:,.0f} MW")
+    has("line limit, rounded, in the section heading",
+        f"{round(w['limit_7pm_mw'], -1):,.0f} of the {c['mw']:,.0f} MW")
+    has("shortfall against the announced draw", f"{w['gap_mw']:,.0f} MW")
+    has("class rating per circuit", f"{w['circuit_rating_mw']:,.0f} MW")
+
+    # the archive numbers are recomputed on every nightly bake, so the prose that
+    # names them has to be pinned or the cron silently falsifies it
+    has("archived day count", f"{p['archive_days']} archived days")
+    has("Luzon archive peak", f"{p['archive_peaks_mw']['luzon']:,} MW")
+    has("Visayas archive peak", f"{p['archive_peaks_mw']['visayas']:,}")
+    for k in ("peak_lo", "peak_hi", "avail_lo", "avail_hi"):
+        has(f"Visayas bulletin {k}", f"{p['visayas_bulletin'][k]:,}")
+
+    # the price card states which fuel sets the price in how many hours; the
+    # count comes from the solve and must not be asserted in prose
+    mw_ = pr["marginal_wave"]
+    has("marginal-hour count with the wave",
+        f"in {mw_['top_hours']} of those hours")
+    pin("the base case is coal in every hour",
+        pr["marginal_base"]["top"] == "coal"
+        and pr["marginal_base"]["top_hours"] == 24)
+    has("headroom left in the stack",
+        f"{pr['merit']['headroom_with_campus_mw']:,.0f} MW of the")
 
     # every source URL the bake carries must appear as a link on the page, so
     # a claim can never outlive the citation it was built on
@@ -182,14 +213,35 @@ def check_html_static_text(c, p, s, w, wa, pr, SITE):
         site["share_of_ncc_pct"] == round(site["ha"] / site["ncc_ha"] * 100, 1))
     pin("site vs Makati is derived from both areas",
         site["vs_makati"] == round(site["ha"] / site["makati_ha"], 2))
-    pin("no tree count and no certificate are claimed",
-        site["tree_count_published"] is False and site["ecc_issued"] is False)
+    pin("no tree count is claimed", site["tree_count_published"] is False)
+    pin("the masterplan certificate is recorded as issued, not as absent",
+        site["ecc_masterplan_issued"] is True
+        and site["ecc_per_locator_pending"] is True)
+    has("the page states the masterplan certificate was issued",
+        "compliance certificate for the project masterplan")
+    has("the page states each locator still needs its own", "must still get its own")
+    pin("no reader-facing line says a certificate has not been issued",
+        "no environmental compliance certificate has been issued" not in static.lower())
+    for b in site["pap_barangays"]:
+        has(f"affected-persons barangay {b}", b)
+    has("the local watershed is named on the water card", site["local_watershed"])
     has("site card states the tree count does not exist", "tree count does not exist")
     has("site card BCDA farmer figure", f"about {site['farmers_bcda']} farmers")
     has("site card advocacy displacement pair",
         f"{site['displaced_advocacy'][0]:,} Indigenous people and")
     has("site card Capas farmland share",
-        f"{site['capas_farmland_pct']:.0f} percent of Capas")
+        f"over {site['capas_farmland_pct']:.0f} percent of Capas")
+    has("site area in prose", f"{site['ha']:,.0f} hectares")
+    has("site share of New Clark City in prose",
+        f"{site['share_of_ncc_pct']} percent of the city by area")
+    pin("the drawn square count is stated beside the exact share, so a reader "
+        "can see the rounding",
+        f"{round(site['ha'] / 50)} of the {round(site['ncc_ha'] / 50)} squares"
+        in static)
+    has("jobs figure, so the page is not one-sided",
+        f"{c['jobs_direct'][0]:,} to {c['jobs_direct'][1]:,} direct jobs")
+    has("the full-development horizon",
+        f"{c['full_build_years'][0]} to {c['full_build_years'][1]} years")
     has("site card keeps the two people-counts apart", "cannot be subtracted")
     pin("the two displacement figures are stored as the advocacy pair",
         site["displaced_advocacy"] == [20000, 15000] and site["farmers_bcda"] == 10)
