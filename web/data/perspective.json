@@ -189,7 +189,9 @@
   "substation": {
    "php_b": 6.95,
    "kv": 230,
-   "year": 2028
+   "year": 2028,
+   "cost_owner": "NGCP transmission development plan",
+   "date_owner": "BCDA target"
   },
   "hsj": {
    "name": "Hermosa-San Jose",
@@ -365,7 +367,7 @@
    "days_sampled": 70,
    "median_php_kwh": 0.56,
    "median_basis": "node-hours where it fires",
-   "max_php_kwh": 19.0,
+   "max_php_kwh": 19.28,
    "max_day": "2026-05-26"
   },
   "src": {

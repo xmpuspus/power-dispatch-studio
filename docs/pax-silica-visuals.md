@@ -60,8 +60,10 @@ neither report says how that fits with the announced 3,000.
 
 ![One day in megawatts. A flat dashed line at 3,000 for Pax Silica. A low filled hump for the solar farm, peaking at 390 at noon](pax-silica-figs/acwa.png)
 
-A real solar deal exists. ACWA Power leased 500 hectares in June 2026 to
-build up to 500 MW of solar with batteries. The chart draws one day in
+A real solar deal exists. ACWA Power leased 500 hectares from BCDA in June 2026
+to build up to 500 MW of solar with batteries. ACWA holds that lease, not Pax
+Silica, and the Enerdata report of it names New Clark City rather than Pax
+Silica. The chart draws one day in
 megawatts, so the sizes are the point rather than a percentage. The dashed
 line is Pax Silica drawing 3,000 MW every hour of the day and night. The filled
 shape is the farm on a perfect cloudless day, and at its noon best it reaches
@@ -101,7 +103,7 @@ cannot is the 3,000 MW Pax Silica needs every hour. This form answers the questi
 actually asks, which is not how full a tank is but the number of circuits
 missing. The answer is three.
 
-## The last two big Philippine grid builds took 13 and 9 months between first power and full service
+## NGCP's two most recent long-distance builds took 13 and 9 months between first power and full service
 
 ![Three timelines. Two finished builds from 2023 to 2024, one with a rust stretch marking a court stop, then the Pax Silica substation's own 2026-to-2028 window](pax-silica-figs/record.png)
 
@@ -131,9 +133,12 @@ are not equally cheap, so each block carries its own cost. The first line is thi
 the navy coal block, so coal sets the price at P6.00 per kWh. The second line
 adds Pax Silica, 15,018 MW. It lands on the rust oil block, so oil sets the
 price at P12.00, for every buyer on Luzon, all 24 hours of the replayed day.
+Oil is the plant that sets that price in 16 of the 24 hours; power pulled from
+the other island grids sets 6 and hydro sets 2.
 The small print adds what that means at home. If generation cost were
-passed through, P6.00 more per kWh is P1,200 a month more for the typical
-200 kWh household, a model figure rather than a forecast. The links between
+passed through in full, P6.00 more per kWh is P1,200 a month more on the
+200 kWh bill Meralco works its own example on. That is a model figure rather
+than a forecast, and the spot price is only one part of a generation charge. The links between
 islands go from about zero to P38 million of congestion rent in the
 modeled day. A what-if inside
 a model rather than a forecast, and it ignores that the wires to the site
@@ -202,7 +207,7 @@ length is the whole comparison. The first grid is all of New Clark City,
 9,450 hectares, with 32 of its 189 squares in rust. Pax Silica is 17.1 percent
 of the city it sits in. Below that, the same squares against places whose size
 people know. Pax Silica's own land comes first, so the site sits above the
-500-hectare solar farm already leased to help power it, which it is 3.2 times
+500-hectare site BCDA leased to ACWA Power for solar, which it is 3.2 times
 over. Then come the outside anchors. It is 0.89 times Makati's land area and
 6.8 times Bonifacio Global City.
 
