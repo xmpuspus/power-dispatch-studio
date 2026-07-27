@@ -125,6 +125,17 @@
   .drop.anchor{ background:#07203F; } .drop.promise{ border:2.5px solid #07203F;
     background:#EBDED4; }
   .waffle100{ display:grid; grid-template-columns:repeat(20, 10px); gap:3px; margin:8px 0 2px; }
+  /* one square is 50 hectares, the same size in every run on the card, so a
+     run's length is the only thing carrying the comparison */
+  .hagrid{ display:flex; flex-wrap:wrap; gap:3px; }
+  .hagrid i{ display:block; background:#EBDED4; border-radius:2px;
+    transform:scale(0); transition:transform .35s cubic-bezier(.22,.9,.35,1); }
+  .on .hagrid i{ transform:scale(1); }
+  .hagrid i.hit{ background:#A65E46; }
+  .hagrid i.ref{ background:#07203F; }
+  .hagrid i.own{ background:#fff; box-shadow:inset 0 0 0 2px #A65E46; }
+  .harow{ margin:14px 0 0; }
+  .harow .halab{ font-size:12.5px; color:var(--ink); margin-bottom:5px; }
   .wafnote{ flex:1 1 220px; font-size:12.5px; color:var(--cardmute, var(--muted));
     align-self:center; }
   .waffle100 i{ width:10px; height:10px; border-radius:3px; background:#EBDED4; display:block; }
@@ -475,27 +486,27 @@ and the division is simple. Here is that number three ways.</p>
 <div class="fig" id="fig-water" style="--accent:#07203F">
   <button class="replay" data-replay="fig-water">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
-  <div class="figtitle">The water Pax Silica asked for would serve <em class="pop">1.4 to 2 times Makati's population</em></div>
+  <div class="figtitle">The water Pax Silica asked for is <em class="pop">1.4 to 1.9 times</em>
+  what everyone in Makati uses</div>
   <div class="figsub">One drop is 5 million liters a day, and the drops are grouped
   in fives so they can be counted. Solid rust is the low end of what Pax Silica
-  asked for; hollow rust carries it to the top of that range. Solid navy is water
-  people already use. Navy with a pale fill is a pond that has been promised and
-  not built. Makati is a city in Metro Manila.</div>
+  asked for and hollow rust carries it to the top of that range. The navy bracket
+  underneath is everyone in Makati's whole day, drawn inside the same run so the
+  two are compared without arithmetic. The outlined bar below is a pond that has
+  been promised and not built, on that same scale. Makati is a city in Metro
+  Manila, population 309,770.</div>
   <div class="droprow">
-    <div class="dlabel"><b>What Pax Silica would drink</b>, the figure from BCDA,
+    <div class="dlabel"><b>What Pax Silica asked for, 65 to 90 million liters a
+    day</b>, the figure from BCDA,
     the Bases Conversion and Development Authority, which is building Pax Silica</div>
     <span id="drops-campus"></span>
-  </div>
-  <div class="droprow">
-    <div class="dlabel"><b>What everyone living in Makati drinks</b></div>
-    <span id="drops-makati"></span>
   </div>
   <div class="droprow">
     <div class="dlabel"><b>What the
     <a href="https://www.manilatimes.net/2026/07/24/regions/rainwater-eyed-for-use-at-planned-pax-silica-hub/2390193">rainwater
     pond BCDA promises</a> would supply</b>, if it is built and if the rain
     arrives. It does not exist yet.</div>
-    <span id="drops-harvest"></span>
+    <div id="pond-bar"></div>
   </div>
   <div class="droprow">
     <div class="dlabel"><b>Of every 100 liters Metro Manila draws from
@@ -538,7 +549,72 @@ Pax Silica has been published. That absence is the finding.</p>
 <a href="https://www.fao.org/4/u5835e/u5835e04.htm">FAO</a> and IRRI.</p>
 </section>
 
-<!-- ============================ BEAT 6: CLOSE ============================ -->
+<!-- ============================ BEAT 6: LAND ============================= -->
+<section class="beat" id="b-site">
+<h2>The designated site is 1,620 hectares of what reporting calls rice and coconut land, and no tree count for it has been published</h2>
+<p>Power and water are what Pax Silica would consume. The land is what it would
+occupy.
+<a href="https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda">BCDA
+president Joshua Bingcang put the designated industrial area at 1,620 hectares</a>,
+and the Manila Bulletin describes the same footprint as
+<a href="https://mb.com.ph/2026/07/22/pax-silica-explained">a 4,000-acre economic
+security zone where "much of the land under discussion supports rice, coconut, and
+other food production"</a>. Hectares are as hard to picture as megawatts, so draw
+them against the city they sit in and two places whose size people know.</p>
+
+<div class="fig" id="fig-site" style="--accent:#A65E46">
+  <button class="replay" data-replay="fig-site">replay</button>
+  <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
+  <div class="figtitle">The site is <em class="pop">1,620 hectares</em>, about nine tenths
+  of Makati's land area</div>
+  <div class="figsub">One square is 50 hectares. The first grid is all of New Clark
+  City, 9,450 hectares, with the 1,620 designated for Pax Silica marked in rust,
+  which is 17.1 percent of the city. The runs below use squares of the same size, so
+  their lengths can be compared directly, to the nearest square. Rust is Pax
+  Silica, hollow rust is land already leased to it, navy is a place its size is
+  measured against, and pale is the rest of New Clark City. Makati is a city in
+  Metro Manila, and Bonifacio Global City is a business district in Taguig, the city
+  next to it. The Manila Bulletin describes the land as rice, coconut and other food
+  production. How many trees stand on it is not public, because no inventory has been
+  published.</div>
+  <div id="site-grid"></div>
+  <p class="fignote"><b>The tree count does not exist.</b> No environmental
+  compliance certificate has been issued, the Department of Environment and Natural
+  Resources says it is still assessing the project, and no tree inventory or
+  tree-cutting permit has been published. Any number of trees felled would be invented.
+  <br><b>The two counts of people do not cover the same ground.</b> BCDA, the Bases
+  Conversion and Development Authority building Pax Silica, says about 10 farmers are
+  directly affected by Pax Silica's 1,620 hectares. Kalikasan, an environmental network, puts
+  displacement from the whole New Clark City project at 20,000 Indigenous people and
+  15,000 farmers. One counts Pax Silica's own hectares, the other the whole
+  city around it, so the two cannot be subtracted.
+  <br>For the wider setting, 30 percent of Capas, the Tarlac town holding Pax Silica, is
+  productive agricultural land, on the municipal government's own data.</p>
+  <p class="srcline">Site area: Joshua Bingcang, president of BCDA, the Bases
+  Conversion and Development Authority, via
+  <a href="https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda">Philstar,
+  24 Jul 2026</a>; the same footprint reads as 4,000 acres, which is 1,619 hectares,
+  in <a href="https://mb.com.ph/2026/07/22/pax-silica-explained">the Manila
+  Bulletin, 22 Jul 2026</a>, so the spread in published figures is acre-to-hectare
+  rounding of one area rather than three different scopes. Farmland share of Capas:
+  Capas municipal government data cited by the scientists' group Agham via
+  <a href="https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project">Philstar,
+  27 Jul 2026</a>. Environmental review status:
+  <a href="https://businessmirror.com.ph/2026/07/20/denr-assesses-pax-silicas-environmental-impact/">BusinessMirror,
+  20 Jul 2026</a>. Displacement figures: BCDA via
+  <a href="https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/">GMA
+  News</a>, and Kalikasan via
+  <a href="https://philstarlife.com/news-and-views/314814-what-exactly-is-pax-silica">PhilSTAR
+  Life, 21 Jul 2026</a>, quoting the South China Morning Post. Areas:
+  <a href="https://en.wikipedia.org/wiki/New_Clark_City">New Clark City</a>,
+  <a href="https://en.wikipedia.org/wiki/Makati">Makati</a>,
+  <a href="https://en.wikipedia.org/wiki/Bonifacio_Global_City">Bonifacio Global
+  City</a>.</p>
+  <p class="rawline">Sources: <a href="https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda">philstar.com/business/2026/07/24/2544359</a> &middot; <a href="https://mb.com.ph/2026/07/22/pax-silica-explained">mb.com.ph/2026/07/22/pax-silica-explained</a> &middot; <a href="https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project">philstar.com/headlines/2026/07/27/2545030</a> &middot; <a href="https://businessmirror.com.ph/2026/07/20/denr-assesses-pax-silicas-environmental-impact/">businessmirror.com.ph/2026/07/20/denr-assesses-pax-silicas-environmental-impact</a> &middot; <a href="https://philstarlife.com/news-and-views/314814-what-exactly-is-pax-silica">philstarlife.com/news-and-views/314814-what-exactly-is-pax-silica</a> &middot; <a href="https://en.wikipedia.org/wiki/New_Clark_City">en.wikipedia.org/wiki/New_Clark_City</a></p>
+</div>
+</section>
+
+<!-- ============================ BEAT 7: CLOSE ============================ -->
 <section class="beat" id="b-close">
 <h2>Every Pax Silica number here has a source. None of it has been independently checked.</h2>
 <table class="ledger">
@@ -1209,19 +1285,180 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     }
     var lo = Math.round(P.water.mld[0] / UNIT);                  // 13
     var hi = Math.round((P.water.mld[1] - P.water.mld[0]) / UNIT); // +5
-    var makati = Math.round(P.water.makati_pop_2024 *
-      P.water.liters_per_person_day / 1e6 / UNIT);               // 9
-    var pond = Math.round(P.water.harvest_mld / UNIT);           // 24
+    var makatiMld = P.water.makati_pop_2024 * P.water.liters_per_person_day / 1e6;
+    var pond = P.water.harvest_mld / UNIT;                       // 24
     drops("drops-campus", lo, hi, "solid", "range",
-      "65 to 90 million liters a day = " + P.water.pools_per_day[0] + " to "
-      + P.water.pools_per_day[1] + " Olympic pools of 2.5 million liters each");
-    drops("drops-makati", makati, 0, "anchor", "",
-      "about 46 million liters a day");
-    drops("drops-harvest", 0, pond, "", "promise", "120 million liters a day, promised");
+      "= " + P.water.pools_per_day[0] + " to " + P.water.pools_per_day[1]
+      + " Olympic pools of 2.5 million liters each");
+    // Makati used to be its own row, which left the reader counting one row
+    // against another and dividing. It is now a bracket under the same run, so
+    // the headline ratio is the thing you see rather than the thing you work out.
+    nestMakati(makatiMld, lo, hi);
+    // the pond was 24 counted drops, the longest row on the card, which gave the
+    // most ink to the one quantity that does not exist. Same scale, one bar.
+    pondBar(pond, lo + hi);
     var w = document.getElementById("angat-waffle"); w.innerHTML = "";
     for (var q = 0; q < 100; q++){ el("i", q < 2 ? "hit" : "", w); }
   }
+
+  // the bracket ends are measured off the drops themselves, so the mark can
+  // never disagree with the row it annotates. offsetLeft/offsetWidth, never
+  // getBoundingClientRect: a drop sits at scale(0) until its animation runs, and
+  // a transformed rect collapses to a point, which put the bracket inside the row
+  function nestMakati(makatiMld, lo, hi){
+    var host = document.getElementById("drops-campus");
+    var ds = host.querySelectorAll(".drop");
+    if (!ds.length) return;
+    var UNIT = 5, pos = makatiMld / UNIT;                  // 9.29 drops in
+    var whole = Math.floor(pos), frac = pos - whole;
+    var mld = Math.round(makatiMld);
+    var r0 = P.water.vs_makati_people[0], r1 = P.water.vs_makati_people[1];
+    var first = ds[0], last = ds[ds.length - 1];
+    // when the run wraps onto a second line the brackets have nothing straight to
+    // sit under, so an inline divider and one plain line carry the same facts
+    if (last.offsetTop - first.offsetTop > 4){
+      var rule = document.createElement("i");
+      rule.style.cssText = "display:inline-block; width:2px; height:20px;"
+        + "background:#07203F; margin:0 5px 0 0; vertical-align:-4px;";
+      host.insertBefore(rule, ds[whole]);
+      var note = el("div", "saxis", host.parentNode);
+      note.style.cssText = "font-size:11.5px; color:var(--ink); margin-top:6px;"
+        + "line-height:1.45;";
+      note.innerHTML = "The navy line is where everyone in Makati's whole day ends, "
+        + mld + " million liters. Every drop past it is water Pax Silica asked for "
+        + "on top of that, " + r0 + " to " + r1 + " times Makati in all.";
+      return;
+    }
+    host.style.position = "relative";
+    host.style.display = "block";
+    host.style.padding = "48px 0 34px";
+    var rowTop = first.offsetTop, rowH = first.offsetHeight;
+    var xMakati = ds[whole].offsetLeft + ds[whole].offsetWidth * frac;
+    var xSolid = ds[lo - 1].offsetLeft + ds[lo - 1].offsetWidth;
+    var xEnd = last.offsetLeft + last.offsetWidth;
+
+    function bracket(x0, x1, colour, up, label){
+      var b = el("div", "saxis", host);
+      b.style.cssText = "position:absolute; left:" + x0 + "px; width:"
+        + Math.max(2, x1 - x0) + "px; height:6px; border:2px solid " + colour + ";"
+        + (up ? "border-bottom:0; top:" + (rowTop - 11) + "px;"
+              : "border-top:0; top:" + (rowTop + rowH + 5) + "px;");
+      var l = el("div", "saxis", host);
+      l.style.cssText = "position:absolute; left:" + x0 + "px; font-size:11.5px;"
+        + "font-weight:600; white-space:nowrap; line-height:1.2; color:" + colour + ";"
+        + (up ? "top:" + Math.max(0, rowTop - 28) + "px;"
+              : "top:" + (rowTop + rowH + 14) + "px;");
+      l.textContent = label;
+      return l;
+    }
+    bracket(0, xMakati, "#07203F", false,
+            "everyone in Makati's whole day, " + mld + " million liters");
+    // a single bracket over the hollow drops reads as if that stretch alone were
+    // 1.4 to 1.9x, so each ratio is ticked at the point where it is actually true
+    function tick(x, label, lift){
+      var m = el("div", "saxis", host);
+      m.style.cssText = "position:absolute; left:" + x + "px; top:"
+        + (rowTop - 12 - lift) + "px; width:2px; height:" + (12 + lift)
+        + "px; background:#A65E46;";
+      var l = el("div", "saxis", host);
+      l.style.cssText = "position:absolute; font-size:11.5px; font-weight:600;"
+        + "white-space:nowrap; line-height:1.2; color:#A65E46; top:"
+        + Math.max(0, rowTop - 26 - lift) + "px; left:" + (x + 4) + "px;";
+      l.textContent = label;
+      return l;
+    }
+    var t1 = tick(xSolid, r0 + " times Makati", 0);
+    var t2 = tick(xEnd, r1 + " times Makati", 0);
+    // right-align the top-of-range label when it would hang past the last drop,
+    // and lift the first label clear if the two would touch
+    if (t2.offsetLeft + t2.offsetWidth > host.clientWidth)
+      t2.style.left = (xEnd - t2.offsetWidth - 4) + "px";
+    if (t1.offsetLeft + t1.offsetWidth + 8 > t2.offsetLeft)
+      t1.style.top = Math.max(0, rowTop - 44) + "px";
+  }
+
+  // one outlined bar on the drop row's own pitch, so its length reads against
+  // the run above it without asking anyone to count 24 drops
+  function pondBar(pondDrops, campusDrops){
+    var host = document.getElementById("pond-bar");
+    if (!host) return;
+    var ds = document.getElementById("drops-campus").querySelectorAll(".drop");
+    if (!ds.length) return;
+    var lastCampus = ds[campusDrops - 1];
+    var pitch = (lastCampus.offsetLeft + lastCampus.offsetWidth) / campusDrops;
+    host.innerHTML = "";
+    host.style.cssText = "position:relative; height:24px; width:100%;";
+    var wide = host.clientWidth || 600;
+    var bar = el("div", "block", host);
+    bar.style.cssText += "left:0; top:0; height:22px; width:"
+      + Math.min(pondDrops * pitch, wide) + "px; border:2px solid #07203F;"
+      + "background:#EBDED4; border-radius:4px; transition-delay:.5s;";
+    var l = el("div", "saxis", host);
+    l.style.cssText = "position:absolute; left:9px; top:0; height:22px;"
+      + "line-height:22px; font-size:11.5px; color:var(--ink);";
+    l.textContent = P.water.harvest_mld + " million liters a day, promised";
+    // the bar runs past the drop run above it, which is the whole point
+    var more = el("div", "saxis", host);
+    more.style.cssText = "position:absolute; right:0; top:0; height:22px;"
+      + "line-height:22px; font-size:11.5px; color:var(--ink);"
+      + "max-width:" + Math.max(0, wide - Math.min(pondDrops * pitch, wide) - 6)
+      + "px; overflow:hidden; white-space:nowrap;";
+    more.textContent = "longer than the run above";
+  }
+
   function runWater(fig){ fig.classList.add("on"); }
+
+  // ---- beat 6: the site's land, in squares of 50 hectares ----------------
+  // area against area, one square size everywhere on the card. The tree count
+  // is deliberately absent: no inventory has been published, so drawing one
+  // would be inventing it.
+  function buildSite(){
+    var s = P.site, PER = 50;                    // hectares per square
+    var host = document.getElementById("site-grid"); host.innerHTML = "";
+    var W = host.clientWidth || 700, cols = W < 420 ? 18 : 27, gap = 3;
+    var cell = Math.max(7, Math.floor((W - (cols - 1) * gap) / cols));
+    function run(label, squares, cls, note){
+      var box = el("div", "harow", host);
+      var l = el("div", "halab", box);
+      l.innerHTML = label;
+      var g = el("div", "hagrid", box);
+      g.style.width = (cols * (cell + gap)) + "px";
+      for (var i = 0; i < squares; i++){
+        var c = el("i", cls && i < cls.n ? cls.k : "", g);
+        c.style.width = cell + "px"; c.style.height = cell + "px";
+        c.style.transitionDelay = (i * 0.004) + "s";
+      }
+      if (note){
+        var n = el("div", "halab", box);
+        n.style.cssText = "margin:5px 0 0; font-size:11.5px; color:var(--cardmute,"
+          + "var(--muted));";
+        n.textContent = note;
+      }
+      return box;
+    }
+    var nccSq = Math.round(s.ncc_ha / PER);
+    var siteSq = Math.round(s.ha / PER);
+    run("<b>All of New Clark City, " + fmt(s.ncc_ha) + " hectares.</b> The rust "
+        + "squares are the " + fmt(s.ha) + " designated for Pax Silica, "
+        + siteSq + " of the " + nccSq + " squares, " + s.share_of_ncc_pct
+        + " percent of the city.",
+        nccSq, {n: siteSq, k: "hit"});
+    run("<b>Pax Silica's designated site, " + fmt(s.ha) + " hectares</b>",
+        siteSq, {n: siteSq, k: "hit"});
+    // Pax Silica's own land first, then the places it is measured against, each
+    // group largest first, so the row order is not a size ramp that breaks
+    run("<b>The solar farm already leased to Pax Silica, " + fmt(s.acwa_ha)
+        + " hectares</b>", Math.round(s.acwa_ha / PER), {n: 999, k: "own"},
+        "The site is " + s.vs_acwa + " times the farm signed to help power it.");
+    run("<b>Makati's land area, " + fmt(s.makati_ha) + " hectares</b>",
+        Math.round(s.makati_ha / PER), {n: 999, k: "ref"},
+        "Pax Silica's site is " + s.vs_makati + " times this.");
+    run("<b>Bonifacio Global City, " + fmt(s.bgc_ha) + " hectares</b>",
+        Math.round(s.bgc_ha / PER), {n: 999, k: "ref"},
+        "Pax Silica's site is " + s.vs_bgc + " times this.");
+
+  }
+  function runSite(fig){ fig.classList.add("on"); }
 
   // a segment too narrow for its own label moves that label to a small
   // legend under the bar instead of letting it clip or spill into the next
@@ -1253,7 +1490,8 @@ this page is dated 26 Jul 2026 and its numbers are baked from
 
   // ---- wiring ----
   var runners = { "fig-grids": runGrids, "fig-land": runSun, "fig-wires": runWires,
-                  "fig-priceb": runPrice, "fig-own": runOwn, "fig-water": runWater };
+                  "fig-priceb": runPrice, "fig-own": runOwn, "fig-water": runWater,
+                  "fig-site": runSite };
   function reset(fig){
     fig.classList.remove("on");
     // wires and own-station rebuild their segments from scratch, so a label
@@ -1299,7 +1537,8 @@ this page is dated 26 Jul 2026 and its numbers are baked from
   // replay has to rebuild before it runs.
   var builders = { "fig-grids": buildGrids, "fig-acwa": buildSun, "fig-land": buildSun,
                    "fig-wires": buildWires, "fig-record": buildRecord,
-                   "fig-priceb": buildPrice, "fig-own": buildOwn, "fig-water": buildWater };
+                   "fig-priceb": buildPrice, "fig-own": buildOwn, "fig-water": buildWater,
+                   "fig-site": buildSite };
   window.__pxplay = function(id){
     var fig = document.getElementById(id);
     if (!fig) return false;
@@ -1316,7 +1555,8 @@ this page is dated 26 Jul 2026 and its numbers are baked from
   fetch("data/perspective.json").then(function(r){ return r.json(); })
     .then(function(d){
       P = d;
-      buildGrids(); buildSun(); buildWires(); buildRecord(); buildPrice(); buildOwn(); buildWater();
+      buildGrids(); buildSun(); buildWires(); buildRecord(); buildPrice(); buildOwn();
+      buildWater(); buildSite();
       arm();
       window.__pxdiag.ready = true;
     })

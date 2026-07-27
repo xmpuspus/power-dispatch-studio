@@ -194,6 +194,35 @@
    "mvip": "https://www.ngcp.ph/article?cid=16636"
   }
  },
+ "site": {
+  "ha": 1620.0,
+  "km2": 16.2,
+  "ncc_ha": 9450,
+  "makati_ha": 1817,
+  "bgc_ha": 240,
+  "acwa_ha": 500.0,
+  "share_of_ncc_pct": 17.1,
+  "vs_makati": 0.89,
+  "vs_bgc": 6.8,
+  "vs_acwa": 3.2,
+  "capas_farmland_pct": 30.0,
+  "farmers_bcda": 10,
+  "displaced_advocacy": [
+   20000,
+   15000
+  ],
+  "tree_count_published": false,
+  "ecc_issued": false,
+  "src": {
+   "area": "https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda (BCDA president Joshua Bingcang, 1,620 ha designated as an industrial area)",
+   "zone": "https://mb.com.ph/2026/07/22/pax-silica-explained (4,000-acre economic security zone; \"Much of the land under discussion supports rice, coconut, and other food production\")",
+   "farmland": "https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project (Capas municipal government data via Agham)",
+   "displacement": "https://philstarlife.com/news-and-views/314814-what-exactly-is-pax-silica (Kalikasan via South China Morning Post, for the New Clark City project as a whole)",
+   "farmers": "https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/ (BCDA counters that about 10 farmers are directly affected)",
+   "assessment": "https://businessmirror.com.ph/2026/07/20/denr-assesses-pax-silicas-environmental-impact/ (DENR assessing; no environmental compliance certificate reported issued, and no tree inventory or tree-cutting permit published)",
+   "areas": "https://en.wikipedia.org/wiki/New_Clark_City ; https://en.wikipedia.org/wiki/Makati ; https://en.wikipedia.org/wiki/Bonifacio_Global_City"
+  }
+ },
  "price": {
   "merit": {
    "blocks": [
