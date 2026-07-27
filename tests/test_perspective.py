@@ -61,6 +61,8 @@ def check_html_static_text(c, p, s, w, wa, pr, SITE):
         f"{wa['people_equiv'][0]:,.0f} to {wa['people_equiv'][1]:,.0f} people")
     has("water rice hectares",
         f"{wa['rice_ha'][0]:,.0f} to {wa['rice_ha'][1]:,.0f} hectares")
+    has("the paddy duty is named beside the hectares it produces",
+        f"{wa['rice_l_s_ha']} liters")
     has("water Angat share",
         f"{wa['angat_share_pct'][0]} to {wa['angat_share_pct'][1]} percent")
     has("Makati 2024 population", f"{wa['makati_pop_2024']:,}")
@@ -349,8 +351,13 @@ def main():
     pin("Makati multiple uses the 2024 census (post-Embo)",
         wa["makati_pop_2024"] == 309770
         and wa["vs_makati_people"][1] == round(600000 / 309770, 1))
-    pin("rice hectares from FAO 12-15 ML/ha/season over 120 days",
-        wa["rice_ha"] == [round(65 / (15 / 120), -1), round(90 / (12 / 120), -1)],
+    # the FAO manual the page cites prints one paddy figure, Table 1's 1.5 l/s/ha.
+    # It carries no season total in millimeters, so the hectares must come from
+    # that duty and nothing else.
+    duty = wa["rice_l_s_ha"] * 86400 / 1e6
+    pin("rice hectares come from the FAO paddy duty the cited page prints",
+        wa["rice_l_s_ha"] == 1.5
+        and wa["rice_ha"] == [round(65 / duty, -1), round(90 / duty, -1)],
         f"{wa['rice_ha']}")
     pin("Angat share stays a small percent (1-3%)",
         1.0 <= wa["angat_share_pct"][0] <= wa["angat_share_pct"][1] <= 3.0)
