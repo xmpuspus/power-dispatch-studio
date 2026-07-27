@@ -14,6 +14,7 @@ import csv
 import glob
 import json
 import os
+from decimal import ROUND_HALF_UP, Decimal
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -126,7 +127,8 @@ LITERS_SRC = ("https://web.archive.org/web/20251231151725/"
 # allocation to MWSS for Metro Manila and Rizal, not a measured withdrawal.
 # https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew
 ANGAT_CMS = 46.0
-ANGAT_MLD = 4000.0
+ANGAT_MLD_EXACT = ANGAT_CMS * 86400 / 1000.0   # 3,974.4 million liters a day
+ANGAT_MLD = 4000.0                              # the rounded figure the page prints
 ANGAT_WINDOW = "16 to 30 Jul 2026"
 # The watershed New Clark City itself draws on, named so the Angat comparison
 # cannot read as a shared tap. Manila Bulletin, 22 Jul 2026: "The Sacobia
@@ -491,6 +493,11 @@ def main() -> None:
             "more_routes": int(
                 -(-(CAMPUS_MW - limit_7pm) // pax["circuits"][0]["rating_mw"])),
             "outages": outage_record(),
+            # solving the WHOLE Luzon network rather than only the branches at
+            # Pax Silica's own bus finds more bottlenecks upstream, and drops
+            # what can actually arrive from 769 to 529 MW. The page must say so:
+            # 769 is an upper bound. Both come from scripts/pax_silica_figure.py.
+            "limit_whole_grid_mw": 529,
             "own_station_mw": OWN_STATION_MW,
             "trip_unit_mw": TRIP_UNIT_MW,
             "own_gap_mw": round(CAMPUS_MW - (OWN_STATION_MW - TRIP_UNIT_MW)
@@ -560,8 +567,15 @@ def main() -> None:
             "angat_cms": ANGAT_CMS,
             "angat_window": ANGAT_WINDOW,
             "local_watershed": LOCAL_WATERSHED,
-            "angat_share_pct": [round(WATER_MLD_LOW / ANGAT_MLD * 100, 1),
-                                round(WATER_MLD_HIGH / ANGAT_MLD * 100, 1)],
+            "angat_mld_exact": round(ANGAT_MLD_EXACT, 1),
+            # against the exact allocation, not the rounded 4,000, and rounded
+            # half-up: 90 / 4,000 is exactly 2.25, which banker's rounding sends
+            # DOWN to 2.2 while the true 90 / 3,974.4 is 2.26
+            "angat_share_pct": [
+                float(Decimal(WATER_MLD_LOW / ANGAT_MLD_EXACT * 100).quantize(
+                    Decimal("0.1"), rounding=ROUND_HALF_UP)),
+                float(Decimal(WATER_MLD_HIGH / ANGAT_MLD_EXACT * 100).quantize(
+                    Decimal("0.1"), rounding=ROUND_HALF_UP))],
             "harvest_mld": HARVEST_MLD,
             "pools_per_day": [round(WATER_MLD_LOW / POOL_ML), round(WATER_MLD_HIGH / POOL_ML)],
             "src": {

@@ -181,6 +181,7 @@
    ],
    "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/ and https://www.iemop.ph/market-data/registered-capacity-generation/"
   },
+  "limit_whole_grid_mw": 529,
   "own_station_mw": 2500.0,
   "trip_unit_mw": 600.0,
   "own_gap_mw": 331,
@@ -407,9 +408,10 @@
   "angat_cms": 46.0,
   "angat_window": "16 to 30 Jul 2026",
   "local_watershed": "Sacobia",
+  "angat_mld_exact": 3974.4,
   "angat_share_pct": [
    1.6,
-   2.2
+   2.3
   ],
   "harvest_mld": 120.0,
   "pools_per_day": [
