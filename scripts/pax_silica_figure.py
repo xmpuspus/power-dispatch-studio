@@ -12,8 +12,9 @@ the solar farm has stopped for the day. A second small panel
 shows the solar day so the zero at 7pm is visible rather than asserted.
 
 How much can come over the lines is the only figure here the model works out.
-It is the limit on the two Concepcion to Clark 230 kV routes, each carrying two
-circuits on shared towers, worked out for
+Pax Silica sits on two Concepcion to Clark 230 kV routes, each carrying two
+circuits on shared towers, and only one of them feeds it. The limit is on that
+one route, worked out for
 each hour on the reduced network for one recorded day. Flow rises in step with
 the load added, so two runs an hour find the crossing point exactly, and a third
 run at that point sits on the rating.

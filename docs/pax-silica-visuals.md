@@ -40,8 +40,8 @@ re-make it after a page change, run `make serve`, then
 ![One rectangle tiled by the three grids. Luzon is the giant piece, holding a dashed rust block for Pax Silica that is slightly bigger than the whole Visayas block](pax-silica-figs/grids.png)
 
 The whole Philippine grid as one rectangle, tiled like a jigsaw. Every
-piece's area is the most power that grid actually used in any 5-minute
-stretch of 105 days of the market operator IEMOP's published files, and
+piece's area is the highest 5-minute energy requirement the market recorded for
+that grid across 105 days of the market operator IEMOP's published files, and
 each piece names the people it serves (about 62.2 million on Luzon, 26.3 on
 Mindanao, 20.6 in the Visayas, 2020 census). Luzon is the giant piece, and
 Mindanao and Visayas share the right column. The rust block is Pax Silica on its own, dashed because it is
@@ -56,7 +56,7 @@ grid pieces were measured while the dashed square is a promise on paper.
 Reporting on the project separately projects demand of at least 5,000 MW, and
 neither report says how that fits with the announced 3,000.
 
-## The 500 MW solar farm signed for New Clark City covers 4.1% of the electricity Pax Silica needs for a day
+## The solar and battery project signed for New Clark City covers 4.1% of the electricity Pax Silica needs for a day
 
 ![One day in megawatts. A flat dashed line at 3,000 for Pax Silica. A low filled hump for the solar farm, peaking at 390 at noon](pax-silica-figs/acwa.png)
 
@@ -90,7 +90,7 @@ uses.
 
 ## The one route feeding Pax Silica delivers only a quarter of what it needs
 
-![Transmission towers in two bands. Two solid navy lines exist and carry 769 MW. Three dashed rust lines do not exist yet](pax-silica-figs/wires.png)
+![Transmission towers in two bands. One navy route feeds Pax Silica and carries 769 MW, a grey one exists but does not feed it. Three dashed rust lines do not exist yet](pax-silica-figs/wires.png)
 
 The chart is the transmission itself. Every line drawn is one 230 kilovolt
 route into Pax Silica, carrying two circuits on shared towers. The two solid
@@ -110,14 +110,17 @@ missing. The answer is three, which covers the gap with about 170 MW to spare.
 
 ![Three timelines. Two finished builds from 2023 to 2024, one with a rust stretch marking a court stop, then the Pax Silica substation's own 2026-to-2028 window](pax-silica-figs/record.png)
 
-The promised fix for Pax Silica is a P6.95 billion substation due by the end
-of 2028. These two timelines show how NGCP's two most recent big builds
+The fix on the table is a P6.95 billion substation in NGCP's transmission
+development plan, which BCDA targets for the end of 2028. The plan and the money
+are NGCP's; the date is BCDA's target. These two timelines show how NGCP's two
+most recent long-distance builds
 actually went. On top, the Hermosa-San Jose line turned on in May 2023 at a
-quarter of its capacity and reached full capacity only in June 2024, because
-a court order over nine towers stopped work for nine months (the rust
-stretch), which is most of why that build took 13 months. Below it, the
-Mindanao-Visayas undersea link, first power April 2023, full service
-January 2024, nine months. Both bars sit on one 24-month axis, so the first
+quarter of its capacity and reached full capacity only in June 2024. A
+court order over nine towers stopped work for nine of those 13 months (the rust
+stretch). Below it, the
+Mindanao-Visayas undersea link, first power April 2023 at an initial 22.5 MW,
+full service January 2024 at 450 MW, nine months. That one met a Supreme Court
+order too, on its Cebu-Magdugo component in September 2023. Both bars sit on one 24-month axis, so the first
 bar being visibly longer is the 13 against the 9. The third strip is the Pax Silica substation's
 own promised window on its own 2026-to-2028 axis, with today marked. Pax
 Silica's construction starts in the first quarter of 2028 and the substation is due at
@@ -142,8 +145,10 @@ price is P12.00 for every buyer on Luzon in all 24 hours of the replayed day.
 Neither anchor is a measured fuel cost. P6.00 is the fixed price the Energy
 Regulatory Commission set for a suspended market, and P12.00 is a labelled
 assumption.
-Oil is the plant that sets that price in 16 of the 24 hours; power pulled from
-the other island grids sets 6 and hydro sets 2.
+Oil is the last block the model dispatches in 16 of the 24 hours. In the other 8
+the last block is power pulled from the other island grids, or hydro, and the
+hour still clears at P12.00. That count names the last block dispatched, which is
+not the same as the block whose cost the hour clears at.
 The small print adds what that means at home. If generation cost were
 passed through in full, P6.00 more per kWh is P1,200 a month more on the
 200 kWh bill Meralco works its own example on. That is a model figure rather
@@ -157,17 +162,20 @@ cap out at 770 MW in the first place.
 
 ![Two bars of 3,000 MW. On a normal night Pax Silica's own station plus the lines cover it. With one generator down, a rust block of 331 MW is left over](pax-silica-figs/own.png)
 
-BCDA's actual plan is for Pax Silica to build its own power station instead
-of drawing from the grid. The 2,500 MW size is one this page chose to
-illustrate the plan. No station size has been announced. The 769 MW is all the two existing lines have left at
-that hour, which is why they cannot cover the whole 600 MW loss. Both bars are the same 3,000 MW, so the two nights sit
+BCDA's actual plan is for Pax Silica to build its own power station on site
+rather than lean on the grid for the whole 3,000 MW. It has not turned grid
+supply down. The 2,500 MW size and the 600 MW unit are both sizes this page
+chose to illustrate the plan; neither is announced. The 769 MW is all the one
+route that feeds Pax Silica has left at
+that hour, which is why it cannot cover the whole 600 MW loss. Both bars are the same 3,000 MW, so the two nights sit
 side by side and one screenshot carries the whole story. On a normal night,
-2,500 MW from its own station plus 500 over the power lines covers everything.
+2,500 MW from its own station plus 500 over that route covers everything.
 On the second bar one 600 MW generator is down, about the size of one of the two
-units at the Sual coal plant in Pangasinan, and the lines are already carrying everything they can, so 331 MW
+units at the Sual coal plant in Pangasinan, and that route is already carrying everything it can, so 331 MW
 has nothing behind it, the electricity of 1.2 million homes. Building your own
 power does not remove the grid. It turns the grid into your backup, and the
-backup runs down the same two lines. The card makes one more point, that a unit
+backup runs down that same single route. At 417 MW, the largest unit in the
+outage record, the gap would be 148 MW rather than 331. The card makes one more point, that a unit
 being out is routine rather than freak. Across the same 105 archived days, San Gabriel, a
 417 MW gas unit in Batangas, was listed out on 33 of them, and Masinloc's
 second unit on 9.

@@ -2,12 +2,12 @@
 
 ![Four ways of supplying the campus, each compared against the 3,000 MW it needs](pax-silica-embedded.png)
 
-On 24 July 2026 the Bases Conversion and Development Authority said Pax Silica at
-New Clark City will build its own power station on site rather than lean on the
-grid for the whole 3,000 MW, and said it will not compete with household supply.
+On 23 July 2026 the Bases Conversion and Development Authority said Pax Silica at
+New Clark City will rely primarily on renewable energy from an embedded power
+plant, and that its draw will not cut into current power supplies in the area.
 BCDA has not turned grid supply down: in June its president said it was also
-looking outside New Clark City for power, and NGCP is building a dedicated
-substation. The 3,000 MW is BCDA's figure at full development, which it puts 10
+looking outside New Clark City for power, and NGCP carries a dedicated
+substation in its transmission development plan. The 3,000 MW is BCDA's figure at full development, which it puts 10
 to 15 years after construction starts in 2028. This checks the on-site plan
 against the network.
 
@@ -21,7 +21,7 @@ Everything is drawn at 7pm, because that is when demand is highest and when the 
 farm has stopped for the day. The small chart underneath shows the solar day, so you
 can see the evening zero rather than take it on trust.
 
-The dashed line at 770 MW is the only number the model works out. Pax Silica sits on
+The dashed line at 770 MW is the main number the model works out. Pax Silica sits on
 two 230 kilovolt routes, each carrying two circuits on shared towers, and only one
 of the two actually feeds it. The 770 is the most that one route can carry, and it
 is why the blue segment stops where it does.
@@ -58,7 +58,8 @@ row three, which the picture shows as covered.
 
 | number | where it comes from |
 |---|---|
-| what the feeding route carries, 770 MW | worked out by the model, on recorded grid data for 25 June 2026 |
+| what the feeding route carries, 769 MW | worked out by the model, on recorded grid data for 25 June 2026, solving only the lines at Pax Silica's own bus |
+| the wider-check column, 2,471 / 163 / 661 MW | worked out by the model, same day, solving the whole Luzon network instead, which finds more bottlenecks upstream |
 | 3,000 MW of demand | BCDA's announced figure at full development, 10 to 15 years after 2028, held flat here from day one |
 | 500 MW solar | the ACWA lease, announced |
 | how solar output varies through the day | an assumption used across this project, a cloudless day |
