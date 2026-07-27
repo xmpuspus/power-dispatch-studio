@@ -35,6 +35,25 @@ HARVEST_MLD = 120.0
 # ACWA Power lease signed 2026-06-02: up to 500 MW solar + storage on 500 ha
 # https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html
 ACWA_MW, ACWA_HA = 500.0, 500.0
+# BCDA (Bingcang): "1,620 hectares in New Clark City in Tarlac have been
+# designated as an industrial area for the Pax Silica initiative"
+# https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda
+# Manila Bulletin puts the same footprint as a 4,000-acre economic security
+# zone, which is 1,618.7 ha, so the spread in reported figures (1,618 to 1,620)
+# is acre-to-hectare rounding of one area, not three different scopes.
+SITE_HA = 1620.0
+# Capas municipal government data, cited by the scientists' group Agham:
+# "over 30 percent of its land area is considered productive agricultural land"
+# https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project
+CAPAS_FARMLAND_PCT = 30.0
+# BCDA (Bingcang, Super Radyo DZBB): "there are only around 10 farmers
+# affected". Kalikasan (De Guzman, via South China Morning Post) puts
+# displacement from the New Clark City project as a whole at 20,000
+# Indigenous people and 15,000 farmers. The two cover DIFFERENT ground: the
+# first is the Pax Silica site, the second the whole city. Never subtract them.
+FARMERS_BCDA = 10
+DISPLACED_ADVOCACY_IP, DISPLACED_ADVOCACY_FARMERS = 20000, 15000
+
 # NGCP dedicated 230 kV substation for New Clark City, P6.95B, end-2028 target
 # https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city
 SUBSTATION_PHP_B, SUBSTATION_KV, SUBSTATION_YEAR = 6.95, 230, 2028
@@ -349,6 +368,35 @@ def main() -> None:
                 "substation": "https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city",
                 "hsj": "https://ngcp.ph/article?cid=16897",
                 "mvip": "https://www.ngcp.ph/article?cid=16636",
+            },
+        },
+        "site": {
+            "ha": SITE_HA,
+            "km2": round(SITE_HA / 100, 2),
+            "ncc_ha": round(NCC_KM2 * 100),
+            "makati_ha": round(MAKATI_KM2 * 100),
+            "bgc_ha": round(BGC_KM2 * 100),
+            "acwa_ha": ACWA_HA,
+            "share_of_ncc_pct": round(SITE_HA / (NCC_KM2 * 100) * 100, 1),
+            "vs_makati": round(SITE_HA / (MAKATI_KM2 * 100), 2),
+            "vs_bgc": round(SITE_HA / (BGC_KM2 * 100), 1),
+            "vs_acwa": round(SITE_HA / ACWA_HA, 1),
+            "capas_farmland_pct": CAPAS_FARMLAND_PCT,
+            "farmers_bcda": FARMERS_BCDA,
+            "displaced_advocacy": [DISPLACED_ADVOCACY_IP,
+                                   DISPLACED_ADVOCACY_FARMERS],
+            # what nobody has published. These stay in the bake so the card
+            # cannot quietly start claiming a number that does not exist.
+            "tree_count_published": False,
+            "ecc_issued": False,
+            "src": {
+                "area": "https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda (BCDA president Joshua Bingcang, 1,620 ha designated as an industrial area)",
+                "zone": "https://mb.com.ph/2026/07/22/pax-silica-explained (4,000-acre economic security zone; \"Much of the land under discussion supports rice, coconut, and other food production\")",
+                "farmland": "https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project (Capas municipal government data via Agham)",
+                "displacement": "https://philstarlife.com/news-and-views/314814-what-exactly-is-pax-silica (Kalikasan via South China Morning Post, for the New Clark City project as a whole)",
+                "farmers": "https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/ (BCDA counters that about 10 farmers are directly affected)",
+                "assessment": "https://businessmirror.com.ph/2026/07/20/denr-assesses-pax-silicas-environmental-impact/ (DENR assessing; no environmental compliance certificate reported issued, and no tree inventory or tree-cutting permit published)",
+                "areas": "https://en.wikipedia.org/wiki/New_Clark_City ; https://en.wikipedia.org/wiki/Makati ; https://en.wikipedia.org/wiki/Bonifacio_Global_City",
             },
         },
         "price": price_effect(sites["day"]),

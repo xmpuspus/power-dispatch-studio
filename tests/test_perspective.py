@@ -32,7 +32,7 @@ def pin(name, ok, detail=""):
         fails.append(name)
 
 
-def check_html_static_text(c, p, s, w, wa, pr):
+def check_html_static_text(c, p, s, w, wa, pr, SITE):
     if not os.path.exists(HTML_PATH):
         pin("pax-silica.html present", False)
         return
@@ -91,7 +91,7 @@ def check_html_static_text(c, p, s, w, wa, pr):
     # every source URL the bake carries must appear as a link on the page, so
     # a claim can never outlive the citation it was built on
     urls = set()
-    for section in (c, p, s, w, wa, pr):
+    for section in (c, p, s, w, wa, pr, SITE):
         for v in section["src"].values():
             urls.update(re.findall(r"https?://[^\s;)]+", v))
     unlinked = sorted(u for u in urls if u not in html)
@@ -116,7 +116,7 @@ def check_html_static_text(c, p, s, w, wa, pr):
         if any("github.com" in u for u in links):
             bad.append(cid + ":repo-path-in-footnote")
     pin(f"all {len(cards)} cards footnote citable public sources",
-        len(cards) == 8 and not bad, ", ".join(bad))
+        len(cards) == 9 and not bad, ", ".join(bad))
 
     # a card gets screenshotted on its own, so a definition sitting on another
     # card is no definition at all: every acronym a card uses is spelled out on
@@ -170,9 +170,30 @@ def check_html_static_text(c, p, s, w, wa, pr):
         chart_heads = [h.strip() for h in heads if h.strip() in titles]
         missing = [t for t in titles if t not in [h.strip() for h in heads]]
         pin(f"all {len(titles)} chart titles appear verbatim as doc headings",
-            len(titles) == 8 and not missing, "; ".join(missing[:2]))
+            len(titles) == 9 and not missing, "; ".join(missing[:2]))
         pin("doc headings carry the chart titles in the page's own order",
             chart_heads == [t for t in titles if t in chart_heads])
+    # the land card: area against area, and the two absences it must keep saying
+    # out loud. It may never start claiming a tree count or a certificate that
+    # nobody has published.
+    site = SITE
+    pin("site area is the announced 1,620 hectares", site["ha"] == 1620.0)
+    pin("site share of New Clark City is derived, not typed",
+        site["share_of_ncc_pct"] == round(site["ha"] / site["ncc_ha"] * 100, 1))
+    pin("site vs Makati is derived from both areas",
+        site["vs_makati"] == round(site["ha"] / site["makati_ha"], 2))
+    pin("no tree count and no certificate are claimed",
+        site["tree_count_published"] is False and site["ecc_issued"] is False)
+    has("site card states the tree count does not exist", "tree count does not exist")
+    has("site card BCDA farmer figure", f"about {site['farmers_bcda']} farmers")
+    has("site card advocacy displacement pair",
+        f"{site['displaced_advocacy'][0]:,} Indigenous people and")
+    has("site card Capas farmland share",
+        f"{site['capas_farmland_pct']:.0f} percent of Capas")
+    has("site card keeps the two people-counts apart", "cannot be subtracted")
+    pin("the two displacement figures are stored as the advocacy pair",
+        site["displaced_advocacy"] == [20000, 15000] and site["farmers_bcda"] == 10)
+
     # the failure scenario cites the measured outage record
     orec = w["outages"]
     pin("outage record: named units with measured days out",
@@ -288,7 +309,7 @@ def main():
     pin("every section carries src URLs",
         all("src" in x and x["src"] for x in (c, p, s, w, wa, pr)))
 
-    check_html_static_text(c, p, s, w, wa, pr)
+    check_html_static_text(c, p, s, w, wa, pr, d["site"])
 
     print()
     if fails:

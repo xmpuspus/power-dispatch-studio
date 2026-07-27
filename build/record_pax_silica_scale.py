@@ -39,6 +39,9 @@ BEATS = [
     ("fig-priceb", 3.4),
     ("fig-own", 5.4),
     ("fig-water", 3.6),
+    # the land card is tall: five runs of squares plus its note. Staged wider,
+    # the runs reflow into fewer rows and the magnifier stops shrinking it.
+    ("fig-site", 3.8, 1220),
 ]
 
 STAGE = r"""
@@ -53,7 +56,11 @@ STAGE = r"""
   inner.id = 'minner';
   s.appendChild(inner);
   const css = document.createElement('style');
+  // the raw URL list is unreadable at montage scale and every source in it is
+  // already a named link in the line above, so it comes off the stage. Nothing
+  // else is hidden: each beat still shows the card's own sources.
   css.textContent = '#mstage .replay{display:none !important;}' +
+    '#mstage .rawline{display:none !important;}' +
     '#minner .fig{margin:0 !important;}';
   document.head.appendChild(css);
   // a staged card is put back where it came from before the next one is
@@ -108,7 +115,7 @@ TITLE = """
     Authority says its Pax Silica campus will need
     <span style="color:#A65E46">3,000 MW</span> of power and
     <span style="color:#A65E46">65 to 90 million liters</span> of water a day.</div>
-  <div style="font-size:20px; color:#3d3d47; margin-top:18px">Eight charts, drawn
+  <div style="font-size:20px; color:#3d3d47; margin-top:18px">Nine charts, drawn
     against things you already know.</div>
 </div>
 """
@@ -136,9 +143,11 @@ async def main():
         await page.evaluate("(c) => window.__m.fit(c)", MAG)
         await asyncio.sleep(2.4)
 
-        for fid, hold in BEATS:
+        for beat in BEATS:
+            fid, hold = beat[0], beat[1]
+            width = beat[2] if len(beat) > 2 else CARD_W
             ok = await page.evaluate(
-                "([id, w]) => window.__m.card(id, w)", [fid, CARD_W])
+                "([id, w]) => window.__m.card(id, w)", [fid, width])
             if not ok:
                 print("missing card:", fid)
                 continue
