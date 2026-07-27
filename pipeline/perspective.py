@@ -82,9 +82,16 @@ ECC_MASTERPLAN_ISSUED = True
 ECC_PER_LOCATOR_PENDING = True
 TREE_COUNT_PUBLISHED = False
 
-# NGCP dedicated 230 kV substation for New Clark City, P6.95B, end-2028 target
+# The Capas 230 kV substation. The cost and the facility are NGCP's, from its
+# Transmission Development Plan 2024 to 2050: "According to the plan, NGCP will
+# allocate P6.95 billion to develop the facility." The end-2028 date is BCDA's
+# target, not NGCP's commitment: Bingcang said "Our target with them is by [the]
+# end of 2028, the dedicated power connection should be already installed in New
+# Clark City." Keep the two owners apart wherever the page prints them.
 # https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city
 SUBSTATION_PHP_B, SUBSTATION_KV, SUBSTATION_YEAR = 6.95, 230, 2028
+SUBSTATION_COST_OWNER = "NGCP transmission development plan"
+SUBSTATION_DATE_OWNER = "BCDA target"
 
 # --- external anchors, each with its primary source --------------------------
 # Meralco's July 2026 rate advisory works its example bill at 200 kWh a month:
@@ -182,7 +189,7 @@ VISAYAS_BULLETIN = {"peak_lo": 2384, "peak_hi": 2482,
 # over all 70 days would be zero. The page must say which.
 DIPCEF = {"days_nonzero": 28, "days_sampled": 70, "median_php_kwh": 0.56,
           "median_basis": "node-hours where it fires",
-          "max_php_kwh": 19.0, "max_day": "2026-05-26"}
+          "max_php_kwh": 19.28, "max_day": "2026-05-26"}
 # The own-station illustration. Neither figure is announced: 2,500 MW is a
 # chosen station size and 600 MW a chosen unit size, close to one of the two
 # 647 MW units at Sual. Every place the page prints them reads from here.
@@ -472,7 +479,9 @@ def main() -> None:
                 * 24 * 1000 / (HOME_KWH_MONTH / DAYS_PER_MONTH) / 1e6, 1),
             "day": sites["day"],
             "substation": {"php_b": SUBSTATION_PHP_B, "kv": SUBSTATION_KV,
-                           "year": SUBSTATION_YEAR},
+                           "year": SUBSTATION_YEAR,
+                           "cost_owner": SUBSTATION_COST_OWNER,
+                           "date_owner": SUBSTATION_DATE_OWNER},
             "hsj": HSJ, "mvip": MVIP,
             "src": {
                 "limit": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/nodal_dcopf.py (solved on OpenStreetMap-mapped routes, https://www.openstreetmap.org/copyright ; ratings are class defaults, NGCP does not publish them)",

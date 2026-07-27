@@ -75,6 +75,8 @@ def check_html_static_text(c, p, s, w, wa, pr, SITE):
     has("DIPCEF sample size",
         f"{pr['dipcef']['days_nonzero']} of {pr['dipcef']['days_sampled']} sampled days")
     has("DIPCEF median", f"P{pr['dipcef']['median_php_kwh']} per kWh")
+    has("DIPCEF maximum, to the precision the sweep measured",
+        f"P{pr['dipcef']['max_php_kwh']} on")
     has("passthrough peso line", f"P{pr['passthrough_php_month']:,} a month")
     has("olympic pool basis", "an Olympic pool holds 2.5 million liters")
     has("island population source", "Island populations, 2020 census")
@@ -301,8 +303,14 @@ def main():
         f"{w['limit_7pm_mw']}")
     pin("gap = campus - limit", w["gap_mw"] == round(c["mw"] - w["limit_7pm_mw"], 0))
     pin("site is radially fed in the model", w["radially_fed"] is True)
+    # the cost and the facility come from NGCP's plan; the date is BCDA's target.
+    # The page must not merge the two owners, so the bake keeps them apart.
+    sub = w["substation"]
     pin("substation is the announced P6.95B 230 kV end-2028",
-        w["substation"] == {"php_b": 6.95, "kv": 230, "year": 2028})
+        sub["php_b"] == 6.95 and sub["kv"] == 230 and sub["year"] == 2028)
+    pin("the substation cost and the substation date carry different owners",
+        sub["cost_owner"] == "NGCP transmission development plan"
+        and sub["date_owner"] == "BCDA target")
 
     pin("price: modeled on the same recorded day as the wires limit",
         pr["day"] == w["day"])
