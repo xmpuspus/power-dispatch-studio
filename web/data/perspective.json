@@ -9,8 +9,19 @@
    90.0
   ],
   "harvest_mld": 120.0,
-  "zone_ha": 1620,
+  "zone_ha": 1620.0,
+  "build_start_year": 2028,
+  "full_build_years": [
+   10,
+   15
+  ],
+  "jobs_direct": [
+   130000,
+   190000
+  ],
   "src": {
+   "horizon": "https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/",
+   "jobs": "https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda",
    "mw": "https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/",
    "mw_ceiling": "https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest",
    "water": "https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/",
@@ -34,7 +45,9 @@
    "peak_lo": 2384,
    "peak_hi": 2482,
    "avail_lo": 2581,
-   "avail_hi": 2691
+   "avail_hi": 2587,
+   "src_hi": "https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/",
+   "src_lo": "https://www.gmanetwork.com/news/money/economy/991590/ngcp-visayas-grid-yellow-alert-june-16-2026/story/"
   },
   "campus_vs_visayas": 1.09,
   "campus_vs_luzon": 0.211,
@@ -139,9 +152,11 @@
   "limit_max_mw": 775.7,
   "gap_mw": 2231.0,
   "radially_fed": true,
-  "n_circuits": 2,
-  "class_rating_mw": 800.0,
-  "more_circuits": 3,
+  "n_routes": 2,
+  "route_rating_mw": 800.0,
+  "circuit_rating_mw": 400.0,
+  "circuits_per_route": 2,
+  "more_routes": 3,
   "outages": {
    "days_in_window": 105,
    "units": [
@@ -166,6 +181,9 @@
    ],
    "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/ and https://www.iemop.ph/market-data/registered-capacity-generation/"
   },
+  "own_station_mw": 2500.0,
+  "trip_unit_mw": 600.0,
+  "own_gap_mw": 331,
   "own_gap_homes_million": 1.2,
   "day": "2026-06-25",
   "substation": {
@@ -174,18 +192,24 @@
    "year": 2028
   },
   "hsj": {
+   "name": "Hermosa-San Jose",
    "full_mw": 8000,
    "full_date": "2024-06-23",
    "line1_mw": 2000,
    "line1_date": "2023-05-27",
    "tro": "2023-07 to 2024-04",
-   "php_b": 10.2
+   "php_b": 10.2,
+   "cost_src": "https://www.ngcp.ph/article?cid=16649",
+   "milestone_src": "https://ngcp.ph/article?cid=16897"
   },
   "mvip": {
    "mw": 450,
    "php_b": 52.0,
    "first_load": "2023-04-30",
-   "commercial": "2024-01-26"
+   "first_load_mw": 22.5,
+   "commercial": "2024-01-26",
+   "energize_src": "https://www.ngcp.ph/article?cid=16636",
+   "commercial_src": "https://www.ngcp.ph/article?cid=16899"
   },
   "src": {
    "limit": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/nodal_dcopf.py (solved on OpenStreetMap-mapped routes, https://www.openstreetmap.org/copyright ; ratings are class defaults, NGCP does not publish them)",
@@ -212,14 +236,24 @@
    15000
   ],
   "tree_count_published": false,
-  "ecc_issued": false,
+  "ecc_masterplan_issued": true,
+  "ecc_per_locator_pending": true,
+  "pap_barangays": [
+   "O'Donnell",
+   "Aranguren",
+   "Santa Lucia"
+  ],
+  "local_watershed": "Sacobia",
   "src": {
    "area": "https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda (BCDA president Joshua Bingcang, 1,620 ha designated as an industrial area)",
-   "zone": "https://mb.com.ph/2026/07/22/pax-silica-explained (4,000-acre economic security zone; \"Much of the land under discussion supports rice, coconut, and other food production\")",
+   "zone": "https://mb.com.ph/2026/07/22/pax-silica-explained (\"a proposed 4,000-acre (about 1,620-hectare) Economic Security Zone\"; separately, under the article's list of critics' objections, \"Much of the land under discussion supports rice, coconut, and other food production\", which is the critics' characterisation of the wider land at issue and not Manila Bulletin describing these 1,620 hectares)",
+   "watershed": "https://mb.com.ph/2026/07/22/pax-silica-explained (\"The Sacobia watershed, the primary water source for New Clark City, has reportedly shown signs of strain since 2020\")",
    "farmland": "https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project (Capas municipal government data via Agham)",
    "displacement": "https://philstarlife.com/news-and-views/314814-what-exactly-is-pax-silica (Kalikasan via South China Morning Post, for the New Clark City project as a whole)",
    "farmers": "https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/ (BCDA counters that about 10 farmers are directly affected)",
-   "assessment": "https://businessmirror.com.ph/2026/07/20/denr-assesses-pax-silicas-environmental-impact/ (DENR assessing; no environmental compliance certificate reported issued, and no tree inventory or tree-cutting permit published)",
+   "assessment": "https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/ (BCDA says DENR issued an environmental compliance certificate for the masterplan and each locator still needs its own; DENR was still running the impact assessment three days earlier, https://businessmirror.com.ph/2026/07/20/denr-assesses-pax-silicas-environmental-impact/ ; no tree inventory or tree-cutting permit is published)",
+   "pap": "https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project (BCDA's initial list of Project Affected Persons covers three Capas barangays, per Agham)",
+   "jobs": "https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda (BCDA estimates 130,000 to 190,000 direct jobs)",
    "areas": "https://en.wikipedia.org/wiki/New_Clark_City ; https://en.wikipedia.org/wiki/Makati ; https://en.wikipedia.org/wiki/Bonifacio_Global_City"
   }
  },
@@ -285,10 +319,31 @@
    ],
    "avail_mw": 15682.0,
    "evening_demand_mw": 12018,
+   "evening_demand_basis": "mean hour-19 demand across the archive window",
+   "headroom_with_campus_mw": 664.0,
    "demand_with_campus_mw": 15018
   },
   "passthrough_php_month": 1200,
+  "passthrough_delta_php_kwh": 6.0,
   "day": "2026-06-25",
+  "marginal_base": {
+   "top": "coal",
+   "top_hours": 24,
+   "counts": {
+    "coal": 24
+   },
+   "hours": 24
+  },
+  "marginal_wave": {
+   "top": "oil",
+   "top_hours": 16,
+   "counts": {
+    "export": 6,
+    "hydro": 2,
+    "oil": 16
+   },
+   "hours": 24
+  },
   "luzon_mean": [
    6.0,
    12.0
@@ -309,6 +364,7 @@
    "days_nonzero": 28,
    "days_sampled": 70,
    "median_php_kwh": 0.56,
+   "median_basis": "node-hours where it fires",
    "max_php_kwh": 19.0,
    "max_day": "2026-05-26"
   },
@@ -337,6 +393,9 @@
    900.0
   ],
   "angat_mld": 4000.0,
+  "angat_cms": 46.0,
+  "angat_window": "16 to 30 Jul 2026",
+  "local_watershed": "Sacobia",
   "angat_share_pct": [
    1.6,
    2.2
@@ -348,9 +407,9 @@
   ],
   "src": {
    "announced": "https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/",
-   "standard": "https://esmart.nhrc.upd.edu.ph/?p=1422 (MWSS 150 liters per person per day planning standard)",
+   "standard": "https://web.archive.org/web/20251231151725/https://esmart.nhrc.upd.edu.ph/?p=1422 (UP National Hydraulic Research Center project e-SMART: \"medium domestic water demand projections at 150 liters per day per capita\", households only; the live page stopped answering in July 2026, so this is the archived copy)",
    "makati": "https://en.wikipedia.org/wiki/Makati (2024 census, after the Embo transfer)",
-   "angat": "https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew",
+   "angat": "https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew (NWRB cut the MWSS allocation from 48 to 46 cubic meters per second for 16 to 30 Jul 2026; 46 CMS is 3,974 million liters a day, rounded here to 4,000, and it is an allocation for Metro Manila and Rizal rather than a measured withdrawal)",
    "rice": "https://www.fao.org/4/u5835e/u5835e04.htm (1,200-1,500 mm a season)",
    "nwrb": "https://businessmirror.com.ph/2026/07/22/local-water-source-enough-to-supply-pax-silica-operation-water-board/",
    "dispute": "https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/"

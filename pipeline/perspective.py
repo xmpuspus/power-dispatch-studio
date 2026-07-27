@@ -20,10 +20,20 @@ ROOT = os.path.dirname(HERE)
 WEB = os.path.join(ROOT, "web", "data")
 
 # --- announced figures, each with its primary source -------------------------
-# BCDA (Bingcang): "around, at full development, mga three gigawatts po iyan"
+# BCDA (Bingcang): "Initial assessment is to be conservative, around, at full
+# development, mga three gigawatts po iyan". Same piece: BCDA says the draw
+# "will not cut into the current power supplies in the area".
 # https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/
 CAMPUS_MW = 3000.0
-# Inquirer: projected demand "could reach at least 5 gigawatts"
+# How far out "at full development" is. BCDA (Bingcang) via BusinessMirror:
+# "While the construction of the site is expected to start in the first quarter
+# of 2028, its full development will take another 10 to 15 years."
+# https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/
+BUILD_START_YEAR = 2028
+FULL_BUILD_YEARS_LOW, FULL_BUILD_YEARS_HIGH = 10, 15
+# Inquirer Business, 22 Jun 2026, the reporter's own sentence: an enclave
+# "whose projected electricity demand could reach at least 5 gigawatts". Not
+# attributed there to BCDA, and it predates BCDA's own 3 GW figure of 23 Jul.
 # https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest
 CAMPUS_MW_CEILING = 5000.0
 # BCDA (Bingcang): "65 to 90 million liters of water ... per day"
@@ -53,25 +63,63 @@ CAPAS_FARMLAND_PCT = 30.0
 # first is the Pax Silica site, the second the whole city. Never subtract them.
 FARMERS_BCDA = 10
 DISPLACED_ADVOCACY_IP, DISPLACED_ADVOCACY_FARMERS = 20000, 15000
+# BCDA's own initial list of Project Affected Persons, reported by the
+# scientists' group Agham: residents of three Capas barangays are on it. This
+# is the published thing that sits against the 10-farmer count, so the page
+# must carry it wherever it carries the 10.
+# https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project
+PAP_BARANGAYS = ["O'Donnell", "Aranguren", "Santa Lucia"]
+# BCDA's own case, carried so the land card is not one-sided. Direct jobs
+# 130,000 to 190,000, per BCDA via Philstar, 24 Jul 2026.
+# https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda
+JOBS_DIRECT_LOW, JOBS_DIRECT_HIGH = 130000, 190000
+# DENR issued an environmental compliance certificate for the MASTERPLAN, per
+# BCDA (Bingcang) via BusinessMirror, 23 Jul 2026; each locator still needs its
+# own. No tree inventory and no tree-cutting permit is published, which is a
+# separate absence and the only one the page may claim.
+# https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/
+ECC_MASTERPLAN_ISSUED = True
+ECC_PER_LOCATOR_PENDING = True
+TREE_COUNT_PUBLISHED = False
 
 # NGCP dedicated 230 kV substation for New Clark City, P6.95B, end-2028 target
 # https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city
 SUBSTATION_PHP_B, SUBSTATION_KV, SUBSTATION_YEAR = 6.95, 230, 2028
 
 # --- external anchors, each with its primary source --------------------------
-# Meralco computes the "typical residential customer" on 200 kWh a month
+# Meralco's July 2026 rate advisory works its example bill at 200 kWh a month:
+# "For residential customers consuming 200 kWh, this adjustment translates to
+# an increase of P69". Meralco does not call 200 kWh typical, so the page must
+# say "the 200 kWh a month Meralco works its example bill on".
 # https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026
 HOME_KWH_MONTH = 200.0
 DAYS_PER_MONTH = 30.4166  # 365 / 12, so the homes figure is a monthly average
 # Makati after the ten Embo barangays moved to Taguig (2023):
 # 309,770 people (2024 census), 18.17 km2. https://en.wikipedia.org/wiki/Makati
 MAKATI_POP, MAKATI_KM2 = 309770, 18.17
-# MWSS planning standard for domestic use, liters per person per day
-# https://esmart.nhrc.upd.edu.ph/?p=1422
+# Domestic water demand for Metro Manila, liters per person per day. The
+# source is UP's National Hydraulic Research Center project e-SMART, which
+# calls it a projection, not a standard: "medium domestic water demand
+# projections at 150 liters per day per capita". It covers households only, so
+# it is not a measurement of any city's total draw. The live site stopped
+# answering in July 2026, so the archived copy is the citation.
+# https://web.archive.org/web/20251231151725/https://esmart.nhrc.upd.edu.ph/?p=1422
 LITERS_PER_PERSON_DAY = 150.0
-# NWRB allocation to MWSS from Angat, mid-2026: 46 CMS, about 4,000 MLD
+LITERS_SRC = ("https://web.archive.org/web/20251231151725/"
+              "https://esmart.nhrc.upd.edu.ph/?p=1422")
+# NWRB's allocation to MWSS from Angat, cut from 48 to 46 cubic meters per
+# second for 16 to 30 Jul 2026 while the dam sat at a record low 152.85 m.
+# 46 CMS x 86,400 s = 3,974 MLD, which this file rounds to 4,000. It is an
+# allocation to MWSS for Metro Manila and Rizal, not a measured withdrawal.
 # https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew
+ANGAT_CMS = 46.0
 ANGAT_MLD = 4000.0
+ANGAT_WINDOW = "16 to 30 Jul 2026"
+# The watershed New Clark City itself draws on, named so the Angat comparison
+# cannot read as a shared tap. Manila Bulletin, 22 Jul 2026: "The Sacobia
+# watershed, the primary water source for New Clark City, has reportedly shown
+# signs of strain since 2020." https://mb.com.ph/2026/07/22/pax-silica-explained
+LOCAL_WATERSHED = "Sacobia"
 # FAO/IRRI: a paddy season takes 1,200-1,500 mm, i.e. 12-15 ML per hectare,
 # over a roughly 120-day season. https://www.fao.org/4/u5835e/u5835e04.htm
 RICE_ML_HA_SEASON_LOW, RICE_ML_HA_SEASON_HIGH, RICE_SEASON_DAYS = 12.0, 15.0, 120
@@ -85,32 +133,56 @@ TERRA_HA_PER_MW = TERRA_HA / TERRA_MW  # 1.0, measured on a real PH build
 BGC_KM2 = 2.4
 # https://en.wikipedia.org/wiki/New_Clark_City
 NCC_KM2 = 94.5
-# Hermosa-San Jose 500 kV: 8,000 MW full capacity 2024-06-23, first circuit
-# at 2,000 MW 2023-05-27, a Supreme Court TRO froze towers 170-178 from
-# July 2023 to April 2024, P10.2B. https://ngcp.ph/article?cid=16897
-HSJ = {"full_mw": 8000, "full_date": "2024-06-23", "line1_mw": 2000,
-       "line1_date": "2023-05-27", "tro": "2023-07 to 2024-04",
-       "php_b": 10.2}
-# Mindanao-Visayas link: P52B, 450 MW, first load 2023-04-30, commercial
-# 2024-01-26. https://www.ngcp.ph/article?cid=16636
+# Hermosa-San Jose 500 kV, the line component NGCP names inside its
+# Mariveles-Hermosa-San Jose facility. Milestones and the TRO come from
+# cid=16897; the P10.2B is the ERC's provisional approval for the
+# Hermosa-San Jose line and comes from cid=16649, NOT from cid=16897, which
+# prints PhP 20.94B for the whole Mariveles-Hermosa-San Jose project.
+# https://ngcp.ph/article?cid=16897 and https://www.ngcp.ph/article?cid=16649
+HSJ = {"name": "Hermosa-San Jose", "full_mw": 8000, "full_date": "2024-06-23",
+       "line1_mw": 2000, "line1_date": "2023-05-27",
+       "tro": "2023-07 to 2024-04", "php_b": 10.2,
+       "cost_src": "https://www.ngcp.ph/article?cid=16649",
+       "milestone_src": "https://ngcp.ph/article?cid=16897"}
+# Mindanao-Visayas link: P52B and 450 MW transfer capacity from cid=16636,
+# which also dates the 30 Apr 2023 energisation (an initial 22.5 MW load). The
+# full commercial operation date is from cid=16899, the ceremonial switch-on:
+# "On 26 January 2024, the energization ceremony was held at Malacanan Palace".
+# https://www.ngcp.ph/article?cid=16636 and https://www.ngcp.ph/article?cid=16899
 MVIP = {"mw": 450, "php_b": 52.0, "first_load": "2023-04-30",
-        "commercial": "2024-01-26"}
+        "first_load_mw": 22.5, "commercial": "2024-01-26",
+        "energize_src": "https://www.ngcp.ph/article?cid=16636",
+        "commercial_src": "https://www.ngcp.ph/article?cid=16899"}
 # island-group populations, 2020 census (PSA), for the who-is-served line
 # https://en.wikipedia.org/wiki/Luzon https://en.wikipedia.org/wiki/Visayas https://en.wikipedia.org/wiki/Mindanao
 ISLAND_POP_M = {"luzon": 62.0, "visayas": 20.6, "mindanao": 26.3}
 # an Olympic pool holds 2,500 cubic meters = 2.5 million liters (FR standard)
 # https://en.wikipedia.org/wiki/Olympic-size_swimming_pool
 POOL_ML = 2.5
-# NGCP Visayas alert bulletins, June 2026: peak demand 2,384-2,482 MW against
-# 2,581-2,691 MW available.
+# Two NGCP Visayas yellow-alert bulletins, June 2026, each carrying one
+# peak/available pair. 15 Jun: available 2,581 MW, peak demand 2,482 MW.
+# 16 Jun: available 2,587 MW, peak demand 2,384 MW. Both figures per bulletin,
+# never mixed across days.
 # https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/
+# https://www.gmanetwork.com/news/money/economy/991590/ngcp-visayas-grid-yellow-alert-june-16-2026/story/
 VISAYAS_BULLETIN = {"peak_lo": 2384, "peak_hi": 2482,
-                    "avail_lo": 2581, "avail_hi": 2691}
+                    "avail_lo": 2581, "avail_hi": 2587,
+                    "src_hi": "https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/",
+                    "src_lo": "https://www.gmanetwork.com/news/money/economy/991590/ngcp-visayas-grid-yellow-alert-june-16-2026/story/"}
 # WESM's published nodal congestion component, from the DIPCEF sweep this
 # project archives; the numbers are stated and oracle-guarded in
 # web/methodology.html (small and intermittent after 2026-05-01)
+# The median is taken over the node-hours where the component fires, not over
+# the 70 sampled days: nodal_prices.py collects a value only "if c". A median
+# over all 70 days would be zero. The page must say which.
 DIPCEF = {"days_nonzero": 28, "days_sampled": 70, "median_php_kwh": 0.56,
+          "median_basis": "node-hours where it fires",
           "max_php_kwh": 19.0, "max_day": "2026-05-26"}
+# The own-station illustration. Neither figure is announced: 2,500 MW is a
+# chosen station size and 600 MW a chosen unit size, close to one of the two
+# 647 MW units at Sual. Every place the page prints them reads from here.
+OWN_STATION_MW = 2500.0
+TRIP_UNIT_MW = 600.0
 
 
 def island(region: str) -> str | None:
@@ -218,9 +290,14 @@ def merit_ladder() -> dict:
                        "cost": b["cost"], "cum_from": round(cum, 0),
                        "cum_to": round(cum + b["mw"], 0)})
         cum += b["mw"]
+    # this demand is the TYPICAL evening, the mean of hour-19 demand across the
+    # archive window, not the recorded day the price solve replays. The card
+    # must say so, because the two differ by a few hundred megawatts.
     demand = mo["typical_evening_demand_mw"]
     return {"blocks": blocks, "avail_mw": round(cum, 0),
             "evening_demand_mw": demand,
+            "evening_demand_basis": "mean hour-19 demand across the archive window",
+            "headroom_with_campus_mw": round(cum - demand - CAMPUS_MW, 0),
             "demand_with_campus_mw": demand + int(CAMPUS_MW)}
 
 
@@ -231,20 +308,34 @@ def price_effect(day: str) -> dict:
     sys.path.insert(0, os.path.join(ROOT, "src"))
     import power_dispatch as pkg
 
-    base = pkg.run_scenario({"date": day, "opts": {}})["summary"]
-    wave = pkg.run_scenario(
-        {"date": day, "opts": {"demand_delta": {"luzon": 3000}}})["summary"]
+    import collections
+
+    base_run = pkg.run_scenario({"date": day, "opts": {}})
+    wave_run = pkg.run_scenario(
+        {"date": day, "opts": {"demand_delta": {"luzon": 3000}}})
+    base, wave = base_run["summary"], wave_run["summary"]
+
+    def marginal_hours(run):
+        c = collections.Counter(h["marginal"]["luzon"] for h in run["hours"])
+        return {"top": c.most_common(1)[0][0], "top_hours": c.most_common(1)[0][1],
+                "counts": dict(c), "hours": 24}
 
     def rent(s):
         return s["leyte_rent_m_php"] + s["mvip_rent_m_php"]
 
-    passthrough = round((12.0 - 6.0) * HOME_KWH_MONTH)
+    lz = [round(base["mean_price"]["luzon"], 2),
+          round(wave["mean_price"]["luzon"], 2)]
+    passthrough = round((lz[1] - lz[0]) * HOME_KWH_MONTH)
     return {
         "merit": merit_ladder(),
         "passthrough_php_month": passthrough,
+        "passthrough_delta_php_kwh": round(lz[1] - lz[0], 2),
         "day": day,
-        "luzon_mean": [round(base["mean_price"]["luzon"], 2),
-                       round(wave["mean_price"]["luzon"], 2)],
+        # which fuel sets the price each hour, counted rather than asserted:
+        # adding the wave does not put oil on the margin in every hour
+        "marginal_base": marginal_hours(base_run),
+        "marginal_wave": marginal_hours(wave_run),
+        "luzon_mean": lz,
         "visayas_peak": [round(base["peak_price"]["visayas"], 2),
                          round(wave["peak_price"]["visayas"], 2)],
         "links_rent_m_php": [round(rent(base), 1), round(rent(wave), 1)],
@@ -290,8 +381,13 @@ def main() -> None:
             "energy_gwh_day": round(energy_gwh_day, 1),
             "water_mld": [WATER_MLD_LOW, WATER_MLD_HIGH],
             "harvest_mld": HARVEST_MLD,
-            "zone_ha": 1620,
+            "zone_ha": SITE_HA,
+            "build_start_year": BUILD_START_YEAR,
+            "full_build_years": [FULL_BUILD_YEARS_LOW, FULL_BUILD_YEARS_HIGH],
+            "jobs_direct": [JOBS_DIRECT_LOW, JOBS_DIRECT_HIGH],
             "src": {
+                "horizon": "https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/",
+                "jobs": "https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda",
                 "mw": "https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/",
                 "mw_ceiling": "https://business.inquirer.net/596398/pax-silicas-mammoth-power-needs-draw-maharlika-foreign-interest",
                 "water": "https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/",
@@ -348,17 +444,27 @@ def main() -> None:
             "limit_max_mw": pax["limit_max_mw"],
             "gap_mw": round(CAMPUS_MW - limit_7pm, 0),
             "radially_fed": pax["radially_fed"],
-            "n_circuits": len(pax["circuits"]),
-            "class_rating_mw": pax["circuits"][0]["rating_mw"],
+            # each "circuit" in the sites bake is a merged branch: the network
+            # builder sums RATING_MW["ac230"] = 400 MW per circuit over the
+            # circuits it merges, so a rating of 800 is a double-circuit route
+            # and the drawn rows are routes, not single circuits
+            "n_routes": len(pax["circuits"]),
+            "route_rating_mw": pax["circuits"][0]["rating_mw"],
+            "circuit_rating_mw": 400.0,
+            "circuits_per_route": int(pax["circuits"][0]["rating_mw"] / 400.0),
             # how many more circuits of the same class the shortfall would take.
             # The rating is a class default, so this is an order-of-size answer,
             # not an engineering design.
-            "more_circuits": int(
+            "more_routes": int(
                 -(-(CAMPUS_MW - limit_7pm) // pax["circuits"][0]["rating_mw"])),
             "outages": outage_record(),
+            "own_station_mw": OWN_STATION_MW,
+            "trip_unit_mw": TRIP_UNIT_MW,
+            "own_gap_mw": round(CAMPUS_MW - (OWN_STATION_MW - TRIP_UNIT_MW)
+                                - limit_7pm),
             "own_gap_homes_million": round(
-                (CAMPUS_MW - 1900 - limit_7pm) * 24 * 1000
-                / (HOME_KWH_MONTH / DAYS_PER_MONTH) / 1e6, 1),
+                (CAMPUS_MW - (OWN_STATION_MW - TRIP_UNIT_MW) - limit_7pm)
+                * 24 * 1000 / (HOME_KWH_MONTH / DAYS_PER_MONTH) / 1e6, 1),
             "day": sites["day"],
             "substation": {"php_b": SUBSTATION_PHP_B, "kv": SUBSTATION_KV,
                            "year": SUBSTATION_YEAR},
@@ -387,15 +493,21 @@ def main() -> None:
                                    DISPLACED_ADVOCACY_FARMERS],
             # what nobody has published. These stay in the bake so the card
             # cannot quietly start claiming a number that does not exist.
-            "tree_count_published": False,
-            "ecc_issued": False,
+            "tree_count_published": TREE_COUNT_PUBLISHED,
+            "ecc_masterplan_issued": ECC_MASTERPLAN_ISSUED,
+            "ecc_per_locator_pending": ECC_PER_LOCATOR_PENDING,
+            "pap_barangays": PAP_BARANGAYS,
+            "local_watershed": LOCAL_WATERSHED,
             "src": {
                 "area": "https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda (BCDA president Joshua Bingcang, 1,620 ha designated as an industrial area)",
-                "zone": "https://mb.com.ph/2026/07/22/pax-silica-explained (4,000-acre economic security zone; \"Much of the land under discussion supports rice, coconut, and other food production\")",
+                "zone": "https://mb.com.ph/2026/07/22/pax-silica-explained (\"a proposed 4,000-acre (about 1,620-hectare) Economic Security Zone\"; separately, under the article's list of critics' objections, \"Much of the land under discussion supports rice, coconut, and other food production\", which is the critics' characterisation of the wider land at issue and not Manila Bulletin describing these 1,620 hectares)",
+                "watershed": "https://mb.com.ph/2026/07/22/pax-silica-explained (\"The Sacobia watershed, the primary water source for New Clark City, has reportedly shown signs of strain since 2020\")",
                 "farmland": "https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project (Capas municipal government data via Agham)",
                 "displacement": "https://philstarlife.com/news-and-views/314814-what-exactly-is-pax-silica (Kalikasan via South China Morning Post, for the New Clark City project as a whole)",
                 "farmers": "https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/ (BCDA counters that about 10 farmers are directly affected)",
-                "assessment": "https://businessmirror.com.ph/2026/07/20/denr-assesses-pax-silicas-environmental-impact/ (DENR assessing; no environmental compliance certificate reported issued, and no tree inventory or tree-cutting permit published)",
+                "assessment": "https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/ (BCDA says DENR issued an environmental compliance certificate for the masterplan and each locator still needs its own; DENR was still running the impact assessment three days earlier, https://businessmirror.com.ph/2026/07/20/denr-assesses-pax-silicas-environmental-impact/ ; no tree inventory or tree-cutting permit is published)",
+                "pap": "https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project (BCDA's initial list of Project Affected Persons covers three Capas barangays, per Agham)",
+                "jobs": "https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda (BCDA estimates 130,000 to 190,000 direct jobs)",
                 "areas": "https://en.wikipedia.org/wiki/New_Clark_City ; https://en.wikipedia.org/wiki/Makati ; https://en.wikipedia.org/wiki/Bonifacio_Global_City",
             },
         },
@@ -409,15 +521,18 @@ def main() -> None:
             "liters_per_person_day": LITERS_PER_PERSON_DAY,
             "rice_ha": [round(rice_ha_lo, -1), round(rice_ha_hi, -1)],
             "angat_mld": ANGAT_MLD,
+            "angat_cms": ANGAT_CMS,
+            "angat_window": ANGAT_WINDOW,
+            "local_watershed": LOCAL_WATERSHED,
             "angat_share_pct": [round(WATER_MLD_LOW / ANGAT_MLD * 100, 1),
                                 round(WATER_MLD_HIGH / ANGAT_MLD * 100, 1)],
             "harvest_mld": HARVEST_MLD,
             "pools_per_day": [round(WATER_MLD_LOW / POOL_ML), round(WATER_MLD_HIGH / POOL_ML)],
             "src": {
                 "announced": "https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/",
-                "standard": "https://esmart.nhrc.upd.edu.ph/?p=1422 (MWSS 150 liters per person per day planning standard)",
+                "standard": LITERS_SRC + " (UP National Hydraulic Research Center project e-SMART: \"medium domestic water demand projections at 150 liters per day per capita\", households only; the live page stopped answering in July 2026, so this is the archived copy)",
                 "makati": "https://en.wikipedia.org/wiki/Makati (2024 census, after the Embo transfer)",
-                "angat": "https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew",
+                "angat": "https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew (NWRB cut the MWSS allocation from 48 to 46 cubic meters per second for 16 to 30 Jul 2026; 46 CMS is 3,974 million liters a day, rounded here to 4,000, and it is an allocation for Metro Manila and Rizal rather than a measured withdrawal)",
                 "rice": "https://www.fao.org/4/u5835e/u5835e04.htm (1,200-1,500 mm a season)",
                 "nwrb": "https://businessmirror.com.ph/2026/07/22/local-water-source-enough-to-supply-pax-silica-operation-water-board/",
                 "dispute": "https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/",

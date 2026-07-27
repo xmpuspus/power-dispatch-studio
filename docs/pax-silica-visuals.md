@@ -43,7 +43,7 @@ The whole Philippine grid as one rectangle, tiled like a jigsaw. Every
 piece's area is the most power that grid actually used in any 5-minute
 stretch of 105 days of the market operator IEMOP's published files, and
 each piece names the people it serves (about 62 million on Luzon, 26 on
-Mindanao, 21 in the Visayas, 2020 census). Luzon is the giant piece, and
+Mindanao, 20.6 in the Visayas, 2020 census). Luzon is the giant piece, and
 Mindanao and Visayas share the right column. The rust block is Pax Silica on its own, dashed because it is
 announced and not built, drawn inside the Luzon block because New Clark City sits on
 Luzon and that is the grid it would join. It is not part of the 14,232 MW
@@ -81,7 +81,7 @@ with a dot) and part of Taguig. The panels would not actually go there. Pax
 Silica sits about 95 km north, and the map is only a place to see the size
 against. The small solid rust square beside it is the farm they actually
 signed, 5 km². For scale, all of New Clark City is 94.5 km² and MTerra
-Solar itself, the biggest solar build anywhere, is 35. After sunset you
+Solar itself, the biggest solar-and-battery build anywhere, is 35 km². After sunset you
 would still need about 33,000 megawatt-hours of batteries, 7 times MTerra Solar's. The
 basemap is OpenStreetMap and CARTO, the same one the project's grid map
 uses.
@@ -158,13 +158,16 @@ being out is routine rather than freak. Across the same 105 archived days, San G
 417 MW gas unit in Batangas, was listed out on 33 of them, and Masinloc's
 second unit on 9.
 
-## The water Pax Silica asked for is 1.4 to 1.9 times what everyone in Makati uses
+## The water Pax Silica asked for is 1.4 to 1.9 times the daily water planned for everyone in Makati
 
 ![Rows of water drops. Rust drops for Pax Silica, fewer navy for Makati, outlined for the promised pond, and a 100-square grid with 2 colored](pax-silica-figs/water.png)
 
 No model needed here. BCDA itself said Pax Silica will use 65 to 90 million
 liters of water a day, which is 26 to 36 Olympic pools every single day, and the
 chart makes it countable. One drop is 5 million liters a day, grouped in fives.
+Makati's own figure is what its 309,770 residents are planned for at home, at 150
+liters each a day, so it leaves out every office, mall and factory in the
+district and the ratio above it is a ceiling rather than a measurement.
 The row that used to sit underneath for Makati is gone. Makati is now a navy
 bracket under the same run of drops, ending 9 and a bit drops in, so the
 headline ratio is something you see rather than something you work out. Two rust
@@ -172,7 +175,9 @@ ticks mark where the run passes 1.4 and 1.9 times Makati. The promised rainwater
 pond used to be 24 counted drops, the longest row on the card, which gave the
 most ink to the one quantity that does not exist. It is now a single outlined bar
 on the same scale, still visibly longer than what Pax Silica asked for. And the
-last row zooms out. Of every 100 liters Metro Manila draws from Angat dam, Pax
+last row zooms out. Angat dam is a size reference and not a shared tap. It
+supplies Metro Manila, about 95 km south, while New Clark City draws on the
+Sacobia watershed. Of every 100 liters Angat is allocated for Metro Manila, Pax
 Silica would take about 2, the two colored squares in the grid. The small print carries the exact figures,
 including that the same water would keep 520 to 900 hectares of rice
 flooded. The National Water Resources Board says local sources are enough. Farmer
@@ -186,8 +191,11 @@ published an independent study of the site's water.
 This one answers the land question, and half the answer is that the number
 people most want has never been published. BCDA's president put the
 designated industrial area at 1,620 hectares, and the Manila Bulletin describes
-the same footprint as a 4,000-acre economic security zone where "much of the
-land under discussion supports rice, coconut, and other food production." One
+the same footprint as a 4,000-acre Economic Security Zone. What grows on those
+hectares is contested rather than surveyed. Listing the objections to the
+project, the same Manila Bulletin piece reports that critics say "much of the
+land under discussion supports rice, coconut, and other food production", which
+describes the wider land at issue rather than this footprint. One
 square on the chart is 50 hectares, the same size in every run, so a run's
 length is the whole comparison. The first grid is all of New Clark City,
 9,450 hectares, with 32 of its 189 squares in rust. Pax Silica is 17.1 percent
@@ -197,17 +205,24 @@ people know. Pax Silica's own land comes first, so the site sits above the
 over. Then come the outside anchors. It is 0.89 times Makati's land area and
 6.8 times Bonifacio Global City.
 
-What the chart does not show is a tree count, because no tree count exists. No
-environmental compliance certificate has been issued, the Department of
-Environment and Natural Resources says it is still assessing the project, and no
-tree inventory or tree-cutting permit has been published. Any number of trees
-felled would be invented, including one from this page, so the card says that
-instead of drawing it. The two published counts of people do not settle it
-either, and they are not measuring the same ground. BCDA says about 10 farmers
-are directly affected by those hectares, while Kalikasan puts displacement from the
+What the chart does not show is a tree count, because no tree count exists.
+Nobody publishes a tree inventory or a tree-cutting permit for Pax Silica, and no
+authoritative count of trees per hectare covers this land cover. Any number of
+trees felled would be an invention, including one from this page, so the card
+says that instead of drawing it. The environmental review is further along than
+the tree question. BCDA says the Department of Environment and Natural Resources
+issued an environmental compliance certificate for the project masterplan, and
+that each company locating inside Pax Silica must still get its own.
+The published counts of people do not settle the displacement question
+either, and they do not measure the same ground. BCDA says about 10 farmers
+are directly affected by those hectares. BCDA also published an initial list of
+Project Affected Persons that reaches residents of three Capas barangays,
+O'Donnell, Aranguren and Santa Lucia. Kalikasan puts displacement from the
 whole New Clark City project at 20,000 Indigenous people and 15,000 farmers. One
-counts the site, the other the city around it. For the wider setting, 30 percent
-of Capas is productive agricultural land on the municipal government's own data.
+count covers the site, the other the city around it. For the wider setting, over
+30 percent of Capas is productive agricultural land on the municipal
+government's own data, and BCDA puts the project at 130,000 to 190,000 direct
+jobs.
 
 ## Every chart rests on at least one number nobody has published, whether line ratings, the connection point, or the site's water
 
