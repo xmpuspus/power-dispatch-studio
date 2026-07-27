@@ -120,9 +120,14 @@ ANGAT_WINDOW = "16 to 30 Jul 2026"
 # watershed, the primary water source for New Clark City, has reportedly shown
 # signs of strain since 2020." https://mb.com.ph/2026/07/22/pax-silica-explained
 LOCAL_WATERSHED = "Sacobia"
-# FAO/IRRI: a paddy season takes 1,200-1,500 mm, i.e. 12-15 ML per hectare,
-# over a roughly 120-day season. https://www.fao.org/4/u5835e/u5835e04.htm
-RICE_ML_HA_SEASON_LOW, RICE_ML_HA_SEASON_HIGH, RICE_SEASON_DAYS = 12.0, 15.0, 120
+# FAO irrigation manual, Table 1, "APPROXIMATE AVERAGE IN net VALUES FOR
+# DIFFERENT CLIMATES AND RICE": paddy rice takes 1.5 liters per second per
+# hectare as an average net irrigation need across the season. That is 129.6
+# cubic meters a hectare a day, or 13 mm a day. Use the figure that page prints;
+# it carries no season-total in millimeters.
+# https://www.fao.org/4/u5835e/u5835e04.htm
+RICE_L_S_HA = 1.5
+RICE_ML_HA_DAY = RICE_L_S_HA * 86400 / 1e6  # 0.1296 ML per hectare per day
 # MTerra Solar, Nueva Ecija-Bulacan: 3,500 MWp on 3,500 ha with a 4,500 MWh
 # battery, the largest single solar-plus-storage build anywhere; first grid
 # sync Feb 2026. https://en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm
@@ -371,8 +376,8 @@ def main() -> None:
     # water equivalences from the announced 65-90 MLD
     people_lo = WATER_MLD_LOW * 1e6 / LITERS_PER_PERSON_DAY
     people_hi = WATER_MLD_HIGH * 1e6 / LITERS_PER_PERSON_DAY
-    rice_ha_lo = WATER_MLD_LOW / (RICE_ML_HA_SEASON_HIGH / RICE_SEASON_DAYS)
-    rice_ha_hi = WATER_MLD_HIGH / (RICE_ML_HA_SEASON_LOW / RICE_SEASON_DAYS)
+    rice_ha_lo = WATER_MLD_LOW / RICE_ML_HA_DAY
+    rice_ha_hi = WATER_MLD_HIGH / RICE_ML_HA_DAY
 
     out = {
         "generated_from": "pipeline/perspective.py",
@@ -520,6 +525,7 @@ def main() -> None:
                                  round(people_hi / MAKATI_POP, 1)],
             "liters_per_person_day": LITERS_PER_PERSON_DAY,
             "rice_ha": [round(rice_ha_lo, -1), round(rice_ha_hi, -1)],
+            "rice_l_s_ha": RICE_L_S_HA,
             "angat_mld": ANGAT_MLD,
             "angat_cms": ANGAT_CMS,
             "angat_window": ANGAT_WINDOW,
@@ -533,7 +539,7 @@ def main() -> None:
                 "standard": LITERS_SRC + " (UP National Hydraulic Research Center project e-SMART: \"medium domestic water demand projections at 150 liters per day per capita\", households only; the live page stopped answering in July 2026, so this is the archived copy)",
                 "makati": "https://en.wikipedia.org/wiki/Makati (2024 census, after the Embo transfer)",
                 "angat": "https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew (NWRB cut the MWSS allocation from 48 to 46 cubic meters per second for 16 to 30 Jul 2026; 46 CMS is 3,974 million liters a day, rounded here to 4,000, and it is an allocation for Metro Manila and Rizal rather than a measured withdrawal)",
-                "rice": "https://www.fao.org/4/u5835e/u5835e04.htm (1,200-1,500 mm a season)",
+                "rice": "https://www.fao.org/4/u5835e/u5835e04.htm (Table 1, paddy rice at 1.5 liters per second per hectare as the average net irrigation need over a season, which is 129.6 cubic meters a hectare a day)",
                 "nwrb": "https://businessmirror.com.ph/2026/07/22/local-water-source-enough-to-supply-pax-silica-operation-water-board/",
                 "dispute": "https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/",
             },

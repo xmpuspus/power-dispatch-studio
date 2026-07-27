@@ -179,8 +179,9 @@ last row zooms out. Angat dam is a size reference and not a shared tap. It
 supplies Metro Manila, about 95 km south, while New Clark City draws on the
 Sacobia watershed. Of every 100 liters Angat is allocated for Metro Manila, Pax
 Silica would take about 2, the two colored squares in the grid. The small print carries the exact figures,
-including that the same water would keep 520 to 900 hectares of rice
-flooded. The National Water Resources Board says local sources are enough. Farmer
+including that the same water would irrigate 500 to 690 hectares of paddy rice,
+at the 1.5 liters a second per hectare the FAO manual gives as a season
+average. The National Water Resources Board says local sources are enough. Farmer
 groups and Aeta communities on the land dispute that, and nobody has
 published an independent study of the site's water.
 

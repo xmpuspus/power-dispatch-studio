@@ -389,9 +389,10 @@
   ],
   "liters_per_person_day": 150.0,
   "rice_ha": [
-   520.0,
-   900.0
+   500.0,
+   690.0
   ],
+  "rice_l_s_ha": 1.5,
   "angat_mld": 4000.0,
   "angat_cms": 46.0,
   "angat_window": "16 to 30 Jul 2026",
@@ -410,7 +411,7 @@
    "standard": "https://web.archive.org/web/20251231151725/https://esmart.nhrc.upd.edu.ph/?p=1422 (UP National Hydraulic Research Center project e-SMART: \"medium domestic water demand projections at 150 liters per day per capita\", households only; the live page stopped answering in July 2026, so this is the archived copy)",
    "makati": "https://en.wikipedia.org/wiki/Makati (2024 census, after the Embo transfer)",
    "angat": "https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew (NWRB cut the MWSS allocation from 48 to 46 cubic meters per second for 16 to 30 Jul 2026; 46 CMS is 3,974 million liters a day, rounded here to 4,000, and it is an allocation for Metro Manila and Rizal rather than a measured withdrawal)",
-   "rice": "https://www.fao.org/4/u5835e/u5835e04.htm (1,200-1,500 mm a season)",
+   "rice": "https://www.fao.org/4/u5835e/u5835e04.htm (Table 1, paddy rice at 1.5 liters per second per hectare as the average net irrigation need over a season, which is 129.6 cubic meters a hectare a day)",
    "nwrb": "https://businessmirror.com.ph/2026/07/22/local-water-source-enough-to-supply-pax-silica-operation-water-board/",
    "dispute": "https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/"
   }
