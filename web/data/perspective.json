@@ -334,7 +334,11 @@
    "counts": {
     "coal": 24
    },
-   "hours": 24
+   "hours": 24,
+   "price_levels": [
+    6.0
+   ],
+   "label_is": "last block dispatched, not the price setter"
   },
   "marginal_wave": {
    "top": "oil",
@@ -344,7 +348,11 @@
     "hydro": 2,
     "oil": 16
    },
-   "hours": 24
+   "hours": 24,
+   "price_levels": [
+    12.0
+   ],
+   "label_is": "last block dispatched, not the price setter"
   },
   "luzon_mean": [
    6.0,

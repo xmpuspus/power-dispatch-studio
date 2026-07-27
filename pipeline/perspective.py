@@ -61,6 +61,12 @@ CAPAS_FARMLAND_PCT = 30.0
 # displacement from the New Clark City project as a whole at 20,000
 # Indigenous people and 15,000 farmers. The two cover DIFFERENT ground: the
 # first is the Pax Silica site, the second the whole city. Never subtract them.
+# The advocacy pair itself is reported two ways: PhilSTAR Life via SCMP has
+# 20,000 Indigenous people AND 15,000 farmers, while the GMA explainer has
+# "around 20,000 indigenous Aetas and local farmers", one count over both
+# groups. The page prints the larger reading and names the smaller one beside
+# it. https://philstarlife.com/news-and-views/314814-what-exactly-is-pax-silica
+# https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/
 FARMERS_BCDA = 10
 DISPLACED_ADVOCACY_IP, DISPLACED_ADVOCACY_FARMERS = 20000, 15000
 # BCDA's own initial list of Project Affected Persons, reported by the
@@ -328,9 +334,17 @@ def price_effect(day: str) -> dict:
     base, wave = base_run["summary"], wave_run["summary"]
 
     def marginal_hours(run):
+        # NOTE ON WHAT THIS LABEL IS. chrono.marginal() returns the last block
+        # the stack dispatches, which is NOT always the block whose cost the
+        # hour clears at: with imports and energy-limited hydro in the stack,
+        # an hour can be labelled hydro and still price at the oil cost. So the
+        # page may say which block runs last, and must never say that block
+        # "sets the price".
         c = collections.Counter(h["marginal"]["luzon"] for h in run["hours"])
+        prices = sorted({round(h["price"]["luzon"], 2) for h in run["hours"]})
         return {"top": c.most_common(1)[0][0], "top_hours": c.most_common(1)[0][1],
-                "counts": dict(c), "hours": 24}
+                "counts": dict(c), "hours": 24, "price_levels": prices,
+                "label_is": "last block dispatched, not the price setter"}
 
     def rent(s):
         return s["leyte_rent_m_php"] + s["mvip_rent_m_php"]

@@ -50,13 +50,13 @@ Luzon and that is the grid it would join. It is not part of the 14,232 MW
 already there. It takes the Visayas block's own shape and is scaled by area,
 at the same baseline, so you can see that Pax Silica alone is bigger than that
 whole grid, and bigger than Mindanao's too. The chip carries the translation, since 3,000 MW around the
-clock is the electricity of 10.9 million homes at Meralco's 200 kWh a
-month typical household. One thing to remember when reading it is that the
+clock is the electricity of 10.9 million homes, at the 200 kWh a month Meralco
+works its own example bill on. One thing to remember when reading it is that the
 grid pieces were measured while the dashed square is a promise on paper.
 Reporting on the project separately projects demand of at least 5,000 MW, and
 neither report says how that fits with the announced 3,000.
 
-## Pax Silica's signed solar farm covers 4.1% of the electricity it needs for a day
+## The 500 MW solar farm signed for New Clark City covers 4.1% of the electricity Pax Silica needs for a day
 
 ![One day in megawatts. A flat dashed line at 3,000 for Pax Silica. A low filled hump for the solar farm, peaking at 390 at noon](pax-silica-figs/acwa.png)
 
@@ -92,16 +92,19 @@ uses.
 
 ![Transmission towers in two bands. Two solid navy lines exist and carry 769 MW. Three dashed rust lines do not exist yet](pax-silica-figs/wires.png)
 
-The chart is the transmission itself. Every line drawn is one circuit into
-the site, with towers on it. The two solid navy lines are the circuits that
+The chart is the transmission itself. Every line drawn is one 230 kilovolt
+route into Pax Silica, carrying two circuits on shared towers. The two solid
+navy lines are the routes that
 exist, and together they have 769 MW of room at the modeled 7pm on a real day
-(25 June 2026). The three dashed rust lines do not exist. They are how many
-more circuits of the same kind the remaining 2,231 MW would take, at the
-standard rating for a 230 kilovolt line, or one 500 kilovolt line instead. The
+(25 June 2026). Only one of the two actually feeds Pax Silica. The three dashed
+rust lines do not exist. They are how many
+more routes of the same kind the remaining 2,231 MW would take, at a class
+default of 400 MW a circuit and so 800 MW a route, or one 500 kilovolt line
+instead. The
 line at the bottom closes the arithmetic. 769 that can arrive plus 2,231 that
 cannot is the 3,000 MW Pax Silica needs every hour. This form answers the question a grid planner
-actually asks, which is not how full a tank is but the number of circuits
-missing. The answer is three.
+actually asks, which is not how full a tank is but the number of routes
+missing. The answer is three, which covers the gap with about 170 MW to spare.
 
 ## NGCP's two most recent long-distance builds took 13 and 9 months between first power and full service
 
@@ -233,9 +236,10 @@ jobs.
 ## Every chart rests on at least one number nobody has published, whether line ratings, the connection point, or the site's water
 
 NGCP does not publish what its lines can carry, so the 770 MW limit is a
-standard assumption and everything built on it moves with it. The map puts
-Pax Silica 8.6 km from the real site, because the real connection point is
-not public. The solar day is cloudless and Pax Silica's demand is held
+class default of 400 MW a circuit, and everything built on it moves with it. The
+model connects Pax Silica to a bus 8.6 km from the site, because the real
+connection point is not public. That is an electrical simplification, not a
+misplaced pin on the map. The solar day is cloudless and Pax Silica's demand is held
 flat, both of which are generous to the supply side. The water arithmetic
 uses a per-person standard rather than a study of the site. And every announced
 number is one side's announcement. Nobody has independently checked BCDA's
