@@ -381,7 +381,7 @@ partner standing, so this is the two-circuit case, not the one-circuit case.</p>
 <div class="fig" id="fig-wires" style="--accent:#07203F">
   <button class="replay" data-replay="fig-wires">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
-  <div class="figtitle">Today's power lines can deliver only <em class="pop">a quarter</em> of what Pax Silica needs</div>
+  <div class="figtitle">The one route feeding Pax Silica delivers only <em class="pop">a quarter</em> of what it needs</div>
   <div class="figsub">Pax Silica would need 3,000 megawatts (MW) every hour. Every
   row here is one 230 kilovolt (kV) route into Pax Silica, carrying two circuits
   on shared towers, and the towers drawn along it only say
@@ -540,7 +540,7 @@ P0.56 per kWh, and the largest single value in the sample is P19.28 on 26 May
 
 <!-- ======================= BEAT 4: OWN STATION =========================== -->
 <section class="beat" id="b-own">
-<h2>Pax Silica's own power station is the actual plan, and it still leans on the same two power routes</h2>
+<h2>Pax Silica's own power station is the actual plan, and it still leans on the same single route</h2>
 <p>Which is why BCDA says Pax Silica will build its own power on site rather
 than lean on the grid for the whole 3,000 MW. It did not turn grid supply
 down. In June 2026 Bingcang put it this way: "We're looking at a power
@@ -1224,7 +1224,8 @@ this page is dated 27 Jul 2026 and its numbers are baked from
       // left column names each group, right column carries its megawatts
       txt(0, y + rowH * have / 2 - 4, "the " + have + " power routes", "var(--ink)", 13, null, "600");
       txt(0, y + rowH * have / 2 + 13, "into Pax Silica today,", "var(--ink)", 13);
-      txt(0, y + rowH * have / 2 + 30, "two circuits each", "var(--cardmute, var(--muted))", 12);
+      txt(0, y + rowH * have / 2 + 30, "two circuits each, and only", "var(--cardmute, var(--muted))", 12);
+      txt(0, y + rowH * have / 2 + 45, "one of them feeds it", "var(--cardmute, var(--muted))", 12);
       txt(W - 8, y + rowH * have / 2 - 4, fmt(lim) + " MW", "#07203F", 15, "end", "700");
       txt(W - 8, y + rowH * have / 2 + 14, "of room at 7pm", "var(--cardmute, var(--muted))", 12, "end");
       txt(0, yMore + rowH * more / 2 - 12, "about " + more + " more routes like them,", "#A65E46", 13, null, "600");
@@ -1467,11 +1468,11 @@ this page is dated 27 Jul 2026 and its numbers are baked from
       {name: "A normal night", segs: [
         {k: "own", mw: own, t: fmt(own) + " MW from its own power station"},
         {k: "lines", mw: need - own,
-         t: fmt(need - own) + " MW over the power routes"}]},
+         t: fmt(need - own) + " MW over the feeding route"}]},
       {name: "One " + fmt(trip) + " MW generator down, about the size of one of "
        + "the two units at the Sual coal plant in Pangasinan", segs: [
         {k: "own", mw: left, t: fmt(left) + " MW from its own station"},
-        {k: "lines", mw: lim, t: fmt(lim) + " MW over the power routes"},
+        {k: "lines", mw: lim, t: fmt(lim) + " MW over the feeding route"},
         {k: "dark", mw: gap, t: fmt(gap) + " MW with no source"}]},
     ];
     rows.forEach(function(r, ri){
@@ -1499,7 +1500,7 @@ this page is dated 27 Jul 2026 and its numbers are baked from
       + "all. That is the electricity of " + P.wires.own_gap_homes_million
       + " million Philippine homes. Pax Silica's own station covers most of its "
       + "own demand, but "
-      + "the backup for it comes down the same two power routes."
+      + "the backup for it comes down the same single route."
       + "<br><b>A unit being out is routine, not a freak event.</b> In the same "
       + o.days_in_window + " archived days, " + worst.label + " of "
       + fmt(worst.mw) + " MW was listed out on <b>" + worst.days_out

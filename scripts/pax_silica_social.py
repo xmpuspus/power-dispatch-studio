@@ -5,9 +5,10 @@ A feed autoplays muted and renders the first frame as the thumbnail, so beat one
 carries the whole claim on its own and nothing here needs sound or a caption to
 land. Dark card in the same palette as scripts/stat_card.py.
 
-Every number comes from the model runs, not typed here. What the two lines carry
-is read from the headroom file that scripts/pax_silica_headroom.py writes, and
-the solar shape from the bake, so this cannot drift from the figure.
+Every number comes from the model runs, not typed here. What the feeding route
+carries is read from the headroom file that scripts/pax_silica_headroom.py
+writes, and the station size, the tripped unit and the solar shape from
+web/data/perspective.json, so this cannot drift from the page.
 
 Writes docs/pax-silica-social.mp4 and docs/pax-silica-social.gif.
 Run scripts/pax_silica_headroom.py first if the cache is cold.
@@ -36,12 +37,20 @@ CORAL = "#e2664b"
 
 NEED = 3000.0
 FPS = 12
+ROOT_BAKE = os.path.join(ROOT, "web", "data", "perspective.json")
 
 
 def load_limit() -> float:
     if os.path.exists(CACHE):
         return json.load(open(CACHE))["headroom_mw"][19]
     raise SystemExit("run scripts/pax_silica_headroom.py first")
+
+
+def scenario() -> tuple[float, float, float]:
+    """The station size, the unit that goes out and what is left, all from the
+    bake, so the clip and the page cannot state different figures."""
+    w = json.load(open(ROOT_BAKE))["wires"]
+    return w["own_station_mw"], w["trip_unit_mw"], float(w["own_gap_mw"])
 
 
 def card(beat, t, limit, solar_noon):
@@ -78,54 +87,59 @@ def card(beat, t, limit, solar_noon):
     grid = limit / NEED
     ax.add_patch(plt.Rectangle((bx, by), bw, bh, transform=ax.transAxes,
                                color="#173553", zorder=2))
-    T(0.07, 0.415, "what the campus needs every hour, 3,000 MW", 16, MUTE)
+    T(0.07, 0.415, "what Pax Silica needs every hour, 3,000 MW", 16, MUTE)
 
     if beat == 0:
         T(0.07, 0.86, "It will need 3,000 MW.", 42, WHITE, "bold")
-        T(0.07, 0.74, "The two power lines\ninto the site carry 770.", 40, CORAL,
+        T(0.07, 0.74, "One route feeds it,\nand it carries 770.", 40, CORAL,
           "bold")
         seg(0, grid, STEEL)
         bar_label(grid / 2, "770", WHITE, 20)
 
     elif beat == 1:
-        T(0.07, 0.86, "2,230 MW of it\nhas no source.", 42, WHITE, "bold")
+        T(0.07, 0.86, f"{NEED - limit:,.0f} MW of it\nhas no source.", 42, WHITE, "bold")
         seg(0, grid, STEEL)
         seg(grid, (1 - grid) * t, CORAL)
         bar_label(grid / 2, "770", WHITE, 20)
         if t > 0.7:
-            bar_label(grid + (1 - grid) / 2, "2,230 short", WHITE, 22)
+            bar_label(grid + (1 - grid) / 2, f"{NEED - limit:,.0f} short", WHITE, 22)
 
     elif beat == 2:
-        T(0.07, 0.86, "A 500 MW solar farm\nis being built there.", 38, WHITE,
+        T(0.07, 0.86, "A 500 MW solar farm\nis leased next to it.", 38, WHITE,
           "bold")
         T(0.07, 0.70, "At 7pm it makes nothing.\nThe gap does not move.", 34, GOLD,
           "bold")
         seg(0, grid, STEEL)
         seg(grid, 1 - grid, CORAL)
         bar_label(grid / 2, "770", WHITE, 20)
-        bar_label(grid + (1 - grid) / 2, "2,230 short", WHITE, 22)
+        bar_label(grid + (1 - grid) / 2, f"{NEED - limit:,.0f} short", WHITE, 22)
 
     elif beat == 3:
-        T(0.07, 0.86, "Which is why it has to\nbuild its own\npower station.", 40,
+        st, trip, gap = scenario()
+        T(0.07, 0.86, "Which is why it plans\nits own power station\non site.", 40,
           WHITE, "bold")
-        own = 2500.0 / NEED
-        seg(0, 500.0 / NEED, STEEL)
-        seg(500.0 / NEED, own * t, NAVY)
+        own = st / NEED
+        seg(0, (NEED - st) / NEED, STEEL)
+        seg((NEED - st) / NEED, own * t, NAVY)
         if t > 0.7:
-            bar_label(500.0 / NEED + own / 2, "2,500 MW of its own", WHITE, 21)
+            bar_label((NEED - st) / NEED + own / 2,
+                      f"{st:,.0f} MW of its own", WHITE, 21)
 
     else:
-        T(0.07, 0.86, "Then one 600 MW unit\ngoes down.", 40, WHITE, "bold")
-        T(0.07, 0.735, "330 MW is left\nwith no source.", 36, CORAL, "bold")
+        st, trip, gap = scenario()
+        left = st - trip
+        T(0.07, 0.86, f"Then one {trip:,.0f} MW unit\ngoes down.", 40, WHITE, "bold")
+        T(0.07, 0.735, f"{gap:,.0f} MW is left\nwith no source.", 36, CORAL, "bold")
         seg(0, limit / NEED, STEEL)
-        seg(limit / NEED, 1900.0 / NEED, NAVY)
-        seg((limit + 1900.0) / NEED, 330.0 / NEED, CORAL)
-        bar_label((limit + 1900.0 + 165.0) / NEED, "330", WHITE, 19)
+        seg(limit / NEED, left / NEED, NAVY)
+        seg((limit + left) / NEED, gap / NEED, CORAL)
+        bar_label((limit + left + gap / 2) / NEED, f"{gap:,.0f}", WHITE, 19)
 
     ax.plot([0.07, 0.34], [0.115, 0.115], transform=ax.transAxes,
             color="#24425f", lw=1.4)
     T(0.07, 0.095, "Modelled on the public grid map and one recorded day.\n"
-                   "Line ratings are estimates. NGCP does not publish them.", 14,
+                   "Line ratings are class defaults. NGCP does not publish them.\n"
+                   "3,000 MW is BCDA's full-development figure, 10 to 15 years out.", 14,
       MUTE)
     return fig
 

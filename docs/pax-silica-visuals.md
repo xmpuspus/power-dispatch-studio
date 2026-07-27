@@ -13,9 +13,9 @@ because a feed renders frame one as the thumbnail, then gives each chart its own
 
 Each beat's motion is meant to carry that chart's argument rather than decorate
 it. The supply curve builds cheapest plant first, then demand walks right along
-it and stops inside the plant that sets the price, then Pax Silica's 3,000 MW
+it and stops inside the block that sets the price, then Pax Silica's 3,000 MW
 pushes it further right onto oil. The mechanism is the animation. A pulse of
-light runs the length of the two power lines that exist and nothing moves on the
+light runs the length of the two power routes that exist and nothing moves on the
 three that do not, because nothing travels down a line nobody has built. The
 solar day is uncovered midnight to midnight, so the hours arrive in the order
 they happen and each label appears as the sweep reaches the hour it names. The
@@ -88,7 +88,7 @@ would still need about 33,000 megawatt-hours of batteries, 7 times MTerra Solar'
 basemap is OpenStreetMap and CARTO, the same one the project's grid map
 uses.
 
-## Today's power lines can deliver only a quarter of what Pax Silica needs
+## The one route feeding Pax Silica delivers only a quarter of what it needs
 
 ![Transmission towers in two bands. Two solid navy lines exist and carry 769 MW. Three dashed rust lines do not exist yet](pax-silica-figs/wires.png)
 
