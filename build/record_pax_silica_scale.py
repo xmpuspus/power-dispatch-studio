@@ -115,7 +115,10 @@ TITLE = """
     Authority says its Pax Silica campus will need
     <span style="color:#A65E46">3,000 MW</span> of power and
     <span style="color:#A65E46">65 to 90 million liters</span> of water a day.</div>
-  <div style="font-size:20px; color:#3d3d47; margin-top:18px">Nine charts, drawn
+  <div style="font-size:20px; color:#3d3d47; margin-top:18px">Both are figures at
+    full development, which BCDA puts 10 to 15 years after construction starts in
+    2028.</div>
+  <div style="font-size:20px; color:#3d3d47; margin-top:10px">Nine charts, drawn
     against things you already know.</div>
 </div>
 """
