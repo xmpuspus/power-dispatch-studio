@@ -122,6 +122,15 @@ def check_html_static_text(c, p, s, w, wa, pr, SITE):
         and pr["marginal_base"]["top_hours"] == 24)
     has("headroom left in the stack",
         f"{pr['merit']['headroom_with_campus_mw']:,.0f} MW of the")
+    # both cost anchors are settlement prices, so the page must name the setter
+    # of the coal one and must never call either a measured fuel cost
+    has("the coal price names its regulator and resolution",
+        "Resolution No. 10, Series of 2026")
+    pin("the page never claims no price setter exists",
+        "names no price setter" not in static)
+    pin("the 770 MW is never credited to both routes at once",
+        "two existing 230 kV routes deliver" not in flat
+        and "two existing power routes can carry" not in flat)
 
     # every source URL the bake carries must appear as a link on the page, so
     # a claim can never outlive the citation it was built on

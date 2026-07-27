@@ -54,7 +54,7 @@
   "homes_million": 10.9,
   "home_kwh_month": 200.0,
   "island_pop_m": {
-   "luzon": 62.0,
+   "luzon": 62.2,
    "visayas": 20.6,
    "mindanao": 26.3
   },
@@ -379,7 +379,7 @@
    "max_day": "2026-05-26"
   },
   "src": {
-   "engine": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py (the cost stack; P6.00 coal is the administered price IEMOP publishes at https://www.iemop.ph/market-data/indicative-administered-prices/ , gas is https://www.foi.gov.ph/requests/malampaya-natural-gas-price/ , and P12.00 oil is a labelled assumption in https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/fleet_ph.py)",
+   "engine": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py (the cost stack; P6.00 coal is the fixed price the Energy Regulatory Commission set in Resolution No. 10, Series of 2026, effective 26 Mar 2026 while WESM was suspended, https://www.gmanetwork.com/news/money/economy/983104/erc-sets-fixed-p6-kwh-rate-for-coal-power-amid-crisis/story/ , and IEMOP publishes the indicative administered prices at https://www.iemop.ph/market-data/indicative-administered-prices/ ; gas is https://www.foi.gov.ph/requests/malampaya-natural-gas-price/ ; the coal block is split by a modelled unit commitment, a must-run tranche at P4.14 and a marginal tranche at the P6.00 administered price, per https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/fleet_ph.py , where P12.00 oil is also labelled an assumption)",
    "dipcef": "https://www.iemop.ph/market-data/dipc-energy-results-final/ (the LMP_CONGESTION column, swept over the archived sample)"
   }
  },

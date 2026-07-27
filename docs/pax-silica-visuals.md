@@ -42,7 +42,7 @@ re-make it after a page change, run `make serve`, then
 The whole Philippine grid as one rectangle, tiled like a jigsaw. Every
 piece's area is the most power that grid actually used in any 5-minute
 stretch of 105 days of the market operator IEMOP's published files, and
-each piece names the people it serves (about 62 million on Luzon, 26 on
+each piece names the people it serves (about 62.2 million on Luzon, 26.3 on
 Mindanao, 20.6 in the Visayas, 2020 census). Luzon is the giant piece, and
 Mindanao and Visayas share the right column. The rust block is Pax Silica on its own, dashed because it is
 announced and not built, drawn inside the Luzon block because New Clark City sits on
@@ -95,8 +95,8 @@ uses.
 The chart is the transmission itself. Every line drawn is one 230 kilovolt
 route into Pax Silica, carrying two circuits on shared towers. The two solid
 navy lines are the routes that
-exist, and together they have 769 MW of room at the modeled 7pm on a real day
-(25 June 2026). Only one of the two actually feeds Pax Silica. The three dashed
+exist. Only one of the two actually feeds Pax Silica, and that one has 769 MW of
+room at the modeled 7pm on a real day (25 June 2026). The three dashed
 rust lines do not exist. They are how many
 more routes of the same kind the remaining 2,231 MW would take, at a class
 default of 400 MW a circuit and so 800 MW a route, or one 500 kilovolt line
@@ -128,14 +128,20 @@ twelve months against the 13 and 9 months the two builds above took.
 
 ![Plant blocks lined up cheapest to priciest. A dark demand line lands on the navy coal block, a white one on the rust oil block](pax-silica-figs/priceb.png)
 
-This is the actual price mechanism, drawn. Every Luzon plant is lined up
-cheapest to priciest. Each block's width is its megawatts, its height is
-its cost, and the most expensive plant that has to run sets the price for
-everyone. Coal appears twice, at P4.14 and at P6.00, because two coal plants
-are not equally cheap, so each block carries its own cost. The first line is this evening's demand, 12,018 MW. It lands inside
+This is the price mechanism, drawn. Luzon's whole fleet is grouped into eight
+fuel-and-cost blocks, cheapest to priciest. Each block's width is its megawatts,
+its height is its cost, and the last block that has to run sets the price for
+everyone. Coal appears twice, at P4.14 and at P6.00, because the model splits
+it: a must-run tranche that stays online overnight, and the rest at the
+administered price. The first line is a typical evening's demand, 12,018 MW,
+which is the average 7pm demand across the 105 archived days rather than one
+dated evening. It lands inside
 the navy coal block, so coal sets the price at P6.00 per kWh. The second line
-adds Pax Silica, 15,018 MW. It lands on the rust oil block, so oil sets the
-price at P12.00, for every buyer on Luzon, all 24 hours of the replayed day.
+adds Pax Silica, 15,018 MW. It lands on the rust oil block, and the modeled
+price is P12.00 for every buyer on Luzon in all 24 hours of the replayed day.
+Neither anchor is a measured fuel cost. P6.00 is the fixed price the Energy
+Regulatory Commission set for a suspended market, and P12.00 is a labelled
+assumption.
 Oil is the plant that sets that price in 16 of the 24 hours; power pulled from
 the other island grids sets 6 and hydro sets 2.
 The small print adds what that means at home. If generation cost were

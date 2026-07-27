@@ -171,9 +171,13 @@ MVIP = {"mw": 450, "php_b": 52.0, "first_load": "2023-04-30",
         "first_load_mw": 22.5, "commercial": "2024-01-26",
         "energize_src": "https://www.ngcp.ph/article?cid=16636",
         "commercial_src": "https://www.ngcp.ph/article?cid=16899"}
-# island-group populations, 2020 census (PSA), for the who-is-served line
+# island-group populations, 2020 census (PSA), for the who-is-served line. One
+# census year for all three so the three blocks stay comparable. Luzon
+# 62,196,942, Visayas 20,583,861, Mindanao 26,252,442. The Luzon article now
+# leads with a 2024 figure of 64,301,558; the 2020 row is in its own historical
+# table, and using it keeps the three on one basis.
 # https://en.wikipedia.org/wiki/Luzon https://en.wikipedia.org/wiki/Visayas https://en.wikipedia.org/wiki/Mindanao
-ISLAND_POP_M = {"luzon": 62.0, "visayas": 20.6, "mindanao": 26.3}
+ISLAND_POP_M = {"luzon": 62.2, "visayas": 20.6, "mindanao": 26.3}
 # an Olympic pool holds 2,500 cubic meters = 2.5 million liters (FR standard)
 # https://en.wikipedia.org/wiki/Olympic-size_swimming_pool
 POOL_ML = 2.5
@@ -349,6 +353,9 @@ def price_effect(day: str) -> dict:
     def rent(s):
         return s["leyte_rent_m_php"] + s["mvip_rent_m_php"]
 
+    # Both cost anchors are settlement prices, not measured fuel costs: coal
+    # P6.00 is the ERC's fixed administered price for a suspended market and
+    # oil P12.00 is a labelled assumption. The page must say so for both.
     lz = [round(base["mean_price"]["luzon"], 2),
           round(wave["mean_price"]["luzon"], 2)]
     passthrough = round((lz[1] - lz[0]) * HOME_KWH_MONTH)
@@ -369,7 +376,7 @@ def price_effect(day: str) -> dict:
                          wave["unserved_mwh"]["luzon"]],
         "dipcef": DIPCEF,
         "src": {
-            "engine": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py (the cost stack; P6.00 coal is the administered price IEMOP publishes at https://www.iemop.ph/market-data/indicative-administered-prices/ , gas is https://www.foi.gov.ph/requests/malampaya-natural-gas-price/ , and P12.00 oil is a labelled assumption in https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/fleet_ph.py)",
+            "engine": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py (the cost stack; P6.00 coal is the fixed price the Energy Regulatory Commission set in Resolution No. 10, Series of 2026, effective 26 Mar 2026 while WESM was suspended, https://www.gmanetwork.com/news/money/economy/983104/erc-sets-fixed-p6-kwh-rate-for-coal-power-amid-crisis/story/ , and IEMOP publishes the indicative administered prices at https://www.iemop.ph/market-data/indicative-administered-prices/ ; gas is https://www.foi.gov.ph/requests/malampaya-natural-gas-price/ ; the coal block is split by a modelled unit commitment, a must-run tranche at P4.14 and a marginal tranche at the P6.00 administered price, per https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/fleet_ph.py , where P12.00 oil is also labelled an assumption)",
             "dipcef": "https://www.iemop.ph/market-data/dipc-energy-results-final/ (the LMP_CONGESTION column, swept over the archived sample)",
         },
     }

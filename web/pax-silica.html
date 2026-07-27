@@ -214,7 +214,7 @@
 <main>
 <a class="back" href="index.html">&#8249; back to the map</a>
 <p class="kicker">Pax Silica, New Clark City, Capas, Tarlac</p>
-<h1>Pax Silica would draw more power than the whole Visayas grid, and use up to twice the daily water planned for everyone living in Makati. Every day.</h1>
+<h1>Pax Silica would draw more power than the whole Visayas grid, and use up to 1.9 times the daily water planned for everyone living in Makati. Every day.</h1>
 <p class="lede">In July 2026 the Bases Conversion and Development Authority, the government agency developing Pax Silica, put numbers on its Pax Silica campus:
 <a href="https://www.gmanetwork.com/news/money/economy/995915/pax-silica-ai-hub-to-consume-3-gigawatts-at-full-development-bcda/story/">3,000 MW of power at full development</a>, and
 <a href="https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/">65 to 90 million liters of water a day</a>.
@@ -475,9 +475,12 @@ are the slow part:</p>
 plants that cost more, and the marginal plant is what sets the price for
 everyone, in pesos per kilowatt-hour (kWh). This project's <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py">cost model</a>
 replays the same recorded day, 25 June 2026, with and without Pax Silica.
-Without it, coal sets the Luzon price in all 24 hours, at the administered coal cost of
-P6.00 per kWh (<a href="https://www.iemop.ph/market-data/indicative-administered-prices/">the
-indicative administered price IEMOP publishes</a>). With it the price is P12.00 in every one of the 24 hours,
+Without it, coal sets the Luzon price in all 24 hours, at P6.00 per kWh, the
+<a href="https://www.gmanetwork.com/news/money/economy/983104/erc-sets-fixed-p6-kwh-rate-for-coal-power-amid-crisis/story/">fixed price the Energy
+Regulatory Commission set in Resolution No. 10, Series of 2026</a>.
+Neither anchor is a measured fuel cost. That P6.00 is a fixed settlement price
+the regulator imposed on 26 March 2026 while it had the spot market suspended,
+and the market reopened on 1 May, seven weeks before the day replayed here. With it the price is P12.00 in every one of the 24 hours,
 because the day now reaches the oil block at the top of the stack. Oil is the
 last block the model dispatches in 16 of those hours. In the other 8 the last
 block is power pulled from the other island grids, or hydro, and the hour still
@@ -493,8 +496,9 @@ claim: at P9.00 the same run reads 1.5 times, at P15.00 it reads 2.5.</p>
   <div class="figsub">Luzon's whole fleet, the Philippines' biggest grid, grouped
   into eight fuel-and-cost blocks and lined up cheapest to priciest. A block's
   width is its megawatts and its height is its cost in Philippine pesos per
-  kilowatt-hour. Each block holds many plants, which is why coal appears twice at
-  two costs. The last block needed sets the price everyone pays, so each line
+  kilowatt-hour. Coal appears twice because the model splits it, not because two
+  sets of plants burn it: a must-run tranche that stays online overnight is
+  priced at P4.14, and the rest at the P6.00 administered price. The last block needed sets the price everyone pays, so each line
   stops inside that block rather than at its edge: only part of it runs. The two
   demand lines are the typical evening, the average 7pm demand across the 105
   archived days, not one dated evening. Adding 3,000 MW leaves 664 MW of the
@@ -511,16 +515,20 @@ claim: at P9.00 the same run reads 1.5 times, at P15.00 it reads 2.5.</p>
   Bases Conversion and Development Authority developing Pax Silica, does
   not ask for this. It holds Pax
   Silica at a flat 3,000 MW and ignores delivery. Only about 770 MW can physically
-  reach Pax Silica over its two existing power routes, and real evening prices already
-  run above this stack. Coal at P6.00 is
-  <a href="https://www.iemop.ph/market-data/indicative-administered-prices/">the
-  indicative administered price published by IEMOP</a>, the Independent
-  Electricity Market Operator of the Philippines. That page names no price
-  setter, so this page names none. Gas is
+  reach Pax Silica over the one existing route that feeds it, and real evening prices already
+  run above this stack. Coal at P6.00 is the fixed price the
+  <a href="https://www.gmanetwork.com/news/money/economy/983104/erc-sets-fixed-p6-kwh-rate-for-coal-power-amid-crisis/story/">Energy Regulatory
+  Commission set in Resolution No. 10, Series of 2026</a>, effective 26 March
+  2026 while it had the spot market suspended, and IEMOP, the Independent
+  Electricity Market Operator of the Philippines,
+  <a href="https://www.iemop.ph/market-data/indicative-administered-prices/">publishes
+  the indicative administered prices</a>. It is a settlement price for a
+  suspended market rather than a measured cost of burning coal, and the market
+  reopened on 1 May 2026, before the day replayed here. Gas is
   <a href="https://www.foi.gov.ph/requests/malampaya-natural-gas-price/">a freedom-of-information answer</a>, but the P12.00 oil
   price is a labelled assumption, a peaker proxy in
   <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/fleet_ph.py">the fuel-cost table, where it is labelled an assumption</a>.</p>
-  <p class="rawline">Sources: <a href="https://www.iemop.ph/market-data/indicative-administered-prices/">iemop.ph/market-data/indicative-administered-prices</a> &middot; <a href="https://www.foi.gov.ph/requests/malampaya-natural-gas-price/">foi.gov.ph/requests/malampaya-natural-gas-price</a> &middot; <a href="https://www.iemop.ph/market-data/dipc-energy-results-final/">iemop.ph/market-data/dipc-energy-results-final</a> &middot; <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026</a></p>
+  <p class="rawline">Sources: <a href="https://www.gmanetwork.com/news/money/economy/983104/erc-sets-fixed-p6-kwh-rate-for-coal-power-amid-crisis/story/">gmanetwork.com/news/money/economy/983104</a> &middot; <a href="https://www.iemop.ph/market-data/indicative-administered-prices/">iemop.ph/market-data/indicative-administered-prices</a> &middot; <a href="https://www.foi.gov.ph/requests/malampaya-natural-gas-price/">foi.gov.ph/requests/malampaya-natural-gas-price</a> &middot; <a href="https://www.iemop.ph/market-data/dipc-energy-results-final/">iemop.ph/market-data/dipc-energy-results-final</a> &middot; <a href="https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026">company.meralco.com.ph/news-and-advisories/higher-residential-rates-july-2026</a></p>
 </div>
 <p>The market as it runs now prices congestion small and sparse. The published
 nodal congestion component of the Wholesale Electricity Spot Market (WESM) fires
@@ -544,7 +552,7 @@ fills. It works.</p>
 two units at the Sual coal plant in Pangasinan. The
 lines are already asked for everything they carry, and 331 MW of Pax Silica
 has no source. Building your own station does not remove the grid, it turns the grid
-into your backup, and the backup comes down the same two routes. The 331 MW is
+into your backup, and the backup comes down the same one route. The 331 MW is
 set by the unit size chosen: at 417 MW, the largest unit in the outage record
 below, the gap is 148 MW instead.</p>
 
@@ -557,7 +565,7 @@ below, the gap is 148 MW instead.</p>
   hour, split by where each megawatt would come from. Building its own power
   station on site is its announced plan; the 2,500 MW station size and the 600 MW
   unit are both chosen illustrations, not announced figures, modeled at 7pm on
-  25 Jun 2026. Its two existing power routes can carry at most
+  25 Jun 2026. The one existing route that feeds Pax Silica can carry at most
   769 MW at that hour, which is why they cannot make up the whole 600 MW an
   out-of-service generator takes away.</div>
   <div id="own-rows"></div>
@@ -782,13 +790,13 @@ them against the city they sit in and two places whose size people know.</p>
 <tr><td>500 MW solar with storage on 500 hectares (ACWA lease, Jun 2026)</td>
     <td>4.1% of Pax Silica's day, on a cloudless day, and nothing at the 7pm peak</td></tr>
 <tr><td>A dedicated 230 kV substation at P6.95B in NGCP's transmission development plan, which BCDA targets for end-2028 (Manila Bulletin, 25 May 2026)</td>
-    <td>The two existing 230 kV routes deliver about 770 MW of the 3,000 at 7pm</td></tr>
+    <td>Of the two existing 230 kV routes, only one feeds Pax Silica, and it delivers about 770 MW of the 3,000 at 7pm</td></tr>
 <tr><td>An on-site power station is BCDA's plan (BCDA, Jul 2026), and in June 2026 its president said it was also looking outside New Clark City for power (Inquirer Business, 22 Jun 2026)</td>
     <td>Serving the whole 3,000 MW from the grid instead doubles the modeled Luzon price to P12.00 from P6.00, on a P12.00 oil cost this page labels an assumption</td></tr>
 <tr><td>BCDA puts 130,000 to 190,000 direct jobs on the project (BCDA, 24 Jul 2026)</td>
     <td>Not costed here. This page counts what Pax Silica would draw, not what it would return</td></tr>
 <tr><td>An on-site power station of unannounced size (BCDA, Jul 2026)</td>
-    <td>On a chosen 2,500 MW station, losing a chosen 600 MW unit leaves 331 MW with no source, because the backup is the same two routes</td></tr>
+    <td>On a chosen 2,500 MW station, losing a chosen 600 MW unit leaves 331 MW with no source, because the backup comes down the same single route</td></tr>
 </table>
 
 <div class="cavebox"><b>What this page cannot know.</b> The grid operator NGCP, the National Grid Corporation of the Philippines, does not publish
@@ -1387,8 +1395,9 @@ this page is dated 27 Jul 2026 and its numbers are baked from
       P.price.luzon_mean[0].toFixed(2) + " per kWh</b>", 0);
     dline(m.demand_with_campus_mw, "coral",
       "<b style='color:#A65E46'>plus Pax Silica's 3,000 MW, " +
-      fmt(m.demand_with_campus_mw) + " MW</b><br>oil sets it in " +
-      P.price.marginal_wave.top_hours + " of 24 hours: <b style='color:#A65E46'>P" +
+      fmt(m.demand_with_campus_mw) + " MW</b><br>oil is the last block in " +
+      P.price.marginal_wave.top_hours + " of 24 hours, and every hour clears at "
+      + "<b style='color:#A65E46'>P" +
       P.price.luzon_mean[1].toFixed(2) + " per kWh</b>", 1);
     // cost axis, so a block's height is readable as pesos per kWh
     [0, 6, 12].forEach(function(php){
@@ -1412,7 +1421,7 @@ this page is dated 27 Jul 2026 and its numbers are baked from
     if (W >= 480){
       var lab = el("div", "slabel", wrap);
       lab.innerHTML = "cheapest first: wind, hydro, geothermal, cheaper coal, gas"
-        + "<br>each step up is a pricier plant";
+        + "<br>each step up is a pricier block";
       lab.style.left = "48px"; lab.style.bottom = (axisH + 6 * ys + 20) + "px";
       var pay = el("div", "payoff", wrap);
       pay.style.cssText = "position:absolute; left:14px; top:2px; right:auto;"
