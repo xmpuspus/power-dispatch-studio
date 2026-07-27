@@ -77,6 +77,12 @@
     margin-top:4px; }
 
   /* the existing circuits draw in, then the missing ones fade up behind them */
+  /* motion means power arriving: a pulse runs the length of each circuit that
+     exists, and the circuits that do not exist stay still, because nothing
+     travels down a line that has not been built */
+  @keyframes wireflow { from { stroke-dashoffset:260; } to { stroke-dashoffset:0; } }
+  #wires-flow .pulse{ opacity:0; transition:opacity .6s ease; }
+  .on #wires-flow .pulse{ opacity:1; animation:wireflow 2.2s linear infinite; }
   #wires-flow .wire{ opacity:0; transition:opacity .5s ease; }
   #wires-flow .wire.live{ transform:translateX(-14px); transition:opacity .5s ease, transform .7s cubic-bezier(.22,.9,.35,1); }
   .on #wires-flow .wire{ opacity:1; }
@@ -89,26 +95,44 @@
     transform:scale(0); transform-origin:bottom left;
     transition:transform .9s cubic-bezier(.22,.9,.35,1); }
   .on .block{ transform:scale(1); }
+  /* the title claims Pax Silica beats this one block, so that block is flashed
+     once as the dashed block finishes growing, to put the eye on the comparison */
+  @keyframes cueflash {
+    0%,100% { box-shadow:none; }
+    35%,65% { box-shadow:0 0 0 3px #A65E46 inset; }
+  }
+  .block.cue{ animation:cueflash .95s ease-in-out 1; }
   .on .blocks .saxis{ opacity:1 !important; }
   .block .blabel{ position:absolute; top:8px; left:10px; right:8px;
     font-size:12.5px; line-height:1.3; }
   .block .blabel b{ display:block; font-size:13.5px; }
 
-  /* the solar day: the gold band grows up out of the axis */
-  #acwa-day .solarband{ transform:scaleY(0); transform-origin:bottom;
-    transition:transform 1s cubic-bezier(.22,.9,.35,1); }
-  #acwa-day.on .solarband{ transform:none; }
+  /* the solar day plays as a day: a clip sweeps midnight to midnight, so the
+     curve is uncovered in the order the hours happen rather than growing
+     vertically all at once, which says nothing about time */
+  /* the end state is CSS so a no-JS or reduced-motion reader sees the finished
+     chart; the motion itself is scripted, because a class toggled in the same
+     task that builds the element gets coalesced and the transition never runs */
+  #acwa-day .sweep{ transform-origin:right; }
+  #acwa-day.on .sweep{ transform:scaleX(0); }
+  #acwa-day .whenlab{ opacity:0; }
+  #acwa-day.on .whenlab{ opacity:1; }
   .cellnote{ position:relative; font-size:12.5px; margin-top:8px; color:var(--ink); }
 
   /* merit-order ladder (price beat) */
   .steps{ position:relative; }
   .steps .step{ position:absolute; bottom:26px; background:#EBDED4;
-    border-radius:8px 8px 0 0; opacity:0; transition:opacity .6s; }
-  .on .steps .step{ opacity:1; }
+    border-radius:8px 8px 0 0; transform:scaleY(0); transform-origin:bottom;
+    transition:transform .55s cubic-bezier(.22,.9,.35,1); }
+  .on .steps .step{ transform:none; }
   .steps .step.hot{ background:#A65E46; }
   .steps .step.base{ background:#07203F; }
+  /* the price mechanism is a sequence, so it is animated as one: demand walks
+     right along the supply curve and stops inside the plant that sets the price */
   .steps .dline{ position:absolute; bottom:26px; width:0; border-left:2px solid var(--ink);
-    opacity:0; transition:opacity .5s .8s; }
+    opacity:0; transition:left .7s cubic-bezier(.3,.8,.35,1), opacity .25s; }
+  .steps .slabel{ opacity:0; transition:opacity .35s; }
+  .on .steps .slabel{ opacity:1; }
   .steps .dline.coral{ border-left-color:#181818; }
   .on .steps .dline{ opacity:1; }
   .steps .slabel{ position:absolute; font-size:11.5px; color:var(--muted);
@@ -156,8 +180,15 @@
   .strip{ margin:16px 0 30px; }
   .strip .name{ font-size:13px; margin-bottom:4px; }
   .tl{ position:relative; height:20px; background:#EBDED4; border-radius:10px; }
-  .tl .span{ position:absolute; top:0; bottom:0; background:#07203F; border-radius:10px; }
-  .tl .stall{ position:absolute; top:0; bottom:0; background:#A65E46; border-radius:6px; }
+  /* time is the axis, so the bars grow along it, and the court order appears
+     only once the bar has reached the month it started */
+  .tl .span{ position:absolute; top:0; bottom:0; background:#07203F; border-radius:10px;
+    transform:scaleX(0); transform-origin:left;
+    transition:transform .95s cubic-bezier(.25,.85,.35,1); }
+  .tl .stall{ position:absolute; top:0; bottom:0; background:#A65E46; border-radius:6px;
+    opacity:0; transition:opacity .4s .55s; }
+  .on .tl .span{ transform:none; }
+  .on .tl .stall{ opacity:1; }
   .tl .tick{ position:absolute; top:23px; font-size:11.5px; color:var(--muted); white-space:nowrap; }
   .tlwrap{ padding-bottom:26px; }
 
@@ -172,6 +203,9 @@
   @media (prefers-reduced-motion: reduce){
     .seg,.sq,.block,.drop,.daycells .cell i,.steps .step,.steps .dline,#wires-flow{
       transition:none !important; }
+    #wires-flow .pulse{ animation:none !important; opacity:0 !important; }
+    .hagrid i, #acwa-day .sweep, .tl .span, .tl .stall{
+      transition:none !important; transform:none !important; }
     .seg span{ transition:none !important; opacity:1; }
   }
 </style>
@@ -348,6 +382,7 @@ bottleneck. And the recent record says the last kilometers of big grid builds
 are the slow part:</p>
 
 <div class="fig tlwrap" id="fig-record" style="--accent:#A65E46">
+  <button class="replay" data-replay="fig-record">replay</button>
   <div class="figkick">Proposed Pax Silica data-center and chip campus, New Clark City, Philippines</div>
   <div class="figtitle">The last two big Philippine grid builds took <em class="pop">13 and 9 months</em> between first power and full service</div>
   <div class="figsub">The two most recent big builds by NGCP, the National Grid
@@ -713,7 +748,9 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     label(tile(colX, hV + 4, colW, hM, "background:#EBDED4;", 0.15),
       "<b>Mindanao grid</b>" + fmt(pk.mindanao) + " MW"
       + (roomy ? "<br>~" + pop.mindanao + "M people" : ""), "var(--ink)");
-    label(tile(colX, 0, colW, hV, "background:#EBDED4;", 0.3),
+    var visTile = tile(colX, 0, colW, hV, "background:#EBDED4;", 0.3);
+    visTile.dataset.cue = "1";
+    label(visTile,
       "<b>Visayas grid</b>" + fmt(pk.visayas) + " MW"
       + (roomy ? "<br>~" + pop.visayas + "M people" : ""), "var(--ink)");
 
@@ -747,7 +784,14 @@ this page is dated 26 Jul 2026 and its numbers are baked from
       + (narrow ? "" : "<br>bigger than the whole Visayas grid");
     wrap.style.height = (H + (narrow ? 48 : 4)) + "px";
   }
-  function runGrids(fig){ fig.classList.add("on"); }
+  function runGrids(fig){
+    fig.classList.add("on");
+    if (reduced) return;
+    var vis = fig.querySelector("[data-cue]");
+    if (!vis) return;
+    vis.classList.remove("cue");
+    setTimeout(function(){ vis.classList.add("cue"); }, 1500);
+  }
 
   // ---- beat 2: the day as 24 hour cells + land squares ----
   function buildSun(){
@@ -789,6 +833,12 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     add("polygon", {points: px(0) + "," + py(0) + " " + pts.join(" ") + " "
                     + px(23) + "," + py(0), fill: "#A65E46", opacity: ".9"},
         "solarband");
+    // the hours are uncovered in order: a card-coloured rectangle over the curve
+    // shrinks toward the right edge. It goes in after the band and before the
+    // demand line, so the flat 3,000 MW draw is on screen the whole time and only
+    // the day fills in underneath it.
+    add("rect", {x: padL - 1, y: 0, width: DW - padL + 1, height: DH,
+                 fill: "#fff"}, "sweep");
     // what the campus draws, every hour
     add("line", {x1: padL, x2: DW - padR, y1: py(need2), y2: py(need2),
                  stroke: "#07203F", "stroke-width": 2.5,
@@ -799,16 +849,22 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     var hPeak = prof.indexOf(Math.max.apply(null, prof));
     add("line", {x1: px(hPeak), x2: px(hPeak), y1: py(peak), y2: py(peak) - 22,
                  stroke: "#A65E46", "stroke-width": 1.4});
-    lab(px(hPeak), py(peak) - 27, "at noon, its best: " + fmt(peak) + " MW",
+    var peakLab = lab(px(hPeak), py(peak) - 27,
+        "at noon, its best: " + fmt(peak) + " MW",
         "#A65E46", dnarrow ? 11 : 12.5, "middle", "700");
+    peakLab.setAttribute("class", "whenlab");
+    peakLab.dataset.at = 900;                     // the sweep passes noon here
     // on a phone the noon label already owns the band just above the curve,
       // so the evening zero is named up under the demand line instead, with its
       // tick drawn all the way up to the words
       var zy = dnarrow ? py(need2) + 30 : py(0) - 34;
     add("line", {x1: px(19), x2: px(19), y1: py(0), y2: zy,
                  stroke: "#A65E46", "stroke-width": 1.4, "stroke-dasharray": "3 3"});
-    lab(dnarrow ? DW - padR : px(19) + 6, zy - 4, "from 7pm, nothing", "#A65E46",
+    var zeroLab = lab(dnarrow ? DW - padR : px(19) + 6, zy - 4,
+        "from 7pm, nothing", "#A65E46",
         dnarrow ? 11 : 12.5, dnarrow ? "end" : "start", "700");
+    zeroLab.setAttribute("class", "whenlab");
+    zeroLab.dataset.at = 1320;
     [[0, "midnight"], [6, "6am"], [12, "noon"], [18, "6pm"], [23, "11pm"]]
       .forEach(function(tk){
         lab(px(tk[0]), DH - 8, tk[1], "var(--cardmute, var(--muted))",
@@ -850,7 +906,10 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     var ov = el("div", "block", land);
     ov.style.cssText += "left:" + (cx - side / 2) + "px; bottom:" + (LH - cy - side / 2)
       + "px; width:" + side + "px; height:" + side + "px;"
-      + "background:rgba(166,94,70,.3); border:3px solid #A65E46; border-radius:6px; z-index:3;";
+      + "background:rgba(166,94,70,.3); border:3px solid #A65E46; border-radius:6px;"
+      + "z-index:3; transform-origin:center; transition-delay:.15s;";
+    // Makati is marked at this square's centre, so growing from the centre reads
+    // as the area expanding out of the place the reader already knows
     // the label is wider than the square it names, so it rides UNDER the
     // square: at the top it collides with the signed-farm label top-right
     var ol = el("div", "saxis", land);
@@ -867,7 +926,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     var fv = el("div", "block", land);
     fv.style.cssText += "left:" + fx + "px; bottom:" + fb + "px; width:" + fs
       + "px; height:" + fs + "px; background:#A65E46; border-radius:4px;"
-      + "z-index:3; transition-delay:.5s;";
+      + "z-index:3; transform-origin:center; transition-delay:.75s;";
     if (mapNarrow){
       var fig = document.getElementById("land-map").parentNode;
       var fl2 = document.createElement("div");
@@ -912,7 +971,18 @@ this page is dated 26 Jul 2026 and its numbers are baked from
   function runSun(fig){ fig.classList.add("on"); }
   function runCells(){
     var c = document.getElementById("acwa-day");
-    if (c) c.classList.add("on");
+    if (!c) return;
+    c.classList.add("on");
+    if (reduced) return;
+    var sweep = c.querySelector(".sweep");
+    if (sweep) sweep.animate(
+      [{transform: "scaleX(1)"}, {transform: "scaleX(0)"}],
+      {duration: 1600, easing: "cubic-bezier(.3,.55,.4,1)"});
+    // each label waits for the sweep to reach the hour it names
+    c.querySelectorAll(".whenlab").forEach(function(l){
+      l.animate([{opacity: 0}, {opacity: 1}],
+        {duration: 320, delay: parseFloat(l.dataset.at || 0), fill: "backwards"});
+    });
   }
 
   // ---- beat 3: wires stack + record strips ----
@@ -961,6 +1031,20 @@ this page is dated 26 Jul 2026 and its numbers are baked from
       w.setAttribute("stroke", col); w.setAttribute("stroke-width", exists ? 3 : 2);
       if (!exists) w.setAttribute("stroke-dasharray", "7 6");
       g.appendChild(w);
+      if (exists){
+        var fl = document.createElementNS(ns, "line");
+        fl.setAttribute("x1", x0); fl.setAttribute("x2", x1);
+        fl.setAttribute("y1", y); fl.setAttribute("y2", y);
+        fl.setAttribute("stroke", "#8fbcf0");
+        fl.setAttribute("stroke-width", 4);
+        fl.setAttribute("stroke-linecap", "round");
+        // one short lit segment in a long gap, so exactly one pulse is in
+        // flight per circuit at a time
+        fl.setAttribute("stroke-dasharray", "26 234");
+        fl.setAttribute("class", "pulse");
+        fl.style.animationDelay = (delay + 0.3) + "s";
+        g.appendChild(fl);
+      }
       var n = narrow ? 3 : 4;
       for (var i = 0; i < n; i++){
         var px = x0 + (x1 - x0) * (i + 0.5) / n;
@@ -1121,7 +1205,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
       s.style.left = (b.cum_from * xs) + "px";
       s.style.width = Math.max(1.5, (b.cum_to - b.cum_from) * xs - 2) + "px";
       s.style.height = Math.max(2, b.cost * ys) + "px";
-      s.style.transitionDelay = (i * 0.08) + "s";
+      s.style.transitionDelay = (i * 0.06) + "s";
       s.title = b.fuel.replace("_", " ") + ": " + fmt(b.mw) + " MW at P" + b.cost.toFixed(2);
       if (m.evening_demand_mw > b.cum_from && m.evening_demand_mw <= b.cum_to) landBase = b;
       if (m.demand_with_campus_mw > b.cum_from && m.demand_with_campus_mw <= b.cum_to){
@@ -1141,12 +1225,20 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     wrap.querySelectorAll(".step").forEach(function(s, i){
       if (m.blocks[i] === landBase) s.classList.add("base");
     });
+    var prevX = 0;
     function dline(mw, cls, labelHtml, row){
       var d = el("div", "dline " + cls, wrap);
-      d.style.left = (mw * xs) + "px";
+      // row 0 walks in from zero supply; row 1 starts where row 0 stopped, so the
+      // campus's 3,000 MW is seen pushing the price-setting plant along
+      d.dataset.from = prevX;
+      d.dataset.to = mw * xs;
+      d.dataset.at = row === 0 ? 1.05 : 1.9;
+      d.style.left = prevX + "px";
+      prevX = mw * xs;
       d.style.height = (chartH + (row === 0 ? 46 : 2)) + "px";
       var l = el("div", "slabel", wrap);
       l.innerHTML = labelHtml;
+      l.style.transitionDelay = (row === 0 ? 1.5 : 2.35) + "s";
       // each label right-aligned to its own line, in its own vertical band,
       // so the two can never collide
       l.style.right = (W - mw * xs + 8) + "px";
@@ -1199,7 +1291,22 @@ this page is dated 26 Jul 2026 and its numbers are baked from
         + P.price.luzon_mean[1].toFixed(2) + " per kWh";
     }
   }
-  function runPrice(fig){ fig.classList.add("on"); }
+  function runRecord(fig){ fig.classList.add("on"); }
+
+  function runPrice(fig){
+    fig.classList.add("on");
+    fig.querySelectorAll(".dline").forEach(function(d){
+      d.style.left = d.dataset.from + "px";
+      d.style.opacity = "0";
+      var go = function(){
+        d.style.transitionDelay = "0s";
+        d.style.opacity = "1";
+        d.style.left = d.dataset.to + "px";
+      };
+      if (reduced) return go();
+      setTimeout(go, parseFloat(d.dataset.at) * 1000);
+    });
+  }
 
   // ---- beat 4: own-station two-state ----
   function buildOwn(){
@@ -1230,7 +1337,10 @@ this page is dated 26 Jul 2026 and its numbers are baked from
         e.style.background = paint[sg.k];
         e.style.left = (left / need * 100) + "%";
         e.dataset.w = (sg.mw / need * 100) + "%";
-        e.style.transitionDelay = (ri * 0.5 + si * 0.12) + "s";
+        // the dark block is the consequence, so it waits for the two sources
+        // beside it to finish before it appears
+        e.style.transitionDelay =
+          (ri * 0.6 + (sg.k === "dark" ? 1.15 : si * 0.14)) + "s";
         var sp = el("span", "", e);
         sp.textContent = sg.t; sp.style.color = ink[sg.k];
         left += sg.mw;
@@ -1337,6 +1447,9 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     var xSolid = ds[lo - 1].offsetLeft + ds[lo - 1].offsetWidth;
     var xEnd = last.offsetLeft + last.offsetWidth;
 
+    // the drops count up over about a second, so the comparison marks arrive
+    // after them: first the quantity, then what it is being measured against
+    var cue = [];
     function bracket(x0, x1, colour, up, label){
       var b = el("div", "saxis", host);
       b.style.cssText = "position:absolute; left:" + x0 + "px; width:"
@@ -1349,6 +1462,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
         + (up ? "top:" + Math.max(0, rowTop - 28) + "px;"
               : "top:" + (rowTop + rowH + 14) + "px;");
       l.textContent = label;
+      cue.push(b, l);
       return l;
     }
     bracket(0, xMakati, "#07203F", false,
@@ -1365,6 +1479,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
         + "white-space:nowrap; line-height:1.2; color:#A65E46; top:"
         + Math.max(0, rowTop - 26 - lift) + "px; left:" + (x + 4) + "px;";
       l.textContent = label;
+      cue.push(m, l);
       return l;
     }
     var t1 = tick(xSolid, r0 + " times Makati", 0);
@@ -1375,6 +1490,10 @@ this page is dated 26 Jul 2026 and its numbers are baked from
       t2.style.left = (xEnd - t2.offsetWidth - 4) + "px";
     if (t1.offsetLeft + t1.offsetWidth + 8 > t2.offsetLeft)
       t1.style.top = Math.max(0, rowTop - 44) + "px";
+    if (!reduced) cue.forEach(function(e){
+      e.animate([{opacity: 0}, {opacity: 1}],
+        {duration: 380, delay: 1050, fill: "backwards"});
+    });
   }
 
   // one outlined bar on the drop row's own pitch, so its length reads against
@@ -1417,16 +1536,22 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     var host = document.getElementById("site-grid"); host.innerHTML = "";
     var W = host.clientWidth || 700, cols = W < 420 ? 18 : 27, gap = 3;
     var cell = Math.max(7, Math.floor((W - (cols - 1) * gap) / cols));
-    function run(label, squares, cls, note){
+    function run(label, squares, cls, note, mixed){
       var box = el("div", "harow", host);
       var l = el("div", "halab", box);
       l.innerHTML = label;
       var g = el("div", "hagrid", box);
       g.style.width = (cols * (cell + gap)) + "px";
+      var hits = cls ? Math.min(cls.n, squares) : 0;
       for (var i = 0; i < squares; i++){
-        var c = el("i", cls && i < cls.n ? cls.k : "", g);
+        var isHit = i < hits;
+        var c = el("i", isHit ? cls.k : "", g);
         c.style.width = cell + "px"; c.style.height = cell + "px";
-        c.style.transitionDelay = (i * 0.004) + "s";
+        // the city grid fills pale first and only then picks out the rust share,
+        // because Pax Silica is part of the city, not the thing the city joins
+        c.style.transitionDelay = (mixed
+          ? (isHit ? 0.85 + i * 0.012 : (i - hits) * 0.004)
+          : i * 0.006) + "s";
       }
       if (note){
         var n = el("div", "halab", box);
@@ -1442,7 +1567,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
         + "squares are the " + fmt(s.ha) + " designated for Pax Silica, "
         + siteSq + " of the " + nccSq + " squares, " + s.share_of_ncc_pct
         + " percent of the city.",
-        nccSq, {n: siteSq, k: "hit"});
+        nccSq, {n: siteSq, k: "hit"}, null, true);
     run("<b>Pax Silica's designated site, " + fmt(s.ha) + " hectares</b>",
         siteSq, {n: siteSq, k: "hit"});
     // Pax Silica's own land first, then the places it is measured against, each
@@ -1490,7 +1615,8 @@ this page is dated 26 Jul 2026 and its numbers are baked from
 
   // ---- wiring ----
   var runners = { "fig-grids": runGrids, "fig-land": runSun, "fig-wires": runWires,
-                  "fig-priceb": runPrice, "fig-own": runOwn, "fig-water": runWater,
+                  "fig-record": runRecord, "fig-priceb": runPrice,
+                  "fig-own": runOwn, "fig-water": runWater,
                   "fig-site": runSite };
   function reset(fig){
     fig.classList.remove("on");
@@ -1499,6 +1625,7 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     // inline label if this replay lands on a wider viewport
     if (fig.id === "fig-wires") buildWires();
     if (fig.id === "fig-own") buildOwn();
+    if (fig.id === "fig-record") buildRecord();
     fig.querySelectorAll(".seg").forEach(function(e){ e.style.width = "0"; });
     var legend = fig.querySelector(".seg-legend");
     if (legend) legend.innerHTML = "";
@@ -1547,7 +1674,14 @@ this page is dated 26 Jul 2026 and its numbers are baked from
     delete fig.dataset.done;
     void fig.offsetWidth;                       // flush, so the transition restarts
     fig.classList.add("on");
-    if (id === "fig-acwa"){ runCells(); return true; }
+    if (id === "fig-acwa"){
+      // the solar day's "on" sits on #acwa-day, not on the card, so clearing the
+      // card alone left the sweep already finished and the replay showed nothing
+      var day = document.getElementById("acwa-day");
+      if (day){ day.classList.remove("on"); void day.offsetWidth; }
+      runCells();
+      return true;
+    }
     if (runners[id]) runners[id](fig);
     return true;
   };

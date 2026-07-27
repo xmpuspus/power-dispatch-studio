@@ -9,7 +9,23 @@ from, and the one thing worth double-checking.
 ![A montage. A title card first, then each chart in turn, animating from empty and holding while it finishes, with a hard cut to the next](pax-silica-scale.gif)
 
 A montage rather than a page scroll. It opens on a title card naming Pax Silica and both announced figures,
-because a feed renders frame one as the thumbnail, then gives each chart its own beat. The
+because a feed renders frame one as the thumbnail, then gives each chart its own beat.
+
+Each beat's motion is meant to carry that chart's argument rather than decorate
+it. The supply curve builds cheapest plant first, then demand walks right along
+it and stops inside the plant that sets the price, then Pax Silica's 3,000 MW
+pushes it further right onto oil. The mechanism is the animation. A pulse of
+light runs the length of the two power lines that exist and nothing moves on the
+three that do not, because nothing travels down a line nobody has built. The
+solar day is uncovered midnight to midnight, so the hours arrive in the order
+they happen and each label appears as the sweep reaches the hour it names. The
+timeline bars grow along their own calendar axis and the court order appears only
+once the bar has reached the month it began. The hectare grid fills the city pale
+first and only then picks out Pax Silica's share, because Pax Silica is part of
+that city rather than something added to it. The water drops count up before the
+Makati bracket and the ratio ticks arrive, so the quantity lands before the
+comparison. And the treemap flashes the Visayas block once as the dashed campus
+block finishes growing beside it, which is the comparison the title makes. The
 recorder drives the live page. It lifts one card onto a centered stage,
 magnifies it to fill the frame, rebuilds it at that size, plays it from
 empty, holds while it finishes, then cuts to the next. The own-station card
