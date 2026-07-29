@@ -11,13 +11,13 @@
   },
   "bound_line_features": 27,
   "bound_stations": 18,
-  "equipment_total": 76,
+  "equipment_total": 77,
   "equipment_matched": 43
  },
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 110,
+   "days": 111,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -31,7 +31,7 @@
   },
   {
    "equipment": "1EHVNGS_TR2",
-   "days": 107,
+   "days": 108,
    "rtd_intervals": 3011,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -40,7 +40,7 @@
   },
   {
    "equipment": "1EHVNGS_TR1",
-   "days": 107,
+   "days": 108,
    "rtd_intervals": 986,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -49,7 +49,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 89,
+   "days": 90,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 84,
+   "days": 85,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -102,6 +102,20 @@
    "station": "Olongapo Substation"
   },
   {
+   "equipment": "1BAUA_1LAT1",
+   "days": 24,
+   "rtd_intervals": 579,
+   "max_overload_mw": 69.11,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Bauang Substation",
+    "La Trinidad Substation"
+   ],
+   "path_km": 36.0,
+   "path_edges": 1
+  },
+  {
    "equipment": "4MAAS_7UBA1",
    "days": 24,
    "rtd_intervals": 0,
@@ -116,23 +130,9 @@
    "path_edges": 2
   },
   {
-   "equipment": "1BAUA_1LAT1",
-   "days": 23,
-   "rtd_intervals": 576,
-   "max_overload_mw": 69.11,
-   "matched": true,
-   "kind": "line",
-   "stations": [
-    "Bauang Substation",
-    "La Trinidad Substation"
-   ],
-   "path_km": 36.0,
-   "path_edges": 1
-  },
-  {
    "equipment": "1BAUA_1LAT2",
-   "days": 22,
-   "rtd_intervals": 593,
+   "days": 23,
+   "rtd_intervals": 594,
    "max_overload_mw": 69.11,
    "matched": true,
    "kind": "line",
@@ -755,6 +755,14 @@
   },
   {
    "equipment": "CALACA_OUT",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
+   "equipment": "DASMA_CORR",
    "days": 1,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
