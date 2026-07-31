@@ -277,6 +277,23 @@ export function Studio({
     if (dest) writeHashView(dest.slug, gridScoped ? grid : undefined)
   }, [dest, grid, gridScoped])
 
+  // Back and Forward walk the views, and a link pasted into an already-open
+  // studio moves it. Without this the hash is write-only and Back leaves the app.
+  useEffect(() => {
+    const sync = () => {
+      const h = readHashView(window.location.hash)
+      const target = h.slug ? destBySlug(h.slug) : undefined
+      if (target) setNav(target.nav)
+      if (h.grid) setGrid(h.grid as GridKey)
+    }
+    window.addEventListener('popstate', sync)
+    window.addEventListener('hashchange', sync)
+    return () => {
+      window.removeEventListener('popstate', sync)
+      window.removeEventListener('hashchange', sync)
+    }
+  }, [])
+
   const revertAll = () => {
     setScenarios((prev) =>
       prev.map((s, i) => (i === ai ? { ...s, overrides: {}, importedKeys: [] } : s))

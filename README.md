@@ -533,7 +533,7 @@ The individual what-ifs, each a recorded studio session:
 
 ![The Explain a day view: for a past market day the observed evening peak sits at P23.53, the cost model clears flat at the P6 fundamentals floor, and the offer-book replay tracks the observed evening ramp hour by hour, so the offer premium reads +P18.88; a second day is picked and the whole decomposition re-computes, with the named equipment that bound the grid listed and a CSV export button](studio/docs/view-explain.gif)
 
-![Studio walkthrough: pricing the DICT 1.5 GW data-center build, the Luzon evening mean lifting from P6.01 to P11.50 and the Leyte-Luzon HVDC saturating, with the two runs compared at +P5.49/kWh and +P32.55M congestion rent](studio/docs/workflow-1-datacenter.gif)
+![Studio walkthrough: pricing the DICT 1.5 GW data-center build, the Luzon evening mean lifting from P6.01 to P11.60 and the Leyte-Luzon HVDC saturating, with the two runs compared at +P5.59/kWh and +P33.15M congestion rent](studio/docs/workflow-1-datacenter.gif)
 
 ![Studio walkthrough: tripping both 647 MW Sual units, loss-of-load probability rising from 0.09 to 10.6 percent while the observed evening still clears with no unserved load](studio/docs/workflow-2-contingency.gif)
 

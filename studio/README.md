@@ -580,7 +580,8 @@ src/
   lib/       types.ts (baked-model types), data.ts (loader hooks + formatters)
   ui/        kit.tsx (Panel, StatTile, Chip, Segmented, ThemeToggle), DataGrid.tsx
   map/       MapView.tsx (MapLibre network view)
-  studio/    Studio.tsx (shell: explorer, ribbon, Run gate, share-link hydration)
+  shell/     nav.ts (39 destinations, grouped by question), Shell.tsx (bar, rail, palette, run dock)
+  studio/    Studio.tsx (model state, panes, Run gate, share-link and deep-link hydration)
              model.ts (object model + scenario overrides + solveModel)
              lpText.ts (canonical LP text, byte-mirror of pipeline/lp_model.py)
              solver.ts (the HiGHS wasm build, loaded once)
