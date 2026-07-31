@@ -3504,6 +3504,49 @@
    },
    "n_out": 18,
    "n_unmatched": 10
+  },
+  {
+   "date": "2026-07-31",
+   "out": [
+    "01MARVEL_G01",
+    "01MPGC_U04",
+    "01SROQUE_U01",
+    "03PAGBIL_G01",
+    "03SLTEC_G01",
+    "03STA-RI_G02",
+    "04TONGO_BAT",
+    "05CEDC_U01",
+    "05CPPC_U03",
+    "10AGUS4_U03",
+    "10AGUS5_U01",
+    "10GNPK_U02",
+    "11STEAG_U01",
+    "12KEGGIN_G01",
+    "13SMC_U02",
+    "14SARANG_U02",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1093.3,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "matched_fuel_mw": {
+    "luzon": {
+     "coal": 698.0,
+     "hydro": 134.7,
+     "natural_gas": 260.6
+    },
+    "visayas": {
+     "coal": 82.0
+    },
+    "mindanao": {
+     "hydro": 40.5,
+     "coal": 243.0
+    }
+   },
+   "n_out": 17,
+   "n_unmatched": 7
   }
  ],
  "resources": [
@@ -3732,6 +3775,14 @@
    "match": "verified"
   },
   {
+   "resource": "03SLTEC_G01",
+   "grid": "luzon",
+   "plant": null,
+   "fuel": null,
+   "unit_mw": null,
+   "match": "unmatched"
+  },
+  {
    "resource": "03SLTEC_G02",
    "grid": "luzon",
    "plant": null,
@@ -3756,12 +3807,28 @@
    "match": "verified"
   },
   {
+   "resource": "03STA-RI_G02",
+   "grid": "luzon",
+   "plant": "SANTA RITA",
+   "fuel": "natural_gas",
+   "unit_mw": 260.6,
+   "match": "verified"
+  },
+  {
    "resource": "03TGPP_G01",
    "grid": "luzon",
    "plant": null,
    "fuel": null,
    "unit_mw": null,
    "match": "unmatched"
+  },
+  {
+   "resource": "04TONGO_BAT",
+   "grid": "visayas",
+   "plant": null,
+   "fuel": "storage",
+   "unit_mw": null,
+   "match": "storage"
   },
   {
    "resource": "05CARMEN_BAT",
@@ -4276,12 +4343,12 @@
    "match": "verified"
   }
  ],
- "n_resources": 96,
- "n_verified": 55,
- "n_unmatched": 35,
- "n_storage": 6,
+ "n_resources": 99,
+ "n_verified": 56,
+ "n_unmatched": 36,
+ "n_storage": 7,
  "grid_mapping_note": "Grid per resource comes from the WESM code's numeric area prefix (01-03 Luzon, 04-08 Visayas, 09-14 Mindanao), an INFERRED mapping spot-checked against named plants; IEMOP does not publish a code key on this dataset.",
- "coverage_note": "55 of 96 outage codes in this window map to a DOE-fleet plant with a dependable MW; 35 stay unmatched and carry no MW (their outage is listed, not sized), and 6 are grid batteries outside the generation list. Matched MW is therefore a floor on the true scheduled-outage MW.",
+ "coverage_note": "56 of 99 outage codes in this window map to a DOE-fleet plant with a dependable MW; 36 stay unmatched and carry no MW (their outage is listed, not sized), and 7 are grid batteries outside the generation list. Matched MW is therefore a floor on the true scheduled-outage MW.",
  "note": "The operator's own outage schedules used in real-time dispatch (IEMOP OUTRTD), one row per resource out per day. This is the observed maintenance-plus-forced outage state, not a forecast.",
  "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/",
  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
