@@ -69,13 +69,16 @@ function DayStrip({
   const y = (v: number) => 16 + (1 - (v - bot) / (top - bot)) * (SUN_TOP - 26)
   const path = good.length
     ? limits
-        .map((v, h) =>
-          `${h === 0 ? 'M' : 'L'}${x(h).toFixed(1)},${y(v ?? bot).toFixed(1)}`
+        .map(
+          (v, h) => `${h === 0 ? 'M' : 'L'}${x(h).toFixed(1)},${y(v ?? bot).toFixed(1)}`
         )
         .join(' ')
     : ''
   const sun = solar
-    .map((sv, h) => `${h === 0 ? 'M' : 'L'}${x(h).toFixed(1)},${(H - 26 - sv * 26).toFixed(1)}`)
+    .map(
+      (sv, h) =>
+        `${h === 0 ? 'M' : 'L'}${x(h).toFixed(1)},${(H - 26 - sv * 26).toFixed(1)}`
+    )
     .join(' ')
 
   return (
@@ -87,39 +90,67 @@ function DayStrip({
     >
       {path ? (
         <>
-          <path d={`${path} L${x(23)},${SUN_TOP - 10} L${x(0)},${SUN_TOP - 10} Z`}
-                className="daystrip__fill" />
+          <path
+            d={`${path} L${x(23)},${SUN_TOP - 10} L${x(0)},${SUN_TOP - 10} Z`}
+            className="daystrip__fill"
+          />
           <path d={path} className="daystrip__limit" />
-          <text x={W - 42} y={y(hi) + 4} className="daystrip__scale">{Math.round(hi).toLocaleString()}</text>
-          <text x={W - 42} y={y(lo) + 4} className="daystrip__scale">{Math.round(lo).toLocaleString()}</text>
+          <text x={W - 42} y={y(hi) + 4} className="daystrip__scale">
+            {Math.round(hi).toLocaleString()}
+          </text>
+          <text x={W - 42} y={y(lo) + 4} className="daystrip__scale">
+            {Math.round(lo).toLocaleString()}
+          </text>
         </>
       ) : (
-        <text x={x(0)} y={40} className="daystrip__scale">no headroom in any hour</text>
+        <text x={x(0)} y={40} className="daystrip__scale">
+          no headroom in any hour
+        </text>
       )}
 
       {/* the sun always shows its shape, because the point is WHEN it stops,
           not how much of it the site happens to have bought yet */}
-      <path d={`${sun} L${x(23)},${H - 26} L${x(0)},${H - 26} Z`}
-            className={`daystrip__sunfill ${solarMw > 0 ? '' : 'is-off'}`} />
+      <path
+        d={`${sun} L${x(23)},${H - 26} L${x(0)},${H - 26} Z`}
+        className={`daystrip__sunfill ${solarMw > 0 ? '' : 'is-off'}`}
+      />
       <text x={x(0)} y={H - 30} className="daystrip__sunlabel">
-        {solarMw > 0 ? `its own solar, ${Math.round(solarMw).toLocaleString()} MW` : 'its own solar (none set)'}
+        {solarMw > 0
+          ? `its own solar, ${Math.round(solarMw).toLocaleString()} MW`
+          : 'its own solar (none set)'}
       </text>
 
       <line x1={x(hour)} x2={x(hour)} y1={10} y2={H - 22} className="daystrip__now" />
-      <text x={x(hour)} y={8} className="daystrip__nowlabel"
-            textAnchor={hour > 18 ? 'end' : hour < 4 ? 'start' : 'middle'}>
+      <text
+        x={x(hour)}
+        y={8}
+        className="daystrip__nowlabel"
+        textAnchor={hour > 18 ? 'end' : hour < 4 ? 'start' : 'middle'}
+      >
         {HOUR_LABEL(hour)}
       </text>
       {[0, 6, 12, 18].map((h) => (
-        <text key={h} x={x(h)} y={H - 8} className="daystrip__tick"
-              textAnchor={h === 0 ? 'start' : 'middle'}>
+        <text
+          key={h}
+          x={x(h)}
+          y={H - 8}
+          className="daystrip__tick"
+          textAnchor={h === 0 ? 'start' : 'middle'}
+        >
           {HOUR_LABEL(h)}
         </text>
       ))}
       {limits.map((_, h) => (
-        <rect key={h} x={x(h) - 11} y={0} width={22} height={H - 20}
-              fill="transparent" style={{ cursor: 'pointer' }}
-              onClick={() => onPick(h)} />
+        <rect
+          key={h}
+          x={x(h) - 11}
+          y={0}
+          width={22}
+          height={H - 20}
+          fill="transparent"
+          style={{ cursor: 'pointer' }}
+          onClick={() => onPick(h)}
+        />
       ))}
     </svg>
   )
@@ -213,9 +244,7 @@ export function SitesView() {
               return (
                 <li key={s.id}>
                   <button
-                    className={`sitelist__item ${
-                      s.id === site.id ? 'is-active' : ''
-                    }`}
+                    className={`sitelist__item ${s.id === site.id ? 'is-active' : ''}`}
                     onClick={() => {
                       setSiteId(s.id)
                       setMw(s.mw)
@@ -382,21 +411,20 @@ export function SitesView() {
 
           {site.already_over_rating ? (
             <p className="note note--warn">
-              A circuit here is already carrying more than its estimated rating
-              with nothing new added, at{' '}
-              {Math.round((site.worst_base_loading ?? 0) * 100)}% of it. So there
-              is no headroom to report and the limit reads nothing. That says as
-              much about the estimated rating as about the site, because NGCP
-              does not publish the real one.
+              A circuit here is already carrying more than its estimated rating with
+              nothing new added, at {Math.round((site.worst_base_loading ?? 0) * 100)}% of
+              it. So there is no headroom to report and the limit reads nothing. That says
+              as much about the estimated rating as about the site, because NGCP does not
+              publish the real one.
             </p>
           ) : null}
 
           {site.radially_fed ? (
             <p className="note note--warn">
-              One of its circuits is the site&apos;s only connection to the rest
-              of the grid. Losing that one takes it to nothing, so it has no
-              second way in on the public map. Whether the real grid has one is
-              not something that map can answer.
+              One of its circuits is the site&apos;s only connection to the rest of the
+              grid. Losing that one takes it to nothing, so it has no second way in on the
+              public map. Whether the real grid has one is not something that map can
+              answer.
             </p>
           ) : null}
 
