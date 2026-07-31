@@ -18,3 +18,14 @@
   (which rules/ux warns against), or drop the sticky rule because it does
   nothing today.
 
+- 2026-07-31, ruff rule set: the CI gate now names four rule groups
+  (E4, E7, E9, F), which is what it enforced the last time it was green. Ruff's
+  wider 0.16 defaults report 116 more findings under E4,E7,E9,F,I,B,DTZ,UP:
+  32 unsorted imports, 38 naive-datetime calls (DTZ, which CLAUDE.md calls a
+  real gotcha), 27 zip-without-strict, 10 unused loop variables. None is a bug
+  today. The three B023 late-binding hits are false positives, because all
+  three closures are called inside the iteration that builds them
+  (pipeline/coupled_dispatch.py:163,167 and pipeline/merit_order.py:230).
+  Widening the select and fixing the 116 is a worthwhile pass over
+  pipeline/ and scripts/, and it is not a bug fix.
+

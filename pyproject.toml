@@ -43,3 +43,15 @@ include = [
     "LICENSE",
     "README.md",
 ]
+
+[tool.ruff]
+target-version = "py311"
+# The gate was green at 2eb4123 under ruff's older defaults, and reported 362
+# errors on the next run with no code change: ruff widened what "default"
+# means. Naming the rules here, and pinning the version in ci.yml, keeps the
+# gate meaning the same thing tomorrow as today.
+lint.select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+"tmp/**" = ["ALL"]
+
