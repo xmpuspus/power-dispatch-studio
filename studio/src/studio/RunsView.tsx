@@ -17,6 +17,7 @@ import {
   runCsv,
   type SavedRun,
 } from './runs'
+import { ScrollBox } from '../ui/ScrollBox'
 
 const GRIDS: GridKey[] = ['luzon', 'visayas', 'mindanao']
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
@@ -152,7 +153,7 @@ export function RunsView({
           </label>
           {importMsg && <span className="runs__import-msg">{importMsg}</span>}
         </div>
-        <div className="propgrid-wrap">
+        <ScrollBox className="propgrid-wrap">
           <table className="propgrid">
             <thead>
               <tr>
@@ -242,7 +243,7 @@ export function RunsView({
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollBox>
         <p className="note">
           Runs live in this browser's storage, newest first, {MAX_RUNS} at most. A run
           saved under an older engine is flagged instead of silently re-read.
@@ -284,7 +285,7 @@ export function RunsView({
               </select>
             </label>
           </div>
-          <div className="propgrid-wrap">
+          <ScrollBox className="propgrid-wrap">
             <table className="propgrid compare">
               <thead>
                 <tr>
@@ -318,7 +319,7 @@ export function RunsView({
                 })}
               </tbody>
             </table>
-          </div>
+          </ScrollBox>
           {a.hours.length > 0 && b.hours.length > 0 && (
             <HourLines
               series={[

@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react'
 import type { GridKey } from '../lib/types'
 import { useLossSurface, useNodalObs } from '../lib/data'
 import { Panel, StatTile, EmptyNote } from '../ui/kit'
+import { ScrollBox } from '../ui/ScrollBox'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 const sgn = (v: number) => `${v > 0 ? '+' : ''}₱${v.toFixed(2)}`
@@ -137,7 +138,7 @@ export function NodalView({ grid }: { grid: GridKey }) {
           onChange={(e) => setQ(e.target.value)}
           aria-label="Filter nodes"
         />
-        <div className="propgrid-wrap">
+        <ScrollBox className="propgrid-wrap">
           <table className="propgrid">
             <thead>
               <tr>
@@ -172,7 +173,7 @@ export function NodalView({ grid }: { grid: GridKey }) {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollBox>
         {rows.length > shown.length && (
           <p className="note">
             Showing 25 of {rows.length} matching nodes; sort or narrow the filter for the

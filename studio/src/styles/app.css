@@ -127,7 +127,7 @@
 }
 .hero__stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: var(--sp-3);
   max-width: 860px;
 }
@@ -471,7 +471,10 @@
 }
 .stat-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  /* 210px is where the longest tile label still reads; min(100%) keeps the
+     track from outgrowing a narrow canvas, which is what a bare 150px floor
+     did on a phone (two tiles at 160px, labels wrapping to three lines) */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
   gap: var(--sp-3);
 }
 .stat {
@@ -756,7 +759,7 @@
 /* corridors */
 .corridor-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: var(--sp-3);
 }
 .corridor {
@@ -786,11 +789,45 @@
 }
 
 /* ============ Data grid ============ */
-.grid-wrap {
+.grid-wrap,
+.propgrid-wrap {
   overflow-x: auto;
   border: 1px solid var(--border);
   border-radius: var(--r-md);
 }
+/* ScrollBox measures which side still holds columns and writes data-more. The
+   fade sits on the box, not on the content, so it stays at the edge while the
+   table scrolls under it, and it is gone once that side is reached. A mask
+   beats a background gradient here: row backgrounds paint over a background,
+   and a dark-surface shadow is invisible in the dark theme. */
+.grid-wrap[data-more='right'],
+.propgrid-wrap[data-more='right'] {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 30px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 30px), transparent);
+}
+.grid-wrap[data-more='left'],
+.propgrid-wrap[data-more='left'] {
+  -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 30px), transparent);
+  mask-image: linear-gradient(to left, #000 calc(100% - 30px), transparent);
+}
+.grid-wrap[data-more='both'],
+.propgrid-wrap[data-more='both'] {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 30px,
+    #000 calc(100% - 30px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 30px,
+    #000 calc(100% - 30px),
+    transparent
+  );
+}
+
 .grid {
   width: 100%;
   border-collapse: collapse;
@@ -1072,7 +1109,7 @@
 }
 @media (max-width: 760px) {
   .scn {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

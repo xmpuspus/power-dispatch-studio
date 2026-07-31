@@ -15,6 +15,7 @@ import {
   type Scenario,
   type SolvedModel,
 } from './model'
+import { ScrollBox } from '../ui/ScrollBox'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 
@@ -38,7 +39,7 @@ export function PropertiesGrid({
   const imported = new Set(importedKeys ?? [])
   const specs = CLASSES.find((c) => c.id === cls)?.props ?? []
   return (
-    <div className="propgrid-wrap">
+    <ScrollBox className="propgrid-wrap">
       <table className="propgrid">
         <thead>
           <tr>
@@ -103,7 +104,7 @@ export function PropertiesGrid({
           ))}
         </tbody>
       </table>
-    </div>
+    </ScrollBox>
   )
 }
 
@@ -482,7 +483,7 @@ export function CompareView({
             the ribbon, and they line up here.
           </EmptyNote>
         )}
-        <div className="propgrid-wrap">
+        <ScrollBox className="propgrid-wrap">
           <table className="propgrid compare">
             <thead>
               <tr>
@@ -520,7 +521,7 @@ export function CompareView({
               })}
             </tbody>
           </table>
-        </div>
+        </ScrollBox>
       </Panel>
     </div>
   )
