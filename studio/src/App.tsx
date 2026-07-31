@@ -6,12 +6,12 @@ import { StatTile, ThemeToggle } from './ui/kit'
 const MapView = lazy(() => import('./map/MapView').then((m) => ({ default: m.MapView })))
 const Studio = lazy(() => import('./studio/Studio').then((m) => ({ default: m.Studio })))
 
-// a shared-scenario link (ChronoView's copyLink, decoded for real by
-// studio/runs.decodeShare once the studio mounts) puts its payload at this
-// hash prefix; a plain prefix test is enough to decide whether to jump
-// straight to the studio, without pulling the studio's solver bundle into
-// the main chunk just to check
-const HAS_SHARE_HASH = /#m=[A-Za-z0-9_-]+/
+// Two kinds of link open the studio directly. A shared scenario (ChronoView's
+// copyLink, decoded for real by studio/runs.decodeShare once the studio mounts)
+// carries `m=`; a view deep link carries `v=<slug>`. A plain pattern test is
+// enough to decide whether to jump straight in, without pulling the studio's
+// solver bundle into the main chunk just to check.
+const HAS_SHARE_HASH = /[#&](m=[A-Za-z0-9_-]+|v=[a-z0-9-]+)/
 
 type Theme = 'light' | 'dark'
 

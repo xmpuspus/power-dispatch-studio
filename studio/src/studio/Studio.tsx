@@ -1,8 +1,25 @@
-import { Component, useEffect, useMemo, useState, type ReactNode } from 'react'
+import {
+  Component,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { GRIDS } from '../lib/types'
 import { php, pct, useFleet, useGenerators, useProfiles } from '../lib/data'
-import { Segmented, ThemeToggle } from '../ui/kit'
+import { CommandPalette, NavRail, RunDock, TopBar } from '../shell/Shell'
+import { usePaletteKey } from '../shell/usePaletteKey'
+import {
+  type Nav,
+  destBySlug,
+  destOf,
+  groupOf,
+  phaseOf,
+  readHashView,
+  writeHashView,
+} from '../shell/nav'
 import { DurationView, MarginalView, ReliabilityView, ReserveView } from './views'
 import { ScenarioView } from './Scenario'
 import { BillView } from './Bill'
@@ -31,7 +48,6 @@ import { MultiYearView } from './MultiYearView'
 import { ExpansionView } from './ExpansionView'
 import { decodeShare, loadRuns, type SavedRun } from './runs'
 import {
-  CLASSES,
   baseObjects,
   overrideKey,
   solveModel,
@@ -53,105 +69,9 @@ import {
   SolvedReliabilityView,
 } from './model-views'
 
-type SolId =
-  | 'merit'
-  | 'chrono'
-  | 'sweep'
-  | 'distribution'
-  | 'flows'
-  | 'n1'
-  | 'regions'
-  | 'duration'
-  | 'marginal'
-  | 'reliability'
-type AnalysisId =
-  | 'reserve'
-  | 'bill'
-  | 'market'
-  | 'backcast'
-  | 'explain'
-  | 'emissions'
-  | 'capture'
-  | 'portfolio'
-  | 'crossrun'
-  | 'ensemble'
-  | 'rtdoe5'
-  | 'forward'
-  | 'multiyear'
-  | 'week'
-  | 'expansion'
-  | 'vintage'
-  | 'nodal'
-  | 'sites'
-  | 'lossval'
-type PhaseId = 'lt' | 'pasa'
-type Nav =
-  | { kind: 'class'; id: ClassId }
-  | { kind: 'quick' }
-  | { kind: 'compare' }
-  | { kind: 'runs' }
-  | { kind: 'sol'; id: SolId }
-  | { kind: 'analysis'; id: AnalysisId }
-  | { kind: 'phase'; id: PhaseId }
-
-const SOL_LABEL: Record<SolId, string> = {
-  merit: 'Merit order',
-  chrono: 'Chronology',
-  sweep: 'Load sweep',
-  distribution: 'Window band',
-  flows: 'Coupled flows',
-  n1: 'N-1 contingency',
-  regions: 'Regions',
-  duration: 'Price duration',
-  marginal: 'Marginal units',
-  reliability: 'Reliability',
-}
-const ANALYSIS_LABEL: Record<AnalysisId, string> = {
-  backcast: 'Backcast',
-  explain: 'Explain a day',
-  reserve: 'Reserve market',
-  bill: 'Bill impact',
-  market: 'Market power',
-  emissions: 'Emissions',
-  capture: 'Capture prices',
-  portfolio: 'Portfolio',
-  crossrun: 'Cross-run',
-  ensemble: 'Ensembles',
-  rtdoe5: '5-minute replay',
-  forward: 'Forward prices',
-  multiyear: 'Multi-year path',
-  week: 'Native week',
-  expansion: 'Expansion mix',
-  nodal: 'Nodal prices',
-  sites: 'Siting a new load',
-  lossval: 'Loss validation',
-  vintage: 'Assumptions',
-}
-const PHASE_LABEL: Record<PhaseId, string> = {
-  lt: 'Long-term',
-  pasa: 'Adequacy',
-}
-// views that recompute from the current model (the rest read the calibrated base case)
-const LIVE_SOL = new Set<SolId>([
-  'merit',
-  'chrono',
-  'sweep',
-  'distribution',
-  'flows',
-  'n1',
-  'regions',
-  'reliability',
-])
-// navs that pick a grid
-const GRID_SOL = new Set<SolId>([
-  'merit',
-  'chrono',
-  'sweep',
-  'distribution',
-  'n1',
-  'duration',
-  'marginal',
-])
+// The nav shape, the 39 destinations, and which of them read one grid at a time
+// all live in shell/nav.ts. Studio keeps the model state and the panes; the
+// shell owns how an analyst reaches them.
 
 export function Studio({
   d,
@@ -194,10 +114,27 @@ export function Studio({
   )
   const [ai, setAi] = useState(shared ? 1 : 0)
   const active = scenarios[ai]
-  const [nav, setNav] = useState<Nav>(
-    shared ? { kind: 'sol', id: 'chrono' } : { kind: 'class', id: 'generator' }
+  // a deep link picks the opening view; a shared scenario without one lands on
+  // the chronology it was captured from; everything else opens on the lever
+  // panel, which is where a first-time analyst can do something in one drag
+  const linked = useMemo(() => readHashView(window.location.hash), [])
+  const [nav, setNav] = useState<Nav>(() => {
+    const d0 = linked.slug ? destBySlug(linked.slug) : undefined
+    if (d0) return d0.nav
+    return shared ? { kind: 'sol', id: 'chrono' } : { kind: 'quick' }
+  })
+  const [grid, setGrid] = useState<GridKey>((linked.grid as GridKey) ?? 'luzon')
+  const [navOpen, setNavOpen] = useState(false)
+  const [palette, setPalette] = useState(false)
+  const [dockOpen, setDockOpen] = useState(
+    () => !window.matchMedia?.('(max-width: 1180px)').matches
   )
-  const [grid, setGrid] = useState<GridKey>('luzon')
+  const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle')
+  // the Quick scenario levers preview live; they report the clear here so the
+  // dock can show it beside the solved model instead of silently disagreeing
+  const [live, setLive] = useState<Record<GridKey, number> | null>(null)
+  const onLive = useCallback((p: Record<GridKey, number> | null) => setLive(p), [])
+  usePaletteKey(() => setPalette(true))
   const [chronoDate, setChronoDate] = useState<string | null>(shared?.date ?? null)
   const [chronoSpan, setChronoSpan] = useState<'day' | 'week'>(shared?.span ?? 'day')
   const [runsList, setRunsList] = useState<SavedRun[]>(() => loadRuns())
@@ -325,21 +262,20 @@ export function Studio({
   }
 
   const editCount = Object.keys(active.overrides).length
-  const gridScoped =
-    (nav.kind === 'sol' && GRID_SOL.has(nav.id)) ||
-    (nav.kind === 'analysis' &&
-      (nav.id === 'reserve' ||
-        nav.id === 'backcast' ||
-        nav.id === 'explain' ||
-        nav.id === 'capture' ||
-        nav.id === 'crossrun' ||
-        nav.id === 'ensemble' ||
-        nav.id === 'rtdoe5' ||
-        nav.id === 'nodal' ||
-        nav.id === 'sites' ||
-        nav.id === 'forward' ||
-        nav.id === 'multiyear' ||
-        nav.id === 'week'))
+  const dest = destOf(nav)
+  const group = groupOf(nav)
+  const gridScoped = !!dest?.scoped
+
+  // the calibrated base case, solved once. Every figure in the run dock reads
+  // its move against this, so an analyst sees the size of what they changed
+  // rather than a level they must remember the old value of
+  const base = useMemo(() => solveModel(d, objects, {}), [d, objects])
+
+  // the open view rides in the URL beside any shared scenario, so a colleague
+  // can be sent one view rather than told which one to click to
+  useEffect(() => {
+    if (dest) writeHashView(dest.slug, gridScoped ? grid : undefined)
+  }, [dest, grid, gridScoped])
 
   const revertAll = () => {
     setScenarios((prev) =>
@@ -373,110 +309,120 @@ export function Studio({
       return false
     }
   }
-  const phaseLabel = nav.kind === 'phase' ? PHASE_LABEL[nav.id] : 'Short-term'
+  const phaseLabel = phaseOf(nav)
 
   return (
     <div className="studio" data-testid="studio">
-      <header className="studio__titlebar">
-        <div className="studio__brand">
-          <BrandMark />
-          <div>
-            <div className="studio__name">
-              Power Dispatch<span className="studio__from">Studio</span>
-            </div>
-            <div className="studio__tag">Philippine WESM</div>
-          </div>
-        </div>
-        <span className="studio__homage" title="Free and open, built on public data.">
-          Open production-cost studio for the WESM, built on public data.
-        </span>
-        <div className="studio__barright">
-          <span className={`statuschip statuschip--${dirty ? 'unsolved' : 'solved'}`}>
-            <Dot /> {dirty ? 'Unsolved' : 'Solved'}
-          </span>
-          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-          <button className="btn btn--ghost" onClick={onExit}>
-            Close studio
-          </button>
-        </div>
-      </header>
-
-      <Ribbon
+      <TopBar
+        nav={nav}
+        grid={grid}
+        onGrid={setGrid}
+        gridScoped={gridScoped}
         scenarios={scenarios}
         ai={ai}
-        dirty={dirty}
+        onPickScenario={pickScenario}
+        onAddScenario={addScenario}
         editCount={editCount}
-        grid={grid}
-        gridScoped={gridScoped}
+        dirty={dirty}
         onRun={run}
-        onPick={pickScenario}
-        onAdd={addScenario}
-        onRevertAll={revertAll}
-        onCopy={copySummary}
-        onGrid={setGrid}
-        phaseLabel={phaseLabel}
+        onOpenPalette={() => setPalette(true)}
+        onOpenNav={() => setNavOpen(true)}
+        onExit={onExit}
+        theme={theme}
+        onToggleTheme={onToggleTheme}
       />
 
-      <div className="studio__body">
-        <Explorer nav={nav} setNav={setNav} editCount={editCount} />
+      <div className={`studio__body ${dockOpen ? 'dock-open' : 'dock-closed'}`}>
+        <NavRail
+          nav={nav}
+          onNav={setNav}
+          open={navOpen}
+          onClose={() => setNavOpen(false)}
+          editCount={editCount}
+        />
 
         <main className="studio__main">
-          <Crumbs nav={nav} grid={grid} gridScoped={gridScoped} dirty={dirty} />
-          <div className="studio__scroll">
-            {nav.kind === 'class' && nav.id === 'generator' && (
-              <div className="studio__start">
-                <div className="studio__start-txt">
-                  <b>New here?</b> The quickest way to simulate: open Quick scenario, drag
-                  a lever, and the three grids re-clear live as you move it. No Run
-                  needed. For deeper edits, change any value in these tables and press
-                  Run.
-                </div>
-                <div className="studio__start-actions">
-                  <button
-                    className="btn btn--primary btn--sm"
-                    onClick={() => setNav({ kind: 'quick' })}
-                  >
-                    Start simulating →
-                  </button>
-                  <button
-                    className="btn btn--ghost btn--sm"
-                    onClick={() => setNav({ kind: 'analysis', id: 'lossval' })}
-                  >
-                    See the nodal validation proof
-                  </button>
-                </div>
-              </div>
+          <div className="viewhead">
+            <span className="viewhead__group">{group?.label ?? 'Studio'}</span>
+            <h1 className="viewhead__title">{dest?.label ?? 'View'}</h1>
+            <p className="viewhead__hint">
+              {dirty && dest?.live
+                ? `${editCount} edit${editCount === 1 ? '' : 's'} are not in this yet. Press Run.`
+                : (dest?.hint ?? '')}
+            </p>
+            {editCount > 0 && (
+              <button className="btn btn--ghost btn--sm" onClick={revertAll}>
+                Revert {editCount} edit{editCount === 1 ? '' : 's'}
+              </button>
             )}
-            <SolveBoundary key={`${JSON.stringify(nav)}:${editCount}:${dirty}:${grid}`}>
-              <DataPane
-                d={d}
-                profiles={profiles.data}
-                nav={nav}
-                grid={grid}
-                solved={solved}
-                objects={objects}
-                scenarios={scenarios}
-                overrides={active.overrides}
-                ranOv={ranOv}
-                scenarioName={active.name}
-                chronoDate={chronoDate}
-                chronoSpan={chronoSpan}
-                onChronoDate={setChronoDate}
-                onChronoSpan={setChronoSpan}
-                runsList={runsList}
-                onRunsChange={setRunsList}
-                onRestore={restoreRun}
-                dirty={dirty}
-                onEdit={edit}
-                onRevert={revert}
-                onImportCsv={importCsv}
-                importedKeys={active.importedKeys}
-                onRun={run}
-              />
-            </SolveBoundary>
+            <button
+              className="btn btn--ghost btn--sm"
+              onClick={async () => {
+                const ok = await copySummary()
+                setCopied(ok ? 'ok' : 'fail')
+                window.setTimeout(() => setCopied('idle'), 1600)
+              }}
+              title="Copy this scenario's clearing prices and adequacy"
+            >
+              {copied === 'ok'
+                ? 'Copied'
+                : copied === 'fail'
+                  ? 'Copy failed'
+                  : 'Copy summary'}
+            </button>
+          </div>
+          <div className="studio__scroll">
+            <div className="studio__measure">
+              <SolveBoundary key={`${JSON.stringify(nav)}:${editCount}:${dirty}:${grid}`}>
+                <DataPane
+                  d={d}
+                  profiles={profiles.data}
+                  nav={nav}
+                  grid={grid}
+                  solved={solved}
+                  objects={objects}
+                  scenarios={scenarios}
+                  overrides={active.overrides}
+                  ranOv={ranOv}
+                  scenarioName={active.name}
+                  chronoDate={chronoDate}
+                  chronoSpan={chronoSpan}
+                  onChronoDate={setChronoDate}
+                  onChronoSpan={setChronoSpan}
+                  runsList={runsList}
+                  onRunsChange={setRunsList}
+                  onRestore={restoreRun}
+                  dirty={dirty}
+                  onEdit={edit}
+                  onRevert={revert}
+                  onImportCsv={importCsv}
+                  importedKeys={active.importedKeys}
+                  onRun={run}
+                  onLive={onLive}
+                />
+              </SolveBoundary>
+            </div>
           </div>
         </main>
+
+        <RunDock
+          solved={solved}
+          base={base}
+          live={live}
+          grid={grid}
+          onGrid={setGrid}
+          scenarioName={active.name}
+          dirty={dirty}
+          open={dockOpen}
+          onToggle={() => setDockOpen((v) => !v)}
+        />
       </div>
+
+      <CommandPalette
+        open={palette}
+        onClose={() => setPalette(false)}
+        onNav={(n) => setNav(n)}
+      />
 
       <footer className="studio__status mono">
         <span>
@@ -504,163 +450,6 @@ export function Studio({
   )
 }
 
-function Ribbon({
-  scenarios,
-  ai,
-  dirty,
-  editCount,
-  grid,
-  gridScoped,
-  onRun,
-  onPick,
-  onAdd,
-  onRevertAll,
-  onCopy,
-  onGrid,
-  phaseLabel,
-}: {
-  scenarios: Scenario[]
-  ai: number
-  dirty: boolean
-  editCount: number
-  grid: GridKey
-  gridScoped: boolean
-  onRun: () => void
-  onPick: (i: number) => void
-  onAdd: () => void
-  onRevertAll: () => void
-  onCopy: () => Promise<boolean>
-  onGrid: (g: GridKey) => void
-  phaseLabel: string
-}) {
-  const [tab, setTab] = useState<'home' | 'model' | 'solution'>('home')
-  const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle')
-  const tabs = ['home', 'model', 'solution'] as const
-  return (
-    <div className="ribbon">
-      <div className="ribbon__tabs" role="tablist">
-        {tabs.map((t) => (
-          <button
-            key={t}
-            role="tab"
-            aria-selected={t === tab}
-            className={`ribbon__tab ${t === tab ? 'is-active' : ''}`}
-            onClick={() => setTab(t)}
-          >
-            {t[0].toUpperCase() + t.slice(1)}
-          </button>
-        ))}
-      </div>
-      <div className="ribbon__groups">
-        {tab === 'home' && (
-          <>
-            <RibbonGroup label="Simulation">
-              <button
-                className={`btn btn--run${dirty ? ' is-dirty' : ''}`}
-                onClick={onRun}
-                disabled={!dirty}
-                title={
-                  dirty
-                    ? 'Re-solve the edited scenario'
-                    : 'Solved and current. Edit a value to re-run.'
-                }
-                aria-label="Run the simulation"
-              >
-                <PlayIcon /> Run
-              </button>
-            </RibbonGroup>
-            <RibbonGroup label="Scenario">
-              <select
-                className="ribbon__select"
-                value={ai}
-                onChange={(e) => onPick(Number(e.target.value))}
-                aria-label="Active scenario"
-              >
-                {scenarios.map((s, i) => (
-                  <option key={i} value={i}>
-                    {s.name}
-                    {i > 0 ? ` (${Object.keys(s.overrides).length})` : ''}
-                  </option>
-                ))}
-              </select>
-              <button className="btn btn--ghost btn--sm" onClick={onAdd}>
-                + New
-              </button>
-            </RibbonGroup>
-            {gridScoped && (
-              <RibbonGroup label="Region">
-                <Segmented
-                  ariaLabel="Select grid"
-                  value={grid}
-                  onChange={onGrid}
-                  options={GRIDS.map((g) => ({
-                    value: g,
-                    label: g[0].toUpperCase() + g.slice(1),
-                  }))}
-                />
-              </RibbonGroup>
-            )}
-          </>
-        )}
-        {tab === 'model' && (
-          <>
-            <RibbonGroup label="Edits">
-              <button
-                className="btn btn--ghost btn--sm"
-                onClick={onRevertAll}
-                disabled={editCount === 0}
-              >
-                Revert all
-              </button>
-              <span className="ribbon__meta mono">{editCount} edited</span>
-            </RibbonGroup>
-            <RibbonGroup label="Objects">
-              <button
-                className="btn btn--ghost btn--sm"
-                disabled
-                title="The fleet is fixed to the sourced units in this open build"
-              >
-                + Add object
-              </button>
-              <span className="ribbon__meta">fleet is fixed to sourced units</span>
-            </RibbonGroup>
-          </>
-        )}
-        {tab === 'solution' && (
-          <>
-            <RibbonGroup label="Phase">
-              <span className="ribbon__meta">
-                {phaseLabel} <span className="tree__live">active</span>
-              </span>
-            </RibbonGroup>
-            <RibbonGroup label="Export">
-              <button
-                className="btn btn--ghost btn--sm"
-                onClick={async () => {
-                  const ok = await onCopy()
-                  setCopied(ok ? 'ok' : 'fail')
-                  window.setTimeout(() => setCopied('idle'), 1600)
-                }}
-                title="Copy the current scenario's clearing prices and adequacy to the clipboard"
-              >
-                {copied === 'ok'
-                  ? 'Copied'
-                  : copied === 'fail'
-                    ? 'Copy failed'
-                    : 'Copy summary'}
-              </button>
-            </RibbonGroup>
-          </>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// a scenario that breaks the solve must degrade to a message inside the pane,
-// with the shell (ribbon, explorer, revert controls) still alive to fix it.
-// The key remounts the boundary on any edit or navigation, so recovery is one
-// revert away.
 class SolveBoundary extends Component<{ children: ReactNode }, { err: string | null }> {
   state = { err: null }
   static getDerivedStateFromError(e: Error) {
@@ -679,143 +468,6 @@ class SolveBoundary extends Component<{ children: ReactNode }, { err: string | n
       )
     return this.props.children
   }
-}
-
-function RibbonGroup({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="ribbon__group">
-      <div className="ribbon__cmds">{children}</div>
-      <div className="ribbon__grouplabel">{label}</div>
-    </div>
-  )
-}
-
-function Explorer({
-  nav,
-  setNav,
-  editCount,
-}: {
-  nav: Nav
-  setNav: (n: Nav) => void
-  editCount: number
-}) {
-  const [tab, setTab] = useState<'system' | 'simulation'>('system')
-  const isActive = (n: Nav) => JSON.stringify(n) === JSON.stringify(nav)
-  return (
-    <nav className="tree" aria-label="Model explorer">
-      <div className="tree__tabs" role="tablist">
-        <button
-          role="tab"
-          aria-selected={tab === 'system'}
-          className={`tree__tab ${tab === 'system' ? 'is-active' : ''}`}
-          onClick={() => setTab('system')}
-        >
-          System
-        </button>
-        <button
-          role="tab"
-          aria-selected={tab === 'simulation'}
-          className={`tree__tab ${tab === 'simulation' ? 'is-active' : ''}`}
-          onClick={() => setTab('simulation')}
-        >
-          Simulation
-        </button>
-      </div>
-
-      {tab === 'system' ? (
-        <>
-          <TreeGroup label="Objects">
-            {CLASSES.map((c) => (
-              <TreeItem
-                key={c.id}
-                label={c.label}
-                icon="obj"
-                active={isActive({ kind: 'class', id: c.id })}
-                onClick={() => setNav({ kind: 'class', id: c.id })}
-              />
-            ))}
-          </TreeGroup>
-          <TreeGroup label="Shortcut">
-            <TreeItem
-              label="Quick scenario"
-              icon="obj"
-              live
-              active={isActive({ kind: 'quick' })}
-              onClick={() => setNav({ kind: 'quick' })}
-            />
-          </TreeGroup>
-          <div className="tree__foot">
-            {editCount} property edit{editCount === 1 ? '' : 's'} in this scenario. Edit
-            cells, then Run.
-          </div>
-        </>
-      ) : (
-        <>
-          <TreeGroup label="Phases">
-            {(Object.keys(PHASE_LABEL) as PhaseId[]).map((id) => (
-              <TreeItem
-                key={id}
-                label={PHASE_LABEL[id]}
-                icon="sol"
-                active={isActive({ kind: 'phase', id })}
-                onClick={() => setNav({ kind: 'phase', id })}
-              />
-            ))}
-            <div
-              className="tree__phase is-off"
-              title="Medium-term horizon is not in this open build"
-            >
-              <NodeIcon group="Solution" />
-              Medium-term
-            </div>
-            <TreeItem
-              label="Short-term"
-              icon="sol"
-              live
-              active={isActive({ kind: 'sol', id: 'chrono' })}
-              onClick={() => setNav({ kind: 'sol', id: 'chrono' })}
-            />
-          </TreeGroup>
-          <TreeGroup label="Solution">
-            {(Object.keys(SOL_LABEL) as SolId[]).map((id) => (
-              <TreeItem
-                key={id}
-                label={SOL_LABEL[id]}
-                icon="sol"
-                live={LIVE_SOL.has(id)}
-                active={isActive({ kind: 'sol', id })}
-                onClick={() => setNav({ kind: 'sol', id })}
-              />
-            ))}
-            <TreeItem
-              label="Compare scenarios"
-              icon="sol"
-              live
-              active={isActive({ kind: 'compare' })}
-              onClick={() => setNav({ kind: 'compare' })}
-            />
-            <TreeItem
-              label="Saved runs"
-              icon="sol"
-              active={isActive({ kind: 'runs' })}
-              onClick={() => setNav({ kind: 'runs' })}
-            />
-          </TreeGroup>
-          <TreeGroup label="Analysis">
-            {(Object.keys(ANALYSIS_LABEL) as AnalysisId[]).map((id) => (
-              <TreeItem
-                key={id}
-                label={ANALYSIS_LABEL[id]}
-                icon="sol"
-                active={isActive({ kind: 'analysis', id })}
-                onClick={() => setNav({ kind: 'analysis', id })}
-              />
-            ))}
-          </TreeGroup>
-        </>
-      )}
-    </nav>
-  )
 }
 
 function DataPane({
@@ -842,6 +494,7 @@ function DataPane({
   onImportCsv,
   importedKeys,
   onRun,
+  onLive,
 }: {
   d: Dispatch
   profiles: Profiles | null
@@ -866,6 +519,7 @@ function DataPane({
   onImportCsv: (text: string) => ImportResult
   importedKeys: string[] | undefined
   onRun: () => void
+  onLive: (p: Record<GridKey, number> | null) => void
 }) {
   if (nav.kind === 'compare')
     return <CompareView d={d} objects={objects} scenarios={scenarios} />
@@ -896,6 +550,7 @@ function DataPane({
         onRevert={onRevert}
         onImportCsv={onImportCsv}
         importedKeys={importedKeys}
+        onLive={onLive}
       />
     )
   if (nav.kind === 'phase') {
@@ -1010,94 +665,6 @@ function DataPane({
   )
 }
 
-function Crumbs({
-  nav,
-  grid,
-  gridScoped,
-  dirty,
-}: {
-  nav: Nav
-  grid: GridKey
-  gridScoped: boolean
-  dirty: boolean
-}) {
-  let root = 'System'
-  let leaf = ''
-  if (nav.kind === 'class') {
-    root = 'System'
-    leaf = CLASSES.find((c) => c.id === nav.id)?.label ?? ''
-  } else if (nav.kind === 'quick') {
-    root = 'System'
-    leaf = 'Quick scenario'
-  } else if (nav.kind === 'compare') {
-    root = 'Solution'
-    leaf = 'Compare scenarios'
-  } else if (nav.kind === 'runs') {
-    root = 'Solution'
-    leaf = 'Saved runs'
-  } else if (nav.kind === 'sol') {
-    root = 'Solution'
-    leaf = SOL_LABEL[nav.id]
-  } else if (nav.kind === 'phase') {
-    root = 'Simulation'
-    leaf = PHASE_LABEL[nav.id]
-  } else {
-    root = 'Analysis'
-    leaf = ANALYSIS_LABEL[nav.id]
-  }
-  return (
-    <div className="studio__crumbs">
-      {root} <span className="studio__crumbsep">/</span> <strong>{leaf}</strong>
-      {gridScoped && (
-        <>
-          <span className="studio__crumbsep">/</span>{' '}
-          {grid[0].toUpperCase() + grid.slice(1)}
-        </>
-      )}
-      {nav.kind === 'sol' && LIVE_SOL.has(nav.id) && dirty && (
-        <span className="crumbs__stale">edits pending, Run to update</span>
-      )}
-    </div>
-  )
-}
-
-function TreeGroup({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="tree__group">
-      <div className="tree__grouphead">{label}</div>
-      <ul className="tree__list">{children}</ul>
-    </div>
-  )
-}
-
-function TreeItem({
-  label,
-  icon,
-  live,
-  active,
-  onClick,
-}: {
-  label: string
-  icon: 'obj' | 'sol'
-  live?: boolean
-  active: boolean
-  onClick: () => void
-}) {
-  return (
-    <li>
-      <button
-        className={`tree__item ${active ? 'is-active' : ''}`}
-        onClick={onClick}
-        aria-current={active}
-      >
-        <NodeIcon group={icon === 'obj' ? 'Objects' : 'Solution'} />
-        {label}
-        {live && <span className="tree__live">live</span>}
-      </button>
-    </li>
-  )
-}
-
 type DataTab = 'objects' | 'memberships' | 'properties'
 
 function ClassPane({
@@ -1176,77 +743,10 @@ function ClassPane({
   )
 }
 
-function BrandMark() {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 32 32"
-      aria-hidden="true"
-      className="brandmark"
-    >
-      <rect x="1.5" y="1.5" width="29" height="29" rx="7" fill="var(--primary)" />
-      <path
-        d="M9 22V10h5.5a3.8 3.8 0 010 7.6H12"
-        fill="none"
-        stroke="var(--on-primary)"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M18 10l5 12M23 10l-5 12"
-        fill="none"
-        stroke="var(--accent)"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function Dot() {
-  return <span className="livedot" aria-hidden="true" />
-}
-
 function PlayIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M7 5l12 7-12 7z" fill="currentColor" />
-    </svg>
-  )
-}
-
-function NodeIcon({ group }: { group: string }) {
-  return (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      className="nodeicon"
-    >
-      {group === 'Objects' ? (
-        <rect
-          x="4"
-          y="4"
-          width="16"
-          height="16"
-          rx="3"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-      ) : (
-        <path
-          d="M4 12h16M12 4v16"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      )}
     </svg>
   )
 }

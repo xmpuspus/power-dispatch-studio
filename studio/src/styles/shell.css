@@ -1,0 +1,931 @@
+/* ============================================================
+   Studio shell. Loaded after app.css, so it wins on shared names.
+
+   Three regions, one grid: a chrome bar that holds every scenario
+   control, a question-first rail on the left, and a run dock on the
+   right that keeps the answer on screen in all 39 views.
+   ============================================================ */
+
+.studio {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: var(--bg);
+}
+
+/* base.css leaves button background and border to the browser, which paints a
+   raised grey box on anything that does not set them. Every control the shell
+   draws is styled by hand, so start them all from flat. */
+:where(.bar, .rail, .dock, .pal) button {
+  background: none;
+  border: 0;
+  color: inherit;
+  padding: 0;
+}
+.bar button:focus-visible,
+.rail button:focus-visible,
+.dock button:focus-visible,
+.pal button:focus-visible,
+.pal__input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+.bar button:focus-visible {
+  outline-color: var(--chrome-accent);
+}
+
+/* ---------- chrome bar ---------- */
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 52px;
+  padding: 0 var(--sp-3);
+  background: var(--chrome);
+  color: var(--chrome-text);
+  border-bottom: 1px solid var(--chrome-line);
+}
+.bar__navbtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-sm);
+  color: var(--chrome-text);
+}
+.bar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: none;
+  padding-right: var(--sp-2);
+}
+.bar__mark {
+  color: var(--chrome-accent);
+  flex: none;
+}
+.bar__brandtext {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  min-width: 0;
+}
+.bar__name {
+  font-size: var(--fs-13);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+.bar__tag {
+  font-size: var(--fs-11);
+  color: var(--chrome-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.bar__search {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 34px;
+  min-width: 190px;
+  max-width: 300px;
+  padding: 0 var(--sp-2) 0 var(--sp-3);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--chrome-line);
+  background: var(--chrome-2);
+  color: var(--chrome-muted);
+  font-size: var(--fs-13);
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+.bar__search:hover {
+  border-color: var(--chrome-accent);
+  background: var(--chrome-3);
+}
+.bar__searchtxt {
+  flex: 1;
+  text-align: left;
+  color: var(--chrome-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bar__kbd,
+.pal__kbd,
+.pal__foot kbd {
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--chrome-line);
+  background: var(--chrome);
+  color: var(--chrome-muted);
+}
+
+.bar__group {
+  display: flex;
+  flex: none;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--chrome-line);
+  overflow: hidden;
+}
+.bar__seg {
+  height: 32px;
+  padding: 0 var(--sp-3);
+  font-size: var(--fs-12);
+  font-weight: 500;
+  color: var(--chrome-muted);
+  background: var(--chrome-2);
+  border-right: 1px solid var(--chrome-line);
+  white-space: nowrap;
+}
+.bar__seg:last-child {
+  border-right: 0;
+}
+.bar__seg:hover:not(:disabled) {
+  color: var(--chrome-text);
+  background: var(--chrome-3);
+}
+.bar__seg.is-on {
+  color: var(--chrome);
+  background: var(--chrome-accent);
+  font-weight: 600;
+}
+.bar__seg:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.bar__scn {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: none;
+  min-width: 0;
+}
+.bar__scnlabel {
+  font-size: var(--fs-11);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--chrome-muted);
+}
+.bar__scn select {
+  height: 32px;
+  max-width: 200px;
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--chrome-line);
+  background: var(--chrome-2);
+  color: var(--chrome-text);
+  font-size: var(--fs-13);
+  font-family: inherit;
+}
+.bar__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  color: var(--chrome-muted);
+}
+.bar__icon:hover {
+  color: var(--chrome-text);
+  background: var(--chrome-2);
+  border-color: var(--chrome-line);
+}
+.bar__spacer {
+  flex: 1;
+  min-width: var(--sp-2);
+}
+
+.bar__run {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 34px;
+  flex: none;
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-13);
+  font-weight: 600;
+  color: var(--chrome-muted);
+  background: var(--chrome-2);
+  border: 1px solid var(--chrome-line);
+  white-space: nowrap;
+}
+.bar__run.is-dirty {
+  color: var(--chrome);
+  background: var(--chrome-warn);
+  border-color: var(--chrome-warn);
+  cursor: pointer;
+}
+.bar__run:disabled {
+  cursor: default;
+}
+/* ---------- body grid ---------- */
+
+.studio__body {
+  display: grid;
+  grid-template-columns: 244px minmax(0, 1fr) 288px;
+  min-height: 0;
+  background: var(--bg);
+}
+.studio__body.dock-closed {
+  grid-template-columns: 244px minmax(0, 1fr) 40px;
+}
+.studio__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border-left: 1px solid var(--border);
+  background: var(--bg);
+}
+.studio__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--sp-5);
+}
+.studio__measure {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+/* the view heading strip: says what is on screen and what it answers */
+.viewhead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.viewhead__group {
+  font-size: var(--fs-11);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+.viewhead__title {
+  font-size: var(--fs-16);
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+.viewhead__hint {
+  font-size: var(--fs-13);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- question rail ---------- */
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--surface-2);
+}
+.rail__scrim {
+  display: none;
+}
+.rail__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-11);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-faint);
+  border-bottom: 1px solid var(--border);
+}
+.rail__close {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+.rail__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-2) 0 var(--sp-4);
+}
+.rail__group + .rail__group {
+  border-top: 1px solid var(--border);
+}
+.rail__grouphead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  min-height: 40px;
+  padding: var(--sp-2) var(--sp-3);
+  text-align: left;
+  font-size: var(--fs-13);
+  font-weight: 600;
+  color: var(--text);
+}
+.rail__grouphead:hover {
+  background: var(--surface-3);
+}
+.rail__grouphead.is-current {
+  color: var(--primary);
+}
+.rail__count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  color: var(--text-faint);
+}
+.chev {
+  flex: none;
+  transition: transform 0.15s ease;
+}
+.chev.is-open {
+  transform: rotate(90deg);
+}
+.rail__list {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--sp-2) var(--sp-2) 0;
+}
+.rail__item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  min-height: 34px;
+  padding: 6px var(--sp-3) 6px 30px;
+  text-align: left;
+  font-size: var(--fs-13);
+  color: var(--text-muted);
+  border-left: 2px solid transparent;
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+}
+.rail__item:hover {
+  background: var(--surface-3);
+  color: var(--text);
+}
+.rail__item.is-active {
+  background: var(--accent-soft);
+  border-left-color: var(--primary);
+  color: var(--text);
+  font-weight: 600;
+}
+.rail__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rail__live {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: var(--positive);
+  background: color-mix(in srgb, var(--positive) 14%, transparent);
+}
+.rail__foot {
+  padding: var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-12);
+  color: var(--text-faint);
+  line-height: var(--lh-body);
+}
+
+/* ---------- command palette ---------- */
+
+.pal__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-tooltip);
+  background: rgba(6, 11, 22, 0.55);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10vh var(--sp-4) var(--sp-4);
+}
+.pal {
+  width: min(620px, 100%);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  box-shadow: var(--e-3);
+  overflow: hidden;
+}
+.pal__inputrow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-faint);
+}
+.pal__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--fs-16);
+  color: var(--text);
+}
+.pal__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: var(--sp-2);
+}
+.pal__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  text-align: left;
+  border-radius: var(--r-sm);
+}
+.pal__item.is-sel {
+  background: var(--accent-soft);
+}
+.pal__label {
+  font-size: var(--fs-14);
+  font-weight: 600;
+  color: var(--text);
+}
+.pal__hint {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+.pal__empty {
+  padding: var(--sp-5);
+  color: var(--text-muted);
+  font-size: var(--fs-14);
+}
+.pal__foot {
+  display: flex;
+  gap: var(--sp-4);
+  padding: var(--sp-2) var(--sp-4);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-11);
+  color: var(--text-faint);
+}
+.pal__foot span:last-child {
+  margin-left: auto;
+}
+.pal__foot kbd {
+  background: var(--surface-3);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+/* ---------- run dock ---------- */
+
+.dock {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.dock__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 40px;
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--fs-11);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-faint);
+  border-bottom: 1px solid var(--border);
+}
+.dock.is-collapsed .dock__toggle {
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  border-bottom: 0;
+}
+.dock.is-collapsed .dock__togglelabel {
+  writing-mode: vertical-rl;
+  margin-top: var(--sp-2);
+}
+/* collapsed hides the figures on a wide screen only. Below 980 the dock is the
+   strip under the bar and stays open, because losing the answer is the whole
+   defect this dock exists to fix. */
+@media (min-width: 981px) {
+  .dock.is-collapsed .dock__body {
+    display: none;
+  }
+}
+.dock__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.dock__scn {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: var(--sp-1);
+}
+.dock__scnname {
+  font-size: var(--fs-13);
+  font-weight: 600;
+  color: var(--text);
+}
+.dock__stale {
+  font-size: var(--fs-11);
+  color: var(--accent);
+}
+.dock__grid {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color 0.15s ease;
+}
+.dock__grid:hover {
+  border-color: var(--border-strong);
+}
+.dock__grid.is-on {
+  border-color: var(--primary);
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+.dock__gridhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.dock__gridname {
+  font-size: var(--fs-12);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+.dock__price {
+  font-size: var(--fs-22);
+  font-weight: 500;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.dock__rows {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px var(--sp-2);
+  margin-top: var(--sp-2);
+  padding-top: var(--sp-2);
+  border-top: 1px solid var(--border);
+}
+.dock__k {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+.dock__v {
+  font-size: var(--fs-12);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.dock__note {
+  margin: var(--sp-1) 0 0;
+  font-size: var(--fs-11);
+  line-height: var(--lh-body);
+  color: var(--text-faint);
+}
+.delta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.delta--sm {
+  font-size: var(--fs-11);
+  margin-left: 6px;
+}
+.delta--up {
+  color: var(--series-observed);
+}
+.delta--down {
+  color: var(--positive);
+}
+.delta--flat {
+  color: var(--text-faint);
+  font-weight: 400;
+}
+
+/* ---------- status strip ---------- */
+
+.studio__status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-4);
+  height: 28px;
+  background: var(--chrome);
+  color: var(--chrome-muted);
+  border-top: 1px solid var(--chrome-line);
+  font-size: var(--fs-11);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.studio__status b {
+  color: var(--chrome-text);
+  font-weight: 600;
+}
+
+/* ============================================================
+   Responsive. Four steps, each one dropping the least useful
+   column rather than shrinking every column at once.
+   ============================================================ */
+
+/* laptop: narrower rail and dock, same three columns */
+@media (max-width: 1439px) {
+  .studio__body {
+    grid-template-columns: 220px minmax(0, 1fr) 262px;
+  }
+  .studio__body.dock-closed {
+    grid-template-columns: 220px minmax(0, 1fr) 40px;
+  }
+  .studio__scroll {
+    padding: var(--sp-4);
+  }
+}
+
+/* small laptop: the dock collapses by default, the rail stays */
+@media (max-width: 1180px) {
+  .studio__body,
+  .studio__body.dock-closed {
+    grid-template-columns: 208px minmax(0, 1fr) 40px;
+  }
+  .studio__body.dock-open {
+    grid-template-columns: 208px minmax(0, 1fr) 250px;
+  }
+  .bar__search {
+    min-width: 150px;
+  }
+  .bar__scnlabel {
+    display: none;
+  }
+  /* the solver credit is the first thing to go when the strip runs short */
+  .studio__status span:last-child {
+    display: none;
+  }
+}
+
+/* tablet: the rail becomes a drawer, the canvas takes the width */
+@media (max-width: 980px) {
+  .bar__navbtn {
+    display: inline-flex;
+  }
+  /* the drawer button now names the app's position, so the wordmark can go
+     and the bar stops running past the right edge */
+  .bar__brandtext {
+    display: none;
+  }
+  .bar__search {
+    min-width: 0;
+    flex: 1 1 140px;
+  }
+  .bar__scn select {
+    max-width: 140px;
+  }
+  .studio__body,
+  .studio__body.dock-closed,
+  .studio__body.dock-open {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .studio__main {
+    border-left: 0;
+  }
+  .rail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(300px, 84vw);
+    z-index: var(--z-tooltip);
+    box-shadow: var(--e-3);
+    transform: translateX(-102%);
+    transition: transform 0.2s ease;
+  }
+  .rail.is-open {
+    transform: none;
+  }
+  .rail__close {
+    display: inline-flex;
+  }
+  .rail__scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-tooltip) - 1);
+    background: rgba(6, 11, 22, 0.5);
+  }
+  /* the answer moves above the view rather than off the screen */
+  .studio__body,
+  .studio__body.dock-closed,
+  .studio__body.dock-open {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .dock {
+    grid-row: 1;
+    grid-column: 1;
+    border-left: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .studio__main {
+    grid-row: 2;
+    grid-column: 1;
+  }
+  .dock__toggle {
+    display: none;
+  }
+  .dock__body {
+    flex-direction: row;
+    align-items: stretch;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: var(--sp-2) var(--sp-3);
+    gap: var(--sp-2);
+  }
+  .dock__scn,
+  .dock__note {
+    display: none;
+  }
+  .dock__grid {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 172px;
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .dock__price {
+    font-size: var(--fs-18);
+  }
+  .dock__rows {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+/* phone: the bar wraps to two rows, nothing clips */
+@media (max-width: 720px) {
+  .studio {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+  .bar {
+    height: auto;
+    flex-wrap: wrap;
+    row-gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-2);
+  }
+  .bar__brandtext,
+  .bar__state {
+    display: none;
+  }
+  .bar__search {
+    order: 5;
+    flex: 1 1 100%;
+    max-width: none;
+    min-width: 0;
+  }
+  .bar__group {
+    order: 6;
+    flex: 1 1 auto;
+  }
+  .bar__seg {
+    flex: 1;
+    padding: 0 var(--sp-2);
+  }
+  .bar__scn {
+    order: 7;
+  }
+  .bar__scn select {
+    max-width: 150px;
+  }
+  .bar__spacer {
+    display: none;
+  }
+  .bar__run {
+    order: 4;
+    margin-left: auto;
+  }
+  .studio__scroll {
+    padding: var(--sp-3);
+  }
+  .viewhead {
+    flex-wrap: wrap;
+    row-gap: 2px;
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .viewhead__hint {
+    flex: 1 1 100%;
+    white-space: normal;
+  }
+  .studio__status {
+    height: auto;
+    padding: var(--sp-1) var(--sp-3);
+    white-space: normal;
+    flex-wrap: wrap;
+    gap: 2px var(--sp-3);
+    font-size: 10px;
+  }
+  .studio__status span:last-child,
+  .studio__statspace {
+    display: none;
+  }
+  .dock__grid {
+    width: auto;
+    min-width: 150px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail,
+  .chev,
+  .bar__search,
+  .dock__grid {
+    transition: none;
+  }
+}
+
+/* announced by a screen reader, never painted */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* the lever preview band: a second source, kept visibly apart from the solved
+   cards so no card ever mixes a previewed number with a solved one */
+.dock__preview {
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px dashed var(--accent);
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+}
+.dock__previewhead {
+  font-size: var(--fs-11);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  margin-bottom: var(--sp-1);
+}
+.dock__previewrow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+.dock__previewrow .dock__k {
+  flex: 1;
+}

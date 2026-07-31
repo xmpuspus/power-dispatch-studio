@@ -120,9 +120,9 @@ async def main():
         await asyncio.sleep(1.6)
 
         # into the siting view
-        await page.locator(".tree__tab", has_text="Simulation").click()
+        await page.locator(".rail__grouphead", has_text="Where it can sit").click()
         await asyncio.sleep(0.6)
-        await page.locator(".tree__item", has_text="Siting a new load").click()
+        await page.locator(".rail__item", has_text="Siting a new load").click()
         await asyncio.sleep(1.6)
 
         await cap(page, "Every announced site, and what its lines can take",
