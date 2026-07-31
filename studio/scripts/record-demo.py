@@ -3,7 +3,7 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
-BASE = "http://localhost:5188/"
+BASE = "http://localhost:5200/studio/"
 OUT = Path("/tmp/studio-rec")
 OUT.mkdir(exist_ok=True)
 W, H = 1400, 840
@@ -36,6 +36,15 @@ async def main():
         await tap(page, page.get_by_role("button", name="Open Power Dispatch Studio"),
                   pause_after=2.8)
 
+        # the studio now opens on the levers, so reach the fleet table first
+        await page.evaluate(
+            """() => { document.querySelectorAll('.rail__grouphead').forEach(b => {
+                 if (b.getAttribute('aria-expanded') === 'false') b.click() }) }"""
+        )
+        await asyncio.sleep(0.4)
+        await tap(page, page.get_by_role("button", name="Generators", exact=True),
+                  pause_after=1.4)
+
         # trip a Sual unit in the Properties grid: SPI U1 from 647 to 0 MW
         spi = page.locator('input[aria-label="SPI U1 Dependable"]')
         await spi.scroll_into_view_if_needed()
@@ -49,7 +58,8 @@ async def main():
                   pause_after=1.6)
 
         # Chronology: replay an observed day on the edited model
-        await tap(page, page.get_by_role("tab", name="Simulation"), pause_after=0.7)
+        # the question rail replaced the System/Simulation tabs; open every group
+        await page.evaluate("() => { document.querySelectorAll('.rail__grouphead').forEach(b => { if (b.getAttribute('aria-expanded') === 'false') b.click() }) }")
         await tap(page, page.get_by_role("button", name="Chronology"),
                   pause_after=3.2)
         # scroll through dispatch-by-fuel and the storage state of charge
@@ -84,9 +94,9 @@ async def main():
         await asyncio.sleep(0.6)
 
         # flip to the dark theme (the loss-validation panels remap), then close
-        await page.locator(".studio__barright .btn--icon").first.click()
+        await page.locator('.bar button[aria-label^="Switch to"]').click()
         await asyncio.sleep(2.6)
-        await tap(page, page.get_by_role("button", name="Close studio"),
+        await tap(page, page.locator('.bar button[aria-label="Close the studio"]'),
                   pause_after=1.2)
 
         await ctx.close()

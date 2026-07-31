@@ -83,7 +83,7 @@ async def click_text(page: Page, text: str) -> bool:
 
 async def sim_tab(page: Page):
     await page.evaluate(
-        """() => { const t=[...document.querySelectorAll('[role=tab]')].find(e=>e.textContent.trim()==='Simulation'); t&&t.click(); }"""
+        """() => { document.querySelectorAll('.rail__grouphead').forEach(b => { if (b.getAttribute('aria-expanded') === 'false') b.click() }) }"""
     )
     await asyncio.sleep(0.5)
 

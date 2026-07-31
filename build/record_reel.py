@@ -126,11 +126,10 @@ async def studio_beats(page: Page):
     await page.wait_for_selector('[data-testid="studio"]', timeout=8000)
     await asyncio.sleep(1.0)
 
-    # onboarding: the Start-simulating banner on the Generators landing
-    await cap(page, "Start simulating", "The studio opens on the real DOE fleet and points the way in.")
-    await asyncio.sleep(2.4)
-    await click_text(page, "Start simulating")
-    await asyncio.sleep(1.2)
+    # the studio opens on the levers, with the answer already pinned on the right
+    await cap(page, "It opens where you can act",
+              "Levers on the left, and every grid's cleared price pinned on the right.")
+    await asyncio.sleep(2.8)
 
     # Quick scenario: a live what-if, no Run (native setter so React re-clears)
     await cap(page, "A data-center wave", "Drag the lever, the three grids re-clear live, no Run.")

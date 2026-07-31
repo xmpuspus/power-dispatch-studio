@@ -139,6 +139,7 @@ export function TopBar({
         className={`bar__run ${dirty ? 'is-dirty' : ''}`}
         onClick={onRun}
         disabled={!dirty}
+        aria-label="Run the simulation"
         title={
           dirty
             ? `Re-solve with ${editCount} edit${editCount === 1 ? '' : 's'}`

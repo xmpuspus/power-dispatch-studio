@@ -462,13 +462,17 @@ export function readHashView(hash: string): { slug?: string; grid?: string } {
 }
 
 export function writeHashView(slug: string, grid?: string) {
-  const keep = window.location.hash.replace(/^#/, '').split('&')
+  const cur = window.location.hash
+  const keep = cur.replace(/^#/, '').split('&')
   const rest = keep.filter((p) => p && !/^v=/.test(p) && !/^g=/.test(p))
   const parts = [`v=${slug}`, ...(grid ? [`g=${grid}`] : []), ...rest]
   const next = `#${parts.join('&')}`
-  if (next !== window.location.hash) {
-    window.history.replaceState(null, '', next)
-  }
+  if (next === cur) return
+  // a new view is a place the reader can go Back from; a region switch inside
+  // the same view is not, or Back would walk one grid at a time
+  const moved = readHashView(cur).slug !== slug
+  if (moved) window.history.pushState(null, '', next)
+  else window.history.replaceState(null, '', next)
 }
 
 /** Rank destinations against a palette query. Empty query keeps source order. */

@@ -19,7 +19,7 @@ from pathlib import Path
 
 from playwright.async_api import Page, async_playwright
 
-BASE = "http://localhost:5188/"
+BASE = "http://localhost:5200/studio/"
 OUT = Path("/tmp/studio-viewrec")
 OUT.mkdir(exist_ok=True)
 W, H = 1440, 900
@@ -68,7 +68,8 @@ async def enter(page: Page):
 
 
 async def sim(page: Page):
-    await page.get_by_role("tab", name="Simulation").click()
+    # the question rail replaced the System/Simulation tabs; open every group
+    await page.evaluate("() => { document.querySelectorAll('.rail__grouphead').forEach(b => { if (b.getAttribute('aria-expanded') === 'false') b.click() }) }")
     await asyncio.sleep(0.35)
 
 
