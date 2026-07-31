@@ -44,6 +44,10 @@ export function ScrollBox({
       el.removeEventListener('scroll', measure)
       ro.disconnect()
     }
+    // children is a dependency on purpose: an empty state swapped for a table
+    // replaces firstElementChild, and the observer has to follow it. Measured
+    // cost is one observer rebuild across eight keystrokes in an editable cell,
+    // because the grid does not re-render this wrapper per character.
   }, [measure, children])
 
   return (
