@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Dispatch, GridKey } from '../lib/types'
 import { fuelLabel, num, php, useEmissions, useGenerators } from '../lib/data'
 import { Panel, StatTile, Chip, EmptyNote } from '../ui/kit'
@@ -33,6 +33,7 @@ export function ScenarioView({
   onRevert,
   onImportCsv,
   importedKeys,
+  onLive,
 }: {
   d: Dispatch
   grid: GridKey
@@ -42,6 +43,9 @@ export function ScenarioView({
   onRevert: (cls: ClassId, id: string, prop: string) => void
   onImportCsv?: (text: string) => ImportResult
   importedKeys?: string[]
+  /** reports the live coupled clear so the run dock can show it beside the
+      solved scenario. These levers preview, they do not write the model. */
+  onLive?: (p: Record<GridKey, number> | null) => void
 }) {
   const gens = useGenerators()
   const em = useEmissions()
@@ -69,6 +73,11 @@ export function ScenarioView({
     .sort((a, b) => b.capacity_mw - a.capacity_mw)
 
   const out = useMemo(() => solveScenario(d, lv, units), [d, lv, units])
+  const cp = out.coupled.price
+  useEffect(() => {
+    onLive?.({ luzon: cp.luzon, visayas: cp.visayas, mindanao: cp.mindanao })
+    return () => onLive?.(null)
+  }, [cp.luzon, cp.visayas, cp.mindanao, onLive])
   const mo = d.merit_order[grid]
   const set = (patch: Partial<Levers>) => setLv((p) => ({ ...p, ...patch }))
 

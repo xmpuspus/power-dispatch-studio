@@ -209,8 +209,10 @@ async def trip_unit(page: Page, needle: str):
 
 
 async def sim_tab(page: Page):
+    """Open every group in the question rail, so a view is one click away."""
     await page.evaluate(
-        """() => { const t=[...document.querySelectorAll('[role=tab]')].find(e=>e.textContent.trim()==='Simulation'); t&&t.click(); }"""
+        """() => { document.querySelectorAll('.rail__grouphead').forEach(b => {
+             if (b.getAttribute('aria-expanded') === 'false') b.click() }) }"""
     )
     await asyncio.sleep(0.5)
 
