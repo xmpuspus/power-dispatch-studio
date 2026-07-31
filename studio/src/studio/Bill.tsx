@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { num, php, pct, useBill } from '../lib/data'
 import { Panel, StatTile, Source, EmptyNote } from '../ui/kit'
+import { ScrollBox } from '../ui/ScrollBox'
 
 const MIX_LABEL: Record<string, string> = {
   psa: 'Bilateral PSAs',
@@ -91,7 +92,7 @@ export function BillView() {
             title="The residual moves month to month"
             subtitle="Meralco's own published mix and generation charge, last three advisories."
           >
-            <div className="propgrid-wrap">
+            <ScrollBox className="propgrid-wrap">
               <table className="propgrid">
                 <thead>
                   <tr>
@@ -120,7 +121,7 @@ export function BillView() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </ScrollBox>
             <p className="note">{d.mix_history_note}</p>
             {d.june_moves && (
               <p className="note">

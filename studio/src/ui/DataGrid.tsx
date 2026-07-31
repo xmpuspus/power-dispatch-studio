@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { ScrollBox } from './ScrollBox'
 
 export interface Column<T> {
   key: string
@@ -20,7 +21,7 @@ export function DataGrid<T>({
   empty?: string
 }) {
   return (
-    <div className="grid-wrap">
+    <ScrollBox className="grid-wrap">
       <table className="grid">
         <thead>
           <tr>
@@ -54,6 +55,6 @@ export function DataGrid<T>({
           )}
         </tbody>
       </table>
-    </div>
+    </ScrollBox>
   )
 }
