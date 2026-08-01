@@ -44,7 +44,7 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 ## Contents
 
 - [The grid names its own choke point](#the-grid-names-its-own-choke-point)
-- [Luzon reserves fell short on 73 of the window's 115 days](#luzon-reserves-fell-short-on-73-of-the-windows-115-days)
+- [Luzon reserves fell short on 73 of the window's 116 days](#luzon-reserves-fell-short-on-73-of-the-windows-116-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
 - [Luzon and Mindanao validate the loss surface, and Visayas fails](#luzon-and-mindanao-validate-the-loss-surface-and-visayas-fails)
 - [Every column in the day-by-day feed comes from the archive, not the model](#every-column-in-the-day-by-day-feed-comes-from-the-archive-not-the-model)
@@ -111,7 +111,7 @@ MW** median, where the must-run subset the methodology measured out sits
 at 5.7 (`so_instructions` in the same file; the administered-dispatch
 overlay it sizes is a named queued build).
 
-## Luzon reserves fell short on 73 of the window's 115 days
+## Luzon reserves fell short on 73 of the window's 116 days
 
 In the operator's own real-time dispatch schedules, **Luzon scheduled reserves fell
 below the stated requirement on 73 of the window's 116 days**, and load was curtailed

@@ -206,7 +206,7 @@ def canonical():
     curtail_days, curtail_mwh = (int(mc.group(1)), mc.group(2)) if mc else (0, "0")
 
     mru = mo["so_instructions"]["mru_contrast"]
-    return {
+    out = {
         "days_covered": cg["days_covered"],
         "distinct_equipment": cg["distinct_equipment"],
         "constraint_records": cg["constraint_records"],
@@ -413,6 +413,16 @@ def canonical():
         "window_from": cg["window"]["from"],
         "window_to": cg["window"]["to"],
     }
+    # GitHub builds a heading anchor by dropping the decimal point, so
+    # "P15.72" in a heading becomes "...-p1572" in the contents link that
+    # points at it. Both forms carry the same number and both go stale when
+    # the bake moves, so both are guarded. Without the slug form the contents
+    # link breaks on the first night the window grows.
+    for k in ("admin_max_spread", "mkt_max_spread", "offer_corr_lo",
+              "offer_corr_hi", "coupling_cost_pct", "coupling_outage_pct",
+              "loss_luz_spearman", "loss_min_spearman"):
+        out[f"{k}_slug"] = str(out[k]).replace(".", "").replace("-", "")
+    return out
 
 
 # Each registry entry: a unique anchor regex over the README with ONE capture
@@ -456,6 +466,26 @@ REGISTRY = [
     ("README.md",
      re.compile(r"\*\*([\d,]+) MOT-raise instructions\*\* across the window at a \*\*(\d+)\s*\n?\s*MW\*\* median"),
      ["motrd_rows", "motrd_median"]),
+    # --- the contents list. Its link text AND the #fragment it points at both
+    # carry the heading's numbers, so both go stale the night the window grows,
+    # and a stale fragment scrolls nowhere. The cron runs --write, so guarding
+    # them here is what keeps the contents working without a human in the loop.
+    ("README.md",
+     re.compile(r"- \[Luzon reserves fell short on (\d+) of the window's (\d+) days\]"
+                r"\(#luzon-reserves-fell-short-on-(\d+)-of-the-windows-(\d+)-days\)"),
+     ["luzon_reserve_short_days", "days_covered",
+      "luzon_reserve_short_days", "days_covered"]),
+    ("README.md",
+     re.compile(r"- \[The three grids priced within P(0\.\d+) while suspended, then "
+                r"split to P(\d+\.\d+)\]\(#the-three-grids-priced-within-p(\d+)-while-"
+                r"suspended-then-split-to-p(\d+)\)"),
+     ["admin_max_spread", "mkt_max_spread",
+      "admin_max_spread_slug", "mkt_max_spread_slug"]),
+    ("README.md",
+     re.compile(r"- \[The offer-book replay tracks the market's own prices at "
+                r"(0\.\d+) to (0\.\d+)\]\(#the-offer-book-replay-tracks-the-markets-"
+                r"own-prices-at-(\d+)-to-(\d+)\)"),
+     ["offer_corr_lo", "offer_corr_hi", "offer_corr_lo_slug", "offer_corr_hi_slug"]),
     # --- README headings. A number in a heading is the most-read number in the
     # file and drifts like any other, so each one is anchored on its own. The
     # anchors start at "## " so they can never match the body sentence below.
