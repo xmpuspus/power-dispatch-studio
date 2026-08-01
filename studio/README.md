@@ -331,7 +331,7 @@ the flow data showed the engine was right, and one is a dated backcast.
 | +600 MW gas, Visayas | local generation relieves the island | Visayas mean falls, corridor dependence drops |
 | Malampaya to imported LNG (gas P4.80 to P10.30) | price shape lifts with the fuel cost | Luzon price rises toward the gas cost |
 | Trip both 647 MW Sual units | Luzon tightens | reprices coal to oil with no unserved load on the observed evening; the reliability draw puts loss-of-load probability at 10.6% |
-| 935 MW Visayas outage, Jul 1 (dated) | matches the observed island spread | reproduces 87.8% of the observed Visayas-over-Luzon spread |
+| 935 MW Visayas outage, Jul 1 (dated) | matches the observed island spread | reproduces 87.9% of the observed Visayas-over-Luzon spread |
 
 Two of these are quantitative claims that stand on their own. First, the
 corridor binds far below the announced wave: the forward replay saturates the
@@ -346,7 +346,7 @@ Read the peso magnitudes as direction, not prediction. The cost model uses flat
 per-fuel blocks, so a price delta is the height of the next block, not a
 calibrated response: tripping both Sual units and stacking a dry year onto the
 DICT build both read +P5.98/kWh because both step Luzon from the P6 block to the
-P12 one. The corridor-saturation hours, the 275 MW threshold, and the 87.8%
+P12 one. The corridor-saturation hours, the 275 MW threshold, and the 87.9%
 backcast are the structural claims that do not turn on block height.
 
 ### How far these analyses are validated

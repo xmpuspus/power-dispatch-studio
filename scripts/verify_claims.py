@@ -270,6 +270,28 @@ def canonical():
         "buyback_eue_w": _n(disp["storage"]["reliability_buyback"]["luzon_dict_2028"]["with_storage"]["eue_mwh_evening_window"], 0),
         # added Visayas load that binds the Leyte-Luzon corridor (dc_binding_threshold)
         "dc_knee": _n(disp["coupling"]["dc_binding_threshold"]["added_visayas_load_to_bind_leyte_mw"], 0),
+        # The coupling decomposition, which the README quoted in four places and
+        # nothing guarded. The nightly rebake moved both: the outage scenario
+        # read 87.8 against a bake of 0.879, and the cost-only share read
+        # "about 1%" against a bake of 0.005, which is half that.
+        "coupling_outage_pct": _n(
+            disp["coupling"]["outage_scenario"]["explained_fraction"] * 100, 1),
+        "coupling_cost_pct": _n(
+            disp["coupling"]["spread_decomposition"]["visayas_vs_luzon"]
+            ["explained_fraction"] * 100, 1),
+        "vis_luz_spread": _n(
+            disp["coupling"]["spread_decomposition"]["visayas_vs_luzon"]
+            ["observed_php_kwh"], 2),
+        # the regime split, quoted across a whole README section and guarded
+        # nowhere until now: both regime spreads, the three market-window means,
+        # and the count of days past P5
+        "admin_max_spread": _n(_load("prices.json")["regimes"]["administered"]
+                               ["max_spread"], 3),
+        "mkt_max_spread": _n(_load("prices.json")["max_spread"]["php"], 2),
+        "mkt_days_gt5": _load("prices.json")["regimes"]["market"]["days_spread_gt5"],
+        "mkt_luz": _n(_load("prices.json")["regimes"]["market"]["means"]["luzon"], 2),
+        "mkt_vis": _n(_load("prices.json")["regimes"]["market"]["means"]["visayas"], 2),
+        "mkt_min": _n(_load("prices.json")["regimes"]["market"]["means"]["mindanao"], 2),
         # backcast narrative scalars quoted in studio/README prose next to the tables
         "vis_lwap_hit": _n(bc["per_grid"]["visayas"]["high_hour_hit_rate_pct"], 0),
         "vis_mcp_hit": _n(bc["per_grid_mcp"]["visayas"]["high_hour_hit_rate_pct"], 0),
@@ -434,6 +456,54 @@ REGISTRY = [
     ("README.md",
      re.compile(r"\*\*([\d,]+) MOT-raise instructions\*\* across the window at a \*\*(\d+)\s*\n?\s*MW\*\* median"),
      ["motrd_rows", "motrd_median"]),
+    # --- README headings. A number in a heading is the most-read number in the
+    # file and drifts like any other, so each one is anchored on its own. The
+    # anchors start at "## " so they can never match the body sentence below.
+    ("README.md",
+     re.compile(r"## Luzon reserves fell short on (\d+) of the window's (\d+) days"),
+     ["luzon_reserve_short_days", "days_covered"]),
+    ("README.md",
+     re.compile(r"## The offer-book replay tracks the market's own prices at "
+                r"(0\.\d+) to (0\.\d+)"),
+     ["offer_corr_lo", "offer_corr_hi"]),
+    ("README.md",
+     re.compile(r"## The three grids priced within P(0\.\d+) while suspended, "
+                r"then split to P(\d+\.\d+)"),
+     ["admin_max_spread", "mkt_max_spread"]),
+    # --- the regime-split body, which quoted six numbers and guarded none
+    ("README.md",
+     re.compile(r"priced within \*\*P(0\.\d+)/kWh\*\* of each other"),
+     ["admin_max_spread"]),
+    ("README.md",
+     re.compile(r"the average was \*\*Luzon P(\d+\.\d+), Visayas P(\d+\.\d+), Mindanao\s*\n?\s*"
+                r"P(\d+\.\d+) per kWh\*\*, with \*\*(\d+) days spreading beyond P5/kWh\*\* "
+                r"and a widest daily spread\s*\n?\s*of \*\*P(\d+\.\d+)/kWh"),
+     ["mkt_luz", "mkt_vis", "mkt_min", "mkt_days_gt5", "mkt_max_spread"]),
+    ("README.md",
+     re.compile(r"### Coupling alone explains (\d+\.\d)% of the island price gap, "
+                r"and the recorded outage explains (\d+\.\d)%"),
+     ["coupling_cost_pct", "coupling_outage_pct"]),
+    # --- the coupling decomposition in the body, quoted in four places and
+    # guarded in none until now; both had drifted from the nightly rebake
+    ("README.md",
+     re.compile(r"observed \*\*P(\d+\.\d+)/kWh\*\* Visayas-Luzon spread "
+                r"\(\*\*(\d+\.\d)%\*\*\)"),
+     ["vis_luz_spread", "coupling_cost_pct"]),
+    ("README.md",
+     re.compile(r"the coupled model now reproduces \*\*(\d+\.\d)%\*\* of"),
+     ["coupling_outage_pct"]),
+    ("README.md",
+     re.compile(r"outage backcast lands\s*\n?\s*at (\d+\.\d)%"),
+     ["coupling_outage_pct"]),
+    ("README.md",
+     re.compile(r"reproduces \*\*(\d+\.\d) percent\*\* of the observed island price gap"),
+     ["coupling_outage_pct"]),
+    ("studio/README.md",
+     re.compile(r"reproduces (\d+\.\d)% of the observed Visayas-over-Luzon spread"),
+     ["coupling_outage_pct"]),
+    ("studio/README.md",
+     re.compile(r"the 275 MW threshold, and the (\d+\.\d)%"),
+     ["coupling_outage_pct"]),
     # --- studio/README.md scalars (reserve replay + data table)
     ("studio/README.md",
      re.compile(r"at the same interval: (\d+) days, twelve"),

@@ -1,43 +1,58 @@
 # Power Dispatch Studio
 
-Can the Philippine grid host the announced data-center wave? An interactive map, a
-browser dispatch studio, and a daily archive built on the market operator's own
-public files: where transmission already binds (named equipment, 5-minute
-receipts), where the announced data-center megawatts land, and what the spot market
-and the Meralco bill are doing. The studio replays market days two ways, on a
-calibrated cost stack and on the operator's own published offer books, so the
-offer premium in the wholesale price is a measured series, not a guess. Inputs,
-method, and every number are open and reproducible from a clean clone.
+**Can the Philippine grid host the announced data-center wave?** A map, a 39-view
+browser dispatch studio, and a daily archive, all built on the market operator's
+own public files. Where transmission already binds, named equipment on 5-minute
+receipts. Where the announced megawatts would land. What that does to the spot
+market and to the Meralco bill.
 
-It is **free**, runs entirely in your browser with no license and no install,
-and every input traces to a public source. Think of it as a small, open,
-browser-based counterpart to the licensed production-cost tools grid planners
-use, not a replacement for a planning suite but enough to
-actually model and validate the what-ifs that matter here: new data centers, the
-choke points they would sit behind, and how the market prices those constraints,
-against the real Philippine market. Formerly gridbill-ph.
+It is **free**, runs in your browser with no license and no install, and every
+number traces to a public source. The studio replays market days two ways, on a
+calibrated cost stack and on the operator's own published offer books. So the
+offer premium in the wholesale price is a measured series, not a guess. Every
+input and every number rebuilds from a clean clone.
+
+Think of it as a small, open, browser-based counterpart to the licensed
+production-cost tools grid planners use. It is not a replacement for a planning
+suite. It does model the what-ifs that matter here. New data centers, the choke
+points behind them, and how the market prices those constraints. Formerly
+gridbill-ph.
 
 [![CI](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml)
 [![License: MIT (code) / CC-BY-4.0 (data)](https://img.shields.io/badge/license-MIT%20%2F%20CC--BY--4.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![PyPI](https://img.shields.io/pypi/v/power-dispatch-studio?color=blue)](https://pypi.org/project/power-dispatch-studio/)
 
-[<img width="820" alt="One pass across the whole platform: the map's five modes and in-browser simulate, a real click through into the dispatch studio, the Start-simulating onboarding, a live data-center what-if and a Sual unit trip in the Quick scenario, the backcast against the operator's own offer books, probabilistic reliability, and a fast sweep of the deep analyses" src="docs/reel.gif">](https://power-dispatch-studio.vercel.app)
+[<img width="820" alt="The map through its five modes. The head panel asks whether the Philippine grid can host the announced data-center wave. Supply shows the May 2026 system margin against the announced megawatts. Choke points lists the named 230 kV equipment at a binding limit. Prices shows the three island grids fanning apart after the market reopened. Drivers is the day-by-day archive feed, and Simulate re-clears the merit-order price in the browser as a data-center load ramps on." src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
 
-The whole platform in one pass, map to studio. A [smoother MP4 is the version to share](docs/reel.mp4). The map on its own, through its five modes:
+The map, through its five modes. The last beat runs live: a data-center load
+re-clears the merit order from coal at P6.00 to oil at P12.00, in the browser.
 
-[<img width="820" alt="A tour of the map through its five modes. The head panel asks whether the Philippine grid can host the announced data-center wave. Supply shows the May 2026 system margin against the announced megawatts; Choke points lists the named 230 kV equipment at a binding limit; Prices shows the three island grids fanning apart after the market reopened; Drivers is the day-by-day archive feed; and Simulate re-clears the merit-order price in the browser as a data-center load is added" src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
+| Start here | What it gives you |
+|---|---|
+| **[Open the map](https://power-dispatch-studio.vercel.app)** | Five modes over the archive, plus an in-browser simulate |
+| **[Open the studio](https://power-dispatch-studio.vercel.app/studio/)** | 39 analyst views, a command palette, and scenarios that travel as a link |
+| **[Every number and its source](web/methodology.html)** | The full method, the unit conversions, and every caveat |
+| **`pip install power-dispatch-studio`** | The same LP engine, offline, with a bundled archive snapshot |
 
-Live: [the map](https://power-dispatch-studio.vercel.app) and
-[the studio](https://power-dispatch-studio.vercel.app/studio/), or open
-`web/index.html` after `make data` and read
-[every number and source](web/methodology.html).
+The pip package runs the engine the browser runs:
+[power-dispatch-studio on PyPI](https://pypi.org/project/power-dispatch-studio/),
+then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
+`import power_dispatch as pd; pd.run_scenario(...)` in a notebook. Or open
+`web/index.html` after `make data`.
 
-The dispatch engine is also a pip package,
-[power-dispatch-studio on PyPI](https://pypi.org/project/power-dispatch-studio/):
-`pip install power-dispatch-studio`, then `power-dispatch run --date 2026-06-17`
-emits an hourly CSV, or `import power_dispatch as pd; pd.run_scenario(...)` in a
-notebook. It is the same LP engine the browser runs, with a bundled snapshot of
-the public data archive, so it works offline.
+## Contents
+
+- [The grid names its own choke point](#the-grid-names-its-own-choke-point)
+- [Luzon reserves fell short on 73 of the window's 115 days](#luzon-reserves-fell-short-on-73-of-the-windows-115-days)
+- [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
+- [Luzon and Mindanao validate the loss surface, and Visayas fails](#luzon-and-mindanao-validate-the-loss-surface-and-visayas-fails)
+- [Every column in the day-by-day feed comes from the archive, not the model](#every-column-in-the-day-by-day-feed-comes-from-the-archive-not-the-model)
+- [A cost stack clears near flat P6, and the evening gap is offers, not new load](#a-cost-stack-clears-near-flat-p6-and-the-evening-gap-is-offers-not-new-load)
+- [The offer-book replay tracks the market's own prices at 0.68 to 0.87](#the-offer-book-replay-tracks-the-markets-own-prices-at-068-to-087)
+- [The studio is 39 views, and every one of them is a URL you can send](#the-studio-is-39-views-and-every-one-of-them-is-a-url-you-can-send)
+- [IEMOP's public window rolls at 90 days, so the git history is the archive](#iemops-public-window-rolls-at-90-days-so-the-git-history-is-the-archive)
+- [What it is not](#what-it-is-not) · [Where the data comes from](#where-the-data-comes-from) · [Reproduce locally](#reproduce-locally) · [Data products](#data-products) · [Method](#method)
 
 The whole argument in four charts: the grid names its own choke point, the price
 is a shape a data center barely moves with room and jumps when full, one plant
@@ -96,7 +111,7 @@ MW** median, where the must-run subset the methodology measured out sits
 at 5.7 (`so_instructions` in the same file; the administered-dispatch
 overlay it sizes is a named queued build).
 
-## Thin is the normal state
+## Luzon reserves fell short on 73 of the window's 115 days
 
 In the operator's own real-time dispatch schedules, **Luzon scheduled reserves fell
 below the stated requirement on 73 of the window's 115 days**, and load was curtailed
@@ -121,7 +136,7 @@ Per-day reserve and curtailment series:
 
 ![The Sual arithmetic: the May 2026 system margin bar of 3,629 MW with one 647 MW unit subtracted, then both, showing one unit is 18 percent of the margin](docs/sual-margin.gif)
 
-## One market, three prices
+## The three grids priced within P0.015 while suspended, then split to P15.72
 
 WESM is one market on paper and three prices in practice. While the market was
 suspended under administered pricing (through May 1, 2026), the three island grids
@@ -149,9 +164,9 @@ through the market suspension window and small and intermittent after prices
 resumed on 2026-05-01, so the deviation stays loss-dominated. Recipe: `python3 build/record_nodal_walkthrough.py` against the
 combined serve; a [smoother MP4 is here](docs/nodal-walkthrough.mp4).
 
-![Nodal walkthrough: the map's Prices mode with per-node deviation dots, hovering the Zamboanga radial premium and the Gamu versus Calaca siting swing with the computed peso-per-year difference, then the studio's Nodal prices table filtered to delivery points, the Leyte geothermal export discount, and the Luzon forward band with the node adder framing](docs/nodal-walkthrough.gif)
+The four decisions run end to end in [docs/nodal-walkthrough.mp4](docs/nodal-walkthrough.mp4), and as a gif in [docs/nodal-walkthrough.gif](docs/nodal-walkthrough.gif). Or open the [Nodal prices view](https://power-dispatch-studio.vercel.app/studio/#v=nodal-prices) and read the table yourself.
 
-## The nodal model is validated against the market's own record
+## Luzon and Mindanao validate the loss surface, and Visayas fails
 
 WESM decomposes every published LMP into an energy, a loss, and a congestion
 part, and the congestion part is small and sparse (zero through the market
@@ -218,7 +233,7 @@ is modelled separately below.
 
 ![Who runs the Philippine power market: IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC regulates, DOE sets policy, TransCo owns the transmission assets NGCP operates on concession, and the last row notes WESM is energy-only with no capacity auction](docs/wesm-roles.png)
 
-## What moved prices, day by day
+## Every column in the day-by-day feed comes from the archive, not the model
 
 The Drivers mode is the analyst's Monday-morning view: one row per archive day
 joining the observed daily LWAP per grid, recorded curtailment, the operator's
@@ -231,13 +246,15 @@ the price**: the marginal resource IEMOP names per 5-minute interval (market
 clearing price files), beside the model's own marginal-block table, never
 merged with it.
 
-## Simulate the dispatch
+## A cost stack clears near flat P6, and the evening gap is offers, not new load
 
 The map's Simulate mode is a simplified merit-order model of the grid. It stacks a
 sourced generator fleet by marginal cost against the archive's own dispatched
 generation, per grid, and reads off the marginal clearing price.
 
-![A walkthrough of the Simulate mode on the Luzon grid: the merit-order stack sits on the coal margin at a P6 clearing price, then a data-center slider adds 1,500 MW of flat load until the demand line crosses into the oil block and the price flips to P12, then tripping both 647 MW Sual units (1,294 MW, an N-2 case, not a single contingency) holds the grid on that oil margin, then the levers relieve the feeding HVDC corridor, then the grid switches to the smaller Visayas stack, which clears on its own coal margin at P6](docs/dispatch-demo.gif) Coal
+The longer walkthrough, which trips both Sual units and then relieves the feeding corridor, is [docs/dispatch-demo.gif](docs/dispatch-demo.gif).
+
+Coal
 marginal cost is the ERC administered price of **P6.00/kWh** and Malampaya gas is
 **P4.80/kWh**, both sourced; the availability derates and the split of the fleet
 across grids are labeled model assumptions, except hydro, whose split now follows
@@ -331,7 +348,9 @@ and [`web/data/generators.geojson`](web/data/generators.geojson); the engine is
 
 ### Pax Silica needs more power than the whole Visayas grid and up to twice as much water as everyone in Makati
 
-[![A montage of the eight charts, each animating in turn: the whole grid tiled as one rectangle with a dashed campus square covering all of the Visayas piece; the solar day as 24 nearly-empty hour columns; the 122 km2 of panels laid over a real Metro Manila map; the two transmission circuits that exist against the three more it would take; the announce-to-energize record of the last two big grid builds; the merit-order ladder where adding the campus moves the price-setter from coal to oil; the own-station plan losing 331 MW when one generator trips; and the water drawn as countable drops against Makati and Angat](docs/pax-silica-scale.gif)](web/pax-silica.html)
+[![Pax Silica needs 3,000 MW and one route feeds it, and that route carries about 770. Four stacked bars at the 7pm peak. All of it from the grid leaves 2,231 MW with no source. The 500 MW solar farm changes nothing, because it makes nothing in the evening. A 2,500 MW station on site plus 500 from the grid closes it. The same station with one 600 MW unit down leaves 331 MW with no source.](docs/pax-silica-embedded.png)](web/pax-silica.html)
+
+The eight charts on the companion page also run as one montage, in [docs/pax-silica-scale.gif](docs/pax-silica-scale.gif) and [docs/pax-silica-scale.mp4](docs/pax-silica-scale.mp4).
 
 BCDA's own figures for the campus at New Clark City: **3,000 MW** of power at full
 development and **65 to 90 million liters** of water a day. Numbers that size mean
@@ -354,7 +373,7 @@ because the backup runs down the same two lines. Every number is either BCDA's
 own, or computed here from a stated source, with the full ledger and every
 caveat on the page itself.
 
-### Coupling the three grids
+### Coupling alone explains 0.5% of the island price gap, and the recorded outage explains 87.9%
 
 The single-grid model clears each island alone. The next step couples them: cheap
 Luzon power flows south over the Leyte-Luzon HVDC (a sourced **250 MW** operating
@@ -373,7 +392,7 @@ the Leyte-Luzon cap by the operator's own hourly corridor-availability record
 **0.0%** of the window: a blocked link carries no flow and earns no congestion
 rent, which is a different thing from a link that binds because it is full),
 the coupled model still reproduces almost
-**none** of the observed **P5.31/kWh** Visayas-Luzon spread (about **1%**). Cost
+**none** of the observed **P5.31/kWh** Visayas-Luzon spread (**0.5%**). Cost
 stacks price the three islands nearly identically, so the observed spread is the
 scarcity and offer premium of the 52-day yellow-alert streak, which a cost model
 cannot see.
@@ -446,7 +465,7 @@ asserted; all sets are published in the
 The mechanism the thesis names takes over under the documented outage. Re-clear the
 streak window with the **935 MW** of Visayas capacity NGCP recorded unavailable on
 July 1 and the 250 MW corridor saturates in **93.2%** of intervals at a mean
-congestion rent of **P5.74/kWh**, and the coupled model now reproduces **87.8%** of
+congestion rent of **P5.74/kWh**, and the coupled model now reproduces **87.9%** of
 the observed spread endogenously: the constraint, plus the outage the operator
 itself recorded, IS most of the streak's price geography. That is a labeled
 scenario, kept out of the calibration. And the forward question the map exists to
@@ -465,9 +484,9 @@ the analyst would predict, two moved a way that first looked wrong until the
 flow data showed the engine was right (a Manila data center saturates the link
 by *importing* cheap Visayas power; a gigawatt of solar cuts fuel and emissions
 but leaves the 7pm peak untouched), and the dated 935 MW outage backcast lands
-at 87.8%. Full scorecard in [studio/README.md](studio/README.md).
+at 87.9%. Full scorecard in [studio/README.md](studio/README.md).
 
-## Does the model check out?
+## The offer-book replay tracks the market's own prices at 0.68 to 0.87
 
 Yes, and the check runs against the operator's own published prices, not a
 synthetic benchmark. The studio replays every full-coverage market day and
@@ -477,7 +496,7 @@ bound. Replay the operator's own offer book instead and the model tracks the
 real price shape hour by hour, reaching **0.68 to 0.87 correlation** with
 observed prices across the quarter and **87 to 99 percent** of the inter-island
 flow direction. A dated event closes it: the **935 MW** Visayas outage of July 1
-reproduces **87.8 percent** of the observed island price gap, with the
+reproduces **87.9 percent** of the observed island price gap, with the
 constraint kept out of the calibration. The gap between the cost floor and the
 offer-book replay is not hidden; it is itself a measured series, the offer
 premium the market bids over cost.
@@ -491,25 +510,28 @@ the corridor-flow scores, are in [studio/README.md](studio/README.md). It is a
 calibrated congestion-and-siting model, not a price forecaster, and it never
 claims to predict prices or brownouts.
 
-## The studio
+## The studio is 39 views, and every one of them is a URL you can send
 
 The full authoring surface lives at
-[/studio/](https://power-dispatch-studio.vercel.app/studio/): a browser dispatch
-studio in the working shape of a commercial production-cost tool (an object model
-in a properties grid, scenarios as tagged overrides, a Run gate, a solution
-browser, chronological replay of observed days, and a backcast that scores the
-model against the actual price tape). The July 2026 pass added the planning
-layers: the DOE's committed and indicative build pipeline on a horizon slider (LT
-Plan), the operator's own scheduled outages re-priced as adequacy (PASA), a load
-sweep that walks the announced wave in MW steps, a window band that replays a
-scenario across every archived market day, per-hour binding-constraint naming,
-operational CO2 accounting, and a self-contained HTML run report. Every planning layer is
-computed from the archive or a sourced list, with no optimizer choosing builds; the
-dispatch itself solves as a HiGHS linear program in the browser (the July 2026
-solver pass), with storage optimised across the day's hours, hydro energy-limited
-to each day's observed water where the archive carries the operator's
-per-resource schedules, and prices taken from the duals. The model's scope and its
-accuracy statement live in [studio/README.md](studio/README.md).
+[/studio/](https://power-dispatch-studio.vercel.app/studio/). It takes the
+working shape of a commercial production-cost tool: an object model in a
+properties grid, scenarios as tagged overrides, a Run gate, a solution browser,
+chronological replay of archived market days, and a backcast that scores the
+model against the actual price tape.
+
+The July 2026 pass added the planning layers. The DOE's committed and indicative
+build pipeline on a horizon slider (LT Plan), and the operator's own scheduled
+outages re-priced as adequacy (PASA). A load sweep that walks the announced wave
+in MW steps, and a window band that replays a scenario across every archived
+market day. Per-hour binding-constraint naming, operational CO2 accounting, and a
+self-contained HTML run report.
+
+Every planning layer computes from the archive or a sourced list, and no
+optimizer chooses builds. The dispatch itself solves as a HiGHS linear program in
+the browser. Storage optimises across the day's hours, and hydro stays
+energy-limited to each day's recorded water where the archive carries the
+operator's per-resource schedules. Prices come from the duals. The model's scope
+and its accuracy statement live in [studio/README.md](studio/README.md).
 
 The Backcast opens on the offer-book replay by default, the calibrated view, with
 the cost model one click away as the counterfactual you subtract. A companion
@@ -523,25 +545,126 @@ to [`web/data/exports/`](web/data/exports/) every night, linked from the map's
 Drivers panel and documented in
 [`web/data/exports/index.json`](web/data/exports/index.json).
 
-The whole flow in one pass: open the studio, prove it against real prices,
-build the DICT 1.5 GW data-center wave, and trip both Sual units on top. Full
-quality for sharing is [docs/studio-e2e.mp4](docs/studio-e2e.mp4).
+### You get between the 39 views by asking, not by hunting a menu
 
-![One end-to-end pass through the studio: the grid as an object model; a backcast that clears flat at the P6 cost floor then, on the operator's own offer book, tracks the observed evening price shape hour by hour; building the DICT 1.5 GW data-center wave so the Luzon evening flips coal to oil and the Leyte-Luzon HVDC saturates; then tripping both 647 MW Sual units so loss-of-load probability jumps; closing on the free, browser-based, fully-sourced framing](docs/studio-e2e.gif)
+The shell is built around the analyst's question rather than the model's object
+classes. Three parts carry it, and the clip below runs all three.
 
-The individual what-ifs, each a recorded studio session:
+- **A command palette.** Cmd K, then type what you want to know. The ranker
+  matches the label, the hint and a per-view alias list, so "price setter"
+  finds Marginal units.
+- **A question rail.** The 39 views sit in 8 groups, and each group is a
+  question: Tonight's market, Is there headroom, Where it can sit, Prices and
+  bills, The build-out, My scenarios, Is the model right, Model inputs.
+- **A pinned run dock.** It holds the clearing price and the reserve margin for
+  all three grids while you move around. Drag a lever and it re-prices live,
+  labelled a preview until you press Run.
 
-![The Explain a day view: for a past market day the observed evening peak sits at P23.53, the cost model clears flat at the P6 fundamentals floor, and the offer-book replay tracks the observed evening ramp hour by hour, so the offer premium reads +P18.88; a second day is picked and the whole decomposition re-computes, with the named equipment that bound the grid listed and a CSV export button](studio/docs/view-explain.gif)
+![The studio shell in four beats. The command palette opens over the studio, and the query 'price setter' ranks Marginal units first. Pressing Enter lands on that view and writes its own deep link into the address bar. The question rail expands to show all 39 views in their eight question groups, and N-1 contingency opens from it. A data-center lever then drags in the Quick scenario, and the run dock re-prices the Luzon clearing price from P6.00 to P12.00 live.](docs/studio-shell.gif)
 
-![Studio walkthrough: pricing the DICT 1.5 GW data-center build, the Luzon evening mean lifting from P6.01 to P11.60 and the Leyte-Luzon HVDC saturating, with the two runs compared at +P5.59/kWh and +P33.15M congestion rent](studio/docs/workflow-1-datacenter.gif)
+**Every view is a URL.** The shell writes `#v=<slug>` as you move, beside the
+`#m=` scenario share, so
+[`/studio/#v=backcast&g=visayas`](https://power-dispatch-studio.vercel.app/studio/#v=backcast&g=visayas)
+opens the Visayas backcast for whoever you send it to. That is what lets this
+README carry all 39 views as links rather than 39 clips. GitHub applies no lazy
+loading, and 39 clips would weigh about 200 MB.
 
-![Studio walkthrough: tripping both 647 MW Sual units, loss-of-load probability rising from 0.09 to 10.6 percent while the observed evening still clears with no unserved load](studio/docs/workflow-2-contingency.gif)
+Here are all 39 in one frame, each tile a real screenshot of the running app.
+Click it to open the sheet full size, because inline the tile names read and
+the numbers inside them do not. `build/shoot_view_sheet.py` opens each view by
+its deep link. It checks that the shell landed on the view it asked for, and
+fails on any mismatch. So the sheet doubles as the only end-to-end test the 39
+deep links have.
 
-![Studio walkthrough: repricing Malampaya gas to imported LNG so the whole Luzon price shape lifts to the gas cost, then stacking the announced build and a dry year to tip the evening to oil](studio/docs/workflow-3-malampaya.gif)
+[![A contact sheet of all 39 studio views, six across. Each tile is a real screenshot of the running app, labelled with its view name and its question group. The rows run through Tonight's market, Is there headroom, Where it can sit, and Prices and bills. Then The build-out, My scenarios, Is the model right, and Model inputs.](docs/views-contact-sheet.png)](docs/views-contact-sheet.png)
 
-![Studio walkthrough: editing a generator in the properties grid, running the model, replaying an observed day in Chronology, and reading the backcast against observed prices](studio/docs/demo.gif)
+<details>
+<summary><b>Open any of the 39 views directly, and what each one answers</b></summary>
 
-## What this is
+<!-- views:start -->
+
+| Question | View | What it answers |
+|---|---|---|
+| Tonight's market | [Chronology](https://power-dispatch-studio.vercel.app/studio/#v=chronology) | Every hour of one observed day, three grids cleared together |
+|  | [Explain a day](https://power-dispatch-studio.vercel.app/studio/#v=explain-a-day) | What set the price on a chosen day, hour by hour |
+|  | [5-minute replay](https://power-dispatch-studio.vercel.app/studio/#v=five-minute-replay) | The operator's own 5-minute dispatch intervals, replayed |
+|  | [Merit order](https://power-dispatch-studio.vercel.app/studio/#v=merit-order) | The stack that clears, cheapest unit to the marginal one |
+|  | [Marginal units](https://power-dispatch-studio.vercel.app/studio/#v=marginal-units) | Which plant sets the price, and how often |
+|  | [Native week](https://power-dispatch-studio.vercel.app/studio/#v=native-week) | 168 hours solved as one program, storage carried across midnight |
+| Is there headroom | [Reliability](https://power-dispatch-studio.vercel.app/studio/#v=reliability) | Loss-of-load probability from forced-outage Monte Carlo |
+|  | [Adequacy](https://power-dispatch-studio.vercel.app/studio/#v=adequacy) | Whether supply covers demand across the outage schedule |
+|  | [N-1 contingency](https://power-dispatch-studio.vercel.app/studio/#v=n-1) | What the margin does when the largest unit trips |
+|  | [Load sweep](https://power-dispatch-studio.vercel.app/studio/#v=load-sweep) | Price against demand, swept across the whole range |
+|  | [Window band](https://power-dispatch-studio.vercel.app/studio/#v=window-band) | The price band the archive window actually produced |
+|  | [Price duration](https://power-dispatch-studio.vercel.app/studio/#v=price-duration) | Hours at or above each price, sorted |
+| Where it can sit | [Siting a new load](https://power-dispatch-studio.vercel.app/studio/#v=siting) | What a named site can draw, hour by hour, over its own lines |
+|  | [Coupled flows](https://power-dispatch-studio.vercel.app/studio/#v=coupled-flows) | What moves over the HVDC links, and when they bind |
+|  | [Nodal prices](https://power-dispatch-studio.vercel.app/studio/#v=nodal-prices) | Locational deviation from the regional price, per bus |
+|  | [Regional split](https://power-dispatch-studio.vercel.app/studio/#v=regional-split) | How the solved dispatch divides across the three grids |
+| Prices and bills | [Bill impact](https://power-dispatch-studio.vercel.app/studio/#v=bill-impact) | What a WESM move does to a Meralco household bill |
+|  | [Capture prices](https://power-dispatch-studio.vercel.app/studio/#v=capture-prices) | What each fuel earns against the average, by shape |
+|  | [Forward prices](https://power-dispatch-studio.vercel.app/studio/#v=forward-prices) | The forward band the archive window supports |
+|  | [Market power](https://power-dispatch-studio.vercel.app/studio/#v=market-power) | How concentrated the clearing stack is, and who cannot be replaced |
+|  | [Reserve market](https://power-dispatch-studio.vercel.app/studio/#v=reserve-market) | What co-clearing reserves costs the energy price |
+|  | [Emissions](https://power-dispatch-studio.vercel.app/studio/#v=emissions) | Tonnes per hour from the solved stack, and what a carbon price moves |
+| The build-out | [Long-term](https://power-dispatch-studio.vercel.app/studio/#v=long-term) | Capacity the long horizon needs, against the announced pipeline |
+|  | [Expansion mix](https://power-dispatch-studio.vercel.app/studio/#v=expansion-mix) | Which technology the least-cost build picks, and why |
+|  | [Multi-year path](https://power-dispatch-studio.vercel.app/studio/#v=multi-year-path) | The price and margin path across years, not one day |
+|  | [Portfolio](https://power-dispatch-studio.vercel.app/studio/#v=portfolio) | What one owner holds, and what it earns |
+| My scenarios | [Quick scenario](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario) | Drag a lever, the three grids re-clear live, no Run needed |
+|  | [Compare scenarios](https://power-dispatch-studio.vercel.app/studio/#v=compare) | Two scenarios side by side, property by property |
+|  | [Saved runs](https://power-dispatch-studio.vercel.app/studio/#v=saved-runs) | Runs kept in this browser, ready to restore |
+|  | [Cross-run](https://power-dispatch-studio.vercel.app/studio/#v=cross-run) | One measure tracked across every saved run |
+|  | [Ensembles](https://power-dispatch-studio.vercel.app/studio/#v=ensembles) | Many draws of the same scenario, and the spread they give |
+| Is the model right | [Backcast](https://power-dispatch-studio.vercel.app/studio/#v=backcast) | Every market day replayed against the observed price |
+|  | [Loss validation](https://power-dispatch-studio.vercel.app/studio/#v=loss-validation) | Whether the loss surface reproduces the observed nodal spread |
+|  | [Assumptions](https://power-dispatch-studio.vercel.app/studio/#v=assumptions) | Every constant, its source, and the date it was read |
+| Model inputs | [Generators](https://power-dispatch-studio.vercel.app/studio/#v=generators) | Every sourced unit: capacity, fuel price, forced outage |
+|  | [Fuels](https://power-dispatch-studio.vercel.app/studio/#v=fuels) | Fuel prices and how much of each is available per grid |
+|  | [Interfaces](https://power-dispatch-studio.vercel.app/studio/#v=interfaces) | The corridor flow limits the solve must respect |
+|  | [Regions](https://power-dispatch-studio.vercel.app/studio/#v=regions) | Evening load and peak for each of the three grids |
+|  | [Storage](https://power-dispatch-studio.vercel.app/studio/#v=storage) | Battery power and energy on each grid |
+
+<!-- views:end -->
+
+</details>
+
+The whole flow in one longer pass, from opening the studio to tripping both Sual
+units, runs in [docs/studio-e2e.mp4](docs/studio-e2e.mp4) and
+[docs/studio-e2e.gif](docs/studio-e2e.gif). Four single what-ifs sit beside it,
+each a recorded studio session:
+[Explain a day](studio/docs/view-explain.gif),
+[the DICT 1.5 GW data-center build](studio/docs/workflow-1-datacenter.gif),
+[tripping both 647 MW Sual units](studio/docs/workflow-2-contingency.gif), and
+[repricing Malampaya gas to imported LNG](studio/docs/workflow-3-malampaya.gif).
+[studio/README.md](studio/README.md) carries one recorded clip per deep analysis,
+14 in all.
+
+**What this page weighs.** Opening this README downloads 13.5 MB of media across
+15 files. It was 87.2 MB across 22. GitHub adds no lazy-load attribute, and a
+closed details block does not defer a fetch either. I measured both in a real
+browser. So every embedded byte arrives whether you scroll to it or not. The long
+walkthroughs are links for that reason, and the 39 views are one contact sheet
+plus 39 deep links.
+
+`python3 tests/test_readme_views.py` re-measures that total against the files on
+disk and fails when the stated number drifts.
+
+**Every recording, in full quality.** The gifs above are previews. Each has an
+mp4 beside it, two to four times smaller and sharper.
+
+- [The whole platform in one pass](docs/reel.mp4), map to studio, and its [gif](docs/reel.gif)
+- [The map hero](docs/hero.mp4), and [the studio shell](docs/studio-shell.mp4)
+- [The studio end to end](docs/studio-e2e.mp4), and [the nodal walkthrough](docs/nodal-walkthrough.mp4)
+- [Siting a load at Pax Silica](docs/siting-walkthrough.mp4), and its [gif](docs/siting-walkthrough.gif)
+- [The Pax Silica montage](docs/pax-silica-scale.mp4), and [the map's Simulate walkthrough](docs/dispatch-demo.gif)
+
+Two files stay in `docs/` on purpose and appear nowhere above.
+`scripts/og_card.py` writes `docs/hero.png` from the bake, beside the social
+preview card. `docs/pax-silica-social.gif` and `docs/pax-silica-social.mp4` are
+the square crop for posting.
+
+## IEMOP's public window rolls at 90 days, so the git history is the archive
 
 - **A daily archive.** IEMOP's public window is a rolling ~90 days per dataset.
   `pipeline/archive_iemop.py` plus a GitHub Actions cron turns that window into a
@@ -652,7 +775,7 @@ staleness gate that fails the cron if the archive stops growing.
 | `web/data/*.json` | The rest of the baked layers: reliability series, the three answers, choke points, data-center sites, anchors |
 | `web/data/exports/*.csv` | Analyst-ready CSVs baked every night: the congestion league, both backcast engines per grid, and the day-by-day feed (LWAP, spread, curtailment, alerts, binding equipment). Documented in `web/data/exports/index.json` |
 
-## Methodology
+## Method
 
 Every number, source, unit conversion, and caveat:
 [`web/methodology.html`](web/methodology.html). The launch research (prior art, the
