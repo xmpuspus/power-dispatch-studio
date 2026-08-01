@@ -98,20 +98,20 @@ async def main():
         await hover_choke(page)
         await asyncio.sleep(1.7)
 
-        # Prices: the per-node layer. Open national so the field reads, then push
-        # into the Luzon density where the price dots sit ON the faint grid, so it
-        # reads as a node network, not a smudge near Manila.
+        # Prices: the per-node layer, held national so the whole field reads at
+        # once. The second push into Luzon used to sit here and is gone: a pan
+        # repaints every pixel, so a second of it costs 0.41 MB of gif against
+        # 0.22 MB for a second where only a panel changes. Measured on this
+        # recording. The corridor fly above earns its bytes because the corridor
+        # is the subject; this one only moved the camera.
         await mode(page, "price")
         await page.mouse.move(W / 2, 40)  # drop the hover popup
         await fly(page, 122.2, 12.2, 5.2, 900)
-        await asyncio.sleep(1.3)
-        await fly(page, 121.15, 15.1, 6.35, 1400)
-        await asyncio.sleep(1.7)
+        await asyncio.sleep(1.9)
 
-        # Drivers: the day-by-day archive feed; keep a slow drift so it stays alive
+        # Drivers: the day-by-day archive feed. Still, for the same reason.
         await mode(page, "drivers")
-        await fly(page, 122.6, 12.6, 5.5, 1700)
-        await asyncio.sleep(0.6)
+        await asyncio.sleep(1.5)
 
         # Simulate: add a data center; the merit-order price re-clears coal to oil
         await mode(page, "simulate")
@@ -126,21 +126,36 @@ async def main():
         webm = REC / "map-hero.webm"
         Path(vid).replace(webm)
 
-    # bake docs/hero.gif with the house palette recipe. -ss trims the blank + load
-    # lead so the loop opens clean on the Supply view.
-    vf = "fps=13,scale=900:-1:flags=lanczos"
+    # bake docs/hero.gif. -ss trims the blank + load lead so the loop opens clean
+    # on the Supply view. The recipe is the one measured smallest on this footage
+    # at a quality that still reads: 11 fps and 820 px cost about a third of what
+    # 13 fps and 900 px did, and 96 colors against 128 cost another fifth.
+    # gifsicle then packs it; --lossy is not used, it moved this file under 2%.
+    vf = "fps=11,scale=820:-1:flags=lanczos"
     pal = REC / "hero-pal.png"
     subprocess.run(
         ["ffmpeg", "-y", "-ss", "1.6", "-i", str(webm), "-vf",
-         f"{vf},palettegen=max_colors=128:stats_mode=diff", str(pal)],
+         f"{vf},palettegen=max_colors=96:stats_mode=diff", str(pal)],
         check=True, capture_output=True,
     )
     subprocess.run(
         ["ffmpeg", "-y", "-ss", "1.6", "-i", str(webm), "-i", str(pal), "-lavfi",
-         f"{vf}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3", str(OUT)],
+         f"{vf}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle",
+         str(OUT)],
         check=True, capture_output=True,
     )
-    print(f"wrote {OUT} ({OUT.stat().st_size // 1024} KB)")
+    subprocess.run(["gifsicle", "-O3", str(OUT), "-o", str(OUT)], capture_output=True)
+
+    # the full-resolution version to share, the same pattern the reel and the
+    # studio pass already follow: the gif is the preview, the mp4 is the copy
+    mp4 = OUT.with_suffix(".mp4")
+    subprocess.run(
+        ["ffmpeg", "-y", "-ss", "1.6", "-i", str(webm), "-vf", "scale=1280:-2",
+         "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "24", "-an", str(mp4)],
+        check=True, capture_output=True,
+    )
+    print(f"wrote {OUT} ({OUT.stat().st_size // 1024} KB) "
+          f"and {mp4.name} ({mp4.stat().st_size // 1024} KB)")
 
 
 asyncio.run(main())

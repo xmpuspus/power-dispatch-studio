@@ -65,6 +65,7 @@ qa:
 	$(PY) tests/test_sites.py
 	$(PY) tests/test_perspective.py
 	$(PY) tests/test_engine_sync.py
+	$(PY) tests/test_readme_views.py
 	$(PY) tests/qa_gate.py
 	$(PY) scripts/verify_claims.py
 
