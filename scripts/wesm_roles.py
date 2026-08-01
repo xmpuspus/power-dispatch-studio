@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Who runs the Philippine power market. Six bodies split the functions of the
+"""Who runs the Philippine power market, as a dark card. Six bodies split the functions of the
 electricity market between them, and WESM runs an energy-only market with no
 centralized capacity auction. This figure is why Power Dispatch Studio has no capacity-market
 chart: there is no capacity market to chart.
@@ -9,13 +9,10 @@ Static explainer, no archive data. Output docs/wesm-roles.png.
 import os
 import sys
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import vizstyle as vz  # noqa: E402
-vz.apply()
+import cardstyle as cs  # noqa: E402
+cs.apply()
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "docs", "wesm-roles.png")
@@ -34,45 +31,42 @@ ROWS = [
 
 
 def main():
-    fig, ax = plt.subplots(figsize=(9.6, 4.4))
+    fig, ax = cs.card(figsize=(9.6, 5.0), field="dusk",
+                      rect=(0.055, 0.135, 0.90, 0.635))
     ax.axis("off")
+    ax.grid(False)
     n = len(ROWS)
-    x_fn, x_body, x_role = 0.02, 0.36, 0.52
-    y0, dy = 0.82, 0.125
+    x_fn, x_body, x_role = 0.015, 0.35, 0.50
+    y0, dy = 0.90, 0.145
 
-    ax.text(x_fn, 0.95, "Function", fontsize=10.5, fontweight="bold", color=vz.MUTE)
-    ax.text(x_body, 0.95, "Body", fontsize=10.5, fontweight="bold", color=vz.NAVY)
-    ax.text(x_role, 0.95, "Who they are", fontsize=10.5, fontweight="bold",
-            color=vz.MUTE)
-    ax.plot([0.0, 1.0], [0.91, 0.91], color=vz.GRID, lw=1)
+    ax.text(x_fn, 1.01, "Function", fontsize=9.6, color=cs.MUTE)
+    ax.text(x_body, 1.01, "Body", fontsize=9.6, color=cs.MUTE)
+    ax.text(x_role, 1.01, "Who they are", fontsize=9.6, color=cs.MUTE)
+    ax.plot([0.0, 1.0], [0.975, 0.975], color=cs.FAINT, lw=1.0)
 
     for i, (fn, body, role) in enumerate(ROWS):
         y = y0 - i * dy
         last = i == n - 1
-        ax.text(x_fn, y, fn, fontsize=10.5, color=vz.NAVY,
-                fontweight="bold" if last else "normal", va="center")
-        ax.text(x_body, y, body, fontsize=10.5,
-                color=vz.CORAL if last else vz.NAVY,
-                fontweight="bold", va="center")
-        ax.text(x_role, y, role, fontsize=10, color=vz.MUTE, va="center")
-        if not last:
-            ax.plot([0.0, 1.0], [y - dy / 2, y - dy / 2], color=vz.FILL, lw=0.8)
+        col = cs.CORAL if last else cs.STEEL
+        # the last row is the finding, not another body: there is no capacity
+        # market to chart, so it gets the accent and a rule of its own
+        if last:
+            ax.plot([0.0, 1.0], [y + dy / 2, y + dy / 2], color=cs.FAINT, lw=1.0)
+        ax.text(x_fn, y, fn, fontsize=10.4, color=cs.TEXT if last else cs.BODY,
+                va="center")
+        ax.text(x_body, y, body, fontsize=10.8, color=col, va="center",
+                fontweight="bold")
+        ax.text(x_role, y, role, fontsize=9.8, color=cs.MUTE, va="center")
 
     ax.set_xlim(0, 1)
-    ax.set_ylim(0, 1)
-    ax.set_title("Six bodies run the Philippine power market",
-                 fontsize=14, color=vz.NAVY, loc="left", x=0.02)
-    vz.caption(fig,
-               "IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC "
-               "regulates, and DOE sets policy. WESM is energy-only: generators are "
-               "paid for the energy they dispatch and for the reserve they hold, "
-               "but there is no forward capacity auction to price or to chart. "
-               "Sources: IEMOP, NGCP, "
-               "PEMC, ERC, DOE.",
-               y=0.02)
-    fig.savefig(OUT, dpi=150, bbox_inches="tight", facecolor="white")
-    plt.close(fig)
-    print("wrote", OUT, f"({os.path.getsize(OUT) // 1024} KB)")
+    ax.set_ylim(-0.02, 1.06)
+    cs.title(fig, "Six bodies run the market, and none of them runs a capacity auction",
+             "WESM is energy-only, which is why this project has no capacity-market chart.")
+    cs.source(fig,
+              "Generators are paid for the energy they dispatch and for the "
+              "reserve they hold. There is no forward capacity auction to price "
+              "or to chart.\nSources: IEMOP, NGCP, PEMC, ERC, DOE.")
+    cs.save_png(fig, OUT, dpi=140)
 
 
 if __name__ == "__main__":

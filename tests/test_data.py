@@ -1461,11 +1461,12 @@ check("loss surface ships per-node scatter for the figure and studio card",
       all(g in lsf.get("scatter", {}) and len(lsf["scatter"][g]) >= 50
           and all(len(p) == 2 for p in lsf["scatter"][g][:5])
           for g in ("luzon", "visayas", "mindanao")))
-check("the validation figure exists and is a real PNG",
+# the validation figure animates now, so it ships as a gif
+check("the validation figure exists and is a real animation",
       os.path.isfile(os.path.join(os.path.dirname(__file__), "..", "docs",
-                                  "loss-surface.png"))
+                                  "loss-surface.gif"))
       and os.path.getsize(os.path.join(os.path.dirname(__file__), "..",
-                                       "docs", "loss-surface.png")) > 20000)
+                                       "docs", "loss-surface.gif")) > 20000)
 
 # nodal dailies: the DIPCEF price side is being archived (deriver ran at
 # least once; the cron tops it up nightly)

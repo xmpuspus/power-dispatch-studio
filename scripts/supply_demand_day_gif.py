@@ -1,32 +1,35 @@
 #!/usr/bin/env python3
-"""Animated GIF: one real Luzon day, dispatched generation meeting demand through 24 hours, with the WESM price tracking
-it. Deep supply keeps the price low most of the day; it climbs into the evening peak
-and spikes when the grid runs tight.
+"""Animated GIF: one Luzon day, generation above and price below.
 
-Reads the baked web/data/price_load.json representative day, so the figure follows
-the bake. Output docs/supply-demand-day.gif.
+The old version put megawatts on the left axis and pesos on the right. A dual
+axis lets whoever picks the scales pick the apparent correlation too, and the
+Tufte veto bans it. Two panels stacked on one shared clock carry the same
+comparison, and let a reader read each series against its own zero.
+
+The day plays out interval by interval, so the evening ramp arrives rather than
+sitting there already finished.
+
+Reads web/data/price_load.json. Output docs/supply-demand-day.gif.
 """
 import json
 import os
-import subprocess
 import sys
+from datetime import datetime
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.colors import LinearSegmentedColormap
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import vizstyle as vz  # noqa: E402
-vz.apply()
+import cardstyle as cs  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
-FRAMES = "/tmp/pds_sd_frames"
-DATA = os.path.join(ROOT, "web", "data", "price_load.json")
+WEB = os.path.join(ROOT, "web", "data")
 
 
 def hour_of(ti):
-    # "6/20/2026 6:35:00 PM" -> fractional hour
+    """'6/20/2026 6:35:00 PM' -> fractional hour."""
     try:
         t = ti.split(" ", 1)[1]
         hm, _, ap = t.rpartition(" ")
@@ -39,74 +42,83 @@ def hour_of(ti):
         return 0.0
 
 
+def ground(fig, field="day"):
+    lo, hi = cs.FIELDS[field]
+    gnd = fig.add_axes([0, 0, 1, 1], zorder=0)
+    gnd.imshow(np.linspace(0, 1, 256).reshape(-1, 1),
+               cmap=LinearSegmentedColormap.from_list("f", [hi, lo]),
+               aspect="auto", extent=(0, 1, 0, 1), interpolation="bicubic")
+    gnd.set_xticks([])
+    gnd.set_yticks([])
+    for s in gnd.spines.values():
+        s.set_visible(False)
+
+
 def main():
-    D = json.load(open(DATA))
-    rep = D["representative_day"]
-    day = rep["date"]
-    lz = rep["series"]["luzon"]
-    hrs = [hour_of(p["t"]) for p in lz]
-    gen = [p["gen_mw"] for p in lz]
-    price = [p["price"] for p in lz]
+    D = json.load(open(os.path.join(WEB, "price_load.json")))["representative_day"]
+    rows = D["series"]["luzon"]
+    day = datetime.strptime(D["date"], "%Y-%m-%d").strftime("%-d %B %Y")
+    hours = np.array([hour_of(r["t"]) for r in rows], float)
+    gen = np.array([r["gen_mw"] for r in rows], float)
+    pr = np.array([r["price"] for r in rows], float)
+    order = np.argsort(hours)
+    hours, gen, pr = hours[order], gen[order], pr[order]
 
-    os.makedirs(FRAMES, exist_ok=True)
-    for f in os.listdir(FRAMES):
-        os.remove(os.path.join(FRAMES, f))
+    peak_i, trough_i = int(np.argmax(pr)), int(np.argmin(pr))
+    swing = pr[peak_i] - pr[trough_i]
+    # the load band dips overnight and recovers; it does not climb all day,
+    # and the title has to say what the panels show
+    dem_pct = 100.0 * (gen.max() - gen.min()) / gen.max()
 
-    gmax = max(gen)
-    reveal = list(range(6, len(lz) + 1, 6))
-    if reveal[-1] != len(lz):
-        reveal.append(len(lz))
-    frames = reveal + [len(lz)] * 10
+    fdir = cs.frames_dir("sdd")
+    for fi, t in enumerate(cs.reveal(40, 18)):
+        n = max(2, int(round(len(rows) * t)))
+        cs.apply()
+        fig = plt.figure(figsize=(8.8, 5.3), facecolor=cs.BG)
+        ground(fig)
+        ax1 = fig.add_axes([0.085, 0.470, 0.605, 0.300], facecolor="none", zorder=2)
+        ax2 = fig.add_axes([0.085, 0.180, 0.605, 0.230], facecolor="none", zorder=2)
+        for a in (ax1, ax2):
+            cs.tufte(a)
 
-    for fi, upto in enumerate(frames):
-        fig, ax = plt.subplots(figsize=(8.8, 5.0))
-        ax2 = ax.twinx()
-        # demand met by dispatched generation, as a filled area (the supply soaking
-        # up the demand); price as the line on the right axis
-        ax.fill_between(hrs[:upto], gen[:upto], color="#dbe4ec", zorder=1)
-        ax.plot(hrs[:upto], gen[:upto], color=vz.STEEL, lw=1.8, zorder=2)
-        ax2.plot(hrs[:upto], price[:upto], color=vz.CORAL, lw=2.2, zorder=3)
-        if upto:
-            ax.scatter([hrs[upto - 1]], [gen[upto - 1]], s=26, color=vz.STEEL, zorder=4)
-            ax2.scatter([hrs[upto - 1]], [price[upto - 1]], s=26, color=vz.CORAL, zorder=4)
+        ax1.fill_between(hours[:n], 0, gen[:n], color=cs.STEEL, alpha=0.15, zorder=3)
+        cs.glow(ax1, hours[:n], gen[:n], cs.STEEL, lw=1.7, zorder=4)
+        ax1.set_ylim(0, gen.max() * 1.20)
+        ax1.set_xlim(0, 24)
+        ax1.set_xticks([])
+        ax1.set_ylabel("generation meeting\ndemand, MW", fontsize=8.4)
 
-        ax.set_xlim(0, 24)
-        ax.set_ylim(0, gmax * 1.12)
-        ax2.set_ylim(-3, max(20, max(price) + 3))
-        ax.set_xticks([0, 6, 12, 18, 24])
-        ax.set_xticklabels(["12am", "6am", "noon", "6pm", "12am"])
-        ax.set_xlabel(f"hour of the day, Luzon, {day}", fontsize=10.5)
-        ax.set_ylabel("dispatched generation meeting demand  (MW)",
-                      fontsize=10.5, color=vz.STEEL)
-        ax2.set_ylabel("WESM price  (PhP per kWh)", fontsize=10.5, color=vz.CORAL)
-        ax.tick_params(axis="y", colors=vz.STEEL)
-        ax2.tick_params(axis="y", colors=vz.CORAL)
-        ax.set_title("Deep supply keeps the price low, until the evening peak",
-                     fontsize=13.5, color=vz.NAVY, loc="left")
-        vz.tufte(ax, grid="y")
-        ax2.spines["top"].set_visible(False)
-        vz.caption(fig,
-                   "One Luzon day from the archive. The band is generation meeting "
-                   "demand through the day. The coral line is the price. The price "
-                   "stays low while there is room and climbs into the evening peak. "
-                   "Source: IEMOP RTDSUM generation and LWAPF price, archived.",
-                   y=-0.05)
-        fig.tight_layout()
-        fig.savefig(os.path.join(FRAMES, f"f{fi:03d}.png"), dpi=110,
-                    bbox_inches="tight", facecolor="white")
+        cs.glow(ax2, hours[:n], pr[:n], cs.CORAL, lw=1.7, zorder=4)
+        ax2.set_ylim(min(0.0, pr.min() * 1.2), pr.max() * 1.30)
+        ax2.set_xlim(0, 24)
+        ax2.set_xticks([0, 6, 12, 18, 24])
+        ax2.set_xticklabels(["12am", "6am", "noon", "6pm", "12am"])
+        ax2.set_ylabel("WESM price\nPhP per kWh", fontsize=8.4)
+
+        if n > peak_i:
+            cs.dot(ax2, hours[peak_i], pr[peak_i], cs.CORAL, size=28, zorder=7)
+            cs.chip(ax2, hours[peak_i], pr[peak_i] * 1.19,
+                    f"P{pr[peak_i]:.2f} at the peak", cs.CORAL, 8.6)
+        if n > trough_i:
+            cs.chip(ax2, hours[trough_i], pr[trough_i] + pr.max() * 0.17,
+                    f"P{pr[trough_i]:.2f} overnight", cs.MUTE, 8.4)
+
+        cs.title(fig,
+                 f"Demand moves {dem_pct:.0f}% across the day. "
+                 f"The price moves P{swing:.0f}.",
+                 f"One Luzon day from the archive, {day}, every 5-minute interval.")
+        if t > 0.9:
+            cs.payoff(fig, 0.735, 0.585, f"P{swing:.2f}",
+                      "overnight low to evening peak,\non the same day",
+                      cs.CORAL, 31)
+        cs.source(fig,
+                  "Two panels on one shared clock, never two axes on one panel: a "
+                  "dual axis lets the choice of scales invent a correlation.\n"
+                  "Source: IEMOP RTDSUM generation and LWAPF price, archived.")
+        fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 
-    out = os.path.join(DOCS, "supply-demand-day.gif")
-    pal = "/tmp/pds_sd_pal.png"
-    vf = "fps=11,scale=880:-1:flags=lanczos"
-    subprocess.run(["ffmpeg", "-y", "-i", os.path.join(FRAMES, "f%03d.png"),
-                    "-vf", vf + ",palettegen=stats_mode=diff", pal], check=True,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.run(["ffmpeg", "-y", "-framerate", "11",
-                    "-i", os.path.join(FRAMES, "f%03d.png"), "-i", pal,
-                    "-lavfi", vf + "[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3",
-                    out], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    print("wrote", out, f"({os.path.getsize(out) // 1024} KB)")
+    cs.save_gif(fdir, os.path.join(DOCS, "supply-demand-day.gif"), fps=13, width=880)
 
 
 if __name__ == "__main__":

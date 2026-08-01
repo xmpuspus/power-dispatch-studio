@@ -1,35 +1,37 @@
 #!/usr/bin/env python3
-"""Animated GIF: the price is a shape, not a number. A data center plugs in the same power every hour, but the effect on the WESM
-price depends on how busy the grid already is. Nearly nothing when there is room, a
-jump when the grid is full.
+"""Animated GIF: the same data center, priced against two different grids.
 
-Reads the baked web/data/price_load.json (Luzon generation joined to price, from the
-archive), so the figure follows the bake. Output docs/price-shape.gif.
+The old version swept one marker along the curve, so the reader met the two
+answers seconds apart and had to hold the first in memory. Both states now sit
+in one frame, because adjacency is the comparison: the same 300 MW added to a
+quiet grid and to a full one, with the price move labelled on each. The sweep
+still runs, but it runs between two marks the reader can already see.
+
+Reads web/data/price_load.json. Output docs/price-shape.gif.
 """
 import json
 import os
-import subprocess
 import sys
 
+import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import vizstyle as vz  # noqa: E402
-vz.apply()
+import cardstyle as cs  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
-FRAMES = "/tmp/pds_shape_frames"
-DATA = os.path.join(ROOT, "web", "data", "price_load.json")
+WEB = os.path.join(ROOT, "web", "data")
+DC_MW = 300   # one large campus, the size the announced sites come in
 
-DC_MW = 300   # one large campus, e.g. the announced Narra Technology Park (3 x 100 MW)
+
+def bump_at(x, y, xc):
+    """The price move the same DC_MW causes with the grid at xc."""
+    return float(np.interp(xc + DC_MW, x, y)) - float(np.interp(xc, x, y))
 
 
 def main():
-    D = json.load(open(DATA))
+    D = json.load(open(os.path.join(WEB, "price_load.json")))
     curve = D["curve"]["luzon"]
     scat = D["scatter"]["luzon"]
     x = np.array([c["gen_mw"] for c in curve], float)
@@ -37,69 +39,59 @@ def main():
     sx = np.array([p[0] for p in scat], float)
     sy = np.clip(np.array([p[1] for p in scat], float), -5, 40)
 
-    os.makedirs(FRAMES, exist_ok=True)
-    for f in os.listdir(FRAMES):
-        os.remove(os.path.join(FRAMES, f))
-
     lo, hi = x.min() + 200, x.max() - DC_MW - 200
-    sweep = np.linspace(lo, hi, 34)
-    positions = np.concatenate([sweep, sweep[::-1]])   # ping-pong for a smooth loop
+    quiet, full = lo, hi
+    b_quiet, b_full = bump_at(x, y, quiet), bump_at(x, y, full)
+    times = b_full / b_quiet if b_quiet > 0 else 0
 
-    for i, xc in enumerate(positions):
-        y0 = float(np.interp(xc, x, y))
-        y1 = float(np.interp(xc + DC_MW, x, y))
-        bump = y1 - y0
-        tight = xc > (lo + 0.6 * (hi - lo))
-        col = vz.CORAL if tight else vz.STEEL
-        verdict = ("price jumps" if bump > 1.2 else
-                   "price nudges up" if bump > 0.35 else "price barely moves")
+    sweep = np.linspace(quiet, full, 30)
+    seq = list(sweep) + [full] * 14 + list(sweep[::-1]) + [quiet] * 8
 
-        fig, ax = plt.subplots(figsize=(8.6, 5.0))
-        ax.scatter(sx, sy, s=4, alpha=0.06, color="#9fb2c4",
-                   edgecolors="none", zorder=1, rasterized=True)
-        ax.plot(x, y, color=vz.NAVY, lw=2.6, zorder=3)
-        ax.scatter([xc], [y0], s=110, color=col, zorder=5)
-        ax.annotate("", xy=(xc + DC_MW, y1), xytext=(xc, y0),
-                    arrowprops=dict(arrowstyle="-|>", color=col, lw=2.4), zorder=4)
-        ax.text(xc, y0 - 1.7, "the grid right now", ha="center", fontsize=9.5,
-                color=vz.NAVY)
-        ax.text(xc + DC_MW * 0.5, (y0 + y1) / 2 + 0.6,
-                f"+ one {DC_MW} MW data center", fontsize=9.5, color=col)
-        ax.text(0.5, 0.94, f"{verdict}, about +P{bump:.2f}/kWh",
-                transform=ax.transAxes, ha="center", fontsize=15,
-                fontweight="bold", color=col)
+    fdir = cs.frames_dir("shape")
+    for fi, xc in enumerate(seq):
+        fig, ax = cs.card(figsize=(8.8, 5.1), field="day",
+                          rect=(0.075, 0.185, 0.615, 0.585))
+        ax.scatter(sx, sy, s=4, alpha=0.05, color=cs.STEEL, edgecolors="none",
+                   zorder=1, rasterized=True)
+        cs.glow(ax, x, y, cs.STEEL, lw=2.0, zorder=3,
+                passes=((6.0, 0.07), (3.0, 0.12)))
 
-        ax.set_xlim(x.min() - 300, x.max() + 300)
-        ax.set_ylim(-2, max(16, y.max() + 2))
-        ax.set_xlabel("how busy the Luzon grid is  (dispatched generation, MW, busier to the right)",
-                      fontsize=10.5)
-        ax.set_ylabel("WESM price  (PhP per kWh)", fontsize=10.5)
-        ax.set_title("Same data center. The price effect depends on how busy the grid is.",
-                     fontsize=13.5, color=vz.NAVY, loc="left")
-        vz.tufte(ax, grid="y")
-        vz.caption(fig,
-                   "Each faint dot is one five-minute interval on the Luzon grid. The "
-                   "line is the average price at each load. A data center adds the "
-                   "same megawatts every hour, but when the grid has room the price "
-                   f"hardly notices and when it is full the same {DC_MW} MW shoves it "
-                   "up. Source: IEMOP RTDSUM generation joined to LWAPF price, archived.",
-                   y=-0.05)
-        fig.tight_layout()
-        fig.savefig(os.path.join(FRAMES, f"f{i:03d}.png"), dpi=110,
-                    bbox_inches="tight", facecolor="white")
+        # both answers, always on screen
+        for xa, col, lab in ((quiet, cs.STEEL, "grid with room"),
+                             (full, cs.CORAL, "grid nearly full")):
+            ya, yb = float(np.interp(xa, x, y)), float(np.interp(xa + DC_MW, x, y))
+            ax.plot([xa, xa], [ya, yb], color=col, lw=2.4, zorder=6,
+                    solid_capstyle="round")
+            cs.dot(ax, xa, ya, col, size=34, zorder=6)
+            cs.chip(ax, xa, yb + 1.5, f"+P{yb - ya:.2f}/kWh", col, 9.4)
+            ax.text(xa, -1.6, lab, fontsize=8.4, color=col, ha="center",
+                    va="top", zorder=6)
+
+        # the moving marker, showing that the answer changes continuously
+        ym = float(np.interp(xc, x, y))
+        cs.dot(ax, xc, ym, cs.WHITE, size=16, zorder=8)
+
+        ax.set_xlim(x.min() - 250, x.max() + 250)
+        ax.set_ylim(-3.4, max(y) * 1.16)
+        ax.set_xlabel("Luzon generation meeting demand, MW", fontsize=9)
+        ax.set_ylabel("WESM price, PhP per kWh", fontsize=9)
+
+        cs.title(fig, f"The same {DC_MW} MW costs {times:.0f} times more when the grid is full",
+                 "Every faint dot is one 5-minute interval on the Luzon grid. "
+                 "The line is the average price at each load.")
+        cs.payoff(fig, 0.745, 0.615, f"{times:.0f}x", "the same load, "
+                  "the bigger price move", cs.CORAL, 40)
+        fig.text(0.745, 0.475,
+                 f"with room  +P{b_quiet:.2f}/kWh\nnearly full  +P{b_full:.2f}/kWh",
+                 fontsize=9.0, color=cs.BODY, va="top", zorder=6)
+        cs.source(fig,
+                  f"A data center draws the same {DC_MW} MW every hour. What it "
+                  "does to the price depends on how busy the grid already is.\n"
+                  "Source: IEMOP RTDSUM generation joined to LWAPF price, archived.")
+        fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 
-    out = os.path.join(DOCS, "price-shape.gif")
-    pal = "/tmp/pds_shape_pal.png"
-    vf = "fps=12,scale=860:-1:flags=lanczos"
-    subprocess.run(["ffmpeg", "-y", "-i", os.path.join(FRAMES, "f%03d.png"),
-                    "-vf", vf + ",palettegen=stats_mode=diff", pal], check=True,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.run(["ffmpeg", "-y", "-framerate", "12",
-                    "-i", os.path.join(FRAMES, "f%03d.png"), "-i", pal,
-                    "-lavfi", vf + "[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3",
-                    out], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    print("wrote", out, f"({os.path.getsize(out) // 1024} KB)")
+    cs.save_gif(fdir, os.path.join(DOCS, "price-shape.gif"), fps=14, width=880)
 
 
 if __name__ == "__main__":

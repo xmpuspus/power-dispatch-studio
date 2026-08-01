@@ -1,70 +1,104 @@
 #!/usr/bin/env python3
-"""Small-multiples: the three island grids side by side, each showing its own price-vs-load shape. Luzon carries the
-volume and a long climb; the smaller grids are flatter until they run tight. One row
-makes the point that the same load does different things on different islands.
+"""Animated GIF: the same load, priced by three different islands.
 
-Reads the baked web/data/price_load.json, so it stays in sync with the map. Output
-docs/small-multiples.png.
+Three panels on one shared price axis, so the comparison is adjacency rather
+than memory. Each grid's curve draws in together with the others, and the card
+carries the payoff a reader would otherwise have to work out: how much more the
+steepest island charges at its own busiest hour than the flattest one.
+
+Reads web/data/price_load.json. Output docs/small-multiples.gif.
 """
 import json
 import os
 import sys
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.colors import LinearSegmentedColormap
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import vizstyle as vz  # noqa: E402
-vz.apply()
+import cardstyle as cs  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DOCS = os.path.join(ROOT, "docs")
 WEB = os.path.join(ROOT, "web", "data")
-OUT = os.path.join(ROOT, "docs", "small-multiples.png")
-
 GRIDS = [("luzon", "Luzon"), ("visayas", "Visayas"), ("mindanao", "Mindanao")]
+
+
+def klab(v):
+    return f"{v / 1000:.1f}k" if v < 10000 else f"{round(v / 1000):.0f}k"
 
 
 def main():
     D = json.load(open(os.path.join(WEB, "price_load.json")))
-    pmax = max(c["mean_price"] for g, _ in GRIDS for c in D["curve"][g]) * 1.08
+    pmax = max(c["mean_price"] for g, _ in GRIDS for c in D["curve"][g]) * 1.14
+    tops = {g: max(c["mean_price"] for c in D["curve"][g]) for g, _ in GRIDS}
+    steep = max(tops, key=tops.get)
+    flat = min(tops, key=tops.get)
 
-    fig, axes = plt.subplots(1, 3, figsize=(11.4, 3.9), sharey=True)
-    for ax, (key, label) in zip(axes, GRIDS):
-        curve = D["curve"][key]
-        scat = D["scatter"][key]
-        x = [c["gen_mw"] for c in curve]
-        y = [c["mean_price"] for c in curve]
-        col = vz.REGION[key]
-        ax.scatter([p[0] for p in scat],
-                   [min(max(p[1], -3), pmax) for p in scat],
-                   s=4, alpha=0.05, color="#9fb2c4", edgecolors="none",
-                   zorder=1, rasterized=True)
-        ax.plot(x, y, color=col, lw=2.4, zorder=3)
-        ax.set_title(label, fontsize=12, color=col, loc="left")
-        ax.set_ylim(-2, pmax)
-        ax.set_xlabel("dispatched generation (MW)", fontsize=9.5)
-        vz.tufte(ax, grid="y")
-        gwlo, gwhi = min(x), max(x)
-        mid = (gwlo + gwhi) / 2
+    fdir = cs.frames_dir("smult")
+    for fi, t in enumerate(cs.reveal(30, 16)):
+        cs.apply()
+        fig = plt.figure(figsize=(10.6, 5.0), facecolor=cs.BG)
+        lo, hi = cs.FIELDS["dusk"]
+        gnd = fig.add_axes([0, 0, 1, 1], zorder=0)
+        gnd.imshow(np.linspace(0, 1, 256).reshape(-1, 1),
+                   cmap=LinearSegmentedColormap.from_list("f", [hi, lo]),
+                   aspect="auto", extent=(0, 1, 0, 1), interpolation="bicubic")
+        gnd.set_xticks([])
+        gnd.set_yticks([])
+        for s in gnd.spines.values():
+            s.set_visible(False)
 
-        def klab(v):
-            return f"{v/1000:.1f}k" if v < 10000 else f"{int(round(v/1000))}k"
-        ax.set_xticks([gwlo, mid, gwhi])
-        ax.set_xticklabels([klab(gwlo), klab(mid), klab(gwhi)], fontsize=9)
-    axes[0].set_ylabel("WESM price  (PhP per kWh)", fontsize=10.5)
-    fig.suptitle("The same load does different things on different islands",
-                 fontsize=14, color=vz.NAVY, x=0.02, ha="left", y=1.02)
-    vz.caption(fig,
-               "Each panel is one island grid: the average WESM price at each level "
-               "of dispatched generation, over the archive window. Luzon carries the "
-               "volume and a long climb. The smaller grids stay flat until they run "
-               "tight. Source: IEMOP RTDSUM generation joined to LWAPF price, archived.",
-               y=-0.06)
-    fig.tight_layout()
-    fig.savefig(OUT, dpi=150, bbox_inches="tight", facecolor="white")
-    plt.close(fig)
-    print("wrote", OUT, f"({os.path.getsize(OUT) // 1024} KB)")
+        for i, (key, label) in enumerate(GRIDS):
+            ax = fig.add_axes([0.065 + i * 0.243, 0.235, 0.205, 0.495],
+                              facecolor="none", zorder=2)
+            cs.tufte(ax)
+            curve = D["curve"][key]
+            x = np.array([c["gen_mw"] for c in curve], float)
+            y = np.array([c["mean_price"] for c in curve], float)
+            scat = D["scatter"][key]
+            n = max(2, int(round(len(x) * t)))
+            col = cs.REGION[key]
+
+            ax.scatter([p[0] for p in scat],
+                       [min(max(p[1], -3), pmax) for p in scat],
+                       s=3.5, alpha=0.05, color=col, edgecolors="none",
+                       zorder=1, rasterized=True)
+            cs.glow(ax, x[:n], y[:n], col, lw=1.9, zorder=3,
+                    passes=((5.5, 0.08), (2.8, 0.13)))
+            cs.dot(ax, x[n - 1], y[n - 1], col, size=20, zorder=6)
+            ax.text(0.0, 1.06, label, transform=ax.transAxes, fontsize=11.5,
+                    color=col, ha="left", va="bottom", zorder=6)
+            ax.set_ylim(-2, pmax)
+            ax.set_xlim(x.min() - 200, x.max() + 200)
+            ax.set_xticks([x.min(), (x.min() + x.max()) / 2, x.max()])
+            ax.set_xticklabels([klab(x.min()), klab((x.min() + x.max()) / 2),
+                                klab(x.max())], fontsize=8.2)
+            if i == 0:
+                ax.set_ylabel("WESM price, PhP per kWh", fontsize=9)
+            else:
+                ax.set_yticklabels([])
+            if i == 1:
+                ax.set_xlabel("dispatched generation, MW", fontsize=9)
+
+        cs.title(fig, "The same load does different things on three islands",
+                 "Average WESM price at each level of dispatched generation, "
+                 "over the archive window. One shared price axis.")
+        if t > 0.9:
+            cs.payoff(fig, 0.815, 0.575, f"P{tops[steep]:.0f}",
+                      f"{steep.capitalize()} at its busiest, against\n"
+                      f"P{tops[flat]:.0f} on {flat.capitalize()}",
+                      cs.REGION[steep], 30)
+        cs.source(fig,
+                  "Each faint dot is one 5-minute interval. Luzon carries the "
+                  "volume and climbs a long way; the smaller grids stay flat "
+                  "until they run tight.\n"
+                  "Source: IEMOP RTDSUM generation joined to LWAPF price, archived.")
+        fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=100, facecolor=cs.BG)
+        plt.close(fig)
+
+    cs.save_gif(fdir, os.path.join(DOCS, "small-multiples.gif"), fps=12, width=940)
 
 
 if __name__ == "__main__":

@@ -1,98 +1,101 @@
 #!/usr/bin/env python3
-"""Animated GIF: the Sual arithmetic. The May 2026 system margin is one bar; one
-647 MW Sual unit is subtracted, then the second, showing why a single trip of the
-grid's largest units moves the whole system. Arithmetic on the published margin,
-never a dispatch simulation.
+"""Animated GIF: the Sual arithmetic, drawn as a quantity you can count.
 
-Reads only web/data/market_anchors.json + sual.geojson. Output docs/sual-margin.gif.
+The margin used to be one bar that got shorter. A bar shrinking says "less". It
+does not say how much less, and 3,629 MW is a number nobody feels. So the
+margin is a grid of 100 MW blocks instead. The blocks fill in, one Sual unit
+takes its blocks away, then the second does, and a reader counts the loss.
+
+This is arithmetic on IEMOP's published May 2026 margin, never a dispatch
+simulation, and the card says so.
+
+Reads web/data/market_anchors.json + sual.geojson. Output docs/sual-margin.gif.
 """
 import json
 import os
-import subprocess
 import sys
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyBboxPatch
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import vizstyle as vz  # noqa: E402
-vz.apply()
+import cardstyle as cs  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
-FRAMES = "/tmp/pds_sual_frames"
 WEB = os.path.join(ROOT, "web", "data")
+BLOCK_MW = 100
+COLS = 9
+
+
+def square(x, y, color, alpha, grow=0.0):
+    s = 0.40 + grow
+    return FancyBboxPatch((x - s, y - s), 2 * s, 2 * s,
+                          boxstyle="round,pad=0,rounding_size=0.10",
+                          fc=color, ec="none", alpha=alpha, zorder=4)
 
 
 def main():
     A = json.load(open(os.path.join(WEB, "market_anchors.json")))
-    sual = json.load(open(os.path.join(WEB, "sual.geojson")))["features"][0]["properties"]
+    sual = json.load(open(os.path.join(WEB, "sual.geojson")))["features"][0]
     margin = A["wesm_may2026_margin_mw"]
-    unit = sual["unit_mw"]
+    unit = sual["properties"]["unit_mw"]
 
-    os.makedirs(FRAMES, exist_ok=True)
-    for f in os.listdir(FRAMES):
-        os.remove(os.path.join(FRAMES, f))
+    n_blocks = int(round(margin / BLOCK_MW))
+    per_unit = unit / BLOCK_MW
+    share = 100.0 * unit / margin
+    rows = (n_blocks + COLS - 1) // COLS
 
-    # three states: full margin, minus one unit, minus two units. Ease between.
-    stops = [margin, margin - unit, margin - 2 * unit]
-    labels = ["May 2026 system margin",
-              "after one Sual unit trips (-647 MW)",
-              "after both units trip (-1,294 MW)"]
-    seq = []
-    for k in range(len(stops) - 1):
-        a, b = stops[k], stops[k + 1]
-        for s in range(22):
-            t = s / 21
-            seq.append((a + (b - a) * t, k, k + 1, t))
-        seq += [(b, k + 1, k + 1, 1.0)] * 12
-    seq = [(stops[0], 0, 0, 1.0)] * 12 + seq
+    fdir = cs.frames_dir("sual")
+    seq = ([("fill", t) for t in cs.reveal(18, 8)]
+           + [("one", t) for t in cs.reveal(9, 10)]
+           + [("two", t) for t in cs.reveal(9, 16)])
 
-    for fi, (val, li, lj, t) in enumerate(seq):
-        fig, ax = plt.subplots(figsize=(8.4, 4.8))
-        # ghost of the full margin
-        ax.bar([0], [margin], width=0.5, color=vz.FILL, zorder=1)
-        col = vz.CORAL if val < margin - unit + 1 else (
-            vz.GOLD if val < margin - 1 else vz.GREEN)
-        ax.bar([0], [val], width=0.5, color=col, zorder=3)
-        ax.text(0, val + 55, f"{int(round(val)):,} MW", ha="center",
-                fontsize=15, fontweight="bold", color=vz.NAVY)
-        ax.text(0, margin + 55, f"full margin {margin:,} MW", ha="center",
-                fontsize=9, color=vz.MUTE)
-        lab = labels[lj] if t > 0.5 else labels[li]
-        ax.text(0, -230, lab, ha="center", fontsize=11, color=col, fontweight="bold")
-        ax.text(0.62, margin * 0.5,
-                f"one unit = {round(100 * unit / margin)}%\nof the margin",
-                fontsize=10, color=vz.MUTE, va="center")
-        ax.set_xlim(-0.7, 1.1)
-        ax.set_ylim(-320, margin * 1.16)
-        ax.set_xticks([])
-        ax.set_ylabel("megawatts of system supply margin", fontsize=10.5)
-        ax.set_title("One plant trip takes a fifth of the margin with it",
-                     fontsize=14, color=vz.NAVY, loc="left")
-        vz.tufte(ax, grid="y")
-        vz.caption(fig,
-                   "Sual's two 647 MW units are among the largest on "
-                   "the Luzon grid. This subtracts a unit from IEMOP's published May "
-                   "2026 margin as arithmetic, not a dispatch simulation. The margin "
-                   "itself moves daily. Source: IEMOP May 2026 report.", y=-0.03)
-        fig.tight_layout()
-        fig.savefig(os.path.join(FRAMES, f"f{fi:03d}.png"), dpi=110,
-                    bbox_inches="tight", facecolor="white")
+    for fi, (stage, t) in enumerate(seq):
+        fig, ax = cs.card(figsize=(8.6, 4.25), field="dusk",
+                          rect=(0.075, 0.235, 0.62, 0.505))
+        shown = n_blocks if stage != "fill" else int(round(n_blocks * t))
+        gone = 0.0
+        if stage == "one":
+            gone = per_unit * t
+        elif stage == "two":
+            gone = per_unit * (1 + t)
+
+        for i in range(shown):
+            x, y = i % COLS, -(i // COLS)
+            # the loss is taken off the end of the same grid, so it reads as a
+            # bite out of one quantity rather than as a second, different bar
+            lost = i >= n_blocks - gone
+            if lost:
+                ax.add_patch(square(x, y, cs.CORAL, 0.18, grow=0.20))
+            ax.add_patch(square(x, y, cs.CORAL if lost else cs.STEEL,
+                                0.95 if lost else 0.78))
+
+        ax.set_xlim(-0.7, COLS - 0.3)
+        ax.set_ylim(-rows + 0.35, 0.7)
+        ax.set_aspect("equal")
+        ax.axis("off")
+
+        left = margin - gone * BLOCK_MW
+        cs.title(fig,
+                 f"One Sual unit is {share:.0f}% of the whole system's spare margin",
+                 f"Each block is {BLOCK_MW} MW. The May 2026 margin was "
+                 f"{margin:,} MW, and Sual runs two units of {unit} MW.")
+        cs.payoff(fig, 0.745, 0.545, f"{left:,.0f}",
+                  "MW of margin left" if gone else "MW of spare margin",
+                  cs.CORAL if gone else cs.STEEL, size=37)
+        if stage != "fill":
+            n = 1 if stage == "one" else 2
+            word = "unit trips" if n == 1 else "units trip"
+            fig.text(0.745, 0.415, f"{n} of 2 {word}\n-{n * unit:,} MW",
+                     fontsize=9.6, color=cs.BODY, va="top", zorder=6)
+        cs.source(fig, y=0.055, text="Arithmetic on IEMOP's published May 2026 supply margin, not a "
+                  "dispatch simulation. The margin itself moves daily.\n"
+                  "Sources: IEMOP May 2026 report; Sual Power Station unit ratings.")
+        fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 
-    out = os.path.join(DOCS, "sual-margin.gif")
-    pal = "/tmp/pds_sual_pal.png"
-    vf = "fps=12,scale=840:-1:flags=lanczos"
-    subprocess.run(["ffmpeg", "-y", "-i", os.path.join(FRAMES, "f%03d.png"),
-                    "-vf", vf + ",palettegen=stats_mode=diff", pal], check=True,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.run(["ffmpeg", "-y", "-framerate", "12",
-                    "-i", os.path.join(FRAMES, "f%03d.png"), "-i", pal,
-                    "-lavfi", vf + "[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3",
-                    out], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    print("wrote", out, f"({os.path.getsize(out) // 1024} KB)")
+    cs.save_gif(fdir, os.path.join(DOCS, "sual-margin.gif"), fps=12, width=880)
 
 
 if __name__ == "__main__":

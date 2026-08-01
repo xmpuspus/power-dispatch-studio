@@ -1,95 +1,102 @@
 #!/usr/bin/env python3
-"""Animated GIF: the three island grids priced as one under administered pricing,
-then fanned apart the moment WESM trading resumed. The one-line lesson is that the
-inter-island links are the geography, and the market prices that geography daily.
+"""Animated GIF: one market on paper, three prices once trading resumed.
 
-Reads only the baked web/data/prices.json, so the figure follows the bake. Renders
-frames with matplotlib, assembles with ffmpeg (palette two-pass, never PIL for the
-GIF). Output docs/price-spread.gif.
+The three island grids share one frame, because the comparison is the whole
+finding. While the market ran on administered prices the lines sit on top of
+each other, within P0.015. The suspension band ends and they fan apart. The
+card carries the widest daily gap as its payoff, and keeps the two regimes
+labelled so the suspension never reads as a market outcome.
+
+Reads web/data/prices.json. Output docs/price-spread.gif.
 """
 import json
 import os
-import subprocess
 import sys
+from datetime import date
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import vizstyle as vz  # noqa: E402
-vz.apply()
+import cardstyle as cs  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
-FRAMES = "/tmp/pds_spread_frames"
-DATA = os.path.join(ROOT, "web", "data", "prices.json")
+WEB = os.path.join(ROOT, "web", "data")
+
+
+def pretty(iso):
+    y, m, d = (int(x) for x in iso.split("-"))
+    return date(y, m, d).strftime("%b %-d")
 
 
 def main():
-    P = json.load(open(DATA))
+    P = json.load(open(os.path.join(WEB, "prices.json")))
     dates = P["dates"]
-    resumed = P.get("resumed", "2026-05-01")
     series = {g: P["series"][g] for g in ("luzon", "visayas", "mindanao")}
-    resume_i = next((i for i, d in enumerate(dates) if d >= resumed), 0)
-
-    os.makedirs(FRAMES, exist_ok=True)
-    for f in os.listdir(FRAMES):
-        os.remove(os.path.join(FRAMES, f))
-
+    resumed = P.get("resumed", "2026-05-01")
+    reg = P["regimes"]
+    widest = P["max_spread"]
     n = len(dates)
-    ymax = max(v for g in series.values() for v in g if v is not None) * 1.08
-    reveal = list(range(4, n + 1, 2))
-    if reveal[-1] != n:
-        reveal.append(n)
-    hold = [n] * 10
+    cut = next((i for i, d in enumerate(dates) if d >= resumed), 0)
+    ymax = max(v for g in series.values() for v in g if v is not None) * 1.14
 
-    for fi, upto in enumerate(reveal + hold):
-        fig, ax = plt.subplots(figsize=(8.6, 4.8))
-        ax.axvspan(0, resume_i, color=vz.FILL, zorder=0)
-        for g, col in vz.REGION.items():
-            xs = [i for i in range(upto) if series[g][i] is not None]
-            ys = [series[g][i] for i in xs]
-            if xs:
-                ax.plot(xs, ys, color=col, lw=2.0, zorder=3)
-                ax.scatter([xs[-1]], [ys[-1]], s=26, color=col, zorder=4)
-                ax.text(xs[-1] + 0.6, ys[-1], g.title(), color=col, fontsize=10,
-                        va="center", fontweight="bold")
-        ax.axvline(resume_i, color=vz.MUTE, lw=1.0, ls=(0, (4, 3)), zorder=2)
-        ax.text(resume_i - 1.5, ymax * 0.96, "WESM suspended\n(administered prices)",
-                ha="right", va="top", fontsize=8.5, color=vz.MUTE)
-        ax.text(resume_i + 1.5, ymax * 0.96, "market resumes 2026-05-01",
-                ha="left", va="top", fontsize=8.5, color=vz.NAVY)
-        ax.set_xlim(0, n + 9)
+    fdir = cs.frames_dir("spread")
+    seq = cs.reveal(38, 16)
+
+    for fi, t in enumerate(seq):
+        fig, ax = cs.card(figsize=(8.8, 5.0), field="dusk",
+                          rect=(0.075, 0.195, 0.615, 0.575))
+        upto = max(2, int(round(n * t)))
+
+        band = min(upto, cut)
+        if band > 1:
+            ax.axvspan(0, band - 1, color="#18212e", alpha=0.9, zorder=0)
+            if t > 0.20:
+                ax.text((band - 1) / 2, ymax * 0.96, "WESM suspended",
+                        ha="center", fontsize=8.8, color=cs.MUTE, zorder=6)
+                ax.text((band - 1) / 2, ymax * 0.895,
+                        f"administered, the three within "
+                        f"P{reg['administered']['max_spread']}",
+                        ha="center", fontsize=7.8, color=cs.MUTE, zorder=6)
+        if upto > cut:
+            ax.axvline(cut, color=cs.FAINT, lw=1.0, ls=(0, (4, 3)), zorder=1)
+            ax.text(cut + 1.5, ymax * 0.96, f"market resumes {pretty(resumed)}",
+                    fontsize=8.8, color=cs.BODY, zorder=6)
+
+        for g in ("luzon", "visayas", "mindanao"):
+            ys = [v for v in series[g][:upto]]
+            xs = list(range(len(ys)))
+            cs.glow(ax, xs, ys, cs.REGION[g], lw=1.6, zorder=4)
+            cs.dot(ax, xs[-1], ys[-1], cs.REGION[g], size=22, zorder=7)
+            if t > 0.45:
+                ax.text(xs[-1] + 1.4, ys[-1], g.capitalize(), fontsize=9,
+                        color=cs.REGION[g], va="center", zorder=8)
+
+        ax.set_xlim(0, n + 11)
         ax.set_ylim(0, ymax)
-        ax.set_ylabel("daily average price  (PhP per kWh)", fontsize=10.5)
-        ax.set_xlabel("archive days, 2026-04-07 to 2026-06-25", fontsize=10.5)
         ax.set_xticks([])
-        ax.set_title("One market on paper, three prices in practice",
-                     fontsize=14, color=vz.NAVY, loc="left")
-        vz.tufte(ax, grid="y")
-        vz.caption(fig,
-                   "Each line is one island grid's daily average of IEMOP's "
-                   "load-weighted five-minute prices. Under administered pricing the "
-                   "grids move together. Once the market reopens the links between "
-                   "them separate the prices. Source: IEMOP LWAPF, archived.",
-                   y=-0.04)
-        fig.tight_layout()
-        fig.savefig(os.path.join(FRAMES, f"f{fi:03d}.png"), dpi=110,
-                    bbox_inches="tight", facecolor="white")
+        ax.set_ylabel("daily average price, PhP per kWh", fontsize=9)
+
+        cs.title(fig, "One market on paper, three prices in practice",
+                 f"Daily load-weighted average price per island grid, "
+                 f"{pretty(dates[0])} to {pretty(dates[-1])}.")
+        if t > 0.9:
+            cs.payoff(fig, 0.745, 0.625, f"P{widest['php']:.2f}",
+                      f"widest gap in one day, {pretty(widest['date'])}",
+                      cs.CORAL, 30)
+            fig.text(0.745, 0.495,
+                     f"{reg['market']['days_spread_gt5']} of "
+                     f"{reg['market']['days']} market days\nsplit by more than P5",
+                     fontsize=8.8, color=cs.BODY, va="top", zorder=6)
+        cs.source(fig,
+                  "Each line is one island grid's daily average of IEMOP's "
+                  "load-weighted 5-minute prices. The links between the islands "
+                  "are the reason the numbers differ.\n"
+                  "Source: IEMOP LWAPF, archived.")
+        fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 
-    out = os.path.join(DOCS, "price-spread.gif")
-    pal = "/tmp/pds_spread_pal.png"
-    vf = "fps=10,scale=860:-1:flags=lanczos"
-    subprocess.run(["ffmpeg", "-y", "-i", os.path.join(FRAMES, "f%03d.png"),
-                    "-vf", vf + ",palettegen=stats_mode=diff", pal], check=True,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.run(["ffmpeg", "-y", "-framerate", "10",
-                    "-i", os.path.join(FRAMES, "f%03d.png"), "-i", pal,
-                    "-lavfi", vf + "[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3",
-                    out], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    print("wrote", out, f"({os.path.getsize(out) // 1024} KB)")
+    cs.save_gif(fdir, os.path.join(DOCS, "price-spread.gif"), fps=12, width=880)
 
 
 if __name__ == "__main__":
