@@ -1,109 +1,111 @@
 #!/usr/bin/env python3
-"""The loss-surface validation figure: can network physics predict the
-market's own per-node price deviations?
+"""Animated GIF: does network physics track the market's own per-node prices?
 
-One small-multiple panel per grid: modeled loss-factor deviation (x)
-against the observed deviation from the regional price (y), one dot per
-placed node, the fitted affine convention as a line, and the Spearman
-rank correlation plus post-fit error stated on the panel. Validated
-grids carry a green rule, failing grids a red one, so the verdict reads
-off the figure. Every number is read from data/derived/loss_surface.json,
-which recomputes nightly.
+Three panels in one frame, one per island grid, each plotting the model's
+marginal loss-factor deviation against the market's observed deviation from its
+regional price. The points arrive together, so the shape of each cloud lands at
+the same moment, and the verdict sits on the panel: two grids validate, and the
+third is shown failing rather than dropped.
 
-    python3 scripts/loss_surface_fig.py     # -> docs/loss-surface.png
+Every number reads from data/derived/loss_surface.json, which recomputes nightly.
+
+    python3 scripts/loss_surface_fig.py     # -> docs/loss-surface.gif
 """
-
 import json
 import os
+import sys
 
 import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.colors import LinearSegmentedColormap
 
-import vizstyle as vz
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import cardstyle as cs  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LOSS = os.path.join(HERE, "..", "data", "derived", "loss_surface.json")
-OUT = os.path.join(HERE, "..", "docs", "loss-surface.png")
-
-GOOD = "#1a7f48"
-CRIT = "#b3261e"
+OUT = os.path.abspath(os.path.join(HERE, "..", "docs", "loss-surface.gif"))
 GRIDS = ("luzon", "visayas", "mindanao")
 
 
-def main() -> None:
+def main():
     with open(LOSS) as f:
         d = json.load(f)
     if not d.get("available"):
         raise SystemExit("loss_surface.json not available; run the pipeline")
-    vz.apply()
-    fig, axes = plt.subplots(1, 3, figsize=(12.4, 5.0))
-    for ax, g in zip(axes, GRIDS):
-        w = d["window"].get(g)
-        pts = d["scatter"].get(g, [])
-        color = vz.REGION[g]
-        validated = g in d["validated_grids"]
-        edge = GOOD if validated else CRIT
-        if pts:
-            xs = [p[0] for p in pts]
-            ys = [p[1] for p in pts]
-            ax.scatter(xs, ys, s=14, c=color, alpha=0.45, linewidths=0, zorder=3)
-            # the fitted affine convention (reported, not hidden)
-            a = w["affine_slope"]
-            b = w["affine_intercept_php_kwh"]
-            lo, hi = min(xs), max(xs)
-            ax.plot([lo, hi], [a * lo + b, a * hi + b], color=vz.NAVY, lw=1.6, zorder=4)
-        vz.tufte(ax, grid="both")
-        ax.axhline(0, color=vz.MUTE, lw=0.6, zorder=1)
-        ax.axvline(0, color=vz.MUTE, lw=0.6, zorder=1)
-        rho = w["spearman"] if w else None
-        mae = w["mae_after_affine_php_kwh"] if w else None
-        n = w["n_nodes"] if w else 0
-        verdict = "validated" if validated else "fails · not diagnosed"
-        ax.set_title(g.capitalize(), color=edge, fontsize=13, fontweight="bold", pad=10)
-        ax.text(
-            0.03,
-            0.97,
-            f"Spearman {rho:+.2f}\nerror {mae:.2f} P/kWh\n{n} nodes  ·  {verdict}",
-            transform=ax.transAxes,
-            va="top",
-            ha="left",
-            fontsize=9.5,
-            color=vz.NAVY,
-            bbox=dict(
-                boxstyle="round,pad=0.4", fc="white", ec=edge, lw=1.1, alpha=0.92
-            ),
-        )
-        ax.set_xlabel(
-            "modeled loss-factor deviation (P/kWh)", color=vz.MUTE, fontsize=9
-        )
-    axes[0].set_ylabel(
-        "observed deviation from regional price (P/kWh)", color=vz.NAVY, fontsize=9.5
-    )
-    fig.tight_layout(rect=(0, 0, 1, 0.86))
-    fig.text(
-        0.5,
-        0.965,
-        "Does network physics track the market's own per-node prices?",
-        ha="center",
-        color=vz.NAVY,
-        fontsize=15,
-        fontweight="bold",
-    )
-    fig.text(
-        0.5,
-        0.915,
-        f"Marginal loss factors from the OpenStreetMap grid vs WESM's "
-        f"published nodal deviations, {d['clean_days']} clean market "
-        f"days. Recomputed nightly (data/derived/loss_surface.json).",
-        ha="center",
-        color=vz.MUTE,
-        fontsize=9.5,
-    )
-    fig.savefig(OUT, dpi=150, bbox_inches="tight")
-    kb = os.path.getsize(OUT) // 1024
-    print(
-        f"wrote {OUT} ({kb} KB)  validated={d['validated_grids']} "
-        f"failing={d['failing_grids']}"
-    )
+
+    fdir = cs.frames_dir("loss")
+    for fi, t in enumerate(cs.reveal(24, 16)):
+        cs.apply()
+        fig = plt.figure(figsize=(10.6, 5.0), facecolor=cs.BG)
+        glo, ghi = cs.FIELDS["night"]
+        gnd = fig.add_axes([0, 0, 1, 1], zorder=0)
+        gnd.imshow(np.linspace(0, 1, 256).reshape(-1, 1),
+                   cmap=LinearSegmentedColormap.from_list("f", [ghi, glo]),
+                   aspect="auto", extent=(0, 1, 0, 1), interpolation="bicubic")
+        gnd.set_xticks([])
+        gnd.set_yticks([])
+        for sp in gnd.spines.values():
+            sp.set_visible(False)
+
+        for i, g in enumerate(GRIDS):
+            ax = fig.add_axes([0.068 + i * 0.243, 0.235, 0.200, 0.470],
+                              facecolor="none", zorder=2)
+            cs.tufte(ax, ygrid=False)
+            ax.grid(color=cs.FAINT, lw=0.6, alpha=0.7, zorder=0)
+            ax.set_axisbelow(True)
+            w = d["window"].get(g) or {}
+            pts = d["scatter"].get(g, [])
+            ok = g in d["validated_grids"]
+            col = cs.REGION[g]
+            n = max(1, int(round(len(pts) * t)))
+            if pts:
+                ax.scatter([p[0] for p in pts[:n]], [p[1] for p in pts[:n]],
+                           s=11, alpha=0.50, color=col, edgecolors="none",
+                           zorder=3)
+                if w.get("affine_slope") is not None and t > 0.55:
+                    xa = np.array([min(p[0] for p in pts),
+                                   max(p[0] for p in pts)], float)
+                    ax.plot(xa, w["affine_slope"] * xa
+                            + w["affine_intercept_php_kwh"],
+                            color=cs.WHITE, lw=1.3, alpha=0.7, zorder=5)
+            ax.axhline(0, color=cs.FAINT, lw=0.8, zorder=1)
+            ax.axvline(0, color=cs.FAINT, lw=0.8, zorder=1)
+            ax.text(0.0, 1.20, g.capitalize(), transform=ax.transAxes,
+                    fontsize=11.5, color=col, ha="left", va="bottom", zorder=6)
+            ax.text(0.0, 1.055,
+                    f"Spearman {w.get('spearman', 0):+.2f}   "
+                    f"{'validated' if ok else 'fails'}",
+                    transform=ax.transAxes, fontsize=8.6,
+                    color=cs.GREEN if ok else cs.CORAL, ha="left",
+                    va="bottom", zorder=6)
+            ax.tick_params(labelsize=8.0)
+            if i == 0:
+                ax.set_ylabel("observed deviation from the\nregional price, "
+                              "PhP/kWh", fontsize=8.2)
+            if i == 1:
+                ax.set_xlabel("the model's marginal loss-factor deviation",
+                              fontsize=8.6)
+
+        n_ok = len(d["validated_grids"])
+        cs.title(fig, f"Network physics tracks the market on {n_ok} of the 3 "
+                      "grids, and the third is shown failing",
+                 f"One dot per node, {d['n_nodes_compared']} in all, across "
+                 f"{d['clean_days']} clean market days. Recomputed nightly.")
+        if t > 0.9:
+            vis = d["window"]["visayas"]["spearman"]
+            cs.payoff(fig, 0.815, 0.565, f"{vis:+.2f}",
+                      "Visayas ranks the wrong way,\nand the sign is not yet "
+                      "diagnosed", cs.CORAL, 29)
+        cs.source(fig,
+                  "Marginal loss factors come from the OpenStreetMap-geometry "
+                  "backbone, compared grid by grid against WESM's published "
+                  "nodal deviations.\nA failing grid stays on the card instead "
+                  "of being dropped. Source: data/derived/loss_surface.json.")
+        fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=100, facecolor=cs.BG)
+        plt.close(fig)
+
+    cs.save_gif(fdir, OUT, fps=12, width=940)
 
 
 if __name__ == "__main__":

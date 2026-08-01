@@ -32,6 +32,11 @@ viz:
 	$(PY) scripts/wesm_roles.py
 	$(PY) scripts/constraint_league_gif.py
 	$(PY) scripts/constraint_map_gif.py
+	$(PY) scripts/small_multiples.py
+	$(PY) scripts/price_shape_gif.py
+	$(PY) scripts/price_spread_gif.py
+	$(PY) scripts/sual_margin_gif.py
+	$(PY) scripts/supply_demand_day_gif.py
 	$(PY) scripts/story_montage.py
 	$(PY) scripts/stat_card.py
 	$(PY) scripts/loss_surface_fig.py

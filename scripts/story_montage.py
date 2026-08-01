@@ -25,15 +25,17 @@ SRC = "/tmp/pds_montage_src"
 FRAMES = "/tmp/pds_montage_frames"
 OUT = os.path.join(DOCS, "story-montage.gif")
 
-NAVY, MUTE, CORAL = "#12335c", "#5b6b75", "#e2664b"
+# the montage now tiles the dark cards, so its own chrome goes dark too
+BG = "#0d1117"
+NAVY, MUTE, CORAL = "#e9edf2", "#8592a3", "#ff5c39"
 PANELS = [
-    ("constraint-league.gif",
-     "1.  The grid names its own choke point. Named 230 kV lines at a limit on most days in the window."),
+    ("constraint-map.gif",
+     "1.  The grid names its own choke point, and it sits between two islands."),
     ("price-shape.gif",
      "2.  The price is a shape. The same data center barely moves it with room, jumps it when full."),
     ("sual-margin.gif",
-     "3.  One plant trip takes a fifth of the margin with it. Arithmetic, not prophecy."),
-    ("bill-wedge.png",
+     "3.  One Sual unit is 18% of the whole system's spare margin. Arithmetic, not prophecy."),
+    ("bill-wedge.gif",
      "And a WESM swing is only a slice of the Meralco bill, and only on the next month's bill."),
 ]
 CELL_W, CELL_H = 820, 470
@@ -72,7 +74,7 @@ def load_frames(name):
 def fit(img, w, h):
     im = img.copy()
     im.thumbnail((w, h), Image.LANCZOS)
-    cell = Image.new("RGB", (w, h), "white")
+    cell = Image.new("RGB", (w, h), BG)
     cell.paste(im, ((w - im.width) // 2, (h - im.height) // 2))
     return cell
 
@@ -87,7 +89,7 @@ def main():
     tf, sf, lf = font(31, True), font(19), font(18, True)
 
     for t in range(n_out):
-        canvas = Image.new("RGB", (OUT_W, OUT_H), "white")
+        canvas = Image.new("RGB", (OUT_W, OUT_H), BG)
         d = ImageDraw.Draw(canvas)
         d.text((PAD + 4, 16),
                "Can the Philippine grid host the data-center wave?",

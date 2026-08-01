@@ -1,102 +1,108 @@
 #!/usr/bin/env python3
-"""The wholesale-to-retail wedge, built on the actual Meralco peso breakdown. A move
-in the WESM wholesale price only touches the generation slice of the bill, and only
-through a monthly pass-through, so a wholesale swing is never a one-for-one bill swing.
+"""Animated GIF: what a WESM swing actually moves on a Meralco bill.
 
-Reads only web/data/market_anchors.json, so the figure follows the bake. Output
-docs/bill-wedge.png.
+One bar, the whole June 2026 residential rate, split three ways on one frame so
+the comparison needs no memory. The slices arrive in turn and the spot slice
+keeps pulsing, because that slice is the only part a spot price moves, and only
+on the next month's bill.
+
+The arithmetic that matters here: the WESM price applies to the WESM share of
+energy, so what reaches the blended generation charge is share times price,
+about P0.70/kWh. Stacking the P7.03 price itself against the P14.48 rate
+overstates the bill's spot exposure roughly tenfold.
+
+Reads web/data/market_anchors.json. Output docs/bill-wedge.gif.
 """
 import json
+import math
 import os
 import sys
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyBboxPatch
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import vizstyle as vz  # noqa: E402
-vz.apply()
+import cardstyle as cs  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-WEB = os.path.join(ROOT, "web", "data")
 DOCS = os.path.join(ROOT, "docs")
+WEB = os.path.join(ROOT, "web", "data")
 
 
 def main():
     A = json.load(open(os.path.join(WEB, "market_anchors.json")))
-    total = A["meralco_june2026_rate_php_kwh"]        # 14.4833
-    gen = A["meralco_june2026_generation_charge"]     # 9.0704
-    price = A["meralco_june2026_wesm_price_php_kwh"]  # 7.0281, the WESM PRICE
-    espc = A["meralco_june2026_wesm_share_pct"] / 100.0    # 0.10 of energy
-    # The WESM price applies to the WESM share of energy, so what lands in the
-    # blended generation charge is share x price, about P0.70/kWh. Stacking the
-    # P7.0281 price itself as a slice of the P14.4833 rate overstates the bill's
-    # spot exposure roughly tenfold, and leaves a P2.04 residual that implies
-    # the other 90% of supply cost P2.27/kWh.
-    wesm = round(espc * price, 4)                     # ~0.7028
-    other = round(total - gen, 4)                     # transmission, distribution, taxes, etc
-    gen_non_wesm = round(gen - wesm, 4)               # contracted generation (PSA + IPP)
+    total = A["meralco_june2026_rate_php_kwh"]
+    gen = A["meralco_june2026_generation_charge"]
+    price = A["meralco_june2026_wesm_price_php_kwh"]
+    espc = A["meralco_june2026_wesm_share_pct"] / 100.0
+    wesm = round(espc * price, 4)
+    other = round(total - gen, 4)
+    contracted = round(gen - wesm, 4)
 
-    fig, ax = plt.subplots(figsize=(9.4, 3.6))
-    # one horizontal bar, the whole Meralco rate, split into three slices
-    segs = [
-        ("WESM (spot)", wesm, vz.CORAL, True),
-        ("contracted generation\n(PSA + IPP)", gen_non_wesm, vz.STEEL, False),
-        ("transmission, distribution,\ntaxes and the rest", other, vz.FILL, False),
-    ]
-    left = 0
-    for name, val, color, hi in segs:
-        share = 100 * val / total
-        ax.barh(0, share, left=left, color=color, height=0.5,
-                edgecolor="white", linewidth=1.6, zorder=3)
-        tc = "white" if hi else vz.NAVY
-        if share < 18:
-            # narrow slice: label below the bar with a tick so text never clips
-            ax.text(left + share / 2, -0.42,
-                    f"{name.replace(chr(10), ' ')}\nP{val:.2f} ({share:.0f}%)",
-                    ha="center", va="top", fontsize=8, color=vz.NAVY)
-            ax.plot([left + share / 2, left + share / 2], [-0.25, -0.34],
-                    color=vz.MUTE, lw=0.8)
-        else:
-            ax.text(left + share / 2, 0,
-                    f"{name}\nP{val:.2f}/kWh ({share:.0f}%)", ha="center",
-                    va="center", fontsize=9, color=tc,
-                    fontweight="bold" if hi else "normal")
-        left += share
+    segs = [("WESM spot", wesm, cs.CORAL),
+            ("contracted generation, PSA and IPP", contracted, cs.STEEL),
+            ("transmission, distribution, taxes", other, "#33445c")]
+    wesm_pct = 100 * wesm / total
 
-    wesm_share = 100 * wesm / total
-    ax.annotate("a swing in the WESM spot price moves\nONLY this slice, and only next month",
-                xy=(wesm_share / 2, 0.26), xytext=(wesm_share / 2 + 6, 0.74),
-                ha="center", fontsize=9.5, color=vz.NAVY,
-                arrowprops=dict(arrowstyle="->", color=vz.NAVY, lw=1.2))
-    ax.set_xlim(0, 100)
-    ax.set_ylim(-1.05, 1.05)
-    ax.set_yticks([])
-    ax.set_xticks([0, 25, 50, 75, 100])
-    ax.set_xticklabels(["0%", "25%", "50%", "75%",
-                        f"100% = P{total:.2f}/kWh"], fontsize=9)
-    for s in ("top", "right", "left"):
-        ax.spines[s].set_visible(False)
-    ax.spines["bottom"].set_color(vz.MUTE)
-    ax.tick_params(length=0)
-    ax.set_title("A swing in the WESM price is only a slice of the Meralco bill",
-                 fontsize=13.5, color=vz.NAVY, pad=12, loc="left")
-    fig.text(0.5, -0.05,
-             f"Meralco June 2026 residential rate, P{total:.2f}/kWh. The generation "
-             f"charge (P{gen:.2f}) is the largest part, but only "
-             f"{espc * 100:.0f}% of the energy behind it was bought on WESM. At a "
-             f"WESM price of P{price:.2f}/kWh that is P{wesm:.2f}/kWh of the bill, "
-             f"{100 * wesm / total:.1f}%. The other {100 - espc * 100:.0f}% is under "
-             f"contracts whose prices do not move with the spot market, so a spot "
-             f"spike moves this one slice on the next bill, not the whole bill and "
-             f"not the same day. Source: Meralco June 2026 advisory.",
-             ha="center", fontsize=8.5, color=vz.MUTE, wrap=True)
-    fig.tight_layout()
-    out = os.path.join(DOCS, "bill-wedge.png")
-    fig.savefig(out, dpi=150, bbox_inches="tight", facecolor="white")
-    plt.close(fig)
-    print("wrote", out, f"({os.path.getsize(out) // 1024} KB)")
+    fdir = cs.frames_dir("wedge")
+    # each slice slides in, then the spot slice pulses so the eye returns to it
+    seq = ([("grow", t) for t in cs.reveal(20, 6)]
+           + [("pulse", i / 24) for i in range(24)])
+
+    for fi, (stage, t) in enumerate(seq):
+        fig, ax = cs.card(figsize=(9.0, 4.5), field="money",
+                          rect=(0.075, 0.30, 0.615, 0.30))
+        shown_total = total * (t if stage == "grow" else 1.0)
+        left = 0.0
+        for name, val, col in segs:
+            w = max(0.0, min(val, shown_total - left))
+            if w <= 0:
+                break
+            pct = 100 * val / total
+            alpha = 1.0
+            if stage == "pulse" and col == cs.CORAL:
+                alpha = 0.74 + 0.26 * (0.5 + 0.5 * math.cos(2 * math.pi * t))
+            ax.add_patch(FancyBboxPatch(
+                (left, -0.30), w, 0.60,
+                boxstyle="round,pad=0,rounding_size=0.06",
+                fc=col, ec="none", alpha=alpha, zorder=4))
+            if w > val * 0.92 and w > total * 0.09:
+                ax.text(left + w / 2, 0, f"{name}\nP{val:.2f}  {pct:.0f}%",
+                        ha="center", va="center", fontsize=9.0,
+                        color=cs.TEXT if col != "#33445c" else cs.BODY, zorder=6)
+            left += w
+
+        if stage == "pulse":
+            ax.annotate("a spot swing moves ONLY this slice,\nand only on next month's bill",
+                        xy=(wesm / 2, 0.34), xytext=(total * 0.10, 1.15),
+                        fontsize=9.2, color=cs.CORAL, ha="left", zorder=8,
+                        arrowprops=dict(arrowstyle="->", color=cs.CORAL, lw=1.2))
+            ax.text(wesm / 2, -0.42, f"P{wesm:.2f}", ha="center", va="top",
+                    fontsize=9.0, color=cs.CORAL, zorder=6)
+
+        ax.set_xlim(-0.15, total + 0.15)
+        ax.set_ylim(-1.15, 1.65)
+        ax.set_yticks([])
+        ax.set_xticks([0, total])
+        ax.set_xticklabels(["P0", f"P{total:.2f} per kWh"])
+        ax.grid(False)
+
+        cs.title(fig, f"A WESM swing moves {wesm_pct:.0f}% of a Meralco bill, "
+                      "and only next month",
+                 f"The June 2026 residential rate, P{total:.2f}/kWh, split three ways.")
+        cs.payoff(fig, 0.745, 0.585, f"P{wesm:.2f}",
+                  f"of the P{total:.2f} rate rides\non the spot market",
+                  cs.CORAL, 34)
+        cs.source(fig,
+                  f"Meralco bought {espc * 100:.0f}% of its energy on WESM at "
+                  f"P{price:.2f}/kWh, so P{wesm:.2f}/kWh of the P{gen:.2f} "
+                  "generation charge is spot.\nThe other "
+                  f"{100 - espc * 100:.0f}% sits under contracts whose prices do "
+                  "not move with the spot market. Source: Meralco June 2026 advisory.")
+        fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
+        plt.close(fig)
+
+    cs.save_gif(fdir, os.path.join(DOCS, "bill-wedge.gif"), fps=12, width=900)
 
 
 if __name__ == "__main__":

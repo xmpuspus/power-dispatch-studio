@@ -189,7 +189,7 @@ recomputes nightly as clean market days accumulate
 (`data/derived/loss_surface.json`), and the studio carries the same three
 panels under Analysis, Loss validation.
 
-![Loss-surface validation: three scatter panels, one per grid, of the model's marginal loss-factor deviation against the market's observed per-node deviation, each with its fitted line and Spearman rank correlation. Luzon and Mindanao trend clearly and are marked validated in green; Visayas scatters and is marked failing in red](docs/loss-surface.png)
+![Loss-surface validation: three scatter panels, one per grid, of the model's marginal loss-factor deviation against the market's observed per-node deviation, each with its fitted line and Spearman rank correlation. Luzon and Mindanao trend clearly and are marked validated in green; Visayas scatters and is marked failing in red](docs/loss-surface.gif)
 
 That wholesale price passes into the Meralco bill monthly, and only on the share
 of energy actually bought on the spot market. The June 2026 advisory paid
@@ -202,7 +202,7 @@ margin**, which is why the loss of one large unit is felt system-wide; the map's
 subtraction in the open, as arithmetic on the published margin, not a dispatch
 simulation.
 
-![The Meralco June 2026 bill as a horizontal bar: the WESM spot slice at 0.70 pesos per kWh is about 5 percent, contracted generation from PSAs and IPPs 58 percent, and transmission distribution and taxes 37 percent, with an arrow noting a WESM swing moves only the spot slice and only on the next month's bill](docs/bill-wedge.png)
+![The Meralco June 2026 bill as a horizontal bar: the WESM spot slice at 0.70 pesos per kWh is about 5 percent, contracted generation from PSAs and IPPs 58 percent, and transmission distribution and taxes 37 percent, with an arrow noting a WESM swing moves only the spot slice and only on the next month's bill](docs/bill-wedge.gif)
 
 The price is a shape, not a number. The same data center draws the same power every
 hour, but what it does to the WESM price depends on how busy the grid already is:
@@ -231,7 +231,7 @@ they hold. What energy-only means is that there is no forward capacity auction t
 price, which is why this project has no capacity-market chart. The reserve layer
 is modelled separately below.
 
-![Three small-multiple panels, one per island grid, each plotting the average WESM price against dispatched generation: Luzon a long climb from 3 to 14 pesos, Visayas rising then easing, Mindanao climbing steeply past 22 pesos](docs/small-multiples.png)
+![Three small-multiple panels, one per island grid, each plotting the average WESM price against dispatched generation: Luzon a long climb from 3 to 14 pesos, Visayas rising then easing, Mindanao climbing steeply past 22 pesos](docs/small-multiples.gif)
 
 ![Who runs the Philippine power market: IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC regulates, DOE sets policy, TransCo owns the transmission assets NGCP operates on concession, and the last row notes WESM is energy-only with no capacity auction](docs/wesm-roles.png)
 
@@ -642,7 +642,7 @@ each a recorded studio session:
 [studio/README.md](studio/README.md) carries one recorded clip per deep analysis,
 14 in all.
 
-**What this page weighs.** Opening this README downloads 13.4 MB of media across
+**What this page weighs.** Opening this README downloads 11.8 MB of media across
 15 files. It was 87.2 MB across 22. GitHub adds no lazy-load attribute, and a
 closed details block does not defer a fetch either. I measured both in a real
 browser. So every embedded byte arrives whether you scroll to it or not. The long
