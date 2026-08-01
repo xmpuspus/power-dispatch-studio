@@ -31,6 +31,7 @@ viz:
 	$(PY) scripts/bill_wedge.py
 	$(PY) scripts/wesm_roles.py
 	$(PY) scripts/constraint_league_gif.py
+	$(PY) scripts/constraint_map_gif.py
 	$(PY) scripts/story_montage.py
 	$(PY) scripts/stat_card.py
 	$(PY) scripts/loss_surface_fig.py

@@ -75,7 +75,9 @@ day-ahead count measures how persistently the constraint reappears across re-run
 the real-time count how often it actually bound. The same corridor IEMOP's December
 2025 report names in prose; here it is the receipts behind the prose.
 
-![The constraint league filling in bar by bar: named transmission equipment ranked by days at a binding limit over the archive window, the Leyte-Cebu corridor lines highlighted in coral topping the list by day-ahead days at a limit](docs/constraint-league.gif)
+![The constraint league drawn on the grid itself, on a dark canvas. The Philippine transmission network glows faintly, brightest along the 500 kV backbone. Twelve named substations light up in rank order, each dot sized by days at a binding limit, with a white core for the smaller real-time count. The Leyte-Cebu corridor is coral and tops the ranked list beside the map. An inset zooms to the corridor itself, 31 km from Tabango in Leyte to Daanbantayan in Cebu.](docs/constraint-map.gif)
+
+The same league as plain ranked bars, with no map, is [docs/constraint-league.gif](docs/constraint-league.gif).
 
 Across the 116-day window, **80 distinct pieces of equipment** hit a limit at least
 once, in **95 monitored constraints** (a transformer is listed under each winding
@@ -640,7 +642,7 @@ each a recorded studio session:
 [studio/README.md](studio/README.md) carries one recorded clip per deep analysis,
 14 in all.
 
-**What this page weighs.** Opening this README downloads 13.5 MB of media across
+**What this page weighs.** Opening this README downloads 13.4 MB of media across
 15 files. It was 87.2 MB across 22. GitHub adds no lazy-load attribute, and a
 closed details block does not defer a fetch either. I measured both in a real
 browser. So every embedded byte arrives whether you scroll to it or not. The long
