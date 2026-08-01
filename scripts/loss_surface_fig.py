@@ -99,9 +99,9 @@ def main():
                       "diagnosed", cs.CORAL, 29)
         cs.source(fig,
                   "Marginal loss factors come from the OpenStreetMap-geometry "
-                  "backbone, compared grid by grid against WESM's published "
-                  "nodal deviations.\nA failing grid stays on the card instead "
-                  "of being dropped. Source: data/derived/loss_surface.json.")
+                  "backbone. Each grid is compared against WESM's published "
+                  "nodal deviations.\nFrom data/derived/loss_surface.json, "
+                  "recomputed nightly.")
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=100, facecolor=cs.BG)
         plt.close(fig)
 

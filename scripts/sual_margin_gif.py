@@ -91,7 +91,7 @@ def main():
                      fontsize=9.6, color=cs.BODY, va="top", zorder=6)
         cs.source(fig, y=0.055, text="Arithmetic on IEMOP's published May 2026 supply margin, not a "
                   "dispatch simulation. The margin itself moves daily.\n"
-                  "Sources: IEMOP May 2026 report; Sual Power Station unit ratings.")
+                  "From the IEMOP May 2026 report and Sual Power Station unit ratings.")
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

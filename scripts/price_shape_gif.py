@@ -87,7 +87,7 @@ def main():
         cs.source(fig,
                   f"A data center draws the same {DC_MW} MW every hour. What it "
                   "does to the price depends on how busy the grid already is.\n"
-                  "Source: IEMOP RTDSUM generation joined to LWAPF price, archived.")
+                  "From IEMOP RTDSUM generation joined to LWAPF price, archived.")
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

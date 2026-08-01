@@ -98,7 +98,7 @@ def main():
                   f"P{price:.2f}/kWh, so P{wesm:.2f}/kWh of the P{gen:.2f} "
                   "generation charge is spot.\nThe other "
                   f"{100 - espc * 100:.0f}% sits under contracts whose prices do "
-                  "not move with the spot market. Source: Meralco June 2026 advisory.")
+                  "not move with the spot market. From the Meralco June 2026 advisory.")
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 
