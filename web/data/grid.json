@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 113,
+   "days": 114,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -31,8 +31,8 @@
   },
   {
    "equipment": "1EHVNGS_TR2",
-   "days": 110,
-   "rtd_intervals": 3020,
+   "days": 111,
+   "rtd_intervals": 3030,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -40,8 +40,8 @@
   },
   {
    "equipment": "1EHVNGS_TR1",
-   "days": 110,
-   "rtd_intervals": 990,
+   "days": 111,
+   "rtd_intervals": 996,
    "max_overload_mw": 0.0,
    "matched": true,
    "kind": "station",
@@ -49,7 +49,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 92,
+   "days": 93,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 87,
+   "days": 88,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -269,6 +269,14 @@
    "path_edges": 2
   },
   {
+   "equipment": "1MEXI_1HER1",
+   "days": 5,
+   "rtd_intervals": 18,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "no plausible path in the graph"
+  },
+  {
    "equipment": "3BINA_3DAS2",
    "days": 4,
    "rtd_intervals": 87,
@@ -312,14 +320,6 @@
    "matched": true,
    "kind": "station",
    "station": "Marawi Substation"
-  },
-  {
-   "equipment": "1MEXI_1HER1",
-   "days": 4,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": false,
-   "why": "no plausible path in the graph"
   },
   {
    "equipment": "2QUEZ_2ARA1",
