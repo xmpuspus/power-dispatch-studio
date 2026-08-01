@@ -105,7 +105,7 @@ stated = re.search(r"downloads (\d+\.\d) MB of media across\s*\n?\s*(\d+) files"
 check("the README states its own media weight", stated is not None)
 if stated:
     check(f"stated MB matches the files on disk ({stated.group(1)} vs {total_mb:.1f})",
-          abs(float(stated.group(1)) - total_mb) < 0.1)
+          abs(float(stated.group(1)) - total_mb) < 0.05)
     check(f"stated file count matches ({stated.group(2)} vs {len(embedded)})",
           int(stated.group(2)) == len(embedded))
 

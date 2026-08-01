@@ -95,6 +95,58 @@ CHOKEPOINTS = [
     },
 ]
 
+# --- IEMOP station code -> the OpenStreetMap substation it names ----------------
+# The congestions-manifesting files identify equipment by a station code
+# ("05DAANBN", "1EHVNGS_TR1"), and nothing in the public files carries a
+# coordinate. This table is what lets the constraint league be drawn on a map.
+#
+# It is hand-built and each entry is a named OSM feature in web/data/grid_nodes
+# .geojson, never a fuzzy match. A code like DAANBN is not a prefix of
+# DAANBANTAYAN, and loose matching put Tabang (Bulacan) where Tabango (Leyte)
+# belongs, Mandaluyong where Mandaue belongs, and Binangonan where Binan
+# belongs. A wrong substation on a map is a defect that looks like data, so
+# ambiguous codes are resolved from the line topology in the same file, or
+# left off the map:
+#   01EHVNAG -> "Nagsaag EHV Substation": the equipment is 1EHVNGS_TR1/TR2,
+#     and Nagsaag (San Manuel, Pangasinan) is the only EHV node matching NGS.
+#   01EHVSJO -> "San Jose del Monte Substation": the 500 kV Nagsaag-San Jose
+#     and Marilao-San Jose-Tayabas lines both end within 0.8 km of it.
+#   01SNRAFA -> "San Rafael Substation" (Bulacan): the Caysio-San Rafael
+#     230 kV line ends 0.9 km from it, which separates it from the Tarlac
+#     San Rafael.
+# Geometry is OpenStreetMap (ODbL), community-mapped, NOT NGCP's own network
+# model. Source: https://www.openstreetmap.org/copyright
+STATION_OSM = {
+    "05DAANBN": "Daanbantayan Cable Terminal",
+    "04TABANG": "Tabango Substation",
+    "01EHVNAG": "Nagsaag EHV Substation",
+    "01EHVSJO": "San Jose del Monte Substation",
+    "01SNRAFA": "San Rafael Substation",
+    "01OLONGA": "Olongapo Substation",
+    "01BAUANG": "Bauang Substation",
+    "04MAASIN": "Maasin Substation",
+    "01TGEGAR": "Tuguegarao Substation",
+    "01LATRIN": "La Trinidad Substation",
+    "01MEXICO": "Mexico Substation",
+    "03BINAN": "Biñan Substation",
+    "05MANDAU": "Mandaue Gas Insulated Substation",
+    "03CLACA": "Calaca Substation",
+    "08NABAS": "Nabas Substation",
+    "01HERMOS": "Hermosa Substation",
+    "03DASMAE": "Dasmariñas Substation",
+}
+
+# Codes the map leaves off, and why. Reported on the card rather than snapped to
+# a nearby node, because a plausible wrong dot is worse than a missing one.
+STATION_UNPLACED = {
+    "LEYTE_TO": "an interface row, not a station: drawn as the Leyte-Cebu arc",
+    "01BPPC": "Bauang Private Power Corp, a plant with no OSM substation node",
+}
+
+# The two 230 kV lines that carry the Leyte-Cebu corridor, drawn as an arc
+# between their end stations rather than as two dots.
+CORRIDOR_ARC = ("04TABANG", "05DAANBN")
+
 # --- Sual (the fragility example) ---------------------------------------------
 # Sual coal-fired power station, Sual, Pangasinan: 2 x 647 MW, among the largest
 # units on the Luzon grid, and the worked example here because unit trips are a
