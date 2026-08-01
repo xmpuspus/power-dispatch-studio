@@ -92,9 +92,9 @@ def main():
                       cs.REGION[steep], 30)
         cs.source(fig,
                   "Each faint dot is one 5-minute interval. Luzon carries the "
-                  "volume and climbs a long way; the smaller grids stay flat "
-                  "until they run tight.\n"
-                  "Source: IEMOP RTDSUM generation joined to LWAPF price, archived.")
+                  "volume and climbs a long way. The smaller grids stay flat "
+                  "until they run tight.\nFrom IEMOP RTDSUM generation joined "
+                  "to LWAPF price, archived.")
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=100, facecolor=cs.BG)
         plt.close(fig)
 

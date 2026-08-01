@@ -92,7 +92,7 @@ def main():
                   "Each line is one island grid's daily average of IEMOP's "
                   "load-weighted 5-minute prices. The links between the islands "
                   "are the reason the numbers differ.\n"
-                  "Source: IEMOP LWAPF, archived.")
+                  "From IEMOP LWAPF, archived.")
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

@@ -291,7 +291,7 @@ def main():
                  "and substations are OpenStreetMap (ODbL), community-mapped, and are",
                  fontsize=7.6, color=MUTE, va="top")
         fig.text(0.012, 0.018,
-                 "not NGCP's network model. Counts: IEMOP RTDCV and DAPCV, archived. "
+                 "not NGCP's network model. Counts from IEMOP RTDCV and DAPCV, archived. "
                  f"{len(STATION_UNPLACED)} league codes carry no OSM substation and are left off.",
                  fontsize=7.6, color=MUTE, va="top")
 

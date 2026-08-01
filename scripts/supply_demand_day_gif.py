@@ -112,9 +112,9 @@ def main():
                       "overnight low to evening peak,\non the same day",
                       cs.CORAL, 31)
         cs.source(fig,
-                  "Two panels on one shared clock, never two axes on one panel: a "
-                  "dual axis lets the choice of scales invent a correlation.\n"
-                  "Source: IEMOP RTDSUM generation and LWAPF price, archived.")
+                  "Generation and price share one clock, and each reads against "
+                  "its own zero.\nFrom IEMOP RTDSUM generation and LWAPF "
+                  "price, archived.")
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

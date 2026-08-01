@@ -64,8 +64,8 @@ def main():
              "WESM is energy-only, which is why this project has no capacity-market chart.")
     cs.source(fig,
               "Generators are paid for the energy they dispatch and for the "
-              "reserve they hold. There is no forward capacity auction to price "
-              "or to chart.\nSources: IEMOP, NGCP, PEMC, ERC, DOE.")
+              "reserve they hold. No forward capacity auction exists to price "
+              "or to chart.\nFrom IEMOP, NGCP, PEMC, ERC and DOE.")
     cs.save_png(fig, OUT, dpi=140)
 
 

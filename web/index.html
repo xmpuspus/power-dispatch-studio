@@ -265,7 +265,7 @@
 <div id="banner" role="alert"></div>
 
 <div id="findings" class="panel" aria-label="Key findings">
-  <div id="fhead"><h2>Key findings</h2>
+  <div id="fhead"><h2>What the archive says</h2>
     <button id="fclose" title="close" aria-label="close">&times;</button></div>
   <div id="flist"></div>
 </div>
@@ -780,7 +780,7 @@ function sideprice(){
         <td class="num">${n.dev > 0 ? "+" : ""}${fmt(n.dev,2)}</td></tr>`;
       return one(pg.top[0]) + one(pg.bottom[0]);
     };
-    nodalBlock = `<h2 style="margin-top:12px">The same story, node by node</h2>
+    nodalBlock = `<h2 style="margin-top:12px">Inside each region, single nodes sit above and below the regional price</h2>
     <p class="sub">Below the regional averages, DIPCEF prices about
     ${fmt(NO.n_nodes)} individual nodes. The dots on the map are each node's
     persistent deviation from its own region's price across the window's
@@ -825,7 +825,7 @@ function sideprice(){
   ${P.max_spread && P.max_spread.date ? `<div class="note">Widest daily
   regional spread in the window: P${fmt(P.max_spread.php,2)}/kWh on
   ${esc(P.max_spread.date)}.</div>` : ""}
-  <h2 style="margin-top:12px">The bill translation</h2>
+  <h2 style="margin-top:12px">Only the spot share of the bill moves, and only next month</h2>
   ${mer}
   <div class="note">The generation charge is the biggest slice of a Meralco bill
   and moves with WESM through monthly pass-through, but only on the share bought
