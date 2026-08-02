@@ -72,28 +72,31 @@ export default function App() {
       <main className="app__main">
         <section className="hero">
           <div className="hero__copy">
-            <h1 className="hero__title">Can the grid host the data-center wave?</h1>
+            <h1 className="hero__title">
+              Test how much data-center demand the grid can carry
+            </h1>
             <p className="hero__lede">
-              A merit-order dispatch model built on IEMOP's public 5-minute files,
-              calibrated against observed prices. It couples the three grids over the HVDC
-              links, commits baseload, runs forced-outage Monte Carlo, and shows where
-              storage buys back the gap. Open the studio to explore the solution.
+              This lowest-cost-first dispatch model (merit order) uses IEMOP's public
+              5-minute files and checks its results against recorded prices. It clears the
+              three grids together over the high-voltage direct-current (HVDC) links,
+              accounts for baseload commitments and random plant outages, and tests where
+              storage can cover a shortfall.
             </p>
             <div className="hero__stats">
               {d ? (
                 <>
                   <StatTile
-                    label="Reserve margin, Luzon"
+                    label="Spare dependable capacity, Luzon (reserve margin)"
                     value={pct((d.adequacy.luzon.reserve_margin_pct ?? 0) / 100, 1)}
                     hint="at the evening peak"
                   />
                   <StatTile
-                    label="LOLP with DICT 1.5 GW"
+                    label="Shortfall chance with DICT 1.5 GW (LOLP)"
                     value={pct(
                       d.reliability_mc.dict_2028_luzon.distribution.lolp_pct / 100,
                       2
                     )}
-                    hint="the data-center wave"
+                    hint="with the announced added demand"
                     tone="accent"
                   />
                   <StatTile
@@ -126,7 +129,7 @@ export default function App() {
           </span>
           <span className="app__footnote">
             Power Dispatch Studio is a free, open, independent production-cost tool for
-            the WESM, built on public data.
+            the Philippine Wholesale Electricity Spot Market (WESM), built on public data.
           </span>
         </footer>
       </main>
@@ -150,7 +153,7 @@ export default function App() {
               ? `Data error: ${error ?? solverErr}`
               : !d && loading
                 ? 'Loading the model.'
-                : 'Loading the HiGHS solver.'}
+                : 'Loading the calculation engine.'}
           </p>
           <button className="btn btn--ghost" onClick={() => setStudio(false)}>
             Close

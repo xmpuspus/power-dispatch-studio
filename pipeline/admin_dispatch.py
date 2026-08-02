@@ -1,29 +1,21 @@
 #!/usr/bin/env python3
-"""Measure the administered-dispatch overlay (MOTRD out-of-merit raises) and
-record why it stays measured, not built into the per-fuel engines.
+"""Measure out-of-merit raise instructions and their effect on the fuel model.
 
-The post-convergence queue named an administered-dispatch overlay on the
-replay, sized by the SO dispatch instructions (market_ops.json
-so_instructions), as an engine-grade build. Measure-first decided against it:
+The operator's instructions are large enough to matter for dispatch: all about
+89,000 records are raises. During affected hours, the instructed MW is 6 to 11
+percent of generation by grid and reaches 40 percent in the upper tail.
 
-- The MOT-raise record is MATERIAL in MW: all ~89k instructions are raises,
-  and on hours with a raise the administered MW is 6 to 11 percent of the
-  grid's dispatched generation (Mindanao highest), reaching 40 percent at the
-  tail. It is NOT the inert must-run subset.
-- But it is PRICE-INERT in the model's per-fuel block engines, for the same
-  reason the R6 min-stable coal floor was: the raises are overwhelmingly on
-  COAL baseload units, and on 87 percent of the raise hours coal is already
-  the modeled MARGINAL fuel (the price-setter). Forcing more coal on cannot
-  move a price coal already sets, and on the tight hours coal is already at
-  its ceiling, so a per-fuel administered floor would not bind. The
-  out-of-merit effect is a per-RESOURCE fact (which specific coal unit runs
-  for security), which the aggregated per-fuel LP drops by construction.
-- So the engine layer the record sizes is the per-resource joint clear
-  (Pass F), not a per-fuel floor. This module measures the two numbers that
-  make that case and commits them for the methodology and a pin.
+The instructions do not change prices in this model. Most apply to coal units,
+and coal is already the marginal fuel during 87 percent of affected hours. The
+instruction selects a particular unit for grid security, while the model groups
+units by fuel. A per-resource model would be needed to represent that choice.
+
+This module records the size and fuel mix of the instructions for the method
+page and data checks.
 
     python3 pipeline/admin_dispatch.py --derive
 """
+
 from __future__ import annotations
 
 import argparse
@@ -93,7 +85,8 @@ def _rtdsum_gen_hourly() -> dict:
                     continue
                 try:
                     acc[(g, t.date().isoformat(), t.hour)].append(
-                        float(r.get("GENERATION") or 0))
+                        float(r.get("GENERATION") or 0)
+                    )
                 except ValueError:
                     continue
     return {k: sum(v) / len(v) for k, v in acc.items()}
@@ -118,12 +111,15 @@ def derive() -> dict:
             num += a
             den += y
             hrs += 1
-        frac[g] = {"mw_weighted_pct": round(100 * num / den, 2) if den else None,
-                   "n_raise_hours": hrs}
+        frac[g] = {
+            "mw_weighted_pct": round(100 * num / den, 2) if den else None,
+            "n_raise_hours": hrs,
+        }
 
     # fuel mix of the raised MW (the operator's out-of-merit dispatch), via
     # the model's own resource->fuel classifier
     from offers import classify_fuel
+
     mix: dict = collections.Counter()
     mix_tot = 0.0
     for r in _iter_rows():
@@ -131,10 +127,15 @@ def derive() -> dict:
             mw = float(r.get("SO_MW_INSTRUCTION") or 0)
         except ValueError:
             continue
-        mix[classify_fuel((r.get("RESOURCE_NAME") or "").strip()) or "unclassified"] += mw
+        mix[
+            classify_fuel((r.get("RESOURCE_NAME") or "").strip()) or "unclassified"
+        ] += mw
         mix_tot += mw
-    fuel_mix = {k: round(100 * v / mix_tot, 1)
-                for k, v in mix.most_common()} if mix_tot else {}
+    fuel_mix = (
+        {k: round(100 * v / mix_tot, 1) for k, v in mix.most_common()}
+        if mix_tot
+        else {}
+    )
 
     # modeled marginal fuel AND max price on the raise hours (a sample of
     # raise days spread across the window)
@@ -163,33 +164,31 @@ def derive() -> dict:
         "sample_days": sample,
         "n_raise_grid_hours_sampled": n,
         "modeled_marginal_fuel_on_raise_hours_pct": {
-            k: round(100 * v / n, 1) for k, v in marg.most_common()} if n else {},
+            k: round(100 * v / n, 1) for k, v in marg.most_common()
+        }
+        if n
+        else {},
         "coal_marginal_share_pct": coal_pct,
         "raised_mw_fuel_mix_pct": fuel_mix,
         "max_modeled_price_on_raise_hours_php_kwh": round(max_price, 3),
-        "verdict": "measured_material_but_per_fuel_inert",
-        "note": ("The administered MOT-raise dispatch is material in MW (6 to "
-                 "11 percent of dispatched generation on hours with a raise, "
-                 "highest on Mindanao) but price-inert in the per-fuel block "
-                 f"engines. The raised MW is mostly coal ({fuel_mix.get('coal')} "
-                 f"percent) with about a fifth on gas ({fuel_mix.get('natural_gas')} "
-                 f"percent), and coal is the modeled marginal fuel on {coal_pct} "
-                 "percent of the raise hours; every raise hour already prices at "
-                 f"or just above coal's floor (max P{round(max_price, 2)}/kWh "
-                 "across all raise hours), so a per-fuel coal floor cannot lift "
-                 "a price coal already sets, and the only move it could make is "
-                 "downward (coal displacing water), which does not add the "
-                 "administered premium the overlay was meant to model. This is "
-                 "the R6 min-stable-floor outcome, one layer up. The out-of-merit "
-                 "effect is a per-resource fact (which named unit runs for "
-                 "security), which the aggregated LP drops; the engine layer it "
-                 "sizes is the per-resource joint energy+reserve clear, not a "
-                 "per-fuel overlay. Measured on the cost-proxy engine, whose "
-                 "coal-marginal hours price flat at the administered floor; the "
-                 "offer-mode leg rests on the R6 result that the same floor left "
-                 "the observed offer books byte-identical."),
+        "verdict": "does_not_raise_prices_in_fuel_level_model",
+        "note": (
+            "The administered MOT-raise dispatch equals 6 to 11 percent of "
+            "generation in the affected hours, with the largest share on "
+            "Mindanao. It does not raise prices in the fuel-level calculation. "
+            f"Most of the raised output is coal ({fuel_mix.get('coal')} "
+            f"percent) with about a fifth on gas ({fuel_mix.get('natural_gas')} "
+            f"percent). Coal sets the modeled price in {coal_pct} percent of "
+            "those hours. Every affected hour already prices at or just above "
+            f"the coal floor, with a maximum of P{round(max_price, 2)}/kWh. "
+            "Applying the same floor to the public offer books changes none "
+            "of the offers. This calculation groups generation by fuel, so it "
+            "cannot show which named unit the operator runs for security. A "
+            "model with individual units and reserve awards is needed to test "
+            "that effect."
+        ),
         "src": "https://www.iemop.ph/market-data/list-of-mot-raise-re-dispatch-"
-               "based-on-so-dispatch-instruction-report/",
+        "based-on-so-dispatch-instruction-report/",
     }
 
 
@@ -210,7 +209,9 @@ if __name__ == "__main__":
         os.makedirs(os.path.dirname(OUT), exist_ok=True)
         with open(OUT, "w") as fh:
             json.dump(out, fh, indent=1)
-        print(f"wrote {OUT}: coal marginal on {out['coal_marginal_share_pct']}% "
-              f"of raise hours; frac {out['mw_weighted_fraction_of_dispatch']}")
+        print(
+            f"wrote {OUT}: coal marginal on {out['coal_marginal_share_pct']}% "
+            f"of raise hours; frac {out['mw_weighted_fraction_of_dispatch']}"
+        )
     else:
         print(__doc__)

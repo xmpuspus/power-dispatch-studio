@@ -26,7 +26,7 @@ const base: Levers = {
   hydrology: 1,
 }
 
-describe('lever tornado', () => {
+describe('scenario sensitivity ranking', () => {
   // the global setup (vitest.setup.ts) loads the wasm solver in beforeAll, so
   // the sweep has to run after that, not at import time
   let bars: TornadoBar[]

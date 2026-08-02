@@ -1,4 +1,4 @@
-// Native 168-hour week (roadmap item 6): seven consecutive observed days solved
+// Seven consecutive recorded days solved
 // on ONE linear program, so the battery state of charge carries across midnight
 // instead of resetting each day. The day-by-day engine can never bank Monday's
 // cheap water for Thursday's peak; this view measures what that carry is worth.
@@ -78,7 +78,10 @@ export function WeekView({
   if (!result)
     return (
       <div className="view">
-        <Panel title="Native 168-hour week" subtitle="Seven observed days on one LP.">
+        <Panel
+          title="Seven recorded days solved as one continuous week"
+          subtitle="A 168-hour optimization carries stored energy across midnight."
+        >
           <EmptyNote>
             The observed library has fewer than seven full-coverage days, so a week cannot
             be assembled.
@@ -147,7 +150,7 @@ export function WeekView({
           </select>
         </label>
         <label className="chrono__ctl">
-          Storage
+          Battery size
           <select
             className="ribbon__select"
             value={storeKey}
@@ -167,13 +170,13 @@ export function WeekView({
             checked={dcWave}
             onChange={(e) => setDcWave(e.target.checked)}
           />
-          DC-wave spread (8 GW solar + 2.5 GW load)
+          Added-demand case (8 GW solar + 2.5 GW load)
         </label>
       </div>
 
       <Panel
-        title={`Inter-day storage value, ${dates[0]} to ${dates[6]}`}
-        subtitle="One 168-hour LP with the battery state of charge continuous across midnight, against the same seven days solved independently."
+        title={`Value of carrying stored energy between days, ${dates[0]} to ${dates[6]}`}
+        subtitle="One 168-hour optimization carries battery energy across midnight and is compared with the same seven days solved separately."
       >
         <div className="stat-row">
           <StatTile
@@ -225,16 +228,15 @@ export function WeekView({
         </svg>
         <DataGrid columns={cols} rows={week.days} getKey={(r) => r.date} />
         <p className="note">
-          On the observed days the model's own prices are flat enough that the battery
-          never cycles, so the week clears at the day-by-day price and the saving is zero:
-          at present PH spreads inter-day storage earns nothing, which is why little
-          merchant storage has been built. Turn on the announced DC-wave spread (a deep
-          midday solar trough and an evening scarcity peak) and the battery banks cheap
-          energy and carries it across midnight, worth the saving above. The water stays
-          daily-budgeted, so this never lends one day's river to another. Reserve and the
-          gas budget are day-mode analyses and are off in the week LP; every number comes
-          from the same HiGHS engine, byte-identical to the Python backcast (the week LP
-          is pinned by a golden hash).
+          On the recorded days, modeled prices are flat enough that the battery does not
+          charge or discharge. Solving the week together therefore costs the same as
+          solving each day separately. Turn on the announced data-center demand spread,
+          with lower midday prices from solar and a higher evening scarcity price, and the
+          battery stores cheaper energy across midnight. Daily water limits remain
+          separate, so hydro energy cannot move from one day to another. Reserve and gas
+          limits are day-level analyses and are not used in the week calculation. HiGHS
+          solves the same optimization as the Python historical replay, verified by an
+          exact text hash.
         </p>
       </Panel>
     </div>

@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
-"""Keep the hand-written public prose in lockstep with the bake.
+"""Check that public text matches the current data files.
 
 The map reads findings.json/answers.json, which build_data.py recomputes every
-bake, so the on-screen numbers are always current. The README, the OG card
-caption, and the montage are hand-typed and freeze at whatever bake last touched
-them; the archive window rolls a day forward every night, so every window-derived
-count in that prose silently drifts. A journalist who checks the README against
-the live map finds them disagreeing.
+data build, so the on-screen numbers are always current. The README, share card
+caption, and montage use fixed text. The archive window rolls forward every
+night, so counts derived from that window can drift out of date.
 
-This is the oracle that closes that gap. It reads the same baked artifacts the
+This check reads the same generated files the
 map reads, derives the canonical value for every rolling number the prose
 carries, and either checks the prose against them (--check, run by `make qa` and
 CI, fails on drift) or rewrites the prose to match (--write, run by `make data`
-so the nightly rebake keeps README + OG in lockstep with the map).
+so the nightly data preparation keeps the README and share image in step with the map).
 
 Numbers that do not move with the window (the 3,629 MW May margin, the 41
 percent, the Meralco split, the 87.8 percent outage backcast) are NOT registered
@@ -20,6 +18,9 @@ here: they are pinned by tests/test_data.py and change only when their source
 does. This file owns exactly the window-derived counts, including the MOT-raise
 and line-limitation instruction totals, which grow with the archive every night.
 """
+
+# ruff: noqa: E501
+
 import argparse
 import json
 import os
@@ -36,17 +37,25 @@ def _load(name):
         return json.load(fh)
 
 
-_RES_NAMES = {"Fr": "contingency (Fr)", "Dr": "dispatchable (Dr)",
-              "Ru": "regulation up (Ru)", "Rd": "regulation down (Rd)"}
+_RES_NAMES = {
+    "Fr": "contingency (Fr)",
+    "Dr": "dispatchable (Dr)",
+    "Ru": "regulation up (Ru)",
+    "Rd": "regulation down (Rd)",
+}
 
 
 def _reserve_table_md(rv):
-    """Regenerate the studio reserve-validation table from the baked pools."""
+    """Regenerate the studio reserve-validation table from the generated pools."""
+
     def peso(x):
         return f"-P{abs(x):.2f}" if x < 0 else f"P{x:.2f}"
-    rows = ["| Pool | Hours | Observed mean | Modeled mean | Bias | Exact hours "
-            "| Scarcity hours | MAE outside scarcity |",
-            "| --- | --- | --- | --- | --- | --- | --- | --- |"]
+
+    rows = [
+        "| Pool | Hours | Recorded mean | Modeled mean | Bias | Exact hours "
+        "| Scarcity hours | MAE outside scarcity |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+    ]
     for grid in ("luzon", "visayas", "mindanao"):
         for cm in ("Fr", "Dr", "Ru", "Rd"):
             p = rv["pools"][grid][cm]
@@ -54,14 +63,15 @@ def _reserve_table_md(rv):
                 f"| {grid.capitalize()} {_RES_NAMES[cm]} | {p['n_hours']:,} | "
                 f"P{p['observed_mean_php_kwh']:.2f} | P{p['modeled_mean_php_kwh']:.2f} | "
                 f"{peso(p['bias_php_kwh'])} | {p['exact_hours_pct']:.1f}% | "
-                f"{p['n_scarcity_hours']} | P{p['mae_nonscarcity_php_kwh']:.2f} |")
+                f"{p['n_scarcity_hours']} | P{p['mae_nonscarcity_php_kwh']:.2f} |"
+            )
     return "\n".join(rows)
 
 
 # The studio BackcastView renders these tables from profiles.json with
 # Intl.NumberFormat (halfExpand rounding). Python's round() is banker's rounding,
 # so use Decimal ROUND_HALF_UP to reproduce the app's cells exactly; the README
-# then matches what the live studio shows, not just the raw bake fields.
+# then matches what the live studio shows, not just the raw data build fields.
 def _q(v, dp):
     return Decimal(str(v)).quantize(Decimal(1).scaleb(-dp), rounding=ROUND_HALF_UP)
 
@@ -70,11 +80,11 @@ def _n(v, dp=0):
     return f"{_q(v, dp):,.{dp}f}"
 
 
-def _p(v, kwh=False):          # peso mean/MAE, README P-convention
+def _p(v, kwh=False):  # peso mean/MAE, README P-convention
     return f"P{_q(v, 2):.2f}" + ("/kWh" if kwh else "")
 
 
-def _pb(v):                    # signed peso bias, +P / -P
+def _pb(v):  # signed peso bias, +P / -P
     return ("-" if v < 0 else "+") + f"P{_q(abs(v), 2):.2f}"
 
 
@@ -88,52 +98,75 @@ def _mw(v):
 
 
 def _bc_grid_table(pg, window_pg=None, coverage=False):
-    cols = ("| Grid | Coverage | Observed mean | Modeled mean | MAE | Bias | "
-            "Correlation | High-hour hit |") if coverage else (
-            "| Grid | Observed mean | Modeled mean | MAE | Bias | Correlation "
-            "| High-hour hit |")
+    cols = (
+        (
+            "| Grid | Coverage | Recorded mean | Modeled mean | MAE | Bias | "
+            "Correlation | High-hour hit |"
+        )
+        if coverage
+        else (
+            "| Grid | Recorded mean | Modeled mean | MAE | Bias | Correlation "
+            "| High-hour hit |"
+        )
+    )
     dash = "| " + " | ".join(["---"] * (8 if coverage else 7)) + " |"
     rows = [cols, dash]
     for g in ("luzon", "visayas", "mindanao"):
         s = pg[g]
-        cov = (f" {int(s['n_hours']):,} of {int(window_pg[g]['n_hours']):,} h |"
-               if coverage else "")
+        cov = (
+            f" {int(s['n_hours']):,} of {int(window_pg[g]['n_hours']):,} h |"
+            if coverage
+            else ""
+        )
         rows.append(
             f"| {g.capitalize()} |{cov} {_p(s['observed_mean_php_kwh'], True)} | "
             f"{_p(s['modeled_mean_php_kwh'], True)} | {_p(s['mae_php_kwh'])} | "
-            f"{_pb(s['bias_php_kwh'])} | {_n(s['correlation'], 2)} | {_hit(s)} |")
+            f"{_pb(s['bias_php_kwh'])} | {_n(s['correlation'], 2)} | {_hit(s)} |"
+        )
     return "\n".join(rows)
 
 
 def _bc_flows_table(flows, header):
-    rows = [f"| {header} | Observed mean | Modeled mean | MAE | Direction agreement |",
-            "| --- | --- | --- | --- | --- |"]
+    rows = [
+        f"| {header} | Recorded mean | Modeled mean | MAE | Direction agreement |",
+        "| --- | --- | --- | --- | --- |",
+    ]
     for k in ("lv", "vm"):
         f = flows[k]
-        rows.append(f"| {f['corridor']} | {_mw(f['observed_mean_mw'])} | "
-                    f"{_mw(f['modeled_mean_mw'])} | {_mw(f['mae_mw'])} | "
-                    f"{_n(f['direction_agreement_pct'], 0)}% |")
+        rows.append(
+            f"| {f['corridor']} | {_mw(f['observed_mean_mw'])} | "
+            f"{_mw(f['modeled_mean_mw'])} | {_mw(f['mae_mw'])} | "
+            f"{_n(f['direction_agreement_pct'], 0)}% |"
+        )
     return "\n".join(rows)
 
 
 def _bc_offer_target(ob):
-    rows = ["| Grid | Target | MAE | Bias | Correlation | High-hour hit |",
-            "| --- | --- | --- | --- | --- | --- |"]
+    rows = [
+        "| Grid | Target | MAE | Bias | Correlation | High-hour hit |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
     for tgt, key in (("LWAP", "per_grid"), ("MCP", "per_grid_mcp")):
         for g in ("luzon", "visayas", "mindanao"):
             s = ob[key][g]
-            rows.append(f"| {g.capitalize()} | {tgt} | {_p(s['mae_php_kwh'])} | "
-                        f"{_pb(s['bias_php_kwh'])} | {_n(s['correlation'], 2)} | "
-                        f"{_hit(s)} |")
+            rows.append(
+                f"| {g.capitalize()} | {tgt} | {_p(s['mae_php_kwh'])} | "
+                f"{_pb(s['bias_php_kwh'])} | {_n(s['correlation'], 2)} | "
+                f"{_hit(s)} |"
+            )
     return "\n".join(rows)
 
 
 def _bc_rtdhs(bc, ob):
-    rows = ["| Corridor (vs operator record) | Observed mean | Modeled mean | MAE "
-            "| Direction | Observed binding share | Modeled at-cap share |",
-            "| --- | --- | --- | --- | --- | --- | --- |"]
-    for mode, src in (("cost mode", bc["flows_rtdhs"]),
-                      ("offer mode", ob["flows_rtdhs"])):
+    rows = [
+        "| Link (vs operator record) | Recorded mean | Modeled mean | MAE "
+        "| Direction | Recorded limit share | Modeled at-cap share |",
+        "| --- | --- | --- | --- | --- | --- | --- |",
+    ]
+    for mode, src in (
+        ("cost mode", bc["flows_rtdhs"]),
+        ("offer mode", ob["flows_rtdhs"]),
+    ):
         for k in ("lv", "vm"):
             f = src[k]
             rows.append(
@@ -141,7 +174,8 @@ def _bc_rtdhs(bc, ob):
                 f"{_mw(f['modeled_mean_mw'])} | {_mw(f['mae_mw'])} | "
                 f"{_n(f['direction_agreement_pct'], 0)}% | "
                 f"{_n(f['observed_binding_share_pct'], 0)}% | "
-                f"{_n(f['modeled_at_cap_share_pct'], 0)}% |")
+                f"{_n(f['modeled_at_cap_share_pct'], 0)}% |"
+            )
     return "\n".join(rows)
 
 
@@ -153,7 +187,7 @@ def _ci(w, i):
 
 
 def canonical():
-    """Every rolling count the public prose carries, straight from the bake."""
+    """Every rolling count the public prose carries, straight from the data build."""
     cg = _load("congestion.json")
     mo = _load("market_ops.json")
     fnd = {f["id"]: f for f in _load("findings.json")["findings"]}
@@ -185,15 +219,19 @@ def canonical():
     noc = _load("nodal_obs.json")["congestion"]
 
     def _delta(wave_lbl, base_lbl, g):
-        # DICT-wave daily-mean uplift per grid, straight from the golden cases
-        return (_cg[wave_lbl]["expect"]["summary"]["mean_price"][g]
-                - _cg[base_lbl]["expect"]["summary"]["mean_price"][g])
+        # Daily-mean change from the DICT demand case, read from the saved cases.
+        return (
+            _cg[wave_lbl]["expect"]["summary"]["mean_price"][g]
+            - _cg[base_lbl]["expect"]["summary"]["mean_price"][g]
+        )
 
-    _WAVE_C, _BASE_C = "DICT 1.5 GW flat load on Luzon", "base day, no storage"
-    _WAVE_O, _BASE_O = ("DICT 1.5 GW on the observed offer book",
-                        "observed offer book, no levers")
+    _DEMAND_C, _BASE_C = "DICT 1.5 GW flat load on Luzon", "base day, no storage"
+    _DEMAND_O, _BASE_O = (
+        "DICT 1.5 GW on the observed offer book",
+        "observed offer book, unchanged scenario",
+    )
 
-    # reserve-shortfall days are baked into the findings blurb; read the number
+    # reserve-shortfall days are generated into the findings blurb; read the number
     # build_data.py already computed rather than recomputing the series here.
     thin = fnd["thin-normal"]["stat"]
     m = re.search(r"below the stated requirement on (\d+) of (\d+)", thin)
@@ -201,8 +239,9 @@ def canonical():
 
     # curtailment grid-days and MWh come from the same findings card the map shows
     blurb = fnd["thin-normal"]["blurb"]
-    mc = re.search(r"curtailed on (\d+) grid-days? in this window \(([\d,]+\.\d+) MWh\)",
-                   blurb)
+    mc = re.search(
+        r"curtailed on (\d+) grid-days? in this window \(([\d,]+\.\d+) MWh\)", blurb
+    )
     curtail_days, curtail_mwh = (int(mc.group(1)), mc.group(2)) if mc else (0, "0")
 
     mru = mo["so_instructions"]["mru_contrast"]
@@ -227,12 +266,17 @@ def canonical():
         "leyte_cebu_remarks": _n(sodir["limitation_causes"]["leyte-cebu"], 0),
         "limitation_pct": _n(
             sodir["limitation_causes"]["leyte-cebu"]
-            / sodir["n_limitation_remarks"] * 100, 0),
+            / sodir["n_limitation_remarks"]
+            * 100,
+            0,
+        ),
         "motrd_rows": _n(mo["so_instructions"]["motrd"]["n_rows"], 0),
         "motrd_median": _n(mo["so_instructions"]["motrd"]["median_mw"], 0),
         # methodology.html rounds the count to thousands ("97 thousand")
-        "motrd_thousands": _n(round(mo["so_instructions"]["motrd"]["n_rows"] / 1000), 0),
-        # reliability Monte Carlo, base + DICT-wave (dispatch.json reliability_mc)
+        "motrd_thousands": _n(
+            round(mo["so_instructions"]["motrd"]["n_rows"] / 1000), 0
+        ),
+        # Repeated outage calculations for the base and DICT demand cases.
         "rel_base_lolp": _n(rel_lu["lolp_pct"], 2),
         "rel_base_worst": _n(rel_lu["shortfall_mw_max"], 0),
         "rel_dict_lolp": _n(rel_dc["lolp_pct"], 1),
@@ -243,10 +287,22 @@ def canonical():
         # The headline range must span EVERY scored grid on both targets. It was
         # hand-written as "0.73 to 0.88" and silently dropped the minimum, which
         # was Visayas LWAP, the grid this project is about. Compute both ends.
-        "offer_corr_lo": _n(min(v["correlation"] for d in ("per_grid", "per_grid_mcp")
-                                for v in ob[d].values()), 2),
-        "offer_corr_hi": _n(max(v["correlation"] for d in ("per_grid", "per_grid_mcp")
-                                for v in ob[d].values()), 2),
+        "offer_corr_lo": _n(
+            min(
+                v["correlation"]
+                for d in ("per_grid", "per_grid_mcp")
+                for v in ob[d].values()
+            ),
+            2,
+        ),
+        "offer_corr_hi": _n(
+            max(
+                v["correlation"]
+                for d in ("per_grid", "per_grid_mcp")
+                for v in ob[d].values()
+            ),
+            2,
+        ),
         # layered (unit-commitment) calibration correlations + MAE per grid
         "cal_luz_corr": _n(cal["luzon"]["correlation"], 2),
         "cal_vis_corr": _n(cal["visayas"]["correlation"], 2),
@@ -263,130 +319,228 @@ def canonical():
         # Visayas settlement bias, cost mode -> offer mode (README "collapsing from")
         "cost_vis_bias": _n(abs(bc["per_grid"]["visayas"]["bias_php_kwh"]), 2),
         "offer_vis_bias": _n(abs(ob["per_grid"]["visayas"]["bias_php_kwh"]), 2),
-        # storage reliability buyback under the DICT wave (without -> with storage)
-        "buyback_lolp_wo": _n(disp["storage"]["reliability_buyback"]["luzon_dict_2028"]["without"]["lolp_pct"], 2),
-        "buyback_lolp_w": _n(disp["storage"]["reliability_buyback"]["luzon_dict_2028"]["with_storage"]["lolp_pct"], 2),
-        "buyback_eue_wo": _n(disp["storage"]["reliability_buyback"]["luzon_dict_2028"]["without"]["eue_mwh_evening_window"], 0),
-        "buyback_eue_w": _n(disp["storage"]["reliability_buyback"]["luzon_dict_2028"]["with_storage"]["eue_mwh_evening_window"], 0),
+        # Reliability change from storage under the DICT demand case.
+        "buyback_lolp_wo": _n(
+            disp["storage"]["reliability_buyback"]["luzon_dict_2028"]["without"][
+                "lolp_pct"
+            ],
+            2,
+        ),
+        "buyback_lolp_w": _n(
+            disp["storage"]["reliability_buyback"]["luzon_dict_2028"]["with_storage"][
+                "lolp_pct"
+            ],
+            2,
+        ),
+        "buyback_eue_wo": _n(
+            disp["storage"]["reliability_buyback"]["luzon_dict_2028"]["without"][
+                "eue_mwh_evening_window"
+            ],
+            0,
+        ),
+        "buyback_eue_w": _n(
+            disp["storage"]["reliability_buyback"]["luzon_dict_2028"]["with_storage"][
+                "eue_mwh_evening_window"
+            ],
+            0,
+        ),
         # added Visayas load that binds the Leyte-Luzon corridor (dc_binding_threshold)
-        "dc_knee": _n(disp["coupling"]["dc_binding_threshold"]["added_visayas_load_to_bind_leyte_mw"], 0),
+        "dc_knee": _n(
+            disp["coupling"]["dc_binding_threshold"][
+                "added_visayas_load_to_bind_leyte_mw"
+            ],
+            0,
+        ),
         # The coupling decomposition, which the README quoted in four places and
-        # nothing guarded. The nightly rebake moved both: the outage scenario
-        # read 87.8 against a bake of 0.879, and the cost-only share read
-        # "about 1%" against a bake of 0.005, which is half that.
+        # nothing guarded. The nightly data preparation moved both: the outage scenario
+        # read 87.8 against a data build of 0.879, and the cost-only share read
+        # "about 1%" against a data build of 0.005, which is half that.
         "coupling_outage_pct": _n(
-            disp["coupling"]["outage_scenario"]["explained_fraction"] * 100, 1),
+            disp["coupling"]["outage_scenario"]["explained_fraction"] * 100, 1
+        ),
         "coupling_cost_pct": _n(
-            disp["coupling"]["spread_decomposition"]["visayas_vs_luzon"]
-            ["explained_fraction"] * 100, 1),
+            disp["coupling"]["spread_decomposition"]["visayas_vs_luzon"][
+                "explained_fraction"
+            ]
+            * 100,
+            1,
+        ),
         "vis_luz_spread": _n(
-            disp["coupling"]["spread_decomposition"]["visayas_vs_luzon"]
-            ["observed_php_kwh"], 2),
+            disp["coupling"]["spread_decomposition"]["visayas_vs_luzon"][
+                "observed_php_kwh"
+            ],
+            2,
+        ),
         # the regime split, quoted across a whole README section and guarded
         # nowhere until now: both regime spreads, the three market-window means,
         # and the count of days past P5
-        "admin_max_spread": _n(_load("prices.json")["regimes"]["administered"]
-                               ["max_spread"], 3),
+        "admin_max_spread": _n(
+            _load("prices.json")["regimes"]["administered"]["max_spread"], 3
+        ),
         "mkt_max_spread": _n(_load("prices.json")["max_spread"]["php"], 2),
         "mkt_days_gt5": _load("prices.json")["regimes"]["market"]["days_spread_gt5"],
         "mkt_luz": _n(_load("prices.json")["regimes"]["market"]["means"]["luzon"], 2),
         "mkt_vis": _n(_load("prices.json")["regimes"]["market"]["means"]["visayas"], 2),
-        "mkt_min": _n(_load("prices.json")["regimes"]["market"]["means"]["mindanao"], 2),
+        "mkt_min": _n(
+            _load("prices.json")["regimes"]["market"]["means"]["mindanao"], 2
+        ),
         # backcast narrative scalars quoted in studio/README prose next to the tables
         "vis_lwap_hit": _n(bc["per_grid"]["visayas"]["high_hour_hit_rate_pct"], 0),
         "vis_mcp_hit": _n(bc["per_grid_mcp"]["visayas"]["high_hour_hit_rate_pct"], 0),
         "luz_lwap_corr": _n(bc["per_grid"]["luzon"]["correlation"], 2),
         "offer_vismin_mae": _n(ob["flows"]["vm"]["mae_mw"], 0),
-        # Visayas evening-peak residual (evening-hours, moves with hour bucketing)
+        # Visayas evening-peak gap (evening hours, moves with hour grouping)
         "evening_residual_vis": _n(cal["visayas"]["evening_peak_residual_php_kwh"], 2),
         # marginal-block shares + corridor availability + price-duration spike
-        "coal_margin_luz": _n(next(b["share_pct"] for b in disp["marginal_frequency"]["luzon"]["by_block"] if b["block"].startswith("coal (marginal)")), 0),
-        "mindanao_overnight": _n(next(b["share_pct"] for b in disp["marginal_frequency"]["mindanao"]["by_block"] if "committed" in b["block"]), 1),
-        "corridor_blocked": _n(disp["coupling"]["observed_corridor_caps"]["leyte_luzon_hvdc"]["capped_share_pct"], 1),
-        "corridor_saturated": _n(next(c["saturated_pct"] for c in disp["coupling"]["corridors"] if "leyte" in c["id"]), 1),
-        "duration_max": _n(max(x["price"] for x in disp["price_duration"]["luzon"]["observed"]), 0),
-        # offer-book biases + the marquee widest-swing DICT-wave deltas (cost vs offer)
+        "coal_margin_luz": _n(
+            next(
+                b["share_pct"]
+                for b in disp["marginal_frequency"]["luzon"]["by_block"]
+                if b["block"].startswith("coal (marginal)")
+            ),
+            0,
+        ),
+        "mindanao_overnight": _n(
+            next(
+                b["share_pct"]
+                for b in disp["marginal_frequency"]["mindanao"]["by_block"]
+                if "committed" in b["block"]
+            ),
+            1,
+        ),
+        "corridor_blocked": _n(
+            disp["coupling"]["observed_corridor_caps"]["leyte_luzon_hvdc"][
+                "capped_share_pct"
+            ],
+            1,
+        ),
+        "corridor_saturated": _n(
+            disp["coupling"]["outage_scenario"]["leyte_luzon_saturated_pct"], 1
+        ),
+        "duration_max": _n(
+            max(x["price"] for x in disp["price_duration"]["luzon"]["observed"]), 0
+        ),
+        # Offer-book biases and the largest DICT demand-case changes.
         "offer_luz_lwap_bias": _n(ob["per_grid"]["luzon"]["bias_php_kwh"], 2),
         "offer_vis_mcp_bias": _n(abs(ob["per_grid_mcp"]["visayas"]["bias_php_kwh"]), 2),
-        "cost_luz_delta": _n(_delta(_WAVE_C, _BASE_C, "luzon"), 2),
-        "offer_luz_delta": _n(_delta(_WAVE_O, _BASE_O, "luzon"), 2),
-        "offer_vis_delta": _n(_delta(_WAVE_O, _BASE_O, "visayas"), 2),
-        "offer_min_delta": _n(_delta(_WAVE_O, _BASE_O, "mindanao"), 2),
-        "marquee_rolling": _n(mo["gwap_trigger"]["marquee"]["scenario_max_rolling_72h"]["rolling_php_kwh"], 2),
+        "cost_luz_delta": _n(_delta(_DEMAND_C, _BASE_C, "luzon"), 2),
+        "offer_luz_delta": _n(_delta(_DEMAND_O, _BASE_O, "luzon"), 2),
+        "offer_vis_delta": _n(_delta(_DEMAND_O, _BASE_O, "visayas"), 2),
+        "offer_min_delta": _n(_delta(_DEMAND_O, _BASE_O, "mindanao"), 2),
+        "reference_rolling": _n(
+            mo["gwap_trigger"]["reference_case"]["scenario_max_rolling_72h"][
+                "rolling_php_kwh"
+            ],
+            2,
+        ),
         "pinned_share": _n(mo["security_limits"]["pinned_share_pct"], 1),
         # The boundaries prose carries market_ops-derived scalars that nothing
-        # guarded, and every one of them had drifted by the round-10 audit:
-        # "five of the six" days (bake said four), "about 90 percent" coal
+        # guarded, and every one of them had drifted before the later source check:
+        # "five of the six" days (data build said four), "about 90 percent" coal
         # marginal share (95.2), 9,833 MW floor supply (9,834). Guard them.
         # the ramp measurement: the fleet figures are registration data but
         # the worst observed demand rise grows with the archive, so the
         # ratios move nightly and the prose must move with them
-        "ramp_luz_worst": f'{mo["ramp_probe"]["worst_observed_demand_rise_mw_per_hour"]["luzon"]:,.0f}',
+        "ramp_luz_worst": f"{mo['ramp_probe']['worst_observed_demand_rise_mw_per_hour']['luzon']:,.0f}",
         # the adequacy block the prose flags as "the checkable one". Kept on a
         # consistent clock: firm evening capacity vs the evening peak, plus the
         # solar-observed tightest interval. All rolling with the archive.
-        "adq_gross_peak": f'{disp["adequacy"]["luzon"]["gross_peak_mw"]:,.0f}',
-        "adq_eve_peak": f'{disp["adequacy"]["luzon"]["evening_peak_demand_mw"]:,.0f}',
-        "adq_firm_avail": f'{disp["adequacy"]["luzon"]["avail_at_peak_mw"]:,.0f}',
+        "adq_gross_peak": f"{disp['adequacy']['luzon']['gross_peak_mw']:,.0f}",
+        "adq_eve_peak": f"{disp['adequacy']['luzon']['evening_peak_demand_mw']:,.0f}",
+        "adq_firm_avail": f"{disp['adequacy']['luzon']['avail_at_peak_mw']:,.0f}",
         "adq_margin": _n(disp["adequacy"]["luzon"]["reserve_margin_pct"], 1),
-        "adq_dc_margin": _n(disp["adequacy"]["dict_2028"]["reserve_margin_with_dc_pct"], 1),
-        "adq_tight_dc_margin": _n(disp["adequacy"]["dict_2028"]["tight_reserve_margin_with_dc_pct"], 1),
+        "adq_dc_margin": _n(
+            disp["adequacy"]["dict_2028"]["reserve_margin_with_dc_pct"], 1
+        ),
+        "adq_tight_dc_margin": _n(
+            disp["adequacy"]["dict_2028"]["tight_reserve_margin_with_dc_pct"], 1
+        ),
         # the inter-island flow-direction agreement range; drifted 88->87
         # unguarded (the offer replay's per-corridor direction hit rate)
-        "flowdir_lo": f'{min(profiles["offer_backcast"]["flows"][c]["direction_agreement_pct"] for c in ("lv", "vm")):.0f}',
-        "flowdir_hi": f'{max(profiles["offer_backcast"]["flows"][c]["direction_agreement_pct"] for c in ("lv", "vm")):.0f}',
-        "ramp_strict_luz": _n(mo["ramp_probe"]["strict_headroom_online_slowest_band"]["luzon"], 1),
-        "ramp_strict_vis": _n(mo["ramp_probe"]["strict_headroom_online_slowest_band"]["visayas"], 1),
-        "ramp_strict_min": _n(mo["ramp_probe"]["strict_headroom_online_slowest_band"]["mindanao"], 1),
+        "flowdir_lo": f"{min(profiles['offer_backcast']['flows'][c]['direction_agreement_pct'] for c in ('lv', 'vm')):.0f}",
+        "flowdir_hi": f"{max(profiles['offer_backcast']['flows'][c]['direction_agreement_pct'] for c in ('lv', 'vm')):.0f}",
+        "ramp_strict_luz": _n(
+            mo["ramp_probe"]["strict_headroom_online_slowest_band"]["luzon"], 1
+        ),
+        "ramp_strict_vis": _n(
+            mo["ramp_probe"]["strict_headroom_online_slowest_band"]["visayas"], 1
+        ),
+        "ramp_strict_min": _n(
+            mo["ramp_probe"]["strict_headroom_online_slowest_band"]["mindanao"], 1
+        ),
         # "about one percent of clean-day node-hours" rides on six public
         # surfaces and was hand-written; it is 1.18% and now computed
-        "mot_headroom_luz": _n(mo["mot_dispatch_cut"]["per_grid"]["luzon"]
-                               ["headroom_mw"]["mean"], 0),
+        "mot_headroom_luz": _n(
+            mo["mot_dispatch_cut"]["per_grid"]["luzon"]["headroom_mw"]["mean"], 0
+        ),
         # the MOT headroom means + Luzon stack share, and the residual-probe
         # scalars, all rolling with the window and until now hand-typed
-        "mot_headroom_vis": _n(mo["mot_dispatch_cut"]["per_grid"]["visayas"]
-                               ["headroom_mw"]["mean"], 0),
-        "mot_headroom_min": _n(mo["mot_dispatch_cut"]["per_grid"]["mindanao"]
-                               ["headroom_mw"]["mean"], 0),
-        "mot_headroom_share_luz": _n(mo["mot_dispatch_cut"]["per_grid"]["luzon"]
-                                     ["headroom_share_pct"], 1),
-        "resid_import": _n(mo["mot_dispatch_cut"]["luzon_residual_probe"]
-                           ["import_mw_mean"], 0),
-        "resid_gap": _n(mo["mot_dispatch_cut"]["luzon_residual_probe"]
-                        ["gap_mw_mean"], 0),
-        "resid_balance": _n(mo["mot_dispatch_cut"]["luzon_residual_probe"]
-                            ["balance_residual_mw_mean"], 0),
-        # the MOT-raise share of dispatched generation, per-grid range (baked in
+        "mot_headroom_vis": _n(
+            mo["mot_dispatch_cut"]["per_grid"]["visayas"]["headroom_mw"]["mean"], 0
+        ),
+        "mot_headroom_min": _n(
+            mo["mot_dispatch_cut"]["per_grid"]["mindanao"]["headroom_mw"]["mean"], 0
+        ),
+        "mot_headroom_share_luz": _n(
+            mo["mot_dispatch_cut"]["per_grid"]["luzon"]["headroom_share_pct"], 1
+        ),
+        "resid_import": _n(
+            mo["mot_dispatch_cut"]["luzon_residual_probe"]["import_mw_mean"], 0
+        ),
+        "resid_gap": _n(
+            mo["mot_dispatch_cut"]["luzon_residual_probe"]["gap_mw_mean"], 0
+        ),
+        "resid_balance": _n(
+            mo["mot_dispatch_cut"]["luzon_residual_probe"]["balance_residual_mw_mean"],
+            0,
+        ),
+        # the MOT-raise share of dispatched generation, per-grid range (generated in
         # admin_dispatch.mw_weighted_fraction_of_dispatch), lo to hi across grids
-        "raise_share_lo": _n(min(v["mw_weighted_pct"] for v in
-                                 mo["admin_dispatch"]["mw_weighted_fraction_of_dispatch"].values()
-                                 if isinstance(v, dict) and v.get("mw_weighted_pct") is not None), 0),
-        "raise_share_hi": _n(max(v["mw_weighted_pct"] for v in
-                                 mo["admin_dispatch"]["mw_weighted_fraction_of_dispatch"].values()
-                                 if isinstance(v, dict) and v.get("mw_weighted_pct") is not None), 0),
-        "cong_clean_share": _n(_load("nodal_obs.json")["congestion"]
-                               ["clean_day_nonzero_share_pct"], 2),
-
+        "raise_share_lo": _n(
+            min(
+                v["mw_weighted_pct"]
+                for v in mo["admin_dispatch"][
+                    "mw_weighted_fraction_of_dispatch"
+                ].values()
+                if isinstance(v, dict) and v.get("mw_weighted_pct") is not None
+            ),
+            0,
+        ),
+        "raise_share_hi": _n(
+            max(
+                v["mw_weighted_pct"]
+                for v in mo["admin_dispatch"][
+                    "mw_weighted_fraction_of_dispatch"
+                ].values()
+                if isinstance(v, dict) and v.get("mw_weighted_pct") is not None
+            ),
+            0,
+        ),
+        "cong_clean_share": _n(
+            _load("nodal_obs.json")["congestion"]["clean_day_nonzero_share_pct"], 2
+        ),
         "subhourly_neg_days": mo["subhourly_probe"]["n_days_with_observed_negatives"],
-        "subhourly_neg_days_word": ("one two three four five six seven eight"
-                                    .split()[mo["subhourly_probe"]
-                                             ["n_days_with_observed_negatives"] - 1]),
+        "subhourly_neg_days_word": (
+            "one two three four five six seven eight".split()[
+                mo["subhourly_probe"]["n_days_with_observed_negatives"] - 1
+            ]
+        ),
         "coal_marginal_share": _n(mo["admin_dispatch"]["coal_marginal_share_pct"], 0),
-        "floor_supply_mw": f'{mo["subhourly_probe"]["deep_negative_structural"]["aggregate_floor_supply_mw"]:,}',
-        "sneg_load": f'{mo["subhourly_probe"]["deep_negative_structural"]["physical_native_load_mw"]:,}',
+        "floor_supply_mw": f"{mo['subhourly_probe']['deep_negative_structural']['aggregate_floor_supply_mw']:,}",
+        "sneg_load": f"{mo['subhourly_probe']['deep_negative_structural']['physical_native_load_mw']:,}",
         # the crossing-days floor-supply-vs-load margin range, which rolls with
         # the window (was hand-typed and drifted from 0.66-2.53 to a stale 0.54-2.3)
-        "sneg_range_lo": f'{min(r["floor_supply_vs_load_margin_pct"] for r in mo["subhourly_probe"]["crossing_days"]):.2f}',
-        "sneg_range_hi": f'{max(r["floor_supply_vs_load_margin_pct"] for r in mo["subhourly_probe"]["crossing_days"]):.2f}',
+        "sneg_range_lo": f"{min(r['floor_supply_vs_load_margin_pct'] for r in mo['subhourly_probe']['crossing_days']):.2f}",
+        "sneg_range_hi": f"{max(r['floor_supply_vs_load_margin_pct'] for r in mo['subhourly_probe']['crossing_days']):.2f}",
         "reserve_days": rv["days"],
-        "reserve_above_pct": f'{rv["hours_model_above_pct"]:.1f}',
+        "reserve_above_pct": f"{rv['hours_model_above_pct']:.1f}",
         "scored_hours": f"{sum(c['n_hours'] for g in rv['pools'].values() for c in g.values()):,}",
         "reserve_table": _reserve_table_md(rv),
         "bc_lwap": _bc_grid_table(bc["per_grid"]),
         "bc_mcp": _bc_grid_table(bc["per_grid_mcp"], bc["per_grid"], coverage=True),
-        "bc_flows": _bc_flows_table(bc["flows"], "Corridor"),
+        "bc_flows": _bc_flows_table(bc["flows"], "Link"),
         "bc_offer_target": _bc_offer_target(ob),
-        "bc_offer_flows": _bc_flows_table(ob["flows"], "Corridor (offer mode)"),
+        "bc_offer_flows": _bc_flows_table(ob["flows"], "Link (offer mode)"),
         "bc_rtdhs": _bc_rtdhs(bc, ob),
         "vis_lwap_corr": _n(bc["per_grid"]["visayas"]["correlation"], 2),
         "vis_mcp_corr": _n(bc["per_grid_mcp"]["visayas"]["correlation"], 2),
@@ -416,11 +570,18 @@ def canonical():
     # GitHub builds a heading anchor by dropping the decimal point, so
     # "P15.72" in a heading becomes "...-p1572" in the contents link that
     # points at it. Both forms carry the same number and both go stale when
-    # the bake moves, so both are guarded. Without the slug form the contents
+    # the data build moves, so both are guarded. Without the slug form the contents
     # link breaks on the first night the window grows.
-    for k in ("admin_max_spread", "mkt_max_spread", "offer_corr_lo",
-              "offer_corr_hi", "coupling_cost_pct", "coupling_outage_pct",
-              "loss_luz_spearman", "loss_min_spearman"):
+    for k in (
+        "admin_max_spread",
+        "mkt_max_spread",
+        "offer_corr_lo",
+        "offer_corr_hi",
+        "coupling_cost_pct",
+        "coupling_outage_pct",
+        "loss_luz_spearman",
+        "loss_min_spearman",
+    ):
         out[f"{k}_slug"] = str(out[k]).replace(".", "").replace("-", "")
     return out
 
@@ -435,403 +596,550 @@ def canonical():
 # as scalars here.
 REGISTRY = [
     # --- README.md (the LinkedIn-facing surface; --write auto-syncs it nightly)
-    ("README.md",
-     re.compile(r"day-ahead runs on \*\*(\d+) of the window's (\d+) days\*\*"),
-     ["leyte_cebu_dap_days", "days_covered"]),
-    ("README.md",
-     re.compile(r"binding limit in the hourly day-ahead runs on \*\*(\d+) of (\d+)"),
-     ["top_corridor_dap_days", "days_covered"]),
-    ("README.md",
-     re.compile(r"the run settlement\s*\n?\s*actually sees, on \*\*(\d+) days\*\*"),
-     ["top_corridor_rtd_days"]),
-    ("README.md",
-     re.compile(r"Across the (\d+)-day window, \*\*(\d+) distinct pieces of equipment\*\*"
-                r" hit a limit at least\s+once, in \*\*(\d+) monitored constraints\*\*"),
-     ["days_covered", "distinct_equipment", "constraint_records"]),
-    ("README.md",
-     re.compile(r"below the stated requirement on (\d+) of the window's (\d+) days\*\*"),
-     ["luzon_reserve_short_days", "days_covered"]),
-    ("README.md",
-     re.compile(r"dispatch schedules on \*\*(\d+) grid-days \(([\d,]+\.\d) MWh\)\*\*"),
-     ["curtail_grid_days", "curtail_mwh"]),
-    ("README.md",
-     re.compile(r"Across the (\d+)\s*\n?\s*daily logs the System Operator"),
-     ["sodir_days"]),
-    ("README.md",
-     re.compile(r"citing a line limitation \*\*([\d,]+) times, and ([\d,]+) of those name the"),
-     ["limitation_remarks", "leyte_cebu_remarks"]),
-    ("README.md",
-     re.compile(r"one corridor carries (\d+) percent of\s*\n?\s*every line-limitation"),
-     ["limitation_pct"]),
-    ("README.md",
-     re.compile(r"\*\*([\d,]+) MOT-raise instructions\*\* across the window at a \*\*(\d+)\s*\n?\s*MW\*\* median"),
-     ["motrd_rows", "motrd_median"]),
+    (
+        "README.md",
+        re.compile(r"day-ahead runs on \*\*(\d+) of the window's (\d+) days\*\*"),
+        ["leyte_cebu_dap_days", "days_covered"],
+    ),
+    (
+        "README.md",
+        re.compile(r"binding limit in the hourly day-ahead runs on \*\*(\d+) of (\d+)"),
+        ["top_corridor_dap_days", "days_covered"],
+    ),
+    (
+        "README.md",
+        re.compile(r"the run settlement\s*\n?\s*actually sees, on \*\*(\d+) days\*\*"),
+        ["top_corridor_rtd_days"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"Across the (\d+)-day window, \*\*(\d+) distinct pieces of equipment\*\*"
+            r" hit a limit at least\s+once, in \*\*(\d+) monitored constraints\*\*"
+        ),
+        ["days_covered", "distinct_equipment", "constraint_records"],
+    ),
+    (
+        "README.md",
+        re.compile(r"below the stated need\s+on (\d+) of the window's (\d+) days\*\*"),
+        ["luzon_reserve_short_days", "days_covered"],
+    ),
+    (
+        "README.md",
+        re.compile(r"curtailed\s+load on \*\*(\d+) grid-days \(([\d,]+\.\d) MWh\)\*\*"),
+        ["curtail_grid_days", "curtail_mwh"],
+    ),
+    (
+        "README.md",
+        re.compile(r"Across (\d+)\s+daily logs, its instructions"),
+        ["sodir_days"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"citing a line limitation \*\*([\d,]+) times, and ([\d,]+) of those name the"
+        ),
+        ["limitation_remarks", "leyte_cebu_remarks"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"This link appears in (\d+) percent of\s*\n?\s*every line-limitation"
+        ),
+        ["limitation_pct"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"\*\*([\d,]+) MOT-raise instructions\*\* across the window at a \*\*(\d+)\s*\n?\s*MW\*\* median"
+        ),
+        ["motrd_rows", "motrd_median"],
+    ),
     # --- the contents list. Its link text AND the #fragment it points at both
     # carry the heading's numbers, so both go stale the night the window grows,
     # and a stale fragment scrolls nowhere. The cron runs --write, so guarding
     # them here is what keeps the contents working without a human in the loop.
-    ("README.md",
-     re.compile(r"- \[Luzon reserves fell short on (\d+) of the window's (\d+) days\]"
-                r"\(#luzon-reserves-fell-short-on-(\d+)-of-the-windows-(\d+)-days\)"),
-     ["luzon_reserve_short_days", "days_covered",
-      "luzon_reserve_short_days", "days_covered"]),
-    ("README.md",
-     re.compile(r"- \[The three grids priced within P(0\.\d+) while suspended, then "
-                r"split to P(\d+\.\d+)\]\(#the-three-grids-priced-within-p(\d+)-while-"
-                r"suspended-then-split-to-p(\d+)\)"),
-     ["admin_max_spread", "mkt_max_spread",
-      "admin_max_spread_slug", "mkt_max_spread_slug"]),
-    ("README.md",
-     re.compile(r"- \[The offer-book replay tracks the market's own prices at "
-                r"(0\.\d+) to (0\.\d+)\]\(#the-offer-book-replay-tracks-the-markets-"
-                r"own-prices-at-(\d+)-to-(\d+)\)"),
-     ["offer_corr_lo", "offer_corr_hi", "offer_corr_lo_slug", "offer_corr_hi_slug"]),
+    (
+        "README.md",
+        re.compile(
+            r"- \[Luzon reserves fell short on (\d+) of the window's (\d+) days\]"
+            r"\(#luzon-reserves-fell-short-on-(\d+)-of-the-windows-(\d+)-days\)"
+        ),
+        [
+            "luzon_reserve_short_days",
+            "days_covered",
+            "luzon_reserve_short_days",
+            "days_covered",
+        ],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"- \[The three grids priced within P(0\.\d+) while suspended, then "
+            r"split to P(\d+\.\d+)\]\(#the-three-grids-priced-within-p(\d+)-while-"
+            r"suspended-then-split-to-p(\d+)\)"
+        ),
+        [
+            "admin_max_spread",
+            "mkt_max_spread",
+            "admin_max_spread_slug",
+            "mkt_max_spread_slug",
+        ],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"- \[Offer-book replay correlations range from "
+            r"(0\.\d+) to (0\.\d+)\]\(#offer-book-replay-correlations-range-"
+            r"from-(\d+)-to-(\d+)\)"
+        ),
+        ["offer_corr_lo", "offer_corr_hi", "offer_corr_lo_slug", "offer_corr_hi_slug"],
+    ),
     # --- README headings. A number in a heading is the most-read number in the
     # file and drifts like any other, so each one is anchored on its own. The
     # anchors start at "## " so they can never match the body sentence below.
-    ("README.md",
-     re.compile(r"## Luzon reserves fell short on (\d+) of the window's (\d+) days"),
-     ["luzon_reserve_short_days", "days_covered"]),
-    ("README.md",
-     re.compile(r"## The offer-book replay tracks the market's own prices at "
-                r"(0\.\d+) to (0\.\d+)"),
-     ["offer_corr_lo", "offer_corr_hi"]),
-    ("README.md",
-     re.compile(r"## The three grids priced within P(0\.\d+) while suspended, "
-                r"then split to P(\d+\.\d+)"),
-     ["admin_max_spread", "mkt_max_spread"]),
+    (
+        "README.md",
+        re.compile(r"## Luzon reserves fell short on (\d+) of the window's (\d+) days"),
+        ["luzon_reserve_short_days", "days_covered"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"## Offer-book replay correlations range from "
+            r"(0\.\d+) to (0\.\d+)"
+        ),
+        ["offer_corr_lo", "offer_corr_hi"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"## The three grids priced within P(0\.\d+) while suspended, "
+            r"then split to P(\d+\.\d+)"
+        ),
+        ["admin_max_spread", "mkt_max_spread"],
+    ),
     # --- the regime-split body, which quoted six numbers and guarded none
-    ("README.md",
-     re.compile(r"priced within \*\*P(0\.\d+)/kWh\*\* of each other"),
-     ["admin_max_spread"]),
-    ("README.md",
-     re.compile(r"the average was \*\*Luzon P(\d+\.\d+), Visayas P(\d+\.\d+), Mindanao\s*\n?\s*"
-                r"P(\d+\.\d+) per kWh\*\*, with \*\*(\d+) days spreading beyond P5/kWh\*\* "
-                r"and a widest daily spread\s*\n?\s*of \*\*P(\d+\.\d+)/kWh"),
-     ["mkt_luz", "mkt_vis", "mkt_min", "mkt_days_gt5", "mkt_max_spread"]),
-    ("README.md",
-     re.compile(r"### Coupling alone explains (\d+\.\d)% of the island price gap, "
-                r"and the recorded outage explains (\d+\.\d)%"),
-     ["coupling_cost_pct", "coupling_outage_pct"]),
+    (
+        "README.md",
+        re.compile(r"priced within \*\*P(0\.\d+)/kWh\*\* of each other"),
+        ["admin_max_spread"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"the average was \*\*Luzon P(\d+\.\d+), Visayas P(\d+\.\d+), Mindanao\s*\n?\s*"
+            r"P(\d+\.\d+) per kWh\*\*, with \*\*(\d+) days spreading beyond P5/kWh\*\* "
+            r"and a widest daily spread\s*\n?\s*of \*\*P(\d+\.\d+)/kWh"
+        ),
+        ["mkt_luz", "mkt_vis", "mkt_min", "mkt_days_gt5", "mkt_max_spread"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"### The base model explains (\d+\.\d)% of the Visayas-Luzon price "
+            r"difference\. The recorded outage explains (\d+\.\d)%"
+        ),
+        ["coupling_cost_pct", "coupling_outage_pct"],
+    ),
     # --- the coupling decomposition in the body, quoted in four places and
-    # guarded in none until now; both had drifted from the nightly rebake
-    ("README.md",
-     re.compile(r"observed \*\*P(\d+\.\d+)/kWh\*\* Visayas-Luzon spread "
-                r"\(\*\*(\d+\.\d)%\*\*\)"),
-     ["vis_luz_spread", "coupling_cost_pct"]),
-    ("README.md",
-     re.compile(r"the coupled model now reproduces \*\*(\d+\.\d)%\*\* of"),
-     ["coupling_outage_pct"]),
-    ("README.md",
-     re.compile(r"outage backcast lands\s*\n?\s*at (\d+\.\d)%"),
-     ["coupling_outage_pct"]),
-    ("README.md",
-     re.compile(r"reproduces \*\*(\d+\.\d) percent\*\* of the observed island price gap"),
-     ["coupling_outage_pct"]),
-    ("studio/README.md",
-     re.compile(r"reproduces (\d+\.\d)% of the observed Visayas-over-Luzon spread"),
-     ["coupling_outage_pct"]),
-    ("studio/README.md",
-     re.compile(r"the 275 MW threshold, and the (\d+\.\d)%"),
-     ["coupling_outage_pct"]),
+    # guarded in none until now; both had drifted from nightly data preparation
+    (
+        "README.md",
+        re.compile(
+            r"explains only \*\*(\d+\.\d)%\*\* of the recorded "
+            r"\*\*P(\d+\.\d+)/kWh\*\*\s+Visayas-Luzon difference"
+        ),
+        ["coupling_cost_pct", "vis_luz_spread"],
+    ),
+    (
+        "README.md",
+        re.compile(r"the coupled model now reproduces \*\*(\d+\.\d)%\*\* of"),
+        ["coupling_outage_pct"],
+    ),
+    (
+        "README.md",
+        re.compile(r"outage historical replay explains (\d+\.\d)% of the price"),
+        ["coupling_outage_pct"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"reproduces \*\*(\d+\.\d) percent\*\* of the recorded\s+"
+            r"island price gap"
+        ),
+        ["coupling_outage_pct"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"reproduces (\d+\.\d)% of the recorded Visayas-over-Luzon spread"),
+        ["coupling_outage_pct"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"the 275 MW threshold, and the (\d+\.\d+) percent"),
+        ["coupling_outage_pct"],
+    ),
     # --- studio/README.md scalars (reserve replay + data table)
-    ("studio/README.md",
-     re.compile(r"at the same interval: (\d+) days, twelve"),
-     ["reserve_days"]),
-    ("studio/README.md",
-     re.compile(r"noise-level \((\d+\.\d) percent of the ~([\d,]+) scored"),
-     ["reserve_above_pct", "scored_hours"]),
-    ("studio/README.md",
-     re.compile(r"Hourly demand and observed prices \((\d+) observed days\)"),
-     ["profiles_days"]),
+    (
+        "studio/README.md",
+        re.compile(r"comparison uses (\d+) days and twelve"),
+        ["reserve_days"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"higher in\s+(\d+\.\d)\s+percent of about ([\d,]+) scored hours"),
+        ["reserve_above_pct", "scored_hours"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"Hourly demand and recorded prices \((\d+) days\)"),
+        ["profiles_days"],
+    ),
     # the two backcast correlations quoted in the narrative prose (they must
     # agree with the tables above them, which drifted apart before this)
-    ("studio/README.md",
-     re.compile(r"settlement-price shape \(correlation\s*\n?\s*(0\.\d+)"),
-     ["vis_lwap_corr"]),
-    ("studio/README.md",
-     re.compile(r"agreement \(correlation 0\.\d+ to (0\.\d+), hit"),
-     ["vis_mcp_corr"]),
-    # --- web/methodology.html scalars
-    ("web/methodology.html",
-     re.compile(r"same interval, (\d+) days by 12 grid-commodity pools"),
-     ["reserve_days"]),
-    ("web/methodology.html",
-     re.compile(r"noise-level \((\d+\.\d) percent of scored hours"),
-     ["reserve_above_pct"]),
-    # the MOT-raise count rounded to thousands, quoted in two methodology places
-    ("web/methodology.html",
-     re.compile(r"must-run subset: (\d+)\s*\n?\s*thousand instructions across the archived window"),
-     ["motrd_thousands"]),
-    # the must-run inertness measure: per-grid-hour peak median, grid-hours,
-    # weekly-file count, and the per-interval median, all rolling with the archive
-    ("web/methodology.html",
-     re.compile(r"peaks at a median of (\d+) MW across its (\d+) instructed\s+"
-                r"grid-hours in (\d+) weekly files \(the per-interval instruction "
-                r"median is\s+(\d+\.\d) MW\)"),
-     ["mru_gh_peak_median", "mru_grid_hours", "mru_n_weeks", "mru_median"]),
-    ("web/methodology.html",
-     re.compile(r"must-run list's (\d+\.\d) per-interval; (\d+) of the (\d+) weekly\s+"
-                r"files were published empty"),
-     ["mru_median", "motrd_empty_weeks", "motrd_n_weeks"]),
-    ("web/methodology.html",
-     re.compile(r"re-dispatch record carries (\d+) thousand instructions across the"),
-     ["motrd_thousands"]),
-    ("web/methodology.html",
-     re.compile(r"bound in (\d+) percent of VISLUZ1 and (\d+) percent of MINVIS1"),
-     ["bind_visluz", "bind_minvis"]),
-    ("web/methodology.html",
-     re.compile(r"within half a centavo in (\d+\.\d) percent of hours"),
-     ["reserve_luz_dr_exact"]),
-    # --- README reliability Monte Carlo (base + DICT wave)
-    ("README.md",
-     re.compile(r"loses load in only \*\*(0\.\d+)%\*\* of tight evenings"),
-     ["rel_base_lolp"]),
-    ("README.md",
-     re.compile(r"worst draw shedding\s*\n?\s*\*\*([\d,]+) MW\*\*"),
-     ["rel_base_worst"]),
-    ("README.md",
-     re.compile(r"climbs more than tenfold to \*\*(\d\.\d+)%\*\*"),
-     ["rel_dict_lolp"]),
-    ("README.md",
-     re.compile(r"1-in-100 draw sheds\s*\n?\s*\*\*([\d,]+) MW\*\*"),
-     ["rel_dict_p99"]),
-    ("README.md",
-     re.compile(r"evening-peak window is\s*\n?\s*\*\*([\d,]+) MWh\*\*"),
-     ["rel_dict_eue"]),
+    (
+        "studio/README.md",
+        re.compile(r"settlement-price series a (0\.\d+) correlation"),
+        ["vis_lwap_corr"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"Correlation dropped from 0\.\d+ to (0\.\d+) and the hit rate"),
+        ["vis_mcp_corr"],
+    ),
+    # README outage calculations for the base and DICT demand cases.
+    (
+        "README.md",
+        re.compile(r"loses load in only \*\*(0\.\d+)%\*\* of tight evenings"),
+        ["rel_base_lolp"],
+    ),
+    (
+        "README.md",
+        re.compile(r"worst draw sheds\s+\*\*([\d,]+) MW\*\*"),
+        ["rel_base_worst"],
+    ),
+    (
+        "README.md",
+        re.compile(r"climbs more than tenfold to \*\*(\d\.\d+)%\*\*"),
+        ["rel_dict_lolp"],
+    ),
+    (
+        "README.md",
+        re.compile(r"1-in-100 draw sheds\s*\n?\s*\*\*([\d,]+) MW\*\*"),
+        ["rel_dict_p99"],
+    ),
+    (
+        "README.md",
+        re.compile(r"evening-peak window is\s*\n?\s*\*\*([\d,]+) MWh\*\*"),
+        ["rel_dict_eue"],
+    ),
     # --- README layered-calibration correlations + MAE + means
-    ("README.md",
-     re.compile(r"correlation of \*\*(0\.\d+)\*\* with an MAE\s*\n?\s*of \*\*P(\d+\.\d+)\*\*"),
-     ["cal_vis_corr", "cal_vis_mae"]),
-    ("README.md",
-     re.compile(r"Luzon at \*\*(0\.\d+)\*\* with an MAE of \*\*P(\d+\.\d+)\*\*"),
-     ["cal_luz_corr", "cal_luz_mae"]),
-    ("README.md",
-     re.compile(r"undefined correlation to \*\*(0\.\d+)\*\*\. After the layer"),
-     ["cal_min_corr"]),
-    ("README.md",
-     re.compile(r"modeled \*\*P(\d+\.\d+)/kWh\*\* against an observed \*\*P(\d+\.\d+)/kWh\*\*"),
-     ["cal_luz_modeled", "cal_luz_observed"]),
+    (
+        "README.md",
+        re.compile(
+            r"correlation of \*\*(0\.\d+)\*\* with an MAE\s*\n?\s*of \*\*P(\d+\.\d+)\*\*"
+        ),
+        ["cal_vis_corr", "cal_vis_mae"],
+    ),
+    (
+        "README.md",
+        re.compile(r"Luzon is \*\*(0\.\d+)\*\* with an MAE of \*\*P(\d+\.\d+)\*\*"),
+        ["cal_luz_corr", "cal_luz_mae"],
+    ),
+    (
+        "README.md",
+        re.compile(r"undefined correlation to \*\*(0\.\d+)\*\*\.\s+After the layer"),
+        ["cal_min_corr"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"Luzon averages a modeled \*\*P(\d+\.\d+)/kWh\*\* against a "
+            r"recorded \*\*P(\d+\.\d+)/kWh\*\*"
+        ),
+        ["cal_luz_modeled", "cal_luz_observed"],
+    ),
     # --- README offer-book backcast Mindanao MCP correlation (two mentions)
-    ("README.md",
-     re.compile(r"Mindanao clearing-price correlation \*\*(0\.\d+)\*\*"),
-     ["offer_min_mcp_corr"]),
-    ("README.md",
-     re.compile(r"reaching \*\*(0\.\d+) to (0\.\d+) correlation\*\*"),
-     ["offer_corr_lo", "offer_corr_hi"]),
-    ("README.md",
-     re.compile(r"collapsing from\s*\n?\s*\*\*-P(\d+\.\d+)\*\* to \*\*-P(\d+\.\d+)/kWh\*\*"),
-     ["cost_vis_bias", "offer_vis_bias"]),
+    (
+        "README.md",
+        re.compile(r"Mindanao clearing-price correlation \*\*(0\.\d+)\*\*"),
+        ["offer_min_mcp_corr"],
+    ),
+    (
+        "README.md",
+        re.compile(r"correlation ranges from \*\*(0\.\d+) to (0\.\d+)\*\*"),
+        ["offer_corr_lo", "offer_corr_hi"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"collapsing from\s*\n?\s*\*\*-P(\d+\.\d+)\*\* to \*\*-P(\d+\.\d+)/kWh\*\*"
+        ),
+        ["cost_vis_bias", "offer_vis_bias"],
+    ),
     # --- studio/README.md carries the same bias + Mindanao-correlation prose
-    ("studio/README.md",
-     re.compile(r"settlement bias collapses from -P(\d+\.\d+) to -P(\d+\.\d+)"),
-     ["cost_vis_bias", "offer_vis_bias"]),
-    ("studio/README.md",
-     re.compile(r"clearing-price\s*\n?\s*correlation reaches (0\.\d+)"),
-     ["offer_min_mcp_corr"]),
+    (
+        "studio/README.md",
+        re.compile(r"settlement bias falls from -P(\d+\.\d+) to -P(\d+\.\d+)"),
+        ["cost_vis_bias", "offer_vis_bias"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"clearing-price\s*\n?\s*correlation reaches (0\.\d+)"),
+        ["offer_min_mcp_corr"],
+    ),
     # storage buyback (README) + the corridor knee (README + studio)
-    ("README.md",
-     re.compile(r"loss-of-load probability falls from \*\*(\d+\.\d+)%\*\* to \*\*(\d+\.\d+)%\*\*"),
-     ["buyback_lolp_wo", "buyback_lolp_w"]),
-    ("README.md",
-     re.compile(r"unserved energy from \*\*([\d,]+) MWh\*\* to \*\*(\d+) MWh\*\*"),
-     ["buyback_eue_wo", "buyback_eue_w"]),
-    ("README.md",
-     re.compile(r"just \*\*(\d+) MW\*\* of added Visayas load binds the"),
-     ["dc_knee"]),
-    ("studio/README.md",
-     re.compile(r"puts the knee at (\d+) MW"),
-     ["dc_knee"]),
-    ("studio/README.md",
-     re.compile(r"the (\d+) MW threshold, and the"),
-     ["dc_knee"]),
+    (
+        "README.md",
+        re.compile(
+            r"loss-of-load probability with the added demand falls from "
+            r"\*\*(\d+\.\d+)%\*\* to \*\*(\d+\.\d+)%\*\*"
+        ),
+        ["buyback_lolp_wo", "buyback_lolp_w"],
+    ),
+    (
+        "README.md",
+        re.compile(r"unserved energy from \*\*([\d,]+) MWh\*\* to \*\*(\d+) MWh\*\*"),
+        ["buyback_eue_wo", "buyback_eue_w"],
+    ),
+    (
+        "README.md",
+        re.compile(r"just \*\*(\d+) MW\*\* of added Visayas load fills the"),
+        ["dc_knee"],
+    ),
+    ("studio/README.md", re.compile(r"puts the threshold at (\d+) MW"), ["dc_knee"]),
+    ("studio/README.md", re.compile(r"the (\d+) MW threshold, and the"), ["dc_knee"]),
     # studio narrative scalars that must agree with the regenerated backcast tables
-    ("studio/README.md",
-     re.compile(r"hit rate (\d+) percent, from unrankable"),
-     ["vis_lwap_hit"]),
-    ("studio/README.md",
-     re.compile(r"hit 93 to (\d+) percent"),
-     ["vis_mcp_hit"]),
-    ("studio/README.md",
-     re.compile(r"(\d+) MW MAE against a 375 MW mean flow"),
-     ["offer_vismin_mae"]),
-    ("studio/README.md",
-     re.compile(r"Luzon tracks at (0\.\d+) correlation"),
-     ["luz_lwap_corr"]),
+    (
+        "studio/README.md",
+        re.compile(r"(\d+) percent high-hour hit rate"),
+        ["vis_lwap_hit"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"hit rate from 93 to (\d+) percent"),
+        ["vis_mcp_hit"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"(\d+) MW mean absolute error against a 375 MW mean"),
+        ["offer_vismin_mae"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"Luzon reaches (0\.\d+) correlation"),
+        ["luz_lwap_corr"],
+    ),
     # README coupling/marginal narrative scalars
-    ("README.md",
-     re.compile(r"evening residual runs \*\*P(\d+\.\d+)/kWh\*\* above the cost stack"),
-     ["evening_residual_vis"]),
-    ("README.md",
-     re.compile(r"coal is on the margin \*\*(\d+)%\*\* of"),
-     ["coal_margin_luz"]),
-    ("README.md",
-     re.compile(r"\*\*(\d+\.\d+)%\*\* of Mindanao"),
-     ["mindanao_overnight"]),
-    ("README.md",
-     re.compile(r"blocked for \*\*(\d+\.\d+)%\*\* of intervals"),
-     ["corridor_blocked"]),
-    ("README.md",
-     re.compile(r"saturates on\s*\n?\s*\*\*(\d+\.\d+)%\*\* of the window"),
-     ["corridor_saturated"]),
-    ("README.md",
-     re.compile(r"runs from a \*\*P(\d+)\*\* scarcity spike"),
-     ["duration_max"]),
-    # widest-swing DICT-wave deltas (cost + offer) and the offer biases
-    ("README.md",
-     re.compile(r"raises the Luzon daily mean by \*\*\+P(\d+\.\d+)/kWh\*\* on the cost"),
-     ["cost_luz_delta"]),
-    ("README.md",
-     re.compile(r"\*\*\+P(\d+\.\d+)/kWh\*\* replayed on the market's own bids"),
-     ["offer_luz_delta"]),
-    ("README.md",
-     re.compile(r"reaches the Visayas \(\*\*\+P(\d+\.\d+)\*\*\) and Mindanao \(\*\*\+P(\d+\.\d+)\*\*\)"),
-     ["offer_vis_delta", "offer_min_delta"]),
-    ("studio/README.md",
-     re.compile(r"OVER-prices settlement by P(\d+\.\d+)"),
-     ["offer_luz_lwap_bias"]),
-    ("studio/README.md",
-     re.compile(r"keeps a -P(\d+\.\d+)\s*\n?\s*bias"),
-     ["offer_vis_mcp_bias"]),
-    ("studio/README.md",
-     re.compile(r"wave costs \+P(\d+\.\d+)/kWh on the cost stack"),
-     ["cost_luz_delta"]),
-    ("studio/README.md",
-     re.compile(r"\+P(\d+\.\d+)/kWh on the observed bids, with \+P(\d+\.\d+) reaching the Visayas"),
-     ["offer_luz_delta", "offer_vis_delta"]),
-    ("studio/README.md",
-     re.compile(r"\+P(\d+\.\d+) Mindanao where the cost stack"),
-     ["offer_min_delta"]),
-    ("studio/README.md",
-     re.compile(r"travels with the\s*\n?\s*\+P(\d+\.\d+):"),
-     ["offer_luz_delta"]),
-    ("studio/README.md",
-     re.compile(r"rolling series to P(\d+\.\d+) against P12\.413"),
-     ["marquee_rolling"]),
+    (
+        "README.md",
+        re.compile(r"evening gap runs \*\*P(\d+\.\d+)/kWh\*\* above the cost stack"),
+        ["evening_residual_vis"],
+    ),
+    (
+        "README.md",
+        re.compile(r"coal is on the margin \*\*(\d+)%\*\* of"),
+        ["coal_margin_luz"],
+    ),
+    (
+        "README.md",
+        re.compile(r"\*\*(\d+\.\d+)%\*\* of Mindanao"),
+        ["mindanao_overnight"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"blocked the Leyte-Luzon link for \*\*(\d+\.\d+)%\*\* of market-window"
+        ),
+        ["corridor_blocked"],
+    ),
+    (
+        "README.md",
+        re.compile(r"link saturates in \*\*(\d+\.\d+)%\*\* of intervals"),
+        ["corridor_saturated"],
+    ),
+    (
+        "README.md",
+        re.compile(r"runs from a \*\*P(\d+)\*\* scarcity spike"),
+        ["duration_max"],
+    ),
+    # Largest DICT demand-case changes and offer biases.
+    (
+        "README.md",
+        re.compile(
+            r"raises the Luzon daily mean by \*\*\+P(\d+\.\d+)/kWh\*\* on the cost"
+        ),
+        ["cost_luz_delta"],
+    ),
+    (
+        "README.md",
+        re.compile(r"\*\*\+P(\d+\.\d+)/kWh\*\* replayed on the market's own bids"),
+        ["offer_luz_delta"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"reaches the Visayas \(\*\*\+P(\d+\.\d+)\*\*\) and Mindanao \(\*\*\+P(\d+\.\d+)\*\*\)"
+        ),
+        ["offer_vis_delta", "offer_min_delta"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"overprices\s+settlement by P(\d+\.\d+)"),
+        ["offer_luz_lwap_bias"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"keeps a -P(\d+\.\d+)\s*\n?\s*bias"),
+        ["offer_vis_mcp_bias"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"cost calculation adds P(\d+\.\d+)/kWh"),
+        ["cost_luz_delta"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(
+            r"recorded\s+offers add P(\d+\.\d+)/kWh\. The increase reaches P(\d+\.\d+) in the Visayas"
+        ),
+        ["offer_luz_delta", "offer_vis_delta"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"and P(\d+\.\d+) in\s+Mindanao, where the cost calculation"),
+        ["offer_min_delta"],
+    ),
+    (
+        "studio/README.md",
+        re.compile(r"raises the series to P(\d+\.\d+)/kWh, below"),
+        ["reference_rolling"],
+    ),
     # the same flag is quoted in the top-level README, so guard it there too:
     # an unguarded copy of a nightly number is how the two drift apart
-    ("README.md",
-     re.compile(r"rolling series to P(\d+\.\d+) against\s*\n?\s*the P12\.413 trigger"),
-     ["marquee_rolling"]),
+    (
+        "README.md",
+        re.compile(r"rolling series to P(\d+\.\d+)\s+against the P12\.413 trigger"),
+        ["reference_rolling"],
+    ),
     # drifted 99.2 -> 99.3 unnoticed because nothing guarded it; both copies now do
-    ("README.md",
-     re.compile(r"single MW value in (\d+\.\d+) percent of windows"),
-     ["pinned_share"]),
-    ("web/methodology.html",
-     re.compile(r"on (\w+) of the six closest days"),
-     ["subhourly_neg_days_word"]),
-    ("web/methodology.html",
-     re.compile(r"modeled marginal fuel on about (\d+) percent of the\s*\n?\s*raise hours"),
-     ["coal_marginal_share"]),
-    ("web/methodology.html",
-     re.compile(r"floor-priced supply \(([\d,]+) MW\)"),
-     ["floor_supply_mw"]),
-    ("web/methodology.html",
-     re.compile(r"physical native load \(([\d,]+) MW\) sits ABOVE"),
-     ["sneg_load"]),
-    ("web/methodology.html",
-     re.compile(r"comes within ([\d.]+) to ([\d.]+) percent of native load"),
-     ["sneg_range_lo", "sneg_range_hi"]),
-    ("web/methodology.html",
-     re.compile(r"wider than the ([\d.]+) percent tightest margin"),
-     ["sneg_range_lo"]),
-    ("web/methodology.html",
-     re.compile(r"nonzero on ([\d.]+) percent of clean-day node-hours"),
-     ["cong_clean_share"]),
-    ("README.md",
-     re.compile(r"nonzero on ([\d.]+) percent of clean-day node-hours"),
-     ["cong_clean_share"]),
-    ("web/methodology.html",
-     re.compile(r"touching only ([\d.]+) percent of\s*\n?\s*clean-day"),
-     ["cong_clean_share"]),
-    ("web/methodology.html",
-     re.compile(r"averages ([\d,.]+) MW on Luzon \(([\d.]+) percent of the stack\), "
-                r"([\d,]+) MW on Mindanao\s+and ([\d,]+) MW on the Visayas"),
-     ["mot_headroom_luz", "mot_headroom_share_luz", "mot_headroom_min", "mot_headroom_vis"]),
-    ("web/methodology.html",
-     re.compile(r"raises are material in MW \((\d+) to (\d+) percent of dispatched"),
-     ["raise_share_lo", "raise_share_hi"]),
-    ("web/methodology.html",
-     re.compile(r"import averages ([\d,]+) MW on Luzon"),
-     ["resid_import"]),
-    ("web/methodology.html",
-     re.compile(r"\(([\d,]+) against ([\d,]+) MW across the 15 days"),
-     ["resid_gap", "resid_balance"]),
-
-    ("web/methodology.html",
-     re.compile(r"largest\s*\n?\s*hour-to-hour demand RISE anywhere in the archived observed profiles\s*\n?\s*\(([\d,]+) MW on Luzon"),
-     ["ramp_luz_worst"]),
-    ("README.md",
-     re.compile(r"quarter and \*\*(\d+) to (\d+) percent\*\* of the inter-island"),
-     ["flowdir_lo", "flowdir_hi"]),
-    ("README.md",
-     re.compile(r"gross\s+peak\s+of\s+\*\*([\d,]+)\s+MW\*\*\s+is\s+a\s+mid-afternoon"),
-     ["adq_gross_peak"]),
-    ("README.md",
-     re.compile(r"firm\s+evening\s+peak,\s+when\s+solar\s+is\s+gone,\s+is\s+\*\*([\d,]+)\s+MW\*\*"),
-     ["adq_eve_peak"]),
-    ("README.md",
-     re.compile(r"stack\s+of\s+\*\*([\d,]+)\s+MW\*\*\s+that\s+is\s+an\s+\*\*([\d.]+)%\*\*\s+reserve"),
-     ["adq_firm_avail", "adq_margin"]),
-    ("README.md",
-     re.compile(r"the\s+firm\s+margin\s+falls\s+to\s+\*\*([\d.]+)%\*\*"),
-     ["adq_dc_margin"]),
-    ("README.md",
-     re.compile(r"still\s+holds\s+\*\*([\d.]+)%\*\*\s+with\s+the\s+DICT\s+wave"),
-     ["adq_tight_dc_margin"]),
-    ("web/methodology.html",
-     re.compile(r"out-ramps the worst demand rise by ([\d.]+) times\s*\n?\s*on Luzon, ([\d.]+) on the Visayas and ([\d.]+) on Mindanao"),
-     ["ramp_strict_luz", "ramp_strict_vis", "ramp_strict_min"]),
+    (
+        "README.md",
+        re.compile(r"one MW value in\s+(\d+\.\d+) percent of windows"),
+        ["pinned_share"],
+    ),
+    (
+        "README.md",
+        re.compile(r"nonzero on ([\d.]+) percent of clean-day node-hours"),
+        ["cong_clean_share"],
+    ),
+    (
+        "README.md",
+        re.compile(r"recorded direction \*\*(\d+) to (\d+) percent\*\* of the time"),
+        ["flowdir_lo", "flowdir_hi"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"gross\s+peak\s+of\s+\*\*([\d,]+)\s+MW\*\*\s+is\s+a\s+mid-afternoon"
+        ),
+        ["adq_gross_peak"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"firm\s+evening\s+peak,\s+when\s+solar\s+is\s+gone,\s+is\s+\*\*([\d,]+)\s+MW\*\*"
+        ),
+        ["adq_eve_peak"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"stack\s+of\s+\*\*([\d,]+)\s+MW\*\*\s+that\s+is\s+an\s+\*\*([\d.]+)%\*\*\s+reserve"
+        ),
+        ["adq_firm_avail", "adq_margin"],
+    ),
+    (
+        "README.md",
+        re.compile(r"the\s+firm\s+margin\s+falls\s+to\s+\*\*([\d.]+)%\*\*"),
+        ["adq_dc_margin"],
+    ),
+    (
+        "README.md",
+        re.compile(r"still\s+holds\s+\*\*([\d.]+)%\*\*\s+with\s+the\s+DICT\s+forecast"),
+        ["adq_tight_dc_margin"],
+    ),
     # --- loss-surface validation numbers (recompute nightly; F4) ---
-    ("README.md",
-     re.compile(r"Spearman \*\*\+([\d.]+)\*\* over (\d+) nodes \((\d+)\s+"
-                r"independent buses, 95% CI \+([\d.]+) to \+([\d.]+)\)"),
-     ["loss_luz_spearman", "loss_luz_nodes", "loss_luz_bus",
-      "loss_luz_ci_lo", "loss_luz_ci_hi"]),
-    ("README.md",
-     re.compile(r"Mindanao at \*\*\+([\d.]+)\*\* over (\d+)\s+\((\d+) buses, "
-                r"\+([\d.]+) to \+([\d.]+)\)"),
-     ["loss_min_spearman", "loss_min_nodes", "loss_min_bus",
-      "loss_min_ci_lo", "loss_min_ci_hi"]),
-    ("README.md",
-     re.compile(r"stable negative rank\s+correlation \(\*\*(-[\d.]+)\*\*"),
-     ["loss_vis_spearman"]),
-    # --- published-congestion counts over the static DIPCEF sample (F1 guard) ---
-    ("web/methodology.html",
-     re.compile(r"nonzero on (\d+) of the (\d+) sampled days"),
-     ["cong_days_nonzero", "cong_days_sampled"]),
-    ("web/methodology.html",
-     re.compile(r"up to\s+(\d+) PhP/kWh on 2026-05-26"),
-     ["cong_max"]),
-    ("web/methodology.html",
-     re.compile(r"the (\d+), (\d+), and (\d+) node counts collapse to "
-                r"(\d+), (\d+), and\s+(\d+) independent buses"),
-     ["loss_luz_nodes", "loss_vis_nodes", "loss_min_nodes",
-      "loss_luz_bus", "loss_vis_bus", "loss_min_bus"]),
+    (
+        "README.md",
+        re.compile(
+            r"Spearman \*\*\+([\d.]+)\*\* over (\d+) nodes \((\d+)\s+"
+            r"distinct buses, 95% confidence interval \+([\d.]+) to \+([\d.]+)\)"
+        ),
+        [
+            "loss_luz_spearman",
+            "loss_luz_nodes",
+            "loss_luz_bus",
+            "loss_luz_ci_lo",
+            "loss_luz_ci_hi",
+        ],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"Mindanao at \*\*\+([\d.]+)\*\* over (\d+)\s+\((\d+) buses, "
+            r"\+([\d.]+) to \+([\d.]+)\)"
+        ),
+        [
+            "loss_min_spearman",
+            "loss_min_nodes",
+            "loss_min_bus",
+            "loss_min_ci_lo",
+            "loss_min_ci_hi",
+        ],
+    ),
+    (
+        "README.md",
+        re.compile(r"stable negative rank\s+correlation \(\*\*(-[\d.]+)\*\*"),
+        ["loss_vis_spearman"],
+    ),
 ]
 
 
-# Marker-delimited blocks regenerated wholesale from the bake (the reserve
+# Marker-delimited blocks regenerated wholesale from the data build (the reserve
 # table's 96 cells). The block body between the two markers is replaced with the
 # canonical string on --write and compared on --check.
 BLOCKS = [
-    ("studio/README.md", "<!-- reserve-table:", "<!-- /reserve-table -->",
-     "reserve_table"),
+    (
+        "studio/README.md",
+        "<!-- reserve-table.",
+        "<!-- /reserve-table -->",
+        "reserve_table",
+    ),
     # the six BackcastView tables, hand-typed and drift-prone before this
-    ("studio/README.md", "<!-- bc-lwap:", "<!-- /bc-lwap -->", "bc_lwap"),
-    ("studio/README.md", "<!-- bc-mcp:", "<!-- /bc-mcp -->", "bc_mcp"),
-    ("studio/README.md", "<!-- bc-flows:", "<!-- /bc-flows -->", "bc_flows"),
-    ("studio/README.md", "<!-- bc-offer-target:", "<!-- /bc-offer-target -->",
-     "bc_offer_target"),
-    ("studio/README.md", "<!-- bc-offer-flows:", "<!-- /bc-offer-flows -->",
-     "bc_offer_flows"),
-    ("studio/README.md", "<!-- bc-rtdhs:", "<!-- /bc-rtdhs -->", "bc_rtdhs"),
+    ("studio/README.md", "<!-- bc-lwap.", "<!-- /bc-lwap -->", "bc_lwap"),
+    ("studio/README.md", "<!-- bc-mcp.", "<!-- /bc-mcp -->", "bc_mcp"),
+    ("studio/README.md", "<!-- bc-flows.", "<!-- /bc-flows -->", "bc_flows"),
+    (
+        "studio/README.md",
+        "<!-- bc-offer-target.",
+        "<!-- /bc-offer-target -->",
+        "bc_offer_target",
+    ),
+    (
+        "studio/README.md",
+        "<!-- bc-offer-flows.",
+        "<!-- /bc-offer-flows -->",
+        "bc_offer_flows",
+    ),
+    ("studio/README.md", "<!-- bc-rtdhs.", "<!-- /bc-rtdhs -->", "bc_rtdhs"),
 ]
 
-# Every public prose file is now bake-derived and auto-synced by the nightly
+# Every public prose file now uses generated data and is updated by the nightly
 # cron: the scalar registry above plus the reserve-table block below cover all of
 # the rolling numbers in each, so none can silently freeze behind the map.
-WRITABLE = {"README.md", "studio/README.md", "web/methodology.html"}
+WRITABLE = {"README.md", "studio/README.md"}
 
 
 def _check_file(path, text, canon, write):
@@ -853,13 +1161,13 @@ def _check_file(path, text, canon, write):
                 if g != w:
                     # digit-boundary (not \b): \b fails when the number is
                     # preceded by a word char, e.g. the P in "-P6.91"
-                    new = re.sub(rf"(?<![\d.]){re.escape(g)}(?![\d.])",
-                                 w, new, count=1)
-            text = text[:m.start()] + new + text[m.end():]
+                    new = re.sub(rf"(?<![\d.]){re.escape(g)}(?![\d.])", w, new, count=1)
+            text = text[: m.start()] + new + text[m.end() :]
             fixed += 1
         else:
             problems.append(
-                f"[DRIFT] {path} {keys}: prose has {got}, bake says {want}")
+                f"[DRIFT] {path} {keys}: prose has {got}, data build says {want}"
+            )
     for _f, start, end, key in [b for b in BLOCKS if b[0] == path]:
         si, ei = text.find(start), text.find(end)
         if si == -1 or ei == -1:
@@ -875,14 +1183,18 @@ def _check_file(path, text, canon, write):
             fixed += 1
         else:
             problems.append(
-                f"[DRIFT] {path} block {key}: table out of sync with the bake")
+                f"[DRIFT] {path} block {key}: table out of sync with the data build"
+            )
     return text, problems, fixed
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--write", action="store_true",
-                    help="rewrite the rolling numbers in each file from the bake")
+    ap.add_argument(
+        "--write",
+        action="store_true",
+        help="rewrite the rolling numbers in each file from the data build",
+    )
     args = ap.parse_args()
 
     canon = canonical()
@@ -901,8 +1213,10 @@ def main():
                 fh.write(text)
 
     if args.write:
-        print(f"verify_claims: rewrote {total_fixed} number(s) across "
-              f"{len(files)} file(s) from the bake")
+        print(
+            f"verify_claims: rewrote {total_fixed} number(s) across "
+            f"{len(files)} file(s) from the data build"
+        )
         miss = [p for p in all_problems if p.startswith("[MISS]")]
         if miss:
             print("\n".join(miss))
@@ -910,15 +1224,19 @@ def main():
         return
 
     if all_problems:
-        print("verify_claims: public prose is out of lockstep with the bake\n")
+        print("verify_claims: public prose is out of lockstep with the data build\n")
         print("\n".join(all_problems))
-        print("\nfix: run `python3 scripts/verify_claims.py --write` "
-              "(and `make viz` for the OG card + montage).")
+        print(
+            "\nfix: run `python3 scripts/verify_claims.py --write` "
+            "(and `make viz` for the OG card + montage)."
+        )
         sys.exit(1)
     n = len(REGISTRY) + len(BLOCKS)
-    print(f"verify_claims: all {n} claims across {len(files)} files match the bake "
-          f"(window {canon['window_from']} to {canon['window_to']}, "
-          f"{canon['days_covered']} days)")
+    print(
+        f"verify_claims: all {n} claims across {len(files)} files match the data build "
+        f"(window {canon['window_from']} to {canon['window_to']}, "
+        f"{canon['days_covered']} days)"
+    )
 
 
 if __name__ == "__main__":

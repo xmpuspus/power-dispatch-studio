@@ -25,11 +25,12 @@
  },
  "opf_ratings_raised_to_replay_flow": 51,
  "rating_provenance": {
-  "observed-rtdcv": 33,
+  "observed-rtdcv": 34,
   "replay-floor": 51,
-  "class-default": 294
+  "class-default": 293
  },
- "opf_finding": "A measured probe, not a shipped price surface: at the current resource-to-bus resolution (share of MW in resource_mapping) the re-dispatch concentrates each grid's unresolved generation onto its few resolved plant buses, so modeled price LEVELS are not usable; what the probe reports is the geography (which corridors the re-dispatch pushes to their estimated limits) and the honest gap. The zonal engine remains the price model.",
+ "opf_finding": "This network test cannot provide usable node price levels. The resource-to-bus map places unresolved generation on the few plant buses that are resolved. Use the result only to see which grid lines reach their estimated limits. The regional model remains the price calculation.",
+ "sited_scenario": null,
  "replay": {
   "top_loaded": [
    {

@@ -8,6 +8,7 @@ evening peak, the same way the intact limit was found.
 
 Read-only.
 """
+
 import json
 import os
 import sys
@@ -44,8 +45,10 @@ def limit_at(net, inj, bus, local):
         slope = (f1 - f0) / PROBE
         if abs(slope) < 1e-9:
             continue
-        for target in (net["branches"][bi]["rating_mw"],
-                       -net["branches"][bi]["rating_mw"]):
+        for target in (
+            net["branches"][bi]["rating_mw"],
+            -net["branches"][bi]["rating_mw"],
+        ):
             d = (target - f0) / slope
             if d > 0 and (best is None or d < best):
                 best = d
@@ -65,22 +68,29 @@ local = [bi for bi, b in enumerate(all_branches) if b["a"] == bus or b["b"] == b
 print(f"site bus {bus}, {len(local)} circuits on it, hour {HOUR} of {DAY}")
 for bi in local:
     br = all_branches[bi]
-    print(f"  {br['names'] or [br['kind']]}  {br['km']} km  "
-          f"rating {br['rating_mw']} MW")
+    print(
+        f"  {br['names'] or [br['kind']]}  {br['km']} km  rating {br['rating_mw']} MW"
+    )
 
 intact = limit_at(net, inj, bus, local)
 print(f"\nboth circuits in service: {intact:,.0f} MW")
 
-results = {"day": DAY, "hour": HOUR, "bus": bus, "intact_mw": round(intact, 1),
-           "outages": []}
+results = {
+    "day": DAY,
+    "hour": HOUR,
+    "bus": bus,
+    "intact_mw": round(intact, 1),
+    "outages": [],
+}
 for drop in local:
     kept = [b for i, b in enumerate(all_branches) if i != drop]
     net["branches"] = kept
     local2 = [i for i, b in enumerate(kept) if b["a"] == bus or b["b"] == bus]
     if not local2:
         print(f"\ndropping {all_branches[drop]['km']} km circuit: bus is cut off")
-        results["outages"].append({"dropped_km": all_branches[drop]["km"],
-                                   "limit_mw": 0.0, "isolated": True})
+        results["outages"].append(
+            {"dropped_km": all_branches[drop]["km"], "limit_mw": 0.0, "isolated": True}
+        )
         net["branches"] = all_branches
         continue
     # is the site bus still joined to the rest of its island at all?
@@ -108,29 +118,48 @@ for drop in local:
         # off from the grid.
         reach = len(seen & island)
         stranded = reach < len(island) / 2
-        print(f"  no solution. The bus still reaches {reach} of "
-              f"{len(island)} buses on its island.")
-        print("  " + ("The site is cut off from the grid by this outage."
-                      if stranded else
-                      "The site stays connected, so this is a limitation of "
-                      "the model rather than a finding about the site."))
-        results["outages"].append({"dropped_km": all_branches[drop]["km"],
-                                   "limit_mw": 0.0 if stranded else None,
-                                   "site_cut_off": stranded,
-                                   "reachable_buses": reach,
-                                   "model_limitation": not stranded})
+        print(
+            f"  no solution. The bus still reaches {reach} of "
+            f"{len(island)} buses on its island."
+        )
+        print(
+            "  "
+            + (
+                "The site is cut off from the grid by this outage."
+                if stranded
+                else "The site stays connected, so this is a limitation of "
+                "the model rather than a finding about the site."
+            )
+        )
+        results["outages"].append(
+            {
+                "dropped_km": all_branches[drop]["km"],
+                "limit_mw": 0.0 if stranded else None,
+                "site_cut_off": stranded,
+                "reachable_buses": reach,
+                "model_limitation": not stranded,
+            }
+        )
     else:
-        print(f"  limit falls {intact:,.0f} -> {out:,.0f} MW "
-              f"({100 * out / intact:.0f}% of intact), cut off: {cut_off}")
-        results["outages"].append({"dropped_km": all_branches[drop]["km"],
-                                   "limit_mw": round(out, 1),
-                                   "isolated": bool(cut_off)})
+        print(
+            f"  limit falls {intact:,.0f} -> {out:,.0f} MW "
+            f"({100 * out / intact:.0f}% of intact), cut off: {cut_off}"
+        )
+        results["outages"].append(
+            {
+                "dropped_km": all_branches[drop]["km"],
+                "limit_mw": round(out, 1),
+                "isolated": bool(cut_off),
+            }
+        )
     net["branches"] = all_branches
 
 cut = [o for o in results["outages"] if o.get("site_cut_off")]
 results["radially_fed"] = bool(cut)
-print(f"\ncircuits whose loss cuts the site off from the grid: "
-      f"{len(cut)} of {len(results['outages'])}")
+print(
+    f"\ncircuits whose loss cuts the site off from the grid: "
+    f"{len(cut)} of {len(results['outages'])}"
+)
 if cut:
     print("In the mapped network the site is fed radially. The two circuits are")
     print("two segments of one route, not two independent paths, so there is no")
@@ -138,4 +167,6 @@ if cut:
     print("public map can answer.")
     print("The self-build plan still draws 500 MW at this hour, and that 500 MW")
     print("has no route during such an outage.")
-json.dump(results, open(os.path.join(ROOT, "tmp", "pax_silica_line_out.json"), "w"), indent=1)
+json.dump(
+    results, open(os.path.join(ROOT, "tmp", "pax_silica_line_out.json"), "w"), indent=1
+)

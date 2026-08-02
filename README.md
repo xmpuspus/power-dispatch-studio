@@ -1,38 +1,39 @@
 # Power Dispatch Studio
 
-**Can the Philippine grid host the announced data-center wave?** A map, a 39-view
-browser dispatch studio, and a daily archive, all built on the market operator's
-own public files. Where transmission already binds, named equipment on 5-minute
-receipts. Where the announced megawatts would land. What that does to the spot
-market and to the Meralco bill.
+**Test whether the Philippine grid can carry announced data-center demand.** The
+project combines a map, a 39-view browser dispatch studio, and a daily archive
+built from the market operator's public files. It names transmission equipment
+that reached a limit in 5-minute records, places announced demand on the grid,
+and estimates how modeled spot prices and a sample Meralco household bill change.
 
-It is **free**, runs in your browser with no license and no install, and every
-number traces to a public source. The studio replays market days two ways, on a
-calibrated cost stack and on the operator's own published offer books. So the
-offer premium in the wholesale price is a measured series, not a guess. Every
-input and every number rebuilds from a clean clone.
+It is **free** and runs in your browser with no license or install. Published
+inputs cite their sources. The interface shows calculations and labels assumptions.
+The studio replays market days two ways, on a
+cost model checked against recorded prices and on the operator's own published offer books. So the
+difference between the two calculations is a model-derived offer premium based
+on published bids. The data and calculated results rebuild from a clean clone.
 
-Think of it as a small, open, browser-based counterpart to the licensed
-production-cost tools grid planners use. It is not a replacement for a planning
-suite. It does model the what-ifs that matter here. New data centers, the choke
-points behind them, and how the market prices those constraints. Formerly
-gridbill-ph.
+The project is a small, open counterpart to the licensed production-cost tools
+used by grid planners. It cannot replace a utility planning model. It can test
+how added demand, plant outages, storage, and inter-island limits change this
+simplified dispatch calculation. The project formerly used the name gridbill-ph.
 
 [![CI](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml)
-[![License: MIT (code) / CC-BY-4.0 (data)](https://img.shields.io/badge/license-MIT%20%2F%20CC--BY--4.0-blue.svg)](LICENSE)
+[MIT code and CC BY 4.0 data](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![PyPI](https://img.shields.io/pypi/v/power-dispatch-studio?color=blue)](https://pypi.org/project/power-dispatch-studio/)
 
-[<img width="820" alt="The map through its five modes. The head panel asks whether the Philippine grid can host the announced data-center wave. Supply shows the May 2026 system margin against the announced megawatts. Choke points lists the named 230 kV equipment at a binding limit. Prices shows the three island grids fanning apart after the market reopened. Drivers is the day-by-day archive feed, and Simulate re-clears the merit-order price in the browser as a data-center load ramps on." src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
+[<img width="820" alt="The map through its five modes. The head panel asks whether the Philippine grid can carry the announced data-center demand. Supply compares the May 2026 system margin with the announced megawatts. Choke points lists the named 230 kV equipment at a binding limit. Prices shows the three island grids separating after the market reopened. Daily market record shows the archive by date, and Simulate recalculates the lowest-cost-first price as data-center demand increases." src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
 
-The map, through its five modes. The last beat runs live. A data-center load
-re-clears the merit order from coal at P6.00 to oil at P12.00, in the browser.
+The map has five views. In the final view, added data-center demand changes the
+lowest-cost-first dispatch (merit order) from coal at P6.00 to oil at P12.00 in
+the browser.
 
 | Start here | What it gives you |
 |---|---|
 | **[Open the map](https://power-dispatch-studio.vercel.app)** | Five modes over the archive, plus an in-browser simulate |
 | **[Open the studio](https://power-dispatch-studio.vercel.app/studio/)** | 39 analyst views, a command palette, and scenarios that travel as a link |
-| **[Every number and its source](web/methodology.html)** | The full method, the unit conversions, and every caveat |
+| **[Methods, sources, and assumptions](web/methodology.html)** | The calculation, unit conversions, sources, assumptions, and limits |
 | **`pip install power-dispatch-studio`** | The same LP engine, offline, with a bundled archive snapshot |
 
 The pip package runs the engine the browser runs. Install it from
@@ -43,96 +44,113 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 
 ## Contents
 
-- [The grid names its own choke point](#the-grid-names-its-own-choke-point)
+- [The Leyte-Cebu link reached a binding limit on 114 of 117 days](#the-leyte-cebu-link-reached-a-binding-limit-on-114-of-117-days)
 - [Luzon reserves fell short on 73 of the window's 117 days](#luzon-reserves-fell-short-on-73-of-the-windows-117-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
-- [Luzon and Mindanao validate the loss surface, and Visayas fails](#luzon-and-mindanao-validate-the-loss-surface-and-visayas-fails)
-- [Every column in the day-by-day feed comes from the archive, not the model](#every-column-in-the-day-by-day-feed-comes-from-the-archive-not-the-model)
-- [A cost stack clears near flat P6, and the evening gap is offers, not new load](#a-cost-stack-clears-near-flat-p6-and-the-evening-gap-is-offers-not-new-load)
-- [The offer-book replay tracks the market's own prices at 0.68 to 0.87](#the-offer-book-replay-tracks-the-markets-own-prices-at-068-to-087)
+- [Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.83) but reverse in Visayas (-0.57)](#modeled-loss-ranks-agree-in-luzon-072-and-mindanao-083-but-reverse-in-visayas--057)
+- [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
+- [The cost stack stays near P6 while recorded evening prices include scarcity and offer premiums](#the-cost-stack-stays-near-p6-while-recorded-evening-prices-include-scarcity-and-offer-premiums)
+- [Offer-book replay correlations range from 0.68 to 0.87](#offer-book-replay-correlations-range-from-068-to-087)
 - [The studio is 39 views, and every one of them is a URL you can send](#the-studio-is-39-views-and-every-one-of-them-is-a-url-you-can-send)
 - [IEMOP's public window rolls at 90 days, so the git history is the archive](#iemops-public-window-rolls-at-90-days-so-the-git-history-is-the-archive)
-- [What it is not](#what-it-is-not) · [Where the data comes from](#where-the-data-comes-from) · [Reproduce locally](#reproduce-locally) · [Data products](#data-products) · [Method](#method)
+- [The model states six limits](#the-model-states-six-limits) · [Where the data comes from](#where-the-data-comes-from) · [Reproduce locally](#reproduce-locally) · [Data products](#data-products) · [Method](#method)
 
-The whole argument runs in four charts. The grid names its own choke point. The
-price is a shape a data center barely moves with room and jumps when full. One
-plant trip takes a fifth of the margin. A WESM swing is only a slice of the
-Meralco bill.
+Four charts carry the main findings. Independent Electricity Market Operator of
+the Philippines (IEMOP) records name the equipment at its
+limit. Added demand barely changes price while capacity is available, then
+raises it sharply as the grid fills. One plant outage removes about one fifth of
+the published margin. Only the Wholesale Electricity Spot Market (WESM) share of
+Meralco's supply passes a spot-price
+change to the bill.
 
-![Four dark cards tiled into one summary. The constrained substations drawn on the Philippine grid, with the Leyte-Cebu corridor on top. The Luzon price-against-load curve, where the same 300 MW adds about P0.32/kWh on a quiet grid and about five times that on a full one. The May 2026 margin as 36 blocks of 100 MW, with Sual's two units taking 13 of them. The Meralco June 2026 bill split three ways, where the spot slice is about a twentieth of the whole rate](docs/story-montage.gif)
+![Four dark cards tiled into one summary. The constrained substations drawn on the Philippine grid, with the Leyte-Cebu link on top. The Luzon price-against-load curve, where the same 300 MW adds about P0.32/kWh on a quiet grid and about five times that on a full one. The May 2026 margin as 36 blocks of 100 MW, with Sual's two units taking 13 of them. The Meralco June 2026 bill split three ways, where the spot slice is about a twentieth of the whole rate](docs/story-montage.gif)
 
-## The grid names its own choke point
+## The Leyte-Cebu link reached a binding limit on 114 of 117 days
 
-The choke points are not inferred. IEMOP publishes a "congestions manifesting" file
-that names the exact transmission equipment sitting at its binding limit, per
-5-minute interval, and this repo archives and ranks them. A row **literally named
+IEMOP publishes a "congestions manifesting" file that names transmission
+equipment at its binding limit for each 5-minute interval. This project archives
+and ranks those records. A row **literally named
 `LEYTE_TO_CEBU`** shows up in the day-ahead runs on **93 of the window's 117 days**.
-The 230 kV lines that carry that corridor, Tabango (Leyte) to Daanbantayan (Cebu),
+The 230 kV lines that carry that link, Tabango (Leyte) to Daanbantayan (Cebu),
 top the league. They are at a binding limit in the hourly day-ahead runs on **114 of 117
 days**, and binding in the 5-minute real-time dispatch, the run settlement
-actually sees, on **23 days** of the window. Both columns are in the table. The
-day-ahead count measures how persistently the constraint reappears across re-runs,
-the real-time count how often it actually bound. The same corridor IEMOP's December
-2025 report names in prose. Here it is the receipts behind the prose.
+actually sees, on **23 days** of the window.
 
-![The constraint league drawn on the grid itself, on a dark canvas. The Philippine transmission network glows faintly. The 500 kV backbone is brightest. Twelve named substations light up in rank order, each dot sized by days at a binding limit, with a white core for the smaller real-time count. The Leyte-Cebu corridor is coral and tops the ranked list beside the map. An inset zooms to the corridor itself, 31 km from Tabango in Leyte to Daanbantayan in Cebu.](docs/constraint-map.gif)
+Both columns are in the table. The
+day-ahead count measures how persistently the constraint reappears across re-runs,
+the real-time count how often it actually bound. IEMOP's December 2025 report
+discusses the same link. The archived rows show the dates and equipment
+behind that statement.
+
+![The constraint league appears on the grid. The 500 kV backbone is brightest. Twelve named substations appear in rank order. Dot size shows days at a binding limit. A white core shows the smaller real-time count. The coral Leyte-Cebu link tops the list. An inset shows its 31 km route from Tabango in Leyte to Daanbantayan in Cebu.](docs/constraint-map.gif)
 
 The same league as plain ranked bars, with no map, is [docs/constraint-league.gif](docs/constraint-league.gif).
 
 Across the 117-day window, **80 distinct pieces of equipment** hit a limit at least
 once, in **95 monitored constraints** (a transformer is listed under each winding
-voltage and a line at each terminal, so one physical asset can hold several limits).
+voltage and a line at each terminal, so one physical asset can have more than one limit ID).
 The map ranks the constraints by days at a limit (a day counts once, so a day-ahead
 re-run cannot inflate it) and keeps the real-time and day-ahead counts in separate
 columns, because the day-ahead projection re-prices hourly and its raw row count
-measures re-run persistence, not time at the limit. Per-equipment receipts sit in
+measures how often the constraint reappears. It does not measure time at the limit. Per-equipment records sit in
 [`web/data/congestion.json`](web/data/congestion.json). Rebuild them with `make data`.
 
-The operator publishes the same story with unit names, and the map now
-carries it. The PSM constrained-on list names every generator that network
-or security constraints forced to run out of merit, per 5-minute interval.
-It carries the administered price each one was paid. Across the window that is **269
-named generators**, the Visayas leading by intervals, batteries topping the
-list at the P32 offer cap (`constrained_on` in
-[`web/data/market_ops.json`](web/data/market_ops.json)). Beside it sit the
-security limits used in real-time dispatch. These are per-resource operating
-points. The archived files pin them to a single MW value in 99.3 percent of windows
-(regulating hydro, the Agus units, is the exception). They are the
-physical record of which units the grid's security constraints held and where
+The price-substitution method (PSM) constrained-on list names each generator that
+network or security constraints forced to run out of merit for each 5-minute interval. Each row has the
+administered price paid to each unit.
+
+Across the window, it names **269
+generators**. Visayas leads by intervals, and batteries top the list at the P32
+offer cap (`constrained_on` in
+[`web/data/market_ops.json`](web/data/market_ops.json)).
+
+The same file has the security limits used in real-time dispatch. These are
+per-resource operating points.
+
+The archived files pin them to one MW value in
+99.3 percent of windows. Regulating hydro at the Agus units is the exception.
+
+They record which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
-The instruction log behind both closes the causal loop. Across the 114
-daily logs the System Operator's own dispatch instructions carry a remark
+The System Operator's instruction log states why it changed dispatch. Across 114
+daily logs, its instructions carry a remark
 citing a line limitation **1,740 times, and 1,713 of those name the
-Leyte-Cebu corridor** ("Advise to discharge under MOT Raise due to
-Leyte-Cebu Line Limitation"), the same corridor the constraint league
-ranks first by shadow-price days. That means one corridor carries 98 percent of
-every line-limitation instruction the operator wrote down. The full out-of-merit record rides
-beside it. It counts **108,842 MOT-raise instructions** across the window at a **55
-MW** median, where the must-run subset the methodology measured out sits
-at 5.7 (`so_instructions` in the same file. The administered-dispatch
-overlay it sizes is a named queued build).
+Leyte-Cebu link** ("Advise to discharge under MOT Raise due to
+Leyte-Cebu Line Limitation"), the same link the constraint league
+ranks first by shadow-price days. This link appears in 98 percent of
+every line-limitation instruction the operator wrote down.
+
+"MOT Raise" is the operator's label for this out-of-merit redispatch.
+
+The full record has
+**108,842 MOT-raise instructions** across the window at a **55
+MW** median.
+
+The must-run subset has a **6½ MW** median.
+
+The `so_instructions` section in the same file has both records.
 
 ## Luzon reserves fell short on 73 of the window's 117 days
 
-In the operator's own real-time dispatch schedules, **Luzon scheduled reserves fell
-below the stated requirement on 73 of the window's 117 days**, and load was curtailed
-in the dispatch schedules on **105 grid-days (5,221.0 MWh)** across the three grids.
-This is observed curtailment in published schedules and observed reserve shortfall,
-not a brownout forecast. The Visayas grid ran **52 consecutive days on
-grid alert (May 11 to July 1, 2026)**, yellow on most of them and RED on three
-(May 13, 14 and 15, in the operator advisories archived here). Red alert is the
-more severe state. Supply itself no longer covers demand plus the regulating
-reserve, so manual load dropping is expected. (Yellow is the lesser state,
-supply still meets demand but the operating margin has fallen below the
-contingency reserve requirement.) The streak ended
-when one 150 MW unit returned, with 935.3 MW still unavailable that day.
+In the operator's real-time schedules, **Luzon reserves fell below the stated need
+on 73 of the window's 117 days**. Across the three grids, the schedules curtailed
+load on **105 grid-days (5,221.0 MWh)**. These figures describe published
+schedules and do not forecast brownouts.
 
-Against that thin margin, the announced data-center wave is the size of the margin
-itself. DICT's forecast is **1,500 MW by 2028** (a labeled forecast, not a
-measurement) and Meralco has committed **1,000 MW for 10 data centers**, while the
+The Visayas grid ran **52 consecutive days on grid alert from May 11 to July 1,
+2026**. Most alerts were yellow. The operator recorded red alerts on May 13, 14,
+and 15. A red alert means supply no longer covers demand plus regulating reserve,
+and the operator expects manual load dropping. A yellow alert means supply still
+covers demand, but the operating margin falls below the contingency reserve need.
+The streak ended when one 150 MW unit returned, with 935.3 MW still unavailable.
+
+Against that thin margin, announced data-center demand is a large share of the
+margin itself. The Department of Information and Communications Technology
+(DICT) forecasts **1,500 MW by 2028**. This is a labeled forecast. Meralco
+committed **1,000 MW for 10 data centers**, while the
 whole system's May 2026 supply margin was **3,629 MW**. A data center is near-flat
-24/7 load, so it consumes margin in every interval, not just at the evening peak.
+24/7 load, so it consumes margin throughout the day, including the evening peak.
 Per-day reserve and curtailment series sit in
 [`web/data/reliability.json`](web/data/reliability.json).
 
@@ -140,121 +158,133 @@ Per-day reserve and curtailment series sit in
 
 ## The three grids priced within P0.015 while suspended, then split to P15.72
 
-WESM is one market on paper and three prices in practice. While the market was
+WESM settles separate prices for the three island grids. While the market was
 suspended under administered pricing (through May 1, 2026), the three island grids
-priced within **P0.015/kWh** of each other. Once trading resumed, they split. Over
+priced within **P0.015/kWh** of each other. Once trading resumed, they split.
+
+Over
 the market-priced days the average was **Luzon P7.65, Visayas P12.96, Mindanao
 P11.52 per kWh**, with **28 days spreading beyond P5/kWh** and a widest daily spread
-of **P15.72/kWh on June 8**. The links between the islands are the reason the numbers
-differ, and the map keeps the two regimes labeled so the suspension is never folded
-into a market-outcome claim.
+of **P15.72/kWh on June 8**. Constrained inter-island links contribute to regional
+price separation, alongside local offers, outages, losses, and settlement rules.
+The map keeps the two regimes labeled so the suspension is never folded into a
+market-outcome claim.
 
-![Three price lines on a dark card. They move together at about 5 to 6 pesos per kWh while WESM is suspended. After the market reopens on May 1 they fan apart, and Visayas and Mindanao climb above Luzon](docs/price-spread.gif)
+![Three price lines stay between 5 and 6 pesos per kWh during the suspension. After May 1, Visayas and Mindanao rise above Luzon.](docs/price-spread.gif)
 
-Under those three regional averages, DIPCEF prices about 1,200 individual nodes,
-and the map draws each node's persistent deviation from its own region's price
-(Prices mode. The studio's Nodal prices view carries the full searchable table).
-The walkthrough below runs four real decisions through that lens, every figure
-read live from the current bake at recording time. Which consumers sit behind a
-radial line and persistently pay above their region. What the same 100 MW data
-center pays behind a premium delivery point versus beside generation. What the
-same MWh earns a plant behind an export constraint. And the nodal forward
-that does not overstate, the regional forward band plus the node's persistent
-adder, held constant and labeled. Deviations are labeled observed locational deviations,
-never congestion premiums. The published nodal congestion component is zero
+Under those three regional averages, IEMOP's final per-node dispatch results
+price about 1,200 individual grid connection points. The map draws each
+point's average difference from its own region's price
+(Prices mode. The studio's Prices at grid connection points view carries the
+full searchable table).
+The walkthrough below runs four decisions through that lens. Its figures come
+from the calculated data at recording time.
+
+- Which consumers pay above their region on average at the end of a radial line.
+- What the same 100 MW data center pays at two different delivery points.
+- What a plant earns behind an export constraint.
+- How a node's recorded average difference changes a regional future price range.
+
+The future calculation holds the recorded node difference constant and labels
+that assumption. The interface calls them recorded location differences.
+
+The published nodal congestion component is zero
 through the market suspension window and small and intermittent after prices
-resumed on 2026-05-01, so the deviation stays loss-dominated. The recipe is `python3 build/record_nodal_walkthrough.py` against the
-combined serve. A [smoother MP4 is here](docs/nodal-walkthrough.mp4).
+resumed on 2026-05-01, so the deviation stays loss-dominated.
 
-The four decisions run end to end in [docs/nodal-walkthrough.mp4](docs/nodal-walkthrough.mp4), and as a gif in [docs/nodal-walkthrough.gif](docs/nodal-walkthrough.gif). Or open the [Nodal prices view](https://power-dispatch-studio.vercel.app/studio/#v=nodal-prices) and read the table yourself.
+The repository has the recording recipe, an MP4, a GIF, and the interactive
+Prices at grid connection points view.
 
-## Luzon and Mindanao validate the loss surface, and Visayas fails
+## Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.83) but reverse in Visayas (-0.57)
 
-WESM decomposes every published LMP into an energy, a loss, and a congestion
+WESM decomposes every published locational marginal price (LMP) into an energy, a loss, and a congestion
 part, and the congestion part is small and sparse (zero through the market
 suspension, nonzero on 1.18 percent of clean-day node-hours afterward), so the
 within-region nodal price structure the market reports is loss-dominated.
 About a thousand resources report per clean day, and the ones that resolve to a
-mapped bus become the validation target. That is a target a closed planning
-suite cannot match in public, because its network dataset is private and its
-per-node accuracy is unpublished. So the model is
+mapped bus become the comparison set.
+
+Public users cannot make the same check with a licensed planning suite because
+its network data and per-node accuracy are not published.
+
+So the model is
 checked against it. Marginal loss factors from the OpenStreetMap-geometry
-backbone are compared, grid by grid, against each node's observed deviation
+backbone are compared, grid by grid, against each node's recorded deviation
 from its regional price. Luzon ranks at Spearman **+0.72** over 314 nodes (72
-independent buses, 95% CI +0.58 to +0.81) and Mindanao at **+0.83** over 118
+distinct buses, 95% confidence interval +0.58 to +0.81) and Mindanao at **+0.83** over 118
 (37 buses, +0.69 to +0.91). Visayas fails with a stable negative rank
-correlation (**-0.57**, negative on all 15 clean days) and is shown failing,
-not dropped, with the sign reversal not yet diagnosed. The comparison
+correlation (**-0.57**, negative on all 15 clean days). The report keeps Visayas
+as a failed check, with the sign reversal not yet diagnosed. The comparison
 recomputes nightly as clean market days accumulate
 (`data/derived/loss_surface.json`), and the studio carries the same three
-panels under Analysis, Loss validation.
+panels under Check the model against market records, Transmission-loss check.
 
-![Three scatter panels on a dark card, one per grid. Each plots the model's marginal loss-factor deviation against the market's observed per-node deviation, with a fitted line and a Spearman rank correlation. Luzon at plus 0.72 and Mindanao at plus 0.83 trend clearly and read validated. Visayas at minus 0.57 slopes the wrong way and reads failing](docs/loss-surface.gif)
+![Three scatter panels on a dark card, one per grid. Each plots the model's marginal loss-factor deviation against the market's recorded per-node deviation, with a fitted line and a Spearman rank correlation. Luzon at plus 0.72 and Mindanao at plus 0.83 move in the same direction as the records. Visayas at minus 0.57 moves in the opposite direction.](docs/loss-surface.gif)
 
-That wholesale price passes into the Meralco bill monthly, and only on the share
-of energy actually bought on the spot market. The June 2026 advisory paid
+The wholesale price affects the Meralco bill through the share of energy bought
+on the spot market. The June 2026 advisory paid
 **P7.03/kWh** for the **10%** of supply it drew from WESM, so about
 **P0.70/kWh** of the **P9.07/kWh** generation charge and of the **P14.48/kWh**
 total rate. The other 90% sits under bilateral contracts whose prices do not
 move with the spot market, which is why a spot spike is never a one-for-one
 bill move. One Sual unit (**647 MW**) equals **18% of the May system
-margin**, which is why the loss of one large unit is felt system-wide. The map's toggle does that
-subtraction in the open, as arithmetic on the published margin, not a dispatch
-simulation.
+margin**, so losing one large unit changes the national margin. The map's toggle does that
+subtraction directly from the published margin. This toggle does not run a
+dispatch simulation.
 
 ![The Meralco June 2026 bill as one horizontal bar on a dark card, split three ways. The WESM spot slice is 0.70 pesos per kWh, about 5 percent. Contracted generation from PSAs and IPPs is 58 percent, and transmission, distribution and taxes are 37 percent. An arrow marks the spot slice as the only part a spot swing moves, and only on the next month's bill](docs/bill-wedge.gif)
 
-The price is a shape, not a number. The same data center draws the same power every
-hour, but what it does to the WESM price depends on how busy the grid already is.
-Almost nothing when there is room, a jump when the grid is full. This is the Luzon
-grid's own price-vs-load curve, every faint dot a 5-minute interval from the
-archive.
+The price effect of added demand depends on how much supply remains available.
+The same data center has a small modeled effect during low demand and a much
+larger effect when the grid is near its limit. The Luzon price-load curve below
+uses one dot for each archived 5-minute interval.
 
-![The Luzon price-against-load curve on a dark card. A faint cloud of 5-minute intervals sits under an average line. The line stays near 4 pesos per kWh at 9 gigawatts and climbs past 14 pesos as the grid fills. Two marks sit on it at once, the same 300 MW data center on a quiet grid adding P0.32/kWh and on a full grid adding P1.51](docs/price-shape.gif)
+![Luzon price-load chart. The average rises from PHP 4 at 9 GW to more than PHP 14 as the grid fills. The same 300 MW load adds PHP 0.32/kWh on a quiet grid and PHP 1.51/kWh on a full grid.](docs/price-shape.gif)
 
-![One Luzon day on a dark card, in two panels sharing one clock. The upper panel is generation meeting demand, a band that dips overnight and recovers by evening. The lower panel is the WESM price, flat through the day and spiking into the evening peak](docs/supply-demand-day.gif)
+![One Luzon day on two aligned panels. Generation dips overnight and recovers by evening. The WESM price stays flat before rising at the evening peak.](docs/supply-demand-day.gif)
 
 The map never claims data centers set today's prices. Current data-center load is
-small against a roughly 15 GW Luzon peak, and the window's prices are driven by fuel,
-outages, weather, and the market restart. What the map shows is the pricing machinery
-that any new flat 24/7 load plugs into. Daily price series, the regime split, and the
-generation-price join sit in [`web/data/prices.json`](web/data/prices.json) and
-[`web/data/price_load.json`](web/data/price_load.json).
+small against a roughly 15 GW Luzon peak. Fuel, outages, weather, and the market
+restart drive the window's prices.
 
-### The same load, three different islands
+The map shows the pricing system that any new flat 24/7 load enters. Calculated
+files hold the daily prices, regime split, and generation-price comparison.
 
-Each island grid answers a new load differently. Luzon carries the volume and climbs
-a long way. The smaller grids stay flat until they run tight. WESM is an energy-only
-market. Generators are paid for the energy they dispatch, and since the reserve
-market went to full commercial operations on 26 January 2024, for the reserve
-they hold. What energy-only means is that there is no forward capacity auction to
-price, which is why this project has no capacity-market chart. The reserve layer
-is modelled separately below.
+### Luzon prices rise across the range. Visayas and Mindanao stay flat until supply tightens
 
-![Three panels on a dark card, one per island grid, sharing one price axis. Each plots the average WESM price against dispatched generation. Luzon climbs a long way from 3 pesos, Visayas rises then eases, and Mindanao climbs steeply past 22 pesos](docs/small-multiples.gif)
+Each island grid changes differently with added demand. Luzon carries more demand,
+and its average price rises across the recorded range. Visayas and Mindanao stay
+flatter until available supply becomes tight.
+
+WESM is an energy-only market. It pays generators for dispatched energy and, since
+26 January 2024, for reserve capacity. WESM has no forward capacity auction, so
+this project has no capacity-market chart. The reserve calculation appears below.
+
+![Three panels on a dark card, one per island grid, sharing one price axis. Each plots the average WESM price against dispatched generation. At their busiest sampled loads, Mindanao reaches P22.50 per kWh, Luzon P14.31, and Visayas P8.97.](docs/small-multiples.gif)
 
 ![Who runs the Philippine power market, as a dark table. IEMOP runs the spot market, NGCP operates the grid, PEMC governs, ERC regulates, and DOE sets policy. TransCo owns the transmission assets NGCP operates on concession. The last row reads none, because WESM is energy-only and holds no capacity auction](docs/wesm-roles.png)
 
-## Every column in the day-by-day feed comes from the archive, not the model
+## The day-by-day feed uses market records only
 
-The Drivers mode is the analyst's Monday-morning view. It gives one row per archive day
-joining the observed daily LWAP per grid, recorded curtailment, the operator's
-matched scheduled-out MW, HVDC and alert advisories from the NSO stream, the
+The Drivers mode gives one row per archive day. It joins the recorded daily
+load-weighted average price (LWAP) per grid, recorded curtailment, the operator's
+matched scheduled-outage MW, high-voltage direct-current (HVDC) link and alert
+advisories from the National System Operations stream, the
 day's binding constraints, and the dearest regional reserve price. A week-ahead
-block on top carries the operator's own projection outage schedule (WAPOS), the
-one forward-looking file in the archive. Every column is observed data. Nothing
-in this mode is modeled. The Simulate panel now shows **who actually set
+block on top carries the operator's own week-ahead projection of outage schedules, the
+one forward-looking file in the archive. Every column is recorded data. The
+Simulate panel shows **who actually set
 the price**. That is the marginal resource IEMOP names per 5-minute interval (market
 clearing price files), beside the model's own marginal-block table, never
 merged with it.
 
-## A cost stack clears near flat P6, and the evening gap is offers, not new load
+## The cost stack stays near P6 while recorded evening prices include scarcity and offer premiums
 
 The map's Simulate mode is a simplified merit-order model of the grid. It stacks a
 sourced generator fleet by marginal cost against the archive's own dispatched
 generation, per grid, and reads off the marginal clearing price.
 
-The longer walkthrough, which trips both Sual units and then relieves the feeding corridor, is [docs/dispatch-demo.gif](docs/dispatch-demo.gif).
+The longer walkthrough, which trips both Sual units and then raises the feeding link's limit, is [docs/dispatch-demo.gif](docs/dispatch-demo.gif).
 
 Coal
 marginal cost is the ERC administered price of **P6.00/kWh** and Malampaya gas is
@@ -263,270 +293,301 @@ across grids are labeled model assumptions, except hydro, whose split now follow
 the DOE plant lists directly. The split reconciles exactly to the
 DOE national fuel totals and never exceeds a grid's published total (tests pin
 every column and every row). A short hour prices at the **P32/kWh WESM offer
-cap** (the market's own ceiling, permanent since December 2015), in every
-engine. That is a published rule, not a fitted value.
+cap** in every calculation. WESM applies this published ceiling since
+December 2015.
 
 A competitive cost stack predicts a nearly flat **~P6/kWh**
-line. Calibrated on the market-priced window only, the 56 days after WESM resumed on
+line. Checked only against the 56 market-priced days after WESM resumed on
 May 1, the stack over-prices the
 overnight trough, because real units bid below cost to stay committed, and
-under-prices the evening peak. The suspension's administered prices are excluded. That evening gap is scarcity and offer behavior, not
-data-center load. On the Visayas grid, tight through the 52-day yellow-alert streak,
-the evening residual runs **P14.85/kWh** above the cost stack. The daily shape and the
-island spread are commitment, scarcity, and offers, not new load.
+under-prices the evening peak. The calculation excludes the suspension's administered prices.
 
-A minimal unit-commitment layer takes the first bite out of the overnight miss.
+Scarcity and generator offers explain the evening gap in this historical period.
+The model does not attribute it to data-center load. On the Visayas grid, tight through the 52-day yellow-alert streak,
+the evening gap runs **P14.85/kWh** above the cost stack. The model attributes the
+daily shape and island spread to commitment, scarcity, and generator offers.
+
+A simple unit-commitment calculation cuts the overnight error.
 Committed baseload coal does not shut down overnight. It keeps its minimum stable load
 online (about **40%** of capacity, a sourced technical minimum) and offers it down to
-the H1 2025 WESM average of **P4.14/kWh**, below the P6.00 administered price. Both
-numbers are sourced, not fitted to the trough. The effect never worsens the fit and
-lifts correlation where a grid's demand dips below the committed tranche. At the current bake, with the observed water budgets, the fleet-derived
+the H1 2025 WESM average of **P4.14/kWh**, below the P6.00 administered price.
+Both numbers come from published sources rather than a fit to the overnight prices.
+The change never worsens the fit and lifts correlation where a grid's demand dips
+below the committed tranche.
+
+In the current calculated data, with the recorded water budgets, the fleet-derived
 hydro split, and native-load demand (each grid's generation plus its net market
 imports) all in the stack, Visayas sits at a correlation of **0.35** with an MAE
-of **P8.43**. Luzon at **0.16** with an MAE of **P4.47**. The grid whose light
+of **P8.43**. Luzon is **0.16** with an MAE of **P4.47**.
+
+The grid whose light
 load now dips below the committed tranche is Mindanao, the big net exporter, which
-commitment takes from a flat, undefined correlation to **0.18**. After the layer,
-Luzon averages a modeled **P5.99/kWh** against an observed **P7.65/kWh**. The evening-peak residual is untouched. Commitment only bites at light
+commitment takes from a flat, undefined correlation to **0.18**.
+
+After the layer,
+Luzon averages a modeled **P5.99/kWh** against a recorded **P7.65/kWh**. The evening-peak gap is unchanged. Commitment affects only light
 load, so the scarcity signal stays exactly where it was.
 
 The adequacy number is the checkable one, and it has to keep one clock. Luzon's gross
-peak of **14,539 MW** is a mid-afternoon event, when solar is generating. The firm
+peak of **14,539 MW** is a mid-afternoon event, when solar generates. The firm
 evening peak, when solar is gone, is **13,275 MW**. Against the evening (solar-out)
-stack of **15,682 MW** that is an **18.1%** reserve margin. Add the DICT forecast
+stack of **15,682 MW** that is an **18.1%** reserve margin.
+
+Add the DICT forecast
 of **1,500 MW** of data centers by 2028 (a labeled DICT forecast, October 2025) and the
 firm margin falls to **6.1%**, on zero solar and one clock. Crediting the modeled
 clear-sky solar profile, the tightest 5-minute interval of the whole window (a
 late-afternoon shoulder hour, when demand is near its peak and only midday solar fills
-the gap) still holds **3.2%** with the DICT wave, and no interval goes short against
-that hour-matched stack. The headroom is thin, not negative.
+the gap) still holds **3.2%** with the DICT forecast, and no interval goes short against
+that hour-matched stack. The smallest margin stays positive at **3.2%**.
 
-That reserve margin is a single number. A forced outage is a coin toss, so the model
-runs it as a distribution. A Monte Carlo of **20,000** draws trips the 11 named
+That reserve margin is a single number. Unit outages are uncertain, so the model
+calculates a range of outcomes from sourced outage rates.
+
+A Monte Carlo of **20,000** draws trips the 11 named
 units at their sourced forced-outage rates (NERC GADS for coal ~10% and gas ~5%. The
 rest is labeled industry-typical) and draws an evening-peak load each time. Today Luzon
-loses load in only **0.09%** of tight evenings, with the worst draw shedding
-**956 MW** when a big unit trips into a high load. Add the DICT 1.5 GW wave and the
+loses load in only **0.09%** of tight evenings. The worst draw sheds
+**956 MW** when a big unit trips into a high load.
+
+Add the DICT 1.5 GW demand forecast and the
 loss-of-load probability climbs more than tenfold to **2.2%**. A 1-in-100 draw sheds
 **481 MW**, and the expected unserved energy over the evening-peak window is
-**3,946 MWh**. The point estimate says the margin stays thin but positive. The
-distribution says how often a forced outage lands on that thin margin, and how hard.
+**3,946 MWh**. The single reserve-margin value stays positive. The simulation
+estimates how often a forced outage produces a shortfall and how large it becomes.
 
-Storage is how the grid shaves those peaks. Luzon already has **634 MW** of batteries
+Storage can serve demand during peak hours. Luzon already has **634 MW** of batteries
 (DOE) and **685 MW** of Kalayaan pumped hydro (CBK Power), and both are time-shifters.
 They charge off-peak near the P4.14 commitment offer and discharge at the evening peak
-at about **P5.17/kWh** after round-trip loss. At a tight evening under the DICT wave the
+at about **P5.17/kWh** after round-trip loss. At a tight evening with the DICT forecast the
 cost stack clears on oil at **P12.00/kWh**. The **1,319 MW** of storage on the grid
-shaves that back to coal at **P6.00**. It buys back most of the adequacy gap too. The
-DC-wave loss-of-load probability falls from **2.40%** to **0.17%** and the expected
-unserved energy from **4,143 MWh** to **217 MWh**. Energy is limited, so this firms the
-peak interval, not a multi-day event, and existing storage is already inside the
-observed prices, so this is a forward scenario against the modeled wave, not a
-calibration change.
+shaves that back to coal at **P6.00**.
 
-Two views show the whole calibration at a glance. The **price-duration curve**
-sorts every 5-minute market interval high to low and overlays modeled against observed.
-The cost stack is a low, flat plateau from about **P4.80 to P12**, while the observed
+Storage decreases the power-shortfall risk. The
+loss-of-load probability with the added demand falls from **2.40%** to **0.17%** and the expected
+unserved energy from **4,143 MWh** to **217 MWh**. Limited stored energy supports
+the peak interval only. Existing storage is already inside the recorded prices,
+so this scenario changes future demand without changing the fit to past prices.
+
+Two views compare the model with market records. The **price-duration curve**
+sorts every 5-minute market interval high to low and overlays modeled against recorded.
+The cost stack is a low, flat plateau from about **P4.80 to P12**, while the recorded
 curve runs from a **P35** scarcity spike on the left down to a negative oversupply tail
-on the right. A competitive cost model reaches neither end. Those raw tails are real
-IEMOP prints, not a cap or floor this project imposed. Regional LWAP carries congestion
+on the right. A competitive cost model reaches neither end. IEMOP records those
+tails directly. Regional LWAP carries congestion
 and loss components, so it climbs above the energy offer cap when supply is tight and
-turns negative during midday oversupply. The daily means in `prices.json` average those
+turns negative during midday oversupply.
+
+The daily means in `prices.json` average those
 5-minute extremes away, which is why that series sits in a tighter band. The **who-sets-the-
 price** table counts the marginal block. On Luzon coal is on the margin **98%** of
 the time (why the modeled line is so flat). With native-load demand the committed
 overnight tranche is rarely the MARGINAL block anywhere (**2.0%** of Mindanao
 intervals, less elsewhere), and the commitment layer's work now shows in the
-calibration table instead, where it takes Mindanao from an undefined correlation
+accuracy table instead, where it takes Mindanao from an undefined correlation
 to **0.18**. Block dispatch cannot name the individual plant, so both stay at the fuel
 level.
 
-The panel re-clears the baked stack in the browser. Move the levers (add a data
+The panel recalculates the sourced supply stack in the browser. Move the controls (add a data
 center as flat 24/7 load, trip any of the 11 named units for an N-1, add firm
 capacity, relieve a choke point, discharge storage) and the clearing price and any
-supply shortfall update live, on the same stack the Python engine produced. The named-generator layer,
-the N-1 table, and the full model sit in [`web/data/dispatch.json`](web/data/dispatch.json)
-and [`web/data/generators.geojson`](web/data/generators.geojson). The engine is
-`pipeline/dispatch.py` on the sourced fleet in `pipeline/fleet_ph.py`.
+supply shortfall update live, on the same stack the Python engine produced.
+
+The dispatch data files include the named generators, outage table, and model
+inputs. The pipeline has the calculations and sourced fleet.
 
 ### Pax Silica needs more power than the whole Visayas grid and up to twice as much water as everyone in Makati
 
-[![Pax Silica needs 3,000 MW and one route feeds it, and that route carries about 770. Four stacked bars at the 7pm peak. All of it from the grid leaves 2,231 MW with no source. The 500 MW solar farm changes nothing, because it makes nothing in the evening. A 2,500 MW station on site plus 500 from the grid closes it. The same station with one 600 MW unit down leaves 331 MW with no source.](docs/pax-silica-embedded.png)](web/pax-silica.html)
+[![Pax Silica needs 3,000 MW at 7 pm, while the grid supplies about 770 MW. A 500 MW solar farm supplies nothing then. A 2,500 MW station plus the grid meets demand. One 600 MW outage leaves 331 MW unmet.](docs/pax-silica-embedded.png)](web/pax-silica.html)
 
-The eight charts on the companion page run as one montage, in [docs/pax-silica-scale.gif](docs/pax-silica-scale.gif) and [docs/pax-silica-scale.mp4](docs/pax-silica-scale.mp4).
+The nine charts on the companion page are available as a GIF and MP4 montage in
+the `docs` directory.
 
-BCDA's own figures for the campus at New Clark City are **3,000 MW** of power at full
-development and **65 to 90 million liters** of water a day. Numbers that size mean
-nothing on their own, so [a companion page](web/pax-silica.html) draws each one
-against something checkable. The campus alone out-demands every island grid's
-highest recorded 5-minute peak in this project's 105-day archive, including
+BCDA's figures for the campus at New Clark City are **3,000 MW** of power at full
+development and **65 to 90 million liters** of water a day. A
+[companion page](web/pax-silica.html) compares each figure with a familiar scale.
+The campus alone exceeds every island grid's
+highest recorded 5-minute peak in this project's 117-day archive, including
 Visayas at **2,744 MW**. The signed 500 MW solar farm covers **4.1%** of a day on
 a cloudless model and nothing at the 7pm peak, and running the campus on sun
-alone would need **122 km²** of panels, more than six times the area of
-Makati. The two 230 kV
-lines into the site carry about **770 MW** of the 3,000 in this project's own
+alone would need **122 km²** of panels, more than six times the area of Makati.
+
+The one modeled 230 kV route into Pax Silica uses two circuits and carries about
+**770 MW** of the 3,000 in this project's own
 model, and NGCP's most recent 500 kV and HVDC builds each took years between
 first power and full service. Served from the market anyway, the campus as flat
-load flips the Luzon marginal block from coal to oil in all 24 hours of the
-same replayed day, **P6.00 to P12.00 per kWh** on the calibrated cost stack,
+load flips the Luzon marginal block from coal to oil in 16 of the 24 hours of the
+same replayed day, **P6.00 to P12.00 per kWh** on the cost model checked against recorded prices,
 with the inter-island links earning **P38 million** of congestion rent in that
 single modeled day. And the announced fix, an on-site power station,
-still loses **331 MW** to no source the moment a single 600 MW unit trips,
-because the backup runs down the same two lines. Every number is either BCDA's
-own, or computed here from a stated source, with the full ledger and every
-caveat on the page itself.
+still leaves **331 MW** unmet the moment a single 600 MW unit trips. The remaining
+1,900 MW from the station plus 769 MW from the grid cannot meet the 3,000 MW draw.
+The page separates BCDA's
+published figures, calculated results, and model assumptions.
 
-### Coupling alone explains 0.5% of the island price gap, and the recorded outage explains 87.9%
+### The base model explains 0.5% of the Visayas-Luzon price difference. The recorded outage explains 87.9%
 
-The single-grid model clears each island alone. The next step couples them. Cheap
-Luzon power flows south over the Leyte-Luzon HVDC (a sourced **250 MW** operating
+The coupled calculation clears all three island grids together. Lower-cost Luzon
+power can flow south over the Leyte-Luzon HVDC (a sourced **250 MW** operating
 limit, below its 440 MW nameplate) and the Mindanao-Visayas HVDC (its 450 MW
 nameplate used as the cap), and the three clearing prices solve together. On a radial
-path the cost-minimizing dispatch equalizes adjacent prices across an open corridor
+path the cost-minimizing dispatch equalizes adjacent prices across an open link
 and, across a saturated one, prices the downstream island higher by the congestion
-rent. A brute-force optimality test pins the solver.
+rent. A brute-force comparison checks the calculated result.
 
-Demand here is native load (each grid's generation plus its net market imports,
-straight from the same IEMOP files), so the replay has to move real MW over the
-corridors to serve the Visayas, which imports roughly a quarter of what it
-consumes. Run over the market window with the full fleet available, and scaling
-the Leyte-Luzon cap by the operator's own hourly corridor-availability record
-(the corridor was blocked for **9.5%** of intervals, and it saturates on
-**0.0%** of the window. A blocked link carries no flow and earns no congestion
-rent, which is a different thing from a link that binds because it is full),
-the coupled model still reproduces almost
-**none** of the observed **P5.31/kWh** Visayas-Luzon spread (**0.5%**). Cost
-stacks price the three islands nearly identically, so the observed spread is the
-scarcity and offer premium of the 52-day yellow-alert streak, which a cost model
-cannot see.
+Demand here is native load. It equals each grid's generation plus its net market imports
+from the same IEMOP files. The replay so moves power over the links
+to serve Visayas, which imports roughly a quarter of what it consumes.
 
-Carry one number into every what-if below. The scenario deltas on this
-page come from the COST model, and the offer books say the true answer is
-bigger. On the widest-swing market day in the window, the same DICT
-1.5 GW wave raises the Luzon daily mean by **+P4.50/kWh** on the cost
+The operator blocked the Leyte-Luzon link for **9.5%** of market-window
+intervals.
+
+With the full fleet available, the link reaches its limit in **0.0%** of the
+window.
+
+A blocked link carries no flow and earns no congestion rent. A full link can
+earn congestion rent.
+
+The coupled model explains only **0.5%** of the recorded **P5.31/kWh**
+Visayas-Luzon difference. The cost stacks price the three islands nearly alike,
+so they do not capture the scarcity and offer premium during the 52-day alert
+streak.
+
+The scenario changes below come from the cost model. The published-offer
+calculation produces larger changes for the widest-swing day. On that day, the same DICT
+1.5 GW demand increase raises the Luzon daily mean by **+P4.50/kWh** on the cost
 stack but **+P12.01/kWh** replayed on the market's own bids, and the
-as-bid shock reaches the Visayas (**+P2.29**) and Mindanao (**+P2.29**)
-where the cost stack shows no change at all (both engines' runs are
-pinned in the baked golden cases. Flip the studio's Chronology engine to
-"Observed offers" to reproduce them). Read every cost-mode delta as a
-floor. One flag travels with it, and it moved AGAINST this project's
-earlier claim. Under the secondary price cap's stated numbers (P7.423/kWh
+published-offer change reaches the Visayas (**+P2.29**) and Mindanao (**+P2.29**),
+where the cost stack shows no change. Reference cases check both calculations.
+Choose "Observed offers" in Hourly market replay to reproduce them. For this
+case, the cost result is the lower of the two estimates.
+
+Correcting the hourly grouping changed an earlier result. Under the secondary
+price cap's stated numbers (P7.423/kWh
 imposed when the 72-hour rolling GWAP breaches P12.413, ERC Res. 26
-s.2025), the widest-swing day now lands just UNDER the threshold. The
-as-bid wave lifts the computed 72-hour rolling series to P12.23 against
-the P12.413 trigger. An earlier version of this section reported that a
-day like that tripped the trigger. It did, on the day the old hourly
-binning chose. Correcting that binning to the operator's clock moved
-the widest-swing day and the flag with it. So the as-bid spike is close
+s.2025), the widest-swing day now lands just under the threshold.
+
+The published-offer case lifts the computed 72-hour rolling series to P12.23
+against the P12.413 trigger.
+
+An earlier version reported that this day tripped the trigger. The old hourly
+grouping chose a different day. Using the operator's clock changed the
+widest-swing day and the flag with it. The published-offer spike is close
 to price-mitigation exposure the cost floor does not carry, but on this
 window it does not reach it.
 
-The raw observed series does cross the threshold, and that finding is
-weaker than it looks. Those crossings are driven by intervals priced
-above the market's own P32/kWh offer cap, which are violation and
-scarcity coefficients rather than clears. Held at the offer cap, Luzon
+The raw recorded series crosses the threshold, but the result is weaker than it
+looks. Violation and scarcity coefficients above the P32/kWh offer cap drive
+those crossings. Ordinary market clears do not. Held at the offer cap, Luzon
 breaches zero windows and its peak falls below the trigger outright.
 
-That does not clear the whole board.
-Held at the same cap the System row still breaches, and so does the
-combined Luzon-Visayas row. Visayas and Mindanao run hot either way,
-and those two only bind while an interconnection is on outage, which is
-the condition ERC Res. 26 s.2025 attaches to the regional cap. So the
-correction removes the breach story for Luzon and narrows it elsewhere
-rather than ending it. The price record, which shows no day pinned at
-the cap anywhere, still sits on the other side of that gap. The computed
-series both ways, the above-cap counts, and the clamp scan are in the
-methodology.
+That does not remove all threshold crossings. Held at the same cap, the system
+row and joint Luzon-Visayas row still cross.
 
-The offer books close most of the rest. IEMOP publishes every resource's
-actual offer curve (and the self-scheduled capacity that submits none), and
-replaying the same days with those books instead of the cost proxy moves the
-corridors like the real grid. That is **99%** direction agreement on Visayas-Mindanao
-against a 375 MW mean observed flow, now scored against the operator's own
-per-interval HVDC schedule (RTDHS) rather than only the net-import identity
+Visayas and Mindanao cross either way. Those two regional caps apply only when
+an interconnection is on outage, as ERC Resolution 26, series of 2025 states.
+
+The correction removes the breach for Luzon and narrows it elsewhere. The price
+record still shows no day fixed at the cap. The method page has both calculated
+series, the above-cap counts, and the capped-price comparison.
+
+IEMOP publishes every resource's offer curve and the self-scheduled capacity
+that submits no offer. Replaying the same days with those records gives **99%**
+direction agreement on Visayas-Mindanao
+against a 375 MW mean recorded flow, now scored against the operator's own
+per-interval high-voltage direct-current schedule rather than only the net-import identity
 the demand is built from, the Visayas settlement bias collapsing from
-**-P6.96** to **-P0.64/kWh**, Mindanao clearing-price correlation **0.87**.
+**-P6.96** to **-P0.64/kWh**, and Mindanao clearing-price correlation **0.87**.
+
 The operator's congestion flags add a target the replay still misses in one
-direction, and the tables say so. The real corridors bound in 45 to 61
-percent of intervals, the offer replay binds them in 33 to 35, the cost
-stack almost never. The reserve books are consumed the same way. Every
+direction, and the tables say so. The real links reached a limit in 45 to 61
+percent of intervals. The offer replay reaches a limit in 33 to 35 percent. The cost
+stack almost never.
+
+The reserve books use the same comparison. Every
 derived reserve book cleared at the operator's scheduled MW reproduces the
 official reserve price within half a centavo in 45 to 88 percent of hours
-per pool, and the residual is one-signed in all twelve pools, the measured
-co-optimisation opportunity-cost wedge. The operator's own final
+per grid and product. The offer-book average is lower than the official average
+in all twelve groups. Official prices can include the energy revenue a plant
+gives up while holding capacity in reserve. The public summary data cannot
+calculate that part plant by plant.
+
+The operator's own final
 per-resource cleared reserve (DIPC reserve results final, **196 resources**
-across 76 days) confirms it. The book replay under-prices the authoritative
+across 76 days) shows the same pattern. The book replay under-prices the authoritative
 final clearing on every one of the twelve pools too, and the final re-solve
 moves the reserve schedule by only a few MW, scattered across the
 regulation products and the tight island dispatchable reserve.
-Registered ancillary-services capacity sizes each reserve book against its
-registration base. The gap between the cost-mode and
-offer-mode tables is the offer premium, measured per hour instead of
-asserted. All sets are published in the
-[studio's validation tables](studio/README.md).
 
-The mechanism the thesis names takes over under the documented outage. Re-clear the
-streak window with the **935 MW** of Visayas capacity NGCP recorded unavailable on
-July 1 and the 250 MW corridor saturates in **93.2%** of intervals at a mean
+Registered ancillary-services capacity sizes each reserve book against its
+registration base. The difference between the cost and published-offer replays
+is a model-derived offer premium reported for each hour. Both results appear in
+the [studio's comparison tables](studio/README.md).
+
+The recorded outage explains most of the modeled regional price difference.
+Recalculate the streak window with the
+**935 MW** of Visayas capacity that NGCP recorded as unavailable on
+July 1 and the 250 MW link saturates in **93.5%** of intervals at a mean
 congestion rent of **P5.74/kWh**, and the coupled model now reproduces **87.9%** of
-the observed spread endogenously. The constraint, plus the outage the operator
-itself recorded, IS most of the streak's price geography. That is a labeled
-scenario, kept out of the calibration. And here is the forward question the map exists to
-ask. At a typical evening, just **275 MW** of added Visayas load binds the
-corridor, less than three of the ten data centers Meralco has committed to
+the recorded spread. This labeled scenario was not used to tune the model.
+
+At a typical evening, just **275 MW** of added Visayas load fills the
+link, less than three of the ten data centers Meralco committed to
 serve (1,000 MW for 10, per PCIJ) and far below the DICT 1.5 GW national
 forecast. The full decomposition is the `coupling` block in
 [`web/data/dispatch.json`](web/data/dispatch.json). The coupled solver is
 `pipeline/coupled_dispatch.py`.
 
-A forward battle-test reaches the same knee from the other direction.
-The dispatch engine drove eight what-ifs an energy analyst would run
-(site a data center in Cebu versus Manila, build a gigawatt of solar, switch
-Malampaya gas to imported LNG, trip both 647 MW Sual units). Six moved the way
-the analyst would predict. Two moved a way that first looked wrong until the
-flow data showed the engine was right (a Manila data center saturates the link
-by *importing* cheap Visayas power, and a gigawatt of solar cuts fuel and emissions
-but leaves the 7pm peak untouched). The dated 935 MW outage backcast lands
-at 87.9%. Full scorecard in [studio/README.md](studio/README.md).
+Eight scenario checks test whether the model moves in the expected direction.
+The checks site a data center in Cebu or Manila, add 1 GW of solar, replace
+Malampaya gas with imported LNG, and trip both 647 MW Sual units. Six produce
+the expected direction.
 
-## The offer-book replay tracks the market's own prices at 0.68 to 0.87
+The two other results follow from the modeled flows. A Manila data center
+saturates the link by importing lower-cost Visayas power. Adding 1 GW of solar
+cuts fuel use and emissions but does not change the 7 pm peak.
 
-Yes, and the check runs against the operator's own published prices, not a
-synthetic benchmark. The studio replays every full-coverage market day and
-scores the clear two ways. The simple cost model is a floor. It clears near the
-**P6 coal baseline** and under-prices scarcity, so read its levels as a lower
-bound. Replay the operator's own offer book instead and the model tracks the
-real price shape hour by hour, reaching **0.68 to 0.87 correlation** with
-observed prices across the quarter and **87 to 99 percent** of the inter-island
-flow direction. A dated event closes it. The **935 MW** Visayas outage of July 1
-reproduces **87.9 percent** of the observed island price gap, with the
-constraint kept out of the calibration. The gap between the cost floor and the
-offer-book replay is not hidden. It is itself a measured series, the offer
-premium the market bids over cost.
+The dated 935 MW outage historical replay explains 87.9% of the price
+difference. The studio README has the full scorecard.
 
-![The backcast clip. On the widest-swing observed day the cost model clears flat at the P6 floor while the observed price spikes. The engine then toggles to the operator's own offer book, and the modeled lines track the observed evening ramp hour by hour. The whole-window backcast table follows, with the per-grid error stated and nothing tuned](docs/backcast-proof.gif)
+## Offer-book replay correlations range from 0.68 to 0.87
 
-Every number here recomputes from the current archive each morning. It is a backtest
-that keeps scoring itself against yesterday's actual prices, not a one-time
-result frozen in a slide. Full per-grid accuracy tables for both engines, plus
-the corridor-flow scores, are in [studio/README.md](studio/README.md). It is a
-calibrated congestion-and-siting model, not a price forecaster, and it never
-claims to predict prices or brownouts.
+The check uses the operator's published prices rather than a synthetic benchmark. The
+studio replays every full-coverage market day and scores each calculation two
+ways. The simple cost model is a floor. It clears near the **P6 coal baseline**
+and under-prices scarcity, so read its levels as a lower bound.
+
+Replaying the operator's offer book tracks the recorded price shape hour by hour.
+The correlation ranges from **0.68 to 0.87** across the quarter, and modeled
+inter-island flow matches the recorded direction **87 to 99 percent** of the time.
+
+The **935 MW** Visayas outage on July 1 reproduces **87.9 percent** of the recorded
+island price gap. The model did not use this constraint to tune its inputs. The
+difference between the cost floor and the offer-book replay is a model-derived
+offer premium based on the market's published bids.
+
+![The historical replay recording. On the widest-swing recorded day, the cost model clears flat at the P6 floor while the market price spikes. The view then switches to the operator's offer book, and the modeled lines follow the recorded evening ramp hour by hour. The full-date-range table reports the error for each grid. Recorded prices were not used to tune model inputs.](docs/backcast-comparison.gif)
+
+The scheduled build recalculates each result from the current archive every
+morning and compares the historical replay with the latest recorded prices.
+Full per-grid accuracy tables for both calculations, plus
+the inter-island flow scores, are in [studio/README.md](studio/README.md). It is a
+congestion-and-siting model checked against recorded prices. It does not forecast
+prices or brownouts.
 
 ## The studio is 39 views, and every one of them is a URL you can send
 
-The full authoring surface lives at
+The full browser interface lives at
 [/studio/](https://power-dispatch-studio.vercel.app/studio/). It takes the
-working shape of a commercial production-cost tool. That means an object model in a
-properties grid, scenarios as tagged overrides, a Run gate, a solution browser,
-chronological replay of archived market days, and a backcast that scores the
-model against the actual price tape.
+same general form as a commercial production-cost tool. It has editable model
+inputs, saved scenario changes, a Run button, results views, chronological replay
+of archived market days, and a historical comparison against recorded prices.
 
-The July 2026 pass added the planning layers. The DOE's committed and indicative
-build pipeline on a horizon slider (LT Plan), and the operator's own scheduled
-outages re-priced as adequacy (PASA). A load sweep that walks the announced wave
-in MW steps, and a window band that replays a scenario across every archived
-market day. Per-hour binding-constraint naming, operational CO2 accounting, and a
-self-contained HTML run report.
+The July 2026 update added planning functions. The long-term view places DOE
+committed and indicative projects on a year slider. The adequacy view applies the
+operator's scheduled outages. Other views step demand through the announced
+range, repeat a scenario across all archived market days, report hourly binding
+constraints and carbon dioxide, and export a self-contained HTML report.
 
 Every planning layer computes from the archive or a sourced list, and no
 optimizer chooses builds. The dispatch itself solves as a HiGHS linear program in
@@ -535,213 +596,205 @@ energy-limited to each day's recorded water where the archive carries the
 operator's per-resource schedules. Prices come from the duals. The model's scope
 and its accuracy statement live in [studio/README.md](studio/README.md).
 
-The Backcast opens on the offer-book replay by default, the calibrated view, with
-the cost model one click away as the counterfactual you subtract. A companion
+The Historical replay opens on the published-offer calculation by default because
+it follows recorded prices more closely. The cost model is one click away for comparison. A companion
 **Explain a day** view takes any past market day and breaks its evening peak into
-what the fundamentals set (the cost model), the offer premium the market bid on
-top (the offer replay minus the cost model), and the named equipment the
-operator's real-time dispatch held at a limit that day, and hands the whole
-decomposition to CSV. The archive itself is take-away too. Tidy CSVs of the
-congestion league, both backcast engines per grid, and the day-by-day feed bake
-to [`web/data/exports/`](web/data/exports/) every night, linked from the map's
+the cost-model result, the offer premium implied by published bids
+on top of it (the offer replay minus the cost model), and the named equipment the
+operator's real-time dispatch held at a limit that day. It exports the breakdown
+as CSV. The project exports separate CSV files for the congestion league,
+both historical replay calculations per grid, and the day-by-day feed. The
+scheduled build writes them to [`web/data/exports/`](web/data/exports/), linked from the map's
 Drivers panel and documented in
 [`web/data/exports/index.json`](web/data/exports/index.json).
 
-### You get between the 39 views by asking, not by hunting a menu
+### Search and question groups organize all 39 views
 
-The shell is built around the analyst's question rather than the model's object
-classes. Three parts carry it, and the clip below runs all three.
+The navigation groups views by the question they answer. The clip below shows
+three ways to move through the studio.
 
 - **A command palette.** Cmd K, then type what you want to know. The ranker
   matches the label, the hint and a per-view alias list, so "price setter"
   finds Marginal units.
-- **A question rail.** The 39 views sit in 8 groups, and each group is a
-  question. The eight are Tonight's market, Is there headroom, Where it can sit,
-  Prices and bills, The build-out, My scenarios, Is the model right, Model inputs.
-- **A pinned run dock.** It holds the clearing price and the reserve margin for
-  all three grids while you move around. Drag a lever and it re-prices live,
+- **Question navigation.** The 39 views sit in 8 groups, and each group is a
+  question. The eight are How today's market clears, Can supply cover demand,
+  Where new demand can connect, Prices and bills, What new capacity is needed,
+  Build and compare scenarios, Check the model against market records, and
+  Review and edit model inputs.
+- **A fixed run summary.** It holds the clearing price and the reserve margin for
+  all three grids while you move around. Move a slider and it re-prices live,
   labelled a preview until you press Run.
 
-![The studio shell in four beats. The command palette opens over the studio, and the query 'price setter' ranks Marginal units first. Pressing Enter lands on that view and writes its own deep link into the address bar. The question rail expands to show all 39 views in their eight question groups, and N-1 contingency opens from it. A data-center lever then drags in the Quick scenario, and the run dock re-prices the Luzon clearing price from P6.00 to P12.00 live.](docs/studio-shell.gif)
+![The studio shell in four parts. The command palette opens over the studio, and the query 'price setter' ranks Marginal units first. Pressing Enter opens that view and writes its link into the address bar. The question rail expands to show all 39 views in eight groups, and Loss of one major unit opens from it. A data-center slider then moves in the Quick scenario, and the run summary recalculates the Luzon clearing price from P6.00 to P12.00.](docs/studio-shell.gif)
 
-**Every view is a URL.** The shell writes `#v=<slug>` as you move, beside the
+**Every view has a URL.** The interface writes `#v=<slug>` as you move, beside the
 `#m=` scenario share, so
 [`/studio/#v=backcast&g=visayas`](https://power-dispatch-studio.vercel.app/studio/#v=backcast&g=visayas)
-opens the Visayas backcast for whoever you send it to. That is what lets this
-README carry all 39 views as links rather than 39 clips. GitHub applies no lazy
-loading, and 39 clips would weigh about 200 MB.
+opens the Visayas historical replay for whoever you send it to. This lets the
+README link to all 39 views without embedding 39 clips. GitHub does not defer
+GIF downloads, and 39 clips would total about 200 MB.
 
 Here are all 39 in one frame, each tile a real screenshot of the running app.
 Click it to open the sheet full size, because inline the tile names read and
 the numbers inside them do not. `build/shoot_view_sheet.py` opens each view by
 its deep link. It checks that the shell landed on the view it asked for, and
-fails on any mismatch. So the sheet doubles as the only end-to-end test the 39
-deep links have.
+fails on any mismatch. The sheet checks all 39 links in one run.
 
-[![A contact sheet of all 39 studio views, five across. Each tile is a real screenshot of the running app, labelled with its view name and its question group. The rows run through Tonight's market, Is there headroom, Where it can sit, and Prices and bills. Then The build-out, My scenarios, Is the model right, and Model inputs.](docs/views-contact-sheet.png)](docs/views-contact-sheet.png)
+[![A contact sheet of all 39 studio views, five across. Each tile is a real screenshot of the running app, labeled with its view name and question group. The rows cover today's market, supply adequacy, new-demand siting, prices and bills, new capacity, scenarios, checks against market records, and model inputs.](docs/views-contact-sheet.png)](docs/views-contact-sheet.png)
 
 <details>
 <summary><b>Open any of the 39 views directly</b></summary>
 
-<!-- views:start -->
+<!-- views table start -->
 
 | Question | View | What it answers |
 |---|---|---|
-| Tonight's market | [Chronology](https://power-dispatch-studio.vercel.app/studio/#v=chronology) | Every hour of one observed day, three grids cleared together |
+| How today's market clears | [Hourly market replay](https://power-dispatch-studio.vercel.app/studio/#v=chronology) | Every hour of one recorded day, three grids cleared together |
 |  | [Explain a day](https://power-dispatch-studio.vercel.app/studio/#v=explain-a-day) | What set the price on a chosen day, hour by hour |
 |  | [5-minute replay](https://power-dispatch-studio.vercel.app/studio/#v=five-minute-replay) | The operator's own 5-minute dispatch intervals, replayed |
-|  | [Merit order](https://power-dispatch-studio.vercel.app/studio/#v=merit-order) | The stack that clears, cheapest unit to the marginal one |
-|  | [Marginal units](https://power-dispatch-studio.vercel.app/studio/#v=marginal-units) | Which plant sets the price, and how often |
-|  | [Native week](https://power-dispatch-studio.vercel.app/studio/#v=native-week) | 168 hours solved as one program, storage carried across midnight |
-| Is there headroom | [Reliability](https://power-dispatch-studio.vercel.app/studio/#v=reliability) | Loss-of-load probability from forced-outage Monte Carlo |
-|  | [Adequacy](https://power-dispatch-studio.vercel.app/studio/#v=adequacy) | Whether supply covers demand across the outage schedule |
-|  | [N-1 contingency](https://power-dispatch-studio.vercel.app/studio/#v=n-1) | What the margin does when the largest unit trips |
-|  | [Load sweep](https://power-dispatch-studio.vercel.app/studio/#v=load-sweep) | Price against demand, swept across the whole range |
-|  | [Window band](https://power-dispatch-studio.vercel.app/studio/#v=window-band) | The price band the archive window actually produced |
-|  | [Price duration](https://power-dispatch-studio.vercel.app/studio/#v=price-duration) | Hours at or above each price, sorted |
-| Where it can sit | [Siting a new load](https://power-dispatch-studio.vercel.app/studio/#v=siting) | What a named site can draw, hour by hour, over its own lines |
-|  | [Coupled flows](https://power-dispatch-studio.vercel.app/studio/#v=coupled-flows) | What moves over the HVDC links, and when they bind |
-|  | [Nodal prices](https://power-dispatch-studio.vercel.app/studio/#v=nodal-prices) | Locational deviation from the regional price, per bus |
-|  | [Regional split](https://power-dispatch-studio.vercel.app/studio/#v=regional-split) | How the solved dispatch divides across the three grids |
-| Prices and bills | [Bill impact](https://power-dispatch-studio.vercel.app/studio/#v=bill-impact) | What a WESM move does to a Meralco household bill |
-|  | [Capture prices](https://power-dispatch-studio.vercel.app/studio/#v=capture-prices) | What each fuel earns against the average, by shape |
-|  | [Forward prices](https://power-dispatch-studio.vercel.app/studio/#v=forward-prices) | The forward band the archive window supports |
-|  | [Market power](https://power-dispatch-studio.vercel.app/studio/#v=market-power) | How concentrated the clearing stack is, and who cannot be replaced |
-|  | [Reserve market](https://power-dispatch-studio.vercel.app/studio/#v=reserve-market) | What co-clearing reserves costs the energy price |
-|  | [Emissions](https://power-dispatch-studio.vercel.app/studio/#v=emissions) | Tonnes per hour from the solved stack, and what a carbon price moves |
-| The build-out | [Long-term](https://power-dispatch-studio.vercel.app/studio/#v=long-term) | Capacity the long horizon needs, against the announced pipeline |
-|  | [Expansion mix](https://power-dispatch-studio.vercel.app/studio/#v=expansion-mix) | Which technology the least-cost build picks, and why |
-|  | [Multi-year path](https://power-dispatch-studio.vercel.app/studio/#v=multi-year-path) | The price and margin path across years, not one day |
-|  | [Portfolio](https://power-dispatch-studio.vercel.app/studio/#v=portfolio) | What one owner holds, and what it earns |
-| My scenarios | [Quick scenario](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario) | Drag a lever, the three grids re-clear live, no Run needed |
+|  | [Lowest-cost-first dispatch (merit order)](https://power-dispatch-studio.vercel.app/studio/#v=merit-order) | Which plants run, from the cheapest through the price-setting unit |
+|  | [Marginal units](https://power-dispatch-studio.vercel.app/studio/#v=marginal-units) | The price-setting plant and its frequency |
+|  | [Inter-day storage (168 hours)](https://power-dispatch-studio.vercel.app/studio/#v=native-week) | 168 hours solved as one program, storage carried across midnight |
+| Can supply cover demand | [Power-shortfall risk](https://power-dispatch-studio.vercel.app/studio/#v=reliability) | Chance of a shortfall (LOLP) across simulated random plant outages |
+|  | [Supply after scheduled outages](https://power-dispatch-studio.vercel.app/studio/#v=adequacy) | Whether supply covers demand across the outage schedule |
+|  | [Loss of one major unit (N-1)](https://power-dispatch-studio.vercel.app/studio/#v=n-1) | How spare capacity changes when the largest unit trips |
+|  | [Price as demand grows](https://power-dispatch-studio.vercel.app/studio/#v=load-sweep) | Price against demand, swept across the whole range |
+|  | [Price range across recorded days](https://power-dispatch-studio.vercel.app/studio/#v=window-band) | The price band the archive window actually produced |
+|  | [Hours above each price](https://power-dispatch-studio.vercel.app/studio/#v=price-duration) | Hours at or above each price, sorted |
+| Where new demand can connect | [Siting a new load](https://power-dispatch-studio.vercel.app/studio/#v=siting) | Hourly load a named site can draw through its own lines |
+|  | [Power between island grids](https://power-dispatch-studio.vercel.app/studio/#v=coupled-flows) | What moves over the high-voltage direct-current links and when a link reaches its limit |
+|  | [Prices at grid connection points (nodal prices)](https://power-dispatch-studio.vercel.app/studio/#v=nodal-prices) | How each connection point differs from its regional price |
+|  | [Generation by island grid](https://power-dispatch-studio.vercel.app/studio/#v=regional-split) | How the solved dispatch divides across the three grids |
+| Prices and bills | [Bill impact](https://power-dispatch-studio.vercel.app/studio/#v=bill-impact) | How a spot-price change in WESM affects a Meralco household bill |
+|  | [Average price earned by each technology (capture price)](https://power-dispatch-studio.vercel.app/studio/#v=capture-prices) | What each technology earns compared with the market average |
+|  | [Possible future price range](https://power-dispatch-studio.vercel.app/studio/#v=forward-prices) | The forward band the archive window supports |
+|  | [Supplier concentration and market power](https://power-dispatch-studio.vercel.app/studio/#v=market-power) | How much capacity the largest suppliers control and whether the grid can replace them |
+|  | [Backup capacity market (reserves)](https://power-dispatch-studio.vercel.app/studio/#v=reserve-market) | How buying backup capacity with energy affects the energy price |
+|  | [Emissions](https://power-dispatch-studio.vercel.app/studio/#v=emissions) | Solved tonnes per hour plus the carbon-price effect |
+| What new capacity is needed | [Long-term supply plan](https://power-dispatch-studio.vercel.app/studio/#v=long-term) | Capacity needed over time compared with announced projects |
+|  | [Lowest-cost expansion mix](https://power-dispatch-studio.vercel.app/studio/#v=expansion-mix) | Technology chosen by the least-cost build and its cost basis |
+|  | [Prices and spare capacity by year](https://power-dispatch-studio.vercel.app/studio/#v=multi-year-path) | The price and margin path across years |
+|  | [Generator portfolio value](https://power-dispatch-studio.vercel.app/studio/#v=portfolio) | Assets and earnings for one owner |
+| Build and compare scenarios | [Quick what-if](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario) | Move a slider and all three grids recalculate immediately |
 |  | [Compare scenarios](https://power-dispatch-studio.vercel.app/studio/#v=compare) | Two scenarios side by side, property by property |
-|  | [Saved runs](https://power-dispatch-studio.vercel.app/studio/#v=saved-runs) | Runs kept in this browser, ready to restore |
-|  | [Cross-run](https://power-dispatch-studio.vercel.app/studio/#v=cross-run) | One measure tracked across every saved run |
-|  | [Ensembles](https://power-dispatch-studio.vercel.app/studio/#v=ensembles) | Many draws of the same scenario, and the spread they give |
-| Is the model right | [Backcast](https://power-dispatch-studio.vercel.app/studio/#v=backcast) | Every market day replayed against the observed price |
-|  | [Loss validation](https://power-dispatch-studio.vercel.app/studio/#v=loss-validation) | Whether the loss surface reproduces the observed nodal spread |
+|  | [Saved simulation runs](https://power-dispatch-studio.vercel.app/studio/#v=saved-runs) | Runs kept in this browser, ready to restore |
+|  | [Compare one measure across runs](https://power-dispatch-studio.vercel.app/studio/#v=cross-run) | One measure tracked across every saved run |
+|  | [Range across repeated simulations](https://power-dispatch-studio.vercel.app/studio/#v=ensembles) | Repeated simulations of one scenario and the range of results |
+| Check the model against market records | [Historical replay](https://power-dispatch-studio.vercel.app/studio/#v=backcast) | Every market day replayed against the observed price |
+|  | [Transmission-loss check](https://power-dispatch-studio.vercel.app/studio/#v=loss-validation) | Whether estimated transmission losses reproduce recorded price differences between connection points |
 |  | [Assumptions](https://power-dispatch-studio.vercel.app/studio/#v=assumptions) | Every constant, its source, and the date it was read |
-| Model inputs | [Generators](https://power-dispatch-studio.vercel.app/studio/#v=generators) | Every sourced unit: capacity, fuel price, forced outage |
+| Review and edit model inputs | [Generators](https://power-dispatch-studio.vercel.app/studio/#v=generators) | Each sourced unit and its capacity, fuel price, and random-outage rate |
 |  | [Fuels](https://power-dispatch-studio.vercel.app/studio/#v=fuels) | Fuel prices and how much of each is available per grid |
-|  | [Interfaces](https://power-dispatch-studio.vercel.app/studio/#v=interfaces) | The corridor flow limits the solve must respect |
+|  | [Inter-grid links](https://power-dispatch-studio.vercel.app/studio/#v=interfaces) | The power-flow limits between island grids |
 |  | [Regions](https://power-dispatch-studio.vercel.app/studio/#v=regions) | Evening load and peak for each of the three grids |
 |  | [Storage](https://power-dispatch-studio.vercel.app/studio/#v=storage) | Battery power and energy on each grid |
 
-<!-- views:end -->
+<!-- views table end -->
 
 </details>
 
-The whole flow in one longer pass, from opening the studio to tripping both Sual
-units, runs in [docs/studio-e2e.mp4](docs/studio-e2e.mp4) and
-[docs/studio-e2e.gif](docs/studio-e2e.gif). Four single what-ifs sit beside it,
-each a recorded studio session. They are
+The full recording, from opening the studio to tripping both Sual units, is
+available as [MP4](docs/studio-e2e.mp4) and [GIF](docs/studio-e2e.gif). Four
+shorter recordings show these tasks.
 [Explain a day](studio/docs/view-explain.gif),
 [the DICT 1.5 GW data-center build](studio/docs/workflow-1-datacenter.gif),
 [tripping both 647 MW Sual units](studio/docs/workflow-2-contingency.gif), and
 [repricing Malampaya gas to imported LNG](studio/docs/workflow-3-malampaya.gif).
-[studio/README.md](studio/README.md) carries one recorded clip per deep analysis,
+[studio/README.md](studio/README.md) carries one recorded clip per analysis view,
 14 in all.
 
-**What this page weighs.** Opening this README downloads 11.8 MB of media across
-15 files. It was 87.2 MB across 22. GitHub adds no lazy-load attribute, and a
-closed details block does not defer a fetch either. I measured both in a real
-browser. So every embedded byte arrives whether you scroll to it or not. The long
-walkthroughs are links for that reason, and the 39 views are one contact sheet
-plus 39 deep links.
+**This page downloads 18.3 MB of media across 15 files.** The earlier version
+downloaded 87.2 MB across 22 files. Browser tests show that GitHub downloads
+media inside closed detail blocks. Longer recordings are links, and the 39 views
+use one contact sheet plus 39 direct links.
 
 `python3 tests/test_readme_views.py` re-measures that total against the files on
 disk and fails when the stated number drifts.
 
-**Every recording, in full quality.** The gifs above are previews. Each has an
-mp4 beside it, two to four times smaller and sharper.
+**Long recordings have MP4 versions.** Short chart and analysis previews stay
+GIF-only. The longer browser recordings are listed below.
 
-- [The whole platform in one pass](docs/reel.mp4), map to studio, and its [gif](docs/reel.gif)
-- [The map hero](docs/hero.mp4), and [the studio shell](docs/studio-shell.mp4)
-- [The studio end to end](docs/studio-e2e.mp4), and [the nodal walkthrough](docs/nodal-walkthrough.mp4)
+- [The map and studio](docs/reel.mp4), and its [GIF](docs/reel.gif)
+- [The map hero](docs/hero.mp4) and [the studio shell](docs/studio-shell.mp4)
+- [The studio end to end](docs/studio-e2e.mp4), and its [gif](docs/studio-e2e.gif)
+- [The nodal walkthrough](docs/nodal-walkthrough.mp4), and its [gif](docs/nodal-walkthrough.gif)
 - [Siting a load at Pax Silica](docs/siting-walkthrough.mp4), and its [gif](docs/siting-walkthrough.gif)
-- [The Pax Silica montage](docs/pax-silica-scale.mp4), and [the map's Simulate walkthrough](docs/dispatch-demo.gif)
+- [The Pax Silica montage](docs/pax-silica-scale.mp4), and its [gif](docs/pax-silica-scale.gif)
+- [The map's Simulate walkthrough](docs/dispatch-demo.gif)
 
-Two files stay in `docs/` on purpose and appear nowhere above.
-`scripts/og_card.py` writes `docs/hero.png` from the bake, beside the social
+Three files stay in `docs/` on purpose and appear nowhere above.
+`scripts/og_card.py` writes `docs/hero.png` from the calculated data, beside the social
 preview card. `docs/pax-silica-social.gif` and `docs/pax-silica-social.mp4` are
 the square crop for posting.
 
 ## IEMOP's public window rolls at 90 days, so the git history is the archive
 
-- **A daily archive.** IEMOP's public window is a rolling ~90 days per dataset.
+- **The daily archive preserves IEMOP files after the public window closes.**
+  IEMOP's public window rolls by about 90 days per dataset.
   `pipeline/archive_iemop.py` plus a GitHub Actions cron turns that window into a
   permanent public archive under `data/raw/` (the git history is the archive).
   It holds named binding constraints (RTD + DAP), regional summaries (demand, curtailment,
   reserve slack), load-weighted average prices, HVDC limits, outage schedules. The
-  archiver fails loud and a staleness gate turns the cron red if the archive stops
+  archiver fails with an error and the scheduled job fails if the archive stops
   growing, because losing a day is permanent once the public window rolls past it.
-- **A baked, checkable map.** `pipeline/build_data.py` computes every number the site
-  shows into `web/data/*.json`. The page renders only baked artifacts, so copy cannot
-  drift from data. `web/index.html` is a single-file MapLibre map with a findings
-  drawer (each computed finding flies the map to its evidence) and deep-linkable
-  `?q=&finding=` URLs.
-- **A sourced constants layer.** Choke-point corridors (drawn on the real routed
-  geometry between the named converter stations and substations, with their archive
-  receipts joined on), 14
-  data-center sites with a citable source each (public MW on 11 of them, 591.3 MW
-  named total), and every market anchor with its primary source, in
-  `pipeline/constants_ph.py`.
+- **The map reads calculated data files.** `pipeline/build_data.py` calculates
+  the site results in `web/data/*.json`. `web/index.html` is a single-file
+  MapLibre map with a findings
+  drawer (each computed finding moves the map to its evidence) and URLs that
+  preserve the active search and finding.
+- **Each fixed input cites a source.** `pipeline/constants_ph.py` defines five
+  choke points on routed lines, 14 data-center sites, and each market input.
+  Eleven sites publish capacity figures, totaling 591.3 MW.
 
-## What it is not
+## The model states six limits
 
-- Not a claim that data centers raised Philippine electricity prices. The window's
-  prices are driven by fuel, outages, weather, and the market restart.
-- Not a brownout forecast. It shows observed curtailment in dispatch schedules,
-  observed reserve shortfalls, and arithmetic on published margins.
-- Not a price forecast. The dispatch model is a simplified merit-order stack
-  calibrated against observed prices. It shows what a competitive cost stack
-  does and does not explain, and is not a predictor. Every plant number is sourced.
+- The project does not claim that data centers raised Philippine electricity prices. Fuel,
+  outages, weather, and the market restart drive the window's prices.
+- The figures do not forecast brownouts. They show recorded curtailment in dispatch schedules,
+  recorded reserve shortfalls, and arithmetic on published margins.
+- The model does not forecast prices. It uses a simplified merit-order stack
+  compared with recorded prices. It shows what a competitive cost stack does and
+  does not explain, and is not a predictor. Each plant entry cites its source.
   The fuel-availability and per-grid-split assumptions are labeled as such.
-- Not a complete data-center inventory (Cushman counts 24 operational facilities.
-  DataCenterMap lists 44. Only publicly-sourced sites are pinned, at city precision).
-- Not NGCP's own network model. Corridor and grid lines follow real routes as mapped
+- The data-center list is not complete. Cushman counts 24 operational facilities,
+  and DataCenterMap lists 44. The map shows only publicly sourced sites, at city precision.
+- The grid lines do not reproduce NGCP's network model. They follow real routes as mapped
   in OpenStreetMap (community data, ODbL), geometry only, no ratings.
-- Not a nodal congestion-premium layer. WESM's published nodal congestion component
+- It does not calculate a nodal congestion premium. WESM's published nodal congestion component
   is zero through the market suspension and small and intermittent afterward (the
-  market re-prices a minority of intervals under a substitution methodology (16
+  market re-prices a minority of intervals under a substitution method (16
   percent of the derived archive, against 22 percent administered and 8 percent
   security-limited) and expresses
-  inter-island congestion as regional price separation, not a per-node charge). What the map and studio DO display is the
-  observed locational deviation per node, labeled as such, never as a congestion
+  inter-island congestion as regional price separation instead of a per-node charge).
+  The map and studio display the recorded price difference per node and do not
+  label it as a congestion
   premium. Full resolution in
-  [`docs/research-launch-20260705.md`](docs/research-launch-20260705.md).
+  [`docs/source-notes.md`](docs/source-notes.md).
 
 ## Where the data comes from
 
-The primary Philippine sources this project reads, archives, or reconciles against.
-Every number on the map traces back to one of these.
+The project reads and archives the Philippine sources below. The method page
+marks calculated results and assumptions separately.
 
-- [IEMOP market data](https://www.iemop.ph/market-data/). the Independent Electricity
-  Market Operator's public files. These are congestions manifesting (named binding equipment per
-  5-minute interval), regional summaries, load-weighted average prices, HVDC limits,
-  outage schedules. The rolling ~90-day window is what `pipeline/archive_iemop.py`
-  turns into a permanent archive.
-- [IEMOP monthly reports](https://www.iemop.ph/news/). the operator's narrative on each
-  billing month. It covers which links bound, why prices moved, supply-and-demand margins. The
-  prose the archive turns into receipts.
-- [NGCP Transmission Development Plan](https://www.ngcp.ph/tdp). the system operator's
-  2025-2050 plan. It carries the corridors, the reinforcement projects, and the schedule that
-  says when a choke point is meant to be relieved.
-- [DOE Power Statistics](https://doe.gov.ph/electric-power/electric-power-statistics).
-  the Department of Energy's installed and dependable capacity by grid and by fuel,
-  and the list of existing power plants. This is the reference the dispatch fleet is
-  reconciled to.
-- [WESM / PEMC](https://www.wesm.ph/). the spot market rules and the Philippine
-  Electricity Market Corporation's governance. It says why WESM is energy-only and how the
-  regional price separation this map shows is settled.
-- [ICSC Philippine Power Outlook](https://icsc.ngo/tag/philippine-power-outlook/).
-  the Institute for Climate and Sustainable Cities' annual PH grid-adequacy analysis
-  (reserve margins, alert risk, HVDC constraints) built on NGCP and DOE outlooks. It is the
-  neighbor to the supply question, in static-report form.
+- [IEMOP market data](https://www.iemop.ph/market-data/) gives named binding
+  equipment per 5-minute interval, regional summaries, load-weighted average
+  prices, high-voltage direct-current limits, and outage schedules.
+  `pipeline/archive_iemop.py` preserves the rolling 90-day public window.
+- [IEMOP monthly reports](https://www.iemop.ph/news/) explain which links reached
+  their limits, the price drivers, and the remaining supply margin.
+- [NGCP's Transmission Development Plan](https://www.ngcp.ph/tdp) lists planned
+  grid links, upgrades, and completion dates from 2025 to 2050.
+- [DOE Power Statistics](https://doe.gov.ph/electric-power/electric-power-statistics)
+  gives installed and dependable capacity by grid and fuel, plus the list of
+  existing power plants. The dispatch fleet must match these totals.
+- [WESM and PEMC](https://www.wesm.ph/) publish spot-market rules and governance.
+  These rules define WESM as an energy-only market and explain regional settlement.
+- [ICSC's Philippine Power Outlook](https://icsc.ngo/tag/philippine-power-outlook/)
+  reports reserve margins, alert risk, and high-voltage direct-current limits
+  based on NGCP and DOE plans.
 - [DataCenterMap](https://www.datacentermap.com/philippines/) and
   [Cushman & Wakefield APAC updates](https://www.cushmanwakefield.com/en/singapore/insights/apac-data-centre-update).
-  the public facility inventories the data-center layer is drawn and cross-checked
-  against (named sites with a citable source each).
+  give the public facility lists used to place and check named data-center sites.
 
 ## Reproduce locally
 
@@ -751,8 +804,8 @@ Needs Python 3.11+ and curl. No accounts, no keys.
 git clone https://github.com/xmpuspus/power-dispatch-studio
 cd power-dispatch-studio
 make backfill    # pull the full public window from iemop.ph (~15 min, ~50 MB)
-make data        # bake web/data/ from the archive + sourced constants
-make qa          # data-integrity pins + banned-framing gate
+make data        # prepare web/data/ from the archive + sourced constants
+make qa          # data and language checks
 make serve       # http://localhost:8789
 make e2e         # behavioral checks against the running map
 ```
@@ -761,44 +814,42 @@ The committed `data/raw/` means `make data` works offline from a clean clone.
 `make backfill` tops up any days the archive is missing (fetches are sequential and
 throttled out of courtesy to IEMOP's servers). `make archive` is the daily
 incremental the cron runs. `python3 pipeline/archive_iemop.py --check` is the
-staleness gate that fails the cron if the archive stops growing.
+staleness check that fails the scheduled job if the archive stops growing.
 
 ## Data products
 
 | File | What it is |
 |---|---|
-| `data/raw/RTDCV/`, `data/raw/DAPCV/` | IEMOP "congestions manifesting" daily CSVs: named equipment, station, binding limit, MW flow, overload, per 5-minute interval (RTD) or hourly (DAP) |
-| `data/raw/RTDSUM/` | RTD regional summaries: energy and reserve rows per grid (demand bids, load curtailed, reserve requirement vs scheduled) |
+| `data/raw/RTDCV/`, `data/raw/DAPCV/` | IEMOP "congestions manifesting" daily CSVs with equipment, station, binding limit, MW flow, and overload per 5-minute interval or hour |
+| `data/raw/RTDSUM/` | Real-time regional energy and reserve rows per grid, including demand bids, curtailed load, reserve need, and scheduled reserve |
 | `data/raw/LWAPF/` | Load-weighted average prices, final, per grid per 5-minute interval (PhP/MWh) |
-| `data/raw/HVDCRTD/`, `data/raw/OUTRTD/` | HVDC limits imposed in RTD; outage schedules used in RTD |
-| `web/data/congestion.json` | Constraint league (ranked by days, RT and DAP counts separate) plus per-corridor receipts joined to the choke-point lines |
+| `data/raw/HVDCRTD/`, `data/raw/OUTRTD/` | High-voltage direct-current limits and outage schedules used in real-time dispatch |
+| `web/data/congestion.json` | Constraint league ranked by day, with separate real-time and day-ahead counts plus records joined to each inter-island link |
 | `web/data/prices.json` | Daily regional price series, the administered-vs-market regime split, and the widest-spread day |
-| `web/data/findings.json` | The findings drawer: computed cards, each with the map focus that flies to its evidence |
-| `web/data/*.json` | The rest of the baked layers: reliability series, the three answers, choke points, data-center sites, anchors |
-| `web/data/exports/*.csv` | Analyst-ready CSVs baked every night: the congestion league, both backcast engines per grid, and the day-by-day feed (LWAP, spread, curtailment, alerts, binding equipment). Documented in `web/data/exports/index.json` |
+| `web/data/findings.json` | Calculated finding cards and the map location for each card |
+| `web/data/*.json` | Calculated reliability series, the three answers, constrained equipment, data-center sites, and reference figures |
+| `web/data/exports/*.csv` | Nightly CSVs for constraints, replay results, and daily market records. See `web/data/exports/index.json` |
 
 ## Method
 
-Every number, source, unit conversion, and caveat sits in
-[`web/methodology.html`](web/methodology.html). The launch research (prior art, the
-WESM price-determination resolution, the news sweep) is in
-[`docs/research-launch-20260705.md`](docs/research-launch-20260705.md). [`CLAUDE.md`](CLAUDE.md)
-carries the working notes and the non-negotiable stance (no attribution claims, no
-prophecy, labeled forecasts, OSM-labeled line routes, city-precision pins).
+The sources, assumptions, unit conversions, calculations, and limits are in
+[`web/methodology.html`](web/methodology.html). The WESM price-method and dated
+market-event notes are in [`docs/source-notes.md`](docs/source-notes.md).
 
 ## License and attribution
 
-The code is MIT. The baked data products are CC-BY-4.0. See [`LICENSE`](LICENSE) and
+The code is MIT. The calculated data products are CC-BY-4.0. See [`LICENSE`](LICENSE) and
 [`CITATION.cff`](CITATION.cff). Upstream market data belongs to its publishers
 (IEMOP, NGCP, Meralco). This repository mirrors public files as-is for research with
 attribution, and will honor any takedown request from the publisher.
 
-Use this attribution when you redistribute the baked data. *Power Dispatch Studio (2026), IEMOP
+Use this attribution when you redistribute the calculated data. *Power Dispatch Studio (2026), IEMOP
 public market data archive, https://github.com/xmpuspus/power-dispatch-studio*.
 
 ## Public-record disclaimer
 
-All data sourced from public records (IEMOP market files, NGCP publications, Meralco
-advisories, PCIJ reporting, company announcements). This tool computes statistical
-indicators only. Patterns may have legitimate explanations. Specific allegations, if
-any, require independent investigation and corroboration.
+Recorded inputs cite public records from IEMOP, NGCP, Meralco, PCIJ, and company
+announcements. Calculated results and model assumptions are labeled separately.
+This tool computes statistical indicators only. Patterns may have legitimate
+explanations. Specific allegations need independent investigation and
+supporting evidence.

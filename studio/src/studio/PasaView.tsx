@@ -62,7 +62,9 @@ export function PasaView({
 
   if (pasa.loading) return <EmptyNote>Loading the outage schedules.</EmptyNote>
   if (pasa.error || !pasa.data?.available || !day)
-    return <EmptyNote>PASA layer not baked. Run make data.</EmptyNote>
+    return (
+      <EmptyNote>Scheduled-outage data are not available in this data release.</EmptyNote>
+    )
   const p = pasa.data
 
   const rows = day.out
@@ -130,8 +132,8 @@ export function PasaView({
       </div>
 
       <Panel
-        title="Adequacy with the day's outages removed"
-        subtitle="The live Monte Carlo re-run with matched outage MW off the stack first; the out MW stops drawing its forced-outage rate while the same plant's in-service units keep theirs."
+        title="Scheduled outages reduce available supply and raise shortfall risk"
+        subtitle="The repeated outage simulation first removes the scheduled unavailable MW. That unavailable capacity is not assigned another random outage, while the same plant's remaining units keep their normal outage rates."
       >
         <CompareBars
           items={GRIDS.map((g) => ({
@@ -146,7 +148,7 @@ export function PasaView({
           {GRIDS.map((g) => (
             <StatTile
               key={g}
-              label={`${cap(g)} reserve margin`}
+              label={`${cap(g)} spare capacity (reserve margin)`}
               value={pct(withOut.marginAfterPct[g] / 100, 1)}
               hint={`from ${pct(base.reserveMarginPct[g] / 100, 1)} with everything in`}
               tone={
@@ -162,8 +164,8 @@ export function PasaView({
       </Panel>
 
       <Panel
-        title={`Resources out on ${day.date}`}
-        subtitle="The operator's outage schedule used in real-time dispatch, one row per resource, sized against the DOE fleet where the code maps."
+        title={`Power resources scheduled out on ${day.date}`}
+        subtitle="The operator uses this outage schedule in real-time dispatch. Each row is matched to DOE plant capacity where the resource code can be identified."
         right={<Source href={p.src} label="IEMOP outage schedules" />}
       >
         <DataGrid columns={cols} rows={rows} getKey={(r) => r.resource} />

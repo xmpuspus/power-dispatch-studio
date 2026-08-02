@@ -8,6 +8,7 @@ element rather than the viewport.
     make serve &
     python3 build/shoot_pax_silica_figs.py
 """
+
 import asyncio
 import os
 
@@ -17,21 +18,30 @@ BASE = os.environ.get("BASE", "http://localhost:8789")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "docs", "pax-silica-figs")
 
-CARDS = [("fig-grids", "grids"), ("fig-acwa", "acwa"), ("fig-land", "land"),
-         ("fig-wires", "wires"), ("fig-record", "record"),
-         ("fig-priceb", "priceb"), ("fig-own", "own"),
-         ("fig-water", "water"), ("fig-site", "site")]
+CARDS = [
+    ("fig-grids", "grids"),
+    ("fig-acwa", "acwa"),
+    ("fig-land", "land"),
+    ("fig-wires", "wires"),
+    ("fig-record", "record"),
+    ("fig-priceb", "priceb"),
+    ("fig-own", "own"),
+    ("fig-water", "water"),
+    ("fig-site", "site"),
+]
 
 
 async def main():
     os.makedirs(OUT, exist_ok=True)
     async with async_playwright() as pw:
         b = await pw.chromium.launch()
-        pg = await b.new_page(viewport={"width": 1280, "height": 900},
-                              device_scale_factor=2)
+        pg = await b.new_page(
+            viewport={"width": 1280, "height": 900}, device_scale_factor=2
+        )
         await pg.goto(BASE + "/pax-silica.html", wait_until="networkidle")
-        await pg.wait_for_function("window.__pxdiag && window.__pxdiag.ready",
-                                   timeout=30000)
+        await pg.wait_for_function(
+            "window.__pxdiag && window.__pxdiag.ready", timeout=30000
+        )
         for cid, name in CARDS:
             el = pg.locator("#" + cid)
             if not await el.count():

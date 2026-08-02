@@ -1,8 +1,8 @@
-"""One reel across the whole platform: the map's five modes and in-browser
-simulate, a real click through to the studio, the Start-simulating onboarding,
-a live Quick-scenario what-if (data-center wave, then a Sual trip), the backcast
-proof, reliability, and a fast sweep of the deep analyses. Every number on screen
-is read live from the running app.
+"""Record the main map and studio functions from the running app.
+
+The recording covers the five map modes, a data-center scenario, a Sual outage,
+the historical price comparison, power-shortfall risk, and four analysis views.
+Values shown on screen are read from the app.
 
 Needs the COMBINED single-origin serve (map at /, studio at /studio/) so the
 "Open the dispatch studio" link is a real navigation, not a cut:
@@ -30,30 +30,40 @@ CAP_JS = r"""
 (args) => {
   const { title, sub, intro } = args;
   let el = document.getElementById('reel-cap');
-  if (!el) { el = document.createElement('div'); el.id = 'reel-cap'; document.body.appendChild(el); }
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'reel-cap';
+    document.body.appendChild(el);
+  }
   const base = `position:fixed;left:50%;z-index:2147483647;box-sizing:border-box;
     font-family:'Fira Sans','Inter',system-ui,sans-serif;
     background:rgba(12,17,24,.94);color:#eef2f7;
     border:1px solid #2b3a4d;border-radius:14px;box-shadow:0 12px 44px rgba(0,0,0,.5);`;
   if (intro) {
-    el.style.cssText = base + `top:50%;transform:translate(-50%,-50%);width:820px;padding:40px 46px;text-align:center;`;
-    el.innerHTML = `<div style="font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:#7f8ea0;margin-bottom:14px;">Power Dispatch Studio</div>
+    el.style.cssText = base + `top:50%;transform:translate(-50%,-50%);
+      width:820px;padding:40px 46px;text-align:center;`;
+    el.innerHTML = `<div style="font-size:14px;letter-spacing:.16em;
+      text-transform:uppercase;color:#7f8ea0;margin-bottom:14px;">
+      Power Dispatch Studio</div>
       <div style="font-size:32px;font-weight:700;line-height:1.25;">${title}</div>
       <div style="font-size:18px;color:#9fb0c9;margin-top:14px;">${sub||''}</div>`;
     return;
   }
-  el.style.cssText = base + `bottom:26px;transform:translateX(-50%);width:1200px;max-width:calc(100% - 40px);padding:16px 24px;`;
-  el.innerHTML = `<div style="font-size:19px;font-weight:650;line-height:1.3;">${title}</div>
+  el.style.cssText = base + `bottom:26px;transform:translateX(-50%);
+    width:1200px;max-width:calc(100% - 40px);padding:16px 24px;`;
+  el.innerHTML = `<div style="font-size:19px;font-weight:650;
+    line-height:1.3;">${title}</div>
     <div style="font-size:15px;color:#a9b7c8;margin-top:4px;">${sub||''}</div>`;
 }
 """
 CLEAR_JS = "() => { const e = document.getElementById('reel-cap'); if (e) e.remove(); }"
-# smooth slider/number ramp with real input events (the tool re-clears live)
+# Smooth slider and number motion with real input events; the calculation updates live.
 ANIM_JS = r"""
 (args) => { const [id,to,ms]=args; const el=document.getElementById(id); if(!el) return;
   const from=+el.value, t0=performance.now();
   return new Promise(r=>{ function f(t){ const k=Math.min(1,(t-t0)/ms);
-    el.value=Math.round(from+(to-from)*k); el.dispatchEvent(new Event('input',{bubbles:true}));
+    el.value=Math.round(from+(to-from)*k);
+    el.dispatchEvent(new Event('input',{bubbles:true}));
     k<1?requestAnimationFrame(f):r(); } requestAnimationFrame(f); }); }
 """
 
@@ -68,7 +78,11 @@ async def clear_cap(page: Page):
 
 async def click_js(page: Page, selector: str) -> bool:
     return await page.evaluate(
-        """(sel) => { const el = document.querySelector(sel); if (el) { el.click(); return true; } return false; }""",
+        """(sel) => {
+          const el = document.querySelector(sel);
+          if (el) { el.click(); return true; }
+          return false;
+        }""",
         selector,
     )
 
@@ -82,13 +96,14 @@ async def click_text(page: Page, text: str) -> bool:
     )
 
 
-async def map_beats(page: Page):
+async def record_map(page: Page):
     await page.goto(BASE + "/", wait_until="networkidle")
-    await asyncio.sleep(4.5)  # basemap tiles + baked data
+    await asyncio.sleep(4.5)  # basemap tiles + generated data
     await cap(
         page,
-        "Can the Philippine grid host the announced data-center wave?",
-        "A production-cost model of the WESM, built on the market operator's own public files.",
+        "Can the Philippine grid carry the announced data-center demand?",
+        "A production-cost model of the WESM, built on the market operator's "
+        "public files.",
         intro=True,
     )
     await asyncio.sleep(3.2)
@@ -96,27 +111,48 @@ async def map_beats(page: Page):
     await asyncio.sleep(0.3)
 
     await click_js(page, "[data-mode=supply]")
-    await cap(page, "Supply", "The May 2026 system margin against the announced megawatts.")
+    await cap(
+        page,
+        "Can existing supply cover announced data-center demand?",
+        "The May 2026 system margin is shown beside each announced project "
+        "or forecast.",
+    )
     await asyncio.sleep(2.6)
     await click_js(page, "[data-mode=choke]")
-    await cap(page, "Choke points", "Named 230 kV equipment ranked by days at a binding limit.")
+    await cap(
+        page,
+        "The Leyte-Cebu corridor reached a binding limit most often",
+        "Named 230 kV equipment ranked by days at a binding limit.",
+    )
     await asyncio.sleep(2.6)
     await click_js(page, "[data-mode=price]")
-    await cap(page, "Prices", "The three island grids fanning apart after the market reopened.")
+    await cap(
+        page,
+        "Island-grid prices separated after market pricing resumed",
+        "Recorded daily prices for Luzon, Visayas, and Mindanao.",
+    )
     await asyncio.sleep(2.6)
 
     # simulate on the map: add a data center, the clearing price flips coal to oil
     await click_js(page, "[data-mode=simulate]")
     await asyncio.sleep(1.6)
-    await cap(page, "Simulate, in your browser", "Add a data center and the merit-order price re-clears live.")
+    await cap(
+        page,
+        "Test a scenario in your browser",
+        "Add a data center and the lowest-cost-first price clears again.",
+    )
     await page.evaluate(ANIM_JS, ["sim-dc", 3000, 3600])
     await asyncio.sleep(3.6)
     await clear_cap(page)
 
 
-async def studio_beats(page: Page):
+async def record_studio(page: Page):
     # real click-through to the studio (single origin: /studio/)
-    await cap(page, "Open the dispatch studio", "Edit the fleet, replay observed days, read the backcast.")
+    await cap(
+        page,
+        "Open the dispatch studio",
+        "Edit the fleet, replay recorded days, and check the historical replay.",
+    )
     await asyncio.sleep(1.8)
     await click_js(page, "#studiolink")
     await page.wait_for_load_state("networkidle")
@@ -126,43 +162,77 @@ async def studio_beats(page: Page):
     await page.wait_for_selector('[data-testid="studio"]', timeout=8000)
     await asyncio.sleep(1.0)
 
-    # the studio opens on the levers, with the answer already pinned on the right
-    await cap(page, "It opens where you can act",
-              "Levers on the left, and every grid's cleared price pinned on the right.")
+    # The studio opens on the what-if controls, with results pinned on the right.
+    await cap(
+        page,
+        "What-if controls sit beside the calculated grid prices",
+        "What-if settings on the left, and every grid's cleared price on the right.",
+    )
     await asyncio.sleep(2.8)
 
-    # Quick scenario: a live what-if, no Run (native setter so React re-clears)
-    await cap(page, "A data-center wave", "Drag the lever, the three grids re-clear live, no Run.")
+    # Quick scenario updates live without the Run button.
+    await cap(
+        page,
+        "Add data-center demand",
+        "Move the slider and all three grid prices recalculate without pressing Run.",
+    )
     await ramp_lever(page, "Add a data center", 2500, 3000)
     await asyncio.sleep(2.8)  # hold on the coal-to-oil flip
-    await cap(page, "Trip the biggest unit", "A Sual coal unit drops on top of the wave.")
+    await cap(
+        page,
+        "Remove the biggest unit",
+        "A Sual coal unit goes out after demand increases.",
+    )
     await trip_unit(page, "Sual")
     await asyncio.sleep(2.6)
     await clear_cap(page)
 
-    # Backcast: the proof
+    # Historical comparison.
     await sim_tab(page)
-    await click_text(page, "Backcast")
+    await click_text(page, "Historical replay")
     await asyncio.sleep(1.0)
     await scroll_top(page)
-    await cap(page, "Does the model track reality?", "The cost model against the observed price tape. Nothing tuned.")
+    await cap(
+        page,
+        "The historical replay reports the model's price error",
+        "The cost calculation is compared with recorded prices for every "
+        "complete market day.",
+    )
     await asyncio.sleep(3.0)
     await click_text(page, "Observed offers")
-    await cap(page, "On the operator's own offer book", "The modeled evening tracks the observed ramp, hour by hour.")
+    await cap(
+        page,
+        "Published offers follow the recorded evening ramp",
+        "Across the archive, price correlation is 0.73 to 0.87 by grid.",
+    )
     await asyncio.sleep(3.2)
     await clear_cap(page)
 
     # Reliability
-    await click_text(page, "Reliability")
+    await click_text(page, "Power-shortfall risk")
     await asyncio.sleep(1.0)
     await scroll_top(page)
-    await cap(page, "Probabilistic reliability", "Forced-outage Monte Carlo. Loss-of-load probability, not a point estimate.")
+    await cap(
+        page,
+        "Chance of a power shortfall",
+        "Repeated simulations apply random plant outages and report "
+        "loss-of-load probability (LOLP).",
+    )
     await asyncio.sleep(3.0)
     await clear_cap(page)
 
-    # analysis breadth: a fast sweep of the deep views
-    await cap(page, "And the deep analyses", "Reserve market, the Meralco bill, forward prices, emissions, and more.")
-    for name in ["Reserve market", "Bill impact", "Forward prices", "Emissions"]:
+    # Four additional analysis views.
+    await cap(
+        page,
+        "The studio calculates reserves, bills, future cases, and emissions",
+        "Open each view from the same scenario.",
+    )
+    for name in [
+        "Backup capacity market",
+        "Bill impact",
+        "Possible future price range",
+        "Emissions",
+    ]:
         ok = await click_text(page, name)
         if ok:
             await asyncio.sleep(0.4)
@@ -172,7 +242,7 @@ async def studio_beats(page: Page):
     await clear_cap(page)
     await cap(
         page,
-        "Free, open, and every number sourced.",
+        "Public sources and labeled assumptions appear beside the results.",
         "power-dispatch-studio.vercel.app",
         intro=True,
     )
@@ -184,8 +254,10 @@ async def ramp_lever(page: Page, label: str, to: int, ms: int):
     # React controlled input: use the native value setter so onChange fires
     await page.evaluate(
         """(args) => { const [label,to,ms]=args;
-          const setV=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set;
-          const l=[...document.querySelectorAll('.lever')].find(x=>x.textContent.includes(label));
+          const setV=Object.getOwnPropertyDescriptor(
+            window.HTMLInputElement.prototype,'value').set;
+          const l=[...document.querySelectorAll('.lever')]
+            .find(x=>x.textContent.includes(label));
           const el=l && l.querySelector('input[type=range]'); if(!el) return;
           const from=+el.value, t0=performance.now();
           return new Promise(r=>{ function f(t){ const k=Math.min(1,(t-t0)/ms);
@@ -198,11 +270,14 @@ async def ramp_lever(page: Page, label: str, to: int, ms: int):
 
 async def trip_unit(page: Page, needle: str):
     await page.evaluate(
-        """(needle) => { const setV=Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype,'value').set;
-          const l=[...document.querySelectorAll('.lever')].find(x=>/Trip a unit/.test(x.textContent));
+        """(needle) => { const setV=Object.getOwnPropertyDescriptor(
+            window.HTMLSelectElement.prototype,'value').set;
+          const l=[...document.querySelectorAll('.lever')]
+            .find(x=>/Trip a unit/.test(x.textContent));
           const sel=l && l.querySelector('select'); if(!sel) return;
           const opt=[...sel.options].find(o=>o.text.includes(needle)); if(!opt) return;
-          setV.call(sel,opt.value); sel.dispatchEvent(new Event('change',{bubbles:true})); }""",
+          setV.call(sel,opt.value);
+          sel.dispatchEvent(new Event('change',{bubbles:true})); }""",
         needle,
     )
 
@@ -218,7 +293,10 @@ async def sim_tab(page: Page):
 
 async def scroll_top(page: Page):
     await page.evaluate(
-        """() => { const s=document.querySelector('.studio__scroll'); if(s) s.scrollTo({top:0,behavior:'smooth'}); }"""
+        """() => {
+          const s=document.querySelector('.studio__scroll');
+          if(s) s.scrollTo({top:0,behavior:'smooth'});
+        }"""
     )
     await asyncio.sleep(0.8)
 
@@ -233,8 +311,8 @@ async def main():
             device_scale_factor=1,
         )
         page = await ctx.new_page()
-        await map_beats(page)
-        await studio_beats(page)
+        await record_map(page)
+        await record_studio(page)
         await asyncio.sleep(0.5)
         await ctx.close()
         vid = await page.video.path()

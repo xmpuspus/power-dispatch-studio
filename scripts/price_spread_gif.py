@@ -4,11 +4,12 @@
 The three island grids share one frame, because the comparison is the whole
 finding. While the market ran on administered prices the lines sit on top of
 each other, within P0.015. The suspension band ends and they fan apart. The
-card carries the widest daily gap as its payoff, and keeps the two regimes
+card labels the widest daily gap and keeps the two regimes
 labelled so the suspension never reads as a market outcome.
 
 Reads web/data/prices.json. Output docs/price-spread.gif.
 """
+
 import json
 import os
 import sys
@@ -44,24 +45,44 @@ def main():
     seq = cs.reveal(38, 16)
 
     for fi, t in enumerate(seq):
-        fig, ax = cs.card(figsize=(8.8, 5.0), field="dusk",
-                          rect=(0.075, 0.195, 0.615, 0.575))
+        fig, ax = cs.card(
+            figsize=(8.8, 5.0), field="dusk", rect=(0.075, 0.195, 0.615, 0.575)
+        )
         upto = max(2, int(round(n * t)))
 
         band = min(upto, cut)
         if band > 1:
             ax.axvspan(0, band - 1, color="#18212e", alpha=0.9, zorder=0)
             if t > 0.20:
-                ax.text((band - 1) / 2, ymax * 0.96, "WESM suspended",
-                        ha="center", fontsize=8.8, color=cs.MUTE, zorder=6)
-                ax.text((band - 1) / 2, ymax * 0.895,
-                        f"administered, the three within "
-                        f"P{reg['administered']['max_spread']}",
-                        ha="center", fontsize=7.8, color=cs.MUTE, zorder=6)
+                ax.text(
+                    (band - 1) / 2,
+                    ymax * 0.96,
+                    "WESM suspended",
+                    ha="center",
+                    fontsize=8.8,
+                    color=cs.MUTE,
+                    zorder=6,
+                )
+                ax.text(
+                    (band - 1) / 2,
+                    ymax * 0.895,
+                    f"administered, the three within "
+                    f"P{reg['administered']['max_spread']}",
+                    ha="center",
+                    fontsize=7.8,
+                    color=cs.MUTE,
+                    zorder=6,
+                )
         if upto > cut:
             ax.axvline(cut, color=cs.FAINT, lw=1.0, ls=(0, (4, 3)), zorder=1)
-            ax.text(cut + 1.5, ymax * 0.96, f"market resumes {pretty(resumed)}",
-                    fontsize=8.8, color=cs.BODY, zorder=6)
+            ax.text(
+                cut + 1.5,
+                ymax * 0.96,
+                f"market resumes {pretty(resumed)}",
+                fontsize=8.8,
+                color=cs.BODY,
+                zorder=6,
+            )
 
         for g in ("luzon", "visayas", "mindanao"):
             ys = [v for v in series[g][:upto]]
@@ -69,30 +90,54 @@ def main():
             cs.glow(ax, xs, ys, cs.REGION[g], lw=1.6, zorder=4)
             cs.dot(ax, xs[-1], ys[-1], cs.REGION[g], size=22, zorder=7)
             if t > 0.45:
-                ax.text(xs[-1] + 1.4, ys[-1], g.capitalize(), fontsize=9,
-                        color=cs.REGION[g], va="center", zorder=8)
+                ax.text(
+                    xs[-1] + 1.4,
+                    ys[-1],
+                    g.capitalize(),
+                    fontsize=9,
+                    color=cs.REGION[g],
+                    va="center",
+                    zorder=8,
+                )
 
         ax.set_xlim(0, n + 11)
         ax.set_ylim(0, ymax)
         ax.set_xticks([])
         ax.set_ylabel("daily average price, PhP per kWh", fontsize=9)
 
-        cs.title(fig, "One market on paper, three prices in practice",
-                 f"Daily load-weighted average price per island grid, "
-                 f"{pretty(dates[0])} to {pretty(dates[-1])}.")
+        cs.title(
+            fig,
+            "One wholesale market produced three different island-grid prices",
+            f"Daily load-weighted average price per island grid, "
+            f"{pretty(dates[0])} to {pretty(dates[-1])}.",
+        )
         if t > 0.9:
-            cs.payoff(fig, 0.745, 0.625, f"P{widest['php']:.2f}",
-                      f"widest gap in one day, {pretty(widest['date'])}",
-                      cs.CORAL, 30)
-            fig.text(0.745, 0.495,
-                     f"{reg['market']['days_spread_gt5']} of "
-                     f"{reg['market']['days']} market days\nsplit by more than P5",
-                     fontsize=8.8, color=cs.BODY, va="top", zorder=6)
-        cs.source(fig,
-                  "Each line is one island grid's daily average of IEMOP's "
-                  "load-weighted 5-minute prices. The links between the islands "
-                  "are the reason the numbers differ.\n"
-                  "From IEMOP LWAPF, archived.")
+            cs.result_label(
+                fig,
+                0.745,
+                0.625,
+                f"P{widest['php']:.2f}",
+                f"widest gap in one day, {pretty(widest['date'])}",
+                cs.CORAL,
+                30,
+            )
+            fig.text(
+                0.745,
+                0.495,
+                f"{reg['market']['days_spread_gt5']} of "
+                f"{reg['market']['days']} market days\nsplit by more than P5",
+                fontsize=8.8,
+                color=cs.BODY,
+                va="top",
+                zorder=6,
+            )
+        cs.source(
+            fig,
+            "Each line is one island grid's daily average of IEMOP's "
+            "load-weighted 5-minute prices. Limited transfer capacity lets "
+            "regional prices separate when local supply and demand differ.\n"
+            "From IEMOP LWAPF, archived.",
+        )
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

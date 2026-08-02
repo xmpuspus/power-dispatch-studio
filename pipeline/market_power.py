@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Bake the market-power / concentration layer.
+"""Generate the market-power / concentration layer.
 
 The dispatch model prices energy from a merit-order stack; it says nothing about who
-OWNS the stack. The WESM's own market-assessment reports track structural indices
+owns the stack. The WESM's own market-assessment reports track structural indices
 (HHI, price-setting frequency, pivotal-supplier, residual-supply index) because a
-concentrated fleet can move price even when the physics has headroom. This bakes the
+concentrated fleet can move price even when the physics has headroom. This stores the
 concentration picture from the ERC's published 2024 generation-capacity shares so the
-studio can show it, and frames the pivotal-supplier idea against the thin reserve
+studio can show it, and compares the pivotal-supplier measure with the thin reserve
 margin the dispatch model already computes.
 
-NOT a model: these are the regulator's own published capacity shares. The HHI is
+This is not a model: these are the regulator's own published capacity shares. The HHI is
 computed from them here (with its method stated); the caveats (national capacity
 shares, not per-grid or energy-weighted) are carried in the output.
 
@@ -21,6 +21,7 @@ Sources:
   demand): Republic Act 9136.
     https://www.doe.gov.ph/sites/default/files/pdf/issuances/ra-9136.pdf
 """
+
 from __future__ import annotations
 
 # ERC 2024 generation-capacity market shares (national, released 17 March 2025).
@@ -81,24 +82,25 @@ def build_market_power() -> dict:
         "largest": {"name": largest[0], "mw": largest[1], "share_pct": largest[2]},
         "cap_installed_pct": CAP_INSTALLED_PCT,
         "cap_demand_pct": CAP_DEMAND_PCT,
-        "pivotal_supplier_note": "A generator is a pivotal supplier when the system cannot "
-                        "meet demand without it: its residual-supply index, (total "
-                        "supply minus that supplier) over demand, falls below 1. The "
-                        "largest generator holds " + f"{largest[2]:.1f}%" + " of "
-                        "national capacity, far more than the thin peak reserve "
-                        "margin, so at the peak the grid is not served without it. "
-                        "That is the market power the merit-order price cannot show.",
+        "pivotal_supplier_note": "A generator is a pivotal supplier when the "
+        "system cannot "
+        "meet demand without it: its residual-supply index, (total "
+        "supply minus that supplier) over demand, falls below 1. The "
+        "largest generator holds " + f"{largest[2]:.1f}%" + " of "
+        "national capacity, far more than the thin peak reserve "
+        "margin, so at the peak the grid is not served without it. "
+        "That is the market power the merit-order price cannot show.",
         "rsi_note": "HHI, price-setting frequency, pivotal-supplier and the "
-                    "residual-supply index are the WESM's own published structural "
-                    "indices (PEMC and ERC market-assessment reports). This view "
-                    "reconstructs the concentration picture from the ERC's capacity "
-                    "shares; it does not recompute the interval-level RSI.",
+        "residual-supply index are the WESM's own published structural "
+        "indices (PEMC and ERC market-assessment reports). This view "
+        "reconstructs the concentration picture from the ERC's capacity "
+        "shares; it does not recompute the interval-level RSI.",
         "note": "These are national installed-CAPACITY shares from the ERC, not "
-                "per-grid shares and not energy-weighted generation. Capacity share "
-                "sets the ceiling on market power; actual price-setting depends on "
-                "who is on the margin hour to hour.",
+        "per-grid shares and not energy-weighted generation. Capacity share "
+        "sets the ceiling on market power; actual price-setting depends on "
+        "who is on the margin hour to hour.",
         "disclaimer": "Statistical indicators derived from public data. Patterns may "
-                      "have legitimate explanations.",
+        "have legitimate explanations.",
         "src": SRC,
         "src_cap": SRC_CAP,
     }
@@ -106,4 +108,5 @@ def build_market_power() -> dict:
 
 if __name__ == "__main__":
     import json
+
     print(json.dumps(build_market_power(), indent=1))

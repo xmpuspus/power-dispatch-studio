@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Bake the DOE demand path: the Power Development Plan 2023-2050 peak-demand
+"""Generate the DOE demand path: the Power Development Plan 2023-2050 peak-demand
 forecast, per grid, year by year (Table 28 of the plan).
 
-The map and studio lean on a single-month Q1 demand baseline; the round-10/11
-convergence critics named the DOE PDP's long-term demand outlook as the input
-for a demand PATH in the LT Plan view (which today shows only the supply-side
-committed and indicative build pipeline). This parses that outlook.
+The map and studio use a single-month Q1 demand baseline. This module parses
+the DOE Power Development Plan's long-term demand forecast for the LT Plan
+view, alongside the committed and indicative supply projects.
 
 Source: DOE PDP 2023-2050, Table 28 "Peak Demand Forecast (2021-2050) in MW",
 per grid. doe.gov.ph 403s non-PH requests, so the file is the Internet
@@ -20,22 +19,24 @@ labeled owner=DOE with the plan and its horizon.
 
     python3 pipeline/pdp_demand.py   # prints the parsed path
 """
+
 from __future__ import annotations
 
 import os
 import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TXT = os.path.join(HERE, "..", "data", "external", "doe",
-                   "pdp_2023-2050.txt")
+TXT = os.path.join(HERE, "..", "data", "external", "doe", "pdp_2023-2050.txt")
 # Table 28 rows: Year[*]  Luzon  Visayas  Mindanao  Philippines (comma thousands)
 _ROW = re.compile(
-    r"^\s*(20[2-5][0-9])(\*?)\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)\s*$",
-    re.M)
+    r"^\s*(20[2-5][0-9])(\*?)\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)\s*$", re.M
+)
 RECON_TOL_MW = 2.0
-SRC = ("https://web.archive.org/web/20250423153601/https://doe.gov.ph/sites/"
-       "default/files/pdf/electric_power/development_plans/"
-       "Power%20Development%20Plan%202023-2050.pdf")
+SRC = (
+    "https://web.archive.org/web/20250423153601/https://doe.gov.ph/sites/"
+    "default/files/pdf/electric_power/development_plans/"
+    "Power%20Development%20Plan%202023-2050.pdf"
+)
 
 
 def _n(s: str) -> int:
@@ -44,13 +45,14 @@ def _n(s: str) -> int:
 
 def build_demand_path() -> dict:
     if not os.path.isfile(TXT):
-        return {"available": False,
-                "note": "no PDP extraction; see data/external/doe/SOURCES.md"}
+        return {
+            "available": False,
+            "note": "no PDP extraction; see data/external/doe/SOURCES.md",
+        }
     txt = open(TXT, encoding="utf-8", errors="replace").read()
     seen: set[int] = set()
     years: list[int] = []
-    grids: dict[str, list[int]] = {g: [] for g in
-                                   ("luzon", "visayas", "mindanao")}
+    grids: dict[str, list[int]] = {g: [] for g in ("luzon", "visayas", "mindanao")}
     national: list[int] = []
     actual_years: list[int] = []
     for y, star, lz, vs, mn, ph in _ROW.findall(txt):
@@ -62,7 +64,8 @@ def build_demand_path() -> dict:
         if abs((lzv + vsv + mnv) - phv) > RECON_TOL_MW:
             raise RuntimeError(
                 f"PDP demand: {yi} grids sum {lzv + vsv + mnv} != national "
-                f"{phv}; refused")
+                f"{phv}; refused"
+            )
         seen.add(yi)
         years.append(yi)
         grids["luzon"].append(lzv)
@@ -79,7 +82,8 @@ def build_demand_path() -> dict:
     if len(years) < 20:
         raise RuntimeError(
             f"PDP demand: only {len(years)} year-rows parsed; expected the "
-            "full 2021-2050 table")
+            "full 2021-2050 table"
+        )
     forecast_from = max(actual_years) + 1 if actual_years else years[0]
     return {
         "available": True,
@@ -93,32 +97,47 @@ def build_demand_path() -> dict:
         "actual_years": actual_years,
         "forecast_from_year": forecast_from,
         "cagr_2025_2050_pct": round(
-            100 * ((national[years.index(2050)] / national[years.index(2025)])
-                   ** (1 / 25) - 1), 2)
-        if 2025 in years and 2050 in years else None,
-        "note": ("The DOE Power Development Plan 2023-2050 peak-demand "
-                 "forecast, per grid, year by year (the plan's Table 28). A "
-                 "LABELED forecast owned by the DOE, not a measurement and "
-                 "not this model's own projection; the 2021 and 2022 rows are "
-                 "the plan's stated actuals. Each year's three grid values "
-                 "reconcile to the plan's own Philippines total within 2 MW "
-                 "or the build refuses. It gives the LT Plan view a demand "
-                 "trajectory beside the supply-side committed and indicative "
-                 "build pipeline; the data-center anchors (DICT, DOE, "
-                 "Meralco) sit on top of this baseline growth."),
+            100
+            * (
+                (national[years.index(2050)] / national[years.index(2025)]) ** (1 / 25)
+                - 1
+            ),
+            2,
+        )
+        if 2025 in years and 2050 in years
+        else None,
+        "note": (
+            "The DOE Power Development Plan 2023-2050 peak-demand "
+            "forecast, per grid, year by year (the plan's Table 28). A "
+            "LABELED forecast owned by the DOE, not a measurement and "
+            "not this model's own projection; the 2021 and 2022 rows are "
+            "the plan's stated actuals. Each year's three grid values "
+            "reconcile to the plan's own Philippines total within 2 MW "
+            "or the build refuses. It gives the LT Plan view a demand "
+            "trajectory beside the supply-side committed and indicative "
+            "build pipeline; the data-center anchors (DICT, DOE, "
+            "Meralco) sit on top of this baseline growth."
+        ),
         "src": SRC,
     }
 
 
 if __name__ == "__main__":
     import json
+
     d = build_demand_path()
     if d.get("available"):
-        print(f"years {d['years'][0]}..{d['years'][-1]} "
-              f"({len(d['years'])} rows); actuals {d['actual_years']}; "
-              f"CAGR 2025-2050 {d['cagr_2025_2050_pct']}%")
-        print("PH 2025/2030/2040/2050:",
-              [d["philippines_mw"][d["years"].index(y)]
-               for y in (2025, 2030, 2040, 2050)])
+        print(
+            f"years {d['years'][0]}..{d['years'][-1]} "
+            f"({len(d['years'])} rows); actuals {d['actual_years']}; "
+            f"CAGR 2025-2050 {d['cagr_2025_2050_pct']}%"
+        )
+        print(
+            "PH 2025/2030/2040/2050:",
+            [
+                d["philippines_mw"][d["years"].index(y)]
+                for y in (2025, 2030, 2040, 2050)
+            ],
+        )
     else:
         print(json.dumps(d))

@@ -1,161 +1,143 @@
 # Power Dispatch Studio
 
-Power Dispatch Studio is a free,
-open, browser-based dispatch studio for the Philippine wholesale electricity
-market (WESM). It carries the working shape of a commercial production-cost
-tool: an object model you edit in a properties grid, scenarios as tagged
-overrides, a Run gate, a solution browser, chronological simulation over
-observed market days, and a backcast that scores the model against the actual
-price tape. Everything runs client-side on baked public data. There is no
-license server, no import wizard, and no project file: a scenario and its run
-window encode into the URL.
+Power Dispatch Studio is a free browser tool for the Philippine Wholesale
+Electricity Spot Market (WESM). You can edit plant and grid inputs, save cases,
+replay recorded market days, and compare calculated prices with market records.
+The browser runs the calculations from public data. The URL stores the case and
+date range, so the tool needs no account, project file, or license server.
 
-It is free and open, built on public data, with no license, no install, and no
-account.
+The Historical replay view tests the model against past market results. It
+recalculates each recorded day and reports the error for Luzon, Visayas, and
+Mindanao. Recorded prices did not set the model inputs.
 
-The model is checked against what actually happened. Every observed market day is
-re-priced by the model and compared to the real WESM price, with the error shown
-for each of the three grids and nothing tuned to make it fit. That comparison,
-called the backcast, is how you tell whether the model is worth anything, and the
-studio shows it:
+![Historical replay. Modeled versus recorded WESM price over 56 market days, with mean absolute error, bias, and correlation stated for Luzon, Visayas, and Mindanao.](docs/view-backcast.gif)
 
-![Backcast view: modeled versus observed WESM price over 56 market days, with MAE, bias, and correlation stated per grid, and the model-versus-observed table for Luzon, Visayas and Mindanao.](docs/view-backcast.gif)
+This recording opens the studio, edits a generator, runs the model, and replays
+a recorded day.
 
-And here it is in use, opening the studio, editing a generator, running the model,
-and replaying an observed day:
+![Screen recording of a generator edit, model run, recorded-day replay, and price comparison.](docs/demo.gif)
 
-![Screen recording: opening the studio, editing a generator in the properties grid, running the model, replaying an observed day in Chronology, and reading the backcast against observed prices.](docs/demo.gif)
+## The studio connects editable grid inputs to recorded market results
 
-## What the studio does
+The browser includes these views and controls.
 
-Every surface a WESM analyst needs, browser-side on baked public data:
-
-| Surface | What it is |
+| Part of the studio | What it shows or changes |
 | --- | --- |
-| System tree: Generators, Fuels, Interfaces, Regions, Storage | Generators are the DOE List of Existing Power Plants at unit level (355 units, 2025 editions); Interfaces are the two HVDC corridors (Leyte-Luzon, MVIP) |
-| Properties grid with scenario tagging | Edit a cell and the edit is tagged to the active scenario, revert per cell; base values return with the x on a changed cell |
-| Run | One HiGHS linear program clearing the three grids together (the browser runs the same wasm solver build commercial tools embed); milliseconds per solve, so the Run gate is authentic without the queue |
-| Chronology (Short-term) | Hour-by-hour replay of an observed market day, or the week ending on it, from the IEMOP archive, on your edited model |
-| Long-term | The DOE's committed and indicative project lists (reconciled to the DOE's own subtotals) as build candidates on a horizon slider; Apply writes them into the scenario as ordinary edits |
-| Adequacy | The operator's own outage schedules (OUTRTD), sized against the DOE fleet, with the reliability Monte Carlo re-run on the day's scheduled-out MW |
-| Load sweep | The snapshot solve stepped over added flat load on one grid: where the corridor binds, where the marginal fuel flips, where unserved load begins |
-| Window band | The scenario replayed across every full-coverage market day in the archive; per-hour price percentiles and the daily-mean distribution. The sample is the observed days, nothing synthetic |
-| What set the price | Every Chronology hour classified: marginal fuel block, saturated corridor on the importing side, or unserved load |
-| Solution views | Merit order, Chronology, Load sweep, Window band, Coupled flows, N-1, Regions, a seeded Monte Carlo reliability, plus scenario compare |
-| Saved runs | Frozen solves (scenario snapshot, window, engine version, hourly results): diff two runs, export hourly CSV or a self-contained HTML report, restore as a scenario |
-| Emissions | Dispatched energy priced in operational tCO2 with sourced per-technology factors; biomass reported uncounted rather than assigned a contested factor |
-| Baked JSON artifacts | Produced by the Python pipeline from archived IEMOP files; the frontend never computes a number the pipeline cannot reproduce |
-| Backcast | Every full-coverage market day replayed against observed hourly LWAP, error stated per grid, nothing tuned. Opens on the offer-book replay (the calibrated view); the cost model is the counterfactual you subtract |
-| Explain a day | Any past market day's evening peak split into fundamentals (cost model), the offer premium (offer replay minus cost model), and the named equipment that bound the grid that day; exportable to CSV |
-| Exports | Tidy CSVs baked nightly to `web/data/exports/` (congestion league, both backcast engines per grid, the day-by-day feed), plus per-view CSV download buttons |
+| Generators, Fuels, Inter-grid links, Regions, and Storage | The 2025 Department of Energy list supplies 355 units. Links cover Leyte-Luzon and Mindanao-Visayas. |
+| Properties grid with scenario tagging | Each edit belongs to the active case. The x on a changed cell restores its base value. |
+| Run | Calculates all three grids together with one linear program in the browser, usually in milliseconds |
+| Hourly market replay | Replays a recorded day or the week ending on it with your edits. |
+| Long-term | Adds selected DOE committed and indicative projects to the active case. |
+| Supply after scheduled outages | Applies scheduled outages, then repeats the shortfall calculation with random forced outages. |
+| Load sweep | Adds flat load and shows when links reach their limits, fuels set the price, or supply falls short. |
+| Window band | Replays every full day in the archive and reports hourly price percentiles and daily means. |
+| What set each hourly price | Classifies every replayed hour by its marginal fuel block, a full importing link, or unmet demand |
+| Calculated views | Shows dispatch, prices, flows, outages, emissions, and comparisons between cases. |
+| Saved runs | Saves the case, dates, calculation version, and hourly results. You can compare, restore, or export a run. |
+| Emissions | Reports operational carbon dioxide using sourced factors. Biomass stays uncounted because its factor is contested. |
+| Calculated JSON files | Python scripts calculate the browser data from archived IEMOP files. |
+| Historical replay | Reports error against recorded prices for every full day. It opens on the published-offer replay. |
+| What set the price on one day | Separates the cost result, offer effect, and equipment limit at the evening peak. |
+| Exports | Writes nightly CSVs to `web/data/exports/`. Each view can download its own CSV. |
 
-What it does not do: it finds the cheapest way to meet demand each hour, but it
-does not decide which individual plants switch on or off (no start-up costs, no
-minimum-run rules), does not enforce transmission contingency limits, and does not
-model the grid node by node. It also does not choose what to build. The Long-term
-view just applies the DOE's own project lists, and the separate Expansion mix view
-runs a least-cost buildout as a rough direction check, not a recommendation. The
-scope table below spells out exactly what it solves.
+The model finds the lowest stated cost for meeting demand each hour. It does not
+decide which plants switch on, enforce transmission contingency limits, or model
+every grid node. The Long-term view applies the DOE project lists. The separate
+Expansion mix view checks the broad direction of a least-cost build and makes no
+build recommendation.
 
 ## The model and its scope
 
-Three zonal regions (Luzon, Visayas, Mindanao) with per-fuel merit-order
-blocks, cleared together over the two HVDC corridors as one HiGHS linear
-program with a small wheeling cost. Prices are the balance duals, real
-locational marginal prices: a saturated corridor prices the downstream grid
-above the upstream one by the congestion rent, and an unsaturated corridor
-holds neighbours within the wheeling cost, so an importing grid can price at
-its neighbour's marginal block instead of its own. Coal splits into a
-committed must-run tranche (offered at the observed commitment level) and a
-marginal tranche at the administered price. Chronology solves each observed
-day as a single 24-hour LP: demand is the archive's dispatched generation per
-hour, solar follows a stated 24-hour shape, storage is optimised across the
-hours (it cycles only when the price spread beats the round-trip loss, and
-idles on a flat day) with daily state-of-charge reset, and the reserve toggle
-withholds the scheduled requirement from the dispatchable stack instead of
-inflating demand.
+The model shows Luzon, Visayas, and Mindanao with the two high-voltage
+direct-current (HVDC) links between them. One calculation meets demand at the
+lowest stated generation and transfer cost. A full link can leave the importing
+grid with a higher price because cheaper power cannot cross it.
+
+For analysts, this is a three-zone linear dispatch model with marginal prices
+and congestion rent. Coal has one block for operating capacity and another at
+the published administered price. Hourly market replay recalculates all 24 hours
+of each recorded day. Solar follows its daily profile. Storage moves energy when
+the price difference covers its losses. The reserve setting holds capacity back
+from energy supply.
 
 | Included | Excluded (by design) |
 | --- | --- |
-| Coupled zonal dispatch with congestion rent | Nodal LMPs (the published PH LMP congestion component is zero through the market suspension and small and intermittent afterward: nonzero on 28 of 70 sampled days, max P19.28/kWh) |
-| Per-unit fleet from the DOE list, unit-level N-1 | Security-constrained unit commitment and min up/down times (not published). Ramp rates ARE published per resource per interval in the RTDOE offer file, so that one is a queued build, not a missing input |
-| Chronological replay of observed days, with each day's scheduled-outage deviation applied (OUTRTD via the PASA mapping) | Load or price forecasting |
+| Coupled zonal dispatch with congestion rent | Nodal LMPs. The recorded congestion component was nonzero on 28 of 70 sampled days. |
+| Per-unit DOE fleet and loss-of-one-unit cases | Unit commitment, run and stop times, and per-resource ramp rates. |
+| Hourly replay of recorded days, with each day's real-time scheduled outages matched to the plant list | Load or price forecasting |
 | Shortage priced at the P32/kWh WESM offer cap (published rule), labeled 'shortage' | Offer-behavior pricing below the cap (per-participant strategy) |
-| Storage optimised over the day's hours (HiGHS LP); the Native week view adds inter-day carryover in a native 168-hour LP | Inter-day storage carryover in the default day mode |
-| Reserve as a withheld-capacity constraint; OBSERVED official regional reserve prices shown beside it | Reserve co-optimisation inside the LP. The per-resource joint energy+reserve LP was prototyped from the raw RTDOE+RTDOR offer curves and located why it cannot reproduce the official RSVPR: on requirement-short hours the price is an administered scarcity value above the entire offer stack, not something the offers carry (methodology; joint_lp_probe) |
-| Monte Carlo adequacy on forced-outage rates, with the day's scheduled outages removable (PASA lite) | Maintenance-schedule optimisation |
-| DOE build pipeline as sourced candidates on a horizon (LT Plan lite) | Expansion optimisation, build-cost economics |
-| Load sweep, window band, per-hour binding classification, operational CO2 | Lifecycle or embodied emissions (only operational tCO2 from dispatched energy is counted) |
-| Energy-limited hydro: the day LP caps hydro at the day's OBSERVED water (DIPCEF per-resource schedules, derived daily; scaled with edits and the hydrology lever) | Inter-day water management (each day's budget stands alone) |
+| Storage optimized over the day's hours. The Inter-day storage view carries stored energy across one 168-hour week | Inter-day storage carryover in the default day mode |
+| Reserve capacity held out of the energy stack | Joint energy-and-reserve pricing. Administered scarcity prices can exceed every published offer. |
+| Repeated shortfall calculations using forced-outage rates, with the day's scheduled outages removable | Maintenance-schedule optimization |
+| DOE announced projects as sourced candidates through a selected year | Expansion optimisation, build-cost economics |
+| Added-load steps, recorded-day price range, per-hour limit classification, and operational carbon dioxide | Lifecycle or embodied emissions. Only operational emissions from dispatched energy are counted |
+| Energy-limited hydro. The daily calculation caps hydro at the day's recorded generation schedule and scales it with edits and the hydrology setting | Inter-day water management. Each day's budget stands alone |
 
-The model's honesty gate is calibration against two observed targets: the
+Historical replay compares the model with two recorded targets, the
 load-weighted average price (LWAP, the settlement-side series) and the
 regional market clearing price (MCP, the ex-ante series commensurate with a
-dispatch dual). A competitive cost stack under-prices tight hours; that
-residual is the scarcity and offer premium a cost model cannot see, and it is
-reported, not tuned away.
+dispatch dual). A competitive cost stack under-prices tight hours. That
+remaining error is the scarcity and offer premium a cost model cannot see, and
+the replay shows it as model error.
 
-## Validation
+## Historical replay reports error against settlement and clearing prices
 
-The Backcast view replays every full-coverage market day with the base model
-against the observed hourly LWAP. At the July 2026 bake (window 2026-05-01 to
-2026-06-25, 56 market days, 24 hourly points each per grid):
+The Historical replay view recalculates every market day with complete data
+against the recorded hourly LWAP. In the July 2026 calculated data (window 2026-05-01 to
+2026-06-25, 56 market days, 24 hourly points each per grid).
 
-Against the settlement-side LWAP (1,344 hours per grid):
+Against the settlement-side LWAP (1,344 hours per grid).
 
-<!-- bc-lwap: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
-| Grid | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
+<!-- bc-lwap. updated from profiles.json by scripts/verify_claims.py --write. do not hand-edit -->
+| Grid | Recorded mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- | --- |
 | Luzon | P7.65/kWh | P6.00/kWh | P4.35 | -P1.65 | 0.30 | 30% |
 | Visayas | P12.96/kWh | P6.00/kWh | P8.71 | -P6.96 | 0.44 | 42% |
 | Mindanao | P11.52/kWh | P6.00/kWh | P7.61 | -P5.52 | 0.11 | 7% |
 <!-- /bc-lwap -->
 
-Against the observed regional clearing price (MCP, the ex-ante series
-commensurate with a dispatch dual; tied intervals averaged per interval
-before the hourly mean). Coverage is stated because it is uneven: the MCP
+Against the recorded regional clearing price (MCP, the ex-ante series
+commensurate with a dispatch dual. Tied intervals averaged per interval
+before the hourly mean). The table shows coverage because it varies. The MCP
 files name a price in fewer Visayas intervals than Luzon ones, and if the
-missing intervals skew toward substituted extremes the observed means here
-are subset statistics:
+missing intervals skew toward substituted extremes the recorded means here
+are subset statistics.
 
-<!-- bc-mcp: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
-| Grid | Coverage | Observed mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
+<!-- bc-mcp. updated from profiles.json by scripts/verify_claims.py --write. do not hand-edit -->
+| Grid | Coverage | Recorded mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Luzon | 1,309 of 1,344 h | P7.01/kWh | P6.00/kWh | P4.00 | -P1.01 | 0.36 | 37% |
 | Visayas | 776 of 1,344 h | P14.77/kWh | P6.00/kWh | P10.90 | -P8.77 | 0.31 | 28% |
 | Mindanao | 1,200 of 1,344 h | P11.54/kWh | P6.00/kWh | P8.20 | -P5.54 | 0.11 | 16% |
 <!-- /bc-mcp -->
 
-And the corridors themselves, the third table (modeled flow vs the observed
-net market imports and exports in the same files):
+And the links themselves, the third table (modeled flow vs the recorded
+net market imports and exports in the same files).
 
-<!-- bc-flows: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
-| Corridor | Observed mean | Modeled mean | MAE | Direction agreement |
+<!-- bc-flows. updated from profiles.json by scripts/verify_claims.py --write. do not hand-edit -->
+| Link | Recorded mean | Modeled mean | MAE | Direction agreement |
 | --- | --- | --- | --- | --- |
 | Luzon to Visayas | 46 MW | 0 MW | 90 MW | 8% |
 | Visayas to Mindanao | -373 MW | -2 MW | 370 MW | 3% |
 <!-- /bc-flows -->
 
-The fourth set replays the same days with the operator's own OFFER BOOKS
-(every resource's priced curve from the real-time generation offers, plus
-self-scheduled capacity as price-takers) instead of the cost proxy: no
-storage or water layers, because the books already embody unit behavior
-(reserve withholding stays available as a stated whole-book
-approximation). 55 derived days; the 56th, 2026-06-09, was refused by the
-coverage gate and is named rather than hidden. Two framing caveats travel
-with the set: the whole window sits inside the post-suspension restart
-regime, so this validates one market quarter, not a climatology; and the
-corridor DIRECTION agreement partly follows from native-load demand
-construction (a net exporter's load sits below its book by construction),
-so the load-bearing flow statistics are the MAE and the binding-share
-pair. The flows are no longer scored only against the net-import identity
-the demand is built from: the operator's own per-interval HVDC schedule
-(RTDHS) is an independent published record (it agrees with the identity
-flows to within half a MW on hourly means), and its congestion flag gives
-a per-interval binding-share target that no demand construction can
-imply.
+The fourth comparison replays each day with the operator's offer books. These
+books include every resource's priced curve and self-scheduled capacity. The
+calculation omits separate storage and water limits because unit offers already
+include that behavior. Reserve withholding remains available as a whole-book
+approximation.
 
-<!-- bc-offer-target: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
+The comparison covers 55 days. It excludes June 9, 2026 because that day's
+offers do not cover enough intervals. The window covers one quarter after market
+operations resumed. It does not support a long-run claim. Direction agreement
+partly follows from the native-load calculation, so flow error and time at the
+limit are more useful measures.
+
+The operator's real-time HVDC schedule supplies a separate flow record. Its
+hourly means agree with the net-import identity within half a MW. Its congestion
+flag gives a limit-frequency check independent of the demand calculation.
+
+<!-- bc-offer-target. updated from profiles.json by scripts/verify_claims.py --write. do not hand-edit -->
 | Grid | Target | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- |
 | Luzon | LWAP | P2.98 | +P1.45 | 0.72 | 53% |
@@ -166,25 +148,21 @@ imply.
 | Mindanao | MCP | P3.05 | -P2.40 | 0.87 | 73% |
 <!-- /bc-offer-target -->
 
-<!-- bc-offer-flows: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
-| Corridor (offer mode) | Observed mean | Modeled mean | MAE | Direction agreement |
+<!-- bc-offer-flows. updated from profiles.json by scripts/verify_claims.py --write. do not hand-edit -->
+| Link (offer mode) | Recorded mean | Modeled mean | MAE | Direction agreement |
 | --- | --- | --- | --- | --- |
 | Luzon to Visayas | 45 MW | 111 MW | 102 MW | 87% |
 | Visayas to Mindanao | -375 MW | -337 MW | 58 MW | 99% |
 <!-- /bc-offer-flows -->
 
-A fifth set scores the same modeled flows against the operator's own
-per-interval HVDC schedule (RTDHS), the corridor record the operator
-publishes rather than the net-import identity the demand is built from,
-and adds the binding-share pair: the share of intervals the operator
-flagged the corridor congested against the share of modeled hours at the
-corridor cap. The offer book moves real MW in the observed direction but
-still binds the corridors less often than the operator did; the cost
-proxy barely binds them at all. That under-binding is the standing gap
-this table exists to show.
+A fifth comparison uses the operator's per-interval HVDC schedule. The table
+compares recorded and calculated flow, then compares how often each link reached
+its limit. The offer-book calculation moves power in the recorded direction but
+reaches link limits less often than the operator's record. The cost calculation
+rarely reaches them.
 
-<!-- bc-rtdhs: generated from profiles.json by scripts/verify_claims.py --write; do not hand-edit -->
-| Corridor (vs operator record) | Observed mean | Modeled mean | MAE | Direction | Observed binding share | Modeled at-cap share |
+<!-- bc-rtdhs. updated from profiles.json by scripts/verify_claims.py --write. do not hand-edit -->
+| Link (vs operator record) | Recorded mean | Modeled mean | MAE | Direction | Recorded limit share | Modeled at-cap share |
 | --- | --- | --- | --- | --- | --- | --- |
 | Luzon to Visayas, cost mode | 46 MW | 0 MW | 90 MW | 8% | 61% | 1% |
 | Visayas to Mindanao, cost mode | -373 MW | -2 MW | 370 MW | 3% | 45% | 0% |
@@ -192,83 +170,73 @@ this table exists to show.
 | Visayas to Mindanao, offer mode | -375 MW | -337 MW | 58 MW | 99% | 46% | 34% |
 <!-- /bc-rtdhs -->
 
-At-cap counts a modeled hour only when the hour's cap is nonzero: a
-fully blocked corridor hour cannot bind in the congestion sense.
+At-cap counts a calculated hour only when the limit is above zero. A fully
+blocked link cannot reach a usable transfer limit.
 
-Five engine steps sit inside these numbers, all reported rather than tuned:
-the LP swap, the observed water budgets, the fleet-derived hydro split, the
-observed layers (curtailment in demand, scheduled-outage deviations, the
-P32/kWh offer cap on short hours), and now NATIVE-LOAD demand: generation
-plus net market imports, so each grid carries the load it actually served
-rather than a series that self-balances by construction. That last step
-moved three things at once, in different directions, and the tables say so.
-The Visayas finally has a rankable settlement-price shape (correlation
-0.44, hit rate 42 percent, from unrankable) and its adequacy margin drops
-to 1.6 percent at peak, which is what a grid living through a 52-day
-yellow-alert streak should look like. The same change CUT the Visayas MCP
-agreement (correlation 0.65 to 0.31, hit 93 to 28 percent): the old
-self-balanced demand had flattered the sparse-coverage MCP subset, and
-that flattery is gone.
+Five calculation changes affect these numbers. They are the LP replacement,
+recorded water budgets, a fleet-based hydro split, recorded operating limits,
+and native-load demand. Native-load demand equals generation plus net market
+imports, so each grid carries the load it served.
 
-The offer-mode set is the sixth step and the payoff. With the market's own
-bids, the corridors move like the real grid (99 percent direction
-agreement on Visayas-Mindanao, 58 MW MAE against a 375 MW mean flow,
-where the cost proxy's three near-identical stacks agree with the
-observed direction in under 10 percent of decisive hours), the Visayas
-settlement bias collapses from -P6.96 to -P0.64, and Mindanao's
-clearing-price correlation reaches 0.87. Subtract the two modes and the
-offer premium stops being a residual and becomes a measured series. What
-remains: Luzon OVER-prices settlement by P1.45 (the ex-ante book clears
-above what substitution-shaved settlement pays, the same wedge the LWAP
-vs MCP tables show), and the sparse Visayas MCP subset keeps a -P5.28
-bias with its coverage stated.
+That demand change gave the Visayas settlement-price series a 0.44 correlation
+and 42 percent high-hour hit rate. The peak adequacy margin fell to 1.6 percent
+during a 52-day yellow-alert period. MCP agreement fell at the same time.
+Correlation dropped from 0.65 to 0.31 and the hit rate from 93 to 28 percent.
 
-The two engines also disagree about the marquee what-if, and that
-disagreement is a published number, not a footnote: on the widest-swing
-market day, the DICT 1.5 GW wave costs +P4.50/kWh on the cost stack but
-+P12.01/kWh on the observed bids, with +P2.29 reaching the Visayas and
-+P2.29 Mindanao where the cost stack moves nothing (both runs are pinned
-in the golden cases; the Chronology engine toggle reproduces them). Read
-every cost-mode scenario delta as a floor. One flag travels with the
-+P12.01: under the secondary cap's stated numbers (P7.423/kWh imposed when
-the 72-hour rolling GWAP breaches P12.413, ERC Res. 26 s.2025), the
-widest-swing day lands just UNDER the threshold, lifting the computed
-rolling series to P12.23 against P12.413. An earlier version of this note
-said such a day tripped the trigger; it did on the day the old hourly
-binning picked, and correcting that binning to the operator's clock moved
-both the day and the flag. Close to price-mitigation exposure the cost
-floor does not carry, but not reaching it on this window.
+The published-offer replay improves the match. Visayas-Mindanao flow reaches 99
+percent direction agreement and 58 MW mean absolute error against a 375 MW mean
+flow. The cost calculation agrees with recorded direction in under 10 percent
+of decisive hours.
 
-The raw OBSERVED series does cross the threshold, and that crossing is
-weaker than it looks: it is driven by intervals priced above the market's
-own P32/kWh offer cap, which are violation and scarcity coefficients, not
-clears. Held at the offer cap, Luzon breaches zero windows and peaks below
-the trigger. It does NOT collapse everywhere: the System row still
-breaches held at the cap, as does the combined Luzon-Visayas row, while
-Visayas and Mindanao run hot either way and bind only during an
-interconnection outage (ERC Res. 26 s.2025). No day is pinned at the cap
-anywhere in the price record, so the gap between the computed trigger and
-the operational one narrows without closing. The full series both ways,
-the above-cap counts, breach counts, and clamp scan are in
-market_ops.json and the methodology.
+The Visayas settlement bias falls from -P6.96 to -P0.64. Mindanao's
+clearing-price correlation reaches 0.87. The difference between the offer and
+cost calculations gives a direct offer-price effect. Luzon still overprices
+settlement by P1.45, and the sparse Visayas MCP subset keeps a -P5.28 bias.
 
-The reserve replay closes the last unconsumed archive dataset. Each
-derived reserve book (RTDOR, the hour's opening 5-minute interval, per
-grid and commodity) is cleared at the MW the operator actually scheduled
-at that exact interval, and the marginal offer is scored against the
-official reserve price (RSVPR) at the same interval: 107 days, twelve
-grid-commodity pools, no tuning. Every pool's mean residual is negative,
-and the hours where the marginal offer sits above the official price are
-noise-level (9.2 percent of the ~30,764 scored hours, by at most
-P0.033/kWh). That one-signed pool residual IS the co-optimisation
-opportunity-cost wedge: WESM pays reserves the forgone energy margin on
-top of the reserve offer, biggest on regulation products and the tight
-islands, near zero on dispatchable reserve. Scarcity hours (scheduled MW
-under the stated requirement, where administrative pricing can sit above
-any offer) are counted per pool and excluded from the right-hand MAE.
+The two calculations disagree on the 1.5 GW DICT demand case. On the day with
+the largest price change, the cost calculation adds P4.50/kWh. The recorded
+offers add P12.01/kWh. The increase reaches P2.29 in the Visayas and P2.29 in
+Mindanao, where the cost calculation shows no change.
 
-<!-- reserve-table: generated from market_ops.json by scripts/verify_claims.py --write; do not hand-edit -->
-| Pool | Hours | Observed mean | Modeled mean | Bias | Exact hours | Scarcity hours | MAE outside scarcity |
+Saved cases check both results, and Hourly market replay reproduces them. Treat
+cost-only price changes as lower bounds. Under ERC Resolution 26 of 2025, the
+P7.423/kWh secondary cap applies when the 72-hour rolling GWAP exceeds
+P12.413/kWh. This case raises the series to P12.23/kWh, below that threshold.
+
+An earlier version used the wrong hourly boundary and reported a breach.
+Matching the operator's clock changed both the chosen day and the result. The
+case approaches secondary-price-cap exposure without crossing it in this data
+window.
+
+The raw recorded series crosses the threshold because some intervals exceed the
+P32/kWh offer cap. Those values are violation and scarcity coefficients rather
+than ordinary market clearing prices. Holding Luzon values at the offer cap
+removes every breach and keeps the peak below the trigger.
+
+The same change does not remove every breach. The System and joint
+Luzon-Visayas rows still cross the threshold. Visayas and Mindanao stay above
+it under either treatment and apply only during an interconnection outage under
+ERC Resolution 26 of 2025. No day stays at the cap for every interval. The full
+series, above-cap counts, and breach counts are in `market_ops.json` and the
+method page.
+
+The reserve replay uses the first five-minute reserve offer book in each hour
+and the scheduled capacity in that interval. The last needed offer sets the
+calculated price. The comparison uses 107 days and twelve grid-product groups.
+Recorded reserve prices did not set the model inputs.
+
+The calculated average is lower in all twelve groups. It is higher in 9.2
+percent of about 30,764 scored hours, by at most P0.033/kWh. Official reserve
+prices can include lost energy revenue. Public summary files do not pair each
+plant's energy and reserve offers, so the data cannot assign the full difference
+to one cause.
+
+The table counts scarcity hours separately. In those hours, scheduled capacity
+falls below the stated need and administrative prices can exceed every offer.
+The last column excludes those hours.
+
+<!-- reserve-table. updated from market_ops.json by scripts/verify_claims.py --write. do not hand-edit -->
+| Pool | Hours | Recorded mean | Modeled mean | Bias | Exact hours | Scarcity hours | MAE outside scarcity |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Luzon contingency (Fr) | 2,568 | P6.50 | P2.54 | -P3.96 | 47.3% | 523 | P3.54 |
 | Luzon dispatchable (Dr) | 2,565 | P2.78 | P2.02 | -P0.76 | 80.9% | 430 | P0.53 |
@@ -284,292 +252,271 @@ any offer) are counted per pool and excluded from the right-hand MAE.
 | Mindanao regulation down (Rd) | 2,568 | P15.52 | P14.71 | -P0.81 | 87.7% | 266 | P0.74 |
 <!-- /reserve-table -->
 
-Exact hours match the official price within half a centavo: on Luzon
+Exact hours match the official price within half a centavo. On Luzon
 dispatchable reserve the book alone reproduces the official price in four
 of five hours, and on Mindanao regulation down in six of seven. The
-per-resource joint energy+reserve clear that would close the wedge was
-prototyped from the raw resource-identified offers (RTDOE energy, RTDOR
+per-resource joint energy-and-reserve calculation uses the raw
+resource-found offers (RTDOE energy, RTDOR
 reserve), so the blocker is not a data-identity gap. It is that the
-reserve requirement clears short on the scarce hours (scheduled reserve
-at 11 to 36 percent of the requirement there) and the official price sits
+scheduled reserve falls short during scarce hours (11 to 36 percent of the
+need) and the official price sits
 above the entire offer stack, an administered scarcity value the public
-offers do not carry. That finding, not the queued build, is what the
-methodology now records (joint_lp_probe).
+offers do not carry. The method page records that limitation and the comparison
+results.
 
-Read these tables before trusting any scenario: the cost model explains
-the cost floor and the congestion geometry and under-prices scarcity; the
-offer mode prices what the market as bid would do, one observed quarter
-deep. The high-hour hit rate reports n/a when a flat model cannot rank
+Read these tables before trusting any scenario. The cost model explains
+the cost floor and the effect of grid-link limits but under-prices scarcity.
+The offer mode prices the submitted bids over the current archive window only.
+The high-hour hit rate reports n/a when a flat model cannot rank
 hours, instead of a fake 100%. The live view recomputes these numbers
 from the current archive window.
 
-Engine correctness is pinned by a two-layer parity harness. Both engines
-build the SAME linear program as the same text, byte for byte (every
-coefficient serialized from integer micro-units), and the fixtures pin its
-sha256: a model-construction drift on either side fails the hash before any
-solver runs. On top of that, the Python solve (highspy) bakes input/output
-fixtures (five snapshot cases, six chronological day-runs) that the browser
-solve (the HiGHS wasm build) must reproduce to P0.02/kWh and 1 MW, including
-exact price-setter labels. Any change to one engine that does not land in the
-other fails the suite, and the retired coordinate-descent clear stays in the
-pipeline test suite as a cost cross-oracle.
+Two test sets compare the browser and Python calculations. Both create the same
+linear-program text from integer micro-units. Fixtures pin its sha256 hash, so a
+coefficient difference fails before either solver runs.
 
-The parity harness proves the two engines build the same program; a second
-check proves the program RESPONDS the way an energy-market analyst would
-predict. Eight counterfactuals an analyst would run to battle-test a dispatch
-model, each driven through the chronology engine (the harness is
-`pipeline/scenario_validation.py`): six moved in the predicted
-direction on the first pass, two moved in a direction I had not predicted and
-the flow data showed the engine was right, and one is a dated backcast.
+Python then writes five snapshot cases and six daily replays. The browser must
+match them within P0.02/kWh and 1 MW, including the price-setter labels. A separate
+older cost calculation remains in the Python tests.
+
+The first comparison checks that both implementations build the same optimization problem.
+A second check runs eight scenarios through the hourly replay calculation
+(`pipeline/scenario_validation.py`). Six changed in the expected direction.
+Two changed in the opposite direction, which the calculated inter-grid flows explain.
+One uses a dated market event for comparison.
 
 | What-if | An analyst expects | The engine does |
 | --- | --- | --- |
-| +1 GW solar, Luzon | fuel and emissions down, evening peak untouched | 5,900 MWh less coal and gas burned, 7pm peak unchanged (solar is zero at sunset) |
-| +300 MW data center, Luzon | absorbed by the big grid | absorbed, but it flips the Leyte-Luzon link from export to import and saturates it 6 hours: the corridor is Luzon's cushion |
-| +300 to +1,000 MW data center, Visayas | the small grid saturates the corridor | corridor saturated 17 to 24 hours of 24 across six days, a real Visayas-over-Luzon premium opens, Luzon's own price stays flat |
+| +1 GW solar, Luzon | Lower fuel use and emissions. No change at sunset. | Burns 5,900 MWh less coal and gas. The 7pm peak stays unchanged. |
+| +300 MW data center, Luzon | The larger grid absorbs it. | The link changes from export to import and stays full for 6 hours. |
+| +300 to +1,000 MW data center, Visayas | The smaller grid fills the link. | The link stays full for 17 to 24 hours across six days. A Visayas price premium appears. |
 | +50 MW small hydro, Luzon | small, dispatchable, energy-capped | +175 MWh over the day, price flat, bounded by the water budget |
-| +600 MW gas, Visayas | local generation relieves the island | Visayas mean falls, corridor dependence drops |
-| Malampaya to imported LNG (gas P4.80 to P10.30) | price shape lifts with the fuel cost | Luzon price rises toward the gas cost |
-| Trip both 647 MW Sual units | Luzon tightens | reprices coal to oil with no unserved load on the observed evening; the reliability draw puts loss-of-load probability at 10.6% |
-| 935 MW Visayas outage, Jul 1 (dated) | matches the observed island spread | reproduces 87.9% of the observed Visayas-over-Luzon spread |
+| +600 MW gas, Visayas | local generation relieves the island | Visayas mean falls, link dependence drops |
+| Malampaya to imported LNG | Gas cost rises from P4.80 to P10.30/kWh. | Luzon price rises toward the new gas cost. |
+| Trip both 647 MW Sual units | Luzon supply tightens. | The recorded evening moves from coal to oil with no unserved load. |
+| 935 MW Visayas outage, Jul 1 (dated) | matches the recorded island spread | reproduces 87.9% of the recorded Visayas-over-Luzon spread |
 
-Two of these are quantitative claims that stand on their own. First, the
-corridor binds far below the announced wave: the forward replay saturates the
-250 MW Leyte-Luzon link at a few hundred MW of extra Visayas load, and the
-independent backcast (`coupling.dc_binding_threshold`) puts the knee at 275 MW,
-two code paths landing it well below DICT's 1.5 GW national
-forecast. Second, siting is the whole story: the same data-center megawatts are
-absorbed on Luzon but open a genuine island price premium and saturate the
-corridor almost all day when sited in the Visayas.
+The 250 MW Leyte-Luzon link reaches its limit after a few hundred MW of extra
+Visayas load. A separate historical check puts the threshold at 275 MW. Both
+results fall below DICT's 1.5 GW national forecast. The same added demand has a
+smaller effect in Luzon than in the Visayas because the Visayas link fills.
 
-Read the peso magnitudes as direction, not prediction. The cost model uses flat
-per-fuel blocks, so a price delta is the height of the next block, not a
-calibrated response: tripping both Sual units and stacking a dry year onto the
-DICT build both read +P5.98/kWh because both step Luzon from the P6 block to the
-P12 one. The corridor-saturation hours, the 275 MW threshold, and the 87.9%
-backcast are the structural claims that do not turn on block height.
+Use these peso changes only for direction. They are not forecasts. The cost
+model uses flat fuel blocks, so each price change equals the height of the next
+block. It does not fit a smooth response to past prices.
 
-### How far these analyses are validated
+Tripping both Sual units and adding a dry year to the DICT case each adds
+P5.98/kWh. Both move Luzon from the P6 block to the P12 block. Link-limit hours,
+the 275 MW threshold, and the 87.9 percent historical result do not depend on
+the block height.
 
-Two things stand behind every number the studio shows, and it is worth being
-exact about each.
+### Browser and Python agree to P0.02/kWh. Recorded prices check historical views while future cases stay scenarios
 
-1. **Dual-engine self-consistency, proven by hash.** The Python pipeline and the
-browser build the byte-identical linear program (sha256-pinned) and reproduce the
-same outputs to P0.02/kWh. The studio is consistent with its own reference engine:
-studio equals pipeline.
+Two checks cover different questions.
 
-2. **Validation against observed reality, measured.** The dispatch is scored
-against observed WESM prices over 56 market days; Luzon tracks at 0.30 correlation
-with a stated negative bias, the scarcity premium a cost model cannot see, reported
-not tuned. Every analysis that reads the dispatch (Chronology, Capture prices,
-Cross-run, Native week, Portfolio, five-minute replay) inherits this validation, so
-its credibility is the backcast's.
+1. **Python and the browser agree within P0.02/kWh.** Both build the same
+   byte-for-byte linear-program text and match the saved results.
 
-The limit: the engine is a simplified zonal merit-order LP, with no
-security-constrained unit commitment, no inter-hour ramp limits (the operator
-publishes per-resource ramp curves in the RTDOE file, so this one is a build not
-yet done rather than an unavailable input), and no nodal network. Where
-more unit-level detail was actually built and run through the same backcast, three
-additions (unit commitment with a generic minimum-stable level, each day's observed
-solar shape, and RTDHS corridor caps) made the fit to observed prices worse,
-because public Philippine data cannot support per-unit calibration; each measured
-delta is published in `market_ops.json` and the model keeps the simpler engine.
+2. **Recorded prices show where the cost model misses.** The comparison scores
+   dispatch against 56 market days. Luzon reaches 0.30 correlation with a
+   stated negative bias. Other views share the model's limits. Historical replay
+   does not test each future case.
 
-The same measure-first gate ran on the price-model levers themselves
-(`pipeline/price_model_probes.py`; artifact
-`data/derived/price_model_probes.json`, measured 2026-07-19 on the 56-day
-window). Two findings and one adoption. Withholding the day's scheduled
-reserve MW from the cost stack moved no metric on any grid: the flat
-committed-coal tranche absorbs the withheld capacity without changing the
-marginal block, so the lever stays off and the number is the finding. The
-water budget's opportunity-cost channel priced hydro-marginal hours in under
-five percent of the window's hours, which is why hydro alone cannot rescue
-the Mindanao shape. And a STYLIZED book, the leave-one-out median of the
-operator's own offer curves per grid and hour of day (estimated from bids,
-never from prices; a day is never priced by a curve that saw its own book),
-closes 88 percent of the Luzon correlation gap between the cost stack and
-the same-day replay: pooled correlation 0.38 to 0.69, median within-day
-correlation 0.19 to 0.83, evening-peak MAE P7.89 to P5.58, and on the
-Visayas it slightly beats the same-day book (0.71 against 0.68), typical
-bidding generalizing better than one day's own curve. That earns the
-stylized book the third-engine slot: cost floor, typical bidding, actual
-day, with both gaps published as measured series. The studio's engine
-toggle for it is the named queued build; until then the artifact carries
-the full tables, including SMAPE so the fundamentals engines sit beside
-the published PyPSA-Eur par of 20.76 percent.
+The engine is a zonal merit-order linear program. It omits unit commitment,
+inter-hour ramp limits, and the nodal network. Adding a generic minimum-stable
+level, daily solar shape, and RTDHS link limits made the historical price match
+worse. Public Philippine data do not support tuning those rules for each unit.
+`market_ops.json` reports each measured change.
 
-The forward-looking analyses (Forward prices, Multi-year path, Expansion mix, and
-the Ensembles band) cannot be backcast: there is no observed future or greenfield
-build to score against. Each runs on sourced inputs (the DOE PDP demand path, NREL
-ATB generic costs) and is labeled a scenario on one observed quarter, not a
-forecast.
+The 56-day test checks proposed price rules as well. Withholding scheduled reserve
+from the cost stack changed no price or accuracy measure. Committed coal absorbed
+the reduction without changing the marginal block, so the model leaves this
+setting off.
 
-## Three workflows to try
+The water-budget calculation made hydro marginal in under five percent of the
+hours, so hydro alone cannot reproduce the Mindanao price shape.
 
-**Add a data center and see the price.** System > Regions, raise Luzon load by the
-build's MW (flat, the data-center shape), Run. Chronology on the demand-peak
-day shows which hours flip from coal to oil; Save run, revert the edit, save
-the base, and Compare two runs gives the price and congestion-rent delta.
+A typical-offer case uses the leave-one-out median offer for each grid and hour
+of day. It uses bids only, and it never uses a day's prices or its own offer book.
+This case closes 91 percent of the Luzon correlation gap. Pooled correlation
+rises from 0.30 to 0.68, and median within-day correlation rises from 0.17 to
+0.82. Evening-peak MAE falls from P7.94 to P5.63. In the Visayas, the typical
+case reaches 0.70 correlation against 0.68 for the same-day offer book.
 
-![Recorded studio walkthrough of pricing a data-center build: on the demand-peak day the base Luzon mean is P6.01 on the coal margin; raising Luzon load by 1,500 MW (the DICT 2028 build) lifts the mean to P11.50 and the peak to P12.00 and saturates the Leyte-Luzon HVDC; Compare two runs reads +P5.49/kWh and +P32.55M congestion rent.](docs/workflow-1-datacenter.gif)
+The results keep three comparisons. They show the cost floor, typical bidding,
+and the day's actual offers. Tables report symmetric mean absolute percentage
+error beside the published PyPSA-Eur value of 20.76 percent.
 
-**Turn off the two biggest units.** System > Generators, set SPI U1 and SPI U2
-(the two 647 MW Sual units) to zero, Run. N-1 and Reliability show the
-adequacy hit; Chronology on the stress day shows whether the evening clears on
-oil or sheds load, and its congestion-rent tile prices the corridors binding in
+No future market records exist yet for comparison. Each case uses sourced
+inputs such as DOE demand growth and NREL cost assumptions. The interface labels
+them as scenarios on the current archive window. They are not forecasts.
+
+## Three guided cases show demand, outages, and gas-price changes
+
+**Add a data center and see the price.** Open Review and edit model inputs >
+Regions, raise Luzon load by the project's MW, and press Run. Hourly market replay
+on the demand-peak day shows which hours move from coal to oil. Save the run,
+restore the base, save it, and open Compare scenarios to see the price and
+congestion-rent difference.
+
+![Data-center case. Luzon mean price rises from P6.01 to P11.50/kWh. The Leyte-Luzon link fills.](docs/workflow-1-datacenter.gif)
+
+**Turn off the two biggest units.** Open Review and edit model inputs > Generators,
+set SPI U1 and SPI U2 (the two 647 MW Sual units) to zero, and press Run. Loss of
+one major unit (N-1) and Power-shortfall risk show the supply effect. Hourly
+market replay on the stress day shows whether the evening clears on
+oil or sheds load, and its congestion-rent tile prices the links binding in
 the peak hours.
 
-![Recorded studio walkthrough of the single contingency: zeroing both 647 MW Sual units lifts Luzon loss-of-load probability from a 0.09% base to 10.6% and leaves the rest of the fleet pricing coal to oil in N-1, yet the observed stress evening still clears with no unserved load at a P11.40 Luzon mean and P31.95M congestion rent: the 10.6% is the reliability draw across sampled evenings, not this day, and the binding constraint is the corridor.](docs/workflow-2-contingency.gif)
+![Sual outage case. Both 647 MW units are unavailable. The view compares reliability, hourly prices, and inter-island flows.](docs/workflow-2-contingency.gif)
 
-**Switch gas to imported LNG.** System > Fuels, reprice natural gas from the
+**Switch gas to imported LNG.** Open Review and edit model inputs > Fuels, reprice natural gas from the
 Malampaya cost (P4.80/kWh) to the imported-LNG cost (P10.30/kWh), Run, and
-read the Chronology price shape; then in the Quick scenario, stack the announced
+read the Hourly market replay price shape. Then in Quick what-if, combine the announced
 build and a dry year on the LNG switch for the compounding view. Share the exact
 scenario with Copy link.
 
-![Recorded studio walkthrough of the Malampaya cliff: repricing gas from the Malampaya cost P4.80 to the imported-LNG cost P10.30 lifts the whole Luzon price shape to the gas cost, mean P6.00 to P10.30 with congestion rent P25.39M; then in the Quick scenario, stacking imported LNG, the announced 1,500 MW build, and a dry year tips the evening to oil at P12.00, +P6.00/kWh.](docs/workflow-3-malampaya.gif)
+![Imported LNG case. Gas rises from P4.80 to P10.30/kWh. Added demand and a dry year move the evening price to oil.](docs/workflow-3-malampaya.gif)
 
-## Ten analyses added in the July 2026 build-out
+## Ten more analyses extend the recorded-day model
 
-Ten analyses were added in the July 2026 build-out, one recorded clip each (real
-captures of the running studio; the numbers on screen are one dated bake and the
-live view recomputes them as the archive window rolls). How far each one is
-validated is the honest part, so read [How far these analyses are
-validated](#how-far-these-analyses-are-validated) first.
+Each analysis below has a recording of the running studio. The numbers on screen
+come from one dated data release. The live view recalculates them as the archive
+window changes. Read [Browser and Python agree to P0.02/kWh. Recorded prices check
+historical views while future cases stay scenarios](#browser-and-python-agree-to-p002kwh-recorded-prices-check-historical-views-while-future-cases-stay-scenarios)
+to see which results have matching market records.
 
-Backcast-validated, each a transform of the dispatch the backcast scores against
-observed WESM prices:
+These views use the same dispatch as the historical price comparison.
 
-**Native week.** A native 168-hour linear program where the battery state of
-charge carries across midnight instead of resetting each day; the daily water
-budget stays. The inter-day storage value is measured, and it is exactly zero at
-today's observed price spreads (the model's own prices are too flat for arbitrage
-to beat the round-trip loss); it turns positive only under a data-center-wave
-scenario. Dual-engine byte-parity is pinned by a golden hash.
+**Inter-day storage.** A 168-hour linear program where the battery state of
+charge carries across midnight instead of resetting each day. The daily water
+budget stays. Today's recorded price spreads give exactly zero inter-day storage
+value because the calculated prices are too flat to cover round-trip loss. The
+value turns positive only in a case with higher data-center demand. Browser and
+Python calculations match the same saved result.
 
-![Native week: a 168-hour storage state-of-charge sawtooth that does not fall back to zero between days, with the inter-day saving, peak charge, and the MWh carried across midnight.](docs/view-week.gif)
+![Inter-day storage. A 168-hour storage state-of-charge line that does not reset between days, with the inter-day saving, peak charge, and the MWh carried across midnight.](docs/view-week.gif)
 
 **Capture prices.** Generation-weighted average price per technology over a saved
-run's window, the number a project uses for revenue and GEA bid support.
+run's window, the number a project uses for revenue and Green Energy Auction bid support.
 
-![Capture prices: a per-technology table of generation, capture price, and capture rate for a saved run.](docs/view-capture.gif)
+![Capture prices. A per-technology table of generation, capture price, and capture rate for a saved run.](docs/view-capture.gif)
 
-**Portfolio.** A contract-for-differences valuation of an owner position (grid,
-fuel, share, PSA strike) against a saved run's hourly WESM prices, with the
-uncontracted-exposure profile beside it.
+**Generator portfolio value.** Values an owner's generation against hourly WESM
+prices and a contract-for-differences strike price, which settles the difference
+between the market price and the contract price. It shows the value not covered
+by a power-supply agreement beside it.
 
-![Portfolio: a position panel and an uncontracted-exposure chart valuing a generation position against WESM.](docs/view-portfolio.gif)
+![Portfolio. A position panel and an uncontracted-exposure chart valuing a generation position against WESM.](docs/view-portfolio.gif)
 
-**Cross-run.** Every saved run's headline metrics side by side, plus a lever
-tornado that sweeps each Quick lever one at a time and ranks it by how far it
-moves the clearing price.
+**Cross-run.** Every saved run's headline measures side by side, plus a
+sensitivity ranking that changes each Quick setting in turn and orders the
+settings by how far they move the clearing price.
 
-![Cross-run: a metric matrix across saved runs and a lever tornado ranking each lever by its price impact.](docs/view-crossrun.gif)
+![Saved-run comparison with a metric matrix and a sensitivity ranking of each scenario setting by its price impact.](docs/view-crossrun.gif)
 
-**Five-minute replay.** The observed five-minute offer books for a sample day
-cleared to the grid's own generation, 288 intervals, showing the scarcity spikes
+**Five-minute replay.** The recorded five-minute offer books for a sample day
+cleared to the grid's own generation, 288 intervals, showing the high-price intervals
 the hourly replay smooths.
 
-![Five-minute replay: a 288-point intraday price line against the hourly-mean step, with the intraday range and the offer-cap share.](docs/view-rtdoe5.gif)
+![Five-minute replay. A 288-point intraday price line against the hourly-mean step, with the intraday range and the offer-cap share.](docs/view-rtdoe5.gif)
 
-**Nodal prices.** The observed per-node price surface under the regional
-averages: each WESM node's persistent deviation from its own region's SMP over
-the window's clean market days, from the derived DIPCEF nodal dailies, with a
-searchable per-node table. Observed, not modeled, and labeled a locational
-deviation rather than a congestion premium: WESM's published nodal congestion
-component is zero through the market suspension and small and intermittent
-afterward, so the deviation stays loss-dominated, not a per-node congestion charge. The map's Prices mode draws the
-same statistic as a layer.
+**Prices at grid connection points.** This view calculates each WESM node's
+average difference from its regional price over complete market days. It uses
+final dispatch and price records and includes a searchable table. The values
+come from market records. The interface calls them locational deviations.
+WESM's nodal congestion component is small and intermittent, so losses explain
+most of the difference. The map's Prices mode draws the same statistic.
 
-![Nodal prices: per-grid deviation percentiles, the widest premium and discount nodes, and a searchable table of every node's deviation from its regional price.](docs/view-nodal.gif)
+![Grid-connection prices. The view shows regional percentiles and a table of each node's difference from its regional price.](docs/view-nodal.gif)
 
-**Loss validation.** The nodal model checked against the market's own record.
+**Transmission-loss check.** This view checks the nodal model against market records.
 WESM's within-region nodal structure is loss-dominated (the congestion
 component is small and sparse), so marginal loss factors from the OpenStreetMap
-grid are a testable prediction of each node's observed deviation. Three scatter
+grid are a testable prediction of each node's recorded deviation. Three scatter
 panels, one per grid, with the Spearman rank correlation and the per-grid
-verdict: Luzon and Mindanao validate, Visayas fails with a stable negative rank
+result. Luzon and Mindanao pass. Visayas fails with a stable negative rank
 correlation (the sign reversal is not yet diagnosed) and is shown failing.
 Recomputed nightly.
 
-![Loss validation: three scatter panels of modeled loss-factor deviation against observed per-node deviation, per grid, each with a fitted line and Spearman correlation; Luzon and Mindanao marked validated, Visayas failing.](docs/view-lossval.gif)
+![Transmission-loss check. Three scatter plots compare calculated loss factors with recorded node-price differences. Luzon and Mindanao pass. Visayas fails.](docs/view-lossval.gif)
 
-Scenario and forward-looking, where the workflow runs on sourced inputs but there
-is no observed future or greenfield build to backcast against; each is labeled a
-scenario on one observed quarter, not a forecast:
+Future cases use sourced inputs, but no future market record exists for a direct
+comparison. Each view labels its output as a case on the current archive window.
+The results are not forecasts.
 
-**Forward prices.** The observed day library re-priced under the DOE PDP peak-load
-growth to a P10, median, and P90 band per year to 2030. A scenario ensemble, not a
-forecast; one post-suspension quarter, so one regime.
+**Forward prices.** This view applies DOE PDP demand growth to the recorded-day
+library. It reports 10th-percentile, median, and 90th-percentile prices through
+2030. These repeated cases cover one post-suspension quarter and are not a
+forecast.
 
-![Forward prices: a price band to 2030 with the median line, built from the observed library and the DOE PDP demand growth.](docs/view-forward.gif)
+![Forward prices. A price band to 2030 with the median line, built from the recorded library and the DOE PDP demand growth.](docs/view-forward.gif)
 
 **Multi-year path.** The median clearing price per year to 2040 under three policy
-scenarios (base, a Malampaya supply cliff, a carbon price); a fixed fleet saturates
+scenarios (base, lower Malampaya gas supply, and a carbon price). A fixed fleet saturates
 at its capacity, which the view labels.
 
-![Multi-year path: three policy price lines to 2040 with a per-year table.](docs/view-multiyear.gif)
+![Multi-year path. Three policy price lines to 2040 with a per-year table.](docs/view-multiyear.gif)
 
-**Ensembles.** Seeded Monte Carlo joint draws (load, hydrology, fuel price, a
-forced outage) through the day model on one observed day, reported as P10, median,
-and P90 per grid. The band is the spread across plausible operating states, not a
+**Repeated operating scenarios.** The calculation varies load, water availability,
+fuel price, and one forced outage on one recorded day. It reports the 10th percentile,
+median, and 90th percentile for each grid. The band covers the middle 80% of the
+modeled operating states. It is not a
 prediction.
 
-![Ensembles: P10, median and P90 clearing-price tiles and a per-grid table from seeded Monte Carlo draws.](docs/view-ensembles.gif)
+![Repeated operating scenarios. 10th-percentile, median, and 90th-percentile clearing-price tiles and a per-grid table from repeatable calculations.](docs/view-ensembles.gif)
 
 **Expansion mix.** A separate, labeled greenfield least-cost linear program over
-representative periods with generic NREL ATB costs, beside the DOE's own pipeline.
+representative periods with generic NREL ATB costs, beside the DOE's announced projects.
 It lands near 70% renewables and reproduces the direction of the DOE plan's
-86.5%-RE share. A direction check, not a full capacity-expansion optimization, and not a build
-recommendation.
+86.5% renewable share. This is a broad direction check. It does not solve a
+full capacity plan or recommend a build.
 
-![Expansion mix: a least-cost greenfield technology-share table beside the DOE pipeline, with the RE-share tiles.](docs/view-expansion.gif)
+![Expansion mix showing a least-cost new-build technology-share table beside DOE announced projects, with renewable-share figures.](docs/view-expansion.gif)
 
-**Assumptions.** Every baked value with its primary source and the bake date, and
-the archive coverage per dataset: the model's own vintage, in the studio.
+**Assumptions and data dates.** Every calculated value with its primary source,
+calculation date, and archive coverage for each dataset.
 
-![Assumptions: the bake date, engine version, and the per-dataset archive-coverage table.](docs/view-vintage.gif)
+![Assumptions showing the preparation date, calculation version, and archive coverage for each dataset.](docs/view-vintage.gif)
 
 ## Data
 
 | Input | Source | Refresh |
 | --- | --- | --- |
-| Hourly demand and observed prices (117 observed days) | IEMOP RTD regional summaries and final LWAP files, archived daily by the repo's pipeline (the public window rolls ~90 days; the git history is the durable archive) | Daily cron |
-| Per-unit fleet (355 units) | DOE List of Existing Power Plants, grid-connected: Luzon and Mindanao as of 2025-04-30, Visayas 2025-03-31 (Internet Archive captures of the DOE's own PDFs; doe.gov.ph refuses non-PH requests). The parser refuses any grid whose rows do not reconcile to the PDF's own per-fuel subtotals | Per DOE edition |
-| Corridor limits | IEMOP monthly reports (Leyte-Luzon 250 MW operating limit) and the MVIP nameplate | Sourced constants |
+| Hourly demand and recorded prices (117 days) | IEMOP regional summaries and final load-weighted average price files. Git history keeps files after the public window rolls forward. | Daily scheduled job |
+| Per-unit fleet (355 units) | DOE List of Existing Power Plants, grid-connected. Luzon and Mindanao as of 2025-04-30, Visayas 2025-03-31 (Internet Archive captures of the DOE's own PDFs. doe.gov.ph refuses non-PH requests). The parser refuses any grid whose rows do not reconcile to the PDF's own per-fuel subtotals | Per DOE edition |
+| Link limits | IEMOP monthly reports (Leyte-Luzon 250 MW operating limit) and the MVIP nameplate | Sourced constants |
 | Fuel costs | ERC administered coal price, Malampaya FOI, imported-LNG estimate | Sourced constants |
-| Reserve requirements and prices | IEMOP RTD reserve schedules (sample days; product-code mapping labeled INFERRED) | Sample top-ups |
-| Hydro water budgets | Per-resource daily energy derived from DIPCEF schedules (data/derived/dipcef_daily/, reconciled to RTDSUM within 2 percent per day); grid-connected WESM hydro matched to the DOE fleet, pumped storage excluded | Daily cron |
-| Storage fleet | DOE (634 MW BESS), CBK Power (Kalayaan 685 MW); energy durations are stated assumptions because the sources publish MW, not MWh | Sourced constants |
-| Build pipeline (LT Plan) | DOE committed and indicative project lists, As of 31 December 2025 (Internet Archive captures); every fuel section reconciles to the DOE's printed subtotal and every grid to the DOE's LVM summary | Per DOE edition |
-| Transmission candidates | NGCP TDP 2025-2050 (March 2025 + September 2025 revision); MW only where the TDP states transfer capacity | Per TDP edition |
-| Scheduled outages (PASA) | IEMOP outage schedules used in RTD, sized against the DOE fleet through a hand-verified alias table; unmatched codes carry no MW | Daily cron |
-| Emission factors | IPCC 2006 fuel defaults at the EMB's published Philippine heat efficiencies; EMB diesel figure; DOE grid factor as cross-check | Sourced constants |
+| Reserve needs and prices | IEMOP real-time reserve schedules from sample days. Inferred product-code mappings are labeled | Sample updates |
+| Hydro water budgets | Per-resource daily energy from final dispatch schedules, reconciled to regional summaries within 2 percent per day. Grid-connected WESM hydro matched to the Department of Energy fleet, pumped storage excluded | Daily scheduled job |
+| Storage fleet | DOE 634 MW BESS and CBK Power 685 MW Kalayaan. Energy duration is an assumption because sources publish MW only. | Sourced constants |
+| Announced projects (Long-term plan) | DOE committed and indicative project lists, as of 31 December 2025 (Internet Archive captures). Every fuel section reconciles to the DOE's printed subtotal and every grid to the DOE's LVM summary | Per DOE edition |
+| Transmission candidates | NGCP TDP 2025-2050 (March 2025 + September 2025 revision). MW only where the TDP states transfer capacity | Per TDP edition |
+| Scheduled outages | IEMOP outage schedules used in real-time dispatch, sized against the Department of Energy fleet through a manually checked name table. Unmatched codes carry no MW | Daily scheduled job |
+| Emission factors | IPCC 2006 fuel defaults at the EMB's published Philippine heat efficiencies. EMB diesel figure. DOE grid factor as cross-check | Sourced constants |
 | Supply-mix history | Meralco advisories April to June 2026 (WESM 6/7/10%), each month cross-checked in an independent news report | Monthly advisory |
 
-Every number in the interface is either computed by the pipeline from archived
-files or a labeled constant with its primary source; `../web/methodology.html`
-carries the full provenance, and assumptions ship in the artifacts themselves.
+The interface distinguishes recorded inputs, calculated results, and labeled
+assumptions. `../web/methodology.html` carries the source record, and calculated
+files store assumptions beside the results.
 
 ## Quickstart
 
 ```bash
 cd studio
 npm install
-npm run dev        # copies the baked data, starts Vite on :5173
+npm run dev        # copies the calculated data, starts Vite on http://localhost:5173
 ```
 
-Requires the baked artifacts in `../web/data/` (committed; regenerate with
-`make data` at the repo root).
+Run `make data` at the repository root to recalculate `../web/data/`.
 
-## Verify
+## Check the browser build and model agreement
 
 ```bash
 npm run typecheck  # tsc --noEmit (app + test configs)
 npm run lint       # oxlint
 npm run format:check
-npm run test       # vitest: golden parity (snapshot + chronological) + invariants
+npm run test       # Vitest. Browser/Python agreement and model rules
 npm run build      # production build to dist/
 ```
 
@@ -577,19 +524,19 @@ npm run build      # production build to dist/
 
 ```text
 src/
-  lib/       types.ts (baked-model types), data.ts (loader hooks + formatters)
+  lib/       types.ts (generated-model types), data.ts (loader hooks + formatters)
   ui/        kit.tsx (Panel, StatTile, Chip, Segmented, ThemeToggle), DataGrid.tsx
   map/       MapView.tsx (MapLibre network view)
   shell/     nav.ts (39 destinations, grouped by question), Shell.tsx (bar, rail, palette, run dock)
-  studio/    Studio.tsx (model state, panes, Run gate, share-link and deep-link hydration)
+  studio/    Studio.tsx (model state, panes, Run button, share links and direct links)
              model.ts (object model + scenario overrides + solveModel)
              lpText.ts (canonical LP text, byte-mirror of pipeline/lp_model.py)
              solver.ts (the HiGHS wasm build, loaded once)
              engine.ts (snapshot clear on the single-hour LP), engine.test.ts +
              model.test.ts
-             chrono.ts (day replay as one 24-hour LP), chrono.test.ts (parity
-             vs pipeline/lp_dispatch.py goldens + LP text hashes)
-             ChronoView.tsx (Chronology), BackcastView.tsx (model vs the tape)
+             chrono.ts (day replay as one 24-hour LP), chrono.test.ts (comparison
+             with pipeline/lp_dispatch.py reference results and LP text hashes)
+             ChronoView.tsx (Hourly market replay), BackcastView.tsx (Historical replay)
              insights.ts (binding classification, percentile bands, horizon
              math, CO2), insights.test.ts
              SweepView.tsx (load sweep), DistributionView.tsx (window band)
@@ -602,64 +549,47 @@ src/
   styles/    tokens.css (design tokens, light + dark), base.css, app.css
 ```
 
-The Python counterparts live in `../pipeline/`: `lp_model.py` (the canonical
-LP text) and `lp_dispatch.py` (the highspy reference solve + backcast bake),
-`chrono.py` (assembly helpers + the retired clear kept as a cross-oracle),
-`profiles.py` (observed-day bake incl. hydro water budgets), `fuelmix.py`
+The Python counterparts live in `../pipeline/`. `lp_model.py` (the canonical
+LP text) and `lp_dispatch.py` (the highspy reference solve + historical replay build),
+`chrono.py` (assembly helpers + the retired clear kept as an independent cost check),
+`profiles.py` (recorded-day data including hydro water budgets), `fuelmix.py`
 (DIPCEF daily deriver + hydro classification), `fleet_doe.py` (DOE list
-parser with the reconciliation gate). The pipeline needs `highspy` (pip); the studio's wasm
+parser with a check that the plant rows add up to the published total). The pipeline needs `highspy` (pip). The studio's WebAssembly
 solver installs with npm.
 
-## Record the demo
+## Recording scripts capture the running application
 
-With the dev server on :5173:
-
-```bash
-python3 scripts/record-demo.py                 # Playwright video to /tmp/studio-rec
-ffmpeg -y -i <video>.webm -vf \
-  "fps=9,scale=1000:-1:flags=lanczos,palettegen=stats_mode=diff" /tmp/pal.png
-ffmpeg -y -i <video>.webm -i /tmp/pal.png -lavfi \
-  "fps=9,scale=1000:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3" \
-  /tmp/raw.gif
-gifsicle -O3 --lossy=60 /tmp/raw.gif -o docs/demo.gif
-```
-
-The three captioned workflow GIFs under "Three workflows to try" come from a
-second script that drives one clip per workflow. Every number a caption states
-is read live from the running studio, so a caption cannot drift from the model:
+Start the development server on `http://localhost:5173`, then run the recorder.
 
 ```bash
-python3 scripts/record-workflows.py all   # wf1|wf2|wf3 webms to /tmp/studio-rec
-names="wf1:workflow-1-datacenter wf2:workflow-2-contingency wf3:workflow-3-malampaya"
-for pair in $names; do
-  k=${pair%%:*}; out=${pair##*:}
-  ffmpeg -y -ss 2 -i /tmp/studio-rec/$k.webm \
-    -vf "fps=9,scale=1180:-1:flags=lanczos,palettegen=stats_mode=diff" /tmp/pal.png
-  ffmpeg -y -ss 2 -i /tmp/studio-rec/$k.webm -i /tmp/pal.png -lavfi \
-    "fps=9,scale=1180:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3" /tmp/raw.gif
-  gifsicle -O3 --lossy=60 /tmp/raw.gif -o docs/$out.gif
-done
+python3 scripts/record-demo.py
+python3 scripts/record-workflows.py all
+python3 scripts/record-views.py all
 ```
+
+The scripts read caption values from the running studio, so recordings use the
+current model results. `scripts/convert-views.sh` converts the recorded videos
+to GIF files.
 
 ## Limitations to keep in view
 
-- Zonal, not nodal; three regions, two corridors. Intra-region congestion does
-  not exist in this model.
-- The snapshot solve prices one reference hour; Chronology prices 24 (or 168),
-  with the storage state of charge as the only inter-temporal coupling.
-- Editing a unit shifts its fuel's available capacity by the delta: a labeled
-  approximation, not unit commitment (the LP dispatches blocks, not units).
-- Storage optimisation resets daily: no inter-day carryover, and cycling that
+- The model has three zones and two links. It does not calculate congestion
+  within a zone.
+- The snapshot calculation prices one reference hour. Hourly market replay
+  prices 24 (or 168), with stored energy carrying between hours.
+- Editing a unit shifts the available capacity of its fuel block. This
+  approximation dispatches fuel blocks and does not switch individual units.
+- Storage optimisation resets daily. No inter-day carryover, and cycling that
   does not pay within the day does not happen, reported as idle.
 - Unserved load prices at the dearest block (the documented no-VoLL stance),
   so the model still does not price the scarcity tail.
-- Observed-day replay is not a forecast. Forward cases (the LNG switch, dry
-  hydrology, added load) are what-ifs on observed days.
-- The backcast table above is the accuracy statement. If your use case needs
+- Recorded-day replay is not a forecast. Forward cases (the LNG switch, dry
+  hydrology, added load) are what-ifs on recorded days.
+- The historical replay table above is the accuracy statement. If your use case needs
   the scarcity tail priced correctly, this model does not do that, and says so.
 
 ## License and attribution
 
-Code MIT; baked data products CC-BY-4.0. Attribution when redistributing:
+Code MIT. Calculated data products CC-BY-4.0. Attribution when redistributing.
 Power Dispatch Studio (2026), IEMOP public market data archive, DOE List of Existing
 Power Plants. The interface is an original work.

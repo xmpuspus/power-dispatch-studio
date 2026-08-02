@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""Bake web/data/perspective.json: every number on the pax-silica.html scale page.
+"""Generate the values shown on the Pax Silica scale page.
 
 The page draws the campus's announced needs against things a reader already
 knows. Each figure is either an announced number carried with its source, a
-model output read from the sites bake, or arithmetic done here. The page reads
+model output read from the sites data build, or arithmetic done here. The page reads
 only this file, so its prose cannot drift from the arithmetic.
 
     python3 pipeline/perspective.py
 """
+
+# ruff: noqa: E501
+
 from __future__ import annotations
 
 import csv
@@ -119,16 +122,17 @@ MAKATI_POP, MAKATI_KM2 = 309770, 18.17
 # answering in July 2026, so the archived copy is the citation.
 # https://web.archive.org/web/20251231151725/https://esmart.nhrc.upd.edu.ph/?p=1422
 LITERS_PER_PERSON_DAY = 150.0
-LITERS_SRC = ("https://web.archive.org/web/20251231151725/"
-              "https://esmart.nhrc.upd.edu.ph/?p=1422")
+LITERS_SRC = (
+    "https://web.archive.org/web/20251231151725/https://esmart.nhrc.upd.edu.ph/?p=1422"
+)
 # NWRB's allocation to MWSS from Angat, cut from 48 to 46 cubic meters per
 # second for 16 to 30 Jul 2026 while the dam sat at a record low 152.85 m.
 # 46 CMS x 86,400 s = 3,974 MLD, which this file rounds to 4,000. It is an
 # allocation to MWSS for Metro Manila and Rizal, not a measured withdrawal.
 # https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew
 ANGAT_CMS = 46.0
-ANGAT_MLD_EXACT = ANGAT_CMS * 86400 / 1000.0   # 3,974.4 million liters a day
-ANGAT_MLD = 4000.0                              # the rounded figure the page prints
+ANGAT_MLD_EXACT = ANGAT_CMS * 86400 / 1000.0  # 3,974.4 million liters a day
+ANGAT_MLD = 4000.0  # the rounded figure the page prints
 ANGAT_WINDOW = "16 to 30 Jul 2026"
 # The watershed New Clark City itself draws on, named so the Angat comparison
 # cannot read as a shared tap. Manila Bulletin, 22 Jul 2026: "The Sacobia
@@ -159,20 +163,31 @@ NCC_KM2 = 94.5
 # Hermosa-San Jose line and comes from cid=16649, NOT from cid=16897, which
 # prints PhP 20.94B for the whole Mariveles-Hermosa-San Jose project.
 # https://ngcp.ph/article?cid=16897 and https://www.ngcp.ph/article?cid=16649
-HSJ = {"name": "Hermosa-San Jose", "full_mw": 8000, "full_date": "2024-06-23",
-       "line1_mw": 2000, "line1_date": "2023-05-27",
-       "tro": "2023-07 to 2024-04", "php_b": 10.2,
-       "cost_src": "https://www.ngcp.ph/article?cid=16649",
-       "milestone_src": "https://ngcp.ph/article?cid=16897"}
+HSJ = {
+    "name": "Hermosa-San Jose",
+    "full_mw": 8000,
+    "full_date": "2024-06-23",
+    "line1_mw": 2000,
+    "line1_date": "2023-05-27",
+    "tro": "2023-07 to 2024-04",
+    "php_b": 10.2,
+    "cost_src": "https://www.ngcp.ph/article?cid=16649",
+    "milestone_src": "https://ngcp.ph/article?cid=16897",
+}
 # Mindanao-Visayas link: P52B and 450 MW transfer capacity from cid=16636,
 # which also dates the 30 Apr 2023 energisation (an initial 22.5 MW load). The
 # full commercial operation date is from cid=16899, the ceremonial switch-on:
 # "On 26 January 2024, the energization ceremony was held at Malacanan Palace".
 # https://www.ngcp.ph/article?cid=16636 and https://www.ngcp.ph/article?cid=16899
-MVIP = {"mw": 450, "php_b": 52.0, "first_load": "2023-04-30",
-        "first_load_mw": 22.5, "commercial": "2024-01-26",
-        "energize_src": "https://www.ngcp.ph/article?cid=16636",
-        "commercial_src": "https://www.ngcp.ph/article?cid=16899"}
+MVIP = {
+    "mw": 450,
+    "php_b": 52.0,
+    "first_load": "2023-04-30",
+    "first_load_mw": 22.5,
+    "commercial": "2024-01-26",
+    "energize_src": "https://www.ngcp.ph/article?cid=16636",
+    "commercial_src": "https://www.ngcp.ph/article?cid=16899",
+}
 # island-group populations, 2020 census (PSA), for the who-is-served line. One
 # census year for all three so the three blocks stay comparable. Luzon
 # 62,196,942, Visayas 20,583,861, Mindanao 26,252,442. The Luzon article now
@@ -189,19 +204,28 @@ POOL_ML = 2.5
 # never mixed across days.
 # https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/
 # https://www.gmanetwork.com/news/money/economy/991590/ngcp-visayas-grid-yellow-alert-june-16-2026/story/
-VISAYAS_BULLETIN = {"peak_lo": 2384, "peak_hi": 2482,
-                    "avail_lo": 2581, "avail_hi": 2587,
-                    "src_hi": "https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/",
-                    "src_lo": "https://www.gmanetwork.com/news/money/economy/991590/ngcp-visayas-grid-yellow-alert-june-16-2026/story/"}
+VISAYAS_BULLETIN = {
+    "peak_lo": 2384,
+    "peak_hi": 2482,
+    "avail_lo": 2581,
+    "avail_hi": 2587,
+    "src_hi": "https://www.gmanetwork.com/news/money/economy/991469/ngcp-visayas-grid-yellow-alert-june-15-2026/story/",
+    "src_lo": "https://www.gmanetwork.com/news/money/economy/991590/ngcp-visayas-grid-yellow-alert-june-16-2026/story/",
+}
 # WESM's published nodal congestion component, from the DIPCEF sweep this
-# project archives; the numbers are stated and oracle-guarded in
+# project archives; the numbers are stated and test-checked in
 # web/methodology.html (small and intermittent after 2026-05-01)
 # The median is taken over the node-hours where the component fires, not over
 # the 70 sampled days: nodal_prices.py collects a value only "if c". A median
 # over all 70 days would be zero. The page must say which.
-DIPCEF = {"days_nonzero": 28, "days_sampled": 70, "median_php_kwh": 0.56,
-          "median_basis": "node-hours where it fires",
-          "max_php_kwh": 19.28, "max_day": "2026-05-26"}
+DIPCEF = {
+    "days_nonzero": 28,
+    "days_sampled": 70,
+    "median_php_kwh": 0.56,
+    "median_basis": "node-hours where it fires",
+    "max_php_kwh": 19.28,
+    "max_day": "2026-05-26",
+}
 # The own-station illustration. Neither figure is announced: 2,500 MW is a
 # chosen station size and 600 MW a chosen unit size, close to one of the two
 # 647 MW units at Sual. Every place the page prints them reads from here.
@@ -227,8 +251,9 @@ def archive_peaks() -> dict:
     market had to meet that interval. The max over the window is the closest
     thing the archive holds to 'the grid at its biggest recorded moment'.
     """
-    files = sorted(glob.glob(os.path.join(ROOT, "data", "raw", "RTDSUM",
-                                          "RTDREG_*.csv")))
+    files = sorted(
+        glob.glob(os.path.join(ROOT, "data", "raw", "RTDSUM", "RTDREG_*.csv"))
+    )
     peak: dict[str, float] = {}
     when: dict[str, str] = {}
     for path in files:
@@ -249,9 +274,12 @@ def archive_peaks() -> dict:
     days = len(files)
     lo = os.path.basename(files[0])[7:15] if files else ""
     hi = os.path.basename(files[-1])[7:15] if files else ""
-    return {"days": days, "window": f"{lo}..{hi}",
-            "mw": {k: round(v) for k, v in peak.items()},
-            "at": when}
+    return {
+        "days": days,
+        "window": f"{lo}..{hi}",
+        "mw": {k: round(v) for k, v in peak.items()},
+        "at": when,
+    }
 
 
 def outage_record() -> dict:
@@ -266,8 +294,9 @@ def outage_record() -> dict:
     import collections
 
     days: dict[str, set] = collections.defaultdict(set)
-    files = sorted(glob.glob(os.path.join(ROOT, "data", "raw", "OUTRTD",
-                                          "RTDOS_*.csv")))
+    files = sorted(
+        glob.glob(os.path.join(ROOT, "data", "raw", "OUTRTD", "RTDOS_*.csv"))
+    )
     for path in files:
         day = os.path.basename(path)[6:14]
         with open(path, newline="") as fh:
@@ -281,7 +310,8 @@ def outage_record() -> dict:
             for row in csv.DictReader(fh):
                 try:
                     cap[(row.get("RESOURCE_NAME") or "").strip()] = float(
-                        row["MAXIMUM_CAPACITY"])
+                        row["MAXIMUM_CAPACITY"]
+                    )
                 except (TypeError, ValueError, KeyError):
                     pass
     # the resource codes the page is allowed to name, with the plant each one
@@ -294,49 +324,68 @@ def outage_record() -> dict:
     out = []
     for code, label in NAMED.items():
         if code in days:
-            out.append({"code": code, "label": label,
-                        "mw": round(cap.get(code, 0)),
-                        "days_out": len(days[code])})
+            out.append(
+                {
+                    "code": code,
+                    "label": label,
+                    "mw": round(cap.get(code, 0)),
+                    "days_out": len(days[code]),
+                }
+            )
     out.sort(key=lambda r: -r["days_out"])
-    return {"days_in_window": len(files), "units": out,
-            "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/"
-                   " and https://www.iemop.ph/market-data/registered-capacity-generation/"}
+    return {
+        "days_in_window": len(files),
+        "units": out,
+        "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/"
+        " and https://www.iemop.ph/market-data/registered-capacity-generation/",
+    }
 
 
 def merit_ladder() -> dict:
-    """The baked Luzon supply curve at the 7pm reference hour, plus where
+    """The generated Luzon supply curve at the 7pm reference hour, plus where
     evening demand lands with and without the campus. Same source the map's
     Simulate mode draws from."""
     mo = json.load(open(os.path.join(WEB, "dispatch.json")))["merit_order"]["luzon"]
     blocks, cum = [], 0.0
     for b in mo["blocks"]:
-        blocks.append({"fuel": b["fuel"], "mw": round(b["mw"], 0),
-                       "cost": b["cost"], "cum_from": round(cum, 0),
-                       "cum_to": round(cum + b["mw"], 0)})
+        blocks.append(
+            {
+                "fuel": b["fuel"],
+                "mw": round(b["mw"], 0),
+                "cost": b["cost"],
+                "cum_from": round(cum, 0),
+                "cum_to": round(cum + b["mw"], 0),
+            }
+        )
         cum += b["mw"]
     # this demand is the TYPICAL evening, the mean of hour-19 demand across the
     # archive window, not the recorded day the price solve replays. The card
     # must say so, because the two differ by a few hundred megawatts.
     demand = mo["typical_evening_demand_mw"]
-    return {"blocks": blocks, "avail_mw": round(cum, 0),
-            "evening_demand_mw": demand,
-            "evening_demand_basis": "mean hour-19 demand across the archive window",
-            "headroom_with_campus_mw": round(cum - demand - CAMPUS_MW, 0),
-            "demand_with_campus_mw": demand + int(CAMPUS_MW)}
+    return {
+        "blocks": blocks,
+        "avail_mw": round(cum, 0),
+        "evening_demand_mw": demand,
+        "evening_demand_basis": "mean hour-19 demand across the archive window",
+        "headroom_with_campus_mw": round(cum - demand - CAMPUS_MW, 0),
+        "demand_with_campus_mw": demand + int(CAMPUS_MW),
+    }
 
 
 def price_effect(day: str) -> dict:
     """Replay one recorded day with and without the campus, on the same
     calibrated cost stack the studio runs. Two LP solves, ~a minute."""
     import sys
-    sys.path.insert(0, os.path.join(ROOT, "src"))
-    import power_dispatch as pkg
 
+    sys.path.insert(0, os.path.join(ROOT, "src"))
     import collections
+
+    import power_dispatch as pkg
 
     base_run = pkg.run_scenario({"date": day, "opts": {}})
     wave_run = pkg.run_scenario(
-        {"date": day, "opts": {"demand_delta": {"luzon": 3000}}})
+        {"date": day, "opts": {"demand_delta": {"luzon": 3000}}}
+    )
     base, wave = base_run["summary"], wave_run["summary"]
 
     def marginal_hours(run):
@@ -348,9 +397,14 @@ def price_effect(day: str) -> dict:
         # "sets the price".
         c = collections.Counter(h["marginal"]["luzon"] for h in run["hours"])
         prices = sorted({round(h["price"]["luzon"], 2) for h in run["hours"]})
-        return {"top": c.most_common(1)[0][0], "top_hours": c.most_common(1)[0][1],
-                "counts": dict(c), "hours": 24, "price_levels": prices,
-                "label_is": "last block dispatched, not the price setter"}
+        return {
+            "top": c.most_common(1)[0][0],
+            "top_hours": c.most_common(1)[0][1],
+            "counts": dict(c),
+            "hours": 24,
+            "price_levels": prices,
+            "label_is": "last block dispatched, not the price setter",
+        }
 
     def rent(s):
         return s["leyte_rent_m_php"] + s["mvip_rent_m_php"]
@@ -358,8 +412,7 @@ def price_effect(day: str) -> dict:
     # Both cost anchors are settlement prices, not measured fuel costs: coal
     # P6.00 is the ERC's fixed administered price for a suspended market and
     # oil P12.00 is a labelled assumption. The page must say so for both.
-    lz = [round(base["mean_price"]["luzon"], 2),
-          round(wave["mean_price"]["luzon"], 2)]
+    lz = [round(base["mean_price"]["luzon"], 2), round(wave["mean_price"]["luzon"], 2)]
     passthrough = round((lz[1] - lz[0]) * HOME_KWH_MONTH)
     return {
         "merit": merit_ladder(),
@@ -367,15 +420,16 @@ def price_effect(day: str) -> dict:
         "passthrough_delta_php_kwh": round(lz[1] - lz[0], 2),
         "day": day,
         # which fuel sets the price each hour, counted rather than asserted:
-        # adding the wave does not put oil on the margin in every hour
+        # Added demand does not put oil on the margin in every hour.
         "marginal_base": marginal_hours(base_run),
         "marginal_wave": marginal_hours(wave_run),
         "luzon_mean": lz,
-        "visayas_peak": [round(base["peak_price"]["visayas"], 2),
-                         round(wave["peak_price"]["visayas"], 2)],
+        "visayas_peak": [
+            round(base["peak_price"]["visayas"], 2),
+            round(wave["peak_price"]["visayas"], 2),
+        ],
         "links_rent_m_php": [round(rent(base), 1), round(rent(wave), 1)],
-        "unserved_mwh": [base["unserved_mwh"]["luzon"],
-                         wave["unserved_mwh"]["luzon"]],
+        "unserved_mwh": [base["unserved_mwh"]["luzon"], wave["unserved_mwh"]["luzon"]],
         "dipcef": DIPCEF,
         "src": {
             "engine": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/dispatch.py (the cost stack; P6.00 coal is the fixed price the Energy Regulatory Commission set in Resolution No. 10, Series of 2026, effective 26 Mar 2026 while WESM was suspended, https://www.gmanetwork.com/news/money/economy/983104/erc-sets-fixed-p6-kwh-rate-for-coal-power-amid-crisis/story/ , and IEMOP publishes the indicative administered prices at https://www.iemop.ph/market-data/indicative-administered-prices/ ; gas is https://www.foi.gov.ph/requests/malampaya-natural-gas-price/ ; the coal block is split by a modelled unit commitment, a must-run tranche at P4.14 and a marginal tranche at the P6.00 administered price, per https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/fleet_ph.py , where P12.00 oil is also labelled an assumption)",
@@ -412,7 +466,8 @@ def main() -> None:
     out = {
         "generated_from": "pipeline/perspective.py",
         "campus": {
-            "mw": CAMPUS_MW, "mw_ceiling": CAMPUS_MW_CEILING,
+            "mw": CAMPUS_MW,
+            "mw_ceiling": CAMPUS_MW_CEILING,
             "energy_gwh_day": round(energy_gwh_day, 1),
             "water_mld": [WATER_MLD_LOW, WATER_MLD_HIGH],
             "harvest_mld": HARVEST_MLD,
@@ -448,24 +503,27 @@ def main() -> None:
             },
         },
         "sun": {
-            "acwa_mw": ACWA_MW, "acwa_ha": ACWA_HA,
+            "acwa_mw": ACWA_MW,
+            "acwa_ha": ACWA_HA,
             "acwa_share_pct": round(acwa_share * 100, 1),
             "profile": solar,
-            "hourly_cover_pct": [round(ACWA_MW * s / CAMPUS_MW * 100, 1)
-                                 for s in solar],
+            "hourly_cover_pct": [
+                round(ACWA_MW * s / CAMPUS_MW * 100, 1) for s in solar
+            ],
             "cf_cloudless": round(cf_cloudless, 4),
             "sun_alone_mw": round(sun_alone_mw, -2),
             "sun_alone_km2": round(sun_alone_km2, 0),
             "dark_hours": dark_hours,
             "bridge_gwh": round(bridge_gwh, 0),
-            "terra": {"mw": TERRA_MW, "ha": TERRA_HA,
-                      "bess_mwh": TERRA_BESS_MWH},
+            "terra": {"mw": TERRA_MW, "ha": TERRA_HA, "bess_mwh": TERRA_BESS_MWH},
             "vs_makati": round(sun_alone_km2 / MAKATI_KM2, 1),
             "vs_bgc": round(sun_alone_km2 / BGC_KM2, 0),
             "vs_ncc": round(sun_alone_km2 / NCC_KM2, 2),
             "vs_terra": round(sun_alone_mw * TERRA_HA_PER_MW / TERRA_HA, 1),
             "vs_terra_bess": round(bridge_gwh * 1000 / TERRA_BESS_MWH, 1),
-            "makati_km2": MAKATI_KM2, "bgc_km2": BGC_KM2, "ncc_km2": NCC_KM2,
+            "makati_km2": MAKATI_KM2,
+            "bgc_km2": BGC_KM2,
+            "ncc_km2": NCC_KM2,
             "src": {
                 "acwa": "https://www.enerdata.net/publications/daily-energy-news/acwa-power-secures-site-500-mw-solar-bess-project-philippines.html",
                 "terra": "https://en.wikipedia.org/wiki/Meralco_Terra_Solar_Farm",
@@ -479,7 +537,7 @@ def main() -> None:
             "limit_max_mw": pax["limit_max_mw"],
             "gap_mw": round(CAMPUS_MW - limit_7pm, 0),
             "radially_fed": pax["radially_fed"],
-            # each "circuit" in the sites bake is a merged branch: the network
+            # each "circuit" in the sites data build is a merged branch: the network
             # builder sums RATING_MW["ac230"] = 400 MW per circuit over the
             # circuits it merges, so a rating of 800 is a double-circuit route
             # and the drawn rows are routes, not single circuits
@@ -491,7 +549,8 @@ def main() -> None:
             # The rating is a class default, so this is an order-of-size answer,
             # not an engineering design.
             "more_routes": int(
-                -(-(CAMPUS_MW - limit_7pm) // pax["circuits"][0]["rating_mw"])),
+                -(-(CAMPUS_MW - limit_7pm) // pax["circuits"][0]["rating_mw"])
+            ),
             "outages": outage_record(),
             # solving the WHOLE Luzon network rather than only the branches at
             # Pax Silica's own bus finds more bottlenecks upstream, and drops
@@ -500,17 +559,27 @@ def main() -> None:
             "limit_whole_grid_mw": 529,
             "own_station_mw": OWN_STATION_MW,
             "trip_unit_mw": TRIP_UNIT_MW,
-            "own_gap_mw": round(CAMPUS_MW - (OWN_STATION_MW - TRIP_UNIT_MW)
-                                - limit_7pm),
+            "own_gap_mw": round(
+                CAMPUS_MW - (OWN_STATION_MW - TRIP_UNIT_MW) - limit_7pm
+            ),
             "own_gap_homes_million": round(
                 (CAMPUS_MW - (OWN_STATION_MW - TRIP_UNIT_MW) - limit_7pm)
-                * 24 * 1000 / (HOME_KWH_MONTH / DAYS_PER_MONTH) / 1e6, 1),
+                * 24
+                * 1000
+                / (HOME_KWH_MONTH / DAYS_PER_MONTH)
+                / 1e6,
+                1,
+            ),
             "day": sites["day"],
-            "substation": {"php_b": SUBSTATION_PHP_B, "kv": SUBSTATION_KV,
-                           "year": SUBSTATION_YEAR,
-                           "cost_owner": SUBSTATION_COST_OWNER,
-                           "date_owner": SUBSTATION_DATE_OWNER},
-            "hsj": HSJ, "mvip": MVIP,
+            "substation": {
+                "php_b": SUBSTATION_PHP_B,
+                "kv": SUBSTATION_KV,
+                "year": SUBSTATION_YEAR,
+                "cost_owner": SUBSTATION_COST_OWNER,
+                "date_owner": SUBSTATION_DATE_OWNER,
+            },
+            "hsj": HSJ,
+            "mvip": MVIP,
             "src": {
                 "limit": "https://github.com/xmpuspus/power-dispatch-studio/blob/main/pipeline/nodal_dcopf.py (solved on OpenStreetMap-mapped routes, https://www.openstreetmap.org/copyright ; ratings are class defaults, NGCP does not publish them)",
                 "substation": "https://mb.com.ph/2026/05/25/us-pax-silica-alliance-prompts-7-billion-power-expansion-in-new-clark-city",
@@ -531,9 +600,8 @@ def main() -> None:
             "vs_acwa": round(SITE_HA / ACWA_HA, 1),
             "capas_farmland_pct": CAPAS_FARMLAND_PCT,
             "farmers_bcda": FARMERS_BCDA,
-            "displaced_advocacy": [DISPLACED_ADVOCACY_IP,
-                                   DISPLACED_ADVOCACY_FARMERS],
-            # what nobody has published. These stay in the bake so the card
+            "displaced_advocacy": [DISPLACED_ADVOCACY_IP, DISPLACED_ADVOCACY_FARMERS],
+            # what nobody has published. These stay in the data build so the card
             # cannot quietly start claiming a number that does not exist.
             "tree_count_published": TREE_COUNT_PUBLISHED,
             "ecc_masterplan_issued": ECC_MASTERPLAN_ISSUED,
@@ -542,8 +610,8 @@ def main() -> None:
             "local_watershed": LOCAL_WATERSHED,
             "src": {
                 "area": "https://www.philstar.com/business/2026/07/24/2544359/pax-silica-investors-may-lease-new-clark-land-99-years-bcda (BCDA president Joshua Bingcang, 1,620 ha designated as an industrial area)",
-                "zone": "https://mb.com.ph/2026/07/22/pax-silica-explained (\"a proposed 4,000-acre (about 1,620-hectare) Economic Security Zone\"; separately, under the article's list of critics' objections, \"Much of the land under discussion supports rice, coconut, and other food production\", which is the critics' characterisation of the wider land at issue and not Manila Bulletin describing these 1,620 hectares)",
-                "watershed": "https://mb.com.ph/2026/07/22/pax-silica-explained (\"The Sacobia watershed, the primary water source for New Clark City, has reportedly shown signs of strain since 2020\")",
+                "zone": 'https://mb.com.ph/2026/07/22/pax-silica-explained ("a proposed 4,000-acre (about 1,620-hectare) Economic Security Zone"; separately, under the article\'s list of critics\' objections, "Much of the land under discussion supports rice, coconut, and other food production", which is the critics\' characterisation of the wider land at issue and not Manila Bulletin describing these 1,620 hectares)',
+                "watershed": 'https://mb.com.ph/2026/07/22/pax-silica-explained ("The Sacobia watershed, the primary water source for New Clark City, has reportedly shown signs of strain since 2020")',
                 "farmland": "https://www.philstar.com/headlines/2026/07/27/2545030/scientists-group-debunks-claims-pax-silica-project (Capas municipal government data via Agham)",
                 "displacement": "https://philstarlife.com/news-and-views/314814-what-exactly-is-pax-silica (Kalikasan via South China Morning Post, for the New Clark City project as a whole)",
                 "farmers": "https://www.gmanetwork.com/news/topstories/regions/996145/explainer-how-would-pax-silica-sustain-its-water-demand/story/ (BCDA counters that about 10 farmers are directly affected)",
@@ -558,8 +626,10 @@ def main() -> None:
             "mld": [WATER_MLD_LOW, WATER_MLD_HIGH],
             "people_equiv": [round(people_lo, -3), round(people_hi, -3)],
             "makati_pop_2024": MAKATI_POP,
-            "vs_makati_people": [round(people_lo / MAKATI_POP, 1),
-                                 round(people_hi / MAKATI_POP, 1)],
+            "vs_makati_people": [
+                round(people_lo / MAKATI_POP, 1),
+                round(people_hi / MAKATI_POP, 1),
+            ],
             "liters_per_person_day": LITERS_PER_PERSON_DAY,
             "rice_ha": [round(rice_ha_lo, -1), round(rice_ha_hi, -1)],
             "rice_l_s_ha": RICE_L_S_HA,
@@ -572,15 +642,26 @@ def main() -> None:
             # half-up: 90 / 4,000 is exactly 2.25, which banker's rounding sends
             # DOWN to 2.2 while the true 90 / 3,974.4 is 2.26
             "angat_share_pct": [
-                float(Decimal(WATER_MLD_LOW / ANGAT_MLD_EXACT * 100).quantize(
-                    Decimal("0.1"), rounding=ROUND_HALF_UP)),
-                float(Decimal(WATER_MLD_HIGH / ANGAT_MLD_EXACT * 100).quantize(
-                    Decimal("0.1"), rounding=ROUND_HALF_UP))],
+                float(
+                    Decimal(WATER_MLD_LOW / ANGAT_MLD_EXACT * 100).quantize(
+                        Decimal("0.1"), rounding=ROUND_HALF_UP
+                    )
+                ),
+                float(
+                    Decimal(WATER_MLD_HIGH / ANGAT_MLD_EXACT * 100).quantize(
+                        Decimal("0.1"), rounding=ROUND_HALF_UP
+                    )
+                ),
+            ],
             "harvest_mld": HARVEST_MLD,
-            "pools_per_day": [round(WATER_MLD_LOW / POOL_ML), round(WATER_MLD_HIGH / POOL_ML)],
+            "pools_per_day": [
+                round(WATER_MLD_LOW / POOL_ML),
+                round(WATER_MLD_HIGH / POOL_ML),
+            ],
             "src": {
                 "announced": "https://businessmirror.com.ph/2026/07/23/bcda-pax-silica-development-to-proceed-under-marcos-admin-creating-up-to-190k-jobs/",
-                "standard": LITERS_SRC + " (UP National Hydraulic Research Center project e-SMART: \"medium domestic water demand projections at 150 liters per day per capita\", households only; the live page stopped answering in July 2026, so this is the archived copy)",
+                "standard": LITERS_SRC
+                + ' (UP National Hydraulic Research Center project e-SMART: "medium domestic water demand projections at 150 liters per day per capita", households only; the live page stopped answering in July 2026, so this is the archived copy)',
                 "makati": "https://en.wikipedia.org/wiki/Makati (2024 census, after the Embo transfer)",
                 "angat": "https://www.philstar.com/nation/2026/07/20/2543243/mwss-water-allocation-reduced-anew (NWRB cut the MWSS allocation from 48 to 46 cubic meters per second for 16 to 30 Jul 2026; 46 CMS is 3,974 million liters a day, rounded here to 4,000, and it is an allocation for Metro Manila and Rizal rather than a measured withdrawal)",
                 "rice": "https://www.fao.org/4/u5835e/u5835e04.htm (Table 1, paddy rice at 1.5 liters per second per hectare as the average net irrigation need over a season, which is 129.6 cubic meters a hectare a day)",
@@ -592,11 +673,13 @@ def main() -> None:
     path = os.path.join(WEB, "perspective.json")
     json.dump(out, open(path, "w"), indent=1)
     print("wrote", path)
-    print(f"  homes {out['power']['homes_million']}M, "
-          f"sun-alone {out['sun']['sun_alone_mw']:,.0f} MW / "
-          f"{out['sun']['sun_alone_km2']:.0f} km2, "
-          f"water people {out['water']['people_equiv']}, "
-          f"limit 7pm {out['wires']['limit_7pm_mw']:,.0f} MW")
+    print(
+        f"  homes {out['power']['homes_million']}M, "
+        f"sun-alone {out['sun']['sun_alone_mw']:,.0f} MW / "
+        f"{out['sun']['sun_alone_km2']:.0f} km2, "
+        f"water people {out['water']['people_equiv']}, "
+        f"limit 7pm {out['wires']['limit_7pm_mw']:,.0f} MW"
+    )
 
 
 if __name__ == "__main__":

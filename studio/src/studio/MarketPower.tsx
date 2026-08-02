@@ -10,7 +10,9 @@ export function MarketPowerView({ d }: { d: Dispatch }) {
   const m = useMarketPower()
   if (m.loading) return <EmptyNote>Loading the concentration layer.</EmptyNote>
   if (m.error || !m.data?.available)
-    return <EmptyNote>Market-power layer not baked. Run make data.</EmptyNote>
+    return (
+      <EmptyNote>Market-power data are not available in this data release.</EmptyNote>
+    )
   const mp = m.data
   const firms = mp.companies ?? []
   const others = mp.others_share_pct ?? 0
@@ -26,12 +28,12 @@ export function MarketPowerView({ d }: { d: Dispatch }) {
     <div className="view">
       <Panel
         title="Who owns the fleet"
-        subtitle={`ERC national generation-capacity shares, ${mp.as_of}. The merit order prices energy; it cannot show concentration.`}
+        subtitle={`ERC national generation-capacity shares, ${mp.as_of}. Lowest-cost-first dispatch (merit order) prices energy but does not show who controls the capacity.`}
         right={<Source href={mp.src} label="ERC source" />}
       >
         <div className="stat-row">
           <StatTile
-            label="HHI (floor)"
+            label="Minimum supplier concentration score (HHI)"
             value={num(mp.hhi_floor)}
             hint={mp.hhi_band}
             tone={(mp.hhi_floor ?? 0) >= 1500 ? 'danger' : 'accent'}
@@ -71,8 +73,8 @@ export function MarketPowerView({ d }: { d: Dispatch }) {
       </Panel>
 
       <Panel
-        title="Pivotal supplier"
-        subtitle="Illustrative: a national capacity share set against the Luzon peak cushion, not a computed interval RSI. Read the two tiles as scale, not a ratio."
+        title="The grid may depend on its largest supplier at the evening peak"
+        subtitle="This comparison places national capacity share beside Luzon's spare capacity at peak. It is not an interval-level residual supply index (RSI), and the two percentages are separate scales."
       >
         <div className="stat-row">
           <StatTile
@@ -81,9 +83,9 @@ export function MarketPowerView({ d }: { d: Dispatch }) {
             tone="danger"
           />
           <StatTile
-            label="Luzon reserve margin (evening firm)"
+            label="Luzon spare capacity at the evening peak (reserve margin)"
             value={pct(margin / 100, 1)}
-            hint="firm capacity above the evening peak"
+            hint="dependable capacity above evening demand"
           />
         </div>
         <p className="note">{mp.pivotal_supplier_note}</p>

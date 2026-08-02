@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Bake observed hourly day profiles from the IEMOP archive (web/data/profiles.json).
+"""Generate hourly day profiles from IEMOP data.
+
+The output is web/data/profiles.json.
 
 The chronological engine (pipeline/chrono.py and the studio's chrono.ts) replays
 OBSERVED days, not synthetic ones: per-grid hourly demand comes from the RTD
 regional summaries and the observed hourly price from the final LWAP files.
-Demand here means dispatched generation PLUS recorded curtailment (the load
-that was there to serve, so a backcast can reproduce the scarcity it is scored
-against); the label travels with the artifact.
+Demand here means dispatched generation plus recorded curtailment: the load
+that was there to serve. This lets a historical replay reproduce the scarcity
+it is scored against. The label stays with the generated data.
 
 Each day also carries the deviation of the operator's matched scheduled-out
 MW from the window mean (per grid and fuel, from the PASA layer): the static
@@ -23,6 +25,7 @@ Also carried here, because the chronological run needs them in one place:
   - the per-grid mean scheduled reserve requirement (RTDSUM reserve rows), for
     the reserve-deduction option
 """
+
 from __future__ import annotations
 
 from build_data import GRIDS, REGION_MAP, dataset_files, day_of, f, rows_of
@@ -42,24 +45,22 @@ def _hourly_mean(acc: dict[int, list[float]], dp: int) -> list[float | None]:
     return out
 
 
-def build_profiles(fleet: dict | None = None,
-                   merit_hydro_mw: dict | None = None,
-                   pasa: dict | None = None) -> dict:
+def build_profiles(
+    fleet: dict | None = None,
+    merit_hydro_mw: dict | None = None,
+    pasa: dict | None = None,
+) -> dict:
     lw_files = {day_of(p): p for p in dataset_files("LWAPF")}
     resumed = MARKET_ANCHORS.get("wesm_resumed", "2026-05-01")
 
     days = []
-    reserve_req: dict[str, dict[str, list[float]]] = {
-        g.lower(): {} for g in GRIDS}
+    reserve_req: dict[str, dict[str, list[float]]] = {g.lower(): {} for g in GRIDS}
     for path in dataset_files("RTDSUM"):
         day = day_of(path)
-        dem: dict[str, dict[int, list[float]]] = {
-            g.lower(): {} for g in GRIDS}
-        net_imp: dict[str, dict[int, list[float]]] = {
-            g.lower(): {} for g in GRIDS}
+        dem: dict[str, dict[int, list[float]]] = {g.lower(): {} for g in GRIDS}
+        net_imp: dict[str, dict[int, list[float]]] = {g.lower(): {} for g in GRIDS}
         cur_mwh: dict[str, float] = {g.lower(): 0.0 for g in GRIDS}
-        day_req: dict[str, dict[str, list[float]]] = {
-            g.lower(): {} for g in GRIDS}
+        day_req: dict[str, dict[str, list[float]]] = {g.lower(): {} for g in GRIDS}
         for r in rows_of(path):
             grid = REGION_MAP.get((r.get("REGION_NAME") or "").strip())
             if not grid:
@@ -80,8 +81,7 @@ def build_profiles(fleet: dict | None = None,
                     # the observed inter-island flows (Visayas net-imports
                     # about a quarter of its own generation); the archived
                     # MKT_IMPORT/MKT_EXPORT columns carry the real geometry
-                    dem[grid.lower()].setdefault(h, []).append(
-                        gen + imp - exp + cur)
+                    dem[grid.lower()].setdefault(h, []).append(gen + imp - exp + cur)
                     net_imp[grid.lower()].setdefault(h, []).append(imp - exp)
                     cur_mwh[grid.lower()] += cur * 5 / 60
             elif com in RESERVE_COMMODITIES:
@@ -98,15 +98,19 @@ def build_profiles(fleet: dict | None = None,
             acc: dict[str, dict[int, list[float]]] = {}
             for r in rows_of(lw_path):
                 grid = (r.get("REGION_NAME") or "").strip()
-                key = ("system" if grid == "SYSTEM"
-                       else (REGION_MAP.get(grid) or "").lower())
+                key = (
+                    "system"
+                    if grid == "SYSTEM"
+                    else (REGION_MAP.get(grid) or "").lower()
+                )
                 if not key:
                     continue
                 h = hour_of((r.get("TIME_INTERVAL") or "").strip())
                 if h is None:
                     continue
                 acc.setdefault(key, {}).setdefault(h, []).append(
-                    f(r.get("LWAP")) / 1000)
+                    f(r.get("LWAP")) / 1000
+                )
             for key, by_h in acc.items():
                 lwap[key] = _hourly_mean(by_h, 3)
         # observed corridor flows on the radial path, from the same rows:
@@ -114,28 +118,36 @@ def build_profiles(fleet: dict | None = None,
         # (Visayas->Mindanao, positive south) is Mindanao's net import
         lz = _hourly_mean(net_imp["luzon"], 1)
         mi = _hourly_mean(net_imp["mindanao"], 1)
-        days.append({
-            "date": day,
-            "market": day >= resumed,
-            "demand": {g.lower(): [round(v) for v in
-                                   _hourly_mean(dem[g.lower()], 1)]
-                       for g in GRIDS},
-            "net_flow": {
-                "lv": [None if v is None else round(-v, 1) for v in lz],
-                "vm": [None if v is None else round(v, 1) for v in mi],
-            },
-            "curtailed_mwh": {g: round(v, 1) for g, v in cur_mwh.items()
-                              if v > 0} or None,
-            "reserve_req_mw": {
-                g: {com: round(sum(vals) / len(vals), 1)
-                    for com, vals in day_req[g].items() if vals}
-                for g in ("luzon", "visayas", "mindanao")
-                if day_req[g]} or None,
-            "lwap": lwap,
-        })
+        days.append(
+            {
+                "date": day,
+                "market": day >= resumed,
+                "demand": {
+                    g.lower(): [round(v) for v in _hourly_mean(dem[g.lower()], 1)]
+                    for g in GRIDS
+                },
+                "net_flow": {
+                    "lv": [None if v is None else round(-v, 1) for v in lz],
+                    "vm": [None if v is None else round(v, 1) for v in mi],
+                },
+                "curtailed_mwh": {g: round(v, 1) for g, v in cur_mwh.items() if v > 0}
+                or None,
+                "reserve_req_mw": {
+                    g: {
+                        com: round(sum(vals) / len(vals), 1)
+                        for com, vals in day_req[g].items()
+                        if vals
+                    }
+                    for g in ("luzon", "visayas", "mindanao")
+                    if day_req[g]
+                }
+                or None,
+                "lwap": lwap,
+            }
+        )
     days.sort(key=lambda d: d["date"])
 
-    # the observed hourly regional clearing price (MCP), the backcast's
+    # the observed hourly regional clearing price (MCP), the historical replay's
     # second target: commensurate with a dispatch dual, unlike LWAP which
     # also carries nodal spread and settlement substitution
     mcp = mcp_hourly()
@@ -146,6 +158,7 @@ def build_profiles(fleet: dict | None = None,
     # advisory stream: each hour's cap scales by the fraction of the hour
     # the link was unblocked (present only on days with a recorded block)
     from market_obs import hvdc_unblocked_fractions
+
     hvdc = hvdc_unblocked_fractions()
     for d in days:
         frac = hvdc.get(d["date"])
@@ -155,14 +168,13 @@ def build_profiles(fleet: dict | None = None,
     # each day's scheduled-outage DEVIATION from the MARKET-window mean, per
     # grid and fuel (PASA layer, matched MW only). The static derates carry
     # the average outage state; the engines subtract only this deviation,
-    # and the baseline is the market days the backcast actually replays, so
+    # and the baseline is the market days the historical replay actually uses, so
     # the adjustment washes out over the scored window instead of importing
     # the suspension weeks' outage level. Hydro excluded: its daily
     # variation is the observed water budget. Storage excluded: it is not
     # in the energy stack.
     if pasa and pasa.get("available"):
-        by_date = {d["date"]: d.get("matched_fuel_mw") or {}
-                   for d in pasa["days"]}
+        by_date = {d["date"]: d.get("matched_fuel_mw") or {} for d in pasa["days"]}
         skip = {"hydro", "storage"}
         mean: dict[str, dict[str, float]] = {}
         covered = [d for d in days if d["date"] in by_date and d["market"]]
@@ -171,8 +183,9 @@ def build_profiles(fleet: dict | None = None,
                 for fuel, mw in fm.items():
                     if fuel in skip:
                         continue
-                    mean.setdefault(g, {})[fuel] = (
-                        mean.get(g, {}).get(fuel, 0.0) + mw / len(covered))
+                    mean.setdefault(g, {})[fuel] = mean.get(g, {}).get(
+                        fuel, 0.0
+                    ) + mw / len(covered)
         for d in days:
             fm_day = by_date.get(d["date"])
             if fm_day is None:
@@ -196,13 +209,21 @@ def build_profiles(fleet: dict | None = None,
     hydro_note = None
     if fleet:
         from fuelmix import build_hydro_budgets
+
         hb = build_hydro_budgets(fleet, merit_hydro_mw)
         for d in days:
             d["hydro_budget_mwh"] = hb["days"].get(d["date"])
-        hydro_note = {k: hb[k] for k in
-                      ("n_days", "matched_cores", "suspects_mwh",
-                       "budget_exceeds_modeled_capacity",
-                       "excluded_note", "note")}
+        hydro_note = {
+            k: hb[k]
+            for k in (
+                "n_days",
+                "matched_cores",
+                "suspects_mwh",
+                "budget_exceeds_modeled_capacity",
+                "excluded_note",
+                "note",
+            )
+        }
 
     def full_lwap(d: dict) -> bool:
         lz = d["lwap"].get("luzon") or []
@@ -217,65 +238,72 @@ def build_profiles(fleet: dict | None = None,
         )["date"]
     stress_day = None
     if market:
-        stress_day = max(
-            market, key=lambda d: max(d["demand"]["luzon"]))["date"]
+        stress_day = max(market, key=lambda d: max(d["demand"]["luzon"]))["date"]
 
     return {
         "unit": "hourly mean per grid: demand MW (NATIVE LOAD: dispatched "
-                "generation plus net market imports plus recorded "
-                "curtailment, RTDSUM En rows), observed corridor flows MW "
-                "(net_flow), observed LWAP PhP/kWh (LWAPF), and observed "
-                "regional clearing price PhP/kWh (MCP) where archived",
+        "generation plus net market imports plus recorded "
+        "curtailment, RTDSUM En rows), observed corridor flows MW "
+        "(net_flow), observed LWAP PhP/kWh (LWAPF), and observed "
+        "regional clearing price PhP/kWh (MCP) where archived",
         "note": "Observed days replayed as-is, no synthetic profiles. Demand "
-                "is native load (generation + MKT_IMPORT - MKT_EXPORT + "
-                "recorded curtailment): generation alone self-balances every "
-                "grid and erases the observed inter-island flows, so the "
-                "replay would never need the corridors the product is about. "
-                "Days without full 24-hour demand coverage on all three "
-                "grids are dropped, not filled. Each day also carries the "
-                "observed corridor flows (net_flow), its scheduled-outage "
-                "deviation from the market-window mean (out_dev_mw; hydro "
-                "rides its water budget instead), its scheduled reserve "
-                "requirement (reserve_req_mw), and, where archived, the "
-                "hourly MCP.",
+        "is native load (generation + MKT_IMPORT - MKT_EXPORT + "
+        "recorded curtailment): generation alone self-balances every "
+        "grid and erases the observed inter-island flows, so the "
+        "replay would never need the corridors the product is about. "
+        "Days without full 24-hour demand coverage on all three "
+        "grids are dropped, not filled. Each day also carries the "
+        "observed corridor flows (net_flow), its scheduled-outage "
+        "deviation from the market-window mean (out_dev_mw; hydro "
+        "rides its water budget instead), its scheduled reserve "
+        "requirement (reserve_req_mw), and, where archived, the "
+        "hourly MCP.",
         "resumed": resumed,
         "days": days,
         "default_day": default_day,
         "stress_day": stress_day,
         "solar_profile": [SOLAR_PROFILE[h] for h in range(24)],
         "solar_profile_note": "Normalised clear-sky-ish PH solar output by hour, "
-                              "a labeled model assumption (fleet_ph.SOLAR_PROFILE), "
-                              "not measured irradiance.",
+        "a labeled model assumption (fleet_ph.SOLAR_PROFILE), "
+        "not measured irradiance.",
         "storage_defaults": [
             {
-                "id": "bess_luzon", "label": "Luzon BESS fleet", "grid": "luzon",
-                "power_mw": 634, "energy_mwh": 634,
+                "id": "bess_luzon",
+                "label": "Luzon BESS fleet",
+                "grid": "luzon",
+                "power_mw": 634,
+                "energy_mwh": 634,
                 "src_power": "https://legacy.doe.gov.ph/electric-power/list-existing-power-plants-march-2025",
                 "energy_note": "ASSUMPTION: about one hour of storage at rated "
-                               "power; the DOE lists MW, not MWh.",
+                "power; the DOE lists MW, not MWh.",
             },
             {
-                "id": "kalayaan", "label": "Kalayaan pumped storage", "grid": "luzon",
-                "power_mw": 685, "energy_mwh": 4110,
+                "id": "kalayaan",
+                "label": "Kalayaan pumped storage",
+                "grid": "luzon",
+                "power_mw": 685,
+                "energy_mwh": 4110,
                 "src_power": "http://www.cbkpower.com/project/kalayaan-pumped-storage-power-plant-kpspp/",
                 "energy_note": "ASSUMPTION: about six hours at rated power from "
-                               "the upper reservoir; CBK publishes MW, not MWh.",
+                "the upper reservoir; CBK publishes MW, not MWh.",
             },
         ],
         "storage_round_trip_eff": STORAGE_ROUND_TRIP_EFF,
-        "storage_note": "The chronological run cycles this fleet with a labeled "
-                        "charge-cheap / discharge-dear heuristic (quartile "
-                        "thresholds from a first pass without storage). The "
-                        "snapshot views keep storage out of the energy stack, "
-                        "as before.",
+        "storage_note": "The chronological run charges below the daily 25th "
+        "percentile price and discharges above the 75th "
+        "percentile. Those thresholds come from a calculation "
+        "without storage. The "
+        "snapshot views keep storage out of the energy stack, "
+        "as before.",
         "reserve_req_mean_mw": {
-            g: {com: round(sum(v) / len(v), 1)
-                for com, v in reserve_req[g].items() if v}
+            g: {
+                com: round(sum(v) / len(v), 1) for com, v in reserve_req[g].items() if v
+            }
             for g in (k.lower() for k in GRIDS)
         },
         "reserve_req_note": "Mean scheduled reserve requirement per grid and "
-                            "commodity over the archive window (RTDSUM MKT_REQT; "
-                            "Ru/Rd regulation, Dr dispatchable, Fr contingency "
-                            "mapping INFERRED as in reserve.json).",
+        "commodity over the archive window (RTDSUM MKT_REQT; "
+        "Ru/Rd regulation, Dr dispatchable, Fr contingency "
+        "mapping INFERRED as in reserve.json).",
         "hydro_budget": hydro_note,
     }

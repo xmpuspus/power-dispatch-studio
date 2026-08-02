@@ -1,4 +1,4 @@
-"""Bake the analyst-facing CSV exports from the already-baked web/data JSON.
+"""Generate the analyst-facing CSV exports from the already-generated web/data JSON.
 
 The map and studio are the interactive front doors; these are the take-it-away
 files an analyst pulls into a spreadsheet or their own model. Three tidy tables
@@ -11,8 +11,8 @@ plus an index that documents them, written to web/data/exports/ and served at
   market_by_day.csv      the day-by-day archive feed: LWAP, spread, curtailment,
                          alerts, reserve price, and the day's binding equipment
 
-Reads only the committed bake, no market fetch, so it runs in the same second as
-build_data. build_data calls export_all() at the end of every bake.
+Reads only the committed data build, no market fetch, so it runs in the same second as
+build_data. build_data calls export_all() at the end of every data build.
 """
 
 import csv
@@ -40,14 +40,28 @@ def _write(name, header, rows):
 
 def _congestion_league(cong):
     header = [
-        "equipment", "station", "voltage_kv", "days_bound",
-        "rtd_intervals", "rtd_days", "dap_days", "max_overload_mw",
+        "equipment",
+        "station",
+        "voltage_kv",
+        "days_bound",
+        "rtd_intervals",
+        "rtd_days",
+        "dap_days",
+        "max_overload_mw",
         "max_pct_of_limit",
     ]
     rows = [
-        [e.get("equipment"), e.get("station"), e.get("voltage"), e.get("days"),
-         e.get("rtd_intervals"), e.get("rtd_days"), e.get("dap_days"),
-         e.get("max_overload_mw"), e.get("max_pct_of_limit")]
+        [
+            e.get("equipment"),
+            e.get("station"),
+            e.get("voltage"),
+            e.get("days"),
+            e.get("rtd_intervals"),
+            e.get("rtd_days"),
+            e.get("dap_days"),
+            e.get("max_overload_mw"),
+            e.get("max_pct_of_limit"),
+        ]
         for e in cong.get("league", [])
     ]
     return header, rows
@@ -55,8 +69,15 @@ def _congestion_league(cong):
 
 def _backcast_by_grid(profiles):
     header = [
-        "engine", "grid", "days", "observed_mean_php_kwh", "modeled_mean_php_kwh",
-        "mae_php_kwh", "bias_php_kwh", "correlation", "high_hour_hit_rate_pct",
+        "engine",
+        "grid",
+        "days",
+        "observed_mean_php_kwh",
+        "modeled_mean_php_kwh",
+        "mae_php_kwh",
+        "bias_php_kwh",
+        "correlation",
+        "high_hour_hit_rate_pct",
     ]
     rows = []
     for engine, key in (("offer_replay", "offer_backcast"), ("cost_model", "backcast")):
@@ -64,22 +85,36 @@ def _backcast_by_grid(profiles):
         per = bc.get("per_grid") or {}
         for g in GRIDS:
             s = per.get(g) or {}
-            rows.append([
-                engine, g, bc.get("days"),
-                s.get("observed_mean_php_kwh"), s.get("modeled_mean_php_kwh"),
-                s.get("mae_php_kwh"), s.get("bias_php_kwh"),
-                s.get("correlation"), s.get("high_hour_hit_rate_pct"),
-            ])
+            rows.append(
+                [
+                    engine,
+                    g,
+                    bc.get("days"),
+                    s.get("observed_mean_php_kwh"),
+                    s.get("modeled_mean_php_kwh"),
+                    s.get("mae_php_kwh"),
+                    s.get("bias_php_kwh"),
+                    s.get("correlation"),
+                    s.get("high_hour_hit_rate_pct"),
+                ]
+            )
     return header, rows
 
 
 def _market_by_day(drivers):
     header = [
-        "date", "market",
-        "luzon_lwap_php_kwh", "visayas_lwap_php_kwh", "mindanao_lwap_php_kwh",
+        "date",
+        "market",
+        "luzon_lwap_php_kwh",
+        "visayas_lwap_php_kwh",
+        "mindanao_lwap_php_kwh",
         "spread_php_kwh",
-        "luzon_curtailed_mwh", "visayas_curtailed_mwh", "mindanao_curtailed_mwh",
-        "alert_advisories", "reserve_price_max_php_kwh", "rtd_binding_rows",
+        "luzon_curtailed_mwh",
+        "visayas_curtailed_mwh",
+        "mindanao_curtailed_mwh",
+        "alert_advisories",
+        "reserve_price_max_php_kwh",
+        "rtd_binding_rows",
         "top_binding_equipment",
     ]
     rows = []
@@ -88,14 +123,23 @@ def _market_by_day(drivers):
         cur = day.get("curtailed_mwh") or {}
         binding = day.get("binding") or {}
         top = ";".join(e.get("name", "") for e in binding.get("top_equipment", []))
-        rows.append([
-            day.get("date"), day.get("market"),
-            lwap.get("luzon"), lwap.get("visayas"), lwap.get("mindanao"),
-            day.get("spread"),
-            cur.get("luzon"), cur.get("visayas"), cur.get("mindanao"),
-            day.get("n_alert_advisories"), day.get("reserve_price_max"),
-            binding.get("rtd_binding_rows"), top,
-        ])
+        rows.append(
+            [
+                day.get("date"),
+                day.get("market"),
+                lwap.get("luzon"),
+                lwap.get("visayas"),
+                lwap.get("mindanao"),
+                day.get("spread"),
+                cur.get("luzon"),
+                cur.get("visayas"),
+                cur.get("mindanao"),
+                day.get("n_alert_advisories"),
+                day.get("reserve_price_max"),
+                binding.get("rtd_binding_rows"),
+                top,
+            ]
+        )
     return header, rows
 
 
@@ -107,23 +151,32 @@ def export_all():
     meta = _load("meta.json")
 
     specs = [
-        ("congestion_league.csv", _congestion_league(cong),
-         "Every named 230 kV equipment the operator held at a limit in the window, "
-         "ranked by days bound. Source: IEMOP RTDCV + DAPCV."),
-        ("backcast_by_grid.csv", _backcast_by_grid(profiles),
-         "Both validation engines per grid over the market-priced window. The offer "
-         "premium is the offer_replay modeled mean minus the cost_model modeled mean."),
-        ("market_by_day.csv", _market_by_day(drivers),
-         "The day-by-day archive feed: observed LWAP, island spread, curtailment, "
-         "alert advisories, peak reserve price, and the day's binding equipment."),
+        (
+            "congestion_league.csv",
+            _congestion_league(cong),
+            "Every named 230 kV equipment the operator held at a limit in the window, "
+            "ranked by days bound. Source: IEMOP RTDCV + DAPCV.",
+        ),
+        (
+            "backcast_by_grid.csv",
+            _backcast_by_grid(profiles),
+            "Both validation engines per grid over the market-priced window. The offer "
+            "premium is the offer_replay modeled mean minus the cost_model modeled mean.",
+        ),
+        (
+            "market_by_day.csv",
+            _market_by_day(drivers),
+            "The day-by-day archive feed: observed LWAP, island spread, curtailment, "
+            "alert advisories, peak reserve price, and the day's binding equipment.",
+        ),
     ]
 
     index = {
         "built_utc": meta.get("built_utc"),
         "window": cong.get("window"),
         "note": (
-            "Tidy CSV exports baked from public IEMOP files. Free to reuse under "
-            "CC-BY-4.0; cite Power Dispatch Studio. Regenerated on every bake."
+            "Tidy CSV exports generated from public IEMOP files. Free to reuse under "
+            "CC-BY-4.0; cite Power Dispatch Studio. Regenerated on every data build."
         ),
         "files": [],
     }

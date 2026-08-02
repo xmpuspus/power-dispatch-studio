@@ -1,11 +1,9 @@
-// The loss-surface validation (pipeline/loss_surface.py): does network
-// physics rank the market's own per-node price deviations? Because WESM's
+// Compare modeled transmission-loss ranks with recorded per-node price differences.
+// Because WESM's
 // within-region nodal structure is loss-dominated (the congestion column
 // is small and sparse), marginal loss factors from the OSM-geometry backbone are a
-// testable prediction of the observed per-node deviations. One panel per
-// grid, the same numbers the figure in the README draws, recomputed
-// nightly. Validation, not a model output: the verdict per grid is stated,
-// failing grids included.
+// testable prediction of the observed per-node deviations. One panel per grid,
+// including the Visayas result that runs in the opposite direction.
 
 import { useLossSurface } from '../lib/data'
 import type { LossGridWindow } from '../lib/types'
@@ -53,7 +51,12 @@ function Scatter({
   const fitY = (x: number) => w.affine_slope * x + w.affine_intercept_php_kwh
   const yTitleY = (8 + (H - padB)) / 2
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="lossfit" role="img" aria-label="scatter">
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      className="lossfit"
+      role="img"
+      aria-label="Modeled transmission-loss rank compared with recorded node-price difference"
+    >
       <line x1={padL} y1={Y(0)} x2={W - 8} y2={Y(0)} className="chart__ax" />
       {pts.map((p, i) => (
         <circle key={i} cx={X(p[0])} cy={Y(p[1])} r={2.6} fill={color} opacity={0.45} />
@@ -123,10 +126,12 @@ export function LossValidationView() {
     return (
       <div className="view">
         <Panel
-          title="Loss-surface validation"
-          subtitle="Network physics against the market's own per-node prices."
+          title="Estimated transmission losses compared with recorded per-node prices"
+          subtitle="The network calculation is checked against the market's prices at individual grid connection points."
         >
-          <EmptyNote>Not baked yet. Run pipeline/loss_surface.py, then rebake.</EmptyNote>
+          <EmptyNote>
+            The transmission-loss comparison is not available in this data release.
+          </EmptyNote>
         </Panel>
       </div>
     )
@@ -134,8 +139,8 @@ export function LossValidationView() {
   return (
     <div className="view">
       <Panel
-        title="Does network physics track the market's own per-node prices?"
-        subtitle={`Marginal loss factors from the OpenStreetMap grid against WESM's published per-node deviations, over ${d.clean_days} clean market days. Recomputed nightly.`}
+        title="Modeled loss ranks agree in Luzon and Mindanao but reverse in Visayas"
+        subtitle={`Marginal loss factors from the OpenStreetMap grid are compared with WESM's published prices at each connection point over ${d.clean_days} market days without administered pricing. Recomputed nightly.`}
       >
         <div className="stat-row">
           {GRIDS.map((g) => {
@@ -147,9 +152,9 @@ export function LossValidationView() {
                 key={g}
                 label={g[0].toUpperCase() + g.slice(1)}
                 value={`${w.spearman >= 0 ? '+' : ''}${w.spearman.toFixed(2)}`}
-                hint={`${validated ? 'validated' : 'fails'} · ${w.n_nodes} nodes, ${
+                hint={`${validated ? 'agrees' : 'reverses'} · ${w.n_nodes} nodes, ${
                   w.n_bus
-                } independent bus · 95% CI [${w.spearman_ci95[0].toFixed(2)}, ${w.spearman_ci95[1].toFixed(2)}]`}
+                } distinct buses · 95% confidence interval [${w.spearman_ci95[0].toFixed(2)}, ${w.spearman_ci95[1].toFixed(2)}]`}
               />
             )
           })}
@@ -182,13 +187,12 @@ export function LossValidationView() {
         </p>
         <p className="note">{d.finding}</p>
         <p className="note">
-          The claim is the Spearman rank correlation: does the network model order the
-          nodes the way the market's own settlement does? The line is the fitted affine
-          convention (the loss reference is an affine choice, so slope and intercept are
-          fitted and reported, not hidden), and the error is the mean gap from that line
-          per node. Resistances are class-typical values scaled by real routed length,
-          labeled estimates like the reactances. Grids that fail the test are shown
-          failing, not dropped.
+          Spearman rank correlation shows whether the network model orders the nodes the
+          way the market's own settlement does. The line is the fitted affine convention
+          (the loss reference is an affine choice, so slope and intercept are fitted and
+          reported, not hidden), and the error is the mean gap from that line per node.
+          Resistances are class-typical values scaled by real routed length, labeled
+          estimates like the reactances. The Visayas reversal remains visible.
         </p>
       </Panel>
     </div>

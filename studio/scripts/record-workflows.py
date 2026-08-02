@@ -1,17 +1,15 @@
-"""Record the three README workflows as pedagogical GIFs, each one an analyst's
-train of thought: form a hypothesis, edit an input, Run, read the solved output,
-reach a conclusion. A step-caption banner (in the app's own tokens) narrates the
-intent; every number it states is read live from the running studio, not scripted.
+"""Record the three README workflows from the running studio.
+
+Each recording edits an input, runs the calculation, and reads the result. Values
+shown in captions are read from the app so they stay in sync with the current data.
 
 Usage:
     python3 scripts/record-workflows.py wf1|wf2|wf3|all
 Outputs a .webm per workflow into /tmp/studio-rec; convert with the ffmpeg recipe
 in the studio README.
 
-The stories, verified against the live app (studio/tmp/workflow-demos-*/):
-  wf1  raise Luzon load +1,500 MW -> evening flips coal to oil, congestion rent ₱0->₱15M
-  wf2  zero both 647 MW Sual units -> LOLP 1.8%->12.5%, fleet N-1 flips ₱6->₱12, oil evening
-  wf3  reprice gas ₱4.80->₱10.30 -> price shape lifts to gas; +load +dry year tips to oil
+The workflows cover a 1,500 MW Luzon load increase, an outage of both 647 MW
+Sual units, and a change from Malampaya gas to imported LNG.
 """
 
 import asyncio
@@ -25,7 +23,7 @@ OUT = Path("/tmp/studio-rec")
 OUT.mkdir(exist_ok=True)
 W, H = 1440, 900
 
-# ---- caption overlay: a truthful narration banner in the studio's own tokens -------
+# Caption overlay.
 
 CAPTION_JS = r"""
 (args) => {
@@ -44,16 +42,19 @@ CAPTION_JS = r"""
   if (intro) {
     el.style.cssText = base + `bottom:50%;transform:translate(-50%,50%);
       width:760px;padding:34px 40px;text-align:center;`;
-    el.innerHTML = `<div style="font-size:15px;letter-spacing:.14em;text-transform:uppercase;
+    el.innerHTML = `<div style="font-size:15px;letter-spacing:.14em;
+        text-transform:uppercase;
         color:var(--muted,#8a97a6);margin-bottom:12px;">Power Dispatch Studio</div>
       <div style="font-size:30px;font-weight:700;line-height:1.25;">${title}</div>
-      <div style="font-size:17px;color:var(--muted,#9aa7b6);margin-top:12px;">${sub||''}</div>`;
+      <div style="font-size:17px;color:var(--muted,#9aa7b6);
+        margin-top:12px;">${sub||''}</div>`;
     return;
   }
   el.style.cssText = base + `bottom:20px;width:1180px;max-width:calc(100% - 40px);
     padding:16px 22px;display:flex;gap:16px;align-items:center;`;
   el.innerHTML = `
-    <div style="flex:none;font-family:'Fira Code',monospace;font-size:13px;font-weight:600;
+    <div style="flex:none;font-family:'Fira Code',monospace;font-size:13px;
+      font-weight:600;
       color:var(--on-primary,#0b0f14);background:var(--primary,#4f8cff);
       border-radius:999px;padding:5px 11px;">${step}/${total}</div>
     <div style="min-width:0;">
@@ -72,7 +73,9 @@ class Rec:
         self.step = 0
 
     async def intro(self, title: str, sub: str = "", hold: float = 2.6):
-        await self.page.evaluate(CAPTION_JS, {"intro": True, "title": title, "sub": sub})
+        await self.page.evaluate(
+            CAPTION_JS, {"intro": True, "title": title, "sub": sub}
+        )
         await asyncio.sleep(hold)
         await self.clear()  # don't let the title card linger over the first view
         await asyncio.sleep(0.2)
@@ -89,7 +92,7 @@ class Rec:
         await self.page.evaluate("() => document.getElementById('demo-cap')?.remove()")
 
 
-# ---- interaction helpers -----------------------------------------------------------
+# Interaction helpers.
 
 
 async def enter(page: Page):
@@ -102,7 +105,13 @@ async def enter(page: Page):
 
 async def sim(page: Page):
     # the question rail replaced the System/Simulation tabs; open every group
-    await page.evaluate("() => { document.querySelectorAll('.rail__grouphead').forEach(b => { if (b.getAttribute('aria-expanded') === 'false') b.click() }) }")
+    await page.evaluate(
+        """() => {
+          document.querySelectorAll('.rail__grouphead').forEach(b => {
+            if (b.getAttribute('aria-expanded') === 'false') b.click()
+          })
+        }"""
+    )
     await asyncio.sleep(0.35)
 
 
@@ -153,9 +162,7 @@ async def scroll_to(page: Page, selector: str, block: str = "center"):
 
 
 async def scroll_top(page: Page):
-    """Pin the main scroll container to the top so a view's headline stat tiles are
-    fully visible above the caption banner. Tall views (Reliability, Quick scenario)
-    otherwise leave the payoff number scrolled off after an auto-scrolled click."""
+    """Keep the view's main result above the caption banner."""
     await page.evaluate(
         """() => {
           const s = document.querySelector('.studio__scroll');
@@ -167,9 +174,7 @@ async def scroll_top(page: Page):
 
 
 async def tile(page: Page, label: str) -> str:
-    """A StatTile's value, read live off the screen: captions interpolate
-    these so a caption cannot drift from the model (the July 2026 escape:
-    hardcoded caption numbers outlived two engine changes)."""
+    """Read a StatTile value from the running app for use in a caption."""
     loc = page.locator(".stat", has=page.locator(".stat__label", has_text=label))
     v = await loc.first.locator(".stat__value").inner_text()
     return " ".join(v.split())
@@ -189,7 +194,7 @@ async def input_value(page: Page, aria_label: str) -> float:
     return float(v.replace(",", ""))
 
 
-# ---- workflow 1: price a data-center build -----------------------------------------
+# Workflow 1: price a data-center build.
 
 
 async def wf1(page: Page):
@@ -201,7 +206,7 @@ async def wf1(page: Page):
     )
 
     await sim(page)
-    await view(page, "Chronology")
+    await view(page, "Hourly market replay")
     await pick_day(page, "demand peak")
     wf1_base_mean = await tile(page, "Mean price, Luzon")
     await r.cap(
@@ -216,31 +221,42 @@ async def wf1(page: Page):
     wf1_load = await input_value(page, "Luzon Load (evening)")
     wf1_target = int(wf1_load + 1500)
     await r.cap(
-        "Price the DICT-2028 build: +1,500 MW flat",
-        f"Region load edits shift demand 24/7, the data-center shape. Luzon {int(wf1_load):,} to {wf1_target:,} MW.",
+        "Add the 1,500 MW 2028 government forecast",
+        f"The grid load edit adds the same demand in all 24 hours. "
+        f"Luzon {int(wf1_load):,} to {wf1_target:,} MW.",
     )
     await edit_cell(page, "Luzon Load (evening)", str(wf1_target), hold=1.6)
 
-    await r.cap("Run the coupled clear", "A coordinate-descent solve of the three grids, sub-second.")
+    await r.cap(
+        "Calculate all three island grids together",
+        "The model balances supply, demand, and power transfers between the grids.",
+    )
     await run(page)
     await asyncio.sleep(0.6)
 
     await sim(page)
-    await view(page, "Chronology")
+    await view(page, "Hourly market replay")
     await pick_day(page, "demand peak")
     wf1_mean2 = await tile(page, "Mean price, Luzon")
     wf1_peak2 = await tile(page, "Window peak")
     wf1_rent2 = await tile(page, "Congestion rent")
     await r.cap(
         "The evening flips coal to oil",
-        f"Mean {wf1_base_mean} to {wf1_mean2}, peak {wf1_peak2}. The build saturates the Leyte-Luzon HVDC, congestion rent {wf1_rent2}.",
+        f"Mean {wf1_base_mean} to {wf1_mean2}, peak {wf1_peak2}. "
+        "The added load reaches the Leyte-Luzon high-voltage direct-current "
+        "link limit; congestion rent "
+        f"{wf1_rent2}.",
     )
     await scroll_top(page)
     await asyncio.sleep(3.0)
     await scroll_to(page, "svg[aria-label='Dispatch by fuel over the run window']")
     await asyncio.sleep(2.6)
 
-    await r.cap("Freeze it as a run, then revert to the base", "Save run captures the scenario, window, and hourly results.")
+    await r.cap(
+        "Save this run, then restore the base case",
+        "A saved run keeps the settings, time window, and hourly results "
+        "for comparison.",
+    )
     await scroll_to(page, ".chrono__controls", block="start")
     await page.get_by_role("button", name="Save run").click()
     await asyncio.sleep(1.4)
@@ -250,40 +266,44 @@ async def wf1(page: Page):
     await asyncio.sleep(1.0)
     await run(page)
     await sim(page)
-    await view(page, "Chronology")
+    await view(page, "Hourly market replay")
     await pick_day(page, "demand peak")
     await page.get_by_role("button", name="Save run").click()
     await asyncio.sleep(1.2)
 
-    await view(page, "Saved runs")
+    await view(page, "Saved simulation runs")
     await scroll_to(page, "table", block="center")
     d_mean = await compare_delta(page, "Mean price, Luzon")
     d_rent = await compare_delta(page, "Congestion rent")
     await r.cap(
         "Compare two runs: the price of the build",
-        f"The build costs {d_mean}/kWh on the Luzon day and {d_rent}M in congestion rent.",
+        f"The build costs {d_mean}/kWh on the Luzon day and {d_rent}M "
+        "in congestion rent.",
     )
     await asyncio.sleep(4.2)
     await r.clear()
     await asyncio.sleep(0.6)
 
 
-# ---- workflow 2: stress the single contingency -------------------------------------
+# Workflow 2: test an outage of the two largest Sual units.
 
 
 async def wf2(page: Page):
     r = Rec(page, 6)
     await enter(page)
     await r.intro(
-        "Workflow 2: Stress the single contingency",
-        "Trip the two biggest Luzon units and read the adequacy hit.",
+        "Workflow 2: Remove two major Luzon units",
+        "Take the two 647 MW Sual units out of service and recalculate shortfall risk.",
     )
 
     await sim(page)
-    await view(page, "Reliability")
+    await view(page, "Power-shortfall risk")
+    wf2_base_lolp = await tile(page, "Shortfall chance, Luzon (LOLP)")
+    wf2_base_p99 = await tile(page, "1-in-100 shed, Luzon")
     await r.cap(
-        "Base adequacy",
-        "Luzon loss-of-load probability sits at 1.8%, expected shed 9 MW.",
+        "Current Luzon shortfall chance",
+        f"With the current settings, Luzon shortfall chance is {wf2_base_lolp}; "
+        f"the 1-in-100 shortfall is {wf2_base_p99} MW.",
     )
     await scroll_top(page)
     await asyncio.sleep(3.0)
@@ -297,39 +317,43 @@ async def wf2(page: Page):
     await edit_cell(page, "SPI U1 Dependable", "0", hold=0.9)
     await edit_cell(page, "SPI U2 Dependable", "0", hold=1.3)
 
-    await r.cap("Run", "Re-solve the coupled dispatch and the forced-outage Monte Carlo.")
+    await r.cap(
+        "Recalculate dispatch and power-shortfall risk",
+        "The model clears the three grids again, then repeats the calculation "
+        "with random plant outages.",
+    )
     await run(page)
     await asyncio.sleep(0.6)
 
     await sim(page)
-    await view(page, "Reliability")
-    wf2_lolp = await tile(page, "LOLP Luzon")
-    wf2_base_lolp = await tile(page, "LOLP today")
+    await view(page, "Power-shortfall risk")
+    wf2_lolp = await tile(page, "Shortfall chance, Luzon (LOLP)")
     await r.cap(
-        f"Loss-of-load probability jumps to {wf2_lolp}",
-        f"Base case {wf2_base_lolp}: removing 1,294 MW of coal thins the Luzon evening cushion.",
+        f"Luzon shortfall chance rises to {wf2_lolp}",
+        f"Base case {wf2_base_lolp}: removing 1,294 MW of coal reduces "
+        "Luzon's evening supply margin.",
     )
     await scroll_top(page)
     await asyncio.sleep(3.4)
 
-    await view(page, "N-1")
+    await view(page, "Loss of one major unit (N-1)")
     await scroll_to(page, "table")
     await r.cap(
-        "N-1 insecurity: the rest of the fleet is now exposed",
-        "With Sual gone, the next big-unit trip prices the Luzon evening coal to oil across the fleet (the table's tripped column).",
+        "A second large-unit outage pushes Luzon from coal to oil",
+        "The table shows the price after each remaining unit is taken out of service.",
     )
     await asyncio.sleep(4.0)
 
-    await view(page, "Chronology")
+    await view(page, "Hourly market replay")
     await pick_day(page, "demand peak")
     wf2_mean = await tile(page, "Mean price, Luzon")
     wf2_rent = await tile(page, "Congestion rent")
     await r.cap(
-        "The observed stress evening reprices, it does not shed",
-        f"With both Sual units gone the observed evening still clears coal to oil "
-        f"with no unserved load: the 10.6% is the reliability draw, not this day, "
-        f"and the binding constraint is the corridor. Luzon mean {wf2_mean}, "
-        f"congestion rent {wf2_rent} as the corridors bind in the peak hours.",
+        "The selected day clears at a higher price without a power shortfall",
+        f"With both Sual units out, the selected evening still serves all demand. "
+        f"The {wf2_lolp} shortfall chance comes from repeated outage "
+        f"simulations, not this day. Luzon mean {wf2_mean}; congestion rent "
+        f"{wf2_rent} when the links reach their limits.",
     )
     await scroll_top(page)
     await asyncio.sleep(3.2)
@@ -339,19 +363,20 @@ async def wf2(page: Page):
     await asyncio.sleep(0.6)
 
 
-# ---- workflow 3: test the Malampaya cliff ------------------------------------------
+# Workflow 3: test a switch from Malampaya gas to imported LNG.
 
 
 async def wf3(page: Page):
     r = Rec(page, 8)
     await enter(page)
     await r.intro(
-        "Workflow 3: Test the Malampaya cliff",
-        "Reprice gas from Malampaya to imported LNG, then stack the stresses.",
+        "Workflow 3: Test Malampaya gas depletion",
+        "Reprice gas from Malampaya to imported liquefied natural gas, then "
+        "combine it with added demand and dry-year hydrology.",
     )
 
     await sim(page)
-    await view(page, "Chronology")
+    await view(page, "Hourly market replay")
     await pick_day(page, "widest swing")
     wf3_base_mean = await tile(page, "Mean price, Luzon")
     await r.cap(
@@ -369,18 +394,24 @@ async def wf3(page: Page):
     )
     await edit_cell(page, "natural gas Price", "10.30", hold=1.6)
 
-    await r.cap("Run", "Rebuild the merit order and re-clear.")
+    await r.cap(
+        "Recalculate with imported LNG",
+        "The model rebuilds the lowest-cost-first supply order and calculates "
+        "new prices.",
+    )
     await run(page)
     await asyncio.sleep(0.6)
 
     await sim(page)
-    await view(page, "Chronology")
+    await view(page, "Hourly market replay")
     await pick_day(page, "widest swing")
     wf3_mean2 = await tile(page, "Mean price, Luzon")
     wf3_rent2 = await tile(page, "Congestion rent")
     await r.cap(
         "The whole price shape lifts to the gas cost",
-        f"Mean {wf3_base_mean} to {wf3_mean2}, margin coal to natural gas. Congestion rent {wf3_rent2}.",
+        f"Mean {wf3_base_mean} to {wf3_mean2}. Natural gas, not coal, now "
+        "sets the price. "
+        f"Congestion rent {wf3_rent2}.",
     )
     await scroll_top(page)
     await asyncio.sleep(2.8)
@@ -389,14 +420,15 @@ async def wf3(page: Page):
 
     await r.cap(
         "Share the exact scenario",
-        "Copy link encodes the scenario and the run window in the URL. No project file.",
+        "Copy link stores the scenario and run window in the URL. No project "
+        "file is needed.",
     )
     await scroll_to(page, ".chrono__controls", block="start")
     await page.get_by_role("button", name="Copy link").click()
     await asyncio.sleep(2.2)
 
     await sysm(page)
-    await view(page, "Quick scenario")
+    await view(page, "Quick what-if")
     await page.wait_for_selector('[data-testid="scenario"]')
 
     await page.get_by_text("Switch gas to imported LNG").click()
@@ -405,8 +437,8 @@ async def wf3(page: Page):
     wf3_cp1 = await tile(page, "Clearing price")
     wf3_vs1 = await tile(page, "vs base case")
     await r.cap(
-        "Stack the stresses: switch to imported LNG",
-        f"In the Quick scenario, each lever re-clears live. LNG alone: {wf3_cp1}, {wf3_vs1} over base.",
+        "First change: switch to imported liquefied natural gas",
+        f"Each setting recalculates prices. LNG alone: {wf3_cp1}, {wf3_vs1} over base.",
     )
     await asyncio.sleep(3.0)
 
@@ -428,8 +460,9 @@ async def wf3(page: Page):
     wf3_cp3 = await tile(page, "Clearing price")
     wf3_vs3 = await tile(page, "vs base case")
     await r.cap(
-        "A dry year pulls the hydro cushion, the evening tips to oil",
-        f"Clearing price {wf3_cp3}, {wf3_vs3}/kWh vs base. Each stress alone stops short of oil; together they cross it.",
+        "Less hydro plus added demand pushes the evening price to oil",
+        f"Clearing price {wf3_cp3}, {wf3_vs3}/kWh vs base. Each change alone "
+        "stops short of oil; together they cross it.",
     )
     await asyncio.sleep(3.6)
     await r.clear()

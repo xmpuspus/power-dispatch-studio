@@ -71,7 +71,7 @@ export function TopBar({
         className="bar__navbtn"
         onClick={onOpenNav}
         aria-label="Open the view list"
-        title="Views"
+        title="Open view list"
       >
         <IconMenu />
       </button>
@@ -80,7 +80,7 @@ export function TopBar({
         <BrandMark />
         <div className="bar__brandtext">
           <span className="bar__name">Power Dispatch Studio</span>
-          <span className="bar__tag">Philippine WESM</span>
+          <span className="bar__tag">Philippine spot power market (WESM)</span>
         </div>
       </div>
 
@@ -110,7 +110,7 @@ export function TopBar({
       </div>
 
       <label className="bar__scn">
-        <span className="bar__scnlabel">Scenario</span>
+        <span className="bar__scnlabel">Active scenario</span>
         <select
           value={ai}
           onChange={(e) => onPickScenario(Number(e.target.value))}
@@ -127,7 +127,7 @@ export function TopBar({
       <button
         className="bar__icon"
         onClick={onAddScenario}
-        title="Copy this scenario into a new one"
+        title="Create a copy of this scenario"
         aria-label="New scenario"
       >
         <IconPlus />
@@ -160,7 +160,7 @@ export function TopBar({
         className="bar__icon"
         onClick={onToggleTheme}
         aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-        title="Theme"
+        title="Change color theme"
       >
         {theme === 'light' ? <IconMoon /> : <IconSun />}
       </button>
@@ -168,7 +168,7 @@ export function TopBar({
         className="bar__icon"
         onClick={onExit}
         aria-label="Close the studio"
-        title="Close"
+        title="Close the studio"
       >
         <IconClose />
       </button>
@@ -260,7 +260,7 @@ export function NavRail({
         </div>
         <div className="rail__foot">
           {editCount === 0
-            ? 'No edits yet. Open Quick scenario to move a lever.'
+            ? 'No edits yet. Open Quick what-if to change a scenario setting.'
             : `${editCount} edit${editCount === 1 ? '' : 's'} in this scenario. Press Run.`}
         </div>
       </nav>
@@ -317,7 +317,7 @@ export function CommandPalette({
             ref={input}
             className="pal__input"
             value={q}
-            placeholder="Search 39 views: bill, siting, backcast, nodal, reserve"
+            placeholder="Search 39 views, such as bill, site, historical replay, or reserve"
             aria-label="Search views"
             onChange={(e) => {
               setQ(e.target.value)
@@ -377,8 +377,8 @@ export function CommandPalette({
   )
 }
 
-// --- run dock ---------------------------------------------------------------
-// The reason this exists: the analyst switches views to look at the same
+// Run summary.
+// The analyst switches views to look at the same
 // scenario from a different angle, and the old shell dropped the answer off
 // the screen every time. Here the three cleared grids and their move against
 // the base case stay pinned, in every view.
@@ -406,23 +406,26 @@ export function RunDock({
   onToggle: () => void
 }) {
   const isBase = scenarioName === 'Base Case'
-  // the levers preview against the calibrated base, they do not write the
+  // The what-if controls preview against the calibrated base; they do not write the
   // model, so the preview gets its own band rather than overwriting the solved
   // figures. Showing one number from each source in one card would be a lie.
   const previewing =
     !!live && GRIDS.some((g) => Math.abs(live[g] - solved.coupled.price[g]) >= 0.005)
   return (
-    <aside className={`dock ${open ? '' : 'is-collapsed'}`} aria-label="This run">
+    <aside
+      className={`dock ${open ? '' : 'is-collapsed'}`}
+      aria-label="Current simulation run"
+    >
       <button className="dock__toggle" onClick={onToggle} aria-expanded={open}>
         <IconChevronRight open={open} />
-        <span className="dock__togglelabel">This run</span>
+        <span className="dock__togglelabel">Current run</span>
       </button>
       {/* always rendered: below 980 the dock is the strip under the bar and CSS
           keeps it open, so the answer never leaves a phone screen either */}
       <div className="dock__body">
         {previewing && live && (
           <div className="dock__preview">
-            <div className="dock__previewhead">Lever preview, not yet in the model</div>
+            <div className="dock__previewhead">What-if preview, not yet in the model</div>
             {GRIDS.map((g) => (
               <div key={g} className="dock__previewrow">
                 <span className="dock__k">{GRID_LABEL[g]}</span>
@@ -434,7 +437,7 @@ export function RunDock({
         )}
         <div className="dock__scn">
           <span className="dock__scnname">{scenarioName}</span>
-          {dirty && <span className="dock__stale">edits not solved</span>}
+          {dirty && <span className="dock__stale">changes need a run</span>}
         </div>
         {GRIDS.map((g) => {
           const p = solved.coupled.price[g]
@@ -448,7 +451,7 @@ export function RunDock({
               key={g}
               className={`dock__grid ${g === grid ? 'is-on' : ''}`}
               onClick={() => onGrid(g)}
-              title={`Read ${GRID_LABEL[g]} in the views that take one grid`}
+              title={`Show ${GRID_LABEL[g]} in views that analyze one grid`}
             >
               <div className="dock__gridhead">
                 <span className="dock__gridname">{GRID_LABEL[g]}</span>
@@ -456,7 +459,7 @@ export function RunDock({
               </div>
               <div className="dock__price mono">{php(p)}</div>
               <div className="dock__rows">
-                <span className="dock__k">Reserve margin</span>
+                <span className="dock__k">Spare capacity (reserve margin)</span>
                 <span className="dock__v mono">
                   {pct(m / 100, 1)}
                   {!isBase && (
@@ -467,7 +470,7 @@ export function RunDock({
                     />
                   )}
                 </span>
-                <span className="dock__k">Loss of load</span>
+                <span className="dock__k">Chance of demand shortfall</span>
                 <span className="dock__v mono">{pct(l / 100, 2)}</span>
               </div>
             </button>
@@ -475,9 +478,9 @@ export function RunDock({
         })}
         <p className="dock__note">
           {previewing
-            ? 'The cards below are the solved model. The preview above is what the levers would clear at.'
+            ? 'The cards below show the solved model. The preview above shows the result of the current what-if settings.'
             : isBase
-              ? 'The calibrated base case, at the evening reference hour. Edit a table value and press Run to move it.'
+              ? 'The base case checked against recorded prices, at the evening reference hour. Edit a table value and press Run to change it.'
               : 'Change against Base Case, at the evening reference hour.'}
         </p>
       </div>

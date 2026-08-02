@@ -5,11 +5,12 @@ GitHub applies no lazy loading, so an embedded GIF per view would cost about
 200 MB on open. One contact sheet costs well under a megabyte and every tile is
 a real screenshot of the running app.
 
-It is also the only end-to-end check the 39 deep links have. `#v=<slug>` is
+It also checks all 39 deep links. `#v=<slug>` is
 read by `studio/src/shell/nav.ts`, and nothing else opens every slug. A slug
 that stops resolving leaves the shell on its previous view, so the script
 compares the shell's own current-view label against the label `nav.ts` declares
-and fails on any mismatch. A silent wrong tile is the failure mode here.
+and fails on any mismatch. Without that check, a broken link could show the
+previous view without reporting an error.
 
     bash scripts/vercel_build.sh          # or: cd studio && npm run build -- --base=/studio/
     cp web/serve.py .vercel_out/ && (cd .vercel_out && python3 serve.py 5200 &)
@@ -61,7 +62,7 @@ LABEL_JS = r"""
 def destinations() -> list[dict]:
     """Parse slug, label and group out of nav.ts, the one place they are declared."""
     src = NAV.read_text()
-    body = src[src.index("export const GROUPS"):src.index("export const ALL_DESTS")]
+    body = src[src.index("export const GROUPS") : src.index("export const ALL_DESTS")]
     out: list[dict] = []
     group = ""
     for chunk in re.finditer(
@@ -82,27 +83,30 @@ async def shoot(shots: Path) -> list[dict]:
     rows: list[dict] = []
     async with async_playwright() as pw:
         browser = await pw.chromium.launch()
-        page = await browser.new_page(viewport={"width": W, "height": H},
-                                      device_scale_factor=1)
+        page = await browser.new_page(
+            viewport={"width": W, "height": H}, device_scale_factor=1
+        )
         # The solver keeps the event loop busy, so networkidle never settles.
         # Load once behind a deep link, then drive the rest through hashchange,
         # which is the same path a shared link takes.
         await page.goto(f"{BASE}#v={dests[0]['slug']}", wait_until="load")
         await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
         await page.wait_for_timeout(2500)
-        # No Run click here: the calibrated base is already solved on load, and
+        # No Run click here: the base case is already solved on load, and
         # Run stays disabled until an edit exists, so clicking it only burns the
         # 30-second Playwright retry.
         #
-        # Five views read saved chronology runs and say "no saved run yet" until
+        # Five views read saved hourly market replays and say "no saved run yet" until
         # one exists: capture prices, portfolio, compare, saved runs, cross-run.
-        # Freeze two, the way an analyst would before opening them.
+        # Save two, the way an analyst would before opening them.
         try:
             await page.evaluate("() => { window.location.hash = 'v=chronology' }")
             await page.wait_for_timeout(2200)
             sel = page.get_by_label("Observed day to replay")
-            values = [await o.get_attribute("value")
-                      for o in await sel.locator("option").all()]
+            values = [
+                await o.get_attribute("value")
+                for o in await sel.locator("option").all()
+            ]
             for i in range(2):
                 if i < len(values):
                     await sel.select_option(value=values[-(i + 1)])
@@ -110,7 +114,7 @@ async def shoot(shots: Path) -> list[dict]:
                 await page.get_by_role("button", name="Save run").click()
                 await page.wait_for_timeout(900)
         except Exception as exc:
-            print(f"  note: could not freeze runs ({exc}); run-scoped tiles stay empty")
+            print(f"  note: could not save runs ({exc}); run-scoped tiles stay empty")
         for i, d in enumerate(dests):
             await page.evaluate("(s) => { window.location.hash = 'v=' + s }", d["slug"])
             await page.wait_for_timeout(1400)
@@ -122,10 +126,14 @@ async def shoot(shots: Path) -> list[dict]:
             ok = seen == d["label"]
             await page.evaluate(LABEL_JS, [d["group"], d["label"]])
             await page.wait_for_timeout(150)
-            await page.locator(".studio__main").screenshot(path=str(shots / f"{i:02d}.png"))
+            await page.locator(".studio__main").screenshot(
+                path=str(shots / f"{i:02d}.png")
+            )
             rows.append({**d, "seen": seen, "ok": ok})
-            print(("  ok   " if ok else "  WRONG") + f" #v={d['slug']:<18} "
-                  f"expected {d['label']!r}, shell shows {seen!r}")
+            print(
+                ("  ok   " if ok else "  WRONG") + f" #v={d['slug']:<18} "
+                f"expected {d['label']!r}, shell shows {seen!r}"
+            )
         await browser.close()
     return rows
 
@@ -133,9 +141,21 @@ async def shoot(shots: Path) -> list[dict]:
 def tile(shots: Path, n: int) -> None:
     rows = (n + COLS - 1) // COLS
     subprocess.run(
-        ["ffmpeg", "-v", "error", "-y", "-framerate", "1", "-i", str(shots / "%02d.png"),
-         "-vf", f"scale=430:-1,tile={COLS}x{rows}:margin=6:padding=6:color=#0b0e13",
-         "-frames:v", "1", str(OUT)],
+        [
+            "ffmpeg",
+            "-v",
+            "error",
+            "-y",
+            "-framerate",
+            "1",
+            "-i",
+            str(shots / "%02d.png"),
+            "-vf",
+            f"scale=430:-1,tile={COLS}x{rows}:margin=6:padding=6:color=#0b0e13",
+            "-frames:v",
+            "1",
+            str(OUT),
+        ],
         check=True,
     )
     subprocess.run(["sips", "-Z", "1900", str(OUT)], capture_output=True)
@@ -148,9 +168,14 @@ async def main() -> None:
         tile(shots, len(rows))
     bad = [r for r in rows if not r["ok"]]
     size = OUT.stat().st_size / 1048576
-    print(f"\n{len(rows)} views, {len(bad)} wrong -> {OUT.relative_to(ROOT)} ({size:.2f} MB)")
+    print(
+        f"\n{len(rows)} views, {len(bad)} wrong -> {OUT.relative_to(ROOT)} ({size:.2f} MB)"
+    )
     if bad:
-        sys.exit(f"{len(bad)} deep links did not resolve: " + ", ".join(r["slug"] for r in bad))
+        sys.exit(
+            f"{len(bad)} deep links did not resolve: "
+            + ", ".join(r["slug"] for r in bad)
+        )
 
 
 if __name__ == "__main__":

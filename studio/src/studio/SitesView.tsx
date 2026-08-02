@@ -1,7 +1,7 @@
 // Siting what-if: pick an announced load, size it, decide how much power it
 // makes itself, and see what its own connection can actually deliver.
 //
-// The network solve is baked (pipeline/sites.py) because it depends only on the
+// The network solve is precomputed (pipeline/sites.py) because it depends only on the
 // grid and the day, never on what is typed here. What is typed here is
 // arithmetic against those limits, so the whole view is instant.
 
@@ -202,7 +202,7 @@ export function SitesView() {
   if (sites.loading || profiles.loading)
     return (
       <div className="view">
-        <Panel title="Siting" subtitle="Loading the connection limits.">
+        <Panel title="Where new demand can connect" subtitle="Loading connection limits.">
           <EmptyNote>Loading.</EmptyNote>
         </Panel>
       </div>
@@ -212,12 +212,11 @@ export function SitesView() {
     return (
       <div className="view">
         <Panel
-          title="Siting limits are not baked yet"
-          subtitle="Run make data to build web/data/sites.json."
+          title="Site connection limits are not available"
+          subtitle="The network and node-price data are unavailable in this data release."
         >
           <EmptyNote>
-            This view needs the nodal archive. Run the nodal pipeline, then{' '}
-            <code>python3 pipeline/sites.py</code>.
+            This view needs the archive of prices at individual grid connection points.
           </EmptyNote>
         </Panel>
       </div>
@@ -348,7 +347,7 @@ export function SitesView() {
                     key={label}
                     className="site-bar__seg"
                     style={{ width: `${pct(value)}%`, background: color }}
-                    title={`${label}: ${fmt(value)} MW`}
+                    title={`${label}, ${fmt(value)} MW`}
                   >
                     {pct(value) > 11 ? fmt(value) : ''}
                   </div>
@@ -411,20 +410,20 @@ export function SitesView() {
 
           {site.already_over_rating ? (
             <p className="note note--warn">
-              A circuit here is already carrying more than its estimated rating with
-              nothing new added, at {Math.round((site.worst_base_loading ?? 0) * 100)}% of
-              it. So there is no headroom to report and the limit reads nothing. That says
-              as much about the estimated rating as about the site, because NGCP does not
-              publish the real one.
+              A circuit here already carries{' '}
+              {Math.round((site.worst_base_loading ?? 0) * 100)}% of its estimated rating
+              before new demand is added. The model therefore reports no spare connection
+              capacity. NGCP does not publish the actual rating, so this result may
+              reflect the rating estimate as much as the site itself.
             </p>
           ) : null}
 
           {site.radially_fed ? (
             <p className="note note--warn">
-              One of its circuits is the site&apos;s only connection to the rest of the
-              grid. Losing that one takes it to nothing, so it has no second way in on the
-              public map. Whether the real grid has one is not something that map can
-              answer.
+              The public map shows one circuit as this site&apos;s only connection to the
+              rest of the grid. If that circuit fails, the mapped network has no second
+              route. The public map cannot confirm whether the real grid has another
+              route.
             </p>
           ) : null}
 

@@ -13,7 +13,7 @@ export function DurationView({ d, grid }: { d: Dispatch; grid: GridKey }) {
     <div className="view">
       <Panel
         title="Price-duration curve"
-        subtitle={`${cap(grid)}: modeled vs observed, sorted high to low over the market window.`}
+        subtitle={`${cap(grid)} modeled and recorded prices, sorted from highest to lowest over the market window.`}
         right={<Source href={pd.src} label="cap source" />}
       >
         <div className="legend">
@@ -37,7 +37,7 @@ export function DurationView({ d, grid }: { d: Dispatch; grid: GridKey }) {
           <StatTile
             label="Observed floor"
             value={php(pd.observed_min_php_kwh)}
-            hint="oversupply, real WESM floor"
+            hint="recorded WESM floor during oversupply"
           />
         </div>
         <p className="note">{pd.note}</p>
@@ -53,7 +53,7 @@ export function MarginalView({ d, grid }: { d: Dispatch; grid: GridKey }) {
     <div className="view">
       <Panel
         title="Who sets the price"
-        subtitle={`${cap(grid)}: share of ${num(mf.n_intervals)} market intervals each block is on the margin.`}
+        subtitle={`${cap(grid)} share of ${num(mf.n_intervals)} market intervals in which each fuel block sets the price.`}
       >
         <ShareBars rows={mf.by_block} />
         <p className="note">
@@ -74,21 +74,21 @@ export function ReliabilityView({ d }: { d: Dispatch }) {
   return (
     <div className="view">
       <Panel
-        title="Probabilistic reliability"
-        subtitle={`${num(mc.draws)} Monte Carlo draws, forced outages at sourced rates. Loss-of-load probability, not a point estimate.`}
-        right={<Source href={mc.src_for} label="forced-outage source" />}
+        title="Chance that available supply cannot meet evening demand"
+        subtitle={`${num(mc.draws)} repeated simulations apply random plant outages at sourced rates. The result is loss-of-load probability (LOLP), not one predicted outcome.`}
+        right={<Source href={mc.src_for} label="plant-outage source" />}
       >
         <div className="stat-row">
           <StatTile
-            label="LOLP today"
+            label="Current shortfall chance (LOLP)"
             value={pct(base.lolp_pct / 100, 2)}
             hint="Luzon evening peak"
             tone="positive"
           />
           <StatTile
-            label="LOLP with DICT 1.5 GW"
+            label="Shortfall chance with DICT 1.5 GW (LOLP)"
             value={pct(dc.lolp_pct / 100, 2)}
-            hint="the data-center wave"
+            hint="with the announced added demand"
             tone="danger"
           />
           <StatTile
@@ -101,14 +101,14 @@ export function ReliabilityView({ d }: { d: Dispatch }) {
         <p className="note">{mc.note}</p>
       </Panel>
       <Panel
-        title="Storage buys back the adequacy gap"
+        title="Storage reduces the modeled shortfall risk"
         subtitle={`${num(st.assets.luzon.total_mw)} MW on Luzon (${num(st.assets.luzon.bess_mw)} MW batteries, ${num(st.assets.luzon.pumped_hydro_mw)} MW Kalayaan pumped hydro).`}
         right={<Source href={st.src_pumped_hydro} label="pumped-hydro source" />}
       >
         <CompareBars
           items={[
             {
-              label: 'DICT-wave loss-of-load probability',
+              label: 'Shortfall probability with DICT demand',
               a: bk.without.lolp_pct,
               b: bk.with_storage.lolp_pct,
               aLabel: 'without storage',
@@ -142,9 +142,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
   if (r.error || !r.data?.available)
     return (
       <EmptyNote>
-        Reserve schedules not baked. Run{' '}
-        <code>archive_iemop.py --backfill --only RTDRS --sample-days 3</code> then{' '}
-        <code>make data</code>.
+        Recorded reserve schedules are not available in this data release.
       </EmptyNote>
     )
   const res = r.data
@@ -172,8 +170,8 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title="WESM Reserve Market"
-        subtitle={`Live since ${res.commercial_since}. Real-time dispatch co-optimises energy and reserves; the studio prices energy, and its Chronology toggle withholds the scheduled requirement from the stack rather than co-optimising reserve prices. Sample of ${num(res.n_intervals)} intervals over ${res.sample_days?.join(', ')}.`}
+        title="WESM backup-capacity market (reserves)"
+        subtitle={`Operating since ${res.commercial_since}. Real-time dispatch buys energy and reserve capacity together. The studio's Hourly market replay holds the scheduled reserve requirement out of the energy supply stack but does not calculate reserve prices. The sample covers ${num(res.n_intervals)} intervals on ${res.sample_days?.join(', ')}.`}
         right={<Source href={res.src_market} label="market source" />}
       >
         <div className="stat-row">
@@ -188,17 +186,18 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
           ))}
         </div>
         <p className="note">
-          The dearest reserve products clear well above the energy coal margin. A unit
-          holding reserve cannot also sell that MW as energy, so this cost is real and the
-          energy-only stack cannot see it. These are the operator's own published reserve
-          clearing prices, not a model output. <Source href={res.src_data} label="data" />
+          The highest-priced reserve products clear above the price-setting coal energy
+          block. A plant holding MW in reserve cannot sell the same MW as energy, so an
+          energy-only supply stack misses this cost. These are the operator's published
+          reserve clearing prices, not model results.{' '}
+          <Source href={res.src_data} label="source data" />
         </p>
         {res.mapping_note && <p className="note">* {res.mapping_note}</p>}
       </Panel>
 
       {dearest && (
         <Panel
-          title="Reserve versus energy"
+          title="Backup-capacity price compared with the energy price"
           subtitle={`${dearest.label} is the scarcest product. Compared with the observed energy clearing price on ${cap(grid)}.`}
         >
           <CompareBars
@@ -218,8 +217,8 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
             <p className="note">
               In the tightest tenth of intervals the {res.scarcity.label.toLowerCase()}{' '}
               reserve price averages {php(res.scarcity.top_decile_mean_php_kwh)}, near the{' '}
-              {php(res.reserve_cap_php_kwh)} reserve cap: scarcity prices reserve and
-              energy together. {res.disclaimer}
+              {php(res.reserve_cap_php_kwh)} reserve price cap. Scarcity raises reserve
+              and energy prices together. {res.disclaimer}
             </p>
           )}
         </Panel>
@@ -244,9 +243,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
   )
 }
 
-/** The co-optimized reserve-aware price (item 4): energy plus reserve, split
- * into the pool-level joint clear (reproduces RSVPR on met hours) and the
- * administered scarcity wedge on short hours. The wedge stays reported. */
+/** Show the observed energy price beside calculated and operator-set reserve prices. */
 function ReserveAware({ grid }: { grid: GridKey }) {
   const mo = useMarketOps()
   const ra = mo.data?.reserve_aware
@@ -254,41 +251,47 @@ function ReserveAware({ grid }: { grid: GridKey }) {
   if (!ra?.available || !v) return null
   return (
     <Panel
-      title={`Reserve-aware price on ${cap(grid)}`}
-      subtitle="Energy plus the reserve price, co-optimized. Capacity holding reserve cannot also sell energy."
+      title={`Combined energy and reserve price on ${cap(grid)}`}
+      subtitle="Energy and reserve capacity are bought together. Capacity held in reserve cannot be sold as energy at the same time."
     >
       <div className="stat-row">
         <StatTile label="Energy" value={php(v.energy_php_kwh)} hint="observed mean" />
         <StatTile
-          label="Reserve, offer clear"
+          label="Reserve from published offers"
           value={php(v.reserve_offer_clear_php_kwh)}
-          hint="pool joint clear, met hours"
+          hint="when reserve requirements are met"
         />
         <StatTile
-          label="Scarcity wedge"
+          label="Operator-set scarcity addition"
           value={php(v.reserve_scarcity_wedge_php_kwh)}
-          hint="administered, short hours"
+          hint="when scheduled reserve is short"
         />
         <StatTile
-          label="Reserve-aware"
+          label="Energy plus reserve"
           value={php(v.reserve_aware_php_kwh)}
           hint="energy + reserve"
           tone="accent"
         />
       </div>
       <p className="note">
-        The reserve price splits into what the offer stack itself clears, a pool-level
-        joint clear that reproduces the official RSVPR on requirement-met hours, and the
-        administered scarcity wedge on short hours, an empirical adder that is not in the
-        public offers. The wedge is reported, not tuned away: scarce hours price reserve
-        on a curve the offers do not carry. {ra.note ? '' : ''}
+        The reserve price has two parts. The first comes from the published reserve offers
+        and matches the official regional reserve price when requirements are met. The
+        second is an operator-set scarcity addition when scheduled reserve falls short.
+        That addition is not present in the public offers and is shown separately.
+        {ra.note ? '' : ''}
       </p>
     </Panel>
   )
 }
 
-/** The official regional reserve price series (RSVPR, daily archive): the
- * window-long price evidence beside the per-resource sample above. */
+const RESERVE_LABEL: Record<string, string> = {
+  Fr: 'Contingency reserve (Fr)',
+  Dr: 'Dispatchable reserve (Dr)',
+  Ru: 'Regulation up (Ru)',
+  Rd: 'Regulation down (Rd)',
+}
+
+/** Show the operator's published regional reserve prices over the archive window. */
 function OfficialReservePrices({ grid }: { grid: GridKey }) {
   const mo = useMarketOps()
   const rp = mo.data?.reserve_prices
@@ -297,12 +300,16 @@ function OfficialReservePrices({ grid }: { grid: GridKey }) {
   return (
     <Panel
       title={`Official regional reserve prices, ${cap(grid)}`}
-      subtitle={`IEMOP's published regional reserve price series over ${rp.dates?.length ?? 0} archive days: window mean and dearest daily mean per product code.`}
-      right={<Source href={rp.src} label="data" />}
+      subtitle={`IEMOP's published prices over ${rp.dates?.length ?? 0} archive days. Plain product names are inferred because IEMOP publishes the codes without a key.`}
+      right={<Source href={rp.src} label="source data" />}
     >
       <DataGrid
         columns={[
-          { key: 'code', header: 'Product code', render: (x) => x[0] },
+          {
+            key: 'code',
+            header: 'Reserve product (inferred)',
+            render: (x) => RESERVE_LABEL[x[0]] ?? x[0],
+          },
           {
             key: 'mean',
             header: 'Window mean',
@@ -327,18 +334,7 @@ function OfficialReservePrices({ grid }: { grid: GridKey }) {
   )
 }
 
-const RESERVE_LABEL: Record<string, string> = {
-  Fr: 'Contingency (Fr)',
-  Dr: 'Dispatchable (Dr)',
-  Ru: 'Regulation up (Ru)',
-  Rd: 'Regulation down (Rd)',
-}
-
-/** The reserve replay validation (market_ops): each derived reserve book,
- * cleared at the operator's scheduled MW, under-prices the official RSVPR
- * price by the co-optimisation opportunity-cost wedge; the per-resource final
- * results (DIPCRF) confirm the same one-signed wedge against the authoritative
- * clearing. */
+/** Compare prices calculated from offers with the operator's published prices. */
 function ReserveValidation({ grid }: { grid: GridKey }) {
   const mo = useMarketOps()
   const rv = mo.data?.reserve_validation
@@ -351,8 +347,8 @@ function ReserveValidation({ grid }: { grid: GridKey }) {
     .map((c) => ({ c, v: pool[c]!, f: rrPool?.[c] }))
   return (
     <Panel
-      title={`Reserve replay validation, ${cap(grid)}`}
-      subtitle={`Each derived reserve book (RTDOR), cleared at the operator's scheduled MW and scored against the official RSVPR price over ${rv.days ?? 0} days. Every pool's bias is negative: the book-only replay under-prices the co-optimised reserve, the measured opportunity-cost wedge.${rr?.available ? ` The final per-resource results (DIPCRF, ${rr.resources_named ?? 0} resources) confirm it against the authoritative clearing.` : ''}`}
+      title={`Published reserve prices exceed the offer-book calculation on average, ${cap(grid)}`}
+      subtitle={`The calculation uses the first 5-minute reserve offers of each hour and the operator's scheduled capacity over ${rv.days ?? 0} days.${rr?.available ? ` Final plant-level results cover ${rr.resources_named ?? 0} resources.` : ''} Source files: RTDOR offers, RSVPR regional prices, and DIPCRF final results.`}
       right={<Source href={rv.src} label="data" />}
     >
       <DataGrid
@@ -364,28 +360,28 @@ function ReserveValidation({ grid }: { grid: GridKey }) {
           },
           {
             key: 'obs',
-            header: 'Official mean',
+            header: 'Published mean',
             align: 'right',
             mono: true,
             render: (x) => php(x.v.observed_mean_php_kwh),
           },
           {
             key: 'mod',
-            header: 'Replay mean',
+            header: 'Calculated from offers',
             align: 'right',
             mono: true,
             render: (x) => php(x.v.modeled_mean_php_kwh),
           },
           {
             key: 'wedge',
-            header: 'Wedge (bias)',
+            header: 'Average difference',
             align: 'right',
             mono: true,
             render: (x) => php(x.v.bias_php_kwh),
           },
           {
             key: 'final',
-            header: 'vs DIPCRF final',
+            header: 'Difference from final results',
             align: 'right',
             mono: true,
             render: (x) =>

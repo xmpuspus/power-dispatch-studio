@@ -49,7 +49,7 @@ export function ChronologyView({
   const days = profiles.days
   const [flash, setFlash] = useState<string | null>(null)
   const [reserveDeduction, setReserveDeduction] = useState(false)
-  // engine: the calibrated cost model, or the day's OBSERVED offer book
+  // Price from either the cost calculation or the day's published offer book.
   // (every layer the book already embodies is off; demand lever stays)
   const [engine, setEngine] = useState<'cost' | 'offers'>('cost')
   const offer = useOfferDay(engine === 'offers' ? date : null)
@@ -99,15 +99,15 @@ export function ChronologyView({
     return (
       <div className="basecase-banner">
         {offer.loading
-          ? 'Loading the day’s offer book.'
-          : 'No derived offer book for this day. Books cover the market window with a few days’ publication lag; pick an earlier day or stay on the cost model.'}
+          ? 'Loading the day’s generator offers.'
+          : 'No published generator offers are available for this day. Publication lags by a few days. Pick an earlier day or stay on the cost model.'}
       </div>
     )
   if (!hours.length)
     return (
       <div className="basecase-banner">
-        That day is no longer in the archive window. Pick an observed day from the list;
-        the default is the widest-swing market day.
+        That day is no longer in the archive window. Pick a recorded day from the list.
+        The default is the market day with the widest price range.
       </div>
     )
 
@@ -222,7 +222,7 @@ export function ChronologyView({
               disabled: engine === 'offers',
               title:
                 engine === 'offers'
-                  ? 'The observed offer book is published per day; switch to the cost model for the week window.'
+                  ? 'Recorded generator offers are published one day at a time. Switch to the cost model for a full week.'
                   : undefined,
             },
           ]}
@@ -242,26 +242,26 @@ export function ChronologyView({
             checked={reserveDeduction}
             onChange={(e) => setReserveDeduction(e.target.checked)}
           />
-          Reserve co-clear ({num(reserveMw)} MW withheld)
+          Clear energy and reserves together ({num(reserveMw)} MW held back)
         </label>
         {engine === 'cost' && hb && (
           <span
             className="chrono__reserve"
-            title="Observed daily hydro energy from the operator's per-resource schedules (DIPCEF); the day LP cannot dispatch more hydro than the day's water, scaled with your hydro edits and the hydrology lever."
+            title="Recorded daily hydro energy comes from the operator's final per-resource dispatch schedules. The daily calculation cannot use more hydro energy than the recorded water budget, adjusted by your hydro settings."
           >
-            hydro water: {num(hbTotal)} MWh observed
+            recorded hydro energy limit, {num(hbTotal)} MWh
           </span>
         )}
         {engine === 'offers' && (
           <span
             className="chrono__reserve"
-            title="The day's actual offer book (every resource's priced curve plus self-scheduled capacity as price-takers). The book already embodies unit behavior, so storage, water, and fleet edits are off; reserve co-clear and the added-load lever still apply."
+            title="The day's published generator offers include every resource's priced curve and self-scheduled capacity. These offers already reflect unit behavior, so storage, water, and fleet edits are off. Energy-and-reserve clearing and added demand still apply."
           >
             {offer.loading
-              ? 'loading the offer book'
+              ? 'loading generator offers'
               : offer.data
                 ? "the day's book, as bid"
-                : 'no derived book for this day'}
+                : 'no published offers for this day'}
           </span>
         )}
         <div className="chrono__actions">
@@ -286,13 +286,13 @@ export function ChronologyView({
         />
         <StatTile label="Window peak" value={php(peakPrice)} />
         <StatTile
-          label="Unserved energy"
+          label="Demand not served (unserved energy)"
           value={num(unserved)}
           unit="MWh"
           tone={unserved > 0 ? 'danger' : 'positive'}
         />
         <StatTile
-          label="Congestion rent"
+          label="Value of the price gap across constrained links (congestion rent)"
           value={`₱${num(rentM, 2)}M`}
           hint="both corridors, whole window"
         />
@@ -302,14 +302,14 @@ export function ChronologyView({
         title="Hourly clearing price"
         subtitle={`The three grids cleared together, every hour of the ${
           effectiveSpan === 'day' ? 'observed day' : 'week'
-        }. Observed LWAP dashed where the archive has it.`}
+        }. The recorded load-weighted average price is dashed where the archive has it.`}
       >
         <HourLines series={priceSeries} marks={marks} />
       </Panel>
 
       <Panel
-        title={`Dispatch by fuel, ${cap(grid)}`}
-        subtitle="Merit-order energy per hour against the demand line. Solar follows the 24-hour shape; other fuels hold their derated availability."
+        title={`Generation by fuel and hourly demand, ${cap(grid)}`}
+        subtitle="Lowest-cost-first dispatch (merit order) by hour. Solar follows its 24-hour output profile. Other fuels use their reduced available capacity."
       >
         <DispatchArea
           fuelGen={hours.map((h) => h.fuelGen[grid])}
@@ -320,7 +320,7 @@ export function ChronologyView({
 
       <Panel
         title={`What set the price, ${cap(grid)}`}
-        subtitle="Per hour: the marginal fuel block, a saturated corridor on the importing side, or unserved load. The binding constraint, named."
+        subtitle="Each hour is labeled with the price-setting fuel, an inter-grid link at its limit on the importing side, or demand that could not be served."
       >
         <BindingStrip cells={hours.map((h) => classifyHour(h, grid))} />
         <div className="legend">
@@ -344,8 +344,8 @@ export function ChronologyView({
 
       {hasStorage && (
         <Panel
-          title="Storage state of charge"
-          subtitle="Optimised by the day LP: storage cycles only when the price spread beats the round-trip loss, and idles on a flat day. The state resets each day."
+          title="Stored energy changes only when the price spread covers battery losses"
+          subtitle="The daily optimization charges and discharges storage only when the price difference covers round-trip losses. Stored energy resets each day."
         >
           <SocChart
             soc={hours.map((h) => h.socMwh)}
@@ -358,24 +358,21 @@ export function ChronologyView({
 
       <Panel
         title={`Run price duration, ${cap(grid)}`}
-        subtitle="Every hour of this run sorted dear to cheap. Computed from the run you just configured, not baked."
+        subtitle="Every hour in the current run, sorted from highest to lowest price. These values come from the settings you just ran."
       >
         <DurationCurve modeled={runDuration(hours, grid)} />
       </Panel>
 
       <p className="note">
-        Replays the archive's observed days: demand is dispatched generation per hour
-        (IEMOP RTD regional summaries), replayed against the edited model. Region load
-        edits shift demand flat across all 24 hours, the data-center shape. On days the
-        archive carries per-resource schedules, hydro is energy-limited to the day's
-        observed water (scaled with hydro capacity edits and the hydrology lever), so the
-        solver spends it in the dearest hours. The reserve toggle withholds the mean
-        scheduled requirement (IEMOP RTD reserve rows) from the dispatchable stack, so
-        tight hours price the withheld capacity instead of paying a synthetic demand. The
-        whole day solves as one linear program (HiGHS): storage couples the hours, prices
-        are the balance duals (locational marginal prices, so an importing hour can price
-        at the exporter plus the wheeling cost), and shedding never beats available
-        capacity. Still not full unit commitment: blocks, not units.
+        Each recorded day is recalculated hour by hour with the plant, grid, and demand
+        settings you ran. Demand comes from the market operator's regional summaries. A
+        region load edit adds the same MW in all 24 hours. Where plant schedules are
+        available, hydro generation is limited to its recorded daily energy and can move
+        to the hours when it is most valuable. The reserve option holds back the
+        operator's average reserve requirement before dispatch. Storage links one hour to
+        the next. Regional prices include grid transfer costs and capacity limits. The
+        model dispatches fuel blocks; it does not decide when individual plants start or
+        stop.
       </p>
     </div>
   )

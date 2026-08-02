@@ -1382,6 +1382,6 @@
    "linearity_max_error": 0.0
   }
  ],
- "note": "How much more each site could draw before a circuit on its own bus reaches its rating, solved for every hour of one recorded day on the reduced network built from the public map. NGCP does not publish what its lines are rated to carry, so those ratings are standard figures for the voltage except where the market record named an operating limit, and every number moves with them. Site coordinates are city or campus precision and are moved to the nearest modelled bus, which is not the connection anyone will build. Read snap_km before trusting a site.",
+ "note": "How much more each site could draw before a circuit on its own bus reaches its rating, solved for every hour of one recorded day on the reduced network built from the public map. NGCP does not publish what its lines are rated to carry, so those ratings are standard figures for the voltage except where the market record named an operating limit. The available megawatts depend on those assumed ratings. Site coordinates are city or campus precision and are moved to the nearest modelled bus, which is not the connection anyone will build. Read snap_km before trusting a site.",
  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
 }

@@ -247,8 +247,8 @@
       "pct_of_range_per_hour": 12.2
     }
   ],
-  "verdict": "measured_inert_at_hourly_resolution",
-  "note": "Ramp rates ARE published: every RTDOE offer row carries a piecewise MW-per-minute curve by MW band, on essentially every resource. This measures whether an hourly ramp constraint would bind before building one. It would not, at this engine's resolution: the fleet's one-hour ramp capability runs several times the largest hour-to-hour demand rise anywhere in the archive, so a per-fuel hourly ramp limit is inert by construction and is measured out rather than built. Read the scope before re-using this: it is a grid and fuel-aggregate result at HOURLY resolution. A per-unit model would still see the binding minority counted here (the tightest units are oil and coal machines moving well under a tenth of their range per hour), and a 5-minute replay is a separate question this does not answer.",
+  "verdict": "does_not_bind_at_hourly_resolution",
+  "note": "IEMOP publishes ramp rates in each RTDOE offer row as a piecewise MW-per-minute curve by MW band, on essentially every resource. This measures whether an hourly ramp constraint would affect the result. It does not at this engine's resolution: the fleet's one-hour ramp capability runs several times the largest hour-to-hour demand rise anywhere in the archive, so a per-fuel hourly ramp limit cannot bind in this hourly model rather than built. Read the scope before re-using this: it is a grid and fuel-aggregate result at HOURLY resolution. A per-unit model would still see the binding minority counted here (the tightest units are oil and coal machines moving well under a tenth of their range per hour), and a 5-minute replay is a separate question this does not answer.",
   "src": "https://www.iemop.ph/market-data/rtd-generation-offers/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
 }

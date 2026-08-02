@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Property and cross-oracle checks on the HiGHS LP engine (pipeline side).
+"""Property and independent-reference checks on the HiGHS LP engine (Python side).
 
 The browser parity lives in the studio suite (byte-identical LP text hashes
 plus golden outputs). This file pins the Python engine itself:
   - determinism: two runs of the same day produce identical text and outputs
   - physics: energy balance, storage never creates energy, SoC inside bounds
-  - optimality against the old coordinate-descent clear as a second oracle:
+  - optimality against the old coordinate-descent clear as an independent reference:
     the LP's system cost may never exceed the heuristic's on the same day
 Plain python + highspy, no pytest dependency. Run: python3 tests/test_lp_parity.py
 """
+
 import json
 import os
 import sys
@@ -32,15 +33,15 @@ def check(name, cond):
 dispatch = json.load(open(os.path.join(WEB, "dispatch.json")))
 profiles = json.load(open(os.path.join(WEB, "profiles.json")))
 date = profiles["default_day"]
-storage = [{"grid": s["grid"], "power_mw": s["power_mw"],
-            "energy_mwh": s["energy_mwh"]}
-           for s in profiles["storage_defaults"]]
+storage = [
+    {"grid": s["grid"], "power_mw": s["power_mw"], "energy_mwh": s["energy_mwh"]}
+    for s in profiles["storage_defaults"]
+]
 
 CASES = [
     ("base", {}),
-    ("dict wave", {"demand_delta": {"luzon": 1500}}),
-    ("dict wave + storage", {"demand_delta": {"luzon": 1500},
-                             "storage": storage}),
+    ("dict demand", {"demand_delta": {"luzon": 1500}}),
+    ("dict demand + storage", {"demand_delta": {"luzon": 1500}, "storage": storage}),
     ("reserve co-opt", {"reserve_deduction": True}),
     ("sual out", {"fuel_avail_delta": {"luzon": {"coal": -1294}}}),
 ]
@@ -49,17 +50,20 @@ CASES = [
 a = run_chronology_lp(dispatch, profiles, date, {"storage": storage})
 b = run_chronology_lp(dispatch, profiles, date, {"storage": storage})
 check("deterministic lp text hash", a["lp_sha256"] == b["lp_sha256"])
-check("deterministic outputs",
-      all(a["hours"][h] == b["hours"][h] for h in range(24)))
+check("deterministic outputs", all(a["hours"][h] == b["hours"][h] for h in range(24)))
 
 eff = profiles["storage_round_trip_eff"]
 for label, opts in CASES:
     res = run_chronology_lp(dispatch, profiles, date, opts)
     hrs = res["hours"]
-    check(f"{label}: prices finite and positive", all(
-        0 < o["price"][g] < 100 for o in hrs for g in GRID_KEYS))
-    check(f"{label}: shortfall never negative", all(
-        o["shortfall"][g] >= 0 for o in hrs for g in GRID_KEYS))
+    check(
+        f"{label}: prices finite and positive",
+        all(0 < o["price"][g] < 100 for o in hrs for g in GRID_KEYS),
+    )
+    check(
+        f"{label}: shortfall never negative",
+        all(o["shortfall"][g] >= 0 for o in hrs for g in GRID_KEYS),
+    )
     # energy balance per hour: fuel_gen + storage discharge + shed covers
     # demand plus exports (0.5 MW slack for the rounded reads)
     ok = True
@@ -77,6 +81,7 @@ for label, opts in CASES:
         if soc < -0.51 or o["soc_mwh"] < -1e-6:
             ok = False
     check(f"{label}: storage never creates energy", ok)
+
 
 # cost dominance: the LP system cost may never exceed the heuristic clear's
 # cost on the same inputs and the same objective (the LP is its optimum).
@@ -108,104 +113,155 @@ def dispatch_cost(res, extra_costs=None) -> float:
 
 # like-for-like only: the water budget makes budgeted days a MORE
 # constrained problem than the old clear ever solved, so the dominance
-# oracle runs on a day without a budget
-free_day = next((d["date"] for d in profiles["days"]
-                 if not d.get("hydro_budget_mwh")), None)
-check("an unbudgeted day exists for the cost oracle", free_day is not None)
-kill_all = {f: -1e6 for f in ("coal", "oil", "hydro", "geothermal",
-                              "natural_gas", "biomass")}
+# the independent check runs on a day without a budget
+free_day = next(
+    (d["date"] for d in profiles["days"] if not d.get("hydro_budget_mwh")), None
+)
+check("an unbudgeted day exists for the cost check", free_day is not None)
+kill_all = {
+    f: -1e6 for f in ("coal", "oil", "hydro", "geothermal", "natural_gas", "biomass")
+}
 for label, opts in (
-        ("base", {}),
-        ("dict wave", {"demand_delta": {"luzon": 1500}}),
-        # the adversarial review's refutation scenario: a gutted grid plus
-        # edited fuel costs; shed differs between engines here, so the
-        # dominance oracle must (and now does) price the shedding penalty
-        ("shortage + cost edits",
-         {"fuel_avail_delta": {"mindanao": dict(kill_all)},
-          "fuel_cost": {"oil": 20, "natural_gas": 18}})):
+    ("base", {}),
+    ("dict demand", {"demand_delta": {"luzon": 1500}}),
+    # the adversarial review's refutation scenario: a gutted grid plus
+    # edited fuel costs; shed differs between engines here, so the
+    # dominance check must (and now does) price the shedding penalty
+    (
+        "shortage + cost edits",
+        {
+            "fuel_avail_delta": {"mindanao": dict(kill_all)},
+            "fuel_cost": {"oil": 20, "natural_gas": 18},
+        },
+    ),
+):
     old = run_chronology(dispatch, profiles, free_day, opts)
     new = run_chronology_lp(dispatch, profiles, free_day, opts)
     extra = opts.get("fuel_cost")
-    check(f"{label}: LP total cost <= heuristic clear cost",
-          dispatch_cost(new, extra) <= dispatch_cost(old, extra) + 1.0)
-    if label in ("base", "dict wave"):
+    check(
+        f"{label}: LP total cost <= heuristic clear cost",
+        dispatch_cost(new, extra) <= dispatch_cost(old, extra) + 1.0,
+    )
+    if label in ("base", "dict demand"):
         # both engines agree on unserved energy for the base model
-        check(f"{label}: unserved energy agrees with the old clear", all(
-            abs(old["summary"]["unserved_mwh"][g]
-                - new["summary"]["unserved_mwh"][g]) <= 5.0
-            for g in GRID_KEYS))
+        check(
+            f"{label}: unserved energy agrees with the old clear",
+            all(
+                abs(
+                    old["summary"]["unserved_mwh"][g]
+                    - new["summary"]["unserved_mwh"][g]
+                )
+                <= 5.0
+                for g in GRID_KEYS
+            ),
+        )
 
 # a reserve requirement beyond a grid's capable capacity must clamp, not
 # blow up the solve (the infeasible-row defect the adversarial review found)
-kill = {f: -1e6 for f in ("coal", "oil", "hydro", "geothermal",
-                          "natural_gas", "biomass")}
-res = run_chronology_lp(dispatch, profiles, date,
-                        {"reserve_deduction": True,
-                         "fuel_avail_delta": {"mindanao": kill}})
-check("reserve requirement beyond capable capacity still solves", all(
-    0 < o["price"][g] < 100 for o in res["hours"] for g in GRID_KEYS))
-check("the gutted grid sheds instead of going infeasible",
-      res["summary"]["unserved_mwh"]["mindanao"] > 0)
+kill = {
+    f: -1e6 for f in ("coal", "oil", "hydro", "geothermal", "natural_gas", "biomass")
+}
+res = run_chronology_lp(
+    dispatch,
+    profiles,
+    date,
+    {"reserve_deduction": True, "fuel_avail_delta": {"mindanao": kill}},
+)
+check(
+    "reserve requirement beyond capable capacity still solves",
+    all(0 < o["price"][g] < 100 for o in res["hours"] for g in GRID_KEYS),
+)
+check(
+    "the gutted grid sheds instead of going infeasible",
+    res["summary"]["unserved_mwh"]["mindanao"] > 0,
+)
 # a short hour prices at the sourced WESM offer cap and says so
 short_hours = [o for o in res["hours"] if o["shortfall"]["mindanao"] > 1]
-check("short hours price at the P32 offer cap with the shortage label",
-      bool(short_hours) and all(
-          abs(o["price"]["mindanao"] - 32.0) < 0.5
-          and o["marginal"]["mindanao"] == "shortage" for o in short_hours))
+check(
+    "short hours price at the P32 offer cap with the shortage label",
+    bool(short_hours)
+    and all(
+        abs(o["price"]["mindanao"] - 32.0) < 0.5
+        and o["marginal"]["mindanao"] == "shortage"
+        for o in short_hours
+    ),
+)
 
 # hydro cannot exceed the day's observed water budget where one exists
-budgeted = next((d for d in profiles["days"]
-                 if d.get("hydro_budget_mwh")
-                 and (d["hydro_budget_mwh"].get("luzon") or 0) > 100), None)
-check("a budgeted day exists in the baked window", budgeted is not None)
+budgeted = next(
+    (
+        d
+        for d in profiles["days"]
+        if d.get("hydro_budget_mwh") and (d["hydro_budget_mwh"].get("luzon") or 0) > 100
+    ),
+    None,
+)
+check("a budgeted day exists in the generated window", budgeted is not None)
 if budgeted:
     res = run_chronology_lp(dispatch, profiles, budgeted["date"], {})
     got = sum(o["fuel_gen"]["luzon"].get("hydro", 0.0) for o in res["hours"])
-    check("hydro dispatch respects the day water budget",
-          got <= budgeted["hydro_budget_mwh"]["luzon"] + 0.5)
+    check(
+        "hydro dispatch respects the day water budget",
+        got <= budgeted["hydro_budget_mwh"]["luzon"] + 0.5,
+    )
 
 # the hourly-shape demand channel. The contract that matters is that a flat
 # shape and the scalar it equals are the SAME run: the scalar path is what
-# every baked golden and every saved studio run was produced with, so a shape
+# every generated golden and every saved studio run was produced with, so a shape
 # channel that perturbs it would invalidate them silently.
-flat_scalar = run_chronology_lp(dispatch, profiles, date,
-                                {"demand_delta": {"luzon": 1500}})
-flat_shape = run_chronology_lp(dispatch, profiles, date,
-                               {"demand_delta": {"luzon": [1500.0] * 24}})
-check("a flat 24-hour shape is byte-identical to the scalar it equals",
-      flat_scalar["lp_sha256"] == flat_shape["lp_sha256"])
+flat_scalar = run_chronology_lp(
+    dispatch, profiles, date, {"demand_delta": {"luzon": 1500}}
+)
+flat_shape = run_chronology_lp(
+    dispatch, profiles, date, {"demand_delta": {"luzon": [1500.0] * 24}}
+)
+check(
+    "a flat 24-hour shape is byte-identical to the scalar it equals",
+    flat_scalar["lp_sha256"] == flat_shape["lp_sha256"],
+)
 
 # a real shape has to actually reach the solve: load only in the evening must
 # raise evening demand and leave the morning alone
 evening = [0.0] * 24
 for _h in range(18, 22):
     evening[_h] = 2000.0
-shaped = run_chronology_lp(dispatch, profiles, date,
-                           {"demand_delta": {"luzon": evening}})
+shaped = run_chronology_lp(
+    dispatch, profiles, date, {"demand_delta": {"luzon": evening}}
+)
 plain = run_chronology_lp(dispatch, profiles, date, {})
-check("an evening-only shape lifts evening demand",
-      shaped["hours"][19]["demand"]["luzon"]
-      - plain["hours"][19]["demand"]["luzon"] > 1999.0)
-check("an evening-only shape leaves the morning untouched",
-      abs(shaped["hours"][6]["demand"]["luzon"]
-          - plain["hours"][6]["demand"]["luzon"]) < 1e-6)
+check(
+    "an evening-only shape lifts evening demand",
+    shaped["hours"][19]["demand"]["luzon"] - plain["hours"][19]["demand"]["luzon"]
+    > 1999.0,
+)
+check(
+    "an evening-only shape leaves the morning untouched",
+    abs(shaped["hours"][6]["demand"]["luzon"] - plain["hours"][6]["demand"]["luzon"])
+    < 1e-6,
+)
 
 # a wrong-length shape is a caller error, never a silently flattened run
 _bad = False
 try:
-    run_chronology_lp(dispatch, profiles, date,
-                      {"demand_delta": {"luzon": [1500.0] * 12}})
+    run_chronology_lp(
+        dispatch, profiles, date, {"demand_delta": {"luzon": [1500.0] * 12}}
+    )
 except ValueError:
     _bad = True
 check("a 12-value shape raises instead of silently flattening", _bad)
 
-# the baked goldens must be reproducible from the current pipeline
+# the generated goldens must be reproducible from the current pipeline
 golden = profiles["chrono_golden"]
-res = run_chronology_lp(dispatch, profiles, golden["date"],
-                        {k: v for k, v in golden["cases"][0]["input"].items()
-                         if k != "date"})
-check("baked golden case 0 reproduces (hash)",
-      res["lp_sha256"] == golden["cases"][0]["lp_sha256"])
+res = run_chronology_lp(
+    dispatch,
+    profiles,
+    golden["date"],
+    {k: v for k, v in golden["cases"][0]["input"].items() if k != "date"},
+)
+check(
+    "generated reference case 0 reproduces the stored calculation",
+    res["lp_sha256"] == golden["cases"][0]["lp_sha256"],
+)
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

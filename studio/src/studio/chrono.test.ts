@@ -20,7 +20,7 @@ const d: Dispatch = read('../../public/data/dispatch.json')
 const profiles: Profiles = read('../../public/data/profiles.json')
 
 // golden inputs carry only the offer_mode marker; both engines load the
-// same per-day book artifact and must build identical LP text from it
+// same per-day offer file and must build identical LP text from it
 const resolveOpts = (date: string, opts: Record<string, unknown>): ChronoOpts => {
   const { offer_mode, ...rest } = opts
   if (offer_mode)
@@ -30,9 +30,9 @@ const resolveOpts = (date: string, opts: Record<string, unknown>): ChronoOpts =>
   return rest as ChronoOpts
 }
 
-describe('chronological golden parity vs the Python chrono engine', () => {
+describe('chronological results match the Python engine', () => {
   const g = profiles.chrono_golden
-  it('golden fixtures are baked', () => {
+  it('saved reference cases are generated', () => {
     expect(g.available).toBe(true)
     expect(g.cases?.length).toBeGreaterThanOrEqual(5)
   })
@@ -65,7 +65,7 @@ describe('chronological golden parity vs the Python chrono engine', () => {
           Math.abs(res.hours[h].shortfall.luzon - c.expect.shortfall_luzon[h]),
           `shortfall h${h}`
         ).toBeLessThanOrEqual(tolMW)
-        // exact label parity: a rounded-gen read flips blocks at boundaries
+        // Compare the exact label because rounded generation can flip a boundary block.
         expect(res.hours[h].marginal.luzon, `marginal h${h}`).toBe(
           c.expect.marginal_luzon[h]
         )
@@ -88,13 +88,13 @@ describe('chronological golden parity vs the Python chrono engine', () => {
   }
 })
 
-describe('native 168h week parity vs the Python week engine', () => {
-  // the data pin guarantees the week block is baked (>= 7 full-coverage days)
+describe('168-hour results match the Python week engine', () => {
+  // the data pin guarantees the week block is generated (>= 7 full-coverage days)
   const w = profiles.chrono_golden.week!
   const tolP = profiles.chrono_golden.tolerance_php_kwh ?? 0.02
   const tolMW = profiles.chrono_golden.tolerance_mw ?? 1.0
 
-  it('week golden fixture is baked with an explicit date list', () => {
+  it('the saved week case has an explicit date list', () => {
     expect(w?.available).toBe(true)
     expect(w.input.dates).toHaveLength(7)
   })
@@ -137,7 +137,7 @@ describe('native 168h week parity vs the Python week engine', () => {
     ).toBeLessThanOrEqual(50)
   })
 
-  it('storage is idle on observed spreads but carries under the DC-wave', () => {
+  it('storage is idle on recorded spreads but carries after demand increases', () => {
     const dates = w.input.dates
     const battery: ChronoOpts = {
       storage: [{ grid: 'luzon', power_mw: 2000, energy_mwh: 16000 }],
@@ -153,7 +153,7 @@ describe('native 168h week parity vs the Python week engine', () => {
     )
     expect(obsDaily - obsWeek.summary.physicalCost).toBeGreaterThanOrEqual(-0.5)
     expect(Math.max(...obsWeek.days.map((x) => x.endSocMwh))).toBeLessThan(1)
-    // DC-wave: the battery banks cheap energy and hands it across midnight
+    // With added demand, the battery carries low-cost energy across midnight.
     const wave: ChronoOpts = {
       ...battery,
       solar_delta_mw: { luzon: 8000 },
@@ -276,7 +276,7 @@ describe('chronological behavior', () => {
     const budgeted = profiles.days.find(
       (x) => x.market && x.hydro_budget_mwh?.luzon && x.hydro_budget_mwh.luzon > 100
     )
-    expect(budgeted, 'a budgeted day must exist in the baked window').toBeTruthy()
+    expect(budgeted, 'a budgeted day must exist in the generated window').toBeTruthy()
     const dt = budgeted!.date
     const budget = budgeted!.hydro_budget_mwh!.luzon!
     const hydroSum = (r: ReturnType<typeof runChronology>) =>

@@ -1,8 +1,8 @@
 // Assumption vintage: the data foundation an analyst needs to trust the
-// tool before trusting a number out of it. Every row here is a baked value
+// tool before trusting a number out of it. Every row here is a generated value
 // with its source or basis, nothing invented. Single-user, single-browser
 // tool: no accounts, no server-side state, every value is a file this
-// browser fetched from the same bake that built the rest of the studio.
+// browser fetched from the same data build used by the rest of the studio.
 
 import { useMeta, useEmissions, useMarketAnchors, num, php, pct } from '../lib/data'
 import { Panel, Source, EmptyNote } from '../ui/kit'
@@ -22,10 +22,10 @@ export function VintageView({ d }: { d: Dispatch }) {
   const em = useEmissions()
   const anchors = useMarketAnchors()
 
-  if (meta.loading) return <EmptyNote>Loading the bake record.</EmptyNote>
+  if (meta.loading) return <EmptyNote>Loading the data record.</EmptyNote>
   if (meta.error || !meta.data)
     return (
-      <EmptyNote>Bake record not found: {meta.error ?? 'meta.json missing'}.</EmptyNote>
+      <EmptyNote>Data record not found. {meta.error ?? 'meta.json missing'}.</EmptyNote>
     )
 
   const a = d.assumptions
@@ -106,7 +106,7 @@ export function VintageView({ d }: { d: Dispatch }) {
     },
   ]
 
-  const bakeTime = meta.data.built_utc
+  const generatedAt = meta.data.built_utc
     ? meta.data.built_utc.slice(0, 19).replace('T', ' ') + ' UTC'
     : 'unknown'
 
@@ -119,7 +119,7 @@ export function VintageView({ d }: { d: Dispatch }) {
     { key: 'fuel', header: 'Technology', render: (f) => f.fuel.replace(/_/g, ' ') },
     {
       key: 'v',
-      header: 'tCO2/MWh',
+      header: 'Metric tonnes CO2 per MWh (tCO2/MWh)',
       align: 'right',
       mono: true,
       render: (f) => (f.tco2_per_mwh == null ? 'excluded' : f.tco2_per_mwh.toFixed(3)),
@@ -131,22 +131,22 @@ export function VintageView({ d }: { d: Dispatch }) {
   return (
     <div className="view">
       <p className="scn__lede">
-        Single-user tool: no accounts, no server-side state. Every value below is a baked
-        file this browser fetched from the same build that produced the rest of the
-        studio. Every row shows the source or basis baked with it, nothing invented here.
+        This is a single-user tool with no accounts or server-side state. The browser
+        loads every value below from the same data release used by the rest of the studio.
+        Each row shows its source or calculation basis.
       </p>
 
       <Panel
-        title="Bake and archive coverage"
-        subtitle="When this build was produced, and how many days each source dataset carries in the archive window."
+        title="Data release date and archive coverage"
+        subtitle="The generation date and the number of archived days from each source."
       >
         <div className="kvs">
           <div className="kv">
-            <span>Baked</span>
-            <span className="mono">{bakeTime}</span>
+            <span>Generated</span>
+            <span className="mono">{generatedAt}</span>
           </div>
           <div className="kv">
-            <span>Engine version</span>
+            <span>Calculation version</span>
             <span className="mono">v{ENGINE_VERSION}</span>
           </div>
         </div>
@@ -156,21 +156,21 @@ export function VintageView({ d }: { d: Dispatch }) {
       </Panel>
 
       <Panel
-        title="Engine constants"
-        subtitle="Fuel costs, coal commit parameters, wheeling cost, the WESM offer cap, and the hydrology multipliers this build's dispatch runs against."
+        title="Fixed assumptions used by the dispatch calculation"
+        subtitle="Fuel costs, committed-coal settings, inter-grid transfer cost, the WESM offer cap, and water-availability adjustments."
       >
         <DataGrid columns={constCols} rows={constRows} getKey={(r) => r.label} />
       </Panel>
 
       <Panel
-        title="Emission factors"
+        title="Operational emission factors and their sources"
         subtitle={
           em.data?.unit ?? 'Operational (combustion) emission factors per technology.'
         }
       >
         {em.loading && <EmptyNote>Loading the emission factors.</EmptyNote>}
         {!em.loading && (!em.data?.available || !em.data.factors) && (
-          <EmptyNote>Emission factors not baked.</EmptyNote>
+          <EmptyNote>Emission factors are not available.</EmptyNote>
         )}
         {em.data?.factors && (
           <>
@@ -183,9 +183,10 @@ export function VintageView({ d }: { d: Dispatch }) {
             {em.data.ngef && (
               <p className="note">
                 DOE grid factor (cross-check, not an input): Luzon-Visayas{' '}
-                {em.data.ngef.luzon_visayas_tco2_per_mwh.toFixed(3)} tCO2/MWh, Mindanao{' '}
-                {em.data.ngef.mindanao_tco2_per_mwh.toFixed(3)} tCO2/MWh (
-                {em.data.ngef.vintage}). <Source href={em.data.ngef.src} label="source" />
+                {em.data.ngef.luzon_visayas_tco2_per_mwh.toFixed(3)} metric tonnes CO2 per
+                MWh, Mindanao {em.data.ngef.mindanao_tco2_per_mwh.toFixed(3)} metric
+                tonnes CO2 per MWh ({em.data.ngef.vintage}).{' '}
+                <Source href={em.data.ngef.src} label="source" />
               </p>
             )}
           </>

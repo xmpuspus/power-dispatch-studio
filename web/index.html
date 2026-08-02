@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>Power Dispatch Studio - can the Philippine grid host the data-center wave?</title>
-<meta name="description" content="A Philippine grid map built on the market operator's own public files: where transmission already binds, where the announced data-center megawatts land, and what the spot market and the Meralco bill are doing. Public IEMOP, NGCP, and Meralco data." />
+<title>Power Dispatch Studio tests announced demand against the Philippine grid</title>
+<meta name="description" content="A Philippine grid map built from public market records. See transmission limits, regional prices, and data-center demand." />
 <meta property="og:title" content="Power Dispatch Studio" />
-<meta property="og:description" content="Can the Philippine grid host the data-center wave? The choke points already bind daily; the market prices them. Built on IEMOP's own public files." />
+<meta property="og:description" content="Public market records show Philippine transmission limits, regional prices, and data-center demand." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://power-dispatch-studio.vercel.app/" />
 <meta property="og:image" content="https://power-dispatch-studio.vercel.app/og.png" />
@@ -128,7 +128,7 @@
   body.mode-extra #r-extra{ display:block; }
   @media(max-width:640px){
     #head{ max-width:none; left:8px; right:8px; top:8px; padding:8px 12px; }
-    #head h1{ font-size:16px; padding-right:76px; margin:0; line-height:44px; }
+    #head h1{ font-size:16px; padding-right:76px; margin:0; line-height:1.3; min-height:44px; }
     #side{ display:none; }
     #legend{ display:none; }
     /* the color key has no room on the map at phone width; surface it inside the
@@ -240,11 +240,11 @@
 
 <div id="head" class="panel">
   <button id="headtoggle" aria-label="Show intro, search, and the studio link" aria-expanded="false">Menu <span class="chev">&#9662;</span></button>
-  <h1>Power Dispatch Studio</h1>
-  <p>Can the Philippine grid host the announced data-center wave? Built on the market
-  operator's own public files: where transmission already binds, where the announced
-  megawatts land, and what the spot market and the bill are doing.</p>
-  <div class="scope" id="scope">Archive window loading. Corridor and grid lines
+  <h1>Test how much data-center demand the Philippine grid can carry</h1>
+  <p>Power Dispatch Studio uses the market operator's public files to name transmission
+  equipment already at its limit, place announced demand on the grid, and estimate how
+  modeled spot prices and a sample Meralco household bill change.</p>
+  <div class="scope" id="scope">Archive window loading. Transmission and grid lines
   follow real routes as mapped in OpenStreetMap. Data-center pins are city-precision.</div>
   <button id="fopen" aria-expanded="false"><span>Key findings, computed from the archive</span><span>&rarr;</span></button>
   <div id="findbox">
@@ -258,32 +258,32 @@
       <button data-isl="mindanao">Mindanao</button>
     </div>
   </div>
-  <a id="studiolink" href="studio/">Open the dispatch studio: edit the fleet, replay observed days, read the backcast &rarr;</a>
-  <a id="paxlink" href="pax-silica.html">Pax Silica to scale: more power than the Visayas grid, twice as much water as everyone in Makati &rarr;</a>
+  <a id="studiolink" href="studio/">Open the dispatch studio, edit the fleet, replay recorded days, and check the historical replay &rarr;</a>
+  <a id="paxlink" href="pax-silica.html">Pax Silica would use more power than the Visayas grid and up to 1.9 times Makati's daily water use &rarr;</a>
 </div>
 
 <div id="banner" role="alert"></div>
 
 <div id="findings" class="panel" aria-label="Key findings">
-  <div id="fhead"><h2>What the archive says</h2>
+  <div id="fhead"><h2>The archive links new demand, grid limits, and market prices</h2>
     <button id="fclose" title="close" aria-label="close">&times;</button></div>
   <div id="flist"></div>
 </div>
 
-<button id="mside" class="panel" aria-expanded="false">Details</button>
+<button id="mside" class="panel" aria-expanded="false">Show map details</button>
 
 <div id="modebar" class="panel" role="tablist">
   <button class="mode on" data-mode="supply" role="tab" aria-selected="true">1 Supply</button>
   <button class="mode" data-mode="choke" role="tab" aria-selected="false">2 Choke points</button>
   <button class="mode" data-mode="price" role="tab" aria-selected="false">3 Prices</button>
-  <button class="mode" data-mode="drivers" role="tab" aria-selected="false">Drivers</button>
+  <button class="mode" data-mode="drivers" role="tab" aria-selected="false">Daily market record</button>
   <button class="mode" data-mode="simulate" role="tab" aria-selected="false">Simulate</button>
 </div>
 
 <div id="side" class="panel"></div>
 
 <div id="legend" class="panel">
-  <b id="lg-title">Layers</b>
+  <b id="lg-title">Visible map items</b>
   <div class="keys" id="lg-keys"></div>
   <div id="lg-note"></div>
 </div>
@@ -298,7 +298,7 @@
     <button class="r-nav" id="r-prev" aria-label="Previous">&#8249;</button>
     <div class="r-card" id="r-card">
       <span class="r-tag" id="r-tag">Q1</span>
-      <span class="r-title" id="r-title">Loading the baked answers.</span>
+      <span class="r-title" id="r-title">Loading results.</span>
       <span class="r-stat" id="r-stat"></span>
       <span class="r-blurb" id="r-blurb"></span>
       <span class="r-src" id="r-src"></span>
@@ -308,13 +308,13 @@
   <div id="r-extra"></div>
   <div class="r-foot">Statistical indicators from public records (IEMOP, NGCP, Meralco,
   PCIJ, company filings). Patterns may have legitimate explanations. Forecasts are
-  labeled with their owner. <a href="methodology.html">Methodology and every source</a>.</div>
+  labeled with their owner. <a href="methodology.html">Methods, sources, and assumptions</a>.</div>
 </div>
 
 <script>
 window.__diag = { ready:false, mode:"supply", chokepoints:0, dcs:0, league:0,
   priceDays:0, railIndex:0, answers:false, sual:false, layers:0,
-  findings:0, drawerOpen:false, activeFinding:null, fetchFailures:[], baked:null,
+  findings:0, drawerOpen:false, activeFinding:null, fetchFailures:[], generatedAt:null,
   generators:0, dispatch:false, simulate:null };
 
 const $ = (id) => document.getElementById(id);
@@ -543,14 +543,15 @@ function addLayers(){
     `, ~P${fmt(p.marginal_cost_php_kwh,2)}/kWh marginal` +
     (p.owner ? `<br>${esc(p.owner)}` : "") +
     (p.note ? `<br>${esc(p.note)}` : "") +
-    `<br><i>Pin is city-precision. Pick it in Simulate to trip it (N-1).</i>`);
+      `<br><i>Pin is city-precision. Pick it in Simulate to remove it as the single largest outage (N-1).</i>`);
   const KIND_LABEL = { ac500:"500 kV line", ac230:"230 kV line",
-    ac138:"138 kV line", cable:"HV cable", hvdc:"HVDC" };
+    ac138:"138 kV line", cable:"high-voltage cable",
+    hvdc:"high-voltage direct-current link" };
   const gridHover = p => {
     const b = typeof p.binding === "string" ? parseJSON(p.binding) : p.binding;
     let bind = "";
-    if (b) bind = `<br><b>At its limit in RTD:</b> ${fmt(b.rtd_intervals)} ` +
-      `5-minute intervals across the window (as ` +
+    if (b) bind = `<br><b>At its limit in real-time dispatch:</b> ${fmt(b.rtd_intervals)} ` +
+      `5-minute intervals across the window (listed as ` +
       b.equipment.slice(0, 2).map(esc).join(", ") + `).`;
     return `<b>${esc(p.name || KIND_LABEL[p.kind] || "Grid line")}</b>` +
       (p.voltage ? `<br>${esc(String(p.voltage).split(";")[0]/1000)} kV` : "") +
@@ -566,7 +567,7 @@ function addLayers(){
     return `<b>${esc(p.name || "Substation")}</b>` +
       (p.voltage ? `<br>${esc(String(p.voltage).split(";").map(v=>v/1000).join("/"))} kV` : "") +
       (p.operator ? `<br>${esc(p.operator)}` : "") +
-      (b ? `<br><b>Station equipment at its limit in RTD:</b> ` +
+      (b ? `<br><b>Station equipment at its limit in real-time dispatch:</b> ` +
         `${fmt(b.rtd_intervals)} 5-minute intervals (` +
         b.equipment.slice(0, 2).map(esc).join(", ") + `).` : "") +
       `<br><i>As mapped in OpenStreetMap (ODbL).</i>`;
@@ -579,7 +580,7 @@ function addLayers(){
       `<br>Mean over ${fmt(p.days)} clean market days` +
       (p.mw ? `; ~${fmt(p.mw)} MW scheduled` : "") +
       (p.src ? `<br>Placement: ${esc(p.src)}` : "") +
-      `<br><i>Observed locational deviation (DIPCEF final). WESM prices ` +
+      `<br><i>Recorded node-price difference from the final per-node dispatch result. WESM prices ` +
       `intra-regional congestion administratively, so this is not a ` +
       `congestion premium.</i>`;
   };
@@ -645,15 +646,15 @@ function sideSupply(){
     const t = R.totals;
     const cd = ["luzon","visayas","mindanao"].reduce((s,g)=>s+(t[g]?t[g].curtailment_days:0),0);
     const cm = ["luzon","visayas","mindanao"].reduce((s,g)=>s+(t[g]?t[g].curtailed_mwh_total:0),0);
-    rec = `<div class="kv"><span>Grid-days with load curtailed in RTD dispatch schedules</span><span>${fmt(cd)}</span></div>
+    rec = `<div class="kv"><span>Grid-days with load curtailed in 5-minute real-time dispatch schedules</span><span>${fmt(cd)}</span></div>
     <div class="kv"><span>Energy curtailed in those schedules</span><span>${fmt(cm)} MWh</span></div>`;
   }
-  return `<h2>Is there room for the wave?</h2>
+  return `<h2>Announced demand is compared with the ${fmt(margin)} MW May 2026 supply margin</h2>
   <p class="sub">Announced and forecast data-center megawatts against the whole
   system's May 2026 supply margin. A data center is close to flat 24/7 load, so it
   consumes margin around the clock, not just at the evening peak.</p>
   ${bars}${rec}
-  <div class="note">Every figure is a labeled forecast, commitment, or pipeline
+  <div class="note">Every figure is a labeled forecast, commitment, or announced-project
   count with its owner; none is our estimate. Operational capacity today is
   contested: ${contested ? esc(contested.owner) + " put it between " +
   fmt(contested.mw_low) + " and " + fmt(contested.mw_high) + " MW" : "n/a"}.
@@ -686,7 +687,7 @@ function sideChoke(){
   report; parsed as a labeled substring screen).</div>` : "";
   const coBlock = coRows ? `<p class="sub">The same story with unit names:
   the generators the operator's own constrained-on list says network or
-  security constraints forced to run out of merit (PSM files, administered
+  security constraints forced to run out of merit (administered-price files,
   prices, published about two weeks behind). Top by 5-minute intervals
   across the window:</p>
   <table><thead><tr><th>Unit</th><th>Fuel</th><th>Intervals</th>
@@ -702,7 +703,7 @@ function sideChoke(){
   if (G && G.summary){
     const s = G.summary;
     gridBlock = `<p class="sub">The map now draws the grid itself: ${fmt(s.lines)}
-    line segments (500/230/138 kV, both HVDC links, the inter-island cables) and
+    line segments (500/230/138 kV, both high-voltage direct-current links, the inter-island cables) and
     ${fmt(s.nodes)} substations, real routed geometry as mapped in OpenStreetMap
     (community data, ODbL; not an NGCP document, and geometry only, no ratings).
     ${fmt(s.equipment_matched)} of ${fmt(s.equipment_total)} pieces of binding
@@ -725,26 +726,25 @@ function sideChoke(){
     <div class="kv"><span>Median daily minimum reserve slack, Luzon</span>
       <span>${fmt(L.median_daily_min_reserve_slack_mw)} MW</span></div>`;
   }
-  return `<h2>Where the grid already binds</h2>
+  return `<h2>Leyte-Cebu equipment reached a binding limit on ${fmt(league[0]?.days)} of ${fmt(C.days_covered)} days</h2>
   <p class="sub">Named equipment at its limit, straight from IEMOP's public
   "congestions manifesting" files over the archive window. Ranked by days at a
   limit in ANY run (a day counts once); most of those days come from the
-  hourly day-ahead re-runs, so the real-time columns sit alongside: "RT days"
-  is days with a binding 5-minute real-time row, "RT itv" the row count.
-  Settlement sees the real-time column. The Leyte-Luzon HVDC ran at its
+  hourly day-ahead re-runs, so the real-time columns sit alongside. "Real-time days"
+  counts days with a binding 5-minute row; "5-minute intervals" counts those rows.
+  Settlement sees the real-time column. The Leyte-Luzon high-voltage direct-current link ran at its
   ${fmt(A.hvdc_binding_share_dec2025_pct)}% share of the December 2025 billing
   period at max or offline (IEMOP monthly report).</p>
-  <table><thead><tr><th>Equipment</th><th>Station</th><th>Days</th><th>RT days</th><th>RT itv</th></tr></thead>
-  <tbody>${rows || "<tr><td colspan=5>Bake pending.</td></tr>"}</tbody></table>
+  <table><thead><tr><th>Equipment</th><th>Station</th><th>Days</th><th>Real-time days</th><th>5-minute intervals</th></tr></thead>
+  <tbody>${rows || "<tr><td colspan=5>Recorded constraint data are not available.</td></tr>"}</tbody></table>
   ${gridBlock}
   ${slackline}
   ${coBlock}
   <button class="sual-btn" id="sualbtn" aria-pressed="false">What if a Sual unit trips? (-647 MW)</button>
   <div class="note" id="sualread">${sualDays != null ?
-    "The archive's outage files list a Sual unit out on " + fmt(sualDays) +
-    " day(s) in this window. " : ""}Sual's two 647 MW units are among the largest on
-  the Luzon grid, though GNPower Dinginin's 2x668 MW are larger, which is also the
-  contingency reserve the market holds here. The toggle subtracts one Sual unit from
+    `The archive's outage files list a Sual unit out on ${fmt(sualDays)} day${sualDays === 1 ? "" : "s"} in this window. ` : ""}Sual's two 647 MW units are among the largest on
+  the Luzon grid. GNPower Dinginin's 2x668 MW are larger and set the contingency reserve
+  the market holds here. The toggle subtracts one Sual unit from
   the May 2026 system margin as arithmetic, not a dispatch simulation.</div>`;
 }
 
@@ -781,9 +781,9 @@ function sideprice(){
       return one(pg.top[0]) + one(pg.bottom[0]);
     };
     nodalBlock = `<h2 style="margin-top:12px">Inside each region, single nodes sit above and below the regional price</h2>
-    <p class="sub">Below the regional averages, DIPCEF prices about
+    <p class="sub">Below the regional averages, final per-node dispatch prices cover about
     ${fmt(NO.n_nodes)} individual nodes. The dots on the map are each node's
-    persistent deviation from its own region's price across the window's
+    average difference from its own region's price across the window's
     ${fmt(NO.window.clean_days)} clean market days (administered days
     excluded): red above, blue below, size is magnitude. ${fmt(NO.n_placed)}
     of ${fmt(NO.n_nodes)} nodes resolve to a mapped station; the widest
@@ -795,7 +795,7 @@ function sideprice(){
     +${fmt(NO.per_grid.mindanao.p95,2)} P/kWh.</p>
     <table><thead><tr><th>Extreme node</th><th>Grid</th><th>P/kWh</th></tr></thead>
     <tbody>${rows("luzon")}${rows("visayas")}${rows("mindanao")}</tbody></table>
-    <div class="note">Observed deviations from DIPCEF final results, not a
+    <div class="note">Recorded differences from final per-node dispatch results, not a
     congestion premium: the published nodal congestion component is zero
     through the market suspension and small and intermittent afterward
     (nonzero on ${fmt(NO.congestion.clean_day_nonzero_share_pct,2)} percent of
@@ -808,18 +808,18 @@ function sideprice(){
     price, and never size a PPA or a bid off it alone. Visayas nodes also
     fail the tool's own loss-surface validation, a stable mismatch not yet
     diagnosed, so read Visayas deviations with low confidence; Luzon and
-    Mindanao validate.</div>`;
+    Mindanao agree with the recorded rankings.</div>`;
   }
-  return `<h2>What each of the three grids paid</h2>
+  return `<h2>May 2026 prices averaged P${fmt(A.wesm_may2026_system_avg_php_kwh,2)}/kWh; Visayas was highest at P${fmt(A.wesm_may2026_visayas,2)}</h2>
   <p class="sub">Each day's average of the load-weighted 5-minute prices per
   grid, from the archive. May 2026, meaning the WESM billing period of 26 April
   to 25 May (whose first five days were still administered),
   averaged P${fmt(A.wesm_may2026_system_avg_php_kwh,2)}/kWh system-wide
   (+${fmt(A.wesm_may2026_vs_april_pct,1)}% vs April): Luzon
   P${fmt(A.wesm_may2026_luzon,2)}, Visayas P${fmt(A.wesm_may2026_visayas,2)},
-  Mindanao P${fmt(A.wesm_may2026_mindanao,2)}. One grid on paper; the links
-  between the islands are the reason the numbers differ.</p>
-  <div id="spark">${spark || '<div class="note">Price bake pending.</div>'}</div>
+  Mindanao P${fmt(A.wesm_may2026_mindanao,2)}. The links between the islands
+  contribute to those differences alongside offers, outages, losses, and market rules.</p>
+  <div id="spark">${spark || '<div class="note">Recorded price data are not available.</div>'}</div>
   ${regimeNote}
   ${nodalBlock}
   ${P.max_spread && P.max_spread.date ? `<div class="note">Widest daily
@@ -858,7 +858,7 @@ function sideDrivers(){
     const cur = d.curtailed_mwh
       ? Object.values(d.curtailed_mwh).reduce((s, v) => s + v, 0) : 0;
     if (cur > 0) badges.push(`<span class="bdg" style="background:#9c3d12">${fmt(cur)} MWh curtailed</span>`);
-    if (d.n_hvdc_advisories) badges.push(`<span class="bdg" style="background:#3a6b8a">${d.n_hvdc_advisories} HVDC advisories</span>`);
+    if (d.n_hvdc_advisories) badges.push(`<span class="bdg" style="background:#3a6b8a">${d.n_hvdc_advisories} link advisories</span>`);
     if (d.n_alert_advisories) badges.push(`<span class="bdg" style="background:#8a6bb0">${d.n_alert_advisories} alert advisories</span>`);
     if (d.spread != null && d.spread >= 5) badges.push(`<span class="bdg" style="background:#b3261e">spread P${fmt(d.spread,1)}</span>`);
     const outm = d.out_matched_mw
@@ -872,20 +872,20 @@ function sideDrivers(){
       <div class="kv"><span>Matched scheduled-out MW</span><span>${fmt(outm)}</span></div>
       ${d.hydro_budget_mwh ? `<div class="kv"><span>Observed hydro water (MWh)</span><span>${fmt(Object.values(d.hydro_budget_mwh).reduce((s,v)=>s+v,0))}</span></div>` : ""}
       ${d.reserve_price_max != null ? `<div class="kv"><span>Dearest regional reserve price</span><span>P${fmt(d.reserve_price_max,2)}/kWh</span></div>` : ""}
-      ${top ? `<div class="kv"><span>Top binding constraints (RTD)</span><span>${top}</span></div>` : ""}
+      ${top ? `<div class="kv"><span>Top limits reached in real-time dispatch</span><span>${top}</span></div>` : ""}
       ${d.n_advisories != null ? `<div class="kv"><span>Advisories</span><span>${fmt(d.n_advisories)}</span></div>` : ""}
     </details>`;
   }).join("");
-  return `<h2>What moved prices, day by day</h2>
-  <p class="sub">One row per archive day, every column observed: daily LWAP per
-  grid, recorded curtailment, the operator's matched scheduled-out MW, HVDC and
+  return `<h2>Daily records join price, curtailment, outages, link limits, and alerts</h2>
+  <p class="sub">One row per archive day, every column recorded: daily load-weighted average price (LWAP) per
+  grid, curtailment, the operator's matched scheduled-outage MW, high-voltage direct-current (HVDC) link and
   alert advisories, and the day's binding constraints. Open a day for detail.</p>
   ${outlook}
-  ${rows || '<div class="note">Drivers bake pending.</div>'}
+  ${rows || '<div class="note">Daily market data are not available.</div>'}
   <div class="note export-links">Take the archive away:
     <a href="data/exports/market_by_day.csv" download>market_by_day.csv</a>,
     <a href="data/exports/congestion_league.csv" download>congestion_league.csv</a>,
-    <a href="data/exports/backcast_by_grid.csv" download>backcast_by_grid.csv</a>.
+    <a href="data/exports/backcast_by_grid.csv" download>historical replay by grid (CSV)</a>.
     <a href="data/exports/index.json">What is in them.</a>
     Free to reuse under CC-BY-4.0.</div>
   <div class="note">${esc(DR.note || "")}</div>`;
@@ -921,30 +921,30 @@ const LEGENDS = {
     ["sw","#fff;border:2px solid #b3261e","Sual coal plant (2 x 647 MW)"]],
     note:"Hollow dots have no public MW figure. Pins are city-precision. Not a complete inventory: Cushman counts 24 operational facilities; DataCenterMap lists 44." },
   choke: { title:"Grid choke points", keys: [
-    ["ln","#9c3d12","HVDC inter-island link (real route)"],
-    ["ln","#3a6b8a","AC corridor named congested in primary sources"],
-    ["ln","#b3261e","Line at its limit in the RTD record"],
+    ["ln","#9c3d12","High-voltage direct-current inter-island link (real route)"],
+    ["ln","#3a6b8a","AC transmission line named congested in primary sources"],
+    ["ln","#b3261e","Line at its limit in the real-time dispatch record"],
     ["ln","#41586b","500 kV backbone"],
     ["ln","#7d94a6","230 kV (thin grey = 138 kV)"]],
-    note:"Corridors and the grid follow real routed geometry as mapped in OpenStreetMap (community data, ODbL), not NGCP documents. Red = equipment IEMOP's congestion files record at its limit; hover for the receipts." },
+    note:"Transmission lines follow real routes mapped in OpenStreetMap (community data, ODbL), not NGCP documents. Red marks equipment that IEMOP recorded at its limit; hover for the public record." },
   price: { title:"Prices and the links", keys: [
     ["ln","#9aa7b3","The transmission network (faint) that the nodes sit on"],
-    ["ln","#9c3d12","HVDC links: when they bind, the regional prices separate"],
+    ["ln","#9c3d12","High-voltage direct-current links: regional prices separate at their limits"],
     ["sw","#b3261e","Node above its regional price (persistent, observed)"],
     ["sw","#b9b3a8","Node near its regional price"],
     ["sw","#2b6a9d","Node below its regional price"],
     ["sw","#1a7f48","Data-center sites for reference"]],
-    note:"Each dot is one WESM node, drawn on the transmission grid it sits on, coloured by its observed deviation from its region's price (DIPCEF final, clean market days; size = magnitude). Placed at the resolved site: stations and plants exactly, locality centroids city-precision; the panel lists the rest. Not a congestion premium: WESM prices intra-regional congestion administratively." },
+    note:"Each dot is one WESM node, drawn on the transmission grid it sits on and coloured by its recorded difference from the region's final per-node dispatch price. Dot size shows the size of the difference across clean market days. Stations and plants use exact mapped sites; locality centroids use city-level placement. The panel lists unresolved sites. This is not a congestion premium because WESM prices intra-regional congestion administratively." },
   simulate: { title:"Named generators (price movers)", keys: [
     ["sw","#6b6b6b","Coal unit (size by capacity)"],
     ["sw","#4e79a7","Natural-gas unit"]],
-    note:"The units large enough that one trip is felt on the grid. Pins are city-precision. Trip one in the panel to run the N-1." },
+    note:"These units are large enough for one outage to affect the grid. Pins are placed to city precision. Remove one unit in the panel to run the loss-of-one-unit test (N-1)." },
   drivers: { title:"Day-by-day drivers", keys: [
     ["sw","#9c3d12","Curtailment recorded"],
-    ["sw","#3a6b8a","HVDC advisory (block or de-block)"],
+    ["sw","#3a6b8a","Inter-island link advisory (block or de-block)"],
     ["sw","#8a6bb0","Alert advisory"],
     ["sw","#b3261e","Regional price spread (P5/kWh or more)"]],
-    note:"Every column in the panel is observed data from the archive: prices, outages, curtailment, advisories, binding constraints. Nothing modeled." }
+    note:"Every column in the panel comes from the archive: prices, outages, curtailment, advisories, and binding constraints. Scenario settings do not alter these records." }
 };
 function legendRender(){
   const L = LEGENDS[MODE];
@@ -1026,11 +1026,11 @@ function setMode(m, syncRail = true){
   if (!inRail){
     $("r-extra").innerHTML = m === "drivers"
       ? `<span class="x-tag">Beyond the three questions</span>
-         <span class="x-title">What moved prices, day by day</span>
+         <span class="x-title">Daily price, curtailment, outage, link, and alert records</span>
          <span class="x-blurb">Every column is observed archive data: prices, curtailment, advisories, binding constraints. Open Details for the day-by-day feed.</span>`
       : `<span class="x-tag">Beyond the three questions</span>
-         <span class="x-title">Simulate the dispatch</span>
-         <span class="x-blurb">A simplified merit-order model. Move the levers in Details; the price re-clears in your browser.</span>`;
+         <span class="x-title">Change demand or supply and recalculate the clearing price</span>
+         <span class="x-blurb">A simplified lowest-cost-first model (merit order). Move the sliders in Show map details and the browser recalculates the price.</span>`;
   }
   syncURL();
 }
@@ -1053,7 +1053,7 @@ function sualToggle(btn){
   if (SUAL_ON){
     const m = A.wesm_may2026_margin_mw, left = m - 647;
     read.innerHTML = `Take one 647 MW Sual unit out of the May 2026 system margin of
-    ${fmt(m)} MW and ${fmt(left)} MW remains for everything else: the evening peak,
+    ${fmt(m)} MW and ${fmt(left)} MW stays for everything else: the evening peak,
     forced outages (${fmt(A.visayas_forced_outage_mw)} MW were already out in the
     Visayas in late June), reserves, and any new 24/7 load. Both units:
     ${fmt(m - 1294)} MW. Arithmetic on the operator's published margin, not a
@@ -1066,7 +1066,7 @@ function sualToggle(btn){
   }
 }
 
-/* ---------- simulate: merit-order dispatch, re-cleared in the browser ---------- */
+/* Merit-order dispatch recalculated in the browser. */
 const FUELCOL = { solar:"#e0b93b", wind:"#7fb2d6", hydro:"#3a6b8a",
   geothermal:"#8a6bb0", natural_gas:"#4e79a7", biomass:"#5a9e6f", coal:"#6b6b6b",
   oil:"#b3261e", import:"#1a7f48", firm:"#125c34", storage:"#c77dff",
@@ -1198,7 +1198,7 @@ function fuelKey(blocks){
     `<span class="fkey"><span class="fsw" style="background:${FUELCOL[f]||'#999'}"></span>${esc(fuelLabel(f))}</span>`).join("") + `</div>`;
 }
 
-// the coupled-model finding, read straight from the baked coupling block
+// The coupled-model result comes from the generated coupling data.
 function couplingNote(disp){
   const c = disp.coupling; if (!c) return "";
   const sd = (c.spread_decomposition || {}).visayas_vs_luzon || {};
@@ -1206,16 +1206,16 @@ function couplingNote(disp){
   const bt = c.dc_binding_threshold || {};
   const pct = v => v == null ? "?" : fmt(Math.abs(v * 100) < 0.5 ? 0 : v * 100, 0);
   return `<div class="note" id="sim-coupling-note">Couple the three grids and cheap
-    Luzon power flows south over the HVDC links up to their limits. Over the market
+    Luzon power flows south over the high-voltage direct-current links up to their limits. Over the market
     window that reproduces almost none of the observed P${fmt(sd.observed_php_kwh,2)}/kWh
     Visayas-Luzon spread (about ${pct(sd.explained_fraction)}%): most hours all three
     islands sit on the coal margin and the 250 MW link does not bind. That spread is
-    the scarcity of the 52-day streak, not transmission. Re-clear the streak with the
+    the scarcity of the 52-day streak, not transmission. Recalculate the streak with the
     documented ${fmt(o.outage_mw)} MW Visayas outage and the link saturates
     ${fmt(o.leyte_luzon_saturated_pct,0)}% of the time at a P${fmt(o.leyte_luzon_mean_rent_php_kwh,2)}/kWh
     rent, reproducing ${pct(o.explained_fraction)}% of the spread. At a typical evening
     just ${fmt(bt.added_visayas_load_to_bind_leyte_mw)} MW of added Visayas load binds
-    the corridor.</div>`;
+    the link.</div>`;
 }
 
 // price-duration curve: modeled (flat plateau) vs observed (scarcity + cheap tails)
@@ -1249,7 +1249,7 @@ function obsSettersHTML(g){
   const rows = (pg.top || []).slice(0, 8).map(r =>
     `<div class="kv"><span>${esc(r.resource)}${r.fuel ? " (" + esc(fuelLabel(r.fuel)) + ")" : ""}</span>
      <span>${fmt(r.share_pct,1)}% at P${fmt(r.mean_price_php_kwh,2)}</span></div>`).join("");
-  return `<h2 style="margin-top:12px">Who set the price (observed)</h2>
+  return `<h2 style="margin-top:12px">The operator's marginal resource set the recorded 5-minute price</h2>
   <div id="sim-obssetters">${rows}</div>
   <div class="note">The marginal resource IEMOP names per 5-minute interval
   (market clearing price files, ${fmt(ps.days)} days): the market's own answer,
@@ -1258,8 +1258,8 @@ function obsSettersHTML(g){
 
 function sideSimulate(){
   const disp = D["dispatch.json"] || {};
-  if (!disp.available) return `<h2>Simulate the dispatch</h2>
-    <p class="note">Dispatch bake pending. Run make data.</p>`;
+  if (!disp.available) return `<h2>Demand and supply changes recalculate the clearing price</h2>
+    <p class="note">Dispatch data are not available in this data release.</p>`;
   const g = SIM.grid;
   const cal = (disp.calibration || {})[g] || {};
   const feats = (D["generators.geojson"]||{}).features || [];
@@ -1282,11 +1282,11 @@ function sideSimulate(){
   const pdur = (disp.price_duration||{})[g];
   const mfreq = (disp.marginal_frequency||{})[g];
   window.__diag.priceDuration = !!pdur;
-  return `<h2>Simulate the dispatch</h2>
+  return `<h2>Demand and supply changes recalculate the clearing price</h2>
   <p class="sub">A <b>simplified merit-order model</b>: it stacks the
   sourced fleet by marginal cost against demand and reads off the clearing price.
-  Move the levers; the price re-clears here in your browser, on the same stack the
-  model baked. Calibrated against observed prices, not a predictor of them.</p>
+  Move the sliders and the browser recalculates the price from the same sourced
+  supply stack. The model is checked against recorded prices but does not predict them.</p>
   <div class="gselrow">${gridBtn}</div>
   <div id="sim-read"></div>
   <div id="sim-stack" style="margin:6px 0 2px"></div>
@@ -1300,10 +1300,10 @@ function sideSimulate(){
     <label>Add firm capacity: <b id="sim-firmv">${fmt(SIM.addFirm)}</b> MW
       <input type="range" id="sim-firm" min="0" max="1000" step="50" value="${SIM.addFirm}"></label>
     ${g === "luzon"
-      ? `<label class="lever-off">Relieve the feeding HVDC corridor <span class="tick">Luzon is the exporter, not fed by a corridor. Pick Visayas or Mindanao to relieve its feeding link.</span>
+      ? `<label class="lever-off">Raise the limit of the feeding inter-island link <span class="tick">Luzon is the exporter, not fed by an inter-island link. Pick Visayas or Mindanao to raise its feeding-link limit.</span>
       <input type="range" id="sim-imp" min="0" max="${impMax}" step="25" value="0" disabled></label>`
-      : `<label>Relieve the feeding HVDC corridor (extra operating limit): <b id="sim-impv">${fmt(SIM.imp)}</b> MW
-      <span class="tick">Bites only once the feeding link saturates; add data-center load to bind it.</span>
+      : `<label>Raise the feeding inter-island link limit: <b id="sim-impv">${fmt(SIM.imp)}</b> MW
+      <span class="tick">This changes results only after the feeding link reaches its limit; add demand to test that case.</span>
       <input type="range" id="sim-imp" min="0" max="${impMax}" step="25" value="${SIM.imp}"></label>`}
     <label>Discharge storage at the peak: <b id="sim-storv">${fmt(SIM.stor)}</b> MW
       <span class="tick">${((disp.storage||{}).assets||{})[g] ? (g[0].toUpperCase()+g.slice(1))+" has "+fmt(disp.storage.assets[g].total_mw)+" MW today" : "No sourced storage fleet on this grid (illustrative)"}</span>
@@ -1314,28 +1314,28 @@ function sideSimulate(){
   <div class="note" id="sim-cal">Over ${fmt(cal.n_intervals)} 5-minute intervals
   in the market-priced window (after WESM resumed ${esc((disp.calibration_window||{}).from)}),
   the cost stack averaged P${fmt(cal.modeled_mean_php_kwh,2)}/kWh against an observed
-  P${fmt(cal.observed_mean_php_kwh,2)}/kWh (MAE P${fmt(cal.mae_php_kwh,2)}). It
+  P${fmt(cal.observed_mean_php_kwh,2)}/kWh (mean absolute error P${fmt(cal.mae_php_kwh,2)}). It
   over-prices the overnight trough and under-prices the evening peak; the evening
-  residual of P${fmt(cal.evening_peak_residual_php_kwh,2)}/kWh is scarcity and offer
+  remaining gap of P${fmt(cal.evening_peak_residual_php_kwh,2)}/kWh is scarcity and offer
   behaviour, not data-center load.${cal.note ? " " + esc(cal.note) + "." : ""}</div>
-  ${pdur ? `<h2 style="margin-top:12px">Price-duration curve</h2>
+  ${pdur ? `<h2 style="margin-top:12px">Hours at or above each modeled and recorded price</h2>
   <div id="sim-duration">${durationSVG(pdur)}</div>
   <div class="note"><b style="color:#333">modeled</b> vs
     <b style="color:#b3261e">observed</b>. ${esc(pdur.note)}</div>` : ""}
-  ${mfreq ? `<h2 style="margin-top:12px">Who sets the price (modeled)</h2>
+  ${mfreq ? `<h2 style="margin-top:12px">Modeled share of intervals in which each fuel block sets the price</h2>
   <div id="sim-margfreq">${marginalFreqHTML(mfreq)}</div>
   <div class="note">Share of market intervals each block is on the margin in the
-  MODEL. Block dispatch cannot name the individual plant, so this is at the fuel
+  model. Block dispatch cannot name the individual plant, so this is at the fuel
   level; coal is split into its committed (overnight) and marginal (peak)
   tranches.</div>` : ""}
   ${obsSettersHTML(g)}
-  <h2 style="margin-top:12px">Trip each named plant</h2>
-  <table><thead><tr><th>Plant</th><th>MW</th><th>Evening price</th><th>Shed at peak</th></tr></thead>
-  <tbody>${n1rows || "<tr><td colspan=4>Bake pending.</td></tr>"}</tbody></table>
-  <div class="note">Each row trips the whole named plant at a tight evening (the grid's
-  p95 observed demand); the multi-unit stations (Sual and Ilijan 2x, Masinloc 4x)
-  lose all their units, so their move is larger than a single-unit N-1. The
-  <b>Trip a unit</b> control above re-clears at the panel's current demand, so at a
+  <h2 style="margin-top:12px">Each plant outage changes evening price and unmet demand</h2>
+  <table><thead><tr><th>Plant</th><th>MW</th><th>Evening price</th><th>Unmet MW at peak</th></tr></thead>
+  <tbody>${n1rows || "<tr><td colspan=4>Generator-outage results are not available.</td></tr>"}</tbody></table>
+  <div class="note">Each row removes the whole named plant during an evening at the
+  grid's 95th-percentile recorded demand. Multi-unit stations (Sual and Ilijan 2x, Masinloc 4x)
+  lose all their units, so their move is larger than the loss of one unit. The
+  <b>Trip a unit</b> control above recalculates at the panel's current demand, so at a
   lighter evening the same trip reads a smaller move than this table.</div>
   <div class="note">The panel starts at a typical evening peak
   (${fmt(mo.typical_evening_demand_mw)} MW); the annual gross peak of
@@ -1353,7 +1353,7 @@ function sideSimulate(){
   ${reliabilityNote(disp, g)}`;
 }
 
-// storage as a peak-firming time-shifter: buys back the DC-wave adequacy gap
+// Storage moves energy from low-price hours to the tight evening peak.
 function storageNote(disp, g){
   if (g !== "luzon") return "";
   const st = disp.storage; if (!st) return "";
@@ -1362,10 +1362,10 @@ function storageNote(disp, g){
   const w = rb.without || {}, wi = rb.with_storage || {};
   return `<div class="note" id="sim-stor-note">Batteries (${fmt(a.bess_mw)} MW) and
     Kalayaan pumped hydro (${fmt(a.pumped_hydro_mw)} MW) charge off-peak and discharge
-    at the evening peak. At a tight evening under the DICT 1.5 GW wave the cost stack
+    at the evening peak. At a tight evening with the DICT 1.5 GW demand forecast the cost stack
     clears on oil at P${fmt(pp.without_storage_php_kwh,2)}/kWh; the ${fmt(a.total_mw)} MW
     of storage on the grid shaves it back to P${fmt(pp.with_storage_php_kwh,2)}/kWh
-    (coal). It buys back most of the adequacy gap too: the DC-wave loss-of-load
+    (coal). It also reduces the shortfall risk with the added demand: the loss-of-load
     probability falls from <b>${fmt(w.lolp_pct,2)}%</b> to <b>${fmt(wi.lolp_pct,2)}%</b>.
     Energy is limited, so this firms the peak interval, not a multi-day event. DOE and
     CBK Power figures.</div>`;
@@ -1377,11 +1377,11 @@ function reliabilityNote(disp, g){
   const v = (mc.per_grid || {})[g]; if (!v) return "";
   const dd = g === "luzon" ? (mc.dict_2028_luzon || {}).distribution : null;
   return `<div class="note" id="sim-mc-note">Reserve margin is one number; a forced
-    outage is a coin toss. Sample the ${fmt(mc.draws)} draws (each trips the named
-    units at their sourced forced-outage rate, NERC GADS for coal and gas, then draws
+    outage has a probability. Run ${fmt(mc.draws)} repeated simulations (each removes named
+    units at sourced forced-outage rates from the North American generating-availability dataset, then draws
     an evening-peak load): this grid loses load in <b>${fmt(v.lolp_pct,2)}%</b> of tight
     evenings, expected shortfall ${fmt(v.expected_shortfall_mw)} MW, worst draw
-    ${fmt(v.shortfall_mw_max)} MW.${dd ? " Add the DICT 1.5 GW wave and the loss-of-load"
+    ${fmt(v.shortfall_mw_max)} MW.${dd ? " Add the DICT 1.5 GW demand forecast and the loss-of-load"
     + " probability climbs to <b>" + fmt(dd.lolp_pct,2) + "%</b> (1-in-100 draw sheds "
     + fmt(dd.shortfall_mw_p99) + " MW). DICT forecast, Oct 2025." : ""}</div>`;
 }
@@ -1414,7 +1414,7 @@ function updateSim(){
   if (read) read.innerHTML =
     `<div class="kv"><span>Single-grid clearing price (marginal fuel)</span>
        <span><b>P${fmt(res.price,2)}/kWh</b> &middot; ${esc(fuelLabel(res.marginal))}</span></div>
-     <div class="kv"><span>vs base case (no levers)</span>
+     <div class="kv"><span>vs base case (no scenario changes)</span>
        <span>P${fmt(base.price,2)} &rarr; P${fmt(res.price,2)} (${res.price>=base.price?"+":""}P${fmt(res.price-base.price,2)})</span></div>
      <div class="kv"><span>Available vs demand</span>
        <span>${fmt(res.avail)} MW vs ${fmt(s.demand)} MW</span></div>` +
@@ -1430,10 +1430,10 @@ function updateSim(){
     const g = cs.g, p = cs.res.price[g], corr = cs.res[cs.feed];
     cp = p; csat = corr.sat; crent = corr.rent;
     const feedName = cs.feed === "mvip" ? "MVIP (from Visayas)" : "Leyte-Luzon (from Luzon)";
-    const rows = `<div class="kv"><span>Coupled clearing price (with the two other islands)</span>
+    const rows = `<div class="kv"><span>Clearing price with all three island grids</span>
        <span><b>P${fmt(p,2)}/kWh</b></span></div>` +
       (g === "luzon"
-        ? `<div class="note" style="margin:2px 0">Luzon is the exporting grid: it sets the floor the others import from. Relieving a corridor helps the grid downstream, not Luzon.</div>`
+        ? `<div class="note" style="margin:2px 0">Luzon is the exporting grid: it sets the floor the others import from. Raising a link limit helps the grid downstream, not Luzon.</div>`
         : `<div class="kv"><span>${feedName} link</span><span>${fmt(Math.abs(corr.flow))} MW ${corr.flow>0?"in":"reverse"}${corr.sat?", <b>saturated</b>":", open"}</span></div>` +
           (corr.sat
             ? `<div class="kv"><span>Congestion rent across the binding link</span><span><b>P${fmt(corr.rent,2)}/kWh</b></span></div>`
@@ -1464,7 +1464,7 @@ let FINDINGS = [], ACTIVE = null;
 function renderFindings(){
   const list = $("flist");
   if (!FINDINGS.length){
-    list.innerHTML = `<p class="note">Findings bake pending. Run make data.</p>`;
+    list.innerHTML = `<p class="note">Calculated findings are not available in this data release.</p>`;
     return;
   }
   list.innerHTML = `<p class="note" style="margin:2px 4px 9px">Tap a finding to
@@ -1527,7 +1527,7 @@ function applyURL(){
   if (q && ["supply","choke","price","drivers","simulate"].includes(q)) setMode(q, true);
   if (fid){
     const f = FINDINGS.find(x => x.id === fid);
-    // a shared link may point at a finding no longer in this bake; still open the
+    // A shared link may point at a result no longer in this data version. Still open the
     // drawer so the list is visible rather than silently doing nothing
     if (f){ openDrawer(true); selectFinding(f); }
     else { openDrawer(true); }
@@ -1585,7 +1585,7 @@ function wireFind(){
     { match:["meralco"], isl:"luzon",
       note:"Meralco is a distribution utility, not a generator. It buys from WESM (see Prices) and has committed about 1,000 MW for 10 data centers (see Supply)." },
     { match:["ngcp"], isl:null,
-      note:"NGCP operates the grid, not a generator. The corridors it runs are named in Choke points." },
+      note:"NGCP operates the grid, not a generator. Its inter-island links are named in Choke points." },
   ];
   const aliasFor = (t) => ALIASES.find(a => a.match.some(k => t.includes(k)));
   const render = () => {
@@ -1634,17 +1634,17 @@ loadAll().then(() => {
   const P = D["prices.json"] || {};
   window.__diag.answers = !!A;
   window.__diag.league = (C.league || []).length;
-  window.__diag.baked = M.built_utc || null;
+  window.__diag.generatedAt = M.built_utc || null;
   FINDINGS = F.findings || [];
   window.__diag.findings = FINDINGS.length;
   if (C.window){
     const asOf = P.as_of ? `, prices through ${P.as_of}` : "";
-    const built = M.built_utc ? ` Baked ${String(M.built_utc).slice(0,10)}.` : "";
+    const built = M.built_utc ? ` Generated ${String(M.built_utc).slice(0,10)}.` : "";
     const G = D["grid.json"];
     const routeLine = G
-      ? "Corridor and grid lines follow real routes as mapped in " +
+      ? "Transmission and grid lines follow real routes as mapped in " +
         "OpenStreetMap (ODbL)."
-      : "Corridor lines are schematic.";
+      : "Transmission lines are shown schematically.";
     $("scope").textContent =
       `IEMOP archive window ${C.window.from} to ${C.window.to} (` +
       `${fmt(C.days_covered)} days${asOf}; the public window is rolling, this repo ` +
@@ -1656,9 +1656,9 @@ loadAll().then(() => {
     { tag:"Q2 Infrastructure", ...A.q2 },
     { tag:"Q3 Prices", ...A.q3 },
   ] : [
-    { tag:"Q1", title:"Can the grid handle more data centers?", stat:"Bake pending", blurb:"Run make data." },
-    { tag:"Q2", title:"Where would they have to sit?", stat:"Bake pending" },
-    { tag:"Q3", title:"What happens to prices?", stat:"Bake pending" },
+    { tag:"Q1", title:"Can the grid handle more data centers?", stat:"Data unavailable", blurb:"No result is available." },
+    { tag:"Q2", title:"Where would they have to sit?", stat:"Data unavailable" },
+    { tag:"Q3", title:"What happens to prices?", stat:"Data unavailable" },
   ];
   const draw = () => {
     addLayers();

@@ -13,6 +13,7 @@ overstates the bill's spot exposure roughly tenfold.
 
 Reads web/data/market_anchors.json. Output docs/bill-wedge.gif.
 """
+
 import json
 import math
 import os
@@ -39,19 +40,23 @@ def main():
     other = round(total - gen, 4)
     contracted = round(gen - wesm, 4)
 
-    segs = [("WESM spot", wesm, cs.CORAL),
-            ("contracted generation, PSA and IPP", contracted, cs.STEEL),
-            ("transmission, distribution, taxes", other, "#33445c")]
+    segs = [
+        ("WESM spot", wesm, cs.CORAL),
+        ("contracted generation, PSA and IPP", contracted, cs.STEEL),
+        ("transmission, distribution, taxes", other, "#33445c"),
+    ]
     wesm_pct = 100 * wesm / total
 
     fdir = cs.frames_dir("wedge")
     # each slice slides in, then the spot slice pulses so the eye returns to it
-    seq = ([("grow", t) for t in cs.reveal(20, 6)]
-           + [("pulse", i / 24) for i in range(24)])
+    seq = [("grow", t) for t in cs.reveal(20, 6)] + [
+        ("pulse", i / 24) for i in range(24)
+    ]
 
     for fi, (stage, t) in enumerate(seq):
-        fig, ax = cs.card(figsize=(9.0, 4.5), field="money",
-                          rect=(0.075, 0.30, 0.615, 0.30))
+        fig, ax = cs.card(
+            figsize=(9.0, 4.5), field="money", rect=(0.075, 0.30, 0.615, 0.30)
+        )
         shown_total = total * (t if stage == "grow" else 1.0)
         left = 0.0
         for name, val, col in segs:
@@ -62,23 +67,52 @@ def main():
             alpha = 1.0
             if stage == "pulse" and col == cs.CORAL:
                 alpha = 0.74 + 0.26 * (0.5 + 0.5 * math.cos(2 * math.pi * t))
-            ax.add_patch(FancyBboxPatch(
-                (left, -0.30), w, 0.60,
-                boxstyle="round,pad=0,rounding_size=0.06",
-                fc=col, ec="none", alpha=alpha, zorder=4))
+            ax.add_patch(
+                FancyBboxPatch(
+                    (left, -0.30),
+                    w,
+                    0.60,
+                    boxstyle="round,pad=0,rounding_size=0.06",
+                    fc=col,
+                    ec="none",
+                    alpha=alpha,
+                    zorder=4,
+                )
+            )
             if w > val * 0.92 and w > total * 0.09:
-                ax.text(left + w / 2, 0, f"{name}\nP{val:.2f}  {pct:.0f}%",
-                        ha="center", va="center", fontsize=9.0,
-                        color=cs.TEXT if col != "#33445c" else cs.BODY, zorder=6)
+                ax.text(
+                    left + w / 2,
+                    0,
+                    f"{name}\nP{val:.2f}  {pct:.0f}%",
+                    ha="center",
+                    va="center",
+                    fontsize=9.0,
+                    color=cs.TEXT if col != "#33445c" else cs.BODY,
+                    zorder=6,
+                )
             left += w
 
         if stage == "pulse":
-            ax.annotate("a spot swing moves ONLY this slice,\nand only on next month's bill",
-                        xy=(wesm / 2, 0.34), xytext=(total * 0.10, 1.15),
-                        fontsize=9.2, color=cs.CORAL, ha="left", zorder=8,
-                        arrowprops=dict(arrowstyle="->", color=cs.CORAL, lw=1.2))
-            ax.text(wesm / 2, -0.42, f"P{wesm:.2f}", ha="center", va="top",
-                    fontsize=9.0, color=cs.CORAL, zorder=6)
+            ax.annotate(
+                "a spot swing moves ONLY this slice,\nand only on next month's bill",
+                xy=(wesm / 2, 0.34),
+                xytext=(total * 0.10, 1.15),
+                fontsize=9.2,
+                color=cs.CORAL,
+                ha="left",
+                zorder=8,
+                arrowprops=dict(arrowstyle="->", color=cs.CORAL, lw=1.2),
+            )
+            ax.text(
+                wesm / 2,
+                -0.42,
+                f"P{wesm:.2f}",
+                ha="center",
+                va="top",
+                fontsize=9.0,
+                color=cs.CORAL,
+                zorder=6,
+            )
 
         ax.set_xlim(-0.15, total + 0.15)
         ax.set_ylim(-1.15, 1.65)
@@ -87,18 +121,29 @@ def main():
         ax.set_xticklabels(["P0", f"P{total:.2f} per kWh"])
         ax.grid(False)
 
-        cs.title(fig, f"A WESM swing moves {wesm_pct:.0f}% of a Meralco bill, "
-                      "and only next month",
-                 f"The June 2026 residential rate, P{total:.2f}/kWh, split three ways.")
-        cs.payoff(fig, 0.745, 0.585, f"P{wesm:.2f}",
-                  f"of the P{total:.2f} rate rides\non the spot market",
-                  cs.CORAL, 34)
-        cs.source(fig,
-                  f"Meralco bought {espc * 100:.0f}% of its energy on WESM at "
-                  f"P{price:.2f}/kWh, so P{wesm:.2f}/kWh of the P{gen:.2f} "
-                  "generation charge is spot.\nThe other "
-                  f"{100 - espc * 100:.0f}% sits under contracts whose prices do "
-                  "not move with the spot market. From the Meralco June 2026 advisory.")
+        cs.title(
+            fig,
+            f"A WESM swing moves {wesm_pct:.0f}% of a Meralco bill, "
+            "and only next month",
+            f"The June 2026 residential rate, P{total:.2f}/kWh, split three ways.",
+        )
+        cs.result_label(
+            fig,
+            0.745,
+            0.585,
+            f"P{wesm:.2f}",
+            f"of the P{total:.2f} rate rides\non the spot market",
+            cs.CORAL,
+            34,
+        )
+        cs.source(
+            fig,
+            f"Meralco bought {espc * 100:.0f}% of its energy on WESM at "
+            f"P{price:.2f}/kWh, so P{wesm:.2f}/kWh of the P{gen:.2f} "
+            "generation charge is spot.\nThe other "
+            f"{100 - espc * 100:.0f}% sits under contracts whose prices do "
+            "not move with the spot market. From the Meralco June 2026 advisory.",
+        )
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

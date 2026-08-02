@@ -25,9 +25,9 @@ const hour = (h: number): ChronoHour => ({
 
 const run: SavedRun = {
   id: 'r1',
-  name: 'DC wave, 2026-06-20',
+  name: 'Added demand, 2026-06-20',
   savedAt: '2026-07-07T00:00:00.000Z',
-  scenarioName: 'DC wave',
+  scenarioName: 'Added demand',
   overrides: { 'region:luzon:demand_mw': 12000 },
   date: '2026-06-20',
   span: 'day',
@@ -52,14 +52,14 @@ describe('buildRunReport', () => {
   })
   it('is a self-contained document carrying the run identity', () => {
     expect(html).toContain('<!doctype html>')
-    expect(html).toContain('DC wave')
+    expect(html).toContain('Added demand')
     expect(html).toContain('2026-06-20')
-    expect(html).toContain(`engine v${ENGINE_VERSION}`)
+    expect(html).toContain(`calculation version ${ENGINE_VERSION}`)
     expect(html).not.toContain('<script')
   })
   it('carries the scenario edits, binding tally, emissions, and disclaimer', () => {
-    expect(html).toContain('region')
-    expect(html).toContain('demand_mw')
+    expect(html).toContain('Grid')
+    expect(html).toContain('Demand (MW)')
     expect(html).toContain('Leyte-Luzon at limit')
     expect(html).toContain('tCO2')
     expect(html).toContain('legitimate explanations')
@@ -73,9 +73,9 @@ describe('buildRunReport', () => {
       },
       {}
     )
-    expect(withGen).toContain('<td>generator</td>')
-    expect(withGen).toContain('<td>luzon:SPI U1</td>')
-    expect(withGen).toContain('<td>capacity_mw</td>')
+    expect(withGen).toContain('<td>Power plant</td>')
+    expect(withGen).toContain('<td>luzon / SPI U1</td>')
+    expect(withGen).toContain('<td>Available capacity (MW)</td>')
   })
   it('contains no em-dashes and escapes markup', () => {
     expect(html).not.toContain('—')

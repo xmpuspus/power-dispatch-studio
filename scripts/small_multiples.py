@@ -3,11 +3,12 @@
 
 Three panels on one shared price axis, so the comparison is adjacency rather
 than memory. Each grid's curve draws in together with the others, and the card
-carries the payoff a reader would otherwise have to work out: how much more the
+carries the result a reader would otherwise have to work out: how much more the
 steepest island charges at its own busiest hour than the flattest one.
 
 Reads web/data/price_load.json. Output docs/small-multiples.gif.
 """
+
 import json
 import os
 import sys
@@ -42,17 +43,22 @@ def main():
         fig = plt.figure(figsize=(10.6, 5.0), facecolor=cs.BG)
         lo, hi = cs.FIELDS["dusk"]
         gnd = fig.add_axes([0, 0, 1, 1], zorder=0)
-        gnd.imshow(np.linspace(0, 1, 256).reshape(-1, 1),
-                   cmap=LinearSegmentedColormap.from_list("f", [hi, lo]),
-                   aspect="auto", extent=(0, 1, 0, 1), interpolation="bicubic")
+        gnd.imshow(
+            np.linspace(0, 1, 256).reshape(-1, 1),
+            cmap=LinearSegmentedColormap.from_list("f", [hi, lo]),
+            aspect="auto",
+            extent=(0, 1, 0, 1),
+            interpolation="bicubic",
+        )
         gnd.set_xticks([])
         gnd.set_yticks([])
         for s in gnd.spines.values():
             s.set_visible(False)
 
         for i, (key, label) in enumerate(GRIDS):
-            ax = fig.add_axes([0.065 + i * 0.243, 0.235, 0.205, 0.495],
-                              facecolor="none", zorder=2)
+            ax = fig.add_axes(
+                [0.065 + i * 0.243, 0.235, 0.205, 0.495], facecolor="none", zorder=2
+            )
             cs.tufte(ax)
             curve = D["curve"][key]
             x = np.array([c["gen_mw"] for c in curve], float)
@@ -61,20 +67,44 @@ def main():
             n = max(2, int(round(len(x) * t)))
             col = cs.REGION[key]
 
-            ax.scatter([p[0] for p in scat],
-                       [min(max(p[1], -3), pmax) for p in scat],
-                       s=3.5, alpha=0.05, color=col, edgecolors="none",
-                       zorder=1, rasterized=True)
-            cs.glow(ax, x[:n], y[:n], col, lw=1.9, zorder=3,
-                    passes=((5.5, 0.08), (2.8, 0.13)))
+            ax.scatter(
+                [p[0] for p in scat],
+                [min(max(p[1], -3), pmax) for p in scat],
+                s=3.5,
+                alpha=0.05,
+                color=col,
+                edgecolors="none",
+                zorder=1,
+                rasterized=True,
+            )
+            cs.glow(
+                ax,
+                x[:n],
+                y[:n],
+                col,
+                lw=1.9,
+                zorder=3,
+                passes=((5.5, 0.08), (2.8, 0.13)),
+            )
             cs.dot(ax, x[n - 1], y[n - 1], col, size=20, zorder=6)
-            ax.text(0.0, 1.06, label, transform=ax.transAxes, fontsize=11.5,
-                    color=col, ha="left", va="bottom", zorder=6)
+            ax.text(
+                0.0,
+                1.06,
+                label,
+                transform=ax.transAxes,
+                fontsize=11.5,
+                color=col,
+                ha="left",
+                va="bottom",
+                zorder=6,
+            )
             ax.set_ylim(-2, pmax)
             ax.set_xlim(x.min() - 200, x.max() + 200)
             ax.set_xticks([x.min(), (x.min() + x.max()) / 2, x.max()])
-            ax.set_xticklabels([klab(x.min()), klab((x.min() + x.max()) / 2),
-                                klab(x.max())], fontsize=8.2)
+            ax.set_xticklabels(
+                [klab(x.min()), klab((x.min() + x.max()) / 2), klab(x.max())],
+                fontsize=8.2,
+            )
             if i == 0:
                 ax.set_ylabel("WESM price, PhP per kWh", fontsize=9)
             else:
@@ -82,19 +112,31 @@ def main():
             if i == 1:
                 ax.set_xlabel("dispatched generation, MW", fontsize=9)
 
-        cs.title(fig, "The same load does different things on three islands",
-                 "Average WESM price at each level of dispatched generation, "
-                 "over the archive window. One shared price axis.")
+        cs.title(
+            fig,
+            f"At their busiest sampled loads, {steep.capitalize()} reaches "
+            f"P{tops[steep]:.0f}/kWh; {flat.capitalize()} reaches P{tops[flat]:.0f}",
+            "Average WESM price at each level of dispatched generation, "
+            "over the archive window. One shared price axis.",
+        )
         if t > 0.9:
-            cs.payoff(fig, 0.815, 0.575, f"P{tops[steep]:.0f}",
-                      f"{steep.capitalize()} at its busiest, against\n"
-                      f"P{tops[flat]:.0f} on {flat.capitalize()}",
-                      cs.REGION[steep], 30)
-        cs.source(fig,
-                  "Each faint dot is one 5-minute interval. Luzon carries the "
-                  "volume and climbs a long way. The smaller grids stay flat "
-                  "until they run tight.\nFrom IEMOP RTDSUM generation joined "
-                  "to LWAPF price, archived.")
+            cs.result_label(
+                fig,
+                0.815,
+                0.575,
+                f"P{tops[steep]:.0f}",
+                f"{steep.capitalize()} at its busiest, against\n"
+                f"P{tops[flat]:.0f} on {flat.capitalize()}",
+                cs.REGION[steep],
+                30,
+            )
+        cs.source(
+            fig,
+            "Each faint dot is one 5-minute interval. All three panels use "
+            "the same price scale, so their levels can be compared directly.\n"
+            "From IEMOP RTDSUM generation joined "
+            "to LWAPF price, archived.",
+        )
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=100, facecolor=cs.BG)
         plt.close(fig)
 

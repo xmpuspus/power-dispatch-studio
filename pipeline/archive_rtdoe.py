@@ -5,9 +5,8 @@ offers.py keeps one representative book per hour (the HH:05 interval) because
 an hourly LP only needs one book per hour. But the raw 5-minute detail is only
 recoverable inside IEMOP's rolling ~90-day publication window: once a day ages
 out, its intra-hour offer curves are gone for good. This module captures that
-detail for a curated set of sample days and commits it, so the 5-minute
-as-bid replay (roadmap item 10) has a permanent, public source no one else
-keeps.
+detail for a selected set of sample days and commits it, so the 5-minute
+as-bid replay has a permanent public source in this repository.
 
 For each sample day it fetches the 24 hourly RTDOE files (and the matching
 self-scheduled-nomination files), groups rows by TIME_INTERVAL, and writes one
@@ -19,10 +18,11 @@ and same compaction as offers.py, so the books are drop-in engine inputs at
 Resilient by design: a day whose files have aged out of the window is logged
 and skipped, not fatal, so one lost day cannot abort the whole capture.
 
-    python3 pipeline/archive_rtdoe.py --sample          # the curated set
+    python3 pipeline/archive_rtdoe.py --sample          # the selected set
     python3 pipeline/archive_rtdoe.py --days 2026-05-29,2026-06-17
     python3 pipeline/archive_rtdoe.py --sample --force   # re-derive existing
 """
+
 from __future__ import annotations
 
 import argparse
@@ -47,7 +47,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(HERE, "..", "data", "derived", "rtdoe_5min")
 SCHEMA_VERSION = 1
 
-# Curated sample days: a volatility/scarcity spread across the post-suspension
+# Selected sample days: a volatility/scarcity spread across the post-suspension
 # window (WESM resumed 2026-05-01), oldest days first because early-May is
 # nearest the ~90-day window edge and at most risk of aging out. Selected from
 # the observed Luzon LWAP series (web/data/prices.json): scarcity peaks, a
@@ -122,13 +122,11 @@ def derive_day(date: str) -> dict:
         rows = _fetch_hour_csv(SLUG, "RTDOE", stamp)
         time.sleep(SLEEP)
         if rows is None:
-            raise RuntimeError(f"rtdoe: fetch failed for {date} h{h} "
-                               f"(RTDOE_{stamp})")
+            raise RuntimeError(f"rtdoe: fetch failed for {date} h{h} (RTDOE_{stamp})")
         ssn = _fetch_hour_csv(SSN_SLUG, "RTDNE", stamp)
         time.sleep(SLEEP)
         if ssn is None:
-            raise RuntimeError(f"rtdoe: fetch failed for {date} h{h} "
-                               f"(RTDNE_{stamp})")
+            raise RuntimeError(f"rtdoe: fetch failed for {date} h{h} (RTDNE_{stamp})")
         for key, grids in _grid_rows_by_interval(rows).items():
             slot = per_interval.setdefault(key, {})
             for g, segs in grids.items():
@@ -161,17 +159,21 @@ def derive_day(date: str) -> dict:
         "max_blocks": MAX_BLOCKS,
         "n_intervals": len(intervals),
         "intervals": intervals,
-        "source": ("IEMOP rtd-generation-offers (RTDOE) + "
-                   "rtd-self-scheduled-nominations (RTDNE), per 5-minute "
-                   "interval"),
-        "note": ("Full 5-minute offer books for a sample day. Each interval "
-                 "is that interval's per-grid supply stack, all resource "
-                 "segments pooled and compacted to at most "
-                 f"{MAX_BLOCKS} price blocks (MW-weighted merges), self-"
-                 "scheduled nominations added as a price-taking block at the "
-                 f"offer floor ({OFFER_FLOOR} PhP/kWh). offers.py keeps only "
-                 "the HH:05 book per hour; this preserves the intra-hour "
-                 "detail that IEMOP's rolling window would otherwise erase."),
+        "source": (
+            "IEMOP rtd-generation-offers (RTDOE) + "
+            "rtd-self-scheduled-nominations (RTDNE), per 5-minute "
+            "interval"
+        ),
+        "note": (
+            "Full 5-minute offer books for a sample day. Each interval "
+            "is that interval's per-grid supply stack, all resource "
+            "segments pooled and compacted to at most "
+            f"{MAX_BLOCKS} price blocks (MW-weighted merges), self-"
+            "scheduled nominations added as a price-taking block at the "
+            f"offer floor ({OFFER_FLOOR} PhP/kWh). offers.py keeps only "
+            "the HH:05 book per hour; this preserves the intra-hour "
+            "detail that IEMOP's rolling window would otherwise erase."
+        ),
     }
 
 
@@ -181,7 +183,7 @@ def _existing_days() -> set[str]:
     out = set()
     for fn in os.listdir(OUT_DIR):
         if fn.startswith("RTDOE5_") and fn.endswith(".json"):
-            s = fn[len("RTDOE5_"):-len(".json")]
+            s = fn[len("RTDOE5_") : -len(".json")]
             out.add(f"{s[:4]}-{s[4:6]}-{s[6:]}")
     return out
 
@@ -196,7 +198,7 @@ def _latest_offer_days(n: int) -> list[str]:
     days = []
     for fn in os.listdir(offer_dir) if os.path.isdir(offer_dir) else []:
         if fn.startswith("OFFERD_") and fn.endswith(".json"):
-            s = fn[len("OFFERD_"):-len(".json")]
+            s = fn[len("OFFERD_") : -len(".json")]
             date = f"{s[:4]}-{s[4:6]}-{s[6:]}"
             if date not in have:
                 days.append(date)
@@ -205,15 +207,21 @@ def _latest_offer_days(n: int) -> list[str]:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--sample", action="store_true",
-                    help="capture the curated SAMPLE_DAYS set")
-    ap.add_argument("--latest", type=int, default=0, metavar="N",
-                    help="capture the N newest offer-available days not yet on "
-                         "disk (the compounding daily-cron mode)")
-    ap.add_argument("--days", default="",
-                    help="comma-separated YYYY-MM-DD list")
-    ap.add_argument("--force", action="store_true",
-                    help="re-derive days already on disk")
+    ap.add_argument(
+        "--sample", action="store_true", help="capture the selected SAMPLE_DAYS set"
+    )
+    ap.add_argument(
+        "--latest",
+        type=int,
+        default=0,
+        metavar="N",
+        help="capture the N newest offer-available days not yet on "
+        "disk (the compounding daily-cron mode)",
+    )
+    ap.add_argument("--days", default="", help="comma-separated YYYY-MM-DD list")
+    ap.add_argument(
+        "--force", action="store_true", help="re-derive days already on disk"
+    )
     args = ap.parse_args()
 
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -244,11 +252,13 @@ def main() -> int:
         with open(out, "w", encoding="utf-8") as fh:
             json.dump(data, fh, separators=(",", ":"))
         ok.append(date)
-        print(f"[ok]   {date}: {data['n_intervals']} intervals -> "
-              f"{os.path.getsize(out) // 1024} KB", flush=True)
+        print(
+            f"[ok]   {date}: {data['n_intervals']} intervals -> "
+            f"{os.path.getsize(out) // 1024} KB",
+            flush=True,
+        )
 
-    print(f"\ndone: {len(ok)} written, {len(skipped)} skipped, "
-          f"{len(failed)} failed")
+    print(f"\ndone: {len(ok)} written, {len(skipped)} skipped, {len(failed)} failed")
     if failed:
         print(f"failed (likely aged out of window): {', '.join(failed)}")
     return 0

@@ -539,7 +539,7 @@
   "commit_offer_php_kwh": 4.14,
   "src_min_load": "https://powerline.net.in/2023/04/04/flexibilisation-roadmap-aiming-for-tpps-to-operate-at-40-per-cent-minimum-technical-load/",
   "src_offer": "https://www.philstar.com/business/2026/01/05/2498730/wesm-prices-hit-fresh-lows-2025",
-  "note": "The commitment offer is anchored on the observed H1 2025 WESM average (P4.14/kWh), not fitted to the overnight trough. Where the grid's overnight demand still exceeds the committed tranche the modeled price does not move, and that gap stays in the residual.",
+  "note": "The commitment offer is anchored on the observed H1 2025 WESM average (P4.14/kWh), not fitted to the overnight trough. Where the grid's overnight demand still exceeds the committed tranche the modeled price does not move, and that difference stays in the reported gap.",
   "per_grid": {
    "luzon": {
     "mae_before_php_kwh": 4.488,
@@ -2645,7 +2645,7 @@
   "src_pumped_hydro": "http://www.cbkpower.com/project/kalayaan-pumped-storage-power-plant-kpspp/",
   "note": "Batteries (634 MW, DOE) plus Kalayaan pumped hydro (685 MW, CBK Power), both on Luzon (the national BESS placed on Luzon is a labeled simplification). They charge off-peak near the P4.14 commitment offer and discharge at about P5.17/kWh after round-trip loss. Energy-limited, so this firms the evening peak interval, not a sustained multi-day shortfall.",
   "dict_wave_peak_price": {
-   "reference": "95th-percentile evening demand plus the DICT 1.5 GW wave",
+   "reference": "95th-percentile evening demand plus the DICT 1.5 GW forecast",
    "demand_mw": 14418,
    "without_storage_php_kwh": 12.0,
    "with_storage_php_kwh": 6.0,

@@ -23,12 +23,12 @@ export function CaptureView({ runsList, grid }: { runsList: SavedRun[]; grid: Gr
     return (
       <div className="view">
         <Panel
-          title="Capture prices"
-          subtitle="Generation-weighted price per technology, for a saved run."
+          title="Average price earned by each technology (capture price)"
+          subtitle="Generation-weighted price by technology for a saved run."
         >
           <EmptyNote>
-            No saved run with hourly detail yet. Run a scenario first: open Chronology,
-            configure a scenario and a window, and press Save run.
+            No saved run has hourly detail yet. Open Hourly market replay, configure a
+            scenario and a date range, then press Save run.
           </EmptyNote>
         </Panel>
       </div>
@@ -49,14 +49,14 @@ export function CaptureView({ runsList, grid }: { runsList: SavedRun[]; grid: Gr
     },
     {
       key: 'cap',
-      header: 'Capture price',
+      header: 'Price earned (capture price)',
       align: 'right',
       mono: true,
       render: (r) => php(r.capture_price_php_kwh, 3),
     },
     {
       key: 'rate',
-      header: 'Capture rate',
+      header: 'Share of market average (capture rate)',
       align: 'right',
       mono: true,
       render: (r) =>
@@ -68,7 +68,7 @@ export function CaptureView({ runsList, grid }: { runsList: SavedRun[]; grid: Gr
     <div className="view">
       <div className="chrono__controls">
         <label className="chrono__ctl">
-          Run
+          Saved run
           <select
             className="ribbon__select"
             value={run.id}
@@ -85,18 +85,18 @@ export function CaptureView({ runsList, grid }: { runsList: SavedRun[]; grid: Gr
       </div>
 
       <Panel
-        title={`Capture prices, ${cap(grid)}`}
-        subtitle="Generation-weighted average price per technology over the run's window: sum(generation times price) divided by sum(generation)."
+        title={`Average price earned by each technology, ${cap(grid)}`}
+        subtitle="The capture price is the generation-weighted average over the saved run. It equals total hourly generation times price, divided by total generation."
       >
         <DataGrid columns={cols} rows={rows} getKey={(r) => r.fuel} />
       </Panel>
 
       <p className="note">
-        Generation-weighted capture price per technology for the selected run, useful for
-        GEA and project revenue analysis. Capture rate is the capture price divided by
-        this run's time-average price on {cap(grid)}: below 100% means the technology
-        earns less than the flat average, the usual solar and wind story as penetration
-        rises.
+        The generation-weighted capture price helps assess Green Energy Auction (GEA) bids
+        and project revenue. The capture rate divides that price by the time-average price
+        in {cap(grid)}. A rate below 100% means the technology earns less than the
+        market's flat average, which often occurs for solar and wind as more capacity
+        enters the market.
       </p>
     </div>
   )

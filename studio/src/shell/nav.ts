@@ -1,11 +1,5 @@
-// The studio's information architecture, in one place.
-//
-// The old explorer sorted 39 destinations by what the model calls them
-// (Objects / Solution / Analysis). A market analyst does not arrive with an
-// object class in mind, they arrive with a question: what cleared tonight,
-// is there headroom, where can 300 MW sit, what does it do to the bill.
-// So the groups below are those questions, and every destination keeps its
-// old Nav value so the panes behind them do not change.
+// The studio groups its 39 views by the questions users ask about the market.
+// Each destination keeps its existing Nav value so the view routing stays stable.
 
 import type { ClassId } from '../studio/model'
 
@@ -76,12 +70,12 @@ export type Group = {
 export const GROUPS: Group[] = [
   {
     id: 'tonight',
-    label: "Tonight's market",
+    label: "How today's market clears",
     dests: [
       {
         slug: 'chronology',
-        label: 'Chronology',
-        hint: 'Every hour of one observed day, three grids cleared together',
+        label: 'Hourly market replay',
+        hint: 'Every hour of one recorded day, three grids cleared together',
         nav: { kind: 'sol', id: 'chrono' },
         live: true,
         scoped: true,
@@ -105,8 +99,8 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'merit-order',
-        label: 'Merit order',
-        hint: 'The stack that clears, cheapest unit to the marginal one',
+        label: 'Lowest-cost-first dispatch (merit order)',
+        hint: 'Which plants run, from the cheapest through the price-setting unit',
         nav: { kind: 'sol', id: 'merit' },
         live: true,
         scoped: true,
@@ -115,14 +109,14 @@ export const GROUPS: Group[] = [
       {
         slug: 'marginal-units',
         label: 'Marginal units',
-        hint: 'Which plant sets the price, and how often',
+        hint: 'The price-setting plant and its frequency',
         nav: { kind: 'sol', id: 'marginal' },
         scoped: true,
         alias: 'price setter frequency',
       },
       {
         slug: 'native-week',
-        label: 'Native week',
+        label: 'Inter-day storage (168 hours)',
         hint: '168 hours solved as one program, storage carried across midnight',
         nav: { kind: 'analysis', id: 'week' },
         scoped: true,
@@ -132,27 +126,27 @@ export const GROUPS: Group[] = [
   },
   {
     id: 'headroom',
-    label: 'Is there headroom',
+    label: 'Can supply cover demand',
     dests: [
       {
         slug: 'reliability',
-        label: 'Reliability',
-        hint: 'Loss-of-load probability from forced-outage Monte Carlo',
+        label: 'Power-shortfall risk',
+        hint: 'Chance of a shortfall (LOLP) across simulated random plant outages',
         nav: { kind: 'sol', id: 'reliability' },
         live: true,
         alias: 'lolp monte carlo outage risk',
       },
       {
         slug: 'adequacy',
-        label: 'Adequacy',
+        label: 'Supply after scheduled outages',
         hint: 'Whether supply covers demand across the outage schedule',
         nav: { kind: 'phase', id: 'pasa' },
         alias: 'pasa margin outlook',
       },
       {
         slug: 'n-1',
-        label: 'N-1 contingency',
-        hint: 'What the margin does when the largest unit trips',
+        label: 'Loss of one major unit (N-1)',
+        hint: 'How spare capacity changes when the largest unit trips',
         nav: { kind: 'sol', id: 'n1' },
         live: true,
         scoped: true,
@@ -160,7 +154,7 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'load-sweep',
-        label: 'Load sweep',
+        label: 'Price as demand grows',
         hint: 'Price against demand, swept across the whole range',
         nav: { kind: 'sol', id: 'sweep' },
         live: true,
@@ -169,7 +163,7 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'window-band',
-        label: 'Window band',
+        label: 'Price range across recorded days',
         hint: 'The price band the archive window actually produced',
         nav: { kind: 'sol', id: 'distribution' },
         live: true,
@@ -178,7 +172,7 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'price-duration',
-        label: 'Price duration',
+        label: 'Hours above each price',
         hint: 'Hours at or above each price, sorted',
         nav: { kind: 'sol', id: 'duration' },
         scoped: true,
@@ -188,35 +182,35 @@ export const GROUPS: Group[] = [
   },
   {
     id: 'siting',
-    label: 'Where it can sit',
+    label: 'Where new demand can connect',
     dests: [
       {
         slug: 'siting',
         label: 'Siting a new load',
-        hint: 'What a named site can draw, hour by hour, over its own lines',
+        hint: 'Hourly load a named site can draw through its own lines',
         nav: { kind: 'analysis', id: 'sites' },
         scoped: true,
         alias: 'data center site pax silica connect headroom',
       },
       {
         slug: 'coupled-flows',
-        label: 'Coupled flows',
-        hint: 'What moves over the HVDC links, and when they bind',
+        label: 'Power between island grids',
+        hint: 'What moves over the high-voltage direct-current links and when a link reaches its limit',
         nav: { kind: 'sol', id: 'flows' },
         live: true,
         alias: 'hvdc corridor interconnector leyte',
       },
       {
         slug: 'nodal-prices',
-        label: 'Nodal prices',
-        hint: 'Locational deviation from the regional price, per bus',
+        label: 'Prices at grid connection points (nodal prices)',
+        hint: 'How each connection point differs from its regional price',
         nav: { kind: 'analysis', id: 'nodal' },
         scoped: true,
         alias: 'lmp bus dipcef locational',
       },
       {
         slug: 'regional-split',
-        label: 'Regional split',
+        label: 'Generation by island grid',
         hint: 'How the solved dispatch divides across the three grids',
         nav: { kind: 'sol', id: 'regions' },
         live: true,
@@ -231,21 +225,21 @@ export const GROUPS: Group[] = [
       {
         slug: 'bill-impact',
         label: 'Bill impact',
-        hint: 'What a WESM move does to a Meralco household bill',
+        hint: 'How a spot-price change in WESM affects a Meralco household bill',
         nav: { kind: 'analysis', id: 'bill' },
         alias: 'meralco household generation charge pass through retail',
       },
       {
         slug: 'capture-prices',
-        label: 'Capture prices',
-        hint: 'What each fuel earns against the average, by shape',
+        label: 'Average price earned by each technology (capture price)',
+        hint: 'What each technology earns compared with the market average',
         nav: { kind: 'analysis', id: 'capture' },
         scoped: true,
         alias: 'capture rate solar cannibalisation revenue',
       },
       {
         slug: 'forward-prices',
-        label: 'Forward prices',
+        label: 'Possible future price range',
         hint: 'The forward band the archive window supports',
         nav: { kind: 'analysis', id: 'forward' },
         scoped: true,
@@ -253,15 +247,15 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'market-power',
-        label: 'Market power',
-        hint: 'How concentrated the clearing stack is, and who cannot be replaced',
+        label: 'Supplier concentration and market power',
+        hint: 'How much capacity the largest suppliers control and whether the grid can replace them',
         nav: { kind: 'analysis', id: 'market' },
         alias: 'hhi concentration supplier residual supply index rsi',
       },
       {
         slug: 'reserve-market',
-        label: 'Reserve market',
-        hint: 'What co-clearing reserves costs the energy price',
+        label: 'Backup capacity market (reserves)',
+        hint: 'How buying backup capacity with energy affects the energy price',
         nav: { kind: 'analysis', id: 'reserve' },
         scoped: true,
         alias: 'ancillary services co-clear regulating',
@@ -269,7 +263,7 @@ export const GROUPS: Group[] = [
       {
         slug: 'emissions',
         label: 'Emissions',
-        hint: 'Tonnes per hour from the solved stack, and what a carbon price moves',
+        hint: 'Solved tonnes per hour plus the carbon-price effect',
         nav: { kind: 'analysis', id: 'emissions' },
         alias: 'carbon co2 intensity',
       },
@@ -277,33 +271,33 @@ export const GROUPS: Group[] = [
   },
   {
     id: 'buildout',
-    label: 'The build-out',
+    label: 'What new capacity is needed',
     dests: [
       {
         slug: 'long-term',
-        label: 'Long-term',
-        hint: 'Capacity the long horizon needs, against the announced pipeline',
+        label: 'Long-term supply plan',
+        hint: 'Capacity needed over time compared with announced projects',
         nav: { kind: 'phase', id: 'lt' },
         alias: 'lt plan capacity expansion horizon',
       },
       {
         slug: 'expansion-mix',
-        label: 'Expansion mix',
-        hint: 'Which technology the least-cost build picks, and why',
+        label: 'Lowest-cost expansion mix',
+        hint: 'Technology chosen by the least-cost build and its cost basis',
         nav: { kind: 'analysis', id: 'expansion' },
         alias: 'build new entry technology screening',
       },
       {
         slug: 'multi-year-path',
-        label: 'Multi-year path',
-        hint: 'The price and margin path across years, not one day',
+        label: 'Prices and spare capacity by year',
+        hint: 'The price and margin path across years',
         nav: { kind: 'analysis', id: 'multiyear' },
         alias: 'trajectory 2028 2030 path',
       },
       {
         slug: 'portfolio',
-        label: 'Portfolio',
-        hint: 'What one owner holds, and what it earns',
+        label: 'Generator portfolio value',
+        hint: 'Assets and earnings for one owner',
         nav: { kind: 'analysis', id: 'portfolio' },
         alias: 'owner company fleet revenue',
       },
@@ -311,12 +305,12 @@ export const GROUPS: Group[] = [
   },
   {
     id: 'scenarios',
-    label: 'My scenarios',
+    label: 'Build and compare scenarios',
     dests: [
       {
         slug: 'quick-scenario',
-        label: 'Quick scenario',
-        hint: 'Drag a lever, the three grids re-clear live, no Run needed',
+        label: 'Quick what-if',
+        hint: 'Move a slider and all three grids recalculate immediately',
         nav: { kind: 'quick' },
         live: true,
         alias: 'lever slider what if simulate add data center storage',
@@ -331,22 +325,22 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'saved-runs',
-        label: 'Saved runs',
+        label: 'Saved simulation runs',
         hint: 'Runs kept in this browser, ready to restore',
         nav: { kind: 'runs' },
         alias: 'history restore bookmark',
       },
       {
         slug: 'cross-run',
-        label: 'Cross-run',
+        label: 'Compare one measure across runs',
         hint: 'One measure tracked across every saved run',
         nav: { kind: 'analysis', id: 'crossrun' },
         alias: 'across runs comparison trend',
       },
       {
         slug: 'ensembles',
-        label: 'Ensembles',
-        hint: 'Many draws of the same scenario, and the spread they give',
+        label: 'Range across repeated simulations',
+        hint: 'Repeated simulations of one scenario and the range of results',
         nav: { kind: 'analysis', id: 'ensemble' },
         alias: 'sampling uncertainty draws band',
       },
@@ -354,20 +348,20 @@ export const GROUPS: Group[] = [
   },
   {
     id: 'trust',
-    label: 'Is the model right',
+    label: 'Check the model against market records',
     dests: [
       {
         slug: 'backcast',
-        label: 'Backcast',
+        label: 'Historical replay',
         hint: 'Every market day replayed against the observed price',
         nav: { kind: 'analysis', id: 'backcast' },
         scoped: true,
-        alias: 'validation mae bias correlation calibration proof',
+        alias: 'validation mae bias correlation historical comparison',
       },
       {
         slug: 'loss-validation',
-        label: 'Loss validation',
-        hint: 'Whether the loss surface reproduces the observed nodal spread',
+        label: 'Transmission-loss check',
+        hint: 'Whether estimated transmission losses reproduce recorded price differences between connection points',
         nav: { kind: 'analysis', id: 'lossval' },
         alias: 'losses surface nodal check',
       },
@@ -382,12 +376,12 @@ export const GROUPS: Group[] = [
   },
   {
     id: 'inputs',
-    label: 'Model inputs',
+    label: 'Review and edit model inputs',
     dests: [
       {
         slug: 'generators',
         label: 'Generators',
-        hint: 'Every sourced unit: capacity, fuel price, forced outage',
+        hint: 'Each sourced unit and its capacity, fuel price, and random-outage rate',
         nav: { kind: 'class', id: 'generator' },
         alias: 'plants units fleet capacity',
       },
@@ -400,8 +394,8 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'interfaces',
-        label: 'Interfaces',
-        hint: 'The corridor flow limits the solve must respect',
+        label: 'Inter-grid links',
+        hint: 'The power-flow limits between island grids',
         nav: { kind: 'class', id: 'interface' },
         alias: 'links limits hvdc transfer',
       },

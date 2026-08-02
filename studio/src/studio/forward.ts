@@ -1,5 +1,5 @@
-// Forward price scenarios (roadmap item 1): the reason a PH analyst opens a production-cost model.
-// Builds a forward price DISTRIBUTION per future year by sampling the observed
+// Forward price distributions for Philippine power-market scenarios.
+// Builds a forward price distribution per future year by sampling the recorded
 // day library, applying the DOE PDP peak-demand growth for that year, and
 // drawing joint operating states (hydrology, fuel price, a forced outage)
 // through the same day model the studio solves. Never a point forecast: a
@@ -62,7 +62,7 @@ export function pdpGrowth(
 
 export interface PolicyScenario {
   label: string
-  gasBudgetLuzonMwh?: number // Malampaya cliff: a firm gas fuel budget, or none
+  gasBudgetLuzonMwh?: number // daily Malampaya gas energy limit, or none
   carbonPhpPerTco2?: number // carbon price lever, added to each fuel's cost
 }
 
@@ -77,7 +77,7 @@ const OIL_TCO2 = 0.533
 
 /** A multi-year MEDIAN price trajectory per policy scenario to a long horizon:
  * the same PDP-growth draws as forwardPath, but the median line only, and each
- * scenario also carries a gas fuel budget (the Malampaya cliff) and a carbon
+ * scenario also carries a Malampaya gas energy limit and a carbon
  * price (both fed through the day model). The NDC-pathway and long-PSA view.
  * Composes items 1, 14 (gas budget) and 15 (carbon). Seeded and pure. */
 export function multiYearTrajectory(

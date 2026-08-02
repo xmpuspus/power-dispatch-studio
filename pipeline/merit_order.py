@@ -46,7 +46,7 @@ Measured, not assumed:
   - MOT's MW is CLEARED, not as-bid: summed per region it tracks RTDSUM
     generation at a ratio near 1.0 on the Visayas and Mindanao (a per-grid
     rtdsum_ratio is stored and gated at 5 percent). Luzon runs a small
-    percent high and that residual is open (see the baked note for the
+    percent high and that residual is open (see the generated note for the
     current figure; storage charging is ruled out). Resources show the
     cleared reading directly, a
     coal unit offering a flat 600 MW all day while its dispatched MW moves
@@ -67,6 +67,7 @@ commit only the compact daily JSON under data/derived/merit_order_daily/.
     python3 pipeline/merit_order.py --derive --limit 10
     python3 pipeline/merit_order.py --derive --from 2026-04-21
 """
+
 from __future__ import annotations
 
 import argparse
@@ -93,7 +94,7 @@ SCHEMA_VERSION = 1
 REGION = {"cluz": "luzon", "cvis": "visayas", "cmin": "mindanao"}
 GRIDS = ("luzon", "visayas", "mindanao")
 INTERVALS = 288
-# resource names are the heavy part of the artifact; they are kept at the
+# resource names are the largest part of the file; they are kept at the
 # hour's opening interval only, the same HH:05 book the offer stacks use
 NAME_MINUTE = 5
 # the dispatched total is a cleared-MW sum and RTDSUM is the operator's
@@ -109,8 +110,7 @@ NULL_SEED = 20260720
 def parse_member(text: str) -> tuple[str, list, list]:
     """(interval stamp, not-dispatched rows, dispatched rows) from one MOT
     member. Rows are (resource, mw, block, running_total)."""
-    lines = [ln for ln in text.splitlines()
-             if ln.strip() and ln.strip() != "EOF"]
+    lines = [ln for ln in text.splitlines() if ln.strip() and ln.strip() != "EOF"]
     if not lines:
         raise RuntimeError("empty MOT member")
     stamp = lines[0].strip()
@@ -130,8 +130,9 @@ def parse_member(text: str) -> tuple[str, list, list]:
         if len(parts) < 4:
             continue
         try:
-            cur.append((parts[0].strip(), float(parts[1]), int(parts[2]),
-                        float(parts[3])))
+            cur.append(
+                (parts[0].strip(), float(parts[1]), int(parts[2]), float(parts[3]))
+            )
         except ValueError:
             continue
     return stamp, nd, dp
@@ -230,10 +231,14 @@ def _luzon_balance(date: str) -> dict:
                     return float(r.get(k) or 0)
                 except ValueError:
                     return 0.0
+
             out[ts] = {
-                "gen": _f("GENERATION"), "imp": _f("MKT_IMPORT"),
-                "reqt": _f("MKT_REQT"), "loss": _f("LOSSES"),
-                "exp": _f("MKT_EXPORT")}
+                "gen": _f("GENERATION"),
+                "imp": _f("MKT_IMPORT"),
+                "reqt": _f("MKT_REQT"),
+                "loss": _f("LOSSES"),
+                "exp": _f("MKT_EXPORT"),
+            }
     return out
 
 
@@ -249,10 +254,8 @@ def _read_zip(path: str, date: str) -> dict:
                 member = f"rtd_smerit_{prefix}_{t}.csv"
                 if member not in names:
                     continue
-                stamp, nd, dp = parse_member(
-                    z.read(member).decode("utf-8", "replace"))
-                ts = _ts(stamp) or datetime.strptime(stamp,
-                                                     "%Y-%m-%d %H:%M:%S")
+                stamp, nd, dp = parse_member(z.read(member).decode("utf-8", "replace"))
+                ts = _ts(stamp) or datetime.strptime(stamp, "%Y-%m-%d %H:%M:%S")
                 out[(grid, ts)] = (nd, dp)
     return out
 
@@ -335,8 +338,9 @@ def derive_day(date: str, b64: str, name: str) -> dict:
                 if g == "luzon" and ts in bal:
                     b = bal[ts]
                     lz_gap.append(cut["dispatched_mw"] - obs)
-                    lz_bal_resid.append(b["gen"] + b["imp"] - b["reqt"]
-                                        - b["loss"] - b["exp"])
+                    lz_bal_resid.append(
+                        b["gen"] + b["imp"] - b["reqt"] - b["loss"] - b["exp"]
+                    )
                     lz_import.append(b["imp"])
             named = setters.get((g, ts))
             if named and dp:
@@ -365,13 +369,15 @@ def derive_day(date: str, b64: str, name: str) -> dict:
 
     for g in GRIDS:
         if not ratio[g]:
-            raise RuntimeError(f"merit order: no RTDSUM overlap for {date} "
-                               f"{g}; gate impossible")
+            raise RuntimeError(
+                f"merit order: no RTDSUM overlap for {date} {g}; gate impossible"
+            )
         mean_ratio = sum(ratio[g]) / len(ratio[g])
         if abs(mean_ratio - 1.0) > GATE_REL:
             raise RuntimeError(
                 f"merit order: {date} {g} dispatched total is "
-                f"{mean_ratio:.3f}x RTDSUM generation; refused")
+                f"{mean_ratio:.3f}x RTDSUM generation; refused"
+            )
 
     def _pct(pair):
         return round(100 * pair[0] / pair[1], 1) if pair[1] else None
@@ -395,54 +401,65 @@ def derive_day(date: str, b64: str, name: str) -> dict:
         "next_up": next_up,
         "above_marginal_mw_mean": {
             g: (round(sum(above[g]) / len(above[g]), 1) if above[g] else None)
-            for g in GRIDS},
+            for g in GRIDS
+        },
         "above_marginal_mw_max": {
-            g: (round(max(above[g]), 1) if above[g] else None) for g in GRIDS},
+            g: (round(max(above[g]), 1) if above[g] else None) for g in GRIDS
+        },
         "mcp_agreement": {
-            g: {"n_intervals": agree[g][1],
+            g: {
+                "n_intervals": agree[g][1],
                 "agree_pct": _pct(agree[g]),
                 "null_pct": _pct(null[g]),
-                "head_of_dispatched_pct": _pct(head[g])} for g in GRIDS},
-        "rtdsum_ratio": {g: round(sum(ratio[g]) / len(ratio[g]), 4)
-                         for g in GRIDS},
-        "note": ("The operator's own dispatch cut per region per 5-minute "
-                 "RTD interval, from IEMOP's Regional Merit Order Table "
-                 "(MOT). Each interval's offer stack is split into an "
-                 "offers-not-dispatched and an offers-dispatched section "
-                 "whose running totals are zero-based at the cut and grow "
-                 "away from it. not_dispatched_mw is the operator's own "
-                 "published economic headroom, the MW offered and not "
-                 "taken; dispatched_mw is cleared MW, which tracks RTDSUM "
-                 "generation (rtdsum_ratio) rather than as-bid quantity. "
-                 "Headroom and dispatch are kept every 5 minutes; the "
-                 "marginal and next-up resource names are kept at the "
-                 "hour's opening interval to keep the daily small. "
-                 "marginal is the set of resources named on both sides of "
-                 "the cut, the partially cleared ones the clearing price "
-                 "runs through; next_up is the not-dispatched tranche "
-                 "nearest the cut. MOT carries no price column and its "
-                 "Block index is the same tranche index as the RTDOE offer "
-                 "books, so it is not a finer view of supply than those "
-                 "books already give."),
-        "validation_note": ("mcp_agreement scores this module's cut parse "
-                            "against the marginal resource IEMOP names in "
-                            "the MCP dataset: how often the MCP setter "
-                            "falls inside the partially-cleared set, beside "
-                            "null_pct, the same score for the same number "
-                            "of names drawn at random from that interval's "
-                            "dispatched resources. MCP and MOT come out of "
-                            "the same RTD solve, so this is a parse check, "
-                            "not independent confirmation of the setter. "
-                            "The head of the dispatched section is only the "
-                            "most expensive resource running and is a much "
-                            "worse match for the setter than the "
-                            "partially-cleared set."),
-        "src": ("https://www.iemop.ph/market-data/"
-                "regional-merit-order-table-mot-files/"),
-        "src_setters": ("https://www.iemop.ph/market-data/"
-                        "rtd-market-clearing-price/"),
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+                "head_of_dispatched_pct": _pct(head[g]),
+            }
+            for g in GRIDS
+        },
+        "rtdsum_ratio": {g: round(sum(ratio[g]) / len(ratio[g]), 4) for g in GRIDS},
+        "note": (
+            "The operator's own dispatch cut per region per 5-minute "
+            "RTD interval, from IEMOP's Regional Merit Order Table "
+            "(MOT). Each interval's offer stack is split into an "
+            "offers-not-dispatched and an offers-dispatched section "
+            "whose running totals are zero-based at the cut and grow "
+            "away from it. not_dispatched_mw is the operator's own "
+            "published economic headroom, the MW offered and not "
+            "taken; dispatched_mw is cleared MW, which tracks RTDSUM "
+            "generation (rtdsum_ratio) rather than as-bid quantity. "
+            "Headroom and dispatch are kept every 5 minutes; the "
+            "marginal and next-up resource names are kept at the "
+            "hour's opening interval to keep the daily small. "
+            "marginal is the set of resources named on both sides of "
+            "the cut, the partially cleared ones the clearing price "
+            "runs through; next_up is the not-dispatched tranche "
+            "nearest the cut. MOT carries no price column and its "
+            "Block index is the same tranche index as the RTDOE offer "
+            "books, so it is not a finer view of supply than those "
+            "books already give."
+        ),
+        "validation_note": (
+            "mcp_agreement scores this module's cut parse "
+            "against the marginal resource IEMOP names in "
+            "the MCP dataset: how often the MCP setter "
+            "falls inside the partially-cleared set, beside "
+            "null_pct, the same score for the same number "
+            "of names drawn at random from that interval's "
+            "dispatched resources. MCP and MOT come out of "
+            "the same RTD solve, so this is a parse check, "
+            "not independent confirmation of the setter. "
+            "The head of the dispatched section is only the "
+            "most expensive resource running and is a much "
+            "worse match for the setter than the "
+            "partially-cleared set."
+        ),
+        "src": (
+            "https://www.iemop.ph/market-data/regional-merit-order-table-mot-files/"
+        ),
+        "src_setters": ("https://www.iemop.ph/market-data/rtd-market-clearing-price/"),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -478,8 +495,11 @@ def derive(dates: list[str]) -> None:
         with open(out, "w") as fh:
             json.dump(day, fh, indent=1)
         agr = day["mcp_agreement"]["luzon"]
-        print(f"derived {date} (luzon setter agreement "
-              f"{agr['agree_pct']}% vs null {agr['null_pct']}%)", flush=True)
+        print(
+            f"derived {date} (luzon setter agreement "
+            f"{agr['agree_pct']}% vs null {agr['null_pct']}%)",
+            flush=True,
+        )
 
 
 def _market_dates(frm: str, to: str) -> list[str]:
@@ -497,15 +517,22 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--derive", action="store_true")
     ap.add_argument("--from", dest="frm", default="2026-04-21")
-    ap.add_argument("--to", dest="to",
-                    default=(date_cls.today() - timedelta(days=6)).isoformat())
-    ap.add_argument("--limit", type=int, default=3,
-                    help="derive only the newest N underived days")
+    ap.add_argument(
+        "--to", dest="to", default=(date_cls.today() - timedelta(days=6)).isoformat()
+    )
+    ap.add_argument(
+        "--limit", type=int, default=3, help="derive only the newest N underived days"
+    )
     a = ap.parse_args()
     if a.derive:
         dates = _market_dates(a.frm, a.to)
         if a.limit:
-            underived = [dt for dt in dates if not os.path.isfile(
-                os.path.join(OUT_DIR, f"MOTD_{dt.replace('-', '')}.json"))]
-            dates = underived[-a.limit:]
+            underived = [
+                dt
+                for dt in dates
+                if not os.path.isfile(
+                    os.path.join(OUT_DIR, f"MOTD_{dt.replace('-', '')}.json")
+                )
+            ]
+            dates = underived[-a.limit :]
         derive(dates)

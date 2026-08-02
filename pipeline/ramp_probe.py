@@ -3,7 +3,7 @@
 ever asked to perform, and record why an hourly ramp constraint is not built.
 
 Background. The methodology used to say ramp rates "would require per-unit data
-the Philippine sources do not publish". That was false, and a round-10 audit
+the Philippine sources do not publish". That was false, and a later source check
 caught it: every RTDOE offer row carries a piecewise ramp curve
 (RR_BREAK_QUANTITY1-5 with RR_UP1-5 and RR_DOWN1-5, in MW per minute by MW
 band), populated on essentially every resource, in the same hourly file
@@ -35,6 +35,7 @@ replay is a different question this does not answer.
 
     python3 pipeline/ramp_probe.py --derive
 """
+
 from __future__ import annotations
 
 import argparse
@@ -56,12 +57,12 @@ GRIDS = ("luzon", "visayas", "mindanao")
 # quoted a single hour that happened to be the most favourable of six, and
 # called it a weekday when 2026-05-03 is a Sunday.
 SAMPLE_STAMPS = (
-    "202606220800",   # Mon, the hour of Luzon's worst observed demand rise
-    "202606101900",   # Wed evening peak
-    "202606071800",   # Sun evening peak
-    "202607010600",   # Wed morning pickup
-    "202605311800",   # Sun evening peak
-    "202605031000",   # Sun mid-morning (the previously published hour)
+    "202606220800",  # Mon, the hour of Luzon's worst observed demand rise
+    "202606101900",  # Wed evening peak
+    "202606071800",  # Sun evening peak
+    "202607010600",  # Wed morning pickup
+    "202605311800",  # Sun evening peak
+    "202605031000",  # Sun mid-morning (the previously published hour)
 )
 SRC = "https://www.iemop.ph/market-data/rtd-generation-offers/"
 
@@ -77,12 +78,12 @@ def _resource_rows(stamp: str) -> list[dict]:
     """One interval's rows: the offer book repeats each resource per 5-minute
     interval inside the hourly file, so score a single interval."""
     rows = _fetch_hour_csv("rtd-generation-offers", "RTDOE", stamp)
-    stamps = sorted({(r.get("TIME_INTERVAL") or "").strip()
-                     for r in rows if r.get("TIME_INTERVAL")})
+    stamps = sorted(
+        {(r.get("TIME_INTERVAL") or "").strip() for r in rows if r.get("TIME_INTERVAL")}
+    )
     if not stamps:
         return []
-    return [r for r in rows
-            if (r.get("TIME_INTERVAL") or "").strip() == stamps[0]]
+    return [r for r in rows if (r.get("TIME_INTERVAL") or "").strip() == stamps[0]]
 
 
 def _unit_ramp(r: dict, slowest: bool = False) -> tuple[float, float]:
@@ -91,7 +92,7 @@ def _unit_ramp(r: dict, slowest: bool = False) -> tuple[float, float]:
     block width, so summing them would double count.
 
     `slowest` takes the unit's WORST published band instead of its best. The
-    headline uses the best band, so the honest question is whether the verdict
+    headline uses the best band, so the relevant question is whether the verdict
     survives the pessimistic read; the output reports both so a reader does not
     have to take that on trust."""
     cap = max([_f(r.get(f"QUANTITY{i}")) for i in range(1, 12)] or [0.0])
@@ -123,8 +124,9 @@ def _online_set(stamp: str) -> set[str]:
     because an offline machine cannot. Returns an empty set when the day is not
     derived, and callers then fall back to the offered basis rather than
     reporting a fleet of zero."""
-    path = os.path.join(HERE, "..", "data", "derived", "nodal_daily",
-                        f"NODALD_{stamp[:8]}.json")
+    path = os.path.join(
+        HERE, "..", "data", "derived", "nodal_daily", f"NODALD_{stamp[:8]}.json"
+    )
     if not os.path.isfile(path):
         return set()
     try:
@@ -148,9 +150,10 @@ def _fleet_for_hour(stamp: str) -> dict:
     if not rows:
         return {}
     online = _online_set(stamp)
-    acc = {k: {g: 0.0 for g in GRIDS}
-           for k in ("offered_best", "offered_slow", "online_best",
-                     "online_slow")}
+    acc = {
+        k: {g: 0.0 for g in GRIDS}
+        for k in ("offered_best", "offered_slow", "online_best", "online_slow")
+    }
     for r in rows:
         g = REGION_GRID.get((r.get("REGION_NAME") or "").strip())
         if not g:
@@ -171,8 +174,10 @@ def _fleet_for_hour(stamp: str) -> dict:
 def derive(profiles: dict, stamp: str = SAMPLE_STAMPS[0]) -> dict:
     rows = _resource_rows(stamp)
     if not rows:
-        return {"available": False,
-                "note": "RTDOE hour unavailable; ramp probe not derived."}
+        return {
+            "available": False,
+            "note": "RTDOE hour unavailable; ramp probe not derived.",
+        }
 
     inert = binding = 0
     ratios: list[float] = []
@@ -192,12 +197,14 @@ def derive(profiles: dict, stamp: str = SAMPLE_STAMPS[0]) -> dict:
             inert += 1
         else:
             binding += 1
-            tightest.append({
-                "resource": (r.get("RESOURCE_NAME") or "").strip(),
-                "capacity_mw": round(cap, 1),
-                "ramp_mw_per_min": up,
-                "pct_of_range_per_hour": round(100 * hourly / cap, 1),
-            })
+            tightest.append(
+                {
+                    "resource": (r.get("RESOURCE_NAME") or "").strip(),
+                    "capacity_mw": round(cap, 1),
+                    "ramp_mw_per_min": up,
+                    "pct_of_range_per_hour": round(100 * hourly / cap, 1),
+                }
+            )
         g = REGION_GRID.get((r.get("REGION_NAME") or "").strip())
         if g:
             # a unit cannot move more than its own range inside the hour
@@ -216,14 +223,20 @@ def derive(profiles: dict, stamp: str = SAMPLE_STAMPS[0]) -> dict:
     for st in SAMPLE_STAMPS:
         acc = _fleet_for_hour(st)
         if acc:
-            per_hour[st] = {k: {g: round(v[g], 1) for g in GRIDS}
-                            for k, v in acc.items()}
+            per_hour[st] = {
+                k: {g: round(v[g], 1) for g in GRIDS} for k, v in acc.items()
+            }
     bases = ("offered_best", "offered_slow", "online_best", "online_slow")
     floors = {}
     for basis in bases:
         floors[basis] = {
-            g: (round(min(h[basis][g] for h in per_hour.values()) / worst[g], 2)
-                if per_hour and worst.get(g) else None) for g in GRIDS}
+            g: (
+                round(min(h[basis][g] for h in per_hour.values()) / worst[g], 2)
+                if per_hour and worst.get(g)
+                else None
+            )
+            for g in GRIDS
+        }
     headroom = floors["offered_best"]
     strict = floors["online_slow"]
     strict_vals = [v for v in strict.values() if v is not None]
@@ -236,12 +249,13 @@ def derive(profiles: dict, stamp: str = SAMPLE_STAMPS[0]) -> dict:
         "hourly_inert_resources": inert,
         "hourly_inert_pct": round(100 * inert / scored, 1) if scored else None,
         "hourly_binding_resources": binding,
-        "median_hourly_range_over_capacity": (round(median(ratios), 2)
-                                              if ratios else None),
-        "fleet_ramp_mw_per_hour": {g: round(fleet_mw_per_h[g], 1)
-                                   for g in GRIDS},
+        "median_hourly_range_over_capacity": (
+            round(median(ratios), 2) if ratios else None
+        ),
+        "fleet_ramp_mw_per_hour": {g: round(fleet_mw_per_h[g], 1) for g in GRIDS},
         "fleet_ramp_slowest_band_mw_per_hour": {
-            g: round(fleet_slow_mw_per_h[g], 1) for g in GRIDS},
+            g: round(fleet_slow_mw_per_h[g], 1) for g in GRIDS
+        },
         "worst_observed_demand_rise_mw_per_hour": worst,
         "fleet_ramp_over_worst_demand_rise": headroom,
         "n_sample_hours": len(per_hour),
@@ -252,25 +266,30 @@ def derive(profiles: dict, stamp: str = SAMPLE_STAMPS[0]) -> dict:
         "headroom_floors": floors,
         "strict_headroom_online_slowest_band": strict,
         "tightest_units": tightest[:8],
-        "verdict": ("would_bind" if binds_anywhere
-                    else "measured_inert_at_hourly_resolution"),
-        "note": ("Ramp rates ARE published: every RTDOE offer row carries a "
-                 "piecewise MW-per-minute curve by MW band, on essentially "
-                 "every resource. This measures whether an hourly ramp "
-                 "constraint would bind before building one. It would not, at "
-                 "this engine's resolution: the fleet's one-hour ramp "
-                 "capability runs several times the largest hour-to-hour "
-                 "demand rise anywhere in the archive, so a per-fuel hourly "
-                 "ramp limit is inert by construction and is measured out "
-                 "rather than built. Read the scope before re-using this: it "
-                 "is a grid and fuel-aggregate result at HOURLY resolution. A "
-                 "per-unit model would still see the binding minority counted "
-                 "here (the tightest units are oil and coal machines moving "
-                 "well under a tenth of their range per hour), and a 5-minute "
-                 "replay is a separate question this does not answer."),
+        "verdict": (
+            "would_bind" if binds_anywhere else "does_not_bind_at_hourly_resolution"
+        ),
+        "note": (
+            "IEMOP publishes ramp rates in each RTDOE offer row as a "
+            "piecewise MW-per-minute curve by MW band, on essentially "
+            "every resource. This measures whether an hourly ramp "
+            "constraint would affect the result. It does not at "
+            "this engine's resolution: the fleet's one-hour ramp "
+            "capability runs several times the largest hour-to-hour "
+            "demand rise anywhere in the archive, so a per-fuel hourly "
+            "ramp limit cannot bind in this hourly model "
+            "rather than built. Read the scope before re-using this: it "
+            "is a grid and fuel-aggregate result at HOURLY resolution. A "
+            "per-unit model would still see the binding minority counted "
+            "here (the tightest units are oil and coal machines moving "
+            "well under a tenth of their range per hour), and a 5-minute "
+            "replay is a separate question this does not answer."
+        ),
         "src": SRC,
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -288,15 +307,21 @@ def main() -> None:
     if not out.get("available"):
         print(out.get("note"))
         return
-    print(f"resources with a published ramp curve: "
-          f"{out['n_resources_with_published_ramp']}")
-    print(f"hourly-inert resources: {out['hourly_inert_resources']} "
-          f"({out['hourly_inert_pct']}%)")
+    print(
+        f"resources with a published ramp curve: "
+        f"{out['n_resources_with_published_ramp']}"
+    )
+    print(
+        f"hourly-inert resources: {out['hourly_inert_resources']} "
+        f"({out['hourly_inert_pct']}%)"
+    )
     print("\nfleet one-hour ramp vs worst observed demand rise:")
     for g in GRIDS:
-        print(f"  {g:9s} {out['fleet_ramp_mw_per_hour'][g]:9,.0f} MW/h vs "
-              f"{out['worst_observed_demand_rise_mw_per_hour'][g]:7,.0f} MW/h"
-              f"  ({out['fleet_ramp_over_worst_demand_rise'][g]}x)")
+        print(
+            f"  {g:9s} {out['fleet_ramp_mw_per_hour'][g]:9,.0f} MW/h vs "
+            f"{out['worst_observed_demand_rise_mw_per_hour'][g]:7,.0f} MW/h"
+            f"  ({out['fleet_ramp_over_worst_demand_rise'][g]}x)"
+        )
     print("\nverdict:", out["verdict"])
 
 

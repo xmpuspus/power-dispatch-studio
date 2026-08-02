@@ -56,8 +56,9 @@ export function NodalView({ grid }: { grid: GridKey }) {
     ? `nonzero on ${d.congestion.days_nonzero} of ${d.congestion.days_sampled} sampled days, up to ₱${d.congestion.max_php_kwh.toFixed(2)}/kWh`
     : null
   const methodologyNote =
-    'Observed deviations, not congestion premiums: the published DIPCEF congestion ' +
-    'component is zero through the WESM suspension window and small and ' +
+    "Recorded price differences are not the same as congestion premiums. The operator's final " +
+    'per-resource prices include a congestion component that is zero through ' +
+    'the WESM suspension window and small and ' +
     'intermittent after real-time pricing resumed' +
     (congestionStat ? ` (${congestionStat})` : '') +
     ", so within-region separation mostly rides the loss column. The map's Prices " +
@@ -69,12 +70,12 @@ export function NodalView({ grid }: { grid: GridKey }) {
     return (
       <div className="view">
         <Panel
-          title="Nodal prices, observed"
-          subtitle="Per-node deviations from the regional price."
+          title="Recorded prices at individual grid connection points (nodal prices)"
+          subtitle="Each value is the difference from the island grid's regional price."
         >
           <EmptyNote>
-            No nodal dailies baked yet. Run pipeline/nodal_prices.py --derive, then
-            rebake.
+            Daily prices at individual grid connection points are not available in this
+            data release.
           </EmptyNote>
         </Panel>
       </div>
@@ -84,8 +85,8 @@ export function NodalView({ grid }: { grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title={`Persistent locational deviations, ${cap(grid)}`}
-        subtitle={`Mean deviation of each node's price from the ${cap(grid)} regional SMP over the window's ${d.window.clean_days} clean market days (DIPCEF final; administered PSM/SEC days excluded).`}
+        title={`Average price difference at each ${cap(grid)} grid connection point`}
+        subtitle={`Each value is the mean difference from the ${cap(grid)} regional system marginal price over ${d.window.clean_days} market days. Final per-resource prices are used. Days with administered pricing are excluded.`}
       >
         {banner && <div className="basecase-banner">{banner}</div>}
         <div className="stat-row">
@@ -120,14 +121,15 @@ export function NodalView({ grid }: { grid: GridKey }) {
         </div>
         <p className="note">{methodologyNote}</p>
         <p className="note">
-          Directional screen, not a capture price. Each figure is a mean over a small
-          sample of clean days; the peak and mid-hour columns below show how much a node's
-          price moves within a day. Do not use this number to size a PPA or bid.
+          These averages show the direction of local price differences but are not capture
+          prices. The peak and midday columns show how each node changes within a day. The
+          sample covers only the listed market days, so do not use these values to size a
+          power purchase agreement (PPA) or bid.
         </p>
       </Panel>
 
       <Panel
-        title="Every node in the grid"
+        title="Price differences for every connection point in the grid"
         subtitle="Search by resource code, or click a column to sort (plants end _Gxx, loads _Lxx, delivery points _T1L1)."
       >
         <input
@@ -176,16 +178,16 @@ export function NodalView({ grid }: { grid: GridKey }) {
         </ScrollBox>
         {rows.length > shown.length && (
           <p className="note">
-            Showing 25 of {rows.length} matching nodes; sort or narrow the filter for the
-            rest. The full table ships in nodal_obs.json.
+            Showing 25 of {rows.length} matching nodes. Sort or narrow the filter to see
+            the rest. The full table is available in nodal_obs.json.
           </p>
         )}
         <p className="note">
-          Window {d.window.first} to {d.window.last}: {d.window.days_derived} derived
-          days, {d.window.clean_days} clean ({d.window.clean_criterion}). A modeled
-          counterfactual ("what would a data center at node X pay?") stays a labeled probe
-          until more of the fleet resolves onto network buses; see the methodology's nodal
-          section.
+          The window runs from {d.window.first} to {d.window.last} and includes{' '}
+          {d.window.days_derived} recorded days. Of those, {d.window.clean_days} meet the
+          market-day rule ({d.window.clean_criterion}). A modeled data-center price at one
+          node remains an exploratory estimate until more power plants are matched to
+          network buses. See the nodal section of the methodology.
         </p>
       </Panel>
     </div>

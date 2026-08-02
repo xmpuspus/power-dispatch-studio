@@ -1834,7 +1834,7 @@
    }
   },
   "unit": "PhP/kWh (daily mean of 5-minute regional reserve prices)",
-  "commodity_note": "Commodity codes as published (Dr, Fr, Ru, Rd...); IEMOP publishes no key, so the product mapping stays the reserve view's labeled inference.",
+  "commodity_note": "IEMOP publishes the product codes Dr, Fr, Ru, and Rd without a public key. The plain product names shown here are inferred and the original codes remain beside them.",
   "src": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
@@ -1985,9 +1985,9 @@
     }
    }
   },
-  "note": "Each grid x commodity reserve book (RTDOR, the hour's opening 5-minute interval) cleared at the MW the operator actually scheduled at that same interval (RTDSUM); the marginal offer is the modeled reserve price, scored against the official regional reserve price (RSVPR) at that exact interval. Exact hours match within half a centavo.",
-  "wedge_note": "Every pool's mean residual is negative: the book-only replay under-prices the official co-optimised price, and the hours where the marginal offer sits above it are noise-level (hours_model_above_pct of scored hours, at most max_model_above_php_kwh). WESM pays reserves the forgone ENERGY margin, not just the reserve offer, so the one-signed pool residual is the co-optimisation opportunity-cost wedge, measured per pool. Closing it needs a joint energy+reserve clear with per-resource books on both sides, which the compacted artifacts drop; that build stays named in the methodology.",
-  "scarcity_note": "Hours where the scheduled MW sits under the market requirement (RTDSUM MKT_REQT, hourly mean) are counted per pool and excluded from the non-scarcity MAE: when reserves are short, administrative pricing can set RSVPR above any offer in the book.",
+  "note": "For each grid and reserve product, the calculation uses the first 5-minute offer book of the hour and the reserve capacity the operator scheduled in that interval. The last offer needed sets the calculated reserve price. That price is compared with the operator's published regional reserve price for the same interval. A match means the difference is no more than half a centavo per kWh.",
+  "wedge_note": "The offer-book calculation is lower than the official average price for every grid and product. It is higher in 9.2% of scored hours; the largest excess is P0.033/kWh. Official reserve prices can include the energy revenue a plant gives up when it holds capacity in reserve. The public summary data do not identify each plant's energy and reserve offer, so this calculation reports the measured price difference without assigning all of it to one cause.",
+  "scarcity_note": "Hours with less scheduled reserve than the market requirement are counted for each grid and product. They are excluded from the normal-hour mean absolute error because an operator-set scarcity price can exceed every offer in the book when reserves are short.",
   "src": "https://www.iemop.ph/market-data/rtd-reserve-offers/",
   "src_obs": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
@@ -2017,7 +2017,7 @@
     "reserve_aware_php_kwh": 19.469
    }
   },
-  "note": "The reserve-aware price is the energy price plus the reserve price. The reserve price splits into what the reserve offer stack itself clears (the pool-level joint clear, which reproduces the official RSVPR on requirement-met hours) and the administered scarcity wedge on short hours (observed minus modeled), an empirical adder that is not in the public offers. The wedge is reported here, not tuned away: capacity holding reserve cannot also sell energy, and scarce hours price on an administered curve the offers do not carry.",
+  "note": "The combined price is the energy price plus the official reserve price. The reserve price is split into the price calculated from published reserve offers and the operator-set scarcity addition used when scheduled reserve is short. The public offers do not contain that scarcity addition, so it is shown separately.",
   "src": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
@@ -2249,7 +2249,7 @@
     }
    }
   },
-  "note": "IEMOP's final per-resource cleared reserve (DIPCRF), per commodity. vs_rtd_price compares the final schedule-weighted clearing price against the real-time RSVPR at the same opening interval: the final re-solve's reserve-price movement. replay_vs_final clears the RTDOR reserve book at the final scheduled MW and scores its marginal offer against the final cleared price, a tighter check than against the RTD price. final_vs_rtd_schedule_mw is the mean daily revision of the pool's scheduled reserve between the real-time and final solves (near zero on Luzon, larger on the tight island reserve pools). The per-resource cleared schedules are archived under data/derived/reserve_results_daily/ as the input for the queued joint energy+reserve clear.",
+  "note": "IEMOP's final plant-level reserve results (DIPCRF), grouped by reserve product. The first comparison measures how the final price differs from the real-time regional price (RSVPR) in the same interval. The second calculates a price from the published reserve offers (RTDOR) at the final scheduled capacity and compares it with the final price. The schedule field reports the average change in scheduled reserve between real-time and final results. Plant-level schedules are archived under data/derived/reserve_results_daily/.",
   "src": "https://www.iemop.ph/market-data/dipc-reserve-results-final/",
   "src_rtd": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
@@ -9766,7 +9766,7 @@
     ]
    }
   },
-  "note": "Sampled settlement-side price families (Pass B measure record). admin_lmp is the mean generator-node indicative administered price (AP), the operator's cost-substitute price; settlement_lmp the mean settled LMP (STLPRICE); settlement_congestion its congestion component (zero at the one-price-per-island granularity WESM settles at); dap_lmp the day-ahead projection mean and dap_vs_rt_spread its signed gap to the settled price. Daily means over a small market-day sample: these families were measured, not built into the replay (administered prices are cost-substitute counterfactuals, the settlement congestion component is empty at regional granularity, and the day-ahead run is a projection, out of the real-time replay's scope).",
+  "note": "These daily averages cover a small sample of market days. admin_lmp is the mean indicative administered generator-node price (AP). settlement_lmp is the mean settled locational marginal price (STLPRICE), and settlement_congestion is its congestion component. The Wholesale Electricity Spot Market (WESM) settles at one price per island in this sample, so that component is zero. dap_lmp is the mean day-ahead projection, and dap_vs_rt_spread is its signed difference from the settled price. The replay excludes these price families. Administered prices are cost substitutes, the settlement congestion series is empty at regional detail, and the day-ahead price is a projection.",
   "src_admin": "https://www.iemop.ph/market-data/indicative-administered-prices/",
   "src_settlement": "https://www.iemop.ph/market-data/prices-used-in-settlement/",
   "src_dayahead": "https://www.iemop.ph/market-data/dap-prices-and-schedules/",
@@ -9845,8 +9845,8 @@
    "geothermal": 0.0
   },
   "max_modeled_price_on_raise_hours_php_kwh": 6.021,
-  "verdict": "measured_material_but_per_fuel_inert",
-  "note": "The administered MOT-raise dispatch is material in MW (6 to 11 percent of dispatched generation on hours with a raise, highest on Mindanao) but price-inert in the per-fuel block engines. The raised MW is mostly coal (67.2 percent) with about a fifth on gas (18.2 percent), and coal is the modeled marginal fuel on 100.0 percent of the raise hours; every raise hour already prices at or just above coal's floor (max P6.02/kWh across all raise hours), so a per-fuel coal floor cannot lift a price coal already sets, and the only move it could make is downward (coal displacing water), which does not add the administered premium the overlay was meant to model. This is the R6 min-stable-floor outcome, one layer up. The out-of-merit effect is a per-resource fact (which named unit runs for security), which the aggregated LP drops; the engine layer it sizes is the per-resource joint energy+reserve clear, not a per-fuel overlay. Measured on the cost-proxy engine, whose coal-marginal hours price flat at the administered floor; the offer-mode leg rests on the R6 result that the same floor left the observed offer books byte-identical.",
+  "verdict": "does_not_raise_prices_in_fuel_level_model",
+  "note": "The administered MOT-raise dispatch equals 6 to 11 percent of generation in the affected hours, with the largest share on Mindanao. It does not raise prices in the fuel-level calculation. Most of the raised output is coal (67.2 percent) with about a fifth on gas (18.2 percent). Coal sets the modeled price in 100.0 percent of those hours. Every affected hour already prices at or just above the coal floor, with a maximum of P6.02/kWh. Applying the same floor to the public offer books changes none of the offers. This calculation groups generation by fuel, so it cannot show which named unit the operator runs for security. A model with individual units and reserve awards is needed to test that effect.",
   "src": "https://www.iemop.ph/market-data/list-of-mot-raise-re-dispatch-based-on-so-dispatch-instruction-report/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
@@ -9920,7 +9920,7 @@
   "max_offer_stack_gap_on_met_hours_php_kwh": 1.038,
   "max_scarcity_uplift_on_short_hours_php_kwh": 25.0,
   "verdict": "wedge_is_administered_reserve_scarcity_not_in_offers",
-  "note": "The named per-resource joint energy+reserve LP was prototyped from the raw RTDOE + RTDOR offers and does not reproduce the official reserve price (RSVPR); the diagnosis is that the reserve requirement CLEARS SHORT on the scarce hours and the shortfall is priced by an administered scarcity value that is not in the offers. On the requirement-met hours the marginal Dr offer cleared to the actually scheduled quantity (RTDSUM GENERATION) reproduces RSVPR to the centavo (the offer stack explains it, and the pooled replay already scores these). On the short hours the market scheduled only a fraction of the requirement (RTDSUM GENERATION well below MKT_REQT) and the official price sits above the ENTIRE offer stack, an administered reserve-scarcity value the public offers cannot explain; a free joint LP that forces the full requirement goes infeasible on exactly those hours. So the wedge Pass B measures is administered reserve scarcity on the requirement-short hours, not a co-optimisation internal recoverable from offers. It stays measured, not closed, and the model keeps its stated approximation, withhold the requirement and show the official price beside it. Fixing the energy dispatch to the observed schedule (DIPCEF) and registered capacity (CAPEG) does not change this: it tracks RSVPR only where the requirement is met, and cannot recover the administered scarcity uplift where it is not.",
+  "note": "Tests using named resources and joint energy and reserve offers did not reproduce the official reserve price (RSVPR). When scheduled reserve met the requirement, the marginal demand-response offer reproduced RSVPR to the centavo. When scheduled reserve fell below the market requirement (MKT_REQT), the official price exceeded every public offer. A model that forced the full requirement was infeasible for those hours. This indicates an administered shortage price that is absent from the public offers. Fixing energy dispatch to the observed schedule (DIPCEF) and registered capacity (CAPEG) produced the same result. The model therefore keeps its current approximation and shows both the unmet requirement and official price.",
   "src": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
@@ -9981,8 +9981,8 @@
    "aggregate_floor_supply_mw": 9834,
    "aggregate_must_price_positive": true
   },
-  "verdict": "sign_flips_are_a_knife_edge_needing_finer_supply_than_offers",
-  "note": "The negative clearing prices the hourly replay drops were prototyped at 5-minute resolution and measured, and split into two boundaries neither of which a per-grid 5-minute replay closes. Near zero it is a true knife-edge: on the crossing days the offer book's floor-priced supply (self-scheduled solar and must-run at the WESM floor plus zero-priced offers) comes within 0.66 percent of native load at the midday peak, and the book's own 48-block compaction moves about 4 percent of that supply across the zero line, wider than the margin, so a shallow interval's sign turns on supply accounting finer than the offers give. The DEEP negatives are not an aggregate crossing at all: at the day's most negative interval the observed price is about -P10/kWh while physical native load sits above the entire aggregate floor-priced supply, so the per-grid clear must price positive there; that -10 is a load-weighted average of nodal prices pulled to the floor by curtailed-solar pockets, which no per-grid replay reproduces at any time resolution. A clean 5-minute clear on the model's own demand basis reproduces none of the day's observed negative intervals (4 of the six days show observed negatives). Sub-hourly granularity is necessary but not sufficient; the sign flips stay a named boundary, a near-zero resolution knife-edge over a curtailed-solar nodal floor, and the model keeps its stated approximation.",
+  "verdict": "negative_prices_need_finer_supply_data_than_public_offers",
+  "note": "A tested 5-minute replay still misses the negative clearing prices omitted by the hourly replay. Two limits remain. On the crossing days the offer book's floor-priced supply (self-scheduled solar and must-run at the WESM floor plus zero-priced offers) comes within 0.66 percent of native load at the midday peak, and the book's own 48-block compaction moves about 4 percent of that supply across the zero line, wider than the margin, so a shallow interval's sign turns on supply accounting finer than the offers give. The most negative intervals do not come from the regional supply total crossing demand. At the day's lowest interval the observed price is about -P10/kWh while physical native load sits above the entire aggregate floor-priced supply, so the per-grid clear must price positive there; that -10 is a load-weighted average of nodal prices pulled to the floor by curtailed-solar pockets, which no per-grid replay reproduces at any time resolution. A clean 5-minute clear on the model's own demand basis reproduces none of the day's observed negative intervals (4 of the six days show observed negatives). Five-minute data are necessary but not sufficient. The public offers do not resolve the supply margin closely enough, and regional averages hide curtailed-solar node prices.",
   "src": "https://www.iemop.ph/market-data/load-weighted-average-prices-final/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },
@@ -10140,57 +10140,57 @@
    "oil": 0.4,
    "biomass": 0.5
   },
-  "min_stable_label": "generic NREL ATB / typical thermal, fuel-block level; RTDSL examined but VRE-pinned and coded, no thermal de-fabrication without a unit registry",
+  "min_stable_label": "generic NREL ATB / typical thermal, fuel-block level; RTDSL does not provide thermal minimum-stable levels without a unit registry",
   "overgen_penalty_php_kwh": 0.001,
   "lp": {
    "lwap": {
     "luzon": {
      "n_hours": 1344,
-     "observed_mean_php_kwh": 7.631,
-     "modeled_mean_php_kwh": 6.002,
-     "mae_php_kwh": 4.334,
-     "bias_php_kwh": -1.629,
-     "correlation": 0.356,
-     "high_hour_hit_rate_pct": 36.8
+     "observed_mean_php_kwh": 7.651,
+     "modeled_mean_php_kwh": 6.001,
+     "mae_php_kwh": 4.35,
+     "bias_php_kwh": -1.65,
+     "correlation": 0.297,
+     "high_hour_hit_rate_pct": 30.1
     },
     "visayas": {
      "n_hours": 1344,
-     "observed_mean_php_kwh": 12.913,
+     "observed_mean_php_kwh": 12.964,
      "modeled_mean_php_kwh": 6.002,
-     "mae_php_kwh": 8.656,
-     "bias_php_kwh": -6.911,
-     "correlation": 0.463,
-     "high_hour_hit_rate_pct": 45.6
+     "mae_php_kwh": 8.708,
+     "bias_php_kwh": -6.962,
+     "correlation": 0.442,
+     "high_hour_hit_rate_pct": 41.9
     },
     "mindanao": {
      "n_hours": 1344,
-     "observed_mean_php_kwh": 11.483,
+     "observed_mean_php_kwh": 11.519,
      "modeled_mean_php_kwh": 6.0,
-     "mae_php_kwh": 7.579,
-     "bias_php_kwh": -5.483,
-     "correlation": 0.069,
+     "mae_php_kwh": 7.61,
+     "bias_php_kwh": -5.519,
+     "correlation": 0.109,
      "high_hour_hit_rate_pct": 7.4
     }
    },
    "mcp": {
     "luzon": {
      "n_hours": 1224,
-     "observed_mean_php_kwh": 6.538,
-     "modeled_mean_php_kwh": 6.002,
-     "mae_php_kwh": 3.699,
-     "bias_php_kwh": -0.536,
-     "correlation": 0.436,
-     "high_hour_hit_rate_pct": 44.4
+     "observed_mean_php_kwh": 6.531,
+     "modeled_mean_php_kwh": 6.001,
+     "mae_php_kwh": 3.69,
+     "bias_php_kwh": -0.53,
+     "correlation": 0.437,
+     "high_hour_hit_rate_pct": 39.5
     },
     "visayas": null,
     "mindanao": {
-     "n_hours": 552,
-     "observed_mean_php_kwh": 9.055,
-     "modeled_mean_php_kwh": 6.0,
-     "mae_php_kwh": 6.04,
-     "bias_php_kwh": -3.055,
-     "correlation": 0.024,
-     "high_hour_hit_rate_pct": 3.5
+     "n_hours": 600,
+     "observed_mean_php_kwh": 8.691,
+     "modeled_mean_php_kwh": 5.999,
+     "mae_php_kwh": 5.838,
+     "bias_php_kwh": -2.692,
+     "correlation": 0.113,
+     "high_hour_hit_rate_pct": 1.6
     }
    }
   },
@@ -10198,50 +10198,50 @@
    "lwap": {
     "luzon": {
      "n_hours": 1344,
-     "observed_mean_php_kwh": 7.631,
-     "modeled_mean_php_kwh": 6.004,
-     "mae_php_kwh": 4.336,
-     "bias_php_kwh": -1.627,
-     "correlation": 0.007,
-     "high_hour_hit_rate_pct": 36.8
+     "observed_mean_php_kwh": 7.651,
+     "modeled_mean_php_kwh": 5.984,
+     "mae_php_kwh": 4.332,
+     "bias_php_kwh": -1.667,
+     "correlation": 0.128,
+     "high_hour_hit_rate_pct": 30.1
     },
     "visayas": {
      "n_hours": 1344,
-     "observed_mean_php_kwh": 12.913,
-     "modeled_mean_php_kwh": 6.013,
-     "mae_php_kwh": 8.67,
-     "bias_php_kwh": -6.9,
-     "correlation": -0.005,
+     "observed_mean_php_kwh": 12.964,
+     "modeled_mean_php_kwh": 6.012,
+     "mae_php_kwh": 8.721,
+     "bias_php_kwh": -6.952,
+     "correlation": -0.003,
      "high_hour_hit_rate_pct": 42.6
     },
     "mindanao": {
      "n_hours": 1344,
-     "observed_mean_php_kwh": 11.483,
-     "modeled_mean_php_kwh": 6.013,
-     "mae_php_kwh": 7.598,
-     "bias_php_kwh": -5.469,
-     "correlation": -0.012,
+     "observed_mean_php_kwh": 11.519,
+     "modeled_mean_php_kwh": 6.012,
+     "mae_php_kwh": 7.628,
+     "bias_php_kwh": -5.507,
+     "correlation": -0.011,
      "high_hour_hit_rate_pct": 2.2
     }
    },
    "mcp": {
     "luzon": {
      "n_hours": 1224,
-     "observed_mean_php_kwh": 6.538,
-     "modeled_mean_php_kwh": 6.004,
-     "mae_php_kwh": 3.702,
-     "bias_php_kwh": -0.534,
-     "correlation": 0.007,
-     "high_hour_hit_rate_pct": 44.4
+     "observed_mean_php_kwh": 6.531,
+     "modeled_mean_php_kwh": 5.982,
+     "mae_php_kwh": 3.671,
+     "bias_php_kwh": -0.549,
+     "correlation": 0.137,
+     "high_hour_hit_rate_pct": 39.5
     },
     "visayas": null,
     "mindanao": {
-     "n_hours": 552,
-     "observed_mean_php_kwh": 9.055,
-     "modeled_mean_php_kwh": 5.996,
-     "mae_php_kwh": 6.039,
-     "bias_php_kwh": -3.059,
-     "correlation": 0.012,
+     "n_hours": 600,
+     "observed_mean_php_kwh": 8.691,
+     "modeled_mean_php_kwh": 6.028,
+     "mae_php_kwh": 5.872,
+     "bias_php_kwh": -2.663,
+     "correlation": -0.006,
      "high_hour_hit_rate_pct": 0.0
     }
    }
@@ -10249,26 +10249,26 @@
   "corr_delta": {
    "lwap": {
     "luzon": {
-     "lp_corr": 0.356,
-     "uc_corr": 0.007,
-     "delta": -0.349
+     "lp_corr": 0.297,
+     "uc_corr": 0.128,
+     "delta": -0.169
     },
     "visayas": {
-     "lp_corr": 0.463,
-     "uc_corr": -0.005,
-     "delta": -0.468
+     "lp_corr": 0.442,
+     "uc_corr": -0.003,
+     "delta": -0.445
     },
     "mindanao": {
-     "lp_corr": 0.069,
-     "uc_corr": -0.012,
-     "delta": -0.081
+     "lp_corr": 0.109,
+     "uc_corr": -0.011,
+     "delta": -0.12
     }
    },
    "mcp": {
     "luzon": {
-     "lp_corr": 0.436,
-     "uc_corr": 0.007,
-     "delta": -0.429
+     "lp_corr": 0.437,
+     "uc_corr": 0.137,
+     "delta": -0.3
     },
     "visayas": {
      "lp_corr": null,
@@ -10276,9 +10276,9 @@
      "delta": null
     },
     "mindanao": {
-     "lp_corr": 0.024,
-     "uc_corr": 0.012,
-     "delta": -0.012
+     "lp_corr": 0.113,
+     "uc_corr": -0.006,
+     "delta": -0.119
     }
    }
   },
@@ -10534,8 +10534,8 @@
     "pct_of_range_per_hour": 12.2
    }
   ],
-  "verdict": "measured_inert_at_hourly_resolution",
-  "note": "Ramp rates ARE published: every RTDOE offer row carries a piecewise MW-per-minute curve by MW band, on essentially every resource. This measures whether an hourly ramp constraint would bind before building one. It would not, at this engine's resolution: the fleet's one-hour ramp capability runs several times the largest hour-to-hour demand rise anywhere in the archive, so a per-fuel hourly ramp limit is inert by construction and is measured out rather than built. Read the scope before re-using this: it is a grid and fuel-aggregate result at HOURLY resolution. A per-unit model would still see the binding minority counted here (the tightest units are oil and coal machines moving well under a tenth of their range per hour), and a 5-minute replay is a separate question this does not answer.",
+  "verdict": "does_not_bind_at_hourly_resolution",
+  "note": "IEMOP publishes ramp rates in each RTDOE offer row as a piecewise MW-per-minute curve by MW band, on essentially every resource. This measures whether an hourly ramp constraint would affect the result. It does not at this engine's resolution: the fleet's one-hour ramp capability runs several times the largest hour-to-hour demand rise anywhere in the archive, so a per-fuel hourly ramp limit cannot bind in this hourly model rather than built. Read the scope before re-using this: it is a grid and fuel-aggregate result at HOURLY resolution. A per-unit model would still see the binding minority counted here (the tightest units are oil and coal machines moving well under a tenth of their range per hour), and a 5-minute replay is a separate question this does not answer.",
   "src": "https://www.iemop.ph/market-data/rtd-generation-offers/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations.",
   "headroom_min": 2.41,
@@ -10674,7 +10674,7 @@
    "7.423": 0,
    "6.245": 0
   },
-  "marquee": {
+  "reference_case": {
    "scenario_day": "2026-06-10",
    "uplift_php_kwh": 12.01,
    "scenario_max_rolling_72h": {
@@ -10687,7 +10687,7 @@
    },
    "trips_trigger": false,
    "baseline_trips": false,
-   "note": "The studio's widest-swing as-bid scenario adds the DICT wave's Luzon daily-mean uplift uniformly to the scenario day's observed Luzon GWAP intervals and recomputes the rolling trigger over the windows ending on that day or in the 72 hours after it, beside the same windows unlifted. An arithmetic flag under the rule's stated numbers, not a prediction: the window's own record (mechanism_note) shows the operational trigger did not clamp even above the threshold."
+   "note": "The studio's widest-swing as-bid scenario adds the DICT demand case's Luzon daily-mean increase uniformly to the scenario day's observed Luzon GWAP intervals and recomputes the rolling trigger over the windows ending on that day or in the 72 hours after it, beside the same windows unlifted. An arithmetic flag under the rule's stated numbers, not a prediction: the window's own record (mechanism_note) shows the operational trigger did not clamp even above the threshold."
   },
   "note": "The secondary price cap's own arithmetic, run on the operator's published series: the 72-hour rolling mean of the 5-minute generator-weighted average price (GWAPF), per region, for the combined Luzon-Visayas region, and for the System row as published. Only windows with all 864 intervals present are scored, so archive gaps cannot fake a calm window.",
   "applies_note": "Which row is the operative trigger is published, not a guess. Under ERC Res. 26 s.2025 the system-wide rolling average is the default trigger; the regional or island cap applies ONLY while a grid interconnection is on outage, using the same cap value, threshold, and 72-hour period. So the per-region breach counts below are not exposure on their own: they are exposure only for intervals when the interconnection was out. Read the system row first.",
@@ -10769,8 +10769,8 @@
    "balance_residual_mw_mean": 166.6,
    "import_mw_mean": 40.1
   },
-  "note": "The operator's own dispatch cut per region per 5-minute RTD interval, from IEMOP's Regional Merit Order Table (MOT files). Each interval's offer stack is published split into an offers-dispatched and an offers-not-dispatched section. headroom_mw is the not-dispatched total: the MW offered into the market and not taken, the operator's own published economic headroom, which is a tighter read of room to grow than registered capacity because every MW in it was actually offered. dispatched_mw is cleared MW, not as-bid: summed per region it tracks RTDSUM generation at rtdsum_ratio, and that reconciliation is NOT clean everywhere. The Visayas and Mindanao sit inside 1 percent, which is what a cleared-MW reading predicts. Luzon runs about 1.6 percent HIGH and we do not know why. The obvious candidate is ruled out: pumped storage and batteries charging would count as dispatched offers while not being generation, but they total 0.2 MW on a sampled Luzon interval, nowhere near the roughly 160 MW gap. The RTDSUM import, export and loss columns are a measured no-op, not an untested lead: import is about 25 percent of the gap and it tracks RTDSUM's own about 1.5 percent energy-balance residual at a correlation near 0.9, so it is the term those columns leave over rather than one they explain. The open cause is most likely a self-scheduled or must-run generation split IEMOP does not publish. Read the Luzon headroom knowing that residual is open rather than explained. MOT carries no price column and its Block index is the same tranche index as the RTDOE offer books, so it is not a finer view of supply than those books give.",
-  "validation_note": "mcp_agreement_pct is how often the marginal resource IEMOP names in the MCP dataset falls inside the partially-cleared set this module reads off the cut (the resources named on both sides at once). mcp_null_pct is the same score for the same number of names drawn at random from that interval's dispatched resources, which is what the rate has to beat to mean anything. MCP and MOT come out of the same RTD solve, so this checks the cut parse rather than confirming the setter independently.",
+  "note": "The operator's own dispatch cut per region per 5-minute RTD interval, from IEMOP's Regional Merit Order Table (MOT files). Each interval's offer stack is published split into an offers-dispatched and an offers-not-dispatched section. headroom_mw is the not-dispatched total: the MW offered into the market and not taken, the operator's own published economic headroom, which is a tighter read of room to grow than registered capacity because every MW in it was actually offered. dispatched_mw is cleared MW, not as-bid: summed per region it tracks RTDSUM generation at rtdsum_ratio, and that reconciliation is NOT clean everywhere. The Visayas and Mindanao sit inside 1 percent, which is what a cleared-MW reading predicts. Luzon runs about 1.6 percent higher and we do not know why. The obvious candidate is ruled out: pumped storage and batteries charging would count as dispatched offers while not being generation, but they total 0.2 MW on a sampled Luzon interval, nowhere near the roughly 160 MW gap. The RTDSUM import, export and loss columns do not explain the mismatch. Imports account for about 25 percent of the gap and it tracks RTDSUM's own about 1.5 percent energy-balance residual at a correlation near 0.9, so it is the term those columns leave over rather than one they explain. The open cause is most likely a self-scheduled or must-run generation split IEMOP does not publish. Read the Luzon headroom knowing that residual is open rather than explained. MOT carries no price column and its Block index is the same tranche index as the RTDOE offer books, so it is not a finer view of supply than those books give.",
+  "validation_note": "mcp_agreement_pct is how often the marginal resource IEMOP names in the MCP dataset falls inside the partially-cleared set this module reads off the cut (the resources named on both sides at once). mcp_null_pct is the same score for the same number of names drawn at random from that interval's dispatched resources. The named-resource agreement must exceed this random baseline. MCP and MOT come out of the same RTD solve, so this checks the cut parse rather than confirming the setter independently.",
   "src": "https://www.iemop.ph/market-data/regional-merit-order-table-mot-files/",
   "src_setters": "https://www.iemop.ph/market-data/rtd-market-clearing-price/",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
@@ -12313,7 +12313,7 @@
    "note": "The operator's own valid-discrepancy list on the dispatch instruction report, newest revision per week: the data-quality flag that travels with anything built from this family.",
    "src": "https://www.iemop.ph/market-data/valid-discrepancies-on-so-dispatch-instruction-report/"
   },
-  "note": "The System Operator's out-of-merit dispatch record, measured: every MOT-raise re-dispatch instruction per 5-minute interval with its MW (weekly processed files), the per-grid daily instruction log with the operator's stated cause, and the operator's own discrepancy list. Consuming this record as an engine layer (an administered-dispatch overlay on the replay) is a named queued build; this block is the measured record that sizes it.",
+  "note": "The System Operator's out-of-merit dispatch record, measured: every MOT-raise re-dispatch instruction per 5-minute interval with its MW (weekly processed files), the per-grid daily instruction log with the operator's stated cause, and the operator's own discrepancy list. The current per-fuel model does not apply these instructions because they identify individual resources. This record reports their frequency, size, cause, and data-quality flags.",
   "fuel_note": "Fuel per resource comes from the pasa alias table into the DOE fleet; codes without a confident alias show no fuel rather than a guessed one.",
   "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
  },

@@ -1,4 +1,4 @@
-// Scenario ensembles (roadmap item 5): a seeded Monte Carlo of joint draws
+// Repeated seeded simulations of joint inputs
 // (data-center load, hydrology, fuel price, a forced outage) through the day
 // chronology, shown as a price distribution per grid. This is a scenario
 // ensemble on ONE observed day, not a forecast: the draws span the plausible
@@ -44,7 +44,10 @@ export function EnsembleView({
   if (!marketDays.length)
     return (
       <div className="view">
-        <Panel title="Scenario ensembles" subtitle="Price distribution from joint draws.">
+        <Panel
+          title="Price range across repeated simulations"
+          subtitle="Each simulation changes demand, water, fuel price, and a plant outage together."
+        >
           <EmptyNote>No market day available to run an ensemble on.</EmptyNote>
         </Panel>
       </div>
@@ -55,7 +58,7 @@ export function EnsembleView({
     { key: 'grid', header: 'Grid', render: (r) => cap(r.grid) },
     {
       key: 'p10',
-      header: 'P10',
+      header: '10th percentile (P10)',
       align: 'right',
       mono: true,
       render: (r) => php(r.dist.p10),
@@ -69,7 +72,7 @@ export function EnsembleView({
     },
     {
       key: 'p90',
-      header: 'P90',
+      header: '90th percentile (P90)',
       align: 'right',
       mono: true,
       render: (r) => php(r.dist.p90),
@@ -103,12 +106,12 @@ export function EnsembleView({
           </select>
         </label>
         <label className="chrono__ctl">
-          Draws
+          Repeated simulations
           <select
             className="ribbon__select"
             value={nDraws}
             onChange={(e) => setNDraws(Number(e.target.value))}
-            aria-label="Number of Monte Carlo draws"
+            aria-label="Number of repeated simulations"
           >
             {[30, 60, 120].map((n) => (
               <option key={n} value={n}>
@@ -120,20 +123,28 @@ export function EnsembleView({
       </div>
 
       <Panel
-        title={`Price ensemble, ${cap(grid)}`}
-        subtitle={`${nDraws} seeded joint draws on ${date}: data-center load, hydrology, fuel price, and a forced coal outage, cleared through the day model.`}
+        title={`Price range across ${nDraws} repeated simulations, ${cap(grid)}`}
+        subtitle={`Each repeat on ${date} varies data-center demand, water availability, fuel price, and one forced coal outage. The results are repeatable.`}
       >
         <div className="stat-row">
-          <StatTile label="P10" value={php(sel.p10)} hint="cheap draws" />
-          <StatTile label="Median" value={php(sel.p50)} hint="middle of the ensemble" />
-          <StatTile label="P90" value={php(sel.p90)} hint="tight draws" />
+          <StatTile
+            label="10th percentile (P10)"
+            value={php(sel.p10)}
+            hint="lower-price result"
+          />
+          <StatTile label="Median" value={php(sel.p50)} hint="middle result" />
+          <StatTile
+            label="90th percentile (P90)"
+            value={php(sel.p90)}
+            hint="higher-price result"
+          />
         </div>
         <DataGrid columns={cols} rows={rows} getKey={(r) => r.grid} />
         <p className="note">
-          A scenario ensemble on one observed day, not a forecast. The band is the spread
-          across plausible operating states (load, water, fuel, an outage), seeded so a
-          re-run reproduces it. Prices are the day-mean clearing price per grid in
-          PhP/kWh.
+          These are repeated scenarios on one recorded day, not a forecast. Eighty percent
+          of the results fall between the 10th and 90th percentiles (P10 and P90). The
+          calculation varies load, water, fuel, and one outage. Repeating the calculation
+          gives the same sample. Prices are daily means in pesos per kWh.
         </p>
       </Panel>
     </div>

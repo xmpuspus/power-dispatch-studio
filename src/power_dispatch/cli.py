@@ -9,6 +9,7 @@ Scenario JSON: {"date": "YYYY-MM-DD", "opts": {...}} with the override map from
 `power_dispatch.OPT_KEYS`. Output is one row per hour with per-grid price,
 marginal fuel, demand, shortfall, corridor flows, and storage state.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -78,10 +79,12 @@ def _build_scenario(args) -> dict:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(prog="power-dispatch",
-                                 description="PH WESM dispatch engine")
-    ap.add_argument("--version", action="version",
-                    version=f"power-dispatch {__version__}")
+    ap = argparse.ArgumentParser(
+        prog="power-dispatch", description="PH WESM dispatch engine"
+    )
+    ap.add_argument(
+        "--version", action="version", version=f"power-dispatch {__version__}"
+    )
     sub = ap.add_subparsers(dest="cmd")
 
     sub.add_parser("days", help="list observed days available for replay")
@@ -89,19 +92,38 @@ def main(argv: list[str] | None = None) -> int:
     r = sub.add_parser("run", help="run a scenario, emit hourly CSV")
     r.add_argument("--scenario", help="scenario JSON file")
     r.add_argument("--date", help="observed day YYYY-MM-DD")
-    r.add_argument("--demand", action="append", default=[], metavar="GRID=MW",
-                   help="load delta, e.g. luzon=1500 (repeatable)")
-    r.add_argument("--fuel-cost", action="append", default=[],
-                   metavar="FUEL=PHP", help="marginal-cost override (repeatable)")
+    r.add_argument(
+        "--demand",
+        action="append",
+        default=[],
+        metavar="GRID=MW",
+        help="load delta, e.g. luzon=1500 (repeatable)",
+    )
+    r.add_argument(
+        "--fuel-cost",
+        action="append",
+        default=[],
+        metavar="FUEL=PHP",
+        help="marginal-cost override (repeatable)",
+    )
     r.add_argument("--hydrology", type=float, help="water multiplier (1.0=observed)")
-    r.add_argument("--offer-mode", action="store_true",
-                   help="replay the observed offer book, not the cost proxy")
-    r.add_argument("--reserve-deduction", action="store_true",
-                   help="withhold scheduled reserve from the book")
-    r.add_argument("--data-dir", help="override the baked data directory")
+    r.add_argument(
+        "--offer-mode",
+        action="store_true",
+        help="replay the observed offer book, not the cost proxy",
+    )
+    r.add_argument(
+        "--reserve-deduction",
+        action="store_true",
+        help="withhold scheduled reserve from the book",
+    )
+    r.add_argument("--data-dir", help="use data files from this directory")
     r.add_argument("-o", "--out", help="write CSV here (default stdout)")
-    r.add_argument("--json", action="store_true",
-                   help="emit the full result as JSON instead of hourly CSV")
+    r.add_argument(
+        "--json",
+        action="store_true",
+        help="emit the full result as JSON instead of hourly CSV",
+    )
 
     args = ap.parse_args(argv)
 
@@ -126,9 +148,11 @@ def main(argv: list[str] | None = None) -> int:
             with open(args.out, "w", newline="", encoding="utf-8") as fh:
                 _write_csv(rows, fh)
             s = result["summary"]
-            print(f"wrote {len(rows)} hours -> {args.out} "
-                  f"(mean Luzon {s['mean_price']['luzon']} PhP/kWh)",
-                  file=sys.stderr)
+            print(
+                f"wrote {len(rows)} hours -> {args.out} "
+                f"(mean Luzon {s['mean_price']['luzon']} PhP/kWh)",
+                file=sys.stderr,
+            )
         else:
             _write_csv(rows, sys.stdout)
         return 0

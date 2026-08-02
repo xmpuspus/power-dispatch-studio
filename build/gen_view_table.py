@@ -20,14 +20,14 @@ ROOT = Path(__file__).resolve().parent.parent
 NAV = ROOT / "studio" / "src" / "shell" / "nav.ts"
 README = ROOT / "README.md"
 LIVE = "https://power-dispatch-studio.vercel.app/studio/"
-START = "<!-- views:start -->"
-END = "<!-- views:end -->"
+START = "<!-- views table start -->"
+END = "<!-- views table end -->"
 
 
 def destinations() -> list[dict]:
     """slug, label, hint and question group, in the order nav.ts declares them."""
     src = NAV.read_text()
-    body = src[src.index("export const GROUPS"):src.index("export const ALL_DESTS")]
+    body = src[src.index("export const GROUPS") : src.index("export const ALL_DESTS")]
     out: list[dict] = []
     group = ""
     pending: dict | None = None
@@ -51,10 +51,7 @@ def destinations() -> list[dict]:
 
 
 def render(dests: list[dict]) -> str:
-    lines = [START,
-             "",
-             "| Question | View | What it answers |",
-             "|---|---|---|"]
+    lines = [START, "", "| Question | View | What it answers |", "|---|---|---|"]
     seen = set()
     for d in dests:
         col = d["group"] if d["group"] not in seen else ""

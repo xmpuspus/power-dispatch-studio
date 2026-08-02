@@ -92,12 +92,12 @@ export function RunsView({
     return (
       <div className="view">
         <Panel
-          title="Saved runs"
-          subtitle="Freeze a chronological solve and it lines up here for comparison."
+          title="Saved simulation runs"
+          subtitle="Save an hourly market replay to compare it with other runs."
         >
           <EmptyNote>
-            No saved runs yet. Open Chronology, configure a scenario and a window, and
-            press Save run.
+            No saved runs yet. Open Hourly market replay, configure a scenario and a date
+            range, then press Save run.
           </EmptyNote>
           <div className="runs__archive-bar">
             <label className="btn btn--ghost btn--sm">
@@ -126,14 +126,14 @@ export function RunsView({
     })),
     { label: 'Peak price, Luzon', of: (r) => peakOf(r, 'luzon'), php: true },
     { label: 'Unserved MWh, all grids', of: unservedOf },
-    { label: 'Congestion rent M₱', of: rentOf },
+    { label: 'Value across constrained links (congestion rent), M₱', of: rentOf },
   ]
 
   return (
     <div className="view">
       <Panel
-        title="Saved runs"
-        subtitle="Frozen chronological solves: scenario snapshot, window, engine version, hourly results."
+        title="Saved simulation runs"
+        subtitle="Each saved run keeps its scenario settings, date range, calculation version, and hourly results."
       >
         <div className="runs__archive-bar">
           <button className="btn btn--ghost btn--sm" onClick={onExportAll}>
@@ -157,8 +157,8 @@ export function RunsView({
           <table className="propgrid">
             <thead>
               <tr>
-                <th className="propgrid__obj">Run</th>
-                <th>Scenario</th>
+                <th className="propgrid__obj">Saved run</th>
+                <th>Scenario settings</th>
                 <th>Window</th>
                 <th className="propgrid__num">Mean ₱ Luzon</th>
                 <th className="propgrid__num">Unserved MWh</th>
@@ -174,7 +174,7 @@ export function RunsView({
                     {isStale(r) && (
                       <>
                         {' '}
-                        <Chip tone="danger">stale engine</Chip>
+                        <Chip tone="danger">saved with older model version</Chip>
                       </>
                     )}
                   </td>
@@ -253,7 +253,7 @@ export function RunsView({
       {runs.length >= 2 && a && b && (
         <Panel
           title="Compare two runs"
-          subtitle="A against B; a changed cell is highlighted."
+          subtitle="Run A is compared with Run B. Changed values are highlighted."
         >
           <div className="chrono__controls">
             <label className="chrono__ctl">

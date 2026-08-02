@@ -15,17 +15,17 @@ archive:
 	$(PY) pipeline/offers.py --derive --limit 3
 	$(PY) pipeline/archive_rtdoe.py --latest 1
 
-# Bake the static data from the archive + verified constants into web/data/.
+# Generate the static data from the archive + verified constants into web/data/.
 data:
 	$(PY) pipeline/build_data.py
 	$(PY) pipeline/sites.py
 
 # Re-cut the static share assets (OG card, constraint league, montage) from the
-# current bake. A deliberate step, not the nightly cron: these are dated
+# current data build. A deliberate step, not the nightly cron: these are dated
 # snapshots, so re-run when the narrative is re-cut, not every day.
 # bill_wedge and wesm_roles must run BEFORE story_montage, which embeds
 # bill-wedge.png as a panel. Both were missing from this target, so the bill
-# figure in the README went stale against the bake with nothing to catch it.
+# figure in the README went stale against the data build with nothing to catch it.
 viz:
 	$(PY) scripts/og_card.py
 	$(PY) scripts/bill_wedge.py
@@ -55,7 +55,7 @@ e2e:
 sync-engine:
 	$(PY) tools/sync_engine.py
 
-# Build the pip package (wheel + sdist) into dist/ from the current bake.
+# Build the pip package (wheel + sdist) into dist/ from the current data build.
 # Re-syncs the engine and refreshes the bundled data snapshot first.
 package: sync-engine
 	cp web/data/dispatch.json web/data/profiles.json web/data/meta.json \

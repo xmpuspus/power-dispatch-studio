@@ -1,4 +1,4 @@
-// Forward price scenarios (roadmap item 1): a forward price band per year built
+// A forward price band per year, built
 // by sampling the observed day library, applying the DOE PDP peak-demand growth,
 // and drawing joint operating states through the day model. Never a forecast: a
 // scenario ensemble on observed days, one regime because the library is a single
@@ -37,8 +37,8 @@ export function ForwardView({
     return (
       <div className="view">
         <Panel
-          title="Forward prices"
-          subtitle="A price band per year from the observed library."
+          title="Possible future price range by year"
+          subtitle="Recorded market days are re-priced under future demand and operating conditions."
         >
           <EmptyNote>
             The DOE PDP demand path is unavailable, so the forward band cannot be built.
@@ -81,7 +81,7 @@ export function ForwardView({
     },
     {
       key: 'p10',
-      header: 'P10',
+      header: '10th percentile (P10)',
       align: 'right',
       mono: true,
       render: (r) => php(r.perGrid[grid].p10),
@@ -95,7 +95,7 @@ export function ForwardView({
     },
     {
       key: 'p90',
-      header: 'P90',
+      header: '90th percentile (P90)',
       align: 'right',
       mono: true,
       render: (r) => php(r.perGrid[grid].p90),
@@ -107,12 +107,12 @@ export function ForwardView({
     <div className="view">
       <div className="chrono__controls">
         <label className="chrono__ctl">
-          Draws per year
+          Repeated simulations per year
           <select
             className="ribbon__select"
             value={draws}
             onChange={(e) => setDraws(Number(e.target.value))}
-            aria-label="Draws per year"
+            aria-label="Repeated simulations per year"
           >
             {[20, 30, 60].map((n) => (
               <option key={n} value={n}>
@@ -124,8 +124,8 @@ export function ForwardView({
       </div>
 
       <Panel
-        title={`Forward price band, ${cap(grid)}, to ${YEARS[YEARS.length - 1]}`}
-        subtitle="Observed days re-priced under the DOE PDP demand growth and joint operating draws. A scenario ensemble, not a forecast."
+        title={`Possible price range for ${cap(grid)} through ${YEARS[YEARS.length - 1]}`}
+        subtitle="Recorded days are re-priced under DOE PDP demand growth and varied operating conditions. This is a range of scenarios, not a forecast."
       >
         <div className="stat-row">
           <StatTile
@@ -134,9 +134,9 @@ export function ForwardView({
             hint="middle of the band"
           />
           <StatTile
-            label={`${YEARS[YEARS.length - 1]} P90`}
+            label={`${YEARS[YEARS.length - 1]} 90th percentile (P90)`}
             value={php(last.p90)}
-            hint="tight draws"
+            hint="higher-price scenario result"
           />
           <StatTile
             label="PDP load by 2030"
@@ -173,12 +173,13 @@ export function ForwardView({
         </svg>
         <DataGrid columns={cols} rows={rows} getKey={(r) => r.year} />
         <p className="note">
-          One regime: the observed day library spans a single post-suspension quarter, so
-          this carries seasonality from that quarter only and cannot be a forecast. It is
-          a band of what observed days would clear at under the PDP load path and
-          plausible operating states, the question a DU or IPP asks before a PSA or CSP
-          bid. Every input traces to a source (the demand path is the DOE PDP peak
-          forecast).
+          The recorded days cover one quarter after market operations resumed, so the
+          range includes only that quarter's seasonal pattern and is not a forecast. It
+          shows how those days might clear under the PDP demand path and a range of
+          operating conditions. A distribution utility (DU) or independent power producer
+          (IPP) can use it before a power supply agreement (PSA) or competitive selection
+          process (CSP) bid. Recorded inputs cite their sources, and assumptions are
+          labeled. The demand path is the DOE PDP peak forecast.
         </p>
       </Panel>
     </div>

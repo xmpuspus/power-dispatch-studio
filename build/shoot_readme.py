@@ -1,6 +1,6 @@
 """Render README.md through GitHub's own markdown API and screenshot it.
 
-A README is a rendered page, and the only honest way to check one is to look at
+A README is a rendered page, so the final check has to inspect the rendered page
 it. This posts the file to api.github.com/markdown, wraps the returned HTML in
 GitHub's stylesheet, and shoots it at a desktop and a phone width.
 
@@ -13,7 +13,7 @@ Mode is "markdown", not "gfm". Both render tables, but "gfm" is the comment
 renderer and turns every single newline into a <br>, which is not how GitHub
 renders a file. Under "gfm" this README's badges stack into a column and every
 wrapped source line becomes its own visual line, which looks like a layout bug
-in the README and is a bug in the harness.
+in the README and is a bug in the screenshot script.
 
     python3 build/shoot_readme.py
 """
@@ -30,10 +30,16 @@ CSS = "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-m
 
 
 def render_html() -> str:
-    body = json.dumps({"text": (ROOT / "README.md").read_text(), "mode": "markdown"}).encode()
+    body = json.dumps(
+        {"text": (ROOT / "README.md").read_text(), "mode": "markdown"}
+    ).encode()
     req = urllib.request.Request(
-        "https://api.github.com/markdown", data=body,
-        headers={"Content-Type": "application/json", "Accept": "application/vnd.github+json"},
+        "https://api.github.com/markdown",
+        data=body,
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "application/vnd.github+json",
+        },
     )
     with urllib.request.urlopen(req, timeout=60) as r:
         inner = r.read().decode()

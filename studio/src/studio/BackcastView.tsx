@@ -1,5 +1,5 @@
-// Backcast: the trust artifact. Every full-coverage market day replayed against
-// the observed hourly LWAP, error stated, nothing tuned. Two engines: the base
+// Replay every full-coverage market day against
+// the observed hourly LWAP, with errors reported and no parameters fit to target prices. Two engines: the base
 // COST model, and the operator's own OBSERVED OFFER BOOKS. The gap (scarcity,
 // offers, caps, outages the cost model cannot see) is the finding; the offer
 // books close most of it, which is the point of the toggle.
@@ -80,7 +80,10 @@ export function BackcastView({
     return (
       <div className="view">
         <div className="chrono__controls">{engineToggle}</div>
-        <Panel title="Backcast" subtitle="Model vs observed prices.">
+        <Panel
+          title="Historical replay against recorded prices"
+          subtitle="The model is checked against market records."
+        >
           <p className="note">
             {offers
               ? 'No derived offer books in the archive window yet.'
@@ -171,14 +174,14 @@ export function BackcastView({
         {engineToggle}
         <span className="note">
           {offers
-            ? 'The calibrated view: every market day replayed on the operator’s own published offer books. The correlation and error below are live from the bake.'
-            : 'The counterfactual: the pure merit-order cost model, fundamentals only, nothing tuned. The gap up to the offer replay is the measured offer premium.'}
+            ? 'Every market day is replayed with the operator’s published offers. The results below report correlation and error.'
+            : 'This lowest-cost-first model (merit order) uses fuel and operating costs only. Recorded prices were not used to tune the model inputs. The difference from the published-offer replay comes from subtracting the two calculations.'}
         </span>
       </div>
 
       <div className="stat-row">
         <StatTile
-          label={`MAE, ${cap(grid)}`}
+          label={`Mean absolute error (MAE), ${cap(grid)}`}
           value={php(stats?.mae_php_kwh)}
           hint={fromCost(
             `${bc.days} market days, hourly`,
@@ -210,7 +213,7 @@ export function BackcastView({
       </div>
 
       <Panel
-        title="Model vs observed LWAP, whole market window"
+        title="Modeled prices compared with recorded load-weighted prices (LWAP)"
         subtitle={`Every full-coverage market day since ${bc.window?.from} replayed with ${engineLabel}.`}
         right={
           <button
@@ -249,8 +252,8 @@ export function BackcastView({
 
       {bc.flows ? (
         <Panel
-          title="Corridor flows against the observed imports and exports"
-          subtitle="With native-load demand the replay must move real MW to serve each grid; this scores whether it does."
+          title="Modeled inter-grid flows compared with recorded imports and exports"
+          subtitle="Native-load demand requires the replay to move power between grids. This table measures how closely the flows match."
         >
           <DataGrid
             columns={[
@@ -300,8 +303,8 @@ export function BackcastView({
 
       {bc.flows_rtdhs ? (
         <Panel
-          title="Corridor flows against the operator's own HVDC record"
-          subtitle="The per-interval RTDHS schedule, independent of the demand construction; binding share is the operator's congestion flag."
+          title="Modeled inter-island flows compared with the operator's records"
+          subtitle="The operator's real-time inter-grid schedule records each 5-minute interval independently of the demand calculation. Its congestion flag shows how often a link reached its limit."
         >
           <DataGrid
             columns={[
@@ -333,7 +336,7 @@ export function BackcastView({
               },
               {
                 key: 'bind',
-                header: 'Observed binding share',
+                header: 'Recorded share at limit',
                 align: 'right',
                 mono: true,
                 render: (k: string) => {
@@ -343,7 +346,7 @@ export function BackcastView({
               },
               {
                 key: 'atcap',
-                header: 'Modeled at-cap share',
+                header: 'Modeled share at limit',
                 align: 'right',
                 mono: true,
                 render: (k: string) => {
@@ -361,8 +364,8 @@ export function BackcastView({
 
       {bc.per_grid_mcp ? (
         <Panel
-          title="Same replays against the observed clearing price (MCP)"
-          subtitle="The ex-ante regional marginal price, the target commensurate with a dispatch dual."
+          title="The same replays compared with the recorded market clearing price (MCP)"
+          subtitle="MCP is the regional price calculated before dispatch. It is the recorded measure that can be compared with the model's marginal price."
         >
           <DataGrid
             columns={cols.map((c) =>
@@ -391,8 +394,8 @@ export function BackcastView({
       ) : null}
 
       <Panel
-        title={`One day against the tape, ${cap(grid)}`}
-        subtitle={`Replayed with ${engineLabel} (no edits, no storage cycling) against the observed hourly LWAP.`}
+        title={`One day compared with the market record, ${cap(grid)}`}
+        subtitle={`Replayed with ${engineLabel} (no edits, no storage cycling) against the recorded hourly load-weighted average price (LWAP).`}
       >
         <div className="chrono__controls">
           <label className="chrono__ctl">
@@ -401,7 +404,7 @@ export function BackcastView({
               className="ribbon__select"
               value={day.date}
               onChange={(e) => setDate(e.target.value)}
-              aria-label="Backcast day"
+              aria-label="Historical replay day"
             >
               {marketDays.map((x) => (
                 <option key={x.date} value={x.date}>
@@ -430,8 +433,8 @@ export function BackcastView({
         ) : (
           <p className="note">
             {offerDay.loading
-              ? 'Loading the day’s offer book.'
-              : 'No derived offer book for this day. Books cover the market window with a few days’ publication lag; pick an earlier day or switch to the cost model.'}
+              ? 'Loading the day’s generator offers.'
+              : 'No published generator offers are available for this day. Publication lags by a few days. Pick an earlier day or switch to the cost model.'}
           </p>
         )}
       </Panel>

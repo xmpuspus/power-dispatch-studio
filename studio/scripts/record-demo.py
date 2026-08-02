@@ -33,17 +33,23 @@ async def main():
         await asyncio.sleep(3.0)  # landing hero + stat tiles settle
 
         # into the studio: the Generators grid is the DOE per-plant fleet
-        await tap(page, page.get_by_role("button", name="Open Power Dispatch Studio"),
-                  pause_after=2.8)
+        await tap(
+            page,
+            page.get_by_role("button", name="Open Power Dispatch Studio"),
+            pause_after=2.8,
+        )
 
-        # the studio now opens on the levers, so reach the fleet table first
+        # The studio opens on the what-if controls, so reach the fleet table first.
         await page.evaluate(
             """() => { document.querySelectorAll('.rail__grouphead').forEach(b => {
                  if (b.getAttribute('aria-expanded') === 'false') b.click() }) }"""
         )
         await asyncio.sleep(0.4)
-        await tap(page, page.get_by_role("button", name="Generators", exact=True),
-                  pause_after=1.4)
+        await tap(
+            page,
+            page.get_by_role("button", name="Generators", exact=True),
+            pause_after=1.4,
+        )
 
         # trip a Sual unit in the Properties grid: SPI U1 from 647 to 0 MW
         spi = page.locator('input[aria-label="SPI U1 Dependable"]')
@@ -54,14 +60,24 @@ async def main():
         await asyncio.sleep(1.6)  # edited cell highlights, status goes Unsolved
 
         # Run: the model re-solves, the status flips to Solved
-        await tap(page, page.get_by_role("button", name="Run the simulation"),
-                  pause_after=1.6)
+        await tap(
+            page, page.get_by_role("button", name="Run the simulation"), pause_after=1.6
+        )
 
-        # Chronology: replay an observed day on the edited model
+        # Hourly market replay: run an observed day on the edited model
         # the question rail replaced the System/Simulation tabs; open every group
-        await page.evaluate("() => { document.querySelectorAll('.rail__grouphead').forEach(b => { if (b.getAttribute('aria-expanded') === 'false') b.click() }) }")
-        await tap(page, page.get_by_role("button", name="Chronology"),
-                  pause_after=3.2)
+        await page.evaluate(
+            """() => {
+              document.querySelectorAll('.rail__grouphead').forEach(b => {
+                if (b.getAttribute('aria-expanded') === 'false') b.click()
+              })
+            }"""
+        )
+        await tap(
+            page,
+            page.get_by_role("button", name="Hourly market replay"),
+            pause_after=3.2,
+        )
         # scroll through dispatch-by-fuel and the storage state of charge
         await page.mouse.move(W // 2, H // 2)
         for _ in range(3):
@@ -72,22 +88,32 @@ async def main():
             await page.mouse.wheel(0, -560)
             await asyncio.sleep(0.4)
 
-        # freeze the solve as a run, then the runs ledger
+        # Save the calculation, then open the saved-runs list.
         await tap(page, page.get_by_role("button", name="Save run"), pause_after=1.4)
-        await tap(page, page.get_by_role("button", name="Saved runs"),
-                  pause_after=2.6)
+        await tap(
+            page,
+            page.get_by_role("button", name="Saved simulation runs"),
+            pause_after=2.6,
+        )
 
-        # the backcast: the base model against the observed price tape
-        await tap(page, page.get_by_role("button", name="Backcast"), pause_after=3.4)
+        # Compare the base model with recorded prices.
+        await tap(
+            page,
+            page.get_by_role("button", name="Historical replay"),
+            pause_after=3.4,
+        )
         await page.mouse.wheel(0, 420)
         await asyncio.sleep(2.0)
         await page.mouse.wheel(0, -420)
         await asyncio.sleep(0.6)
 
-        # the nodal validation proof: network physics against the market's own
+        # Compare the transmission-loss calculation with recorded node prices.
         # per-node prices, the newest analysis surface
-        await tap(page, page.get_by_role("button", name="Loss validation"),
-                  pause_after=3.4)
+        await tap(
+            page,
+            page.get_by_role("button", name="Transmission-loss check"),
+            pause_after=3.4,
+        )
         await page.mouse.wheel(0, 300)
         await asyncio.sleep(2.2)
         await page.mouse.wheel(0, -300)
@@ -96,8 +122,11 @@ async def main():
         # flip to the dark theme (the loss-validation panels remap), then close
         await page.locator('.bar button[aria-label^="Switch to"]').click()
         await asyncio.sleep(2.6)
-        await tap(page, page.locator('.bar button[aria-label="Close the studio"]'),
-                  pause_after=1.2)
+        await tap(
+            page,
+            page.locator('.bar button[aria-label="Close the studio"]'),
+            pause_after=1.2,
+        )
 
         await ctx.close()
         vid = await page.video.path()

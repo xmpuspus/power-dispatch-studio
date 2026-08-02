@@ -1,4 +1,4 @@
-// Client scenario engine. Stacks are rebuilt from the baked per-fuel
+// Client scenario engine. Stacks are rebuilt from the generated per-fuel
 // availability (merit_order[g].fuel_avail_mw) exactly as before; the coupled
 // clear is a single-hour HiGHS LP (the same canonical model as the
 // chronological engine, one hour deep), so snapshot prices are locational
@@ -28,7 +28,7 @@ export interface Levers {
   trip: string // named unit tripped on the selected grid (matched by name)
   coalPrice: number // administered coal price for the marginal coal tranche (PhP/kWh)
   reliefMW: number // extra operating limit on the corridor feeding the selected grid (MW)
-  lngSwitch: boolean // reprice gas from Malampaya to imported LNG (the ~2027 cliff)
+  lngSwitch: boolean // reprice gas from Malampaya to imported liquefied natural gas
   hydrology: number // multiplier on hydro availability (dry El Nino / normal / wet)
 }
 
@@ -350,7 +350,7 @@ export function solveScenario(
     )
   }
 
-  // base (no levers) single-grid clear for the selected grid, for the delta readout
+  // Base single-grid clear for the selected grid, before scenario changes.
   const baseStack = buildStack(
     d.merit_order[lv.grid].fuel_avail_mw,
     {},

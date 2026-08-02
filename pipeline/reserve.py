@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Bake the WESM Reserve Market layer from IEMOP RTD reserve schedules (RTDRS).
+"""Generate the WESM Reserve Market layer from IEMOP RTD reserve schedules (RTDRS).
 
 The studio's merit order clears ENERGY only. The real WESM market co-optimises
 energy and reserves in real-time dispatch: a generator scheduled to hold reserve
 is not available to sell energy, and in a tight hour the reserve clearing price
 spikes alongside the energy price. The energy-only stack cannot see that cost
-layer. This bakes the observed reserve clearing prices, per grid and per reserve
+layer. This stores the observed reserve clearing prices, per grid and per reserve
 category, from IEMOP's public RTD Reserve Schedule files so the studio can show
 what the energy-only view leaves out.
 
@@ -42,6 +42,7 @@ Sources (three-product structure and definitions; commercial-ops date):
   https://www.iemop.ph/news/iemop-commences-the-full-commercial-operations-of-reserve-market/
   https://www.iemop.ph/market-data/rtd-reserve-schedule/  (the RTDRS dataset)
 """
+
 from __future__ import annotations
 
 import csv
@@ -88,10 +89,12 @@ def _sample_days(files: list[str]) -> list[str]:
 def build_reserve() -> dict:
     files = sorted(glob.glob(os.path.join(RTDRS_DIR, "*.csv")))
     if not files:
-        return {"available": False,
-                "note": "RTDRS reserve schedules absent; run "
-                        "pipeline/archive_iemop.py --backfill --only RTDRS "
-                        "--sample-days 3"}
+        return {
+            "available": False,
+            "note": "RTDRS reserve schedules absent; run "
+            "pipeline/archive_iemop.py --backfill --only RTDRS "
+            "--sample-days 3",
+        }
 
     # price rows (PhP/kWh) per (grid, category); scheduled MW per (interval, grid,
     # category) so a system MW can be averaged over intervals.
@@ -140,7 +143,11 @@ def build_reserve() -> dict:
             "min_php_kwh": round(min(vals), 3),
             "max_php_kwh": round(max(vals), 3),
             "cap_hit_pct": round(
-                100 * sum(1 for v in vals if v >= RESERVE_CAP_PHP_KWH - 0.1) / len(vals), 1),
+                100
+                * sum(1 for v in vals if v >= RESERVE_CAP_PHP_KWH - 0.1)
+                / len(vals),
+                1,
+            ),
         }
 
     categories = []
@@ -149,14 +156,16 @@ def build_reserve() -> dict:
         if not vals:
             continue
         s = stats(vals)
-        categories.append({
-            "code": code,
-            "category": catkey,
-            "label": label,
-            "code_mapping": basis,
-            **s,
-            "mean_system_mw": round(mean(sys_mw[catkey])) if sys_mw[catkey] else 0,
-        })
+        categories.append(
+            {
+                "code": code,
+                "category": catkey,
+                "label": label,
+                "code_mapping": basis,
+                **s,
+                "mean_system_mw": round(mean(sys_mw[catkey])) if sys_mw[catkey] else 0,
+            }
+        )
     # order by mean price, dearest first (the scarce products lead)
     categories.sort(key=lambda c: -c["mean_php_kwh"])
 
@@ -167,14 +176,17 @@ def build_reserve() -> dict:
             vals = price.get((grid, catkey))
             if not vals:
                 continue
-            rows.append({
-                "code": code,
-                "category": catkey,
-                "label": label,
-                "mean_php_kwh": round(mean(vals), 3),
-                "mean_mw": round(mean(grid_mw[(grid, catkey)]))
-                if grid_mw[(grid, catkey)] else 0,
-            })
+            rows.append(
+                {
+                    "code": code,
+                    "category": catkey,
+                    "label": label,
+                    "mean_php_kwh": round(mean(vals), 3),
+                    "mean_mw": round(mean(grid_mw[(grid, catkey)]))
+                    if grid_mw[(grid, catkey)]
+                    else 0,
+                }
+            )
         rows.sort(key=lambda r: -r["mean_php_kwh"])
         by_grid[grid] = rows
 
@@ -201,26 +213,26 @@ def build_reserve() -> dict:
         "by_grid": by_grid,
         "scarcity": scarcity,
         "mapping_note": "The three reserve products (Regulation, Contingency, "
-                        "Dispatchable) and their definitions are sourced to IEMOP. "
-                        "IEMOP does not publish a code key on the dataset, so the RTD "
-                        "schedule commodity codes (Ru/Rd regulation, Dr dispatchable, "
-                        "Fr contingency) are mapped by inference from those "
-                        "definitions, then corroborated against the archived "
-                        "REQUIREMENT column (RTDSUM MKT_REQT) rather than the "
-                        "schedule: Ru and Rd are identical and symmetric in every "
-                        "region, the shape of a product procured both ways, while Fr "
-                        "and Dr are both pinned at 668 MW in Luzon, the size of the "
-                        "grid's largest single unit and so the contingency it must "
-                        "cover.",
+        "Dispatchable) and their definitions are sourced to IEMOP. "
+        "IEMOP does not publish a code key on the dataset, so the RTD "
+        "schedule commodity codes (Ru/Rd regulation, Dr dispatchable, "
+        "Fr contingency) are mapped by inference from those "
+        "definitions, then corroborated against the archived "
+        "REQUIREMENT column (RTDSUM MKT_REQT) rather than the "
+        "schedule: Ru and Rd are identical and symmetric in every "
+        "region, the shape of a product procured both ways, while Fr "
+        "and Dr are both pinned at 668 MW in Luzon, the size of the "
+        "grid's largest single unit and so the contingency it must "
+        "cover.",
         "note": "The WESM Reserve Market co-optimises energy and reserves in "
-                "real-time dispatch: a unit holding reserve cannot also sell that "
-                "MW as energy, and in a tight hour the reserve clearing price "
-                "spikes with the energy price. The studio's merit order clears "
-                "energy only, so it does not price this layer. These are the "
-                "operator's own published RTD reserve clearing prices over a "
-                "sample of recent days, not a model output.",
+        "real-time dispatch: a unit holding reserve cannot also sell that "
+        "MW as energy, and in a tight hour the reserve clearing price "
+        "spikes with the energy price. The studio's merit order clears "
+        "energy only, so it does not price this layer. These are the "
+        "operator's own published RTD reserve clearing prices over a "
+        "sample of recent days, not a model output.",
         "disclaimer": "Statistical indicators derived from public data. Patterns "
-                      "may have legitimate explanations.",
+        "may have legitimate explanations.",
         "src_market": "https://www.iemop.ph/news/iemop-commences-the-full-commercial-operations-of-reserve-market/",
         "src_data": "https://www.iemop.ph/market-data/rtd-reserve-schedule/",
     }
@@ -228,4 +240,5 @@ def build_reserve() -> dict:
 
 if __name__ == "__main__":
     import json
+
     print(json.dumps(build_reserve(), indent=1))

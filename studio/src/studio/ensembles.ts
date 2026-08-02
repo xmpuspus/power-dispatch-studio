@@ -1,9 +1,7 @@
-// Scenario ensembles (roadmap item 5): a seeded Monte Carlo of joint draws
+// Repeated seeded simulations of joint inputs
 // (data-center load growth, hydrology, fuel price, a forced outage) pushed
-// through the SAME day chronology the studio already solves, surfacing a price
-// distribution per grid instead of a single point. Seeded, so a re-run gives
-// the identical ensemble, and synchronous like the window band (the 66-day band
-// already proves the solve budget is there).
+// through the same day calculation the studio uses, producing a price
+// distribution per grid. The fixed seed makes the result repeatable.
 
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { runChronology } from './chrono'
@@ -32,7 +30,7 @@ export interface DrawRanges {
 }
 
 export const DEFAULT_RANGES: DrawRanges = {
-  demandGrowthMw: 1500, // the DICT 1.5 GW wave as the upper draw
+  demandGrowthMw: 1500, // the DICT 1.5 GW forecast as the upper draw
   hydrologyLo: 0.6,
   hydrologyHi: 1.15,
   coalPriceSpread: 2,

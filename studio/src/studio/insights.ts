@@ -1,5 +1,5 @@
 // Derived analytics over solved results: what set the price each hour, percentile
-// bands across replayed days, and per-run CO2 when emission factors are baked.
+// bands across replayed days, and per-run CO2 when emission factors are available.
 // Pure functions over engine outputs; nothing here touches the parity engines.
 
 import type { GridKey, ProjectRow } from '../lib/types'
@@ -170,7 +170,7 @@ export function addsAtHorizon(
   return { adds, unscheduledMw: Math.round(unscheduled) }
 }
 
-// ---- emissions (factors are baked constants with sources; see emissions.json) -----
+// Emissions factors are generated constants with sources; see emissions.json.
 
 /** Window CO2 in tonnes for one grid (or all grids) from dispatched energy per
  * fuel. Hourly MW over one hour is MWh; storage discharge carries no factor of

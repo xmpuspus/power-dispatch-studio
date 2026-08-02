@@ -11,7 +11,7 @@ name with their submarine segments. This is community-mapped data under
 ODbL: every consumer must label it "as mapped in OpenStreetMap", never
 "NGCP official".
 
-Three raw pulls, one file each (committed, so the bake is reproducible
+Three raw pulls, one file each (committed, so the data build is reproducible
 without hitting Overpass):
   lines_hv.json    power=line tagged 500/230/138 kV (PH area query; 138 kV
                    is in scope because the Mindanao grid and the
@@ -49,7 +49,7 @@ ENDPOINTS = [
 
 # PH bbox for the cable query: area filters are the expensive part of
 # OverpassQL and fail first under server load; the bbox includes Sabah
-# (Malaysia), which the bake clips by centroid (lon < 119.4 and lat < 7.5).
+# (Malaysia), which the data build clips by centroid (lon < 119.4 and lat < 7.5).
 BBOX = "4.5,116.5,21.5,127.2"
 
 QUERIES = {

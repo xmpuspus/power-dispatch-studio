@@ -2,7 +2,7 @@
 """Reduced-backbone DC power flow + DC-OPF over the real (OSM) grid geometry,
 validated against the market's own record.
 
-What this is: the honest tier of nodal modeling that public data supports.
+What this is: the level of nodal modeling that public data supports.
 NGCP's actual network model (impedances, ratings) is distributed to WESM
 members only, so this module builds a REDUCED backbone from the OSM geometry
 (data/raw/OSMGRID via grid_geometry.py) with class-typical reactances scaled
@@ -13,8 +13,8 @@ limits), and observed injections from the derived nodal dailies
 number is labeled estimated; every observed number carries its source.
 
 Two solves per validation hour, both B-theta linear programs on HiGHS
-(highspy, the same solver the day LP uses; this module is pipeline-only and
-never touches the byte-parity day-LP text):
+(highspy, the same solver the day linear program uses; this module is pipeline-only and
+does not change the shared day-model text):
 
   replay  observed injections, flows free: where does the observed dispatch
           load the network? Validation: the most-loaded branches should
@@ -500,7 +500,7 @@ def observed_limits() -> dict[str, float]:
 
 def _gens_for_opf(day: dict, res_bus: dict) -> list[dict]:
     """One dispatchable unit per resolved GEN resource: capability = max
-    observed MW that day, cost = the grid-fuel proxy from the baked merit
+    observed MW that day, cost = the grid-fuel proxy from the generated merit
     order (PhP/MWh), unclassified fuels at the grid median."""
     from offers import classify_fuel
 
@@ -581,7 +581,7 @@ _SOLAR_PROFILE: list[float] | None = None
 
 
 def solar_profile() -> list[float]:
-    """The baked 24-hour PH solar shape (fleet_ph.SOLAR_PROFILE via
+    """The generated 24-hour PH solar shape (fleet_ph.SOLAR_PROFILE via
     web/data/profiles.json). A labeled clear-sky-ish model assumption, not
     measured irradiance, so anything built on it is an optimistic bound on
     what solar delivers."""
@@ -599,14 +599,16 @@ def _net_draw(site: dict, hour: int) -> float:
     A campus that builds its own generation still meets the network at one
     point, and what crosses that point is load minus whatever its own plant
     is producing right then. Firm embedded capacity produces around the
-    clock; embedded solar follows the baked shape and is zero for eleven
+    clock; embedded solar follows the generated shape and is zero for eleven
     hours of it, which is the whole reason the split matters. A negative
     result means the site is sending power out."""
     solar = site.get("embedded_solar_mw", 0.0) * solar_profile()[hour]
     return site["mw"] - site.get("embedded_firm_mw", 0.0) - solar
 
 
-def _plant_load(inj: dict[str, float], net: dict, bus: str, mw: float) -> dict[str, float]:
+def _plant_load(
+    inj: dict[str, float], net: dict, bus: str, mw: float
+) -> dict[str, float]:
     """Add `mw` of load at `bus` and pay for it from the island's own observed
     generation, scaled pro-rata to what each bus was already producing.
 
@@ -668,7 +670,9 @@ def _headroom_gens(
     ]
 
 
-def reinforce_site(net: dict, bus: str, mw: float, radius_km: float = 0.0) -> list[dict]:
+def reinforce_site(
+    net: dict, bus: str, mw: float, radius_km: float = 0.0
+) -> list[dict]:
     """Raise the rating of the branches around the site bus to at least `mw`,
     standing in for the dedicated connection NGCP says it is building (target
     end-2028 for New Clark City).
@@ -993,9 +997,7 @@ def run_day(date: str, sited: dict | None = None) -> dict:
         }
         saved = [(br, br["rating_mw"], br.get("rating_src")) for br in net["branches"]]
         reinforced = (
-            reinforce_site(
-                net, site["bus"], site["reinforce_mw"], site["reinforce_km"]
-            )
+            reinforce_site(net, site["bus"], site["reinforce_mw"], site["reinforce_km"])
             if site["reinforce_mw"] > 0
             else []
         )
@@ -1043,8 +1045,8 @@ def run_day(date: str, sited: dict | None = None) -> dict:
                 "so the site bus prices at the cost of unserved energy. The "
                 "LMP deltas above are that penalty, NOT a market price. Read "
                 "deliverable_mw instead."
-                if shed else
-                "The site load is delivered without shedding, so the LMP "
+                if shed
+                else "The site load is delivered without shedding, so the LMP "
                 "deltas are the model's marginal costs."
             ),
             "site_unserved_mw": added_unserved,
@@ -1073,10 +1075,12 @@ def run_day(date: str, sited: dict | None = None) -> dict:
 
     sited_out = None
     if site:
-        peak_base = [max(replay_load[hr][bi] for hr in hours)
-                     for bi in range(len(branches))]
-        peak_sited = [max(sited_load[hr][bi] for hr in hours)
-                      for bi in range(len(branches))]
+        peak_base = [
+            max(replay_load[hr][bi] for hr in hours) for bi in range(len(branches))
+        ]
+        peak_sited = [
+            max(sited_load[hr][bi] for hr in hours) for bi in range(len(branches))
+        ]
         delta = [peak_sited[bi] - peak_base[bi] for bi in range(len(branches))]
         moved = sorted(range(len(branches)), key=lambda bi: -delta[bi])[:15]
         sited_out = {
@@ -1159,13 +1163,11 @@ def run_day(date: str, sited: dict | None = None) -> dict:
             "class-default": len(branches) - rated_observed - raised,
         },
         "opf_finding": (
-            "A measured probe, not a shipped price surface: at the current "
-            "resource-to-bus resolution (share of MW in resource_mapping) "
-            "the re-dispatch concentrates each grid's unresolved generation "
-            "onto its few resolved plant buses, so modeled price LEVELS are "
-            "not usable; what the probe reports is the geography (which "
-            "corridors the re-dispatch pushes to their estimated limits) "
-            "and the honest gap. The zonal engine remains the price model."
+            "This network test cannot provide usable node price levels. The "
+            "resource-to-bus map places unresolved generation on the few plant "
+            "buses that are resolved. Use the result only to see which grid "
+            "lines reach their estimated limits. The regional model remains "
+            "the price calculation."
         ),
         "sited_scenario": sited_out,
         "replay": {
@@ -1186,27 +1188,49 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--day", required=True, help="YYYY-MM-DD (must be derived)")
     ap.add_argument("--out", default=OUT_PATH)
-    ap.add_argument("--site", choices=sorted(SITES), help="plant an announced load site")
+    ap.add_argument(
+        "--site", choices=sorted(SITES), help="plant an announced load site"
+    )
     ap.add_argument("--site-mw", type=float, help="site load (MW), flat")
-    ap.add_argument("--reinforce-mw", type=float, default=0.0,
-                    help="raise the ratings of the site bus's branches to this "
-                         "MW (the announced dedicated connection)")
-    ap.add_argument("--reinforce-km", type=float, default=0.0,
-                    help="reinforce every branch with an endpoint within this "
-                         "radius of the site bus, not just the incident ones")
-    ap.add_argument("--embedded-firm-mw", type=float, default=0.0,
-                    help="the site's own round-the-clock generation (MW)")
-    ap.add_argument("--embedded-solar-mw", type=float, default=0.0,
-                    help="the site's own solar (MW), follows the baked shape")
+    ap.add_argument(
+        "--reinforce-mw",
+        type=float,
+        default=0.0,
+        help="raise the ratings of the site bus's branches to this "
+        "MW (the announced dedicated connection)",
+    )
+    ap.add_argument(
+        "--reinforce-km",
+        type=float,
+        default=0.0,
+        help="reinforce every branch with an endpoint within this "
+        "radius of the site bus, not just the incident ones",
+    )
+    ap.add_argument(
+        "--embedded-firm-mw",
+        type=float,
+        default=0.0,
+        help="the site's own round-the-clock generation (MW)",
+    )
+    ap.add_argument(
+        "--embedded-solar-mw",
+        type=float,
+        default=0.0,
+        help="the site's own solar (MW), follows the generated shape",
+    )
     a = ap.parse_args()
     sited = None
     if a.site:
         if not a.site_mw:
             ap.error("--site needs --site-mw")
-        sited = {"site": a.site, "mw": a.site_mw,
-                 "reinforce_mw": a.reinforce_mw, "reinforce_km": a.reinforce_km,
-                 "embedded_firm_mw": a.embedded_firm_mw,
-                 "embedded_solar_mw": a.embedded_solar_mw}
+        sited = {
+            "site": a.site,
+            "mw": a.site_mw,
+            "reinforce_mw": a.reinforce_mw,
+            "reinforce_km": a.reinforce_km,
+            "embedded_firm_mw": a.embedded_firm_mw,
+            "embedded_solar_mw": a.embedded_solar_mw,
+        }
     result = run_day(a.day, sited=sited)
     with open(a.out, "w") as f:
         json.dump(result, f, indent=1)
@@ -1220,27 +1244,37 @@ if __name__ == "__main__":
     sc = result.get("sited_scenario")
     if sc:
         s = sc["site"]
-        print(f"\nsited: {s['label']} {s['mw']:,.0f} MW -> bus {s['bus']} "
-              f"({s['grid']}, snapped {s['snap_km']} km)")
+        print(
+            f"\nsited: {s['label']} {s['mw']:,.0f} MW -> bus {s['bus']} "
+            f"({s['grid']}, snapped {s['snap_km']} km)"
+        )
         if s["embedded_firm_mw"] or s["embedded_solar_mw"]:
             nd = s["net_draw_mw"]
-            print(f"  embedded: {s['embedded_firm_mw']:,.0f} MW firm + "
-                  f"{s['embedded_solar_mw']:,.0f} MW solar -> net grid draw "
-                  f"{min(nd):,.0f} to {max(nd):,.0f} MW over the day")
+            print(
+                f"  embedded: {s['embedded_firm_mw']:,.0f} MW firm + "
+                f"{s['embedded_solar_mw']:,.0f} MW solar -> net grid draw "
+                f"{min(nd):,.0f} to {max(nd):,.0f} MW over the day"
+            )
         for r in sc["replay_delta"]["most_loaded_by_the_site"][:8]:
-            print(f"  +{r['loading_delta']:5.2f} loading  {r['kind']:6s} "
-                  f"{r['names'][:2]}  ({r['peak_loading_base']:.2f} -> "
-                  f"{r['peak_loading_sited']:.2f} of rating)")
+            print(
+                f"  +{r['loading_delta']:5.2f} loading  {r['kind']:6s} "
+                f"{r['names'][:2]}  ({r['peak_loading_base']:.2f} -> "
+                f"{r['peak_loading_sited']:.2f} of rating)"
+            )
         for hr, o in sc["opf_delta"].items():
             if o["price_delta_is_a_price"]:
-                print(f"  opf h{hr}: island mean "
-                      f"{o['island_mean_lmp_delta_mwh']:+.1f} PhP/MWh, site bus "
-                      f"{o['site_lmp_delta_mwh']:+.1f}, site-vs-island deviation "
-                      f"{o['site_deviation_change_mwh']:+.1f}, newly binding "
-                      f"{len(o['newly_binding'])}")
+                print(
+                    f"  opf h{hr}: island mean "
+                    f"{o['island_mean_lmp_delta_mwh']:+.1f} PhP/MWh, site bus "
+                    f"{o['site_lmp_delta_mwh']:+.1f}, site-vs-island deviation "
+                    f"{o['site_deviation_change_mwh']:+.1f}, newly binding "
+                    f"{len(o['newly_binding'])}"
+                )
             else:
-                print(f"  opf h{hr}: network sheds {o['site_unserved_mw']:,.0f} MW "
-                      f"at the site, so no price. Deliverable to this bus: "
-                      f"{o['deliverable_mw']:,.0f} MW of the "
-                      f"{o['net_draw_mw']:,.0f} MW it draws. "
-                      f"Newly binding {len(o['newly_binding'])}")
+                print(
+                    f"  opf h{hr}: network sheds {o['site_unserved_mw']:,.0f} MW "
+                    f"at the site, so no price. Deliverable to this bus: "
+                    f"{o['deliverable_mw']:,.0f} MW of the "
+                    f"{o['net_draw_mw']:,.0f} MW it draws. "
+                    f"Newly binding {len(o['newly_binding'])}"
+                )

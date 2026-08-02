@@ -146,7 +146,7 @@ export function Studio({
   const [ranOv, setRanOv] = useState<Overrides>(shared?.overrides ?? {})
   const [dirty, setDirty] = useState(false)
 
-  // the chronology window defaults to the baked widest-swing day once profiles land
+  // The chronology window defaults to the generated widest-swing day after profiles load.
   useEffect(() => {
     const p = profiles.data
     if (!p) return
@@ -443,14 +443,14 @@ export function Studio({
 
       <footer className="studio__status mono">
         <span>
-          Phase <b>{phaseLabel}</b>
+          View type <b>{phaseLabel}</b>
         </span>
         <span>
           Scenario <b>{active.name}</b>, {editCount} edit{editCount === 1 ? '' : 's'}
           {active.importedKeys && active.importedKeys.length > 0 && (
             <span
               className="statuschip statuschip--user"
-              title="Your own CSV inputs, never uploaded"
+              title="Your CSV inputs stay in this browser and are never uploaded"
             >
               {' '}
               user-supplied data ({active.importedKeys.length})
@@ -458,10 +458,13 @@ export function Studio({
           )}
         </span>
         <span>
-          Luzon reserve margin <b>{pct(solved.reserveMarginPct.luzon / 100, 1)}</b>
+          Luzon spare capacity (reserve margin){' '}
+          <b>{pct(solved.reserveMarginPct.luzon / 100, 1)}</b>
         </span>
         <span className="studio__statspace" />
-        <span>merit-order LP solved by HiGHS, calibrated against observed prices</span>
+        <span>
+          lowest-cost-first dispatch (merit order), checked against recorded prices
+        </span>
       </footer>
     </div>
   )
@@ -477,9 +480,9 @@ class SolveBoundary extends Component<{ children: ReactNode }, { err: string | n
       return (
         <div className="view">
           <div className="basecase-banner">
-            This scenario broke the solve: {this.state.err}. Revert the last edit (System
-            tab, the x on a changed cell, or Revert all in the Model ribbon) and it
-            recovers.
+            This scenario could not be solved. {this.state.err}. Open Review and edit
+            model inputs, then use the x beside a changed value or the Revert edits
+            button.
           </div>
         </div>
       )
@@ -577,17 +580,17 @@ function DataPane({
   if (nav.kind === 'analysis') {
     if (nav.id === 'backcast') {
       if (!profiles)
-        return <div className="basecase-banner">Loading the observed day profiles.</div>
+        return <div className="basecase-banner">Loading recorded market days.</div>
       return <BackcastView d={d} profiles={profiles} grid={grid} />
     }
     if (nav.id === 'explain') {
       if (!profiles)
-        return <div className="basecase-banner">Loading the observed day profiles.</div>
+        return <div className="basecase-banner">Loading recorded market days.</div>
       return <DayExplainerView d={d} profiles={profiles} grid={grid} />
     }
     if (nav.id === 'emissions') {
       if (!profiles)
-        return <div className="basecase-banner">Loading the observed day profiles.</div>
+        return <div className="basecase-banner">Loading recorded market days.</div>
       return (
         <EmissionsView d={d} profiles={profiles} objects={objects} overrides={ranOv} />
       )
@@ -610,7 +613,7 @@ function DataPane({
       return <MultiYearView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'week') {
       if (!profiles)
-        return <div className="basecase-banner">Loading the observed day profiles.</div>
+        return <div className="basecase-banner">Loading recorded market days.</div>
       return <WeekView d={d} profiles={profiles} grid={grid} />
     }
     if (nav.id === 'expansion') return <ExpansionView />
@@ -622,7 +625,7 @@ function DataPane({
   if (sol === 'merit') return <SolvedMeritView s={solved} grid={grid} />
   if (sol === 'chrono') {
     if (!profiles || !chronoDate)
-      return <div className="basecase-banner">Loading the observed day profiles.</div>
+      return <div className="basecase-banner">Loading recorded market days.</div>
     return (
       <ChronologyView
         d={d}
@@ -644,7 +647,7 @@ function DataPane({
     return <SweepView d={d} objects={objects} overrides={ranOv} grid={grid} />
   if (sol === 'distribution') {
     if (!profiles)
-      return <div className="basecase-banner">Loading the observed day profiles.</div>
+      return <div className="basecase-banner">Loading recorded market days.</div>
     return (
       <DistributionView
         d={d}
@@ -663,18 +666,19 @@ function DataPane({
       <div>
         <SolvedReliabilityView s={solved} />
         <div className="basecase-banner">
-          Base case reference: the 20,000-draw pipeline distribution and the storage
-          buy-back, calibrated and not recomputed from your edits.
+          Base case reference. These results come from 20,000 outage simulations and the
+          storage comparison. They were checked against recorded prices and do not update
+          with your edits.
         </div>
         <ReliabilityView d={d} />
       </div>
     )
-  // baked, calibrated base-case reference views
+  // Generated, calibrated base-case reference views.
   return (
     <div>
       <div className="basecase-banner">
-        Base case reference. This view is calibrated against the observed window and is
-        not recomputed from your edits.
+        Base case reference. This view was checked against the recorded market window and
+        is not recomputed from your edits.
       </div>
       {sol === 'duration' && <DurationView d={d} grid={grid} />}
       {sol === 'marginal' && <MarginalView d={d} grid={grid} />}
@@ -706,9 +710,9 @@ function ClassPane({
   const [tab, setTab] = useState<DataTab>('properties')
   const rows = objects[cls]
   const tabs: { id: DataTab; label: string }[] = [
-    { id: 'objects', label: 'Objects' },
-    { id: 'memberships', label: 'Memberships' },
-    { id: 'properties', label: 'Properties' },
+    { id: 'objects', label: 'Items' },
+    { id: 'memberships', label: 'Connections' },
+    { id: 'properties', label: 'Inputs' },
   ]
   return (
     <div className="datapane">
@@ -734,8 +738,8 @@ function ClassPane({
               <span>
                 {' '}
                 Units and dependable capacities are the DOE list of existing power plants
-                (2025 editions); units under 20 MW dependable stay in the data but out of
-                this grid.
+                (2025 editions). Units with less than 20 MW of dependable capacity remain
+                in the source data but are not shown in this table.
               </span>
             )}
             {dirty && (

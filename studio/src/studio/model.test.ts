@@ -32,7 +32,7 @@ const gens: { name: string; grid: string; fuel: string; capacity_mw: number }[] 
 const OBJ = baseObjects(d, gens)
 const GRIDS: GridKey[] = ['luzon', 'visayas', 'mindanao']
 
-describe('solveModel base case reproduces the baked solution', () => {
+describe('solveModel base case reproduces the generated solution', () => {
   it('no overrides clears every grid on the coal margin (~P6), only a small wheeling flow', () => {
     const s = solveModel(d, OBJ, {})
     for (const g of GRIDS) expect(s.coupled.price[g]).toBeCloseTo(6, 1)
@@ -42,13 +42,13 @@ describe('solveModel base case reproduces the baked solution', () => {
     expect(Math.abs(s.coupled.flowLV)).toBeLessThan(50)
   })
 
-  it('base fuel availability matches the baked merit_order for Luzon', () => {
+  it('base fuel availability matches the generated merit_order for Luzon', () => {
     const s = solveModel(d, OBJ, {})
-    const baked = Object.values(d.merit_order.luzon.fuel_avail_mw).reduce(
+    const generated = Object.values(d.merit_order.luzon.fuel_avail_mw).reduce(
       (a, b) => a + b,
       0
     )
-    expect(s.avail.luzon).toBeGreaterThan(baked * 0.9)
+    expect(s.avail.luzon).toBeGreaterThan(generated * 0.9)
   })
 })
 

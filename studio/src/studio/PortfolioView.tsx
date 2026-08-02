@@ -50,12 +50,12 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
     return (
       <div className="view">
         <Panel
-          title="Portfolio and contract valuation"
+          title="Value a generator portfolio and its power supply agreement"
           subtitle="Value a generation position against a saved run's hourly prices."
         >
           <EmptyNote>
-            No saved run with hourly detail yet. Run a scenario first: open Chronology,
-            configure a scenario and a window, and press Save run.
+            No saved run has hourly detail yet. Open Hourly market replay, configure a
+            scenario and a date range, then press Save run.
           </EmptyNote>
         </Panel>
       </div>
@@ -78,15 +78,15 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
     <div className="view" data-testid="portfolio">
       <p className="scn__lede">
         Value a generation position against a saved run's hourly prices. Generation is
-        your share of one fuel's dispatched MW in one grid, not a named unit's output: the
-        public run tracks fuel-level dispatch. The PSA is modeled as a contract for
-        differences on a flat volume: paid (strike minus spot) on the contracted MWh, on
-        top of selling everything at spot.
+        your share of generation from one fuel in one grid, not a named plant's output.
+        The public run tracks generation by fuel. The power supply agreement (PSA) is
+        modeled as a contract for differences on a flat volume. It pays the strike price
+        minus the spot price on contracted MWh, in addition to spot-market revenue.
       </p>
 
       <div className="scn">
         <Panel
-          title="Position"
+          title="Generation position and contract terms"
           subtitle={
             withHours.length > 1
               ? 'Pick the run, the position, and the PSA terms.'
@@ -96,7 +96,7 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
           <div className="levers">
             {withHours.length > 1 && (
               <label className="chrono__ctl">
-                Run
+                Saved run
                 <select
                   className="ribbon__select"
                   value={run.id}
@@ -195,10 +195,10 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
               label="Spot revenue"
               value={num(v.spotRevenue)}
               unit="PhP thousand"
-              hint="selling everything at WESM spot"
+              hint="selling all generation on the WESM spot market"
             />
             <StatTile
-              label="Bilateral vs WESM"
+              label="Bilateral contract compared with WESM spot"
               value={`${v.bilateralVsWesmDeltaPhp >= 0 ? '+' : ''}${num(v.bilateralVsWesmDeltaPhp)}`}
               unit="PhP thousand"
               tone={v.bilateralVsWesmDeltaPhp >= 0 ? 'positive' : 'danger'}
@@ -216,7 +216,7 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
           </div>
 
           <Panel
-            title="Uncontracted exposure"
+            title="Generation not covered by the contract"
             subtitle="Generation above the contracted volume, paired with that hour's spot price, dearest spot first."
           >
             {hasExposure ? (
@@ -224,7 +224,8 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
             ) : (
               <p className="note">
                 The contracted volume covers this position's generation in every hour of
-                this window: no uncontracted spot exposure.
+                this window. No generation is exposed to the spot market without contract
+                cover.
               </p>
             )}
           </Panel>
@@ -232,11 +233,12 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
           <p className="note">
             Generation is a flat {sharePct}% share of {fuelLabel(activeFuel)}'s hourly
             dispatched MW in {cap(grid)}, this run's actual dispatch, not a named unit's
-            output. The PSA settles as a contract for differences: (strike minus spot)
-            times the lesser of the contracted volume and that hour's generation, so the
-            contracted slice nets out to the fixed strike and the rest sells at spot.
+            output. The PSA settles as a contract for differences. For each hour, the
+            settlement is the strike price minus the spot price, multiplied by the lesser
+            of contracted volume or generation. Contracted generation receives the fixed
+            strike price, and any remaining generation sells at spot.
             {run.importedKeys && run.importedKeys.length > 0
-              ? ' This run used your own CSV-supplied inputs, not baked assumptions.'
+              ? ' This run used your own CSV inputs, not the published default assumptions.'
               : ''}
           </p>
         </div>

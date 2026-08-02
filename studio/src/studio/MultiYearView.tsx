@@ -1,7 +1,7 @@
-// Multi-year price path (roadmap item 13): a median price trajectory per policy
-// scenario to 2040, composing the forward draws (item 1) with the Malampaya gas
-// cliff (item 14) and the carbon price lever (item 15). Serves the NDC pathway
-// and long PSA question: how the price path bends under the gas cliff and a
+// A median price path per policy
+// scenario to 2040, combining future demand cases with lower Malampaya gas
+// supply and a carbon price. Serves the national climate plan
+// and long-term power-supply-agreement question: how the price path changes under lower gas supply and a
 // carbon price. Not a forecast, one regime, same caveats as the forward band.
 
 import { useMemo, useState } from 'react'
@@ -23,8 +23,8 @@ const COLORS = ['#3b7ea1', '#e0603a', '#2f9e6f']
 
 const SCENARIOS: PolicyScenario[] = [
   { label: 'Base' },
-  { label: 'Malampaya cliff', gasBudgetLuzonMwh: 20000 },
-  { label: 'Carbon PhP2000/tCO2', carbonPhpPerTco2: 2000 },
+  { label: 'Lower Malampaya gas supply', gasBudgetLuzonMwh: 20000 },
+  { label: 'Carbon price: ₱2,000 per metric tonne CO2', carbonPhpPerTco2: 2000 },
 ]
 
 export function MultiYearView({
@@ -92,12 +92,12 @@ export function MultiYearView({
     <div className="view">
       <div className="chrono__controls">
         <label className="chrono__ctl">
-          Draws per year
+          Repeated simulations per year
           <select
             className="ribbon__select"
             value={draws}
             onChange={(e) => setDraws(Number(e.target.value))}
-            aria-label="Draws per year"
+            aria-label="Repeated simulations per year"
           >
             {[10, 15, 30].map((n) => (
               <option key={n} value={n}>
@@ -151,13 +151,14 @@ export function MultiYearView({
         </svg>
         <DataGrid columns={cols} rows={rows} getKey={(r) => r.year} />
         <p className="note">
-          Each line is the median of the same seeded observed-day draws under the DOE PDP
-          load growth. The Malampaya cliff caps Luzon gas fuel energy; the carbon line
-          adds a price per tonne to each fuel's cost. The fleet is held at today's, no new
-          builds, so the lines flatten at the offer cap once the PDP load outgrows the
-          current fleet: that saturation is itself the signal that expansion is needed.
-          One regime and not a forecast: it is the trajectory observed days imply under
-          the load path and each policy, the question a long PSA or an NDC pathway asks.
+          Each line is the median from the same repeatable set of recorded-day simulations
+          under DOE PDP demand growth. Luzon's gas-energy limit falls as Malampaya
+          depletes. The carbon-price line adds a cost per tonne to each fuel. No new
+          plants are added, so prices reach the offer cap when demand outgrows the current
+          fleet. That point shows when expansion is needed. The recorded days cover one
+          market regime, so this is not a forecast. It shows the path those days imply
+          under each demand and policy setting for long-term power supply agreements
+          (PSAs) and nationally determined contribution (NDC) planning.
         </p>
       </Panel>
     </div>

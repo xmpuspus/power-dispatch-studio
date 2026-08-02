@@ -1,7 +1,7 @@
 // Editable object model behind the authoring surface. Objects (Fuels,
 // Generators, Interfaces, Regions) carry properties you edit in a grid; a Scenario is
 // a named override map; Run applies base + overrides, rebuilds the stacks, and solves
-// the coupled dispatch through engine.ts (which is golden-parity to the Python).
+// the coupled dispatch through engine.ts, which is checked against Python.
 //
 // Block-dispatch stance: the model clears aggregate per-fuel blocks. The Fuels
 // class sets the stack (cost + available MW per grid). The Generators class carries
@@ -52,26 +52,32 @@ export interface Scenario {
   overrides: Overrides
   // override keys whose value came from a user-supplied CSV import (item 2),
   // tracked so every view and the report can label them user-supplied and never
-  // uploaded, distinct from the baked public data
+  // uploaded, distinct from the generated public data
   importedKeys?: string[]
 }
 
 export const CLASSES: SystemClass[] = [
   {
     id: 'generator',
-    label: 'Generators',
+    label: 'Power plants',
     props: [
       { key: 'grid', label: 'Region', editable: false },
       { key: 'fuel', label: 'Fuel', editable: false },
       { key: 'capacity_mw', label: 'Dependable', unit: 'MW', editable: true, dp: 0 },
       { key: 'installed_mw', label: 'Installed', unit: 'MW', editable: false, dp: 0 },
       { key: 'marginal_cost', label: 'Fuel price', unit: '₱/kWh', editable: true, dp: 2 },
-      { key: 'for_pct', label: 'Forced outage', unit: '%', editable: true, dp: 0 },
+      {
+        key: 'for_pct',
+        label: 'Random outage rate (forced outage)',
+        unit: '%',
+        editable: true,
+        dp: 0,
+      },
     ],
   },
   {
     id: 'fuel',
-    label: 'Fuels',
+    label: 'Fuel and technology groups',
     props: [
       { key: 'cost', label: 'Price', unit: '₱/kWh', editable: true, dp: 2 },
       { key: 'luzon_mw', label: 'Luzon avail', unit: 'MW', editable: true, dp: 0 },
@@ -81,7 +87,7 @@ export const CLASSES: SystemClass[] = [
   },
   {
     id: 'interface',
-    label: 'Interfaces',
+    label: 'Inter-grid links',
     props: [
       { key: 'from', label: 'From', editable: false },
       { key: 'to', label: 'To', editable: false },
@@ -90,7 +96,7 @@ export const CLASSES: SystemClass[] = [
   },
   {
     id: 'region',
-    label: 'Regions',
+    label: 'Island grids',
     props: [
       { key: 'demand_mw', label: 'Load (evening)', unit: 'MW', editable: true, dp: 0 },
       { key: 'peak_mw', label: 'Evening peak', unit: 'MW', editable: false, dp: 0 },
@@ -98,7 +104,7 @@ export const CLASSES: SystemClass[] = [
   },
   {
     id: 'storage',
-    label: 'Storage',
+    label: 'Battery storage',
     props: [
       { key: 'grid', label: 'Region', editable: false },
       { key: 'power_mw', label: 'Power', unit: 'MW', editable: true, dp: 0 },
@@ -122,7 +128,7 @@ const MERIT_FUELS = [
 // object grid: the editing surface is for units that can move the solve
 export const FLEET_MIN_DEPENDABLE_MW = 20
 
-/** Base objects (no overrides) derived from the baked model + named generators.
+/** Base objects (no overrides) derived from the generated model + named generators.
  * When the DOE per-plant fleet is loaded, the Generators class carries the real
  * unit-level list (dependable capacity as the editable value); otherwise it
  * falls back to the named price-mover set. Storage rows cycle only in the
@@ -224,7 +230,7 @@ export function baseObjects(
 
 /**
  * Chronological run options from the edited object model, expressed as deltas
- * against the baked base. Fuel-grid solar edits count as INSTALLED solar and
+ * against the generated base. Fuel-grid solar edits count as installed solar and
  * follow the 24-hour shape (the snapshot solve reads the same edit as
  * evening-hour MW, where the shape is ~0); every other fuel edit shifts that
  * fuel's availability flat across the day. Region load edits shift demand as
@@ -346,10 +352,10 @@ export function carbonRunSuffix(ov: Overrides): string | null {
   return cp > 0 ? `carbon PhP${cp}/tCO2` : null
 }
 
-/** PhP/kWh a carbon price adds to one fuel's marginal cost, from its baked
+/** PhP/kWh a carbon price adds to one fuel's marginal cost, from its generated
  * tCO2/MWh emission factor: carbon_price * factor / 1000. Zero for a zero or
  * missing factor (solar, wind, hydro, storage; biomass is excluded upstream
- * of this call, its factor is null in the baked data). */
+ * of this call, its factor is null in the generated data). */
 export function carbonCostDelta(
   carbonPricePhpPerTco2: number,
   tco2PerMwh: number | null | undefined
@@ -364,7 +370,7 @@ export function carbonCostDelta(
 // commercial depletion expected around 2027). This lever caps the gas fleet's
 // daily ENERGY as a percent of its flat-out day, modeling the supply cliff. It
 // flows through opts.gas_budget, a day-level constraint both engines build
-// (lp_model.build_day_lp, lpText.buildDayLp), pinned by a golden case.
+// (lp_model.build_day_lp, lpText.buildDayLp), checked by a saved reference case.
 export const GAS_FUEL_ID = '__gas_supply__'
 export const GAS_PROP = 'malampaya_supply_pct'
 export const GAS_SOURCE_NOTE =
@@ -445,7 +451,7 @@ function gaussian(rng: () => number): number {
 
 /**
  * Client Monte Carlo loss-of-load, on the EDITED model. Each draw trips the named
- * units at their (edited) forced-outage rate, samples an evening load from the baked
+ * units at their (edited) forced-outage rate, samples an evening load from the generated
  * distribution centred on the (edited) region load, and takes the shortfall against
  * available capacity. Same idea as the pipeline's snapshot draws, run live so the
  * reliability responds to edits (add capacity, lower LOLP; add load or cut a unit,

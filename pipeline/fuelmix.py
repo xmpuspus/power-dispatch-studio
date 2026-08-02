@@ -18,6 +18,7 @@ reconcile to RTDSUM within 0.25 percent (Mindanao, the worst).
 Run: python3 pipeline/fuelmix.py --derive           # top up missing days
      python3 pipeline/fuelmix.py --derive --limit 5 # bounded run
 """
+
 from __future__ import annotations
 
 import csv
@@ -80,7 +81,8 @@ def derive_day(date: str, hour_files: list[tuple[str, str]]) -> dict:
                 for member in z.namelist():
                     with z.open(member) as fh:
                         rd = csv.DictReader(
-                            io.TextIOWrapper(fh, "utf-8", errors="replace"))
+                            io.TextIOWrapper(fh, "utf-8", errors="replace")
+                        )
                         for r in rd:
                             res = (r.get("RESOURCE_NAME") or "").strip()
                             if not res:
@@ -105,30 +107,41 @@ def derive_day(date: str, hour_files: list[tuple[str, str]]) -> dict:
         raise RuntimeError(f"{date}: no RTDSUM day yet for the gate")
     recon = None
     if rtd:
-        recon = {g: {"dipcef_mwh": round(per_grid[g], 1),
-                     "rtdsum_mwh": rtd[g],
-                     "gap_pct": (round(100 * abs(per_grid[g] - rtd[g])
-                                       / rtd[g], 2) if rtd[g] else None)}
-                 for g in GRIDS}
+        recon = {
+            g: {
+                "dipcef_mwh": round(per_grid[g], 1),
+                "rtdsum_mwh": rtd[g],
+                "gap_pct": (
+                    round(100 * abs(per_grid[g] - rtd[g]) / rtd[g], 2)
+                    if rtd[g]
+                    else None
+                ),
+            }
+            for g in GRIDS
+        }
         for g in GRIDS:
             gap = recon[g]["gap_pct"]
             if gap is not None and gap > 2.0:
                 raise RuntimeError(
-                    f"{date} {g}: DIPCEF/RTDSUM gap {gap}% exceeds the gate")
+                    f"{date} {g}: DIPCEF/RTDSUM gap {gap}% exceeds the gate"
+                )
     return {
         "date": f"{date[:4]}-{date[4:6]}-{date[6:]}",
         "n_hour_files": len(hour_files),
         "n_rows": n_rows,
-        "resources": {res: {"grid": region_of.get(res),
-                            "mwh": round(e, 2)}
-                      for res, e in sorted(energy.items())},
+        "resources": {
+            res: {"grid": region_of.get(res), "mwh": round(e, 2)}
+            for res, e in sorted(energy.items())
+        },
         "per_grid_total_mwh": {g: round(per_grid[g], 1) for g in GRIDS},
         "reconciliation": recon,
-        "note": ("Per-resource daily energy from DIPCEF SCHED_MW (5-minute "
-                 "schedules, final run), derived at archive time because the "
-                 "raw hourly zips are too heavy to commit; the regional "
-                 "totals must reconcile to RTDSUM within 2 percent or the "
-                 "day is refused."),
+        "note": (
+            "Per-resource daily energy from DIPCEF SCHED_MW (5-minute "
+            "schedules, final run), derived at archive time because the "
+            "raw hourly zips are too heavy to commit; the regional "
+            "totals must reconcile to RTDSUM within 2 percent or the "
+            "day is refused."
+        ),
     }
 
 
@@ -144,13 +157,18 @@ def derive(limit: int | None = None) -> int:
     done = 0
     fetch_fail_streak = 0
     days = sorted(by_day)
-    print(f"listing: {len(listing)} files across {len(days)} days "
-          f"({days[0]}..{days[-1]})" if days else "empty listing", flush=True)
+    print(
+        f"listing: {len(listing)} files across {len(days)} days ({days[0]}..{days[-1]})"
+        if days
+        else "empty listing",
+        flush=True,
+    )
     # administered-period days (pre-resumption) consistently fail the
     # reconciliation gate by 3-5 percent, so skip them before fetching:
     # the studio's market replay does not use them and the fetches are paid
     # for nothing. The divergence itself is noted in the methodology.
     from constants_ph import MARKET_ANCHORS
+
     resumed = MARKET_ANCHORS.get("wesm_resumed", "2026-05-01").replace("-", "")
     for date in days:
         if date < resumed:
@@ -170,8 +188,7 @@ def derive(limit: int | None = None) -> int:
                 # hard rather than hammering through a bad patch
                 fetch_fail_streak += 1
                 if fetch_fail_streak >= 3:
-                    print("aborting: 3 consecutive fetch-failure days",
-                          flush=True)
+                    print("aborting: 3 consecutive fetch-failure days", flush=True)
                     break
                 time.sleep(90)
             continue
@@ -191,12 +208,12 @@ if __name__ == "__main__":
         limit = int(sys.argv[sys.argv.index("--limit") + 1])
     if "--derive" in sys.argv:
         n = derive(limit)
-        print(f"derived {n} day(s)")
+        print(f"derived {n} day{'' if n == 1 else 's'}")
     else:
         print(__doc__)
 
 
-# ---- hydro classification + daily budgets -----------------------------------------
+# Hydro classification and daily budgets.
 # Grid-connected WESM hydro resources, classified per code CORE (the segment
 # between the two-digit area prefix and the unit suffix). Auto-matched against
 # the DOE fleet's hydro plants (same grid required), plus explicit aliases for
@@ -218,9 +235,29 @@ HYDRO_ALIAS = {
 HYDRO_EXTRA = {"PULANAI": "mindanao"}
 # pumped storage (Kalayaan) and grid batteries stay in the storage layer
 EXCLUDE_CORES = {"KAL"}
-HINTS = ("HYDRO", "HEP", "AGUS", "PULA", "MAINIT", "SIBUL", "LIANG",
-         "SROQ", "MAGAT", "BINGA", "AMBUK", "BAKUN", "PNTB", "CASEC",
-         "MASIW", "TIMBA", "VILLA", "ASIGA", "BOT", "CALIR", "ANGAT")
+HINTS = (
+    "HYDRO",
+    "HEP",
+    "AGUS",
+    "PULA",
+    "MAINIT",
+    "SIBUL",
+    "LIANG",
+    "SROQ",
+    "MAGAT",
+    "BINGA",
+    "AMBUK",
+    "BAKUN",
+    "PNTB",
+    "CASEC",
+    "MASIW",
+    "TIMBA",
+    "VILLA",
+    "ASIGA",
+    "BOT",
+    "CALIR",
+    "ANGAT",
+)
 
 
 def _core(res: str) -> str:
@@ -233,7 +270,7 @@ def _norm(s: str) -> str:
 
 
 def classify_hydro(fleet: dict) -> dict:
-    """core -> fleet plant (or 'extra') for hydro; built once per bake."""
+    """core -> fleet plant (or 'extra') for hydro; built once per data build."""
     by_norm = {}
     for p in fleet.get("plants", []):
         if p["fuel"] == "hydro":
@@ -251,16 +288,19 @@ def classify_hydro(fleet: dict) -> dict:
     return {"by_norm": by_norm, "fleet_match": fleet_match}
 
 
-def build_hydro_budgets(fleet: dict,
-                        merit_hydro_mw: dict | None = None) -> dict:
+def build_hydro_budgets(fleet: dict, merit_hydro_mw: dict | None = None) -> dict:
     """Per-day per-grid hydro MWh from the derived DIPCEF dailies, with the
     classification stated: matched fleet-hydro cores + explicit aliases +
     known new plants; pumped storage and batteries excluded; anything that
     hints hydro but stays unclassified is listed, not silently counted."""
     cls = classify_hydro(fleet)
-    files = sorted(
-        os.path.join(DERIVED, n) for n in os.listdir(DERIVED)
-        if n.endswith(".json")) if os.path.isdir(DERIVED) else []
+    files = (
+        sorted(
+            os.path.join(DERIVED, n) for n in os.listdir(DERIVED) if n.endswith(".json")
+        )
+        if os.path.isdir(DERIVED)
+        else []
+    )
     budgets: dict[str, dict] = {}
     matched_cores: dict[str, str] = {}
     suspects: dict[str, float] = defaultdict(float)
@@ -301,29 +341,34 @@ def build_hydro_budgets(fleet: dict,
         cap = (merit_hydro_mw or {}).get(g) or 0.0
         if cap <= 0:
             continue
-        worst = max((b.get(g) or 0.0) for b in budgets.values()) if budgets \
-            else 0.0
+        worst = max((b.get(g) or 0.0) for b in budgets.values()) if budgets else 0.0
         if worst > cap * 24:
-            over[g] = {"modeled_hydro_mw": cap,
-                       "max_observed_budget_mwh": round(worst, 1)}
+            over[g] = {
+                "modeled_hydro_mw": cap,
+                "max_observed_budget_mwh": round(worst, 1),
+            }
     return {
         "days": budgets,
         "n_days": len(budgets),
         "budget_exceeds_modeled_capacity": over or None,
         "matched_cores": dict(sorted(matched_cores.items())),
-        "suspects_mwh": {k: round(v, 1)
-                         for k, v in sorted(suspects.items(),
-                                            key=lambda kv: -kv[1])},
-        "excluded_note": ("Kalayaan pumped storage and grid batteries are "
-                          "excluded from the hydro budget (the storage layer "
-                          "owns them); "
-                          f"{round(excluded_mwh):,} MWh excluded across the "
-                          "derived days."),
-        "note": ("Observed daily hydro energy per grid, derived from DIPCEF "
-                 "per-resource schedules (data/derived/dipcef_daily/). "
-                 "Coverage is grid-connected WESM hydro; embedded hydro "
-                 "never appears in the nodal schedules, matching the "
-                 "model's grid-connected scope. A resource that hints hydro "
-                 "but stays unclassified is listed in suspects_mwh and NOT "
-                 "counted, so the budget is a verified floor."),
+        "suspects_mwh": {
+            k: round(v, 1) for k, v in sorted(suspects.items(), key=lambda kv: -kv[1])
+        },
+        "excluded_note": (
+            "Kalayaan pumped storage and grid batteries are "
+            "excluded from the hydro budget (the storage layer "
+            "owns them); "
+            f"{round(excluded_mwh):,} MWh excluded across the "
+            "derived days."
+        ),
+        "note": (
+            "Observed daily hydro energy per grid, derived from DIPCEF "
+            "per-resource schedules (data/derived/dipcef_daily/). "
+            "Coverage is grid-connected WESM hydro; embedded hydro "
+            "never appears in the nodal schedules, matching the "
+            "model's grid-connected scope. A resource that hints hydro "
+            "but stays unclassified is listed in suspects_mwh and NOT "
+            "counted, so the budget is a verified floor."
+        ),
     }

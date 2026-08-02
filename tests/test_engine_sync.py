@@ -12,6 +12,7 @@ Two guarantees, both plain python, no pytest:
 
 Run: python3 tests/test_engine_sync.py
 """
+
 import json
 import os
 import sys
@@ -34,12 +35,16 @@ def check(name, cond):
 # 1. drift check
 import sync_engine  # noqa: E402
 
-check("vendored engine is in sync with pipeline source",
-      sync_engine.sync(check=True) == 0)
+check(
+    "vendored engine is in sync with pipeline source", sync_engine.sync(check=True) == 0
+)
 
-# 2. same-engine parity: pick a baked day and run both sides
-import power_dispatch as pkg  # noqa: E402
+# 2. same-engine parity: pick a generated day and run both sides
 from lp_dispatch import run_chronology_lp  # noqa: E402
+
+import power_dispatch as pkg  # noqa: E402
+
+check("the version 0.1 load_baked name still works", pkg.load_baked is pkg.load_data)
 
 WEB = os.path.join(ROOT, "web", "data")
 dispatch = json.load(open(os.path.join(WEB, "dispatch.json")))
@@ -49,21 +54,28 @@ day = profiles["days"][len(profiles["days"]) // 2]["date"]
 pipe = run_chronology_lp(dispatch, profiles, day, {})
 pack = pkg.run_scenario({"date": day, "opts": {}})
 
-check(f"package and pipeline produce identical LP on {day} (lp_sha256)",
-      pipe["lp_sha256"] == pack["lp_sha256"])
-check("package and pipeline agree on the day summary",
-      pipe["summary"] == pack["summary"])
+check(
+    f"package and pipeline produce identical LP on {day} (lp_sha256)",
+    pipe["lp_sha256"] == pack["lp_sha256"],
+)
+check(
+    "package and pipeline agree on the day summary", pipe["summary"] == pack["summary"]
+)
 
 # 3. a lever run solves and moves price the expected way (demand up -> price up)
 base = pkg.run_scenario({"date": day, "opts": {}})
 up = pkg.run_scenario({"date": day, "opts": {"demand_delta": {"luzon": 1500}}})
-check("adding 1.5 GW Luzon load does not lower the Luzon mean price",
-      up["summary"]["mean_price"]["luzon"]
-      >= base["summary"]["mean_price"]["luzon"] - 1e-9)
+check(
+    "adding 1.5 GW Luzon load does not lower the Luzon mean price",
+    up["summary"]["mean_price"]["luzon"]
+    >= base["summary"]["mean_price"]["luzon"] - 1e-9,
+)
 
-# 4. list_days is the baked day list
-check("list_days matches the baked profiles day count",
-      len(pkg.list_days()) == len(profiles["days"]))
+# 4. list_days is the generated day list
+check(
+    "list_days matches the generated profiles day count",
+    len(pkg.list_days()) == len(profiles["days"]),
+)
 
 print("\n" + ("all green" if not fails else f"{len(fails)} FAILED"))
 sys.exit(1 if fails else 0)

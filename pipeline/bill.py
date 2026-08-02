@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
-"""Bake the contract-cover / bill-impact layer.
+"""Generate the supply-mix and bill-impact data.
 
-The map's third question is "what does a WESM move do to the Meralco bill?" A naive
-reading passes a WESM price move straight through: a P5/kWh spike reads as a P5/kWh
-bill increase. That is wrong. WESM prices only the RESIDUAL slice of a distribution
-utility's supply; the rest is under bilateral Power Supply Agreements (PSAs) and IPP
-contracts whose prices do not move with the spot market. In June 2026 Meralco sourced
-just 10% of its energy from WESM (69% PSAs, 21% First Gas / Prime CoreGen), so a WESM
-move passes through to the generation charge only in proportion to that 10%.
+The map asks what a WESM price change does to the Meralco bill. A P5/kWh WESM
+increase does not mean a P5/kWh bill increase. In June 2026 Meralco bought 10%
+of its electricity from WESM, 69% through power supply agreements, and 21% from
+First Gas and Prime CoreGen. The WESM price change therefore applies to the 10%
+WESM share, while contract prices do not move with the spot market.
 
-This bakes the sourced supply mix and bill anchors so the studio can reframe any WESM
-move as its actual bill impact (contract-buffered), not the full-spot illusion.
+This module stores the published supply mix and bill inputs so the studio can
+calculate the bill change for any WESM price.
 
-NOT a forecast: the mix and the bill components are the utility's own published
+This is not a forecast. The mix and bill components are the utility's published
 figures for a specific month.
 
 Sources:
@@ -24,10 +22,11 @@ Sources:
   to that generation charge and is not itself a slice of the bill):
     https://www.bworldonline.com/top-stories/2026/06/12/756242/meralco-rates-climb-p0-15-kwh-in-june/
 """
+
 from __future__ import annotations
 
 # Meralco June 2026 energy supply mix, share of total energy requirement (%).
-# Sourced to the Meralco June 2026 advisory (via PNA); WESM is the spot-exposed slice.
+# Sourced to the Meralco June 2026 advisory (via PNA); WESM is 10% of supply.
 SUPPLY_MIX_PCT = {
     "psa": 69,
     "ipp_first_gas_prime_coregen": 21,
@@ -55,24 +54,42 @@ SRC_BILL = "https://www.bworldonline.com/top-stories/2026/06/12/756242/meralco-r
 # describes them.
 HOUSEHOLD_KWH_MONTH = 200
 
-# The residual is not a constant: Meralco's own advisories put the WESM slice at
+# The WESM share is not constant: Meralco's own advisories put it at
 # 6% in April, 7% in May, 10% in June 2026. Shares and charges only; per-source
 # peso costs beyond the June WESM figure are not published cleanly and are not
 # estimated here. Advisory URLs are the canonical source (the Meralco site
 # refuses non-PH requests; figures cross-checked in the cited news reports).
 MIX_HISTORY = [
-    {"period": "2026-04", "wesm_pct": 6, "psa_pct": 74, "ipp_pct": 20,
-     "generation_charge_php_kwh": 8.3864, "total_rate_php_kwh": 14.3496,
-     "src": "https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-april-2026",
-     "src_news": "https://www.gmanetwork.com/news/money/economy/983342/meralco-hikes-power-rate-by-53-cents-this-april/story/"},
-    {"period": "2026-05", "wesm_pct": 7, "psa_pct": 73, "ipp_pct": 20,
-     "generation_charge_php_kwh": 8.7942, "total_rate_php_kwh": 14.3345,
-     "src": "https://company.meralco.com.ph/news-and-advisories/lower-residential-rates-may-2026",
-     "src_news": "https://www.bworldonline.com/top-stories/2026/05/14/749484/meralco-cuts-power-rates-slightly-after-3-mo-hikes/"},
-    {"period": "2026-06", "wesm_pct": 10, "psa_pct": 69, "ipp_pct": 21,
-     "generation_charge_php_kwh": 9.0704, "total_rate_php_kwh": 14.4833,
-     "src": SRC_MIX,
-     "src_news": SRC_BILL},
+    {
+        "period": "2026-04",
+        "wesm_pct": 6,
+        "psa_pct": 74,
+        "ipp_pct": 20,
+        "generation_charge_php_kwh": 8.3864,
+        "total_rate_php_kwh": 14.3496,
+        "src": "https://company.meralco.com.ph/news-and-advisories/higher-residential-rates-april-2026",
+        "src_news": "https://www.gmanetwork.com/news/money/economy/983342/meralco-hikes-power-rate-by-53-cents-this-april/story/",
+    },
+    {
+        "period": "2026-05",
+        "wesm_pct": 7,
+        "psa_pct": 73,
+        "ipp_pct": 20,
+        "generation_charge_php_kwh": 8.7942,
+        "total_rate_php_kwh": 14.3345,
+        "src": "https://company.meralco.com.ph/news-and-advisories/lower-residential-rates-may-2026",
+        "src_news": "https://www.bworldonline.com/top-stories/2026/05/14/749484/meralco-cuts-power-rates-slightly-after-3-mo-hikes/",
+    },
+    {
+        "period": "2026-06",
+        "wesm_pct": 10,
+        "psa_pct": 69,
+        "ipp_pct": 21,
+        "generation_charge_php_kwh": 9.0704,
+        "total_rate_php_kwh": 14.4833,
+        "src": SRC_MIX,
+        "src_news": SRC_BILL,
+    },
 ]
 
 # June 2026 per-source movement, the one month with a clean public breakdown:
@@ -94,12 +111,12 @@ def build_bill() -> dict:
         "mix_history": MIX_HISTORY,
         "june_moves": JUNE_MOVES,
         "mix_history_note": (
-            "The spot-exposed residual moved 6% to 7% to 10% across April, "
-            "May, June 2026 while the generation charge climbed P8.39 to "
-            "P9.07: the utility leaned harder on WESM exactly as the grid "
-            "tightened. The pass-through slider below uses the latest month; "
-            "contract shares are the utility's own published mix, and the "
-            "residual varies month to month."),
+            "Meralco's WESM share rose from 6% in April to 7% in May and 10% "
+            "in June 2026. Over the same three advisories, its generation charge "
+            "rose from P8.39 to P9.07/kWh. The table shows the two published "
+            "series without claiming that one caused the other. The slider uses "
+            "June's supply mix."
+        ),
         "supply_mix_pct": SUPPLY_MIX_PCT,
         "wesm_share_pct": SUPPLY_MIX_PCT["wesm"],
         "src_mix": SRC_MIX,
@@ -108,33 +125,33 @@ def build_bill() -> dict:
         "wesm_price_php_kwh": WESM_PRICE,
         # what the WESM price actually contributes to the blended generation
         # charge: share x price, NOT the price itself
-        "wesm_contribution_to_gen_charge_php_kwh": round(
-            wesm_share * WESM_PRICE, 4),
+        "wesm_contribution_to_gen_charge_php_kwh": round(wesm_share * WESM_PRICE, 4),
         "src_bill": SRC_BILL,
         "household_kwh_month": HOUSEHOLD_KWH_MONTH,
-        # a WESM move of DP PhP/kWh raises the generation charge by wesm_share * DP,
-        # not DP; the pass-through factor is baked so the client does not hardcode it.
+        # A WESM move of DP PhP/kWh raises the generation charge by
+        # wesm_share * DP, not DP. The client reads this generated factor.
         "pass_through_factor": round(wesm_share, 3),
-        "note": "WESM prices only the residual slice of a utility's supply. In June "
-                "2026 Meralco drew 10% of its energy from WESM, 69% from bilateral "
-                "PSAs, and 21% from First Gas / Prime CoreGen. A WESM price move "
-                "passes through to the generation charge in proportion to that 10% "
-                "residual, so the bill is far less exposed to a spot spike than the "
-                "headline WESM number suggests. Contract prices do not move with the "
-                "spot market. This is the utility's own published mix for one month, "
-                "not a forecast; the residual share varies month to month.",
+        "note": "WESM supplied 10% of Meralco's electricity in June 2026. "
+        "Meralco drew another 69% from bilateral "
+        "PSAs, and 21% from First Gas / Prime CoreGen. A WESM price move "
+        "passes through to the generation charge in proportion to that 10% "
+        "share, so the bill is far less exposed to a spot spike than the "
+        "headline WESM number suggests. Contract prices do not move with the "
+        "spot market. This is the utility's own published mix for one month, "
+        "not a forecast; the WESM share varies month to month.",
         "gwap_lwap_note": "The WESM figure a bill passes through is a load-weighted "
-                          "average price (LWAP): the price actually paid for energy "
-                          "drawn, weighted by withdrawal. It differs from a "
-                          "generator-weighted average price (GWAP), which weights by "
-                          "injection. The two diverge when the cheap and dear hours "
-                          "carry different load, so a plant's revenue and a consumer's "
-                          "cost are not the same average.",
+        "average price (LWAP): the price actually paid for energy "
+        "drawn, weighted by withdrawal. It differs from a "
+        "generator-weighted average price (GWAP), which weights by "
+        "injection. The two diverge when the cheap and dear hours "
+        "carry different load, so a plant's revenue and a consumer's "
+        "cost are not the same average.",
         "disclaimer": "Statistical indicators derived from public data. Patterns may "
-                      "have legitimate explanations.",
+        "have legitimate explanations.",
     }
 
 
 if __name__ == "__main__":
     import json
+
     print(json.dumps(build_bill(), indent=1))

@@ -1,31 +1,32 @@
 #!/usr/bin/env python3
-"""Measure whether the operator's own RTD HVDC binding schedule improves the
-replay, and record the answer (roadmap item 7).
+"""Test the operator's own RTD HVDC limits in the historical replay.
 
-The corridor caps the engine ships scale the static HVDC limit by the fraction
+The current corridor caps scale the static HVDC limit by the fraction
 of the hour the link was unblocked, inferred from the NSO advisory stream (MPI:
 whole-link outage windows, Leyte-Luzon only). The operator ALSO publishes its
 own per-interval RTD HVDC schedule (RTDHS) with a congestion flag, which carries
 security de-rates the outage inference cannot see and covers the Visayas-
 Mindanao corridor the advisory stream barely mentions.
 
-This probe feeds those RTDHS-derived caps into the day LP and rebuilds the price
-backcast, then compares it to the shipped baseline. The at-cap share cannot be
-the judge: an RTDHS-sourced cap makes the modeled at-cap share track the
+This probe feeds those RTDHS-derived caps into the day LP and rebuilds the
+historical price replay, then compares it with the current baseline. The at-cap
+share cannot
+decide the result because an RTDHS-sourced cap makes the modeled share track the
 observed binding share by construction, and the flow-vs-RTDHS comparison in-
-sample on binding hours. The only independent judge is the PRICE backcast (vs
-LWAP and MCP), which does not read RTDHS.
+sample on binding hours. The price comparison uses LWAP and MCP, which do not
+read RTDHS.
 
 Measured 2026-07-14: the caps LOWER Luzon price MAE slightly (about 0.16
 PhP/kWh vs both LWAP and MCP) but WORSEN price correlation on every grid, badly
 on Visayas (about 0.46 to 0.11 vs LWAP), because the Leyte de-rate to near-zero
 on flagged hours decouples Visayas from its observed import pattern. A price
 model that tracks the observed shape worse is not an improvement, so the shipped
-engine keeps the advisory-based caps and the corridor under-binding versus RTDHS
+engine keeps the advisory-based caps and reports the corridor under-binding versus RTDHS
 stays a documented boundary, not a constructed match.
 
     python3 pipeline/corridor_cap_probe.py --derive   # remeasure, write finding
 """
+
 from __future__ import annotations
 
 import argparse
@@ -89,7 +90,8 @@ def derive() -> dict:
     lz_base = baseline["per_grid_mcp"].get("luzon", {})
     lz_cap = capped["per_grid_mcp"].get("luzon", {})
     corr_worse_grids = [
-        g for blk in ("per_grid", "per_grid_mcp")
+        g
+        for blk in ("per_grid", "per_grid_mcp")
         for g in baseline[blk]
         if (capped[blk][g]["corr"] or 0) < (baseline[blk][g]["corr"] or 0) - 0.01
     ]
@@ -105,13 +107,17 @@ def derive() -> dict:
             "the advisory-based caps."
         ),
         "corr_worse_grids": sorted(set(corr_worse_grids)),
-        "note": ("The modeled at-cap share cannot judge an RTDHS-sourced cap "
-                 "(it aligns with the observed binding share by construction); "
-                 "the price backcast, independent of RTDHS, is the judge, and "
-                 "it says the caps do not improve the replay."),
+        "note": (
+            "The modeled at-cap share cannot judge an RTDHS-sourced cap "
+            "(it aligns with the observed binding share by construction); "
+            "the historical price replay, independent of RTDHS, is the judge, and "
+            "it says the caps do not improve the replay."
+        ),
         "src": "https://www.iemop.ph/market-data/rtd-hvdc-schedules/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -124,8 +130,10 @@ def main() -> int:
         os.makedirs(os.path.dirname(OUT), exist_ok=True)
         with open(OUT, "w") as fh:
             json.dump(out, fh, indent=1)
-        print(f"corridor_cap_probe: shipped={out['shipped']}; "
-              f"corr worse on {out['corr_worse_grids']}")
+        print(
+            f"corridor_cap_probe: shipped={out['shipped']}; "
+            f"corr worse on {out['corr_worse_grids']}"
+        )
         print(out["verdict"])
     else:
         print("pass --derive to remeasure and write the finding")

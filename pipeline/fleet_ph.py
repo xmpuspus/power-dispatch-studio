@@ -35,13 +35,14 @@ here and they are kept apart on purpose:
     - CO2 emission factors by fuel (IPCC/EIA typical values)
 
 Nothing here is a production-cost optimiser. It is a transparent economic-dispatch approximation whose
-honesty gate is the calibration residual against observed LWAP (see dispatch.py).
+accuracy check is the calibration residual against observed LWAP (see dispatch.py).
 
 Sources:
   https://reglobal.org/philippines-grid-expansion-ngcp-focuses-on-renewables-integration/
   https://bilyonaryo.com/2026/03/31/power-producers-back-p6-kwh-coal-price-during-wesm-suspension/
   https://www.foi.gov.ph/requests/malampaya-natural-gas-price/
 """
+
 from __future__ import annotations
 
 GRIDS = ["LUZON", "VISAYAS", "MINDANAO"]
@@ -79,12 +80,36 @@ GRID_TOTAL_MW = {"LUZON": 21742, "VISAYAS": 4267, "MINDANAO": 4878}
 # oil proxy (the only fuel with no per-grid anchor: no named Mindanao units,
 # no published split), keeping Mindanao exactly at its published total.
 GRID_FUEL_MW = {
-    "LUZON":    {"coal": 8850, "natural_gas": 3732, "oil": 2461, "hydro": 2560,
-                 "geothermal": 865, "solar": 1800, "wind": 350, "biomass": 350},
-    "VISAYAS":  {"coal": 1550, "natural_gas": 0, "oil": 500, "hydro": 55,
-                 "geothermal": 975, "solar": 700, "wind": 77, "biomass": 150},
-    "MINDANAO": {"coal": 2606, "natural_gas": 0, "oil": 487, "hydro": 1221,
-                 "geothermal": 112, "solar": 357, "wind": 0, "biomass": 95},
+    "LUZON": {
+        "coal": 8850,
+        "natural_gas": 3732,
+        "oil": 2461,
+        "hydro": 2560,
+        "geothermal": 865,
+        "solar": 1800,
+        "wind": 350,
+        "biomass": 350,
+    },
+    "VISAYAS": {
+        "coal": 1550,
+        "natural_gas": 0,
+        "oil": 500,
+        "hydro": 55,
+        "geothermal": 975,
+        "solar": 700,
+        "wind": 77,
+        "biomass": 150,
+    },
+    "MINDANAO": {
+        "coal": 2606,
+        "natural_gas": 0,
+        "oil": 487,
+        "hydro": 1221,
+        "geothermal": 112,
+        "solar": 357,
+        "wind": 0,
+        "biomass": 95,
+    },
 }
 
 # --- marginal-cost proxy by fuel (PHP/kWh) ------------------------------------
@@ -92,21 +117,21 @@ GRID_FUEL_MW = {
 # are labelled proxies ordered so the merit order is realistic: zero-fuel renewables
 # at the bottom, oil peakers at the top setting the scarcity price.
 FUEL_COST_PHP_KWH = {
-    "solar": 0.00,        # no fuel cost (assumption: bid at floor)
-    "wind": 0.00,         # no fuel cost
-    "hydro": 0.50,        # near-zero fuel; small O&M proxy
-    "geothermal": 3.50,   # steam-field O&M proxy (must-run in practice)
+    "solar": 0.00,  # no fuel cost (assumption: bid at floor)
+    "wind": 0.00,  # no fuel cost
+    "hydro": 0.50,  # near-zero fuel; small O&M proxy
+    "geothermal": 3.50,  # steam-field O&M proxy (must-run in practice)
     "natural_gas": 4.80,  # SOURCED: Malampaya gas ~P4.80/kWh (FOI)
-    "biomass": 5.00,      # feedstock proxy
+    "biomass": 5.00,  # feedstock proxy
     # SOURCED: ERC Resolution No. 10, s. 2026 (effective 26 Mar 2026) fixed coal
     # generation at P6,000/MWh during the WESM suspension. Used here as a
     # marginal-cost PROXY: it is a regulatory settlement price for a suspended
     # market, not a measurement of coal short-run marginal cost, and the stack
     # it feeds is calibrated against the post-resumption market window.
     "coal": 6.00,
-    "lng": 10.30,         # SOURCED: imported LNG ~P10.30/kWh (marginal gas as
-                          # Malampaya depletes; used only by the LNG scenario lever)
-    "oil": 12.00,         # ASSUMPTION: bunker/diesel peaker proxy; scarcity setter
+    "lng": 10.30,  # SOURCED: imported LNG ~P10.30/kWh (marginal gas as
+    # Malampaya depletes; used only by the LNG scenario lever)
+    "oil": 12.00,  # ASSUMPTION: bunker/diesel peaker proxy; scarcity setter
 }
 
 # SOURCED: the WESM offer price ceiling, P32/kWh (WESM Tripartite Committee
@@ -118,16 +143,43 @@ WESM_OFFER_CAP_PHP_KWH = 32.0
 # --- availability derate by fuel (fraction of installed that can be dispatched) -
 # LABELLED ASSUMPTIONS. Solar is handled separately by SOLAR_PROFILE (time of day).
 FUEL_AVAIL = {
-    "coal": 0.85, "natural_gas": 0.90, "oil": 0.92, "geothermal": 0.90,
-    "hydro": 0.55, "biomass": 0.70, "wind": 0.30, "solar": 1.00,
+    "coal": 0.85,
+    "natural_gas": 0.90,
+    "oil": 0.92,
+    "geothermal": 0.90,
+    "hydro": 0.55,
+    "biomass": 0.70,
+    "wind": 0.30,
+    "solar": 1.00,
 }
 
 # Normalised clear-sky-ish PH solar output by hour (0..1). LABELLED ASSUMPTION;
 # multiplies installed solar to approximate midday depression of the price curve.
 SOLAR_PROFILE = {
-    0: 0.0, 1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.05, 7: 0.20, 8: 0.40,
-    9: 0.58, 10: 0.70, 11: 0.76, 12: 0.78, 13: 0.75, 14: 0.66, 15: 0.52,
-    16: 0.34, 17: 0.14, 18: 0.02, 19: 0.0, 20: 0.0, 21: 0.0, 22: 0.0, 23: 0.0,
+    0: 0.0,
+    1: 0.0,
+    2: 0.0,
+    3: 0.0,
+    4: 0.0,
+    5: 0.0,
+    6: 0.05,
+    7: 0.20,
+    8: 0.40,
+    9: 0.58,
+    10: 0.70,
+    11: 0.76,
+    12: 0.78,
+    13: 0.75,
+    14: 0.66,
+    15: 0.52,
+    16: 0.34,
+    17: 0.14,
+    18: 0.02,
+    19: 0.0,
+    20: 0.0,
+    21: 0.0,
+    22: 0.0,
+    23: 0.0,
 }
 
 # --- forced outage rate by fuel (probability a unit is unexpectedly unavailable) -
@@ -138,13 +190,14 @@ SOLAR_PROFILE = {
 # and the availability derate, not an unplanned-trip model.
 # https://www.nerc.com/programs/reliability-assessment--performance-analysis/generating-availability-data-system/gads-conventional/general-availability-review-weighted-efor-dashboard
 FORCED_OUTAGE_RATE = {
-    "coal": 0.10,         # SOURCED: NERC GADS coal EFOR ~10-12%
+    "coal": 0.10,  # SOURCED: NERC GADS coal EFOR ~10-12%
     "natural_gas": 0.05,  # SOURCED: NERC GADS gas ~2-5%
-    "oil": 0.10,          # LABELED: diesel/bunker peaker typical
-    "geothermal": 0.08,   # LABELED: steam-field/well outages, typical
-    "hydro": 0.04,        # LABELED: industry-typical
-    "biomass": 0.08,      # LABELED: industry-typical
-    "solar": 0.0, "wind": 0.0,
+    "oil": 0.10,  # LABELED: diesel/bunker peaker typical
+    "geothermal": 0.08,  # LABELED: steam-field/well outages, typical
+    "hydro": 0.04,  # LABELED: industry-typical
+    "biomass": 0.08,  # LABELED: industry-typical
+    "solar": 0.0,
+    "wind": 0.0,
 }
 
 # --- storage: batteries + pumped hydro (peak-firming time-shifters) -----------
@@ -170,13 +223,29 @@ STORAGE_ROUND_TRIP_EFF = 0.80
 # --- CO2 emission factors (tCO2 per MWh) --------------------------------------
 # LABELLED ASSUMPTIONS (IPCC/EIA typical direct-combustion factors).
 FUEL_CO2_T_PER_MWH = {
-    "coal": 0.95, "natural_gas": 0.42, "lng": 0.42, "oil": 0.75,
-    "geothermal": 0.0, "hydro": 0.0, "solar": 0.0, "wind": 0.0, "biomass": 0.0,
+    "coal": 0.95,
+    "natural_gas": 0.42,
+    "lng": 0.42,
+    "oil": 0.75,
+    "geothermal": 0.0,
+    "hydro": 0.0,
+    "solar": 0.0,
+    "wind": 0.0,
+    "biomass": 0.0,
 }
 
 # Cost order for stacking (low to high); solar/wind first as zero-fuel must-take.
-MERIT_ORDER = ["solar", "wind", "hydro", "geothermal", "natural_gas",
-               "biomass", "coal", "lng", "oil"]
+MERIT_ORDER = [
+    "solar",
+    "wind",
+    "hydro",
+    "geothermal",
+    "natural_gas",
+    "biomass",
+    "coal",
+    "lng",
+    "oil",
+]
 
 # --- minimal unit commitment (labeled) ----------------------------------------
 # The static cost stack over-prices the overnight trough: it sets the coal block at
@@ -208,8 +277,9 @@ def avail_mw(grid: str, fuel: str, hour: int) -> float:
     return installed * FUEL_AVAIL.get(fuel, 1.0)
 
 
-def stack(grid: str, hour: int, removed: dict | None = None,
-          commitment: bool = True) -> list[dict]:
+def stack(
+    grid: str, hour: int, removed: dict | None = None, commitment: bool = True
+) -> list[dict]:
     """Merit-order supply stack for a grid at an hour: blocks sorted by cost.
 
     `removed` optionally subtracts MW from a fuel (an N-1 trip or a de-rate).
@@ -229,19 +299,25 @@ def stack(grid: str, hour: int, removed: dict | None = None,
             # committed min-load tranche offers below the administered price; the
             # rest (cycling coal) stays at P6. Same total MW, same fuel key.
             must_run = round(mw * COAL_MIN_LOAD_FRAC, 1)
-            blocks.append({"fuel": "coal", "cost": COAL_COMMIT_PHP_KWH,
-                           "mw": must_run})
-            blocks.append({"fuel": "coal", "cost": FUEL_COST_PHP_KWH["coal"],
-                           "mw": round(mw - must_run, 1)})
+            blocks.append({"fuel": "coal", "cost": COAL_COMMIT_PHP_KWH, "mw": must_run})
+            blocks.append(
+                {
+                    "fuel": "coal",
+                    "cost": FUEL_COST_PHP_KWH["coal"],
+                    "mw": round(mw - must_run, 1),
+                }
+            )
         else:
-            blocks.append({"fuel": fuel, "cost": FUEL_COST_PHP_KWH[fuel],
-                           "mw": round(mw, 1)})
+            blocks.append(
+                {"fuel": fuel, "cost": FUEL_COST_PHP_KWH[fuel], "mw": round(mw, 1)}
+            )
     blocks.sort(key=lambda b: b["cost"])
     return blocks
 
 
-def clear(blocks: list[dict], demand_mw: float,
-          imports: list[dict] | None = None) -> dict:
+def clear(
+    blocks: list[dict], demand_mw: float, imports: list[dict] | None = None
+) -> dict:
     """Clear a demand against a merit-order stack (plus optional import blocks).
 
     Returns {price, served_mw, avail_mw, shortfall_mw, marginal_fuel}. If
@@ -263,6 +339,10 @@ def clear(blocks: list[dict], demand_mw: float,
     shortfall = max(0.0, demand_mw - total)
     if shortfall > 0:
         price, marginal = WESM_OFFER_CAP_PHP_KWH, "shortage"
-    return {"price": round(price, 3), "served_mw": round(min(demand_mw, total), 1),
-            "avail_mw": round(total, 1), "shortfall_mw": round(shortfall, 1),
-            "marginal_fuel": marginal}
+    return {
+        "price": round(price, 3),
+        "served_mw": round(min(demand_mw, total), 1),
+        "avail_mw": round(total, 1),
+        "shortfall_mw": round(shortfall, 1),
+        "marginal_fuel": marginal,
+    }

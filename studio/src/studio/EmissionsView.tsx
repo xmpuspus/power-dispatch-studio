@@ -44,7 +44,7 @@ export function EmissionsView({
 
   if (em.loading) return <EmptyNote>Loading the emission factors.</EmptyNote>
   if (em.error || !em.data?.available)
-    return <EmptyNote>Emission factors not baked. Run make data.</EmptyNote>
+    return <EmptyNote>Emission factors are not available in this data release.</EmptyNote>
   if (!run || !base || !dayDate)
     return <EmptyNote>No observed day in the archive window yet.</EmptyNote>
 
@@ -68,7 +68,7 @@ export function EmissionsView({
     },
     {
       key: 't',
-      header: 'tCO2',
+      header: 'Metric tonnes CO2 (tCO2)',
       align: 'right',
       mono: true,
       render: (r) =>
@@ -81,7 +81,7 @@ export function EmissionsView({
     { key: 'fuel', header: 'Technology', render: (f) => fuelLabel(f.fuel) },
     {
       key: 'v',
-      header: 'tCO2/MWh',
+      header: 'Metric tonnes CO2 per MWh (tCO2/MWh)',
       align: 'right',
       mono: true,
       render: (f) => (f.tco2_per_mwh == null ? 'excluded' : f.tco2_per_mwh.toFixed(3)),
@@ -118,14 +118,14 @@ export function EmissionsView({
         <StatTile
           label="CO2, all grids, this day"
           value={num(totalT)}
-          unit="tCO2"
-          hint={edited ? `base model ${num(baseT)} tCO2` : 'base model'}
+          unit="metric tonnes CO2"
+          hint={edited ? `base model ${num(baseT)} metric tonnes CO2` : 'base model'}
           tone={edited && totalT > baseT ? 'accent' : 'default'}
         />
         <StatTile
           label="Intensity"
           value={intensity.toFixed(3)}
-          unit="tCO2/MWh"
+          unit="metric tonnes CO2 per MWh"
           hint={
             ngef
               ? `DOE grid factor ${ngef.luzon_visayas_tco2_per_mwh.toFixed(2)} (LV, ${ngef.vintage.slice(0, 9)})`
@@ -141,14 +141,14 @@ export function EmissionsView({
       </div>
 
       <Panel
-        title="CO2 by fuel, ran scenario"
-        subtitle={`Dispatched energy per fuel over ${dayDate} times its factor. Storage carries no factor of its own; biomass is reported uncounted.`}
+        title="Operational CO2 by fuel for the selected scenario"
+        subtitle={`Generation from each fuel on ${dayDate}, multiplied by its emission factor. Storage has no factor of its own. Biomass is not counted.`}
       >
         <DataGrid columns={fuelCols} rows={byFuel} getKey={(r) => r.fuel} />
       </Panel>
 
       <Panel
-        title="The factors, with sources"
+        title="Each emission factor is shown with its source"
         subtitle={em.data.unit}
         right={ngef ? <Source href={ngef.src} label="DOE grid factor" /> : undefined}
       >
@@ -162,9 +162,9 @@ export function EmissionsView({
       </Panel>
 
       <p className="note">
-        A data-center scenario reads directly here: flat load raises the energy the
-        marginal fuel serves, and the delta against the base model is that build's
-        operational CO2 on this model. {em.data.disclaimer}
+        In a data-center scenario, flat demand increases generation from the price-setting
+        fuel. The difference from the base model is the data center's modeled operational
+        CO2. {em.data.disclaimer}
       </p>
     </div>
   )

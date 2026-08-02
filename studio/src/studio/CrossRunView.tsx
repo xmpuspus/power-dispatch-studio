@@ -1,7 +1,5 @@
-// Cross-run analytics (roadmap item 17): every saved run's headline metrics in
-// one matrix, and a one-at-a-time lever tornado that ranks the Quick levers by
-// how far each moves the selected grid's price. Commercial suites do this in a
-// pivot dashboard; here it is one view over the runs already in the browser.
+// One matrix shows each saved run's main measures. A second calculation changes
+// one Quick setting at a time and ranks the selected grid's price change.
 
 import { useMemo } from 'react'
 import type { Dispatch, GridKey } from '../lib/types'
@@ -69,7 +67,7 @@ export function CrossRunView({
 
   const rows = runsList.map(metricsOf)
   const cols: Column<RunMetrics>[] = [
-    { key: 'name', header: 'Run', render: (r) => r.name },
+    { key: 'name', header: 'Saved run', render: (r) => r.name },
     {
       key: 'ml',
       header: 'Mean Luzon',
@@ -117,21 +115,21 @@ export function CrossRunView({
   return (
     <div className="view">
       <Panel
-        title="Cross-run matrix"
-        subtitle="Every saved run's headline metrics side by side."
+        title="Saved runs compared side by side"
+        subtitle="Prices, unmet demand, and constrained-link value for every saved run."
       >
         {rows.length ? (
           <DataGrid columns={cols} rows={rows} getKey={(_, i) => i} />
         ) : (
           <EmptyNote>
-            No saved runs yet. Freeze a chronological solve and it appears here.
+            No saved runs yet. Save an hourly market replay and it will appear here.
           </EmptyNote>
         )}
       </Panel>
 
       <Panel
-        title={`Lever tornado, ${cap(grid)}`}
-        subtitle="Each Quick lever swept one at a time around the base case, ranked by how far it moves this grid's clearing price."
+        title={`Price effect of each quick what-if, ${cap(grid)}`}
+        subtitle="Each setting changes by itself from the base case. The list is ranked by how far it moves this grid's clearing price."
       >
         <div className="tornado">
           {bars.map((b) => {

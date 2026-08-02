@@ -1,8 +1,7 @@
-// 5-minute as-bid replay (roadmap item 10b): the intraday price volatility the
+// The 5-minute as-bid replay shows intraday price changes that the
 // hourly engine smooths away. Each sample day's offer book was cleared to that
 // grid's own dispatched generation at 5-minute resolution (pipeline/
-// rtdoe5_replay.py). The only public 5-minute WESM price replay anywhere, on
-// the captured sample days.
+// rtdoe5_replay.py). This view covers the captured sample days.
 
 import { useMemo, useState } from 'react'
 import type { GridKey } from '../lib/types'
@@ -40,7 +39,7 @@ export function Rtdoe5View({ grid }: { grid: GridKey }) {
           subtitle="Intraday price volatility on the sample days."
         >
           <EmptyNote>
-            No 5-minute sample days baked yet. Run pipeline/rtdoe5_replay.py and rebake.
+            No 5-minute sample days are available in this data release.
           </EmptyNote>
         </Panel>
       </div>
@@ -91,7 +90,7 @@ export function Rtdoe5View({ grid }: { grid: GridKey }) {
 
       <Panel
         title={`5-minute prices, ${cap(grid)}, ${day.date}`}
-        subtitle="Each 5-minute offer book cleared to the grid's own generation. The step line is the hourly mean the hourly replay would use."
+        subtitle="Each 5-minute set of generator offers is cleared against generation in that grid. The step line shows the hourly average used by the hourly replay."
       >
         {stats && (
           <div className="stat-row">
@@ -131,10 +130,11 @@ export function Rtdoe5View({ grid }: { grid: GridKey }) {
           </text>
         </svg>
         <p className="note">
-          A 5-minute as-bid replay on a sample day, own-stack marginal (not the coupled
-          clear). The intraday swings, and the intervals that hit the offer cap, are what
-          the hourly replay averages away. Sample days only: the full 5-minute books live
-          only inside IEMOP's rolling window, so these are the ones the archive captured.
+          A 5-minute replay of published generator bids on a sample day. Each grid is
+          calculated separately. The intraday swings and intervals that hit the offer cap
+          are what the hourly replay averages away. Sample days only: the full 5-minute
+          books live only inside IEMOP's rolling window, so these are the ones the archive
+          captured.
         </p>
       </Panel>
     </div>

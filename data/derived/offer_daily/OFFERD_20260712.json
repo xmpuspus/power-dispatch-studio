@@ -9454,7 +9454,7 @@
   ]
  },
  "fuel_classified_share_pct": 84.5,
- "classification_note": "coal_mw is the hour's offered MW from resources classified as coal (pasa alias + hand-verified abbreviations + a fuel-tolerant fleet match; coverage stated). A min-stable floor carved from this series was MEASURED INERT before shipping: the coal fleet already offers its committed tranche at the price floor (the 40 percent carve left the books byte-identical), so commitment behavior is in the bids, not missing from them.",
+ "classification_note": "coal_mw records hourly coal offers in megawatts. Coal resources are identified through a resource-name list, checked abbreviations, and Department of Energy fleet records. The classified share is reported. Coal plants already offer their committed output at the price floor. Applying a 40 percent technical minimum did not change any hourly offer book, so the files keep the original offers.",
  "max_resources_seen": 240,
  "max_blocks": 48,
  "note": "Observed per-grid hourly offer stacks from IEMOP's real-time generation offers (RTDOE) plus self-scheduled nominations (RTDNE, price-taking at the offer floor: capacity that runs whenever the grid runs and submits no curve): each hour is the book at the hour's first 5-minute interval, all segments pooled and compacted to at most 48 price blocks (MW-weighted merges). Prices PhP/kWh, floor to cap as offered. Gate: each grid-hour's book must cover that hour's dispatched generation or the day is refused.",

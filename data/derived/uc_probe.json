@@ -7,57 +7,57 @@
     "oil": 0.4,
     "biomass": 0.5
   },
-  "min_stable_label": "generic NREL ATB / typical thermal, fuel-block level; RTDSL examined but VRE-pinned and coded, no thermal de-fabrication without a unit registry",
+  "min_stable_label": "generic NREL ATB / typical thermal, fuel-block level; RTDSL does not provide thermal minimum-stable levels without a unit registry",
   "overgen_penalty_php_kwh": 0.001,
   "lp": {
     "lwap": {
       "luzon": {
         "n_hours": 1344,
-        "observed_mean_php_kwh": 7.631,
-        "modeled_mean_php_kwh": 6.002,
-        "mae_php_kwh": 4.334,
-        "bias_php_kwh": -1.629,
-        "correlation": 0.356,
-        "high_hour_hit_rate_pct": 36.8
+        "observed_mean_php_kwh": 7.651,
+        "modeled_mean_php_kwh": 6.001,
+        "mae_php_kwh": 4.35,
+        "bias_php_kwh": -1.65,
+        "correlation": 0.297,
+        "high_hour_hit_rate_pct": 30.1
       },
       "visayas": {
         "n_hours": 1344,
-        "observed_mean_php_kwh": 12.913,
+        "observed_mean_php_kwh": 12.964,
         "modeled_mean_php_kwh": 6.002,
-        "mae_php_kwh": 8.656,
-        "bias_php_kwh": -6.911,
-        "correlation": 0.463,
-        "high_hour_hit_rate_pct": 45.6
+        "mae_php_kwh": 8.708,
+        "bias_php_kwh": -6.962,
+        "correlation": 0.442,
+        "high_hour_hit_rate_pct": 41.9
       },
       "mindanao": {
         "n_hours": 1344,
-        "observed_mean_php_kwh": 11.483,
+        "observed_mean_php_kwh": 11.519,
         "modeled_mean_php_kwh": 6.0,
-        "mae_php_kwh": 7.579,
-        "bias_php_kwh": -5.483,
-        "correlation": 0.069,
+        "mae_php_kwh": 7.61,
+        "bias_php_kwh": -5.519,
+        "correlation": 0.109,
         "high_hour_hit_rate_pct": 7.4
       }
     },
     "mcp": {
       "luzon": {
         "n_hours": 1224,
-        "observed_mean_php_kwh": 6.538,
-        "modeled_mean_php_kwh": 6.002,
-        "mae_php_kwh": 3.699,
-        "bias_php_kwh": -0.536,
-        "correlation": 0.436,
-        "high_hour_hit_rate_pct": 44.4
+        "observed_mean_php_kwh": 6.531,
+        "modeled_mean_php_kwh": 6.001,
+        "mae_php_kwh": 3.69,
+        "bias_php_kwh": -0.53,
+        "correlation": 0.437,
+        "high_hour_hit_rate_pct": 39.5
       },
       "visayas": null,
       "mindanao": {
-        "n_hours": 552,
-        "observed_mean_php_kwh": 9.055,
-        "modeled_mean_php_kwh": 6.0,
-        "mae_php_kwh": 6.04,
-        "bias_php_kwh": -3.055,
-        "correlation": 0.024,
-        "high_hour_hit_rate_pct": 3.5
+        "n_hours": 600,
+        "observed_mean_php_kwh": 8.691,
+        "modeled_mean_php_kwh": 5.999,
+        "mae_php_kwh": 5.838,
+        "bias_php_kwh": -2.692,
+        "correlation": 0.113,
+        "high_hour_hit_rate_pct": 1.6
       }
     }
   },
@@ -65,50 +65,50 @@
     "lwap": {
       "luzon": {
         "n_hours": 1344,
-        "observed_mean_php_kwh": 7.631,
-        "modeled_mean_php_kwh": 6.004,
-        "mae_php_kwh": 4.336,
-        "bias_php_kwh": -1.627,
-        "correlation": 0.007,
-        "high_hour_hit_rate_pct": 36.8
+        "observed_mean_php_kwh": 7.651,
+        "modeled_mean_php_kwh": 5.984,
+        "mae_php_kwh": 4.332,
+        "bias_php_kwh": -1.667,
+        "correlation": 0.128,
+        "high_hour_hit_rate_pct": 30.1
       },
       "visayas": {
         "n_hours": 1344,
-        "observed_mean_php_kwh": 12.913,
-        "modeled_mean_php_kwh": 6.013,
-        "mae_php_kwh": 8.67,
-        "bias_php_kwh": -6.9,
-        "correlation": -0.005,
+        "observed_mean_php_kwh": 12.964,
+        "modeled_mean_php_kwh": 6.012,
+        "mae_php_kwh": 8.721,
+        "bias_php_kwh": -6.952,
+        "correlation": -0.003,
         "high_hour_hit_rate_pct": 42.6
       },
       "mindanao": {
         "n_hours": 1344,
-        "observed_mean_php_kwh": 11.483,
-        "modeled_mean_php_kwh": 6.013,
-        "mae_php_kwh": 7.598,
-        "bias_php_kwh": -5.469,
-        "correlation": -0.012,
+        "observed_mean_php_kwh": 11.519,
+        "modeled_mean_php_kwh": 6.012,
+        "mae_php_kwh": 7.628,
+        "bias_php_kwh": -5.507,
+        "correlation": -0.011,
         "high_hour_hit_rate_pct": 2.2
       }
     },
     "mcp": {
       "luzon": {
         "n_hours": 1224,
-        "observed_mean_php_kwh": 6.538,
-        "modeled_mean_php_kwh": 6.004,
-        "mae_php_kwh": 3.702,
-        "bias_php_kwh": -0.534,
-        "correlation": 0.007,
-        "high_hour_hit_rate_pct": 44.4
+        "observed_mean_php_kwh": 6.531,
+        "modeled_mean_php_kwh": 5.982,
+        "mae_php_kwh": 3.671,
+        "bias_php_kwh": -0.549,
+        "correlation": 0.137,
+        "high_hour_hit_rate_pct": 39.5
       },
       "visayas": null,
       "mindanao": {
-        "n_hours": 552,
-        "observed_mean_php_kwh": 9.055,
-        "modeled_mean_php_kwh": 5.996,
-        "mae_php_kwh": 6.039,
-        "bias_php_kwh": -3.059,
-        "correlation": 0.012,
+        "n_hours": 600,
+        "observed_mean_php_kwh": 8.691,
+        "modeled_mean_php_kwh": 6.028,
+        "mae_php_kwh": 5.872,
+        "bias_php_kwh": -2.663,
+        "correlation": -0.006,
         "high_hour_hit_rate_pct": 0.0
       }
     }
@@ -116,26 +116,26 @@
   "corr_delta": {
     "lwap": {
       "luzon": {
-        "lp_corr": 0.356,
-        "uc_corr": 0.007,
-        "delta": -0.349
+        "lp_corr": 0.297,
+        "uc_corr": 0.128,
+        "delta": -0.169
       },
       "visayas": {
-        "lp_corr": 0.463,
-        "uc_corr": -0.005,
-        "delta": -0.468
+        "lp_corr": 0.442,
+        "uc_corr": -0.003,
+        "delta": -0.445
       },
       "mindanao": {
-        "lp_corr": 0.069,
-        "uc_corr": -0.012,
-        "delta": -0.081
+        "lp_corr": 0.109,
+        "uc_corr": -0.011,
+        "delta": -0.12
       }
     },
     "mcp": {
       "luzon": {
-        "lp_corr": 0.436,
-        "uc_corr": 0.007,
-        "delta": -0.429
+        "lp_corr": 0.437,
+        "uc_corr": 0.137,
+        "delta": -0.3
       },
       "visayas": {
         "lp_corr": null,
@@ -143,9 +143,9 @@
         "delta": null
       },
       "mindanao": {
-        "lp_corr": 0.024,
-        "uc_corr": 0.012,
-        "delta": -0.012
+        "lp_corr": 0.113,
+        "uc_corr": -0.006,
+        "delta": -0.119
       }
     }
   },

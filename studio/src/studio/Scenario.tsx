@@ -43,8 +43,8 @@ export function ScenarioView({
   onRevert: (cls: ClassId, id: string, prop: string) => void
   onImportCsv?: (text: string) => ImportResult
   importedKeys?: string[]
-  /** reports the live coupled clear so the run dock can show it beside the
-      solved scenario. These levers preview, they do not write the model. */
+  /** Reports the live coupled clear so the run summary can show it beside the
+      solved scenario. These controls preview; they do not write the model. */
   onLive?: (p: Record<GridKey, number> | null) => void
 }) {
   const gens = useGenerators()
@@ -124,7 +124,7 @@ export function ScenarioView({
   // every chronological view (Chronology, Emissions, Runs, reports) that
   // reads this scenario's overrides inherits the effect with no extra wiring.
   const factors = em.data?.factor_map ?? {}
-  // the lever writes per-fuel Price via the baked tCO2/MWh factors; with no factors
+  // the lever writes per-fuel Price via the generated tCO2/MWh factors; with no factors
   // loaded it would move but change no solve, so gate it on the factors being ready
   const factorsReady = Object.keys(factors).length > 0
   const carbonPrice = carbonPriceOf(overrides)
@@ -142,7 +142,7 @@ export function ScenarioView({
     const cp = Math.max(0, Math.round(v))
     if (cp > 0) onEdit('fuel', CARBON_FUEL_ID, CARBON_PROP, cp)
     else onRevert('fuel', CARBON_FUEL_ID, CARBON_PROP)
-    // only ever touches fuels with a nonzero baked factor, so a manual edit to
+    // only ever touches fuels with a nonzero generated factor, so a manual edit to
     // a zero-carbon fuel's price (solar, wind, hydro, storage) is never
     // clobbered; a manual edit to coal/gas/oil/geo price IS overwritten while
     // this lever is nonzero, since both share the one Price override slot
@@ -179,21 +179,20 @@ export function ScenarioView({
   return (
     <div className="view" data-testid="scenario">
       <p className="scn__how">
-        Drag a lever below and the three grids re-clear live as you move it, no Run
-        needed. Carbon price and Malampaya gas supply act on the Chronology and Emissions
-        views, not this evening-hour clear.
+        Move a slider below and all three grids recalculate immediately. The carbon-price
+        and Malampaya gas settings apply to Hourly market replay and Emissions, not to
+        this evening-hour calculation.
       </p>
       <p className="scn__lede">
-        A merit-order model, <b>not a full production-cost suite</b>: it stacks the
-        sourced fleet by marginal cost against demand and clears the three grids as one
-        HiGHS linear program, here in your browser, on the same stack the pipeline baked
-        and against the same LP its Python engine solves. Prices are locational marginals
-        from the solve. It is calibrated against observed prices, not a predictor of them.
+        This <b>lowest-cost-first model (merit order)</b> stacks the sourced fleet from
+        lowest to highest operating cost, then calculates all three island grids together.
+        Prices are the cost of serving one additional unit of demand in each island grid.
+        The model is checked against recorded prices but does not predict them.
       </p>
 
       <div className="scn">
         <Panel
-          title="Levers"
+          title="Quick what-if settings"
           subtitle={`${cap(grid)}, evening reference hour ${mo.reference_hour}:00.`}
         >
           <div className="levers">
@@ -266,8 +265,8 @@ export function ScenarioView({
                 disabled={!feedCor?.sat}
                 tick={
                   feedCor?.sat
-                    ? 'extra operating limit on the HVDC link'
-                    : `${feedName} is open at this load; relief changes nothing until the link binds. Add load to bind it.`
+                    ? 'additional transfer capacity on the high-voltage direct-current link'
+                    : `${feedName} is below its limit at this demand. More capacity has no effect until the link reaches its limit. Add demand to test that point.`
                 }
                 onChange={(v) => set({ reliefMW: v })}
               />
@@ -281,7 +280,7 @@ export function ScenarioView({
               <span>
                 <span className="lever__label">Switch gas to imported LNG</span>
                 <span className="lever__tick">
-                  Malampaya depletes around 2027; gas reprices from ₱
+                  Malampaya depletes around 2027. Gas changes from ₱
                   {d.assumptions.fuel_marginal_cost_php_kwh.natural_gas.toFixed(2)} to ₱
                   {d.assumptions.fuel_marginal_cost_php_kwh.lng.toFixed(2)}/kWh
                 </span>
@@ -306,7 +305,9 @@ export function ScenarioView({
               </div>
             </div>
             <label className="lever">
-              <span className="lever__label">Trip a unit (N-1)</span>
+              <span className="lever__label">
+                Remove one unit from service (N-1 test)
+              </span>
               <select
                 className="lever__select"
                 value={lv.trip}
@@ -326,21 +327,21 @@ export function ScenarioView({
               min={0}
               max={5000}
               step={250}
-              fmt={(v) => `₱${num(v)}/tCO2`}
-              tick={`${CARBON_DISCLAIMER}. Raises each carbon-emitting fuel's Price by carbon price times its baked tCO2/MWh factor, divided by 1000, so higher-carbon fuels climb the merit order. It shows in the Chronology and Emissions views, not this evening-hour clear.`}
+              fmt={(v) => `₱${num(v)} per metric tonne CO2`}
+              tick={`${CARBON_DISCLAIMER}. The carbon price is multiplied by each fuel's sourced emissions factor in metric tonnes CO2 per MWh and divided by 1000. This raises the cost of fuels with higher emissions in the lowest-cost-first order. It appears in Hourly market replay and Emissions, not in this evening-hour calculation.`}
               onChange={setCarbonPrice}
               disabled={!factorsReady}
             />
             {!factorsReady && (
               <p className="note">
                 {em.error
-                  ? 'Emission factors failed to load, so the carbon price lever is off.'
-                  : 'Loading emission factors, the carbon price lever will enable shortly.'}
+                  ? 'Emission factors failed to load, so the carbon price setting is off.'
+                  : 'Loading emission factors. The carbon price setting will be available shortly.'}
               </p>
             )}
             {factorsReady && carbonRows.length > 0 && (
               <p className="note">
-                Applies now, Fuels &gt; Price:{' '}
+                Current fuel-price changes in Review and edit model inputs &gt; Fuels{' '}
                 {carbonRows
                   .map((r) => `${fuelLabel(r.fuel)} +₱${r.delta.toFixed(2)}/kWh`)
                   .join(', ')}
@@ -354,18 +355,18 @@ export function ScenarioView({
               max={100}
               step={5}
               fmt={(v) => `${v}%`}
-              tick={`${GAS_SOURCE_NOTE}. Caps the gas fleet's daily energy to this percent of its flat-out day, a fuel budget applied in the Chronology and Emissions views, not this evening-hour clear (the Malampaya supply cliff what-if).`}
+              tick={`${GAS_SOURCE_NOTE}. Caps the gas fleet's daily energy to this percent of its flat-out day. Hourly market replay and Emissions use this limit; this single-evening calculation does not.`}
               onChange={setGasSupply}
             />
             <button className="btn btn--ghost lever__reset" onClick={resetLevers}>
-              Reset levers
+              Reset what-if settings
             </button>
             {onImportCsv && (
               <div className="byo">
                 <div className="byo__head">Bring your own data</div>
                 <p className="note">
                   Load a CSV of your own unit parameters (dependable MW, fuel price,
-                  forced outage), region load, or corridor limits. It stays in this
+                  forced outage), region load, or inter-grid link limits. It stays in this
                   browser and is never uploaded. Imported values are labeled user-supplied
                   everywhere.
                 </p>
@@ -403,8 +404,8 @@ export function ScenarioView({
                 {importMsg && <p className="byo__msg note">{importMsg}</p>}
                 <p className="note">
                   Full hourly load shapes and hydro inflow series are consumed by the
-                  baked chronology, not these per-object overrides, so they are out of
-                  this import.
+                  hourly market replay, not these individual input overrides. They cannot
+                  be imported here.
                 </p>
               </div>
             )}
@@ -449,14 +450,14 @@ export function ScenarioView({
           </Panel>
 
           <Panel
-            title="Coupled with the two other islands"
-            subtitle="The selected grid cleared together with the others over the HVDC links."
+            title="The selected grid clears together with the other two island grids"
+            subtitle="Power can move between them over the high-voltage direct-current (HVDC) links."
           >
             <FlowDiagram prices={prices} corridors={corridors} />
             {out.feed ? (
               <div className="kvs">
                 <div className="kv">
-                  <span>Coupled clearing price</span>
+                  <span>Clearing price with all three island grids</span>
                   <span className="mono">
                     <b>{php(out.coupled.price[grid])}</b>
                   </span>
@@ -466,7 +467,7 @@ export function ScenarioView({
                   <span className="mono">
                     {num(Math.abs(feedCor?.flow ?? 0))} MW{' '}
                     {feedCor?.sat ? (
-                      <Chip tone="danger">saturated</Chip>
+                      <Chip tone="danger">at its limit</Chip>
                     ) : (
                       <Chip tone="default">open</Chip>
                     )}
@@ -474,7 +475,9 @@ export function ScenarioView({
                 </div>
                 {feedCor?.sat && (
                   <div className="kv">
-                    <span>Congestion rent across the binding link</span>
+                    <span>
+                      Value of the price gap across the constrained link (congestion rent)
+                    </span>
                     <span className="mono">
                       <b>{php(feedCor.rent)}</b>
                     </span>
@@ -483,8 +486,9 @@ export function ScenarioView({
               </div>
             ) : (
               <p className="note">
-                Luzon is the exporting grid: it sets the floor the others import from.
-                Relieving a corridor helps the grid downstream, not Luzon.
+                Luzon is the exporting grid and sets the starting price for imports to the
+                other grids. Raising an inter-grid transfer limit helps the importing
+                grid, not Luzon.
               </p>
             )}
           </Panel>
@@ -492,12 +496,13 @@ export function ScenarioView({
       </div>
 
       <p className="note">
-        Solar is derated by the availability profile at the evening reference hour, which
-        is near zero: adding solar barely moves the evening peak the headline is about.
-        Storage (a time-shifter that discharges at the peak) does. A unit trip is
-        subtracted from raw fuel availability before the coal commit tranche is split, so
-        it reproduces the pipeline dispatch exactly. Every price traces to a sourced fuel
-        cost; the scarcity premium lives in the calibration residual, not a tuned number.
+        The evening solar availability is near zero, so added solar barely changes this
+        evening-peak calculation. Storage can discharge at the peak and does change it. A
+        unit outage is removed from available capacity before committed and marginal coal
+        capacity are separated, matching the reference dispatch. Fuel costs come from
+        published sources except for the oil peaker price, which is labeled as an
+        assumption. The cost-only calculation does not include scarcity pricing; the
+        historical replay reports the remaining difference from recorded prices.
       </p>
       {gens.error && <EmptyNote>Generator list unavailable: {gens.error}.</EmptyNote>}
     </div>

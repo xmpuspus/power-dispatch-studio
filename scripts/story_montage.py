@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
-"""One attachable view for LinkedIn: tile the figure panels into a single GIF with
-plain-English labels, so the whole Power Dispatch Studio story reads in one frame.
+"""Tile four market charts into one GIF.
 
-Thesis: the choke points already bind daily and the market prices them; the announced
-data-center wave is the size of the margin; and a WESM swing is only a lagged slice of
-the Meralco bill. The four panels carry that:
-  top-left    constraint league   -> the grid names its own choke point
-  top-right   regional price fan   -> one market, three prices, once trading resumes
-  bottom-left Sual arithmetic      -> one unit trip takes a fifth of the margin
-  bottom-right the bill wedge (static) -> a WESM swing is only a slice, and only later
+The panels compare grid-link limits, the effect of added demand, Sual's share of
+spare capacity, and the share of a Meralco bill exposed to WESM prices:
+  top-left    Leyte-Cebu reaches its limit most often
+  top-right   added demand raises prices more when the grid is nearly full
+  bottom-left one Sual unit removes 18 percent of spare capacity
+  bottom-right WESM supplied 10 percent of Meralco's June 2026 energy
 
 PIL composites the already-decoded panel frames (allowed); ffmpeg assembles the final
 GIF (required, never PIL for GIF assembly). Output docs/story-montage.gif.
 """
+
 import glob
 import os
 import subprocess
@@ -29,14 +28,22 @@ OUT = os.path.join(DOCS, "story-montage.gif")
 BG = "#0d1117"
 NAVY, MUTE, CORAL = "#e9edf2", "#8592a3", "#ff5c39"
 PANELS = [
-    ("constraint-map.gif",
-     "1.  The grid names its own choke point, and it sits between two islands."),
-    ("price-shape.gif",
-     "2.  The price is a shape. The same data center barely moves it with room, jumps it when full."),
-    ("sual-margin.gif",
-     "3.  One Sual unit is 18% of the whole system's spare margin. Arithmetic, not prophecy."),
-    ("bill-wedge.gif",
-     "And a WESM swing is only a slice of the Meralco bill, and only on the next month's bill."),
+    (
+        "constraint-map.gif",
+        "1.  Leyte-Cebu reaches a binding limit most often in the archive.",
+    ),
+    (
+        "price-shape.gif",
+        "2.  The same 300 MW causes a larger price increase when Luzon is nearly full.",
+    ),
+    (
+        "sual-margin.gif",
+        "3.  One Sual unit removes 18% of the whole system's spare margin.",
+    ),
+    (
+        "bill-wedge.gif",
+        "4.  WESM supplied 10% of Meralco's energy in June 2026.",
+    ),
 ]
 CELL_W, CELL_H = 820, 470
 LABEL_H, BANNER_H, PAD = 42, 104, 12
@@ -46,9 +53,12 @@ OUT_H = BANNER_H + 2 * (LABEL_H + CELL_H) + 3 * PAD
 
 
 def font(sz, bold=False):
-    for p in ("/System/Library/Fonts/Helvetica.ttc",
-              "/System/Library/Fonts/Supplemental/Arial Bold.ttf" if bold else
-              "/System/Library/Fonts/Supplemental/Arial.ttf"):
+    for p in (
+        "/System/Library/Fonts/Helvetica.ttc",
+        "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+        if bold
+        else "/System/Library/Fonts/Supplemental/Arial.ttf",
+    ):
         if os.path.exists(p):
             try:
                 return ImageFont.truetype(p, sz)
@@ -65,10 +75,16 @@ def load_frames(name):
     path = os.path.join(DOCS, name)
     if name.endswith(".png"):
         return [Image.open(path).convert("RGB")]
-    subprocess.run(["ffmpeg", "-y", "-i", path, os.path.join(d, "f%03d.png")],
-                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    return [Image.open(f).convert("RGB")
-            for f in sorted(glob.glob(os.path.join(d, "f*.png")))]
+    subprocess.run(
+        ["ffmpeg", "-y", "-i", path, os.path.join(d, "f%03d.png")],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return [
+        Image.open(f).convert("RGB")
+        for f in sorted(glob.glob(os.path.join(d, "f*.png")))
+    ]
 
 
 def fit(img, w, h):
@@ -91,13 +107,19 @@ def main():
     for t in range(n_out):
         canvas = Image.new("RGB", (OUT_W, OUT_H), BG)
         d = ImageDraw.Draw(canvas)
-        d.text((PAD + 4, 16),
-               "Can the Philippine grid host the data-center wave?",
-               font=tf, fill=NAVY)
-        d.text((PAD + 4, 60),
-               "Built from the market operator's own public files. The choke points "
-               "already bind daily, and the market prices them.",
-               font=sf, fill=MUTE)
+        d.text(
+            (PAD + 4, 16),
+            "Test how much data-center demand the Philippine grid can carry",
+            font=tf,
+            fill=NAVY,
+        )
+        d.text(
+            (PAD + 4, 60),
+            "The market operator's public files name equipment at its limit and "
+            "show how the three island grids price scarce capacity.",
+            font=sf,
+            fill=MUTE,
+        )
         for i, (seq, (_, label)) in enumerate(zip(seqs, PANELS)):
             r, c = divmod(i, COLS)
             x = PAD + c * (CELL_W + PAD)
@@ -110,14 +132,38 @@ def main():
 
     pal = "/tmp/pds_montage_pal.png"
     vf = "fps=8,scale=1200:-1:flags=lanczos"
-    subprocess.run(["ffmpeg", "-y", "-i", os.path.join(FRAMES, "m%03d.png"),
-                    "-vf", vf + ",palettegen=stats_mode=diff", pal], check=True,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.run(["ffmpeg", "-y", "-framerate", "8",
-                    "-i", os.path.join(FRAMES, "m%03d.png"), "-i", pal,
-                    "-lavfi", vf + "[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3",
-                    OUT], check=True, stdout=subprocess.DEVNULL,
-                   stderr=subprocess.DEVNULL)
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-i",
+            os.path.join(FRAMES, "m%03d.png"),
+            "-vf",
+            vf + ",palettegen=stats_mode=diff",
+            pal,
+        ],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-framerate",
+            "8",
+            "-i",
+            os.path.join(FRAMES, "m%03d.png"),
+            "-i",
+            pal,
+            "-lavfi",
+            vf + "[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3",
+            OUT,
+        ],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
     print("wrote", OUT, f"({os.path.getsize(OUT) // 1024} KB)  {OUT_W}x{OUT_H}")
 
 

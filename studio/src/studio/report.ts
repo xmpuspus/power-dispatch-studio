@@ -1,6 +1,6 @@
 // Run report: one self-contained HTML file for a frozen run, readable years
-// after the browser storage that held the run is gone. Tables and provenance
-// only; every number in it comes from the frozen hourly results.
+// after the browser storage that held the run is gone. Tables and sources
+// only; its values come from the frozen hourly results.
 
 import type { GridKey } from '../lib/types'
 import type { SavedRun } from './runs'
@@ -19,6 +19,26 @@ function esc(s: string): string {
 
 const php = (v: number, dp = 2) => `P${v.toFixed(dp)}`
 const num = (v: number) => Math.round(v).toLocaleString('en-US')
+
+const CLASS_LABEL: Record<string, string> = {
+  region: 'Grid',
+  generator: 'Power plant',
+  fuel: 'Fuel',
+  interface: 'Grid link',
+  storage: 'Storage',
+}
+
+const PROPERTY_LABEL: Record<string, string> = {
+  demand_mw: 'Demand (MW)',
+  capacity_mw: 'Available capacity (MW)',
+  marginal_cost: 'Generation cost (P/kWh)',
+  cost: 'Fuel cost (P/kWh)',
+  limit_mw: 'Transfer limit (MW)',
+}
+
+const classLabel = (v: string) => CLASS_LABEL[v] ?? v.replace(/_/g, ' ')
+const propertyLabel = (v: string) => PROPERTY_LABEL[v] ?? v.replace(/_/g, ' ')
+const objectLabel = (v: string) => v.replace(':', ' / ')
 
 const CSS = `
 body{font:14px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a2233;
@@ -49,7 +69,7 @@ export function buildRunReport(run: SavedRun, extras: ReportExtras = {}): string
       const cls = k.slice(0, k.indexOf(':'))
       const prop = k.slice(k.lastIndexOf(':') + 1)
       const id = k.slice(cls.length + 1, k.length - prop.length - 1)
-      return `<tr><td>${esc(cls)}</td><td>${esc(id)}</td><td>${esc(prop)}</td><td class="n">${v}</td></tr>`
+      return `<tr><td>${esc(classLabel(cls))}</td><td>${esc(objectLabel(id))}</td><td>${esc(propertyLabel(prop))}</td><td class="n">${v}</td></tr>`
     })
     .join('')
 
@@ -77,7 +97,7 @@ export function buildRunReport(run: SavedRun, extras: ReportExtras = {}): string
 <table><thead><tr><th>Constraint</th><th>Kind</th><th class="n">Hours</th><th class="n">Share</th></tr></thead>
 <tbody>${rows}</tbody></table>`
       }).join('\n')
-    : '<p class="note">Hourly detail was evicted from storage; per-hour tables are unavailable for this run.</p>'
+    : '<p class="note">Hourly detail is no longer stored for this run, so the per-hour tables are unavailable.</p>'
 
   let emissions = ''
   const factors = extras.emissionsFactors
@@ -92,7 +112,7 @@ export function buildRunReport(run: SavedRun, extras: ReportExtras = {}): string
       .sort((a, b) => b.t - a.t)
     const total = rows.reduce((s, r) => s + r.t, 0)
     emissions = `<h2>CO2, all grids</h2>
-<table><thead><tr><th>Fuel</th><th class="n">MWh</th><th class="n">tCO2</th></tr></thead><tbody>
+<table><thead><tr><th>Fuel</th><th class="n">MWh</th><th class="n">Metric tonnes CO2 (tCO2)</th></tr></thead><tbody>
 ${rows
   .map(
     (r) =>
@@ -114,12 +134,12 @@ ${rows
         const cls = k.slice(0, k.indexOf(':'))
         const prop = k.slice(k.lastIndexOf(':') + 1)
         const id = k.slice(cls.length + 1, k.length - prop.length - 1)
-        return `<tr><td>${esc(cls)}</td><td>${esc(id)}</td><td>${esc(prop)}</td><td class="n">${run.overrides[k]}</td></tr>`
+        return `<tr><td>${esc(classLabel(cls))}</td><td>${esc(objectLabel(id))}</td><td>${esc(propertyLabel(prop))}</td><td class="n">${run.overrides[k]}</td></tr>`
       })
       .join('')
     userSupplied = `<h2>User-supplied inputs (${imported.length})</h2>
-<table><thead><tr><th>Class</th><th>Object</th><th>Property</th><th class="n">Value</th></tr></thead><tbody>${rows}</tbody></table>
-<p class="note">These values were imported from the analyst's own CSV in the browser and never uploaded. They are the analyst's inputs, not the baked public data.</p>`
+<table><thead><tr><th>Type</th><th>Plant, grid, or link</th><th>Setting</th><th class="n">Value</th></tr></thead><tbody>${rows}</tbody></table>
+<p class="note">These values were imported from the analyst's own CSV in the browser and never uploaded. They are the analyst's inputs, not the generated public data.</p>`
   }
 
   let capture = ''
@@ -137,7 +157,7 @@ ${rows
   )
   .join('')}
 </tbody></table>
-<p class="note">Generation-weighted capture price per technology: sum(generation times price) divided by generation, on each grid's own price. The capture rate is that divided by the run's time-average price, the revenue signal a project or GEA analyst needs. Solar and wind capture below the flat average when they clear mostly in their own cheap hours.</p>`
+<p class="note">Generation-weighted capture price per technology: sum(generation times price) divided by generation, on each grid's own price. The capture rate is that divided by the run's time-average price. It is a revenue measure used for project analysis and Green Energy Auction (GEA) bids. Solar and wind earn less than the flat average when they clear mostly in low-price hours.</p>`
   }
 
   const hourRows = run.hours
@@ -158,15 +178,15 @@ ${rows
 <h1>Power Dispatch Studio run report</h1>
 <p class="sub">${esc(run.name)} · scenario "${esc(run.scenarioName)}" · window ${esc(
     dates[0] ?? run.date
-  )}${dates.length > 1 ? ` to ${esc(dates[dates.length - 1])}` : ''} · engine v${run.engineVersion} · saved ${esc(
+  )}${dates.length > 1 ? ` to ${esc(dates[dates.length - 1])}` : ''} · calculation version ${run.engineVersion} · saved ${esc(
     run.savedAt.slice(0, 16).replace('T', ' ')
   )} UTC</p>
 
 <h2>Scenario edits (${edits.length})</h2>
 ${
   edits.length
-    ? `<table><thead><tr><th>Class</th><th>Object</th><th>Property</th><th class="n">Value</th></tr></thead><tbody>${editRows}</tbody></table>`
-    : '<p class="note">Base case: no property edits.</p>'
+    ? `<table><thead><tr><th>Type</th><th>Plant, grid, or link</th><th>Setting</th><th class="n">Value</th></tr></thead><tbody>${editRows}</tbody></table>`
+    : '<p class="note">Base case: no setting changes.</p>'
 }
 
 <h2>Daily summary</h2>
@@ -190,16 +210,18 @@ ${
         ''
       )}<th class="n">Flow L-V MW</th><th class="n">Flow V-M MW</th><th class="n">Unserved MW</th></tr></thead>
 <tbody>${hourRows}</tbody></table></details>`
-    : '<p class="note">Hourly detail was evicted from storage.</p>'
+    : '<p class="note">Hourly detail is no longer stored for this run.</p>'
 }
 
-<h2>Provenance</h2>
-<p class="note">Chronological replay of observed IEMOP market days on a merit-order
-model, three zonal grids coupled over two HVDC corridors, solved as one linear
-program per day by HiGHS (storage inter-temporal, reserves as withheld capacity,
-prices from the balance duals). Demand is the archive's dispatched generation per
-hour. A calibrated cost model, not a forecast. Model scope, data provenance, and the backcast
-accuracy statement live in the methodology page of the site that produced this
+<h2>Model and data</h2>
+<p class="note">This report recalculates recorded IEMOP market days with a cost-based
+dispatch model. It represents Luzon, Visayas, and Mindanao and the two
+high-voltage direct-current links between them. Demand is the operator's recorded
+hourly dispatched generation. Storage can move energy between hours, and reserve
+requirements reduce the capacity available for energy. Regional prices reflect the
+cost of the last generation block needed, grid transfer costs, and binding transfer
+limits. This is a scenario calculation, not a forecast. The methodology page explains
+the model limits, data sources, and historical price comparison for the site that produced this
 report${extras.appUrl ? `: <code>${esc(extras.appUrl)}</code>` : '.'}</p>
 <p class="note">Statistical indicators derived from public data. Patterns may have
 legitimate explanations.</p>

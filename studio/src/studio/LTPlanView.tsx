@@ -33,7 +33,11 @@ export function LTPlanView({
   )
   if (pj.loading) return <EmptyNote>Loading the DOE project lists.</EmptyNote>
   if (pj.error || !pj.data?.available)
-    return <EmptyNote>LT Plan layer not baked. Run make data.</EmptyNote>
+    return (
+      <EmptyNote>
+        Long-term planning data are not available in this data release.
+      </EmptyNote>
+    )
   const p = pj.data
 
   const perGrid = (g: GridKey) =>
@@ -110,10 +114,11 @@ export function LTPlanView({
       <DemandPathPanel />
       <p className="scn__lede">
         The DOE tracks every private-sector power project by grid, fuel, MW, and the
-        proponent's target date: committed (permitted and financed) and indicative
-        (earlier-stage, far larger). Pick a horizon, read what the pipeline claims to
-        deliver by then, and Apply writes it into the scenario as fuel-availability edits.
-        Dates are the proponents' declarations, not this site's forecast.
+        proponent's target date. Committed projects are permitted and financed. Indicative
+        projects are at an earlier stage and total far more capacity. Pick a year to see
+        what the project lists claim will be operating by then. Apply adds that capacity
+        to the scenario as fuel-availability changes. Project dates come from the
+        proponents and are not this site's forecast.
       </p>
 
       <div className="chrono__controls">
@@ -171,7 +176,7 @@ export function LTPlanView({
       </div>
 
       <Panel
-        title="What the pipeline adds, by grid and fuel"
+        title="Announced capacity by grid and fuel"
         subtitle={`Every ${scope === 'both' ? 'committed and indicative' : 'committed'} project with a target commercial operation on or before ${year}, summed. As of ${p.as_of}.`}
         right={<Source href={p.editions?.committed?.luzon?.src} label="DOE list" />}
       >
@@ -179,7 +184,7 @@ export function LTPlanView({
           columns={addCols}
           rows={adds}
           getKey={(r) => `${r.grid}:${r.fuel}`}
-          empty="Nothing in the pipeline lands by this horizon."
+          empty="No announced project has a target date by this year."
         />
         <p className="note">
           {p.note} {p.ess_note}
@@ -187,8 +192,8 @@ export function LTPlanView({
       </Panel>
 
       <Panel
-        title="Transmission pipeline (NGCP TDP 2025-2050)"
-        subtitle="Corridor projects from the operator's transmission development plan. Only upgrades to the model's two corridors can apply; the rest are listed for the record."
+        title="Announced transmission projects in the NGCP TDP 2025-2050"
+        subtitle="These projects come from the operator's transmission development plan. Only upgrades to the two inter-grid links in this model can be applied. The other projects remain listed for reference."
         right={<Source href={p.src_tdp} label="TDP" />}
       >
         <DataGrid
@@ -204,10 +209,11 @@ export function LTPlanView({
       </Panel>
 
       <p className="note">
-        Apply writes ordinary property edits tagged to the active scenario: System &gt;
-        Fuels shows each changed cell with its revert, and Run re-solves. The DOE
-        committed total for {year >= 2028 ? 'the 2028 horizon' : 'this horizon'} can be
-        read against the announced data-center wave in the Load sweep view.
+        Apply changes the active scenario. Review and edit model inputs &gt; Fuels shows
+        every changed value and provides a revert control. Run calculates the scenario
+        again. The Department of Energy committed total for{' '}
+        {year >= 2028 ? 'the 2028 horizon' : 'this horizon'} can be read against the
+        announced data-center demand in the Price as demand grows view.
       </p>
     </div>
   )
@@ -275,8 +281,8 @@ function DemandPathPanel() {
   ]
   return (
     <Panel
-      title="System peak demand path (DOE forecast)"
-      subtitle={`The ${d.plan} peak-demand forecast, per grid in MW, that the build pipeline below has to serve. A labeled ${d.owner} forecast (the plan's Table 28), not this site's projection; national peak grows about ${d.cagr_2025_2050_pct} percent a year to ${fmt(ph[idx(2050)])} MW by 2050. The data-center anchors sit on top of this baseline growth.`}
+      title={`DOE forecasts national peak demand of ${fmt(ph[idx(2050)])} MW by 2050`}
+      subtitle={`The ${d.plan} forecasts peak demand for each grid in MW. Announced projects must cover this demand. The forecast comes from ${d.owner} Table 28, not this site. National peak grows about ${d.cagr_2025_2050_pct} percent a year. Data-center demand is added on top of this growth.`}
       right={<Source href={d.src} label="DOE PDP" />}
     >
       <div className="stat-row">

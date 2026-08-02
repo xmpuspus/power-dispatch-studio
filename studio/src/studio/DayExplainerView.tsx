@@ -177,7 +177,7 @@ export function DayExplainerView({
     { key: 'name', header: 'Equipment', render: (e) => e.name },
     {
       key: 'rows',
-      header: 'RTD intervals bound',
+      header: '5-minute real-time intervals at limit',
       align: 'right',
       mono: true,
       render: (e) => num(e.rows),
@@ -217,7 +217,11 @@ export function DayExplainerView({
         <StatTile
           label="Fundamentals (cost model)"
           value={php(here.cost)}
-          hint={costFuel ? `priced on ${fuelLabel(costFuel)}` : 'merit-order stack'}
+          hint={
+            costFuel
+              ? `priced on ${fuelLabel(costFuel)}`
+              : 'lowest-cost-first supply stack (merit order)'
+          }
         />
         <StatTile
           label="Offer premium"
@@ -230,7 +234,7 @@ export function DayExplainerView({
           tone={here.premium != null && here.premium > 1 ? 'danger' : 'default'}
         />
         <StatTile
-          label="Offer replay (calibrated)"
+          label="Replay using published offers"
           value={php(here.offer)}
           hint={
             offerRun
@@ -239,7 +243,7 @@ export function DayExplainerView({
                 : "the operator's book"
               : offerDay.loading
                 ? 'loading the book'
-                : 'no offer book this day'
+                : 'no generator offers this day'
           }
         />
       </div>
@@ -286,13 +290,13 @@ export function DayExplainerView({
         )}
         <DataGrid columns={cols} rows={GRIDS} getKey={(g) => g} />
         <p className="note">
-          Offer premium is the offer replay minus the cost model: the part of the evening
-          price that offer behaviour, scarcity, and caps add on top of the merit-order
-          fundamentals. Residual is what the calibrated offer replay still misses against
-          the tape.
+          Offer premium is the offer replay minus the cost model. It measures the part of
+          the evening price added by generator offers, scarcity, and price caps beyond the
+          lowest-cost-first fundamentals (merit order). Residual is the difference between
+          the published-offer replay and the recorded price.
           {offerRun
             ? ''
-            : ' No derived offer book for this day (books lag publication a few days), so the premium is blank; pick an earlier day.'}
+            : ' No published generator offers are available for this day because publication lags by a few days. The offer difference is blank, so pick an earlier day.'}
         </p>
       </Panel>
 
@@ -302,7 +306,7 @@ export function DayExplainerView({
       >
         <div className="chip-row">
           {curtail != null && curtail > 0 ? (
-            <Chip tone="danger">{num(curtail)} MWh curtailed</Chip>
+            <Chip tone="danger">{num(curtail)} MWh of generation cut (curtailed)</Chip>
           ) : null}
           {alerts != null && alerts > 0 ? (
             <Chip tone="danger">{num(alerts)} alert advisories</Chip>

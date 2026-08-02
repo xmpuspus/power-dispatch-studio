@@ -22,7 +22,7 @@ Semantics and gates:
     least that hour's dispatched generation (RTDSUM); a book smaller than
     what actually ran means a parse or coverage bug, and the day is
     refused, not written.
-  - prices are divided by 1,000 to PhP/kWh, matching every other artifact.
+  - prices are divided by 1,000 to PhP/kWh, matching the other generated files.
 
 The compact stacks are drop-in engine inputs: the same {cost, mw} blocks
 the cost-proxy merit order feeds the day LP, so an offer-mode replay needs
@@ -31,6 +31,7 @@ no LP change on either engine.
     python3 pipeline/offers.py --derive --limit 3   # newest N underived
     python3 pipeline/offers.py --derive --from 2026-05-01 --to 2026-06-25
 """
+
 from __future__ import annotations
 
 import argparse
@@ -54,7 +55,7 @@ SSN_SLUG = "rtd-self-scheduled-nominations"
 SERVER = "/var/www/html/wp-content/uploads/downloads/data"
 REGION = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao"}
 MAX_BLOCKS = 48
-# artifact schema: 2 adds the fuel-classified coal series and the
+# file schema: 2 adds the fuel-classified coal series and the
 # min-stable-floor variant book (hours_floor); derive() rewrites any
 # committed daily below this version
 SCHEMA_VERSION = 2
@@ -67,9 +68,15 @@ SLEEP = 0.3
 # verified abbreviation -> fuel: each entry checked by hand against the DOE
 # fleet (grid + plausible MW). Fuel-level only: the codes' unit mapping can
 # stay ambiguous as long as every candidate row burns the same fuel.
-FUEL_ALIAS = {"GNPD": "coal", "SUAL": "coal", "QPPL": "coal",
-              "MSINLO": "coal", "MINBAL": "coal", "PALM": "coal",
-              "SMC": "coal"}
+FUEL_ALIAS = {
+    "GNPD": "coal",
+    "SUAL": "coal",
+    "QPPL": "coal",
+    "MSINLO": "coal",
+    "MINBAL": "coal",
+    "PALM": "coal",
+    "SMC": "coal",
+}
 
 _fleet_cache: dict | None = None
 
@@ -78,12 +85,15 @@ def _fleet_index():
     global _fleet_cache
     if _fleet_cache is None:
         import re as _re
+
         path = os.path.join(HERE, "..", "web", "data", "fleet.json")
         fleet = json.load(open(path))
         _fleet_cache = {
             "by_name": {p["name"]: p for p in fleet["plants"]},
-            "norm": [(_re.sub(r"[^A-Z0-9]", "", p["name"].upper()), p)
-                     for p in fleet["plants"]],
+            "norm": [
+                (_re.sub(r"[^A-Z0-9]", "", p["name"].upper()), p)
+                for p in fleet["plants"]
+            ],
         }
     return _fleet_cache
 
@@ -94,8 +104,9 @@ def classify_fuel(res: str) -> str | None:
     abbreviations, then a fuel-tolerant core match against the DOE fleet
     (accepted only when every candidate row in the code's grid agrees on
     one fuel). Anything else stays unclassified; coverage is stated in the
-    artifact, never guessed."""
+    generated file, never guessed."""
     import re as _re
+
     idx = _fleet_index()
     alias = _alias_for(res)
     if alias:
@@ -109,9 +120,11 @@ def classify_fuel(res: str) -> str | None:
     core_n = _re.sub(r"[^A-Z0-9]", "", core.upper())
     if len(core_n) < 3:
         return None
-    fuels = {p["fuel"] for n, p in idx["norm"]
-             if (core_n in n or n.startswith(core_n))
-             and (grid is None or p["grid"] == grid)}
+    fuels = {
+        p["fuel"]
+        for n, p in idx["norm"]
+        if (core_n in n or n.startswith(core_n)) and (grid is None or p["grid"] == grid)
+    }
     return fuels.pop() if len(fuels) == 1 else None
 
 
@@ -123,17 +136,21 @@ def _fetch_hour_csv(slug: str, prefix: str, stamp: str) -> list[dict] | None:
         code, body = curl([f"{BASE}/{slug}/?md_file={b64}"], timeout=120)
         head = body[:200].lstrip().lower()
         if code == 0 and body and not head.startswith(b"<"):
-            return list(csv.DictReader(io.StringIO(
-                body.decode("utf-8", "replace"))))
+            return list(csv.DictReader(io.StringIO(body.decode("utf-8", "replace"))))
         time.sleep(5 + 10 * attempt)
     return None
 
 
 def _first_interval(rows: list[dict]) -> str | None:
     """The hour file's earliest TIME_INTERVAL (the HH:05 book)."""
-    stamps = sorted({(r.get("TIME_INTERVAL") or "").strip()
-                     for r in rows if (r.get("TIME_INTERVAL") or "").strip()},
-                    key=lambda s: _ts(s) or datetime.max)
+    stamps = sorted(
+        {
+            (r.get("TIME_INTERVAL") or "").strip()
+            for r in rows
+            if (r.get("TIME_INTERVAL") or "").strip()
+        },
+        key=lambda s: _ts(s) or datetime.max,
+    )
     return stamps[0] if stamps else None
 
 
@@ -167,8 +184,9 @@ def _segments(r: dict) -> list[tuple[float, float]]:
     return out
 
 
-def _compact(blocks: list[tuple[float, float]],
-             max_blocks: int = MAX_BLOCKS) -> list[tuple[float, float]]:
+def _compact(
+    blocks: list[tuple[float, float]], max_blocks: int = MAX_BLOCKS
+) -> list[tuple[float, float]]:
     """Sort by price, merge equal prices, then merge the closest adjacent
     price levels until at most max_blocks remain (MW-weighted price)."""
     merged: dict[float, float] = {}
@@ -177,12 +195,11 @@ def _compact(blocks: list[tuple[float, float]],
         merged[key] = merged.get(key, 0.0) + mw
     levels = sorted(merged.items())
     while len(levels) > max_blocks:
-        gaps = [(levels[i + 1][0] - levels[i][0], i)
-                for i in range(len(levels) - 1)]
+        gaps = [(levels[i + 1][0] - levels[i][0], i) for i in range(len(levels) - 1)]
         _, i = min(gaps)
         (p1, m1), (p2, m2) = levels[i], levels[i + 1]
         pw = round((p1 * m1 + p2 * m2) / (m1 + m2), 3)
-        levels[i:i + 2] = [(pw, m1 + m2)]
+        levels[i : i + 2] = [(pw, m1 + m2)]
     return [(p, round(m, 1)) for p, m in levels if m > 0.05]
 
 
@@ -192,6 +209,7 @@ def _rtdsum_gen(date: str) -> dict[str, dict[int, float]] | None:
     if not os.path.isfile(p):
         return None
     from dispatch import hour_of
+
     acc: dict[str, dict[int, list[float]]] = {g: {} for g in REGION.values()}
     with open(p, newline="", encoding="utf-8", errors="replace") as fh:
         for r in csv.DictReader(fh):
@@ -208,8 +226,7 @@ def _rtdsum_gen(date: str) -> dict[str, dict[int, float]] | None:
             if h is None:
                 continue
             acc[g].setdefault(h, []).append(gen)
-    return {g: {h: sum(v) / len(v) for h, v in by_h.items()}
-            for g, by_h in acc.items()}
+    return {g: {h: sum(v) / len(v) for h, v in by_h.items()} for g, by_h in acc.items()}
 
 
 def derive_day(date: str) -> dict:
@@ -217,7 +234,8 @@ def derive_day(date: str) -> dict:
     Raises RuntimeError when a fetch fails or the gate refuses."""
     d = datetime.strptime(date, "%Y-%m-%d")
     hours: dict[str, list[list[list[float]] | None]] = {
-        g: [None] * 24 for g in REGION.values()}
+        g: [None] * 24 for g in REGION.values()
+    }
     coal_mw: dict[str, list[float]] = {g: [0.0] * 24 for g in REGION.values()}
     offered_mw_sum = {g: 0.0 for g in REGION.values()}
     classified_mw_sum = {g: 0.0 for g in REGION.values()}
@@ -228,18 +246,17 @@ def derive_day(date: str) -> dict:
         rows = _fetch_hour_csv(SLUG, "RTDOE", stamp)
         time.sleep(SLEEP)
         if rows is None:
-            raise RuntimeError(f"offers: fetch failed for {date} h{h} "
-                               f"(RTDOE_{stamp})")
+            raise RuntimeError(f"offers: fetch failed for {date} h{h} (RTDOE_{stamp})")
         ssn = _fetch_hour_csv(SSN_SLUG, "RTDNE", stamp)
         time.sleep(SLEEP)
         if ssn is None:
-            raise RuntimeError(f"offers: fetch failed for {date} h{h} "
-                               f"(RTDNE_{stamp})")
+            raise RuntimeError(f"offers: fetch failed for {date} h{h} (RTDNE_{stamp})")
         first = _first_interval(rows)
         if first is None:
             raise RuntimeError(f"offers: empty book for {date} h{h}")
         per_grid: dict[str, list[tuple[float, float]]] = {
-            g: [] for g in REGION.values()}
+            g: [] for g in REGION.values()
+        }
 
         seen = set()
         for r in rows:
@@ -290,7 +307,8 @@ def derive_day(date: str) -> dict:
             if served is not None and offered < served - 1.0:
                 raise RuntimeError(
                     f"offers: {date} {g} h{h} book {offered:.0f} MW < "
-                    f"dispatched {served:.0f} MW; refused")
+                    f"dispatched {served:.0f} MW; refused"
+                )
     tot_off = sum(offered_mw_sum.values())
     tot_cls = sum(classified_mw_sum.values())
     return {
@@ -299,33 +317,32 @@ def derive_day(date: str) -> dict:
         "hours": hours,
         "coal_mw": coal_mw,
         "fuel_classified_share_pct": (
-            round(100 * tot_cls / tot_off, 1) if tot_off else None),
-        "classification_note": ("coal_mw is the hour's offered MW from "
-                                "resources classified as coal (pasa alias "
-                                "+ hand-verified abbreviations + a "
-                                "fuel-tolerant fleet match; coverage "
-                                "stated). A min-stable floor carved from "
-                                "this series was MEASURED INERT before "
-                                "shipping: the coal fleet already offers "
-                                "its committed tranche at the price floor "
-                                "(the 40 percent carve left the books "
-                                "byte-identical), so commitment behavior "
-                                "is in the bids, not missing from them."),
+            round(100 * tot_cls / tot_off, 1) if tot_off else None
+        ),
+        "classification_note": (
+            "coal_mw records each hour's coal offers in megawatts. Coal resources "
+            "are identified through a resource-name list, checked abbreviations, "
+            "and Department of Energy fleet records. The classified share is "
+            "reported. Coal plants already offer their committed output at the "
+            "price floor. Applying a 40 percent technical minimum did not change "
+            "any hourly offer book, so the files keep the original offers."
+        ),
         "max_resources_seen": n_res,
         "max_blocks": MAX_BLOCKS,
-        "note": ("Observed per-grid hourly offer stacks from IEMOP's "
-                 "real-time generation offers (RTDOE) plus self-scheduled "
-                 "nominations (RTDNE, price-taking at the offer floor: "
-                 "capacity that runs whenever the grid runs and submits no "
-                 "curve): each hour is the book at the hour's first "
-                 "5-minute interval, all segments pooled and compacted to "
-                 f"at most {MAX_BLOCKS} price blocks (MW-weighted merges). "
-                 "Prices PhP/kWh, floor to cap as offered. Gate: each "
-                 "grid-hour's book must cover that hour's dispatched "
-                 "generation or the day is refused."),
+        "note": (
+            "Observed per-grid hourly offer stacks from IEMOP's "
+            "real-time generation offers (RTDOE) plus self-scheduled "
+            "nominations (RTDNE, price-taking at the offer floor: "
+            "capacity that runs whenever the grid runs and submits no "
+            "curve): each hour is the book at the hour's first "
+            "5-minute interval, all segments pooled and compacted to "
+            f"at most {MAX_BLOCKS} price blocks (MW-weighted merges). "
+            "Prices PhP/kWh, floor to cap as offered. Gate: each "
+            "grid-hour's book must cover that hour's dispatched "
+            "generation or the day is refused."
+        ),
         "src": "https://www.iemop.ph/market-data/rtd-generation-offers/",
-        "src_ssn": ("https://www.iemop.ph/market-data/"
-                    "rtd-self-scheduled-nominations/"),
+        "src_ssn": ("https://www.iemop.ph/market-data/rtd-self-scheduled-nominations/"),
     }
 
 
@@ -333,8 +350,7 @@ def derive(dates: list[str]) -> None:
     os.makedirs(OUT_DIR, exist_ok=True)
     consec = 0
     for date in dates:
-        out = os.path.join(
-            OUT_DIR, f"OFFERD_{date.replace('-', '')}.json")
+        out = os.path.join(OUT_DIR, f"OFFERD_{date.replace('-', '')}.json")
         if os.path.isfile(out):
             try:
                 with open(out) as fh:
@@ -372,15 +388,25 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--derive", action="store_true")
     ap.add_argument("--from", dest="frm", default="2026-05-01")
-    ap.add_argument("--to", dest="to",
-                    default=(date_cls.today() - timedelta(days=6)).isoformat())
-    ap.add_argument("--limit", type=int, default=None,
-                    help="derive only the newest N underived days")
+    ap.add_argument(
+        "--to", dest="to", default=(date_cls.today() - timedelta(days=6)).isoformat()
+    )
+    ap.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="derive only the newest N underived days",
+    )
     a = ap.parse_args()
     if a.derive:
         dates = _market_dates(a.frm, a.to)
         if a.limit:
-            underived = [dt for dt in dates if not os.path.isfile(
-                os.path.join(OUT_DIR, f"OFFERD_{dt.replace('-', '')}.json"))]
-            dates = underived[-a.limit:]
+            underived = [
+                dt
+                for dt in dates
+                if not os.path.isfile(
+                    os.path.join(OUT_DIR, f"OFFERD_{dt.replace('-', '')}.json")
+                )
+            ]
+            dates = underived[-a.limit :]
         derive(dates)
