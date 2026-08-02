@@ -139,7 +139,11 @@ export function MapView({ theme }: { theme: 'light' | 'dark' }) {
   }, [layers, ready])
 
   const toggles: { key: LayerKey; label: string; swatch: string }[] = [
-    { key: 'corridors', label: 'HVDC corridors', swatch: '#b3261e' },
+    {
+      key: 'corridors',
+      label: 'Inter-island high-voltage direct-current links',
+      swatch: '#b3261e',
+    },
     { key: 'generators', label: 'Named generators', swatch: '#64748b' },
     { key: 'dc', label: 'Data centers', swatch: '#b45309' },
   ]
@@ -148,7 +152,7 @@ export function MapView({ theme }: { theme: 'light' | 'dark' }) {
     <div className="mapview">
       <div ref={holder} className="mapview__canvas" />
       <div className="mapview__legend" role="group" aria-label="Map layers">
-        <div className="mapview__legendhead">Network</div>
+        <div className="mapview__legendhead">Grid connections</div>
         {toggles.map((t) => (
           <label className="maptoggle" key={t.key}>
             <input

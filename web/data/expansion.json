@@ -45,7 +45,7 @@
   },
   "re_share_pct": 86.5
  },
- "verdict": "A least-cost greenfield build lands renewable-heavy, the same direction as the DOE pipeline, without being told to: the check is the RE share, not a plant-by-plant match.",
+ "verdict": "The lowest-cost new-build scenario is 70.0% renewable, compared with 86.5% in the Department of Energy project list. This compares renewable shares, not individual plants.",
  "costs_note": "Generic technology costs, NREL ATB 2024 moderate case, 2022 USD annualized (CRF 0.09) and converted at 56 PhP/USD. Labeled generic, not PH-specific.",
  "src": "https://atb.nrel.gov/electricity/2024/",
  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."

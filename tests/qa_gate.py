@@ -1,63 +1,108 @@
 #!/usr/bin/env python3
-"""QA gate: banned framings, em-dash ban, AI-jargon ban, and overwrought-voice
-sweep across every user-visible artifact. A failure here means the map is about
-to make a claim that gets fact-checked to death or reads as machine-written.
+"""Check visible text for banned claims, em dashes, AI jargon, and overwriting.
+
+A failure means the map is about to make an unsupported claim or sound
+machine-written.
 Run: python3 tests/qa_gate.py
 """
+
 import glob
 import os
 import re
 import sys
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
-# Every user-visible artifact: the map, the baked data the map reads, the README,
+# Every user-visible file: the map, the generated data the map reads, the README,
 # and the docs/ writeups (audit, roadmap, research, LinkedIn draft) whose copy is
 # also public and must clear the same banned-framing and voice bars.
-TARGETS = (glob.glob(os.path.join(ROOT, "web", "*.html"))
-           + glob.glob(os.path.join(ROOT, "web", "data", "*.json"))
-           + glob.glob(os.path.join(ROOT, "docs", "*.md"))
-           # the studio's in-app React copy is user-visible too; scan it, but
-           # skip *.test.* (test fixtures carry deliberate tells like em-dashes)
-           + [p for p in glob.glob(os.path.join(ROOT, "studio", "src", "**", "*.tsx"),
-                                   recursive=True)
-              + glob.glob(os.path.join(ROOT, "studio", "src", "**", "*.ts"),
-                          recursive=True)
-              if ".test." not in os.path.basename(p)]
-           + [os.path.join(ROOT, "README.md"),
-              os.path.join(ROOT, "studio", "README.md")])
+TARGETS = (
+    glob.glob(os.path.join(ROOT, "web", "*.html"))
+    + glob.glob(os.path.join(ROOT, "web", "data", "*.json"))
+    + glob.glob(os.path.join(ROOT, "docs", "*.md"))
+    # the studio's in-app React copy is user-visible too; scan it, but
+    # skip *.test.* (test fixtures carry deliberate tells like em-dashes)
+    + [
+        p
+        for p in glob.glob(
+            os.path.join(ROOT, "studio", "src", "**", "*.tsx"), recursive=True
+        )
+        + glob.glob(os.path.join(ROOT, "studio", "src", "**", "*.ts"), recursive=True)
+        if ".test." not in os.path.basename(p)
+    ]
+    + [os.path.join(ROOT, "README.md"), os.path.join(ROOT, "studio", "README.md")]
+)
 
 fails = []
 
-# Banned framings for THIS project (CLAUDE.md stance). Data-center attribution
+# Banned claims for this project. Data-center attribution
 # and brownout prophecy are the two ways this map gets torn apart.
 BANNED = [
-    ("'data centers raised/spiked prices' (current DC load is small; unproven attribution)",
-     r"data\s+cent(er|re)s?\s+(have\s+)?(raised|spiked|drove|caused|pushed\s+up|increased)\s+(wesm|spot|power|electricity)?\s*prices"),
-    ("'will cause brownouts' (prophecy; use observed curtailment/alerts)",
-     r"will\s+cause\s+(brownouts|blackouts|rotating\s+outages)"),
-    ("'ghost'/'fraud' style accusation (conservative language only)",
-     r"\b(fraudulent|thieves?|plunder(ed|ing)?)\b"),
-    ("capacity/wholesale % stated as a bill % (keep wholesale and bill apart)",
-     r"bill(s)?\s+(rose|up|jumped|climbed|soared|spiked|surged|increased|went\s+up)"
-     r"\s*(by\s+)?38\.5\s*(%|percent|per\s*cent|pct)"),
+    (
+        (
+            "'data centers raised/spiked prices' "
+            "(current DC load is small; unproven attribution)"
+        ),
+        r"data\s+cent(er|re)s?\s+(have\s+)?(raised|spiked|drove|caused|pushed\s+up|increased)\s+(wesm|spot|power|electricity)?\s*prices",
+    ),
+    (
+        "'will cause brownouts' (prophecy; use observed curtailment/alerts)",
+        r"will\s+cause\s+(brownouts|blackouts|rotating\s+outages)",
+    ),
+    (
+        "'ghost'/'fraud' style accusation (conservative language only)",
+        r"\b(fraudulent|thieves?|plunder(ed|ing)?)\b",
+    ),
+    (
+        "capacity/wholesale % stated as a bill % (keep wholesale and bill apart)",
+        r"bill(s)?\s+(rose|up|jumped|climbed|soared|spiked|surged|increased|went\s+up)"
+        r"\s*(by\s+)?38\.5\s*(%|percent|per\s*cent|pct)",
+    ),
 ]
 
-# US-market framing must not creep back into user-facing artifacts. This map stands
-# on Philippine terms only; a US-ISO name in the copy reads as a ported artifact.
+# US-market framing must not creep back into user-facing files. This map stands
+# on Philippine terms only; a US-ISO name in the copy reads as borrowed US-market text.
 # Word-boundary matched so SPP/MISO/PJM don't fire inside ordinary words.
 US_FRAMING = [
-    r"\bERCOT\b", r"\bPJM\b", r"\bNYISO\b", r"\bISO-NE\b", r"\bMISO\b",
-    r"\bSPP\b", r"\bCAISO\b", r"\bGridStatus\b", r"\bgridstatus\b",
-    r"\bgridbill-us\b", r"\bElectricity Maps\b", r"\belectricitymaps\b",
-    r"\bEPRI\b", r"\bDCFlex\b", r"\bWattTime\b",
+    r"\bERCOT\b",
+    r"\bPJM\b",
+    r"\bNYISO\b",
+    r"\bISO-NE\b",
+    r"\bMISO\b",
+    r"\bSPP\b",
+    r"\bCAISO\b",
+    r"\bGridStatus\b",
+    r"\bgridstatus\b",
+    r"\bgridbill-us\b",
+    r"\bElectricity Maps\b",
+    r"\belectricitymaps\b",
+    r"\bEPRI\b",
+    r"\bDCFlex\b",
+    r"\bWattTime\b",
 ]
 
 AI_JARGON = [
-    "delve", "leverage", "utilize", "seamless", "robust", "tapestry", "pivotal",
-    "in today's", "it's important to note", "game-changer", "cutting-edge",
-    "navigate the complexities", "ever-evolving", "underscore", "showcase",
-    "testament", "paramount", "plethora", "myriad", "at the forefront",
-    "crucial", "comprehensive",
+    "delve",
+    "leverage",
+    "utilize",
+    "seamless",
+    "robust",
+    "tapestry",
+    "pivotal",
+    "in today's",
+    "it's important to note",
+    "game-changer",
+    "cutting-edge",
+    "navigate the complexities",
+    "ever-evolving",
+    "underscore",
+    "showcase",
+    "testament",
+    "paramount",
+    "plethora",
+    "myriad",
+    "at the forefront",
+    "crucial",
+    "comprehensive",
 ]
 
 # Domain terms of art that contain an otherwise-banned jargon word. "Pivotal
@@ -67,12 +112,16 @@ AI_JARGON = [
 DOMAIN_TERMS = ["pivotal supplier", "pivotal-supplier", "pivotal_supplier"]
 
 OVERWROUGHT = [
-    ("dramatic number-verb (skyrocket/plummet/spiral/unleash/shatter)",
-     r"\b(skyrocket|plummet|spiral|unleash|shatter)(ed|ing|s)?\b"),
+    (
+        "dramatic number-verb (skyrocket/plummet/spiral/unleash/shatter)",
+        r"\b(skyrocket|plummet|spiral|unleash|shatter)(ed|ing|s)?\b",
+    ),
     ("'broke from/away' trend metaphor", r"\bbroke\s+(from|away|out)\b"),
     ("'the pack' metaphor", r"\bthe\s+pack\b"),
-    ("'grid on the brink/edge of collapse' (alert language, not doom copy)",
-     r"\b(brink|edge)\s+of\s+collapse\b"),
+    (
+        "'grid on the brink/edge of collapse' (alert language, not doom copy)",
+        r"\b(brink|edge)\s+of\s+collapse\b",
+    ),
 ]
 
 
@@ -83,7 +132,7 @@ def scan(path, text):
     # '1.5 GW' must be labeled as the DICT forecast somewhere NEAR the number
     # (before or after; the regex-lookahead version missed 'DICT: ... 1.5 GW').
     for m in re.finditer(r"1\.5\s*GW", text):
-        window = text[max(0, m.start() - 160):m.end() + 160].lower()
+        window = text[max(0, m.start() - 160) : m.end() + 160].lower()
         if "dict" not in window and "forecast" not in window:
             fails.append(f"{base}: unlabeled '1.5 GW' (label the DICT forecast)")
     low = text.lower()
@@ -95,14 +144,17 @@ def scan(path, text):
     # only in the negated or debunking form ("not a congestion premium", the
     # "= 0" chart that "would mislead"). Require a marker in the local window.
     for m in re.finditer(r"congestion\s+(premium|cost)", text, re.I):
-        ctx = text[max(0, m.start() - 55):m.end() + 20].lower()
+        ctx = text[max(0, m.start() - 55) : m.end() + 20].lower()
         # a quoted mention ("congestion premium") is a term being debunked, not
         # an assertion; otherwise require a negation/debunk marker in the window
-        quoted = bool(re.search(r"[\"']\s*$", text[max(0, m.start() - 2):m.start()]))
+        quoted = bool(re.search(r"[\"']\s*$", text[max(0, m.start() - 2) : m.start()]))
         if not quoted and not re.search(
-                r"\bnot\b|\bnever\b|n't|\bno\b|rather than|=\s*0|mislead", ctx):
-            fails.append(f"{base}: BANNED affirmative 'congestion "
-                         f"{m.group(1).lower()}' (only the negated form is allowed)")
+            r"\bnot\b|\bnever\b|n't|\bno\b|rather than|=\s*0|mislead", ctx
+        ):
+            fails.append(
+                f"{base}: BANNED affirmative 'congestion "
+                f"{m.group(1).lower()}' (only the negated form is allowed)"
+            )
     # The DOE plant list names dozens of solar plants "<NAME> SPP" (solar power
     # plant) and Kalayaan "PSPP" (pumped storage). Scrub SPP only when it follows
     # an ALL-CAPS plant name, so the ban still catches prose about the US ISO.
@@ -110,8 +162,10 @@ def scan(path, text):
     for rx in US_FRAMING:
         m = re.search(rx, us_text)
         if m:
-            fails.append(f"{base}: US-market framing '{m.group(0)}' "
-                         "(map stands on PH terms only)")
+            fails.append(
+                f"{base}: US-market framing '{m.group(0)}' "
+                "(map stands on PH terms only)"
+            )
     scrubbed = low
     for t in DOMAIN_TERMS:
         scrubbed = scrubbed.replace(t, "")
@@ -131,7 +185,7 @@ def main():
         with open(path, encoding="utf-8", errors="replace") as f:
             scan(path, f.read())
         scanned += 1
-    print(f"scanned {scanned} artifacts")
+    print(f"scanned {scanned} files")
     for f_ in fails:
         print("FAIL " + f_)
     if fails:

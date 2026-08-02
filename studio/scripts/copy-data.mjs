@@ -1,5 +1,5 @@
-// Copy the pipeline's baked JSON into public/data so the app reads the same
-// artifacts the map ships. The pipeline (../pipeline) stays the single source of
+// Copy the pipeline's generated JSON into public/data so the app reads the same
+// data files the map ships. The pipeline (../pipeline) stays the source of
 // truth; public/data is gitignored and regenerated on every dev/build.
 import { mkdir, readdir, copyFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
@@ -12,7 +12,7 @@ const dest = join(here, '..', 'public', 'data')
 await mkdir(dest, { recursive: true })
 const files = (await readdir(src)).filter((f) => f.endsWith('.json') || f.endsWith('.geojson'))
 await Promise.all(files.map((f) => copyFile(join(src, f), join(dest, f))))
-console.log(`copied ${files.length} baked artifacts -> public/data`)
+console.log(`copied ${files.length} generated files -> public/data`)
 
 // per-day observed offer books (lazy-fetched by the chronology's offer mode)
 const offersSrc = join(src, 'offers')
@@ -24,10 +24,10 @@ try {
   )
   console.log(`copied ${offerFiles.length} offer days -> public/data/offers`)
 } catch {
-  console.log('no offer days baked (web/data/offers absent)')
+  console.log('no offer days generated (web/data/offers absent)')
 }
 
-// analyst-facing CSV exports (baked to web/data/exports); served from the
+// Analyst-facing CSV exports are generated in web/data/exports and served from the
 // studio origin too so the archive is reachable from either front door
 const exportsSrc = join(src, 'exports')
 try {
@@ -38,7 +38,7 @@ try {
   )
   console.log(`copied ${exportFiles.length} exports -> public/data/exports`)
 } catch {
-  console.log('no exports baked (web/data/exports absent)')
+  console.log('no exports generated (web/data/exports absent)')
 }
 
 // the HiGHS wasm binary ships as a static asset; solver.ts locateFile()

@@ -1,26 +1,24 @@
 #!/usr/bin/env python3
-"""Derive a compact SAMPLED record of the settlement-side price families the
-post-convergence build queue (Pass B) measured before deciding what to build.
+"""Derive a compact sample of settlement-side price families used to decide
+which comparisons to keep.
 
-Three IEMOP datasets, all hourly per-resource zips, measured on a small
-sample of market days rather than built into the replay, because the
-measurement decided each one:
+The calculation checks three IEMOP datasets on a small sample of market days.
+They stay outside the replay for these reasons:
 
 - indicative administered prices (AP): the operator's own cost-substitute
   price per resource per interval, published as indicative on market days and
-  binding during the suspension. Measured: it sits in the cost-stack regime
+  binding during the suspension. It sits in the cost-stack range
   on Luzon (near the P6.00 administered cost floor) and carries the same
   island premium on the corridors. A cost-regime cross-check, sampled here.
 - prices used in settlement (STLPRICE): the LMP each resource is settled at,
-  with the congestion component broken out. Measured: at the one-price-per-
+  with the congestion component broken out. At the one-price-per-
   island granularity WESM settles at, the intra-region congestion component
   is ZERO, so there is no new settlement-side congestion receipt beyond the
   inter-island price differences the flows table already carries.
 - day-ahead prices and schedules (DAP): the day-ahead projection LMP.
-  Measured: it diverges from the real-time settlement in both directions and
+  It diverges from the real-time settlement in both directions and
   by a wide margin; the day-ahead run PROJECTS rather than records, so it
-  stays out of the real-time replay's scope (the methodology's standing
-  stance on projection series) and is reported here as a diagnostic spread.
+  stays out of the real-time replay and is reported here as a comparison.
 
 Sampled, not full-window: AP/STLPRICE/DAP are 24 hourly zips per day like
 DIPCEF (DAP alone is ~340 KB per hour), so a small representative sample
@@ -29,6 +27,7 @@ under data/derived/settlement_sample.json.
 
     python3 pipeline/settlement_side.py --derive
 """
+
 from __future__ import annotations
 
 import argparse
@@ -47,8 +46,14 @@ from offers import _ts
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "data", "derived", "settlement_sample.json")
 GRIDS = ("luzon", "visayas", "mindanao")
-REGION = {"LUZON": "luzon", "CLUZ": "luzon", "VISAYAS": "visayas",
-          "CVIS": "visayas", "MINDANAO": "mindanao", "CMIN": "mindanao"}
+REGION = {
+    "LUZON": "luzon",
+    "CLUZ": "luzon",
+    "VISAYAS": "visayas",
+    "CVIS": "visayas",
+    "MINDANAO": "mindanao",
+    "CMIN": "mindanao",
+}
 # representative market days spread across the post-resumption window
 SAMPLE_DAYS = ["2026-05-20", "2026-06-05", "2026-06-15", "2026-06-25"]
 SLUGS = {
@@ -60,6 +65,7 @@ SLUGS = {
 
 def _listing(slug: str) -> dict[str, str]:
     import base64
+
     pid, _ = page_config(slug)
     out = {}
     for entry in list_files(slug, pid):
@@ -76,20 +82,34 @@ def _rows(slug: str, name: str, b64: str, tmp: str) -> list[dict]:
             raise RuntimeError(f"fetch failed: {name}")
     time.sleep(0.3)
     with zipfile.ZipFile(dest) as z:
-        return list(csv.DictReader(io.TextIOWrapper(
-            z.open(z.namelist()[0]), "utf-8", errors="replace")))
+        return list(
+            csv.DictReader(
+                io.TextIOWrapper(z.open(z.namelist()[0]), "utf-8", errors="replace")
+            )
+        )
 
 
 def _first_interval(rows: list[dict]) -> str | None:
-    ivals = sorted({(r.get("TIME_INTERVAL") or "").strip()
-                    for r in rows if _ts((r.get("TIME_INTERVAL") or "").strip())},
-                   key=lambda s: _ts(s) or datetime.max)
+    ivals = sorted(
+        {
+            (r.get("TIME_INTERVAL") or "").strip()
+            for r in rows
+            if _ts((r.get("TIME_INTERVAL") or "").strip())
+        },
+        key=lambda s: _ts(s) or datetime.max,
+    )
     return ivals[0] if ivals else None
 
 
-def _region_hourly(slug_key: str, day: str, fl: dict, tmp: str,
-                   col: str, gen_only: bool = False,
-                   extra: str | None = None) -> dict:
+def _region_hourly(
+    slug_key: str,
+    day: str,
+    fl: dict,
+    tmp: str,
+    col: str,
+    gen_only: bool = False,
+    extra: str | None = None,
+) -> dict:
     """Per-grid list of 24 hourly means of `col` (and optionally `extra`) at
     each hour's opening interval."""
     slug = SLUGS[slug_key]
@@ -109,10 +129,11 @@ def _region_hourly(slug_key: str, day: str, fl: dict, tmp: str,
         # fail loud if the price column is ever renamed: a silent r.get(col)
         # would read None -> 0 and pass off an empty series as a real zero
         # (the settlement congestion component in particular reads a true 0)
-        for need in (col, *( (extra,) if extra else () )):
+        for need in (col, *((extra,) if extra else ())):
             if need not in rows[0]:
-                raise RuntimeError(f"{prefix}: column {need!r} missing; "
-                                   f"header={sorted(rows[0])}")
+                raise RuntimeError(
+                    f"{prefix}: column {need!r} missing; header={sorted(rows[0])}"
+                )
         acc = {g: [] for g in GRIDS}
         acc_x = {g: [] for g in GRIDS}
         for r in rows:
@@ -160,49 +181,59 @@ def _dap_next_day(day: str, fl: dict, tmp: str) -> dict:
 
 def derive() -> dict:
     import tempfile
+
     fl = {k: _listing(v) for k, v in SLUGS.items()}
     days = []
     with tempfile.TemporaryDirectory() as tmp:
         for day in SAMPLE_DAYS:
-            ap = _region_hourly("AP", day, fl["AP"], tmp, "ADMIN_LMP",
-                                gen_only=True)
-            stl, stlc = _region_hourly("STL", day, fl["STL"], tmp, "LMP",
-                                       extra="LMP_CONGESTION")
+            ap = _region_hourly("AP", day, fl["AP"], tmp, "ADMIN_LMP", gen_only=True)
+            stl, stlc = _region_hourly(
+                "STL", day, fl["STL"], tmp, "LMP", extra="LMP_CONGESTION"
+            )
             dap = _dap_next_day(day, fl["DAP"], tmp)
-            days.append({
-                "date": day,
-                "admin_lmp": {g: _mean(ap[g]) for g in GRIDS},
-                "settlement_lmp": {g: _mean(stl[g]) for g in GRIDS},
-                "settlement_congestion": {g: _mean(stlc[g]) for g in GRIDS},
-                "dap_lmp": dap,
-                "dap_vs_rt_spread": {
-                    g: (round(dap[g] - _mean(stl[g]), 3)
-                        if dap[g] is not None and _mean(stl[g]) is not None
-                        else None) for g in GRIDS},
-            })
+            days.append(
+                {
+                    "date": day,
+                    "admin_lmp": {g: _mean(ap[g]) for g in GRIDS},
+                    "settlement_lmp": {g: _mean(stl[g]) for g in GRIDS},
+                    "settlement_congestion": {g: _mean(stlc[g]) for g in GRIDS},
+                    "dap_lmp": dap,
+                    "dap_vs_rt_spread": {
+                        g: (
+                            round(dap[g] - _mean(stl[g]), 3)
+                            if dap[g] is not None and _mean(stl[g]) is not None
+                            else None
+                        )
+                        for g in GRIDS
+                    },
+                }
+            )
             print(f"derived sample {day}", flush=True)
     return {
         "sample_days": SAMPLE_DAYS,
         "days": days,
-        "note": ("Sampled settlement-side price families (Pass B measure "
-                 "record). admin_lmp is the mean generator-node indicative "
-                 "administered price (AP), the operator's cost-substitute "
-                 "price; settlement_lmp the mean settled LMP (STLPRICE); "
-                 "settlement_congestion its congestion component (zero at the "
-                 "one-price-per-island granularity WESM settles at); dap_lmp "
-                 "the day-ahead projection mean and dap_vs_rt_spread its "
-                 "signed gap to the settled price. Daily means over a small "
-                 "market-day sample: these families were measured, not built "
-                 "into the replay (administered prices are cost-substitute "
-                 "counterfactuals, the settlement congestion component is "
-                 "empty at regional granularity, and the day-ahead run is a "
-                 "projection, out of the real-time replay's scope)."),
-        "src_admin": ("https://www.iemop.ph/market-data/"
-                      "indicative-administered-prices/"),
-        "src_settlement": ("https://www.iemop.ph/market-data/"
-                           "prices-used-in-settlement/"),
-        "src_dayahead": ("https://www.iemop.ph/market-data/"
-                         "dap-prices-and-schedules/"),
+        "note": (
+            "Sampled settlement-side price record. admin_lmp is the mean "
+            "generator-node indicative "
+            "administered price (AP), the operator's cost-substitute "
+            "price; settlement_lmp the mean settled LMP (STLPRICE); "
+            "settlement_congestion its congestion component (zero at the "
+            "one-price-per-island granularity WESM settles at); dap_lmp "
+            "the day-ahead projection mean and dap_vs_rt_spread its "
+            "signed gap to the settled price. Daily means over a small "
+            "market-day sample. These price series stay outside the replay: "
+            "administered prices are cost-substitute "
+            "counterfactuals, the settlement congestion component is "
+            "empty at regional granularity, and the day-ahead run is a "
+            "projection, out of the real-time replay's scope)."
+        ),
+        "src_admin": (
+            "https://www.iemop.ph/market-data/indicative-administered-prices/"
+        ),
+        "src_settlement": (
+            "https://www.iemop.ph/market-data/prices-used-in-settlement/"
+        ),
+        "src_dayahead": ("https://www.iemop.ph/market-data/dap-prices-and-schedules/"),
     }
 
 

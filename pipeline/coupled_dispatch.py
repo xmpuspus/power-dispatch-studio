@@ -1,25 +1,26 @@
 #!/usr/bin/env python3
 """Inter-island coupled economic dispatch for the three PH grids.
 
-Still a simplified model. Where pipeline/dispatch.py clears each grid ALONE against its own
-demand, this couples them: cheap Luzon energy flows south to Visayas and Mindanao
+Still a simplified model. Where pipeline/dispatch.py clears each grid on its own,
+this couples them: cheap Luzon energy flows south to Visayas and Mindanao
 over the two HVDC corridors, up to each corridor's operating limit, and the three
 clearing prices are solved together. If a corridor saturates, the downstream grid
 prices above the upstream grid by the congestion rent (the price gap across the
-binding link). That is the project's central claim, made endogenous.
+binding link). The model calculates this price effect instead of adding it later.
 
 The network is a radial path:  LUZON --(Leyte-Luzon HVDC, 250 MW)-- VISAYAS
 --(MVIP HVDC, 450 MW)-- MINDANAO. On a path with convex (merit-order) supply
 stacks, the cost-minimising dispatch is where adjacent grids' marginal costs are
-equal across any UNSATURATED corridor, and the exporter is strictly cheaper across
-a SATURATED one. We solve that condition directly by coordinate descent on the two
-corridor flows with a per-corridor bisection, and pin the optimality (KKT) with a
-test rather than trusting the algorithm (tests/test_data.py).
+equal across any corridor with spare capacity, and the exporter is strictly
+cheaper when the corridor is full. We solve that condition directly by adjusting
+the two corridor flows. The test in tests/test_data.py checks the mathematical
+conditions for the lowest-cost result.
 
 No scarcity / VOLL adder: an unserved grid still prices at its top block (oil P12),
 and the shortfall is reported. The gap to the far higher observed price stays the
 residual, exactly as in the standalone model.
 """
+
 from __future__ import annotations
 
 from fleet_ph import FUEL_COST_PHP_KWH, WESM_OFFER_CAP_PHP_KWH, stack
@@ -32,7 +33,8 @@ CORRIDORS = [
     {
         "id": "leyte_luzon_hvdc",
         "name": "Leyte-Luzon HVDC",
-        "from": "LUZON", "to": "VISAYAS",
+        "from": "LUZON",
+        "to": "VISAYAS",
         "limit_mw": 250,
         "nameplate_mw": 440,
         "limit_kind": "sourced_operating_limit",
@@ -41,7 +43,8 @@ CORRIDORS = [
     {
         "id": "mvip_hvdc",
         "name": "Mindanao-Visayas HVDC (MVIP)",
-        "from": "VISAYAS", "to": "MINDANAO",
+        "from": "VISAYAS",
+        "to": "MINDANAO",
         "limit_mw": 450,
         "nameplate_mw": 450,
         "limit_kind": "nameplate_as_operating_limit",
@@ -78,8 +81,7 @@ def _marg(blocks: list[dict], g: float) -> tuple[float, str | None]:
     return WESM_OFFER_CAP_PHP_KWH, "shortage"
 
 
-def _root_decr(phi, lo: float, hi: float, target: float,
-               tol: float = 0.25) -> float:
+def _root_decr(phi, lo: float, hi: float, target: float, tol: float = 0.25) -> float:
     """x in [lo, hi] where a non-increasing phi(x) meets `target`."""
     for _ in range(40):
         if hi - lo <= tol:
@@ -117,9 +119,12 @@ def _opt_flow(phi, lo: float, hi: float) -> float:
     return zero
 
 
-def clear_coupled(demand: dict[str, float], hour: int,
-                  removed: dict[str, dict] | None = None,
-                  caps: dict[str, float] | None = None) -> dict:
+def clear_coupled(
+    demand: dict[str, float],
+    hour: int,
+    removed: dict[str, dict] | None = None,
+    caps: dict[str, float] | None = None,
+) -> dict:
     """Couple the three grids and clear them together.
 
     demand: {grid -> MW} for LUZON/VISAYAS/MINDANAO at one interval.
@@ -192,8 +197,12 @@ def clear_coupled(demand: dict[str, float], hour: int,
         _corridor(CORRIDORS[0], f1, c1, pL, pV, eps),
         _corridor(CORRIDORS[1], f2, c2, pV, pM, eps),
     ]
-    return {"grids": grids, "corridors": corridors,
-            "flow_lv_mw": round(f1, 1), "flow_vm_mw": round(f2, 1)}
+    return {
+        "grids": grids,
+        "corridors": corridors,
+        "flow_lv_mw": round(f1, 1),
+        "flow_vm_mw": round(f2, 1),
+    }
 
 
 def _gen_cost(blocks: list[dict], g: float) -> float:
@@ -211,8 +220,13 @@ def _gen_cost(blocks: list[dict], g: float) -> float:
     return c
 
 
-def system_cost(demand: dict[str, float], hour: int, f1: float, f2: float,
-                removed: dict[str, dict] | None = None) -> float:
+def system_cost(
+    demand: dict[str, float],
+    hour: int,
+    f1: float,
+    f2: float,
+    removed: dict[str, dict] | None = None,
+) -> float:
     """Total generation cost (+ wheeling) of a given flow pair. The optimality
     test brute-forces this to confirm clear_coupled lands on the minimum."""
     removed = removed or {}
@@ -222,14 +236,17 @@ def system_cost(demand: dict[str, float], hour: int, f1: float, f2: float,
     gL, gV, gM = dL + f1, dV + f2 - f1, dM - f2
     if gL < 0 or gV < 0 or gM < 0:
         return float("inf")
-    return (_gen_cost(stack("LUZON", hour, removed.get("LUZON")), gL)
-            + _gen_cost(stack("VISAYAS", hour, removed.get("VISAYAS")), gV)
-            + _gen_cost(stack("MINDANAO", hour, removed.get("MINDANAO")), gM)
-            + WHEEL * (abs(f1) + abs(f2)))
+    return (
+        _gen_cost(stack("LUZON", hour, removed.get("LUZON")), gL)
+        + _gen_cost(stack("VISAYAS", hour, removed.get("VISAYAS")), gV)
+        + _gen_cost(stack("MINDANAO", hour, removed.get("MINDANAO")), gM)
+        + WHEEL * (abs(f1) + abs(f2))
+    )
 
 
-def _corridor(meta: dict, flow: float, cap: float,
-              p_from: float, p_to: float, eps: float) -> dict:
+def _corridor(
+    meta: dict, flow: float, cap: float, p_from: float, p_to: float, eps: float
+) -> dict:
     """Report one corridor's flow, saturation, and congestion rent."""
     # A zero cap means the corridor is fully blocked, not fully congested. With
     # cap 0 the >= test is trivially true, and the rent branch then returns a
@@ -241,8 +258,12 @@ def _corridor(meta: dict, flow: float, cap: float,
     if sat:
         rent = round(p_to - p_from if flow > 0 else p_from - p_to, 3)
     return {
-        "id": meta["id"], "name": meta["name"],
-        "from": meta["from"].lower(), "to": meta["to"].lower(),
-        "limit_mw": cap, "flow_mw": round(flow, 1),
-        "saturated": sat, "congestion_rent_php_kwh": rent,
+        "id": meta["id"],
+        "name": meta["name"],
+        "from": meta["from"].lower(),
+        "to": meta["to"].lower(),
+        "limit_mw": cap,
+        "flow_mw": round(flow, 1),
+        "saturated": sat,
+        "congestion_rent_php_kwh": rent,
     }

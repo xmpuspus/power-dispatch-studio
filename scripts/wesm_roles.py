@@ -6,12 +6,14 @@ chart: there is no capacity market to chart.
 
 Static explainer, no archive data. Output docs/wesm-roles.png.
 """
+
 import os
 import sys
 
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import cardstyle as cs  # noqa: E402
+
 cs.apply()
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,15 +26,15 @@ ROWS = [
     ("Governs the market", "PEMC", "Philippine Electricity Market Corporation"),
     ("Regulates prices and rules", "ERC", "Energy Regulatory Commission"),
     ("Sets energy policy", "DOE", "Department of Energy"),
-    ("Owns the transmission assets", "TransCo",
-     "National Transmission Corporation"),
+    ("Owns the transmission assets", "TransCo", "National Transmission Corporation"),
     ("Capacity market", "none", "energy-only, no capacity auction"),
 ]
 
 
 def main():
-    fig, ax = cs.card(figsize=(9.6, 5.0), field="dusk",
-                      rect=(0.055, 0.135, 0.90, 0.635))
+    fig, ax = cs.card(
+        figsize=(9.6, 5.0), field="dusk", rect=(0.055, 0.135, 0.90, 0.635)
+    )
     ax.axis("off")
     ax.grid(False)
     n = len(ROWS)
@@ -52,20 +54,27 @@ def main():
         # market to chart, so it gets the accent and a rule of its own
         if last:
             ax.plot([0.0, 1.0], [y + dy / 2, y + dy / 2], color=cs.FAINT, lw=1.0)
-        ax.text(x_fn, y, fn, fontsize=10.4, color=cs.TEXT if last else cs.BODY,
-                va="center")
-        ax.text(x_body, y, body, fontsize=10.8, color=col, va="center",
-                fontweight="bold")
+        ax.text(
+            x_fn, y, fn, fontsize=10.4, color=cs.TEXT if last else cs.BODY, va="center"
+        )
+        ax.text(
+            x_body, y, body, fontsize=10.8, color=col, va="center", fontweight="bold"
+        )
         ax.text(x_role, y, role, fontsize=9.8, color=cs.MUTE, va="center")
 
     ax.set_xlim(0, 1)
     ax.set_ylim(-0.02, 1.06)
-    cs.title(fig, "Six bodies run the market, and none of them runs a capacity auction",
-             "WESM is energy-only, which is why this project has no capacity-market chart.")
-    cs.source(fig,
-              "Generators are paid for the energy they dispatch and for the "
-              "reserve they hold. No forward capacity auction exists to price "
-              "or to chart.\nFrom IEMOP, NGCP, PEMC, ERC and DOE.")
+    cs.title(
+        fig,
+        "Six bodies run the market, and none of them runs a capacity auction",
+        "WESM is energy-only, which is why this project has no capacity-market chart.",
+    )
+    cs.source(
+        fig,
+        "Generators are paid for the energy they dispatch and for the "
+        "reserve they hold. No forward capacity auction exists to price "
+        "or to chart.\nFrom IEMOP, NGCP, PEMC, ERC and DOE.",
+    )
     cs.save_png(fig, OUT, dpi=140)
 
 

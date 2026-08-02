@@ -1,4 +1,4 @@
-// Types for the baked dispatch model (web/data/dispatch.json). Only the fields the
+// Types for the generated dispatch model (web/data/dispatch.json). Only the fields the
 // Studio reads are typed; the pipeline (pipeline/dispatch.py) is the source of truth.
 
 export type GridKey = 'luzon' | 'visayas' | 'mindanao'
@@ -655,7 +655,7 @@ export interface ChronoGoldenCase {
     storage?: { grid: GridKey; power_mw: number; energy_mwh: number }[]
     reserve_deduction?: boolean
     // marker only: the replaying engine loads the same per-day offer book
-    // artifact (web/data/offers/) the Python bake used
+    // file (web/data/offers/) used by the Python data build
     offer_mode?: boolean
   }
   expect: {
@@ -675,7 +675,7 @@ export interface ChronoGoldenCase {
   }
 }
 
-// the native 168h week golden (roadmap item 6): seven explicit dates solved on
+// The 168-hour reference case solves seven explicit dates on
 // one LP, the studio replays the same window and must build byte-identical text
 export interface WeekGolden {
   available: boolean

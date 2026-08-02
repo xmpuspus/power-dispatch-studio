@@ -3,7 +3,7 @@
 
 IEMOP's public window is a rolling ~90 days per dataset page; this archiver plus
 the daily cron turns that window into a permanent public archive (git history is
-the archive). Access mechanic verified 2026-07-05: each market-data page embeds
+the archive). Download method checked 2026-07-05: each market-data page embeds
 post_id + min_date in a `var php = {...}` blob; POST to wp-admin/admin-ajax.php
 with action=display_filtered_market_data_files returns the full base64 file list;
 GET <page>?md_file=<b64> serves the file. No auth.
@@ -20,6 +20,7 @@ on both macOS and ubuntu runners).
     python3 pipeline/archive_iemop.py --only RTDCV,LWAPF
     python3 pipeline/archive_iemop.py --backfill --dipcef-days 3
 """
+
 from __future__ import annotations
 
 import argparse
@@ -36,8 +37,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(HERE, "..", "data", "raw")
 BASE = "https://www.iemop.ph/market-data"
 AJAX = "https://www.iemop.ph/wp-admin/admin-ajax.php"
-UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-      "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36")
+UA = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+)
 SLEEP = 0.25
 MAX_CONSECUTIVE_ERRORS = 5
 PHT = timezone(timedelta(hours=8))
@@ -53,10 +56,8 @@ DATASETS = {
     "HVDCRTD": "hvdc-limits-imposed-in-rtd",
     "OUTRTD": "outage-schedules-used-in-rtd",
     "DIPCEF": "dipc-energy-results-final",
-    # the page renamed to the plural slug at some point; the old singular
-    # 301s and the archiver's curl does not follow redirects (caught in
-    # the round-8 diff review; latent because RTDRS is a SAMPLE_KEY the
-    # daily cron never touches)
+    # The page uses a plural slug. The former singular URL redirects, but
+    # curl does not follow redirects here. The daily job does not fetch RTDRS.
     "RTDRS": "rtd-reserve-schedules",
     # Added 2026-07-07 (the analyst-parity pass). One small CSV per day each:
     # MCP names the marginal RESOURCE per region per 5-min interval (the
@@ -72,10 +73,7 @@ DATASETS = {
     "MPI": "mpi-advisories",
     "WAPOS": "outage-schedules-used-in-wap",
     "MRU": "list-of-must-run-units-based-on-so-dispatch-instruction-report",
-    # Added 2026-07-08 (the round-7 convergence critic enumerated the full
-    # market-data sitemap: 57 pages then, 58 as of 2026-07-09, the archive
-    # carried 14, and three of the unused pages falsified written boundary
-    # claims). GWAPF is the
+    # Added 2026-07-08 after checking the full market-data sitemap. GWAPF is the
     # per-region generator weighted average price per 5-min interval, the
     # series the ERC secondary cap's 72-hour rolling trigger runs on
     # (methodology had called it unpublished); RTDHS is the per-interval
@@ -86,7 +84,7 @@ DATASETS = {
     # daily books from it, mirroring offers.py.
     "GWAPF": "generator-weighted-average-price-final",
     "RTDHS": "rtd-hvdc-schedules",
-    # Added 2026-07-09 (the round-8 convergence critic): PSMCOG is the
+    # Added 2026-07-09. PSMCOG is the
     # operator's roster of generators network/security constraints force
     # ON out of merit, named per 5-minute interval with the cleared or
     # substituted price (a final-calculation dataset, published about two
@@ -97,27 +95,25 @@ DATASETS = {
     # substitute.
     "PSMCOG": "psm-constrained-on-generators",
     "RTDSL": "security-limits-used-in-rtd",
-    # Added 2026-07-09 (the round-9 convergence critic): the SO dispatch
-    # instruction family the round-8 disposition failed to name. MOTRD is
+    # Added 2026-07-09. MOTRD is
     # the weekly processed MOT-raise re-dispatch list (same schema and
     # cadence as MRU but the full out-of-merit record: a pooled 55 MW
-    # median against MRU's 5.7, max 668 MW, 89k rows across the window,
+    # median against MRU's 6.5, max 668 MW, 109k rows across the window,
     # two weeks published empty); SODIR is the per-grid dispatch
     # instruction log (dailies plus the operator's weekly compilations;
     # consumers count dailies only) whose REMARKS name the cause (reserve
     # activations, line limitations); VDSODIR is the operator's own list
     # of valid discrepancies on that report, the data-quality flag for
     # anything built from the other two.
-    "MOTRD": "list-of-mot-raise-re-dispatch-based-on-so-dispatch-"
-             "instruction-report",
+    "MOTRD": "list-of-mot-raise-re-dispatch-based-on-so-dispatch-instruction-report",
     "SODIR": "so-dispatch-instruction-report",
     "VDSODIR": "valid-discrepancies-on-so-dispatch-instruction-report",
-    # Added 2026-07-10 (post-convergence build queue, Pass B). CAPER is the
+    # Added 2026-07-10. CAPER is the
     # per-resource registered ancillary-services capacity by commodity
     # (Ru/Fr/Rd/Dr), the reserve-side twin of CAPEG (registered-capacity-
     # generation): one small daily CSV, the registration denominator the
     # reserve not-offered screen needs. The heavier settlement-side finals
-    # from the same Pass B (DIPC reserve results DIPCRF, indicative
+    # related reserve and price datasets (DIPC reserve results DIPCRF, indicative
     # administered prices AP) are hourly per-resource zips and stay
     # deriver-only, like the offer books: pipeline/reserve_results.py and
     # pipeline/admin_prices.py fetch them transiently and commit compact
@@ -142,15 +138,19 @@ REVISION_KEYS = {"VDSODIR", "SODIR"}
 def curl(args: list[str], timeout: int = 60) -> tuple[int, bytes]:
     """Run curl, return (exit_code, stdout_bytes)."""
     try:
-        p = subprocess.run(["curl", "-s", "-m", str(timeout), "-A", UA] + args,
-                           capture_output=True, timeout=timeout + 15)
+        p = subprocess.run(
+            ["curl", "-s", "-m", str(timeout), "-A", UA] + args,
+            capture_output=True,
+            timeout=timeout + 15,
+        )
         return p.returncode, p.stdout
     except subprocess.TimeoutExpired:
         return 124, b""
 
 
-def _curl_retry(args: list[str], timeout: int = 60,
-                tries: int = 3) -> tuple[int, bytes]:
+def _curl_retry(
+    args: list[str], timeout: int = 60, tries: int = 3
+) -> tuple[int, bytes]:
     """curl with retries for IEMOP's transient TLS resets (exit 35 on
     roughly one listing call in six under load); backs off between tries."""
     code, body = 1, b""
@@ -177,9 +177,16 @@ def page_config(slug: str) -> tuple[str, str]:
 
 def list_files(slug: str, post_id: str) -> list[tuple[str, str]]:
     """Return [(b64_server_path, filename), ...] newest first."""
-    code, body = _curl_retry(["-X", "POST", AJAX, "--data",
-                              "action=display_filtered_market_data_files&sort="
-                              f"&datefilter=&page=1&post_id={post_id}"])
+    code, body = _curl_retry(
+        [
+            "-X",
+            "POST",
+            AJAX,
+            "--data",
+            "action=display_filtered_market_data_files&sort="
+            f"&datefilter=&page=1&post_id={post_id}",
+        ]
+    )
     if code != 0 or not body:
         raise RuntimeError(f"ajax list failed for {slug} (curl exit {code})")
     data = json.loads(body)
@@ -225,8 +232,14 @@ def recent_pht_stamps(days: int) -> set[str]:
     return {(now - timedelta(days=d)).strftime("%Y%m%d") for d in range(days)}
 
 
-def wanted(key: str, name: str, mode: str, sample_days: int,
-           newest_stamp: str = "", newest_on_disk: str = "") -> bool:
+def wanted(
+    key: str,
+    name: str,
+    mode: str,
+    sample_days: int,
+    newest_stamp: str = "",
+    newest_on_disk: str = "",
+) -> bool:
     m = re.search(r"(\d{8})", name)
     stamp = m.group(1) if m else ""
     if key in SAMPLE_KEYS:
@@ -236,8 +249,9 @@ def wanted(key: str, name: str, mode: str, sample_days: int,
         if sample_days <= 0 or not stamp or not newest_stamp:
             return False
         anchor = datetime.strptime(newest_stamp, "%Y%m%d")
-        keep = {(anchor - timedelta(days=d)).strftime("%Y%m%d")
-                for d in range(sample_days)}
+        keep = {
+            (anchor - timedelta(days=d)).strftime("%Y%m%d") for d in range(sample_days)
+        }
         return stamp in keep
     if mode == "daily":
         # Revision-stamped datasets (week + as-of date in the name) reissue
@@ -278,15 +292,14 @@ def archive(keys: list[str], mode: str, sample_days: int) -> list[str]:
             continue
         fetched = skipped = errors = 0
         consecutive = 0
-        stamps_all = [m.group(1) for _, n in files
-                      if (m := re.search(r"(\d{8})", n))]
+        stamps_all = [m.group(1) for _, n in files if (m := re.search(r"(\d{8})", n))]
         newest_stamp = max(stamps_all) if stamps_all else ""
-        on_disk = [m.group(1) for n in os.listdir(ddir)
-                   if (m := re.search(r"(\d{8})", n))]
+        on_disk = [
+            m.group(1) for n in os.listdir(ddir) if (m := re.search(r"(\d{8})", n))
+        ]
         newest_on_disk = max(on_disk) if on_disk else ""
         for b64, name in files:
-            if not wanted(key, name, mode, sample_days, newest_stamp,
-                          newest_on_disk):
+            if not wanted(key, name, mode, sample_days, newest_stamp, newest_on_disk):
                 continue
             dest = os.path.join(ddir, name)
             if looks_valid(dest):
@@ -302,8 +315,9 @@ def archive(keys: list[str], mode: str, sample_days: int) -> list[str]:
                 consecutive += 1
                 if consecutive >= MAX_CONSECUTIVE_ERRORS:
                     print(f"{key}: aborting after {consecutive} consecutive errors")
-                    failures.append(f"{key}: aborted after {consecutive} "
-                                    "consecutive fetch errors")
+                    failures.append(
+                        f"{key}: aborted after {consecutive} consecutive fetch errors"
+                    )
                     break
         have = sorted(os.listdir(ddir))
         # collect every date in each name so range files (MRU, MOTRD:
@@ -311,15 +325,21 @@ def archive(keys: list[str], mode: str, sample_days: int) -> list[str]:
         # first date re.search returned; oldest/newest then bound the real window.
         stamps = [d for n in have for d in re.findall(r"(20\d{6})", n)]
         manifest[key] = {
-            "slug": slug, "post_id": post_id, "page_min_date": min_date,
+            "slug": slug,
+            "post_id": post_id,
+            "page_min_date": min_date,
             "files": len(have),
             "bytes": sum(os.path.getsize(os.path.join(ddir, n)) for n in have),
             "oldest": min(stamps) if stamps else None,
             "newest": max(stamps) if stamps else None,
         }
-        print(f"{key}: listed {len(files)}, fetched {fetched}, "
-              f"skipped {skipped}, errors {errors}, on disk {len(have)}")
-    manifest["fetched_at_utc"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        print(
+            f"{key}: listed {len(files)}, fetched {fetched}, "
+            f"skipped {skipped}, errors {errors}, on disk {len(have)}"
+        )
+    manifest["fetched_at_utc"] = datetime.now(timezone.utc).isoformat(
+        timespec="seconds"
+    )
     os.makedirs(RAW, exist_ok=True)
     with open(manifest_path, "w") as f:
         json.dump(manifest, f, indent=1, sort_keys=True)
@@ -345,9 +365,16 @@ def archive(keys: list[str], mode: str, sample_days: int) -> list[str]:
 # MOTRD mirrors MRU's weekly cadence. VDSODIR is revision-stamped
 # (week + as-of date; the stamp regex reads the WEEK, which trails by
 # design), so it carries no budget.
-LAG_BUDGET_DAYS = {"LWAPF": 45, "GWAPF": 45, "MRU": 14, "PSMCOG": 45,
-                   "MOTRD": 14, "VDSODIR": None,
-                   "DIPCEF": None, "RTDRS": None}
+LAG_BUDGET_DAYS = {
+    "LWAPF": 45,
+    "GWAPF": 45,
+    "MRU": 14,
+    "PSMCOG": 45,
+    "MOTRD": 14,
+    "VDSODIR": None,
+    "DIPCEF": None,
+    "RTDRS": None,
+}
 LAG_DEFAULT_DAYS = 4
 # the derived nodal archive rolls off the DIPCEF sample, which lags final
 # settlement by weeks; sized like LWAPF so a truly stalled deriver still trips.
@@ -371,32 +398,38 @@ def check_staleness() -> int:
         if not newest:
             stale.append(f"{key}: no files recorded")
             continue
-        age = (today - datetime.strptime(newest, "%Y%m%d")
-               .replace(tzinfo=PHT)).days
+        age = (today - datetime.strptime(newest, "%Y%m%d").replace(tzinfo=PHT)).days
         status = "STALE" if age > budget else "ok"
         print(f"{key}: newest {newest}, {age}d old (budget {budget}d) {status}")
         if age > budget:
-            stale.append(f"{key}: newest {newest} is {age}d old "
-                         f"(budget {budget}d)")
+            stale.append(f"{key}: newest {newest} is {age}d old (budget {budget}d)")
     # the derived nodal archive (data/derived/nodal_daily/) is not a raw
     # DATASET and carries no manifest budget, so without its own check a
     # stalled nodal deriver goes unseen (the map Prices layer and the studio
     # nodal and loss-validation views all read it) (F9)
     nodal_dir = os.path.join(HERE, "..", "data", "derived", "nodal_daily")
-    nodal = sorted(f for f in (os.listdir(nodal_dir) if os.path.isdir(nodal_dir) else [])
-                   if f.startswith("NODALD_") and f.endswith(".json"))
+    nodal = sorted(
+        f
+        for f in (os.listdir(nodal_dir) if os.path.isdir(nodal_dir) else [])
+        if f.startswith("NODALD_") and f.endswith(".json")
+    )
     if not nodal:
         stale.append("nodal_daily: no NODALD files derived")
     else:
         newest_nodal = nodal[-1][7:15]
-        age = (today - datetime.strptime(newest_nodal, "%Y%m%d")
-               .replace(tzinfo=PHT)).days
+        age = (
+            today - datetime.strptime(newest_nodal, "%Y%m%d").replace(tzinfo=PHT)
+        ).days
         status = "STALE" if age > NODAL_BUDGET_DAYS else "ok"
-        print(f"nodal_daily: newest {newest_nodal}, {age}d old "
-              f"(budget {NODAL_BUDGET_DAYS}d) {status}")
+        print(
+            f"nodal_daily: newest {newest_nodal}, {age}d old "
+            f"(budget {NODAL_BUDGET_DAYS}d) {status}"
+        )
         if age > NODAL_BUDGET_DAYS:
-            stale.append(f"nodal_daily: newest {newest_nodal} is {age}d old "
-                         f"(budget {NODAL_BUDGET_DAYS}d)")
+            stale.append(
+                f"nodal_daily: newest {newest_nodal} is {age}d old "
+                f"(budget {NODAL_BUDGET_DAYS}d)"
+            )
     for s in stale:
         print("STALE:", s)
     return 1 if stale else 0
@@ -406,17 +439,28 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--backfill", action="store_true", help="full public window")
-    g.add_argument("--daily", action="store_true",
-                   help="everything newer than the archive's newest file")
-    g.add_argument("--check", action="store_true",
-                   help="staleness check against manifest.json (exit 1 if stale)")
+    g.add_argument(
+        "--daily",
+        action="store_true",
+        help="everything newer than the archive's newest file",
+    )
+    g.add_argument(
+        "--check",
+        action="store_true",
+        help="staleness check against manifest.json (exit 1 if stale)",
+    )
     ap.add_argument("--only", help="comma-separated dataset keys")
-    ap.add_argument("--sample-days", "--dipcef-days", dest="sample_days",
-                    type=int, default=None,
-                    help="fetch the last N days of the SAMPLE datasets "
-                         "(DIPCEF, RTDRS; default: 3 on backfill, 0 on daily). "
-                         "These files are multi-MB per day, so the sample stays "
-                         "static and the repo stays light.")
+    ap.add_argument(
+        "--sample-days",
+        "--dipcef-days",
+        dest="sample_days",
+        type=int,
+        default=None,
+        help="fetch the last N days of the SAMPLE datasets "
+        "(DIPCEF, RTDRS; default: 3 on backfill, 0 on daily). "
+        "These files are multi-MB per day, so the sample stays "
+        "static and the repo stays light.",
+    )
     a = ap.parse_args()
     if a.check:
         return check_staleness()
@@ -433,8 +477,10 @@ def main() -> int:
         sample_days = 0 if mode == "daily" else 3
     failures = archive(keys, mode, sample_days)
     if failures:
-        print(f"{len(failures)} dataset failure(s); exiting nonzero so the "
-              "cron goes red instead of silently losing window days")
+        print(
+            f"{len(failures)} dataset failure(s); exiting nonzero so the "
+            "cron goes red instead of silently losing window days"
+        )
         return 1
     return 0
 

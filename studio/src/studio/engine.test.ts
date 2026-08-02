@@ -85,17 +85,17 @@ describe('golden parity vs the Python coupled_dispatch engine', () => {
   }
 })
 
-describe('all-levers-neutral reproduces the baked merit_order clear', () => {
+describe('all-levers-neutral reproduces the generated merit_order clear', () => {
   for (const gk of GRID_KEYS) {
-    it(`selected grid ${gk} at baseline equals the baked stack clear`, () => {
+    it(`selected grid ${gk} at baseline equals the generated stack clear`, () => {
       const stack = buildStack(d.merit_order[gk].fuel_avail_mw, {}, [], stackParams())
-      const baked = clearGrid(
+      const generated = clearGrid(
         d.merit_order[gk].blocks,
         d.merit_order[gk].typical_evening_demand_mw
       )
       const rebuilt = clearGrid(stack, d.merit_order[gk].typical_evening_demand_mw)
-      expect(rebuilt.price).toBeCloseTo(baked.price, 3)
-      // the rebuilt stack must equal the baked blocks (same fuels, MW, cost)
+      expect(rebuilt.price).toBeCloseTo(generated.price, 3)
+      // the rebuilt stack must equal the generated blocks (same fuels, MW, cost)
       const norm = (bs: typeof stack) =>
         bs.map((b) => `${b.fuel}:${b.mw.toFixed(1)}:${b.cost}`).sort()
       expect(norm(stack)).toEqual(norm(d.merit_order[gk].blocks))

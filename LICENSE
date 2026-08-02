@@ -26,7 +26,7 @@ Scope note (not part of the MIT text above):
 
 - The MIT license applies to the code in this repository (pipeline/, web/*.html,
   web/serve.py, scripts/, tests/, Makefile).
-- The baked data products (web/data/*.json, web/data/*.geojson) are additionally
+- The generated data files (web/data/*.json, web/data/*.geojson) are additionally
   offered under CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/).
   Attribution: power-dispatch-studio (2026), IEMOP public market data archive,
   https://github.com/xmpuspus/power-dispatch-studio

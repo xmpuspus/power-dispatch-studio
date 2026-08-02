@@ -1,17 +1,15 @@
-"""Record the map's Simulate (merit-order dispatch) walkthrough, then bake
+"""Record the map's Simulate (merit-order dispatch) walkthrough, then data build
 docs/dispatch-demo.gif.
 
-Ported from the old agent-browser shell recorder, which replayed a stale
-bake because its daemon cached the baked JSON across sessions. Playwright
-opens a fresh context every run and reads the current data, so the intro
-panel and the stack are never stale.
+The previous recorder cached generated JSON across sessions. Playwright opens a
+fresh browser context for every run and reads the current data.
 
     make serve                          # web/ on :8789
     python3 build/record_dispatch_demo.py [base_url]
 
-Beats, all live (the price re-clears on real input events, no scripting of
-the numbers): enter Simulate on Luzon (coal margin), ramp a data-center
-wave so the clearing price flips coal to oil, trip a Sual unit (N-1),
+The recording uses real input events and reads current results. It opens Simulate
+on Luzon, increases data-center
+the added demand until the clearing price changes from coal to oil, remove a Sual unit,
 relieve the feeding corridor, then reset and switch to the tighter Visayas
 stack.
 """
@@ -31,7 +29,10 @@ OUT = ROOT / "docs" / "dispatch-demo.gif"
 W, H = 1280, 800
 
 ANIM_JS = r"""
-(args) => { const [id, to, ms] = args; const el = document.getElementById(id); if (!el) return;
+(args) => {
+  const [id, to, ms] = args;
+  const el = document.getElementById(id);
+  if (!el) return;
   const from = +el.value, t0 = performance.now();
   return new Promise(r => { function f(t){ const k = Math.min(1, (t - t0) / ms);
     el.value = Math.round(from + (to - from) * k);
@@ -85,11 +86,11 @@ async def main():
         await fly(page, 121.0, 14.9, 6.0, 1000)
         await asyncio.sleep(1.4)
 
-        # the data-center wave: demand marches into the oil block, P6 -> P12
+        # Increase data-center demand until the oil block sets the price.
         await anim(page, "sim-dc", 3000, 3600)
         await asyncio.sleep(1.8)
 
-        # trip a Sual unit (N-1) on top of the wave: a supply shortfall opens
+        # Remove a Sual unit after adding demand; a supply shortfall opens.
         await set_select(page, "sim-trip", "Sual")
         await asyncio.sleep(2.4)
 
@@ -97,12 +98,15 @@ async def main():
         await anim(page, "sim-imp", 250, 2200)
         await asyncio.sleep(2.0)
 
-        # reset, switch to the tighter Visayas stack, add the wave again
+        # Reset, switch to the tighter Visayas supply stack, and add demand again.
         await anim(page, "sim-dc", 0, 900)
         await set_select(page, "sim-trip", "")
         await asyncio.sleep(0.6)
         await page.evaluate(
-            "() => { const b = document.querySelector('.gsel[data-grid=visayas]'); if (b) b.click(); }"
+            """() => {
+              const b = document.querySelector('.gsel[data-grid=visayas]');
+              if (b) b.click();
+            }"""
         )
         await asyncio.sleep(1.6)
         await anim(page, "sim-dc", 700, 2200)

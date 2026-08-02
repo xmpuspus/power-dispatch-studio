@@ -97,18 +97,18 @@ export function DistributionView({
           tone={edited && stats.p50 > baseStats.p50 + 0.005 ? 'accent' : 'default'}
         />
         <StatTile
-          label="P10 to P90 daily mean"
+          label="10th to 90th percentile (P10 to P90)"
           value={`${php(stats.p10)} to ${php(stats.p90)}`}
-          hint={`${num(stats.days)} market days replayed`}
+          hint={`80% of ${num(stats.days)} replayed market days fall in this range`}
         />
         <StatTile
-          label="Unserved energy, window"
+          label="Demand not served in the window"
           value={num(unserved)}
           unit="MWh"
           tone={unserved > 0 ? 'danger' : 'positive'}
         />
         <StatTile
-          label="Congestion rent, window"
+          label="Value across constrained links (congestion rent)"
           value={`₱${num(rentTotal, 1)}M`}
           hint="both corridors, all days"
         />
@@ -116,7 +116,7 @@ export function DistributionView({
 
       <Panel
         title={`Hourly price band, ${cap(grid)}`}
-        subtitle={`The ran scenario replayed over all ${num(stats.days)} market days with full demand coverage. Shaded band spans the 10th to 90th percentile per hour; the dashed line is the base model's median.`}
+        subtitle={`The selected scenario is replayed over all ${num(stats.days)} market days with complete demand data. The shaded range covers the 10th to 90th percentile for each hour. The dashed line is the base model's median.`}
       >
         <BandChart band={band} compare={edited ? baseMedian : undefined} />
       </Panel>
@@ -132,16 +132,16 @@ export function DistributionView({
       </Panel>
 
       <Panel
-        title="Daily-mean distribution by grid"
+        title="Daily average prices across the three grids"
         subtitle="Percentiles of the scenario's daily mean price across the replayed days."
       >
         <DataGrid columns={cols} rows={GRIDS} getKey={(g) => g} />
         <p className="note">
-          The sample is the archive's own observed market days, replayed as-is on the ran
-          scenario; nothing synthetic is drawn. A single day can flatter or damn a
-          scenario, so read the band first and the dearest day second. The observed
-          duration overlay carries the scarcity tail this cost model does not price; the
-          Backcast view states that gap per grid.
+          The sample uses recorded market days from the archive and replays each one with
+          the selected scenario. No synthetic days are added. Judge the scenario from the
+          full price range before checking the highest-price day. The recorded duration
+          line includes scarce, high-price hours that this cost model does not price. The
+          Historical replay view reports that difference for each grid.
         </p>
       </Panel>
     </div>

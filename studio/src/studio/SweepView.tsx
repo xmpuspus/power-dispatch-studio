@@ -123,13 +123,16 @@ export function SweepView({
     },
     {
       key: 'marg',
-      header: 'Marginal fuel',
+      header: 'Price-setting fuel (marginal fuel)',
       render: (r) => fuelLabel(r.s.marginalFuel[grid] ?? 'none'),
     },
     {
       key: 'corr',
       header: 'Import corridor',
-      render: (r) => (r.corridorBound ? `bound, rent ${php(r.corridorRent)}` : 'open'),
+      render: (r) =>
+        r.corridorBound
+          ? `at limit, price-gap value ${php(r.corridorRent)}`
+          : 'below limit',
     },
     {
       key: 'head',
@@ -209,25 +212,24 @@ export function SweepView({
 
       <Panel
         title={`Price response to added load on ${cap(grid)}`}
-        subtitle={`Flat 24/7 load (the data-center shape) added in ${STEPS} steps of ${num(Number(maxMw) / STEPS)} MW on top of the ran scenario; all three grids re-cleared together at each step.`}
+        subtitle={`Flat 24/7 demand is added to the selected scenario in ${STEPS} steps of ${num(Number(maxMw) / STEPS)} MW. All three grids clear together again at each step.`}
       >
         <HourLines series={series} marks={marks} />
       </Panel>
 
       <Panel
-        title="Every step"
-        subtitle="Snapshot solve at the evening reference hour per step, with no daily water budget (a single hour carries none), so hydro offers at capacity here. Chronology prices whole days and is where the budget binds."
+        title="Price, spare capacity, and unmet demand at every demand step"
+        subtitle="Each step solves the evening reference hour. A single hour has no daily water limit, so hydro can offer its full available capacity here. Hourly market replay solves whole days and applies the daily water limit."
       >
         <DataGrid columns={cols} rows={steps} getKey={(r) => String(r.addMw)} />
         <p className="note">
-          The announced wave for scale: DICT forecasts 1,500 MW of data-center demand by
-          2028 and Meralco has committed 1,000 MW for 10 data centers; both are labeled
-          forecasts, not observations. The sweep shows where that scale of flat load lands
-          on this model: which fuel takes the margin, when the importing corridor
-          saturates, and where the stack runs out. A flat price line with shrinking
-          headroom is a real outcome, not a null one: on a deep coal plateau the build
-          eats margin one for one before it moves the price, and the Reliability view
-          prices that erosion as loss-of-load probability.
+          DICT forecasts 1,500 MW of data-center demand by 2028, and Meralco has committed
+          1,000 MW for 10 data centers. Both figures describe future demand, not recorded
+          demand. The demand steps show which fuel sets the price, when the importing link
+          reaches its limit, and when available supply runs out. A flat price with falling
+          spare capacity is still a meaningful result. On a broad coal-price step, each MW
+          of new demand can reduce spare capacity by one MW before the price changes. The
+          Power-shortfall risk view shows the resulting loss-of-load probability (LOLP).
         </p>
       </Panel>
     </div>

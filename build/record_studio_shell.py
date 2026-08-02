@@ -1,13 +1,12 @@
-"""Record the studio shell: command palette, question rail, run dock, deep link.
+"""Record the studio shell: command palette, question rail, run summary, deep link.
 
 The shell was rebuilt on 2026-07-31 around the analyst's question rather than
 the model's object classes, and no demo showed it. Every existing clip opens on
 a view and stays there, so a reader could not see how a person gets between 39
 views, or that each one is a URL they can send to a colleague.
 
-Short on purpose. A gif of flat studio chrome costs about 0.09 MB per second at
-820 px, against 0.22 for the panning map, so this buys four beats for about a
-megabyte.
+The recording stays short because the static studio interface uses about 0.09
+MB per second at 820 px, compared with 0.22 MB for the moving map.
 
     bash scripts/vercel_build.sh
     cp web/serve.py .vercel_out/ && (cd .vercel_out && python3 serve.py 5200 &)
@@ -30,8 +29,7 @@ REC.mkdir(exist_ok=True)
 OUT = ROOT / "docs" / "studio-shell.gif"
 W, H = 1360, 850
 
-# A caption band, and a fake address bar. The recording has no browser chrome,
-# so the deep link has to be drawn or the "every view is a URL" beat is invisible.
+# The caption includes the address because the recording omits browser controls.
 CAP_JS = r"""
 (args) => {
   const { title, url } = args;
@@ -67,15 +65,10 @@ async def main() -> None:
         page = await ctx.new_page()
         await page.goto(f"{BASE}#v=chronology", wait_until="load")
         await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
-        # The base case is already solved on load, and Run stays disabled until
-        # an edit exists, so there is nothing to click here.
+        # The base case is calculated on load. Run stays disabled until an edit.
         await asyncio.sleep(3.0)
 
-        # 1. the palette: type what you want to know, not a menu path. The query
-        # has to be one the ranker actually matches, or Enter selects nothing,
-        # the scrim stays up and every later beat records behind it. "price
-        # setter" is in the Marginal units alias list; "who sets the price" is
-        # not, and it fails silently.
+        # Use a query that matches the Marginal units alias list.
         await cap(page, "Command palette: press Cmd K and type what you want to know")
         await asyncio.sleep(1.2)
         await page.keyboard.press("Meta+k")
@@ -90,16 +83,17 @@ async def main() -> None:
         await asyncio.sleep(1.4)
         landed = (await page.inner_text(".bar__searchtxt")).strip()
         if landed != "Marginal units":
-            raise SystemExit(f"palette beat missed: landed on {landed!r}")
+            raise SystemExit(f"command palette opened {landed!r}")
 
-        # 2. the deep link that the jump just wrote into the address bar
-        await cap(page, "Every view is its own URL, so a view is sendable",
-                  "power-dispatch-studio.vercel.app/studio/#v=marginal-units")
+        # Show the URL written by the command palette.
+        await cap(
+            page,
+            "Every view is its own URL, so a view is sendable",
+            "power-dispatch-studio.vercel.app/studio/#v=marginal-units",
+        )
         await asyncio.sleep(2.4)
 
-        # 3. the rail: the 39 views grouped by the analyst's question. At this
-        # width the rail is already open and its hamburger is hidden by CSS, so
-        # the beat is expanding the groups, not toggling the rail.
+        # Expand the 39 views grouped by the question each view answers.
         await cap(page, "The rail groups all 39 views by the question they answer")
         await asyncio.sleep(0.8)
         await page.evaluate(
@@ -107,15 +101,21 @@ async def main() -> None:
             " if (b.getAttribute('aria-expanded') === 'false') b.click() }) }"
         )
         await asyncio.sleep(2.0)
-        await page.get_by_role("button", name="N-1 contingency", exact=False).first.click()
+        await page.get_by_role(
+            "button", name="Loss of one major unit (N-1)", exact=False
+        ).first.click()
         await asyncio.sleep(1.8)
         landed = (await page.inner_text(".bar__searchtxt")).strip()
-        if landed != "N-1 contingency":
-            raise SystemExit(f"rail beat missed: landed on {landed!r}")
+        if landed != "Loss of one major unit (N-1)":
+            raise SystemExit(f"navigation rail opened {landed!r}")
 
-        # 4. the dock: a lever moves and the price answers before any Run
-        await cap(page, "Drag a lever and the run dock re-prices live, with no Run needed")
-        await page.evaluate("(s) => { window.location.hash = 'v=' + s }", "quick-scenario")
+        # Move a slider and show the recalculated price without pressing Run.
+        await cap(
+            page, "Move a slider and the run summary recalculates, with no Run needed"
+        )
+        await page.evaluate(
+            "(s) => { window.location.hash = 'v=' + s }", "quick-scenario"
+        )
         await asyncio.sleep(1.8)
         moved = await page.evaluate(
             """() => {
@@ -132,7 +132,7 @@ async def main() -> None:
             }"""
         )
         if not moved:
-            print("WARNING: no range lever found, the dock beat is missing")
+            print("WARNING: no range slider found, the run-summary segment is missing")
         await asyncio.sleep(2.6)
 
         await ctx.close()
@@ -145,19 +145,66 @@ async def main() -> None:
     ss = "3.4"
     vf = "fps=11,scale=820:-1:flags=lanczos"
     pal = REC / "pal.png"
-    subprocess.run(["ffmpeg", "-y", "-ss", ss, "-i", str(webm), "-vf",
-                    f"{vf},palettegen=max_colors=96:stats_mode=diff", str(pal)],
-                   check=True, capture_output=True)
-    subprocess.run(["ffmpeg", "-y", "-ss", ss, "-i", str(webm), "-i", str(pal), "-lavfi",
-                    f"{vf}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle",
-                    str(OUT)], check=True, capture_output=True)
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-ss",
+            ss,
+            "-i",
+            str(webm),
+            "-vf",
+            f"{vf},palettegen=max_colors=96:stats_mode=diff",
+            str(pal),
+        ],
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-ss",
+            ss,
+            "-i",
+            str(webm),
+            "-i",
+            str(pal),
+            "-lavfi",
+            f"{vf}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle",
+            str(OUT),
+        ],
+        check=True,
+        capture_output=True,
+    )
     subprocess.run(["gifsicle", "-O3", str(OUT), "-o", str(OUT)], capture_output=True)
     mp4 = OUT.with_suffix(".mp4")
-    subprocess.run(["ffmpeg", "-y", "-ss", ss, "-i", str(webm), "-vf", "scale=1280:-2",
-                    "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "24", "-an", str(mp4)],
-                   check=True, capture_output=True)
-    print(f"wrote {OUT} ({OUT.stat().st_size // 1024} KB) "
-          f"and {mp4.name} ({mp4.stat().st_size // 1024} KB)")
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-ss",
+            ss,
+            "-i",
+            str(webm),
+            "-vf",
+            "scale=1280:-2",
+            "-c:v",
+            "libx264",
+            "-pix_fmt",
+            "yuv420p",
+            "-crf",
+            "24",
+            "-an",
+            str(mp4),
+        ],
+        check=True,
+        capture_output=True,
+    )
+    print(
+        f"wrote {OUT} ({OUT.stat().st_size // 1024} KB) "
+        f"and {mp4.name} ({mp4.stat().st_size // 1024} KB)"
+    )
 
 
 asyncio.run(main())

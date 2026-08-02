@@ -11,6 +11,7 @@ sitting there already finished.
 
 Reads web/data/price_load.json. Output docs/supply-demand-day.gif.
 """
+
 import json
 import os
 import sys
@@ -45,9 +46,13 @@ def hour_of(ti):
 def ground(fig, field="day"):
     lo, hi = cs.FIELDS[field]
     gnd = fig.add_axes([0, 0, 1, 1], zorder=0)
-    gnd.imshow(np.linspace(0, 1, 256).reshape(-1, 1),
-               cmap=LinearSegmentedColormap.from_list("f", [hi, lo]),
-               aspect="auto", extent=(0, 1, 0, 1), interpolation="bicubic")
+    gnd.imshow(
+        np.linspace(0, 1, 256).reshape(-1, 1),
+        cmap=LinearSegmentedColormap.from_list("f", [hi, lo]),
+        aspect="auto",
+        extent=(0, 1, 0, 1),
+        interpolation="bicubic",
+    )
     gnd.set_xticks([])
     gnd.set_yticks([])
     for s in gnd.spines.values():
@@ -97,24 +102,46 @@ def main():
 
         if n > peak_i:
             cs.dot(ax2, hours[peak_i], pr[peak_i], cs.CORAL, size=28, zorder=7)
-            cs.chip(ax2, hours[peak_i], pr[peak_i] * 1.19,
-                    f"P{pr[peak_i]:.2f} at the peak", cs.CORAL, 8.6)
+            cs.chip(
+                ax2,
+                hours[peak_i],
+                pr[peak_i] * 1.19,
+                f"P{pr[peak_i]:.2f} at the peak",
+                cs.CORAL,
+                8.6,
+            )
         if n > trough_i:
-            cs.chip(ax2, hours[trough_i], pr[trough_i] + pr.max() * 0.17,
-                    f"P{pr[trough_i]:.2f} overnight", cs.MUTE, 8.4)
+            cs.chip(
+                ax2,
+                hours[trough_i],
+                pr[trough_i] + pr.max() * 0.17,
+                f"P{pr[trough_i]:.2f} overnight",
+                cs.MUTE,
+                8.4,
+            )
 
-        cs.title(fig,
-                 f"Demand moves {dem_pct:.0f}% across the day. "
-                 f"The price moves P{swing:.0f}.",
-                 f"One Luzon day from the archive, {day}, every 5-minute interval.")
+        cs.title(
+            fig,
+            f"Demand moves {dem_pct:.0f}% across the day. "
+            f"The price moves P{swing:.0f}/kWh.",
+            f"One Luzon day from the archive, {day}, every 5-minute interval.",
+        )
         if t > 0.9:
-            cs.payoff(fig, 0.735, 0.585, f"P{swing:.2f}",
-                      "overnight low to evening peak,\non the same day",
-                      cs.CORAL, 31)
-        cs.source(fig,
-                  "Generation and price share one clock, and each reads against "
-                  "its own zero.\nFrom IEMOP RTDSUM generation and LWAPF "
-                  "price, archived.")
+            cs.result_label(
+                fig,
+                0.735,
+                0.585,
+                f"P{swing:.2f}",
+                "overnight low to evening peak,\non the same day",
+                cs.CORAL,
+                31,
+            )
+        cs.source(
+            fig,
+            "Generation and price use the same time axis. Each chart has its "
+            "own vertical scale.\nFrom IEMOP RTDSUM generation and LWAPF "
+            "price, archived.",
+        )
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

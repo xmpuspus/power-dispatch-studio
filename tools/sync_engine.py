@@ -2,7 +2,7 @@
 """Generate src/power_dispatch/engine/ from the pipeline engine core.
 
 The pipeline is a flat collection of scripts that run with `python3
-pipeline/x.py` and no install step. The pip package (roadmap item 16) needs
+pipeline/x.py` and no install step. The pip package needs
 the same engine as a proper importable module. Rather than duplicate the code
 by hand, this tool copies the five engine-core modules and rewrites their
 intra-engine imports to package-relative, so pipeline/ stays the single source
@@ -11,6 +11,7 @@ of truth and tests/test_engine_sync.py fails the moment the two drift.
     python3 tools/sync_engine.py            # regenerate the vendored engine
     python3 tools/sync_engine.py --check    # verify committed files are current
 """
+
 from __future__ import annotations
 
 import argparse
@@ -31,9 +32,11 @@ MODULES = ["lp_model", "fleet_ph", "constants_ph", "chrono", "lp_dispatch"]
 _PEERS = "|".join(MODULES)
 _IMPORT_RE = re.compile(rf"^(\s*)from ({_PEERS}) import", re.MULTILINE)
 
-_BANNER = ("# GENERATED from pipeline/{mod}.py by tools/sync_engine.py -- do "
-           "not edit.\n# Edit the pipeline source and re-run the sync; "
-           "tests/test_engine_sync.py enforces identity.\n")
+_BANNER = (
+    "# GENERATED from pipeline/{mod}.py by tools/sync_engine.py -- do "
+    "not edit.\n# Edit the pipeline source and re-run the sync; "
+    "tests/test_engine_sync.py enforces identity.\n"
+)
 
 
 def rewrite(mod: str, text: str) -> str:
@@ -64,8 +67,10 @@ def sync(check: bool) -> int:
                 fh.write(want)
             print(f"[sync] wrote engine/{mod}.py")
     if check and drift:
-        print(f"[DRIFT] out of date: {', '.join(drift)} -- run "
-              f"tools/sync_engine.py", file=sys.stderr)
+        print(
+            f"[DRIFT] out of date: {', '.join(drift)} -- run tools/sync_engine.py",
+            file=sys.stderr,
+        )
         return 1
     if not check:
         print(f"synced {len(MODULES)} engine modules -> {DST}")
@@ -74,8 +79,11 @@ def sync(check: bool) -> int:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--check", action="store_true",
-                    help="verify committed files match the source, exit 1 on drift")
+    ap.add_argument(
+        "--check",
+        action="store_true",
+        help="verify committed files match the source, exit 1 on drift",
+    )
     args = ap.parse_args()
     return sync(args.check)
 

@@ -22,6 +22,7 @@ run at that point sits on the rating.
 Writes docs/pax-silica-embedded.png. Kept out of `make viz`, since the nightly
 rebuild does not need it.
 """
+
 import json
 import os
 import sys
@@ -69,9 +70,17 @@ def headroom() -> dict:
     if os.path.exists(CACHE):
         return json.load(open(CACHE))
     sys.path.insert(0, os.path.join(ROOT, "pipeline"))
-    from nodal_dcopf import (SITES, _load_day, _plant_load, build_network,
-                             hour_injections, map_resources, resolve_site,
-                             solve_hour)
+    from nodal_dcopf import (
+        SITES,
+        _load_day,
+        _plant_load,
+        build_network,
+        hour_injections,
+        map_resources,
+        resolve_site,
+        solve_hour,
+    )
+
     net = build_network()
     day = _load_day(DAY)
     res_bus, _ = map_resources(day, net)
@@ -113,8 +122,9 @@ def split(firm: float, solar_mw: float, solar_now: float, limit: float):
 def main():
     hd = headroom()
     limit = hd["headroom_mw"][HOUR]
-    solar = json.load(
-        open(os.path.join(ROOT, "web", "data", "profiles.json")))["solar_profile"]
+    solar = json.load(open(os.path.join(ROOT, "web", "data", "profiles.json")))[
+        "solar_profile"
+    ]
 
     fig = plt.figure(figsize=(12.2, 7.6))
     gs = fig.add_gridspec(2, 1, height_ratios=[3.05, 1.0], hspace=0.62)
@@ -128,34 +138,65 @@ def main():
         for (seg_label, color), value in zip(SEGMENTS, parts):
             if value <= 0:
                 continue
-            ax.barh(y[i], value, left=left, height=0.52, color=color, lw=0,
-                    zorder=3)
+            ax.barh(y[i], value, left=left, height=0.52, color=color, lw=0, zorder=3)
             if value > 300:
-                ax.text(left + value / 2, y[i], f"{value:,.0f}",
-                        color=vz.NAVY if color == vz.GOLD else "white",
-                        fontsize=11, ha="center", va="center", zorder=5,
-                        fontweight="medium")
+                ax.text(
+                    left + value / 2,
+                    y[i],
+                    f"{value:,.0f}",
+                    color=vz.NAVY if color == vz.GOLD else "white",
+                    fontsize=11,
+                    ha="center",
+                    va="center",
+                    zorder=5,
+                    fontweight="medium",
+                )
             left += value
-        ax.text(-90, y[i], label, ha="right", va="center", fontsize=11.5,
-                color=vz.NAVY)
+        ax.text(-90, y[i], label, ha="right", va="center", fontsize=11.5, color=vz.NAVY)
         # the fuller check, drawn under each bar so row three cannot read as
         # solved when the wider network says it is 160 MW short
-        ax.barh(y[i] - 0.40, _strict, left=NEED_MW - _strict, height=0.10,
-                color=vz.CORAL, alpha=0.55, lw=0, zorder=3)
-        ax.text(NEED_MW - _strict - 40, y[i] - 0.40,
-                f"{_strict:,.0f} short",
-                ha="right", va="center", fontsize=9.5, color=vz.CORAL, zorder=5)
+        ax.barh(
+            y[i] - 0.40,
+            _strict,
+            left=NEED_MW - _strict,
+            height=0.10,
+            color=vz.CORAL,
+            alpha=0.55,
+            lw=0,
+            zorder=3,
+        )
+        ax.text(
+            NEED_MW - _strict - 40,
+            y[i] - 0.40,
+            f"{_strict:,.0f} short",
+            ha="right",
+            va="center",
+            fontsize=9.5,
+            color=vz.CORAL,
+            zorder=5,
+        )
 
     # the limit, printed and drawn, because the earlier version made readers
     # subtract two numbers to recover the one figure the whole thing turns on
     ax.axvline(limit, color=vz.MUTE, lw=1.4, ls=(0, (4, 3)), zorder=4)
-    ax.annotate(f"the one route that feeds it carries {limit:,.0f} MW",
-                xy=(limit + 55, y[0] + 0.60), color=vz.MUTE, fontsize=11,
-                ha="left", va="center", zorder=6)
-    ax.annotate("it is the only way in, and losing it leaves nothing",
-                xy=(limit + 55, y[0] + 0.36), color=vz.CORAL, fontsize=10,
-                ha="left", va="center", zorder=6)
-
+    ax.annotate(
+        f"the one route that feeds it carries {limit:,.0f} MW",
+        xy=(limit + 55, y[0] + 0.60),
+        color=vz.MUTE,
+        fontsize=11,
+        ha="left",
+        va="center",
+        zorder=6,
+    )
+    ax.annotate(
+        "it is the only way in, and losing it leaves nothing",
+        xy=(limit + 55, y[0] + 0.36),
+        color=vz.CORAL,
+        fontsize=10,
+        ha="left",
+        va="center",
+        zorder=6,
+    )
 
     ax.set_xlim(0, NEED_MW * 1.02)
     ax.set_ylim(-0.75, len(ROWS) - 0.15)
@@ -165,15 +206,24 @@ def main():
     ax.set_title(
         "Pax Silica needs 3,000 MW. One route feeds it, and that route carries "
         "about 770.",
-        fontsize=15, color=vz.NAVY, loc="left", pad=104)
+        fontsize=15,
+        color=vz.NAVY,
+        loc="left",
+        pad=104,
+    )
     ax.annotate(
         "A data centre and factory campus proposed at New Clark City, Tarlac.\n"
         "3,000 MW is BCDA's figure at full development, which it puts 10 to 15\n"
         "years after construction starts in 2028, and about a fifth of the Luzon\n"
         "grid at its 2026 peak. Shown at 7pm, when demand is highest and solar\n"
         "has stopped.",
-        xy=(0, 1.028), xycoords="axes fraction", fontsize=11, color=vz.MUTE,
-        va="bottom", linespacing=1.55)
+        xy=(0, 1.028),
+        xycoords="axes fraction",
+        fontsize=11,
+        color=vz.MUTE,
+        va="bottom",
+        linespacing=1.55,
+    )
     vz.tufte(ax, grid="x")
     for side in ("left",):
         ax.spines[side].set_visible(False)
@@ -184,26 +234,45 @@ def main():
     handles = [plt.Rectangle((0, 0), 1, 1, color=c, lw=0) for _, c in shown]
     handles.append(plt.Rectangle((0, 0), 1, 1, color=vz.CORAL, alpha=0.55, lw=0))
     labels = [t for t, _ in shown] + ["short, checked against the whole grid"]
-    ax.legend(handles, labels, loc="upper center",
-              bbox_to_anchor=(0.5, -0.07), ncol=4, frameon=False,
-              handlelength=1.1, handleheight=1.0, columnspacing=1.3,
-              fontsize=10, labelcolor=vz.NAVY)
+    ax.legend(
+        handles,
+        labels,
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.07),
+        ncol=4,
+        frameon=False,
+        handlelength=1.1,
+        handleheight=1.0,
+        columnspacing=1.3,
+        fontsize=10,
+        labelcolor=vz.NAVY,
+    )
 
     # why the solar column is empty at 7pm
     hours = np.arange(24)
     out = np.array([SOLAR_MW * s for s in solar])
     sx.fill_between(hours, 0, out, color=vz.GOLD, alpha=0.9, lw=0, zorder=3)
     sx.axvline(HOUR, color=vz.CORAL, lw=1.6, zorder=4)
-    sx.annotate("by 7pm, none left", xy=(HOUR - 0.4, 300), color=vz.CORAL,
-                fontsize=10.5, ha="right", zorder=5)
+    sx.annotate(
+        "by 7pm, none left",
+        xy=(HOUR - 0.4, 300),
+        color=vz.CORAL,
+        fontsize=10.5,
+        ha="right",
+        zorder=5,
+    )
     sx.set_xlim(-0.5, 23.5)
     sx.set_ylim(0, 460)
     sx.set_xticks([0, 6, 12, 18])
     sx.set_xticklabels(["midnight", "6am", "noon", "6pm"])
     sx.set_yticks([0, 400])
     sx.set_yticklabels(["0", "400 MW"])
-    sx.set_title("The solar farm makes nothing in the evening, when demand is highest",
-                 fontsize=12, color=vz.NAVY, loc="left")
+    sx.set_title(
+        "The solar farm makes nothing in the evening, when demand is highest",
+        fontsize=12,
+        color=vz.NAVY,
+        loc="left",
+    )
     vz.tufte(sx, grid="y")
 
     vz.caption(
@@ -216,8 +285,9 @@ def main():
         "which makes 800 MW for a route of two circuits on shared towers. What "
         "was worked out for every hour of one real day, 25 June 2026, is how much "
         "more Pax Silica could draw before reaching that rating, given the power "
-        "already flowing. Every number moves if the real rating differs, so treat "
-        "them all as approximate. The thin bars ask the same question of the "
+        "already flowing. The calculated capacity changes if the real rating "
+        "differs, so treat it as approximate. The thin bars ask the same "
+        "question of the "
         "whole Luzon grid, which finds more bottlenecks past this corridor, so "
         "the real shortfall is bigger in every row including the third. Pax "
         "Silica sits on two routes, and in this map only one of them connects it "
@@ -232,7 +302,8 @@ def main():
         "takes everything the route allows. BCDA is the government agency "
         "developing Pax Silica. NGCP runs the transmission grid. ACWA is the "
         "solar developer.",
-        y=0.015)
+        y=0.015,
+    )
     fig.subplots_adjust(left=0.26, right=0.975, top=0.79, bottom=0.15)
     png = os.path.join(DOCS, "pax-silica-embedded.png")
     fig.savefig(png, dpi=110, facecolor="white")

@@ -56,7 +56,7 @@ export interface ChronoOpts {
   caps?: { leyte?: number; mvip?: number }
   storage?: { grid: GridKey; power_mw: number; energy_mwh: number }[]
   reserve_deduction?: boolean
-  // a day-level gas fuel-energy budget (the Malampaya supply cliff), {grid: MWh}
+  // a daily gas-energy limit for lower Malampaya supply, {grid: MWh}
   gas_budget?: Partial<Record<GridKey, number>>
   // OFFER MODE: the day's derived offer book (web/data/offers/); replaces
   // the cost-proxy stacks, disables every layer the book already embodies

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bake the real grid geometry layers from data/raw/OSMGRID/ and pin the
+"""Generate the real grid geometry layers from data/raw/OSMGRID/ and pin the
 observed binding constraints (RTDCV/DAPCV equipment) onto them.
 
 Two outputs for the map, one shared graph for the nodal model:
@@ -527,7 +527,7 @@ def corridor_route(
 def build_grid(
     league: list[dict], out_dir: str, chokepoints: list[dict] | None = None
 ) -> dict:
-    """Bake grid_lines.geojson + grid_nodes.geojson; return the summary
+    """Generate grid_lines.geojson + grid_nodes.geojson; return the summary
     (plus real routed geometry per chokepoint id when resolvable)."""
     lines, subs = load_features()
     graph = Graph(lines, subs)

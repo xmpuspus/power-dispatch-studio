@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
-"""Measure whether replaying each day's OWN observed solar energy improves the
-backcast, and record the answer (roadmap item 8).
+"""Test whether each day's recorded solar energy improves historical replay.
 
 The shipped model credits solar as a flat clear-sky 24-hour shape times an
 installed capacity. The archive carries each day's actual WESM-dispatched solar
 energy per grid (DIPCEF dailies), so the replay could instead scale the shape to
-reproduce the observed daily energy. This probe runs the backcast both ways and
-compares the price error, the independent judge.
+reproduce the observed daily energy. This probe runs the historical replay both ways and
+compares the price error.
 
 Measured 2026-07-14: it does not help. The observed energy scaled onto the flat
-shape COLLAPSES the Luzon price correlation (about 0.36 to 0.07 vs both LWAP and
+shape lowers the Luzon price correlation (about 0.36 to 0.07 vs both LWAP and
 MCP) while barely moving MAE, because Luzon's observed solar runs about 1.75x
 the clear-sky credit and the flat shape dumps that extra energy into midday,
 crushing modeled daytime prices below what actually cleared. The gap is the
 missing observed hourly SHAPE, which DIPCEF's daily energy cannot supply. So the
-shipped backcast keeps the clear-sky credit; the per-day solar stays a reported
+current historical replay keeps the clear-sky credit; the per-day solar stays a reported
 observation (market_ops.json solar_wind_observed), not a replay input.
 
     python3 pipeline/vre_probe.py --derive   # remeasure, write finding
 """
+
 from __future__ import annotations
 
 import argparse
@@ -51,7 +51,8 @@ def derive() -> dict:
     withsolar = _price(build_backcast(dispatch, profiles, observed_solar=True))
 
     corr_worse = [
-        g for blk in ("per_grid", "per_grid_mcp")
+        g
+        for blk in ("per_grid", "per_grid_mcp")
         for g in baseline[blk]
         if (withsolar[blk][g]["corr"] or 0) < (baseline[blk][g]["corr"] or 0) - 0.02
     ]
@@ -69,13 +70,17 @@ def derive() -> dict:
             "moving MAE; the shipped backcast keeps the clear-sky credit."
         ),
         "corr_worse_grids": sorted(set(corr_worse)),
-        "note": ("The observed DAILY energy without the observed hourly shape "
-                 "cannot be a replay input: dumping it onto the flat midday "
-                 "shape crushes daytime prices below what cleared. The missing "
-                 "piece is a per-resource hourly solar series."),
+        "note": (
+            "The observed DAILY energy without the observed hourly shape "
+            "cannot be a replay input: dumping it onto the flat midday "
+            "shape crushes daytime prices below what cleared. The missing "
+            "piece is a per-resource hourly solar series."
+        ),
         "src": "https://www.iemop.ph/market-data/dipc-energy-results-final/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -88,8 +93,10 @@ def main() -> int:
         os.makedirs(os.path.dirname(OUT), exist_ok=True)
         with open(OUT, "w") as fh:
             json.dump(out, fh, indent=1)
-        print(f"vre_probe: shipped={out['shipped']}; "
-              f"corr worse on {out['corr_worse_grids']}")
+        print(
+            f"vre_probe: shipped={out['shipped']}; "
+            f"corr worse on {out['corr_worse_grids']}"
+        )
         print(out["verdict"])
     else:
         print("pass --derive to remeasure and write the finding")

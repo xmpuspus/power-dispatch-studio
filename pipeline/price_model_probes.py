@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-"""Price-model levers, measured on the backcast before any adoption.
+"""Test proposed price-model inputs against the recorded market prices.
 
-The cost-mode backcast prices every hour off a handful of flat per-fuel
-blocks, so its correlation with the observed tape is structurally low; the
+The cost-based historical replay prices every hour from a handful of flat
+per-fuel blocks, so its correlation with the observed record is structurally low; the
 offer replay (0.73-0.88) shows the missing information is the bidding
-behavior in the books. This probe measures the levers that could close part
+behavior in the books. This probe measures changes that could close part
 of that gap while keeping the project's stance: inputs come from sourced
-constants or the operator's own files, never from the price tape.
+constants or the operator's own files, never from the price record.
 
 Variants, all scored on the same full-coverage market days:
 
   base       the shipped cost-mode engine, unchanged (control)
   reserve    base plus reserve withholding at the DAY's scheduled MW
              (RTDSUM MKT_REQT, non-Rd), the existing engine hook that the
-             shipped backcast leaves off
+             published historical replay leaves off
   stylized   a TYPICAL offer book instead of the cost proxy: for each grid
              and hour-of-day, the median of the observed cumulative offer
              curves across the OTHER days (leave-one-out, so a day is never
@@ -25,21 +25,19 @@ Variants, all scored on the same full-coverage market days:
   offer      the true same-day offer replay, recomputed with this probe's
              extended scorer as the ceiling reference
 
-Two levers from the same program are consolidated or blocked, stated here
-rather than silently dropped:
+Two proposed inputs are not yet separate model cases:
   - a monthly fuel-price index for coal/gas has no sourced in-repo series
     (the ERC administered P6.00 IS the sourced constant); the observed
-    offer books already embed each day's fuel-cost level, so that lever
+    offer books already embed each day's fuel-cost level, so the fuel effect
     rides the stylized book instead of a hand-built index.
   - an observed UNPLANNED daily-unavailability layer has no derived series
     yet (PASA carries scheduled outages, the NSO stream carries HVDC
     blocks and alert prose, not per-day unavailable MW); building that
-    parser is the named unblock, and the dated 935 MW July 1 case in
-    dispatch.json remains its one-day proof.
+    parser is required. The dated 935 MW July 1 case in dispatch.json is only
+    one example day.
 
-The engine is NOT changed. Whatever wins here is adopted separately, the
-same worsens-becomes-finding / improves-becomes-adoption pattern as
-uc_probe and vre_probe.
+This script does not change the engine. It records each case for a separate
+decision about whether to include it.
 
     python3 pipeline/price_model_probes.py --derive   # measure, write JSON
     python3 pipeline/price_model_probes.py            # print the table
@@ -171,7 +169,7 @@ def _lever_backcast(dispatch: dict, profiles: dict, opts: dict) -> dict:
     }
 
 
-# ---- stylized book: leave-one-out median of the observed offer curves --------
+# Typical offer profile: leave-one-out median of the recorded offer curves.
 
 
 def _offer_files() -> dict[str, str]:
@@ -401,9 +399,8 @@ def derive(dispatch: dict, profiles: dict) -> dict:
                 deltas[name][tgt][g] = (
                     round3(v - b) if b is not None and v is not None else None
                 )
-    # adoption tests mirror uc_probe: a lever must beat base on the Luzon
-    # LWAP correlation, and a stylized engine must also close at least half
-    # the base-to-replay correlation gap to earn a third-engine slot
+    # Include a case only if it improves the Luzon LWAP correlation. The
+    # stylized case must also close at least half the base-to-replay gap.
     lz = lambda n: deltas[n]["lwap"]["luzon"]  # noqa: E731
     b_corr = cell(variants["base"], "lwap", "luzon", "correlation")
     o_corr = cell(variants["offer"], "lwap", "luzon", "correlation")
@@ -430,26 +427,30 @@ def derive(dispatch: dict, profiles: dict) -> dict:
             "fuel_price_index": (
                 "no sourced in-repo monthly coal/gas series; the observed "
                 "books already carry each day's fuel-cost level, so the "
-                "lever rides the stylized book instead of a hand-built "
-                "index"
+                "fuel effect is represented by the stylized book instead of "
+                "a hand-built index"
             ),
             "observed_unavailability": (
                 "blocked on a derived per-day unplanned-unavailable-MW "
                 "series (PASA is scheduled-only; the NSO stream carries "
                 "HVDC blocks and alert prose, not MW); the dated 935 MW "
-                "July 1 case remains the one-day proof and the parser is "
-                "the named unblock"
+                "July 1 case is one example; a parser is required for a "
+                "daily series"
             ),
         },
         "variants": variants,
         "corr_delta_vs_base": deltas,
         "stylized_gap_closed_frac": gap_closed,
         "verdicts": {
-            "reserve": ("adopt" if (lz("reserve") or 0) > 0 else "finding"),
+            "reserve": (
+                "improves Luzon correlation"
+                if (lz("reserve") or 0) > 0
+                else "does not improve Luzon correlation"
+            ),
             "stylized": (
-                "adopt as third engine"
+                "candidate for a typical-bidding case"
                 if ((lz("stylized") or 0) > 0 and (gap_closed or 0) >= 0.5)
-                else "finding"
+                else "does not meet the inclusion test"
             ),
         },
     }

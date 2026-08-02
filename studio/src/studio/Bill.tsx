@@ -9,17 +9,14 @@ const MIX_LABEL: Record<string, string> = {
   wesm: 'WESM spot',
 }
 
-// The contract-cover reframe: a WESM move passes through to the bill only in
-// proportion to the utility's residual spot exposure, not one-for-one. Interactive:
-// drag the WESM price and read the buffered bill impact against the naive full-spot
-// illusion. Self-contained (sourced anchors), no dispatch solve.
+// A WESM price change reaches the bill only through the utility's spot-market share.
 export function BillView() {
   const b = useBill()
   const base = b.data?.wesm_price_php_kwh ?? 7.03
   const [wesm, setWesm] = useState<number | null>(null)
   if (b.loading) return <EmptyNote>Loading the bill layer.</EmptyNote>
   if (b.error || !b.data?.available)
-    return <EmptyNote>Bill layer not baked. Run make data.</EmptyNote>
+    return <EmptyNote>Bill data are not available in this data release.</EmptyNote>
   const d = b.data
   const w = wesm ?? base
   const genBase = d.generation_charge_php_kwh ?? 9.07
@@ -40,16 +37,17 @@ export function BillView() {
   return (
     <div className="view">
       <p className="scn__lede">
-        WESM prices only the residual slice of a utility's supply. The rest is under
-        bilateral contracts whose prices do not move with the spot market, so a WESM spike
-        reaches the bill only in proportion to that residual. Drag the WESM price and read
-        the actual bill impact against the full-spot illusion.
+        The Wholesale Electricity Spot Market (WESM) prices only the portion of a
+        utility's supply that is not covered by bilateral contracts. Contract prices do
+        not move with the spot market, so only that uncovered portion passes a WESM price
+        spike to the bill. Move the WESM price to compare the likely bill change with a
+        household charged the full spot-price change.
       </p>
 
       <div className="scn">
         <Panel
-          title="Meralco supply mix"
-          subtitle={`${d.period}. Share of energy by source; only the WESM slice is exposed to the spot market.`}
+          title="Only Meralco's WESM share moves with the spot price"
+          subtitle={`${d.period}. Share of energy by source. Only the WESM share is exposed to the spot market.`}
         >
           <div className="mixbars">
             {Object.entries(mix).map(([k, v]) => (
@@ -67,10 +65,10 @@ export function BillView() {
           </div>
           <label className="lever" style={{ marginTop: 'var(--sp-3)' }}>
             <span className="lever__label">
-              WESM price <b className="lever__val mono">{php(w)}</b>
+              WESM spot price <b className="lever__val mono">{php(w)}</b>
             </span>
             <span className="lever__tick">
-              June baseline {php(base)} · drag to shock the spot price
+              June baseline {php(base)} · move the slider to test another spot price
             </span>
             <input
               type="range"
@@ -89,7 +87,7 @@ export function BillView() {
 
         {(d.mix_history?.length ?? 0) > 0 && (
           <Panel
-            title="The residual moves month to month"
+            title="Meralco's WESM share rose from 6% in April to 10% in June 2026"
             subtitle="Meralco's own published mix and generation charge, last three advisories."
           >
             <ScrollBox className="propgrid-wrap">
@@ -97,10 +95,10 @@ export function BillView() {
                 <thead>
                   <tr>
                     <th className="propgrid__obj">Month</th>
-                    <th className="propgrid__num">WESM</th>
-                    <th className="propgrid__num">PSA</th>
-                    <th className="propgrid__num">IPP</th>
-                    <th className="propgrid__num">Gen charge</th>
+                    <th className="propgrid__num">WESM spot market</th>
+                    <th className="propgrid__num">Power supply agreements</th>
+                    <th className="propgrid__num">Independent producers</th>
+                    <th className="propgrid__num">Generation charge</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -125,11 +123,11 @@ export function BillView() {
             <p className="note">{d.mix_history_note}</p>
             {d.june_moves && (
               <p className="note">
-                June per-source moves, the one month with a clean public breakdown: PSA +
-                {php(d.june_moves.psa_delta_php_kwh)} (54% dollar-denominated, coal and
-                LNG prices), First Gas {php(d.june_moves.ipp_delta_php_kwh)} (better
-                dispatch at Sta. Rita and San Lorenzo).{' '}
-                <Source href={d.june_moves.src_psa} label="source" />
+                June changes by supply source, the one month with a public breakdown:
+                power supply agreements +{php(d.june_moves.psa_delta_php_kwh)} (54%
+                dollar-denominated, coal and LNG prices), First Gas{' '}
+                {php(d.june_moves.ipp_delta_php_kwh)} (better dispatch at Sta. Rita and
+                San Lorenzo). <Source href={d.june_moves.src_psa} label="source" />
               </p>
             )}
           </Panel>
@@ -137,12 +135,12 @@ export function BillView() {
 
         <div className="scn__results">
           <Panel
-            title="Bill impact of the WESM move"
-            subtitle={`Contract-buffered, on a ${num(kwh)} kWh reference household.`}
+            title="Bilateral contracts limit the bill impact of a WESM price change"
+            subtitle={`Using Meralco's June 2026 supply mix for a ${num(kwh)} kWh reference household.`}
           >
             <div className="stat-row">
               <StatTile
-                label="WESM move"
+                label="WESM spot-price change"
                 value={`${move >= 0 ? '+' : ''}${php(move)}`}
                 hint={`from ${php(base)} baseline`}
                 tone={move > 0.001 ? 'accent' : move < -0.001 ? 'positive' : 'default'}
@@ -155,7 +153,7 @@ export function BillView() {
               <StatTile
                 label="Monthly bill impact"
                 value={`${billBuffered >= 0 ? '+' : ''}${php(billBuffered, 0)}`}
-                hint="contract-buffered"
+                hint="after bilateral contracts"
                 tone={
                   billBuffered > 1 ? 'accent' : billBuffered < -1 ? 'positive' : 'default'
                 }
@@ -167,16 +165,16 @@ export function BillView() {
                 {billNaive >= 0 ? '+' : ''}
                 {php(billNaive, 0)}/month
               </b>{' '}
-              (the whole WESM move times {num(kwh)} kWh). Bilateral contracts absorb{' '}
-              <b>{php(Math.abs(saved), 0)}</b> of it: the bill is far less exposed to a
-              spot spike than the headline WESM number implies.{' '}
+              (the full WESM change times {num(kwh)} kWh). Bilateral contracts absorb{' '}
+              <b>{php(Math.abs(saved), 0)}</b> of it. The bill is less exposed to a spot
+              price spike than the headline WESM number suggests.{' '}
               <Source href={d.src_bill} label="bill source" />
             </p>
           </Panel>
 
           <Panel
-            title="GWAP versus LWAP"
-            subtitle="Why a plant's revenue and a bill are not the same average."
+            title="Plant revenue and customer bills use different average prices"
+            subtitle="Generation-weighted price (GWAP) is not the same as load-weighted price (LWAP)."
           >
             <p className="note">{d.gwap_lwap_note}</p>
             <p className="note">{d.disclaimer}</p>

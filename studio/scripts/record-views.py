@@ -1,15 +1,15 @@
-"""Record one real GIF per new analysis view (the 2026-07-14 analyst-workflow
-build-out). Each recording opens the actual studio in Playwright, drops a title
-card naming the view, navigates to it, lets it solve, and holds on the payoff.
-Real motion capture of the running app, never stitched screenshots.
+"""Record one GIF per analysis view from the running studio.
+
+Each recording opens the app, names the view, waits for its calculation, and
+shows the result. The recordings use the real interface, not still images.
 
 Usage:
     python3 scripts/record-views.py week|forward|...|all
 Outputs a .webm per view into /tmp/studio-viewrec; convert with the ffmpeg
 two-pass palette recipe (scripts/convert-views.sh).
 
-The three run-scoped views (capture, portfolio, crossrun) read saved chronology
-runs, so those recordings freeze one or two runs first, exactly as an analyst
+The three run-scoped views (capture, portfolio, crossrun) read saved hourly market
+replays, so those recordings save one or two runs first, exactly as an analyst
 would before opening them.
 """
 
@@ -28,7 +28,11 @@ CAPTION_JS = r"""
 (args) => {
   const { title, sub, intro } = args;
   let el = document.getElementById('demo-cap');
-  if (!el) { el = document.createElement('div'); el.id = 'demo-cap'; document.body.appendChild(el); }
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'demo-cap';
+    document.body.appendChild(el);
+  }
   const base = `position:fixed;left:50%;transform:translateX(-50%);z-index:2147483647;
     box-sizing:border-box;font-family:'Fira Sans',system-ui,sans-serif;
     background:var(--surface,#12161c);color:var(--text,#e9edf2);
@@ -37,16 +41,19 @@ CAPTION_JS = r"""
   if (intro) {
     el.style.cssText = base + `bottom:50%;transform:translate(-50%,50%);
       width:720px;padding:30px 38px;text-align:center;`;
-    el.innerHTML = `<div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;
+    el.innerHTML = `<div style="font-size:14px;letter-spacing:.14em;
+        text-transform:uppercase;
         color:var(--muted,#8a97a6);margin-bottom:10px;">Power Dispatch Studio</div>
       <div style="font-size:28px;font-weight:700;line-height:1.25;">${title}</div>
-      <div style="font-size:16px;color:var(--muted,#9aa7b6);margin-top:11px;">${sub||''}</div>`;
+      <div style="font-size:16px;color:var(--muted,#9aa7b6);
+        margin-top:11px;">${sub||''}</div>`;
     return;
   }
   el.style.cssText = base + `bottom:20px;width:1150px;max-width:calc(100% - 40px);
     padding:14px 22px;`;
   el.innerHTML = `<div style="font-size:18px;font-weight:650;">${title}</div>
-    ${sub ? `<div style="font-size:14px;color:var(--muted,#9aa7b6);margin-top:3px;">${sub}</div>` : ''}`;
+    ${sub ? `<div style="font-size:14px;color:var(--muted,#9aa7b6);
+      margin-top:3px;">${sub}</div>` : ''}`;
 }
 """
 
@@ -69,7 +76,13 @@ async def enter(page: Page):
 
 async def sim(page: Page):
     # the question rail replaced the System/Simulation tabs; open every group
-    await page.evaluate("() => { document.querySelectorAll('.rail__grouphead').forEach(b => { if (b.getAttribute('aria-expanded') === 'false') b.click() }) }")
+    await page.evaluate(
+        """() => {
+          document.querySelectorAll('.rail__grouphead').forEach(b => {
+            if (b.getAttribute('aria-expanded') === 'false') b.click()
+          })
+        }"""
+    )
     await asyncio.sleep(0.35)
 
 
@@ -79,8 +92,8 @@ async def view(page: Page, name: str, settle: float = 1.2):
 
 
 async def save_runs(page: Page, n: int):
-    """Freeze n distinct chronology solves so the run-scoped views have data."""
-    await view(page, "Chronology", settle=1.4)
+    """Save n hourly replay calculations for the run comparison views."""
+    await view(page, "Hourly market replay", settle=1.4)
     sel = page.get_by_label("Observed day to replay")
     opts = await sel.locator("option").all()
     values = [await o.get_attribute("value") for o in opts]
@@ -93,48 +106,119 @@ async def save_runs(page: Page, n: int):
 
 
 VIEWS = [
-    {"key": "backcast", "label": "Backcast", "title": "Validated on history",
-     "sub": "Opens on the operator's own offer books, the calibrated view; the pure cost model is the counterfactual one click away.",
-     "settle": 2.2},
-    {"key": "explain", "label": "Explain a day", "title": "Explain a day",
-     "sub": "Any past market day's evening peak split into fundamentals, the offer premium the market bid on top, and the equipment that bound the grid.",
-     "settle": 2.4},
-    {"key": "week", "label": "Native week", "title": "Native week (168-hour LP)",
-     "sub": "The battery state of charge carries across midnight; the day engine resets it.",
-     "settle": 1.8},
-    {"key": "forward", "label": "Forward prices", "title": "Forward prices",
-     "sub": "A price band to 2030 from the observed library and DOE PDP demand growth.",
-     "settle": 1.6},
-    {"key": "multiyear", "label": "Multi-year path", "title": "Multi-year price path",
-     "sub": "To 2040 under three policy scenarios; a fixed fleet saturates at its cap.",
-     "settle": 1.6},
-    {"key": "ensembles", "label": "Ensembles", "title": "Scenario ensembles",
-     "sub": "Seeded Monte Carlo joint draws: P10, median, P90 per grid.",
-     "settle": 2.8},
-    {"key": "expansion", "label": "Expansion mix", "title": "Expansion mix",
-     "sub": "Greenfield least-cost capacity vs the DOE plan.",
-     "settle": 1.8},
-    {"key": "capture", "label": "Capture prices", "title": "Capture prices",
-     "sub": "Generation-weighted capture price per technology.",
-     "settle": 1.6, "prep": 1},
-    {"key": "portfolio", "label": "Portfolio", "title": "Portfolio valuation",
-     "sub": "Contract-for-differences against WESM, by owner position.",
-     "settle": 1.6, "prep": 1},
-    {"key": "crossrun", "label": "Cross-run", "title": "Cross-run analytics",
-     "sub": "A metric matrix across saved runs plus a lever tornado.",
-     "settle": 1.8, "prep": 2},
-    {"key": "rtdoe5", "label": "5-minute replay", "title": "Five-minute replay",
-     "sub": "288 five-minute intervals: the scarcity spikes the hourly replay smooths.",
-     "settle": 1.8},
-    {"key": "nodal", "label": "Nodal prices", "title": "Nodal prices, observed",
-     "sub": "Per-node deviations from the regional price; observed, not modeled.",
-     "settle": 1.8},
-    {"key": "lossval", "label": "Loss validation", "title": "Loss-surface validation",
-     "sub": "Network physics tested against the market's own per-node prices.",
-     "settle": 1.8},
-    {"key": "vintage", "label": "Assumptions", "title": "Assumptions and vintage",
-     "sub": "Every model assumption with its primary source and date.",
-     "settle": 1.4},
+    {
+        "key": "backcast",
+        "label": "Historical replay",
+        "title": "Market records show the model's error",
+        "sub": "The operator's published offers are compared with recorded "
+        "prices. The cost-only calculation is one click away.",
+        "settle": 2.2,
+    },
+    {
+        "key": "explain",
+        "label": "Explain a day",
+        "title": "Recorded costs, offers, and grid limits explain one market day",
+        "sub": "The evening price is split into the cost calculation, the "
+        "difference from published offers, and equipment at a binding limit.",
+        "settle": 2.4,
+    },
+    {
+        "key": "week",
+        "label": "Inter-day storage (168 hours)",
+        "title": "Storage carries energy across midnight for seven days",
+        "sub": "One 168-hour calculation tracks the battery state of charge "
+        "across day boundaries.",
+        "settle": 1.8,
+    },
+    {
+        "key": "forward",
+        "label": "Possible future price range",
+        "title": "Possible price range through 2030",
+        "sub": "Recorded market days are re-priced under Department of Energy "
+        "Power Development Plan demand growth.",
+        "settle": 1.6,
+    },
+    {
+        "key": "multiyear",
+        "label": "Prices and spare capacity by year",
+        "title": "Prices and spare capacity through 2040",
+        "sub": "Three policy cases show when existing plants can no longer "
+        "cover projected demand through 2040.",
+        "settle": 1.6,
+    },
+    {
+        "key": "ensembles",
+        "label": "Range across repeated simulations",
+        "title": "Price range across repeated simulations",
+        "sub": "Repeated simulations report the 10th percentile, median, and "
+        "90th percentile for each grid.",
+        "settle": 2.8,
+    },
+    {
+        "key": "expansion",
+        "label": "Lowest-cost expansion mix",
+        "title": "Lowest-cost new capacity compared with DOE projects",
+        "sub": "The lowest-cost modeled additions are compared with projects "
+        "listed by the Department of Energy.",
+        "settle": 1.8,
+    },
+    {
+        "key": "capture",
+        "label": "Average price earned by each technology",
+        "title": "Average price earned by each technology",
+        "sub": "The capture price weights each hourly price by generation.",
+        "settle": 1.6,
+        "prep": 1,
+    },
+    {
+        "key": "portfolio",
+        "label": "Generator portfolio value",
+        "title": "Generator portfolio and contract value",
+        "sub": "A contract for differences (CfD) payment is compared with the "
+        "WESM price for each owner.",
+        "settle": 1.6,
+        "prep": 1,
+    },
+    {
+        "key": "crossrun",
+        "label": "Compare one measure across runs",
+        "title": "Saved runs compared side by side",
+        "sub": "One table compares saved runs. A second view ranks each "
+        "what-if by price effect.",
+        "settle": 1.8,
+        "prep": 2,
+    },
+    {
+        "key": "rtdoe5",
+        "label": "5-minute replay",
+        "title": "Five-minute replay",
+        "sub": "All 288 five-minute intervals show brief high-price periods "
+        "hidden by hourly averages.",
+        "settle": 1.8,
+    },
+    {
+        "key": "nodal",
+        "label": "Prices at grid connection points",
+        "title": "Recorded prices at grid connection points",
+        "sub": "Each node's recorded price is compared with its island grid's "
+        "regional price.",
+        "settle": 1.8,
+    },
+    {
+        "key": "lossval",
+        "label": "Transmission-loss check",
+        "title": "Estimated transmission losses checked against market prices",
+        "sub": "Network physics tested against the market's own per-node prices.",
+        "settle": 1.8,
+    },
+    {
+        "key": "vintage",
+        "label": "Assumptions",
+        "title": "Each model assumption shows its source and date",
+        "sub": "Recorded inputs, calculated values, and chosen assumptions are "
+        "identified separately.",
+        "settle": 1.4,
+    },
 ]
 BY_KEY = {v["key"]: v for v in VIEWS}
 
@@ -160,14 +244,17 @@ async def record_one(spec: dict):
         await view(page, spec["label"], settle=spec["settle"])
         await caption(page, spec["title"], spec["sub"])
         await asyncio.sleep(2.6)
-        # a slow scroll to reveal the table/chart below the payoff tiles
+        # Scroll to show the table or chart below the main result.
         await page.mouse.wheel(0, 260)
         await asyncio.sleep(1.8)
         if spec["key"] == "explain":
             # switch the market day to show any past evening peak decomposes
             try:
                 sel = page.get_by_label("Explain day")
-                vals = [await o.get_attribute("value") for o in await sel.locator("option").all()]
+                vals = [
+                    await o.get_attribute("value")
+                    for o in await sel.locator("option").all()
+                ]
                 if len(vals) > 10:
                     await sel.select_option(value=vals[-11])
                     await asyncio.sleep(2.4)

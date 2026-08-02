@@ -9,7 +9,7 @@ bad(){ echo "FAIL $1"; fail=$((fail+1)); }
 
 code(){ curl -s -o /dev/null -w '%{http_code}' "$BASE$1"; }
 
-# 1) pages + every baked artifact serve 200
+# 1) pages and every generated file return HTTP 200
 for p in / /methodology.html; do
   [ "$(code $p)" = "200" ] && ok "GET $p" || bad "GET $p"
 done
@@ -48,7 +48,7 @@ checks.append(("14 dc features", len(dc["features"]) == 14))
 cong = get("/data/congestion.json")
 checks.append(("league present", len(cong.get("league", [])) >= 10))
 fnd = get("/data/findings.json")
-checks.append(("findings drawer baked (>=5)", len(fnd.get("findings", [])) >= 5))
+checks.append(("findings drawer generated (>=5)", len(fnd.get("findings", [])) >= 5))
 checks.append(("every finding has a map focus", all(
     f.get("focus", {}).get("center") and f["focus"].get("mode")
     for f in fnd.get("findings", []))))
@@ -61,23 +61,23 @@ checks.append(("dispatch model available", disp.get("available") is True))
 checks.append(("dispatch calibration 3 grids",
                set(disp.get("calibration", {})) == {"luzon","visayas","mindanao"}))
 checks.append(("N-1 table covers 11 units", len(disp.get("n1", [])) == 11))
-checks.append(("merit-order stacks baked", all(
+checks.append(("merit-order stacks generated", all(
     (disp.get("merit_order", {}).get(g, {}).get("blocks"))
     for g in ("luzon","visayas","mindanao"))))
 cpl = disp.get("coupling", {})
-checks.append(("coupling block baked (spread decomposition + corridors)",
+checks.append(("coupling block generated (spread decomposition + corridors)",
                bool(cpl.get("spread_decomposition")) and len(cpl.get("corridors", [])) == 2
                and cpl.get("outage_scenario", {}).get("leyte_luzon_saturated_pct") is not None))
 mc = disp.get("reliability_mc", {})
-checks.append(("reliability MC + unit commitment baked",
+checks.append(("reliability MC + unit commitment generated",
                mc.get("draws", 0) >= 2000
                and mc.get("dict_2028_luzon", {}).get("distribution", {}).get("lolp_pct") is not None
                and bool(disp.get("unit_commitment", {}).get("per_grid"))))
 stg = disp.get("storage", {})
-checks.append(("storage block baked (assets + buyback)",
+checks.append(("storage block generated (assets + buyback)",
                stg.get("assets", {}).get("luzon", {}).get("total_mw") == 1319
                and stg.get("reliability_buyback", {}).get("luzon_dict_2028") is not None))
-checks.append(("price-duration + marginal-frequency baked",
+checks.append(("price-duration + marginal-frequency generated",
                bool(disp.get("price_duration", {}).get("luzon", {}).get("observed"))
                and bool(disp.get("marginal_frequency", {}).get("luzon", {}).get("by_block"))))
 html = urllib.request.urlopen(base + "/").read().decode()
@@ -126,19 +126,19 @@ if command -v agent-browser >/dev/null 2>&1; then
   sleep 1
   SU=$(agent-browser eval 'const on=(window.__diag||{}).sual; const b=document.getElementById("sualbtn"); (on===b.classList.contains("on"))?"sync":"DESYNC"' 2>/dev/null | strip)
   [[ "$SU" == "sync" ]] && ok "sual toggle stays in sync across mode switch" || bad "sual desync ($SU)"
-  # Simulate mode: generators layer + dispatch model surface, and levers re-clear
+  # Simulate mode: generator layer, dispatch model, and live recalculation.
   agent-browser eval 'document.querySelector("[data-mode=simulate]").click()' >/dev/null 2>&1
   sleep 1
   SM=$(agent-browser eval 'const d=window.__diag||{};[d.mode,d.dispatch,d.generators===11,!!d.simulate].join("|")' 2>/dev/null | strip)
   echo "simulate: $SM"
   [[ "$SM" == simulate\|true\|true\|true ]] && ok "simulate mode + dispatch + generators" || bad "simulate mode ($SM)"
-  # move the add-a-data-center slider and confirm the model re-clears in the browser
+  # Move the add-a-data-center slider and confirm that the browser recalculates.
   BP=$(agent-browser eval '(window.__diag.simulate||{}).price' 2>/dev/null | strip)
   agent-browser eval 'const s=document.getElementById("sim-dc"); s.value=1500; s.dispatchEvent(new Event("input"))' >/dev/null 2>&1
   sleep 1
   AP=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.addDC===1500, d.price!=null].join("|")' 2>/dev/null | strip)
   echo "sim add-DC: base=$BP after=$AP"
-  [[ "$AP" == true\|true ]] && ok "simulate lever re-clears the stack" || bad "simulate lever ($AP)"
+  [[ "$AP" == true\|true ]] && ok "scenario setting recalculates the stack" || bad "scenario setting ($AP)"
   # trip a unit (N-1) and confirm the diag records the tripped unit
   agent-browser eval 'const t=document.getElementById("sim-trip"); t.value=t.options[1].value; t.dispatchEvent(new Event("change"))' >/dev/null 2>&1
   sleep 1
@@ -154,8 +154,8 @@ if command -v agent-browser >/dev/null 2>&1; then
   agent-browser eval 'const i=document.getElementById("sim-imp"); i.value=250; i.dispatchEvent(new Event("input"))' >/dev/null 2>&1
   sleep 1
   AR=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.imp===250, d.coupledPrice!=null].join("|")' 2>/dev/null | strip)
-  echo "coupled: baked=$CB price=$BR afterRelieve=$AR"
-  [[ "$CB" == "true" && "$AR" == true\|true ]] && ok "coupled clear + relieve lever re-clears" || bad "coupled clear ($CB/$AR)"
+  echo "coupled: generated=$CB price=$BR afterRelieve=$AR"
+  [[ "$CB" == "true" && "$AR" == true\|true ]] && ok "coupled calculation updates after a link-limit change" || bad "coupled calculation ($CB/$AR)"
   # the observed price-setter table (MCP files) renders beside the modeled one
   OS=$(agent-browser eval '[!!document.getElementById("sim-obssetters"), (document.getElementById("sim-obssetters")||{}).children ? document.getElementById("sim-obssetters").children.length>0 : false].join("|")' 2>/dev/null | strip)
   [[ "$OS" == true\|true ]] && ok "observed price setters render in simulate" || bad "observed setters ($OS)"

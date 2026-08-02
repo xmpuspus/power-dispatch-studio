@@ -23,7 +23,7 @@ closed tool can match in public, and this module runs it nightly:
            after the affine fit
 
 Everything rides the resolution scoreboard: only nodes the locator placed
-on a bus enter, and the artifact says how many that is.
+on a bus enter, and the output says how many that is.
 
     python3 pipeline/loss_surface.py            # recompute over clean days
 """
@@ -206,7 +206,7 @@ def _spearman(xs: list[float], ys: list[float]) -> float | None:
 
 def _fisher_ci(rho: float | None, n: int) -> list[float] | None:
     """95% CI for a rank correlation via Fisher z, using the INDEPENDENT bus
-    count n (not the inflated node count). Wide when n is small: the honest
+    count n (not the inflated node count). Wide when n is small: the measured
     uncertainty on the validation verdict."""
     if rho is None or n < 5 or abs(rho) >= 1:
         return None
@@ -292,7 +292,7 @@ def build_loss_surface() -> dict:
             continue
         # DIPCEF resources sharing a substation resolve to the same bus and
         # the same modeled value, so n_nodes overstates the independent
-        # sample; n_bus is the honest count the CI uses (F6)
+        # sample; n_bus is the measured count the CI uses (F6)
         n_bus = len({node_bus[r] for r in rs if r in node_bus})
         # affine fit y = a x + b (the loss-reference convention is a per-grid
         # affine choice; slope and intercept are REPORTED, not hidden)
@@ -334,23 +334,22 @@ def build_loss_surface() -> dict:
     failing = [g for g in window if g not in validated]
     if failing:
         detail = (
-            "; "
-            + ", ".join(failing)
-            + " fails the same test with a stable negative rank correlation "
-            "across the clean days, reported as failing, not hidden; the sign "
-            "reversal is not yet diagnosed (a reference-bus or PTDF-orientation "
-            "artifact is the leading suspect, unconfirmed)"
+            ". "
+            + ", ".join(g.title() for g in failing)
+            + " has a stable negative rank correlation across the clean days. "
+            "The cause has not been established; the reference bus or power-"
+            "transfer-factor direction may contribute"
         )
     else:
         detail = ""
     finding = (
-        "Network physics ranks the market's own per-node deviations in "
-        + ", ".join(validated)
+        "Modeled marginal-loss ranks agree with recorded per-node differences "
+        "at Spearman 0.4 or higher in "
+        + ", ".join(g.title() for g in validated)
         + detail
-        + f". Validated at Spearman >= {VALIDATED_SPEARMAN}, a moderate-"
-        "correlation reporting convention rather than a power calculation; "
-        "each grid's spearman_ci95 gives the uncertainty at the independent "
-        "bus count."
+        + f". The {VALIDATED_SPEARMAN} threshold is a reporting choice, not a "
+        "power-system standard. Each grid includes a 95 percent confidence "
+        "interval based on its independent bus count."
     )
     return {
         "available": True,
@@ -375,10 +374,9 @@ def build_loss_surface() -> dict:
             ),
         },
         "reading": (
-            "Spearman is the claim: does network physics rank the "
-            "market's own per-node deviations? MAE after the affine "
-            "fit says how far each node sits from the fitted "
-            "surface, in PhP/kWh."
+            "Spearman rank correlation tests whether the model orders nodes "
+            "like the market record. Mean absolute error after the affine fit "
+            "measures the remaining node difference in PhP/kWh."
         ),
     }
 

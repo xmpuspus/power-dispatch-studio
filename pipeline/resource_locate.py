@@ -17,7 +17,7 @@ how the dot was placed:
 
 Region must agree in every path: a candidate only counts when it sits in
 the resource's own grid (grid of the nearest network bus). Ambiguity is a
-miss, never a guess, and the artifact reports resolved MW share per grid
+miss, never a guess, and the output reports resolved MW share per grid
 so this number is public and its drift visible.
 """
 

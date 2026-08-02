@@ -40860,7 +40860,7 @@
   }
  ],
  "storage_round_trip_eff": 0.8,
- "storage_note": "The chronological run cycles this fleet with a labeled charge-cheap / discharge-dear heuristic (quartile thresholds from a first pass without storage). The snapshot views keep storage out of the energy stack, as before.",
+ "storage_note": "The chronological run charges below the daily 25th percentile price and discharges above the 75th percentile. Those thresholds come from a calculation without storage. The snapshot views keep storage out of the energy stack, as before.",
  "reserve_req_mean_mw": {
   "luzon": {
    "Dr": 610.2,
@@ -42160,7 +42160,7 @@
     }
    },
    {
-    "label": "default storage cycles against the DICT wave",
+    "label": "default storage with the DICT demand forecast",
     "input": {
      "date": "2026-06-10",
      "demand_delta": {
@@ -42896,7 +42896,7 @@
     }
    },
    {
-    "label": "observed offer book, no levers",
+    "label": "observed offer book, unchanged scenario",
     "input": {
      "date": "2026-06-10",
      "offer_mode": true
@@ -43622,7 +43622,7 @@
   ],
   "week": {
    "available": true,
-   "label": "native 168h week, DC-wave with 2 GW / 16 GWh storage",
+   "label": "168-hour week with added demand and 2 GW / 16 GWh storage",
    "input": {
     "dates": [
      "2026-06-19",
@@ -44754,7 +44754,7 @@
   "flows_note": "Modeled corridor flows scored against the observed net market imports and exports in the RTD regional summaries (f1 is Luzon's net export southbound, f2 is Mindanao's net import). Demand is native load, so the replay must move real MW over the corridors to serve it; direction agreement counts hours where the observed flow is at least 10 MW.",
   "mcp_note": "per_grid_mcp scores the same replays against the observed regional marginal price (the RTD ex-ante clearing price, IEMOP MCP files): the target commensurate with a dispatch dual. LWAP additionally carries nodal spread and settlement substitution, so part of the LWAP gap is definitional, and this pair of tables shows how much.",
   "high_hour_note": "High hours are the top decile of observed hourly LWAP in the window; the hit rate is how often the model also ranks that hour in its own top decile. Rank agreement, not level agreement.",
-  "note": "Hourly replay of every full-coverage market day with the base model on the HiGHS LP engine: no storage cycling, no levers, no tuning. The gap to observed prices (scarcity, offers, caps, outages the model cannot see) stays in the residual, it is the finding. Against the previous clear, the LP completes the overnight corridor arbitrage the old solver left half-done: mean error is unchanged and the already-low shape correlation drops a few hundredths; reported, not tuned."
+  "note": "Every market day with complete data is recalculated using recorded hourly demand and the base plant and grid settings. Storage and user scenario changes are excluded. The model inputs are not adjusted to match prices. Differences from recorded prices can reflect scarcity, plant offers, price caps, outages, and other conditions that are not present in the model."
  },
  "offer_backcast": {
   "available": true,
@@ -44866,6 +44866,6 @@
    }
   },
   "flows_rtdhs_note": "The same modeled flows scored against the operator's per-interval HVDC schedule (RTDHS), a published record independent of the net-import identity the demand construction uses; the binding pair sets the operator's CONGESTION_FLAG=Y share against the modeled at-cap share.",
-  "note": "The same replays with the operator's own OFFER BOOKS (RTDOE + self-scheduled nominations) instead of the cost proxy: native-load demand, corridor caps, no storage or reserve or water layers (the books already embody unit behavior). Where the cost-mode tables show what a competitive cost stack would do, these show what the market as bid actually prices; the gap between the two IS the offer premium, measured instead of asserted."
+  "note": "The same replays with the operator's own OFFER BOOKS (RTDOE + self-scheduled nominations) instead of the cost proxy: native-load demand, corridor caps, no storage or reserve or water layers (the books already embody unit behavior). Where the cost-mode tables show what a competitive cost stack would do, these show what the market as bid actually prices; the gap between the two is the model-derived offer premium for each hour."
  }
 }

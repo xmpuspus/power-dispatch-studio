@@ -1,7 +1,7 @@
 // Canonical LP text for the dispatch model: the byte-exact TypeScript mirror
 // of pipeline/lp_model.py. Both engines serialize every coefficient through
 // integer micro-units and emit the same variable and row order, so the parity
-// harness can pin the sha256 of the text itself; a construction drift on
+// comparison test can pin the sha256 of the text itself; a construction drift on
 // either side fails the hash before any solver runs. Any change here must
 // land in lp_model.py too, or the hash parity test fails (that is the point).
 

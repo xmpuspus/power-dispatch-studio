@@ -49,7 +49,9 @@ def source_for(out: Path, explicit: str | None) -> Path:
     sys.exit(f"no source for {out}")
 
 
-def recut(out: Path, src: Path, fps: int, width: int, colors: int, trim: str | None) -> None:
+def recut(
+    out: Path, src: Path, fps: int, width: int, colors: int, trim: str | None
+) -> None:
     before = mb(out)
     cut: list[str] = []
     if trim:
@@ -59,22 +61,50 @@ def recut(out: Path, src: Path, fps: int, width: int, colors: int, trim: str | N
     with tempfile.TemporaryDirectory() as td:
         pal = Path(td) / "pal.png"
         tmp = Path(td) / "out.gif"
-        run(["ffmpeg", "-v", "error", "-y", *cut, "-i", str(src),
-             "-vf", f"{chain},palettegen=stats_mode=diff:max_colors={colors}", str(pal)])
-        run(["ffmpeg", "-v", "error", "-y", *cut, "-i", str(src), "-i", str(pal),
-             "-lavfi", f"{chain}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle",
-             str(tmp)])
+        run(
+            [
+                "ffmpeg",
+                "-v",
+                "error",
+                "-y",
+                *cut,
+                "-i",
+                str(src),
+                "-vf",
+                f"{chain},palettegen=stats_mode=diff:max_colors={colors}",
+                str(pal),
+            ]
+        )
+        run(
+            [
+                "ffmpeg",
+                "-v",
+                "error",
+                "-y",
+                *cut,
+                "-i",
+                str(src),
+                "-i",
+                str(pal),
+                "-lavfi",
+                f"{chain}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle",
+                str(tmp),
+            ]
+        )
         if shutil.which("gifsicle"):
             packed = Path(td) / "packed.gif"
-            r = subprocess.run(["gifsicle", "-O3", str(tmp), "-o", str(packed)],
-                               capture_output=True)
+            r = subprocess.run(
+                ["gifsicle", "-O3", str(tmp), "-o", str(packed)], capture_output=True
+            )
             if r.returncode == 0 and packed.stat().st_size < tmp.stat().st_size:
                 packed.replace(tmp)
         out.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(tmp, out)
     name = out.relative_to(ROOT) if out.is_relative_to(ROOT) else out
-    print(f"{name}: {before:.2f} MB -> {mb(out):.2f} MB "
-          f"(fps {fps}, {width} px, {colors} colors)")
+    print(
+        f"{name}: {before:.2f} MB -> {mb(out):.2f} MB "
+        f"(fps {fps}, {width} px, {colors} colors)"
+    )
 
 
 def main() -> None:

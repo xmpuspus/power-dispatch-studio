@@ -49,7 +49,7 @@ async def main():
         )
         page = await ctx.new_page()
         await page.goto(BASE, wait_until="networkidle")
-        await asyncio.sleep(4.0)  # basemap tiles + baked data
+        await asyncio.sleep(4.0)  # basemap tiles + generated data
         await page.get_by_text("Simulate", exact=False).first.click()
         await asyncio.sleep(3.0)
         # add a data-center load: the price flips coal to oil on the clean map

@@ -1,32 +1,31 @@
 #!/usr/bin/env python3
-"""MILP unit commitment vs the LP dispatch, measured on the backcast (roadmap
-item 9).
+"""Compare mixed-integer unit commitment with the linear dispatch model.
 
-A commercial production-cost tool runs a mixed-integer unit commitment: each thermal unit is either
-committed (and must then run at or above its minimum-stable level) or off, with
+A commercial production-cost tool runs a mixed-integer unit commitment. Each
+thermal unit is either committed, with a minimum-stable level, or off, with
 start costs and minimum up/down times. The studio dispatches LP blocks, so a
 committed coal tranche can idle to zero instead of holding a must-run floor.
 This probe adds binary commitment and a generic minimum-stable level to the
 thermal blocks, prices the committed schedule (solve the MIP, fix the binaries,
 re-solve the LP for the balance duals, the standard dispatch-based pricing an
 ISO uses), and scores the resulting hourly prices against the observed LWAP and
-MCP exactly as the shipped backcast does.
+MCP using the same method as the historical replay.
 
-The minimum-stable levels are GENERIC, labeled: NREL ATB / typical thermal
-values applied at the fuel-block level (no public per-PH-unit registry; that is
-the item-2 path). RTDSL is archived and carries per-resource MIN/MAX operating
+The minimum-stable levels are generic, labeled NREL ATB typical thermal values
+applied at the fuel-block level because no public Philippine unit registry
+supplies them. RTDSL carries per-resource minimum and maximum operating
 limits, but its resources are coded and most floors are VRE self-schedule pins
-(MIN==MAX), so it does not de-fabricate thermal min-stable at the fleet level
-without a unit registry; the generic levels stay the labeled input, RTDSL is
+(MIN==MAX), so it cannot supply thermal minimum-stable levels without a unit
+registry. The generic levels stay as labeled inputs, and RTDSL is
 noted as examined.
 
-The engine is NOT changed. This is the Phase-A measurement the roadmap requires
-before any swap: if commitment worsens the price backcast, the LP stays the
-default and the number is the finding.
+This script does not change the engine. If unit commitment worsens the historical
+price comparison, the linear model remains the default.
 
     python3 pipeline/uc_probe.py --derive   # remeasure, write the finding
     python3 pipeline/uc_probe.py            # print the delta table
 """
+
 from __future__ import annotations
 
 import argparse
@@ -80,10 +79,12 @@ def _uc_text(m: dict, fixed: dict | None = None) -> str:
                     u = f"u_{s}_{h}_{i}"
                     ms = micro(MIN_STABLE[b["fuel"]] * b["mw"])
                     cap = micro(b["mw"])
-                    rows.append(f" cg_{s}_{h}_{i}: x_{s}_{h}_{i}"
-                                f" - {mtext(cap)} {u} <= 0.0")
-                    rows.append(f" ms_{s}_{h}_{i}: x_{s}_{h}_{i}"
-                                f" - {mtext(ms)} {u} >= 0.0")
+                    rows.append(
+                        f" cg_{s}_{h}_{i}: x_{s}_{h}_{i} - {mtext(cap)} {u} <= 0.0"
+                    )
+                    rows.append(
+                        f" ms_{s}_{h}_{i}: x_{s}_{h}_{i} - {mtext(ms)} {u} >= 0.0"
+                    )
                     if fixed is None:
                         binaries.append(f" {u}")
                     else:
@@ -100,8 +101,7 @@ def _uc_text(m: dict, fixed: dict | None = None) -> str:
         for g in GRID_KEYS:
             s = G_SHORT[g]
             obj.append(f" + {mtext(voll_m)} u_load_{s}_{h}")
-            bounds.append(
-                f" 0 <= u_load_{s}_{h} <= {mtext(micro(demand[g][h]))}")
+            bounds.append(f" 0 <= u_load_{s}_{h} <= {mtext(micro(demand[g][h]))}")
             # overgeneration slack absorbs must-run beyond load
             obj.append(f" + {mtext(micro(OVERGEN_PENALTY))} o_{s}_{h}")
             bounds.append(f" 0 <= o_{s}_{h} <= {mtext(micro(1e6))}")
@@ -119,8 +119,9 @@ def _uc_text(m: dict, fixed: dict | None = None) -> str:
                 terms.append(f" {sign} {name}_{h}")
             terms.append(f" + u_load_{s}_{h}")
             terms.append(f" - o_{s}_{h}")
-            rows.append(f" bal_{s}_{h}:" + "".join(terms)
-                        + f" = {mtext(micro(demand[g][h]))}")
+            rows.append(
+                f" bal_{s}_{h}:" + "".join(terms) + f" = {mtext(micro(demand[g][h]))}"
+            )
 
     # hydro is energy-limited by the day's observed water, the SAME cap the LP
     # baseline enforces (build_day_lp, single-day scalar budget). Without it the
@@ -140,38 +141,44 @@ def _uc_text(m: dict, fixed: dict | None = None) -> str:
                         terms.append(f" + x_{s}_{h}_{i}")
             if not terms:
                 continue
-            rows.append(f" hyd_{s}:" + "".join(terms)
-                        + f" <= {mtext(micro(budget))}")
+            rows.append(f" hyd_{s}:" + "".join(terms) + f" <= {mtext(micro(budget))}")
 
-    text = ("\\ uc probe\nminimize\n obj:" + "".join(obj) + "\n"
-            "subject to\n" + "\n".join(rows) + "\n"
-            "bounds\n" + "\n".join(bounds) + "\n")
+    text = (
+        "\\ uc probe\nminimize\n obj:" + "".join(obj) + "\n"
+        "subject to\n" + "\n".join(rows) + "\n"
+        "bounds\n" + "\n".join(bounds) + "\n"
+    )
     if binaries:
         text += "binary\n" + "\n".join(binaries) + "\n"
     return text + "end\n"
 
 
-def run_chronology_uc(dispatch: dict, profiles: dict, date: str,
-                      opts: dict | None = None) -> dict:
+def run_chronology_uc(
+    dispatch: dict, profiles: dict, date: str, opts: dict | None = None
+) -> dict:
     """Two-stage commitment: solve the MIP for the schedule, fix the binaries,
     re-solve the LP for the balance-dual prices. Output carries hourly prices
     the same way run_chronology_lp does, for the backcast scorer."""
     m = _assemble(dispatch, profiles, date, opts or {})
     mip = _highs_solve(_uc_text(m, None))
-    fixed = {k: round(v) for k, v in mip["cols"].items() if k.startswith("u_")
-             and not k.startswith("u_load_")}
+    fixed = {
+        k: round(v)
+        for k, v in mip["cols"].items()
+        if k.startswith("u_") and not k.startswith("u_load_")
+    }
     lp = _highs_solve(_uc_text(m, fixed))
     duals = lp["duals"]
     hours = []
     H = len(m["demand"]["luzon"])
     for h in range(H):
-        price = {g: round3(duals.get(f"bal_{G_SHORT[g]}_{h}", 0.0))
-                 for g in GRID_KEYS}
+        price = {g: round3(duals.get(f"bal_{G_SHORT[g]}_{h}", 0.0)) for g in GRID_KEYS}
         hours.append({"hour": h, "price": price})
     committed = sum(fixed.values())
-    return {"hours": hours, "committed_blocks": committed,
-            "lp_sha256": hashlib.sha256(
-                _uc_text(m, None).encode()).hexdigest()}
+    return {
+        "hours": hours,
+        "committed_blocks": committed,
+        "lp_sha256": hashlib.sha256(_uc_text(m, None).encode()).hexdigest(),
+    }
 
 
 def _backcast_pairs(dispatch: dict, profiles: dict, use_uc: bool) -> dict:
@@ -179,18 +186,23 @@ def _backcast_pairs(dispatch: dict, profiles: dict, use_uc: bool) -> dict:
     against LWAP (settlement) and MCP (ex-ante clear), scored like the shipped
     backcast. use_uc picks the commitment engine or the LP."""
     from lp_dispatch import run_chronology_lp
+
     pairs = {g: [] for g in GRID_KEYS}
     pairs_mcp = {g: [] for g in GRID_KEYS}
     for day in profiles["days"]:
         if not day["market"]:
             continue
         lw = day.get("lwap") or {}
-        if not all(len(lw.get(g) or []) == 24
-                   and all(v is not None for v in lw[g]) for g in GRID_KEYS):
+        if not all(
+            len(lw.get(g) or []) == 24 and all(v is not None for v in lw[g])
+            for g in GRID_KEYS
+        ):
             continue
-        res = (run_chronology_uc(dispatch, profiles, day["date"])
-               if use_uc else
-               run_chronology_lp(dispatch, profiles, day["date"], {}))
+        res = (
+            run_chronology_uc(dispatch, profiles, day["date"])
+            if use_uc
+            else run_chronology_lp(dispatch, profiles, day["date"], {})
+        )
         mc = day.get("mcp") or {}
         for g in GRID_KEYS:
             for h in range(24):
@@ -199,8 +211,10 @@ def _backcast_pairs(dispatch: dict, profiles: dict, use_uc: bool) -> dict:
             if len(mg) == 24 and all(v is not None for v in mg):
                 for h in range(24):
                     pairs_mcp[g].append((res["hours"][h]["price"][g], mg[h]))
-    return {"lwap": {g: _score_pairs(pairs[g]) for g in GRID_KEYS},
-            "mcp": {g: _score_pairs(pairs_mcp[g]) for g in GRID_KEYS}}
+    return {
+        "lwap": {g: _score_pairs(pairs[g]) for g in GRID_KEYS},
+        "mcp": {g: _score_pairs(pairs_mcp[g]) for g in GRID_KEYS},
+    }
 
 
 def derive(dispatch: dict, profiles: dict) -> dict:
@@ -217,25 +231,32 @@ def derive(dispatch: dict, profiles: dict) -> dict:
         for g in GRID_KEYS:
             cl, cu = corr(lp[tgt], g), corr(uc[tgt], g)
             deltas[tgt][g] = {
-                "lp_corr": cl, "uc_corr": cu,
-                "delta": round3(cu - cl) if (cl is not None
-                                             and cu is not None) else None}
-    # the verdict: commitment must beat the LP on the Luzon LWAP correlation
-    # (the deepest market) to justify a swap; otherwise the LP stays default
+                "lp_corr": cl,
+                "uc_corr": cu,
+                "delta": round3(cu - cl)
+                if (cl is not None and cu is not None)
+                else None,
+            }
+    # Unit commitment must improve the Luzon LWAP correlation to replace the
+    # linear model as the default.
     lz = deltas["lwap"]["luzon"]
-    improves = (lz["delta"] is not None and lz["delta"] > 0.0)
+    improves = lz["delta"] is not None and lz["delta"] > 0.0
     return {
         "generated_by": "pipeline/uc_probe.py",
         "min_stable_generic": MIN_STABLE,
         "min_stable_label": "generic NREL ATB / typical thermal, fuel-block "
-                            "level; RTDSL examined but VRE-pinned and coded, "
-                            "no thermal de-fabrication without a unit registry",
+        "level; RTDSL does not provide thermal minimum-"
+        "stable levels without a unit registry",
         "overgen_penalty_php_kwh": OVERGEN_PENALTY,
-        "lp": lp, "uc": uc, "corr_delta": deltas,
-        "verdict": ("commitment improves the Luzon LWAP correlation"
-                    if improves else
-                    "commitment does not improve the price backcast; the LP "
-                    "stays the default engine"),
+        "lp": lp,
+        "uc": uc,
+        "corr_delta": deltas,
+        "verdict": (
+            "commitment improves the Luzon LWAP correlation"
+            if improves
+            else "commitment does not improve the price backcast; the LP "
+            "stays the default engine"
+        ),
         "engine_default": "uc" if improves else "lp",
     }
 
@@ -244,10 +265,8 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--derive", action="store_true")
     args = ap.parse_args()
-    dispatch = json.load(open(os.path.join(HERE, "..", "web", "data",
-                                           "dispatch.json")))
-    profiles = json.load(open(os.path.join(HERE, "..", "web", "data",
-                                            "profiles.json")))
+    dispatch = json.load(open(os.path.join(HERE, "..", "web", "data", "dispatch.json")))
+    profiles = json.load(open(os.path.join(HERE, "..", "web", "data", "profiles.json")))
     out = derive(dispatch, profiles)
     if args.derive:
         os.makedirs(os.path.dirname(OUT), exist_ok=True)
@@ -263,7 +282,7 @@ def main() -> None:
             lp = "None" if r["lp_corr"] is None else f"{r['lp_corr']:.3f}"
             uc = "None" if r["uc_corr"] is None else f"{r['uc_corr']:.3f}"
             dl = "None" if r["delta"] is None else f"{r['delta']:+.3f}"
-            print(f"{tgt+'/'+g:22s}{lp:>8s}{uc:>8s}{dl:>8s}")
+            print(f"{tgt + '/' + g:22s}{lp:>8s}{uc:>8s}{dl:>8s}")
     print("\nverdict:", out["verdict"])
 
 

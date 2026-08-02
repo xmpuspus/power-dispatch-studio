@@ -11,6 +11,7 @@ headroom must land the worst circuit on 1.0 of rating.
 
 Writes hourly_headroom.json for the figure. Read-only otherwise.
 """
+
 import json
 import os
 import sys
@@ -68,14 +69,18 @@ for hr in range(24):
                 best = d
     # linearity check: solving at the computed headroom must sit on the rating
     chk = solve_hour(net, _plant_load(inj, net, bus, float(best)), "replay")
-    rows.append({
-        "hour": hr,
-        "headroom_mw": round(best, 1),
-        "base_ratio": round(worst_ratio(s0), 3),
-        "check_ratio_at_headroom": round(worst_ratio(chk), 3) if chk else None,
-    })
-    print(f"h{hr:02d} headroom {best:8.1f} MW   base {worst_ratio(s0):.3f} of rating"
-          f"   check at headroom {worst_ratio(chk):.3f}")
+    rows.append(
+        {
+            "hour": hr,
+            "headroom_mw": round(best, 1),
+            "base_ratio": round(worst_ratio(s0), 3),
+            "check_ratio_at_headroom": round(worst_ratio(chk), 3) if chk else None,
+        }
+    )
+    print(
+        f"h{hr:02d} headroom {best:8.1f} MW   base {worst_ratio(s0):.3f} of rating"
+        f"   check at headroom {worst_ratio(chk):.3f}"
+    )
 
 good = [r for r in rows if r and r["check_ratio_at_headroom"] is not None]
 err = max(abs(r["check_ratio_at_headroom"] - 1.0) for r in good)
@@ -89,10 +94,12 @@ json.dump(
         "bus": bus,
         "snap_km": site["snap_km"],
         "circuits": [
-            {"names": branches[bi]["names"] or [branches[bi]["kind"]],
-             "rating_mw": branches[bi]["rating_mw"],
-             "rating_src": branches[bi].get("rating_src"),
-             "km": branches[bi]["km"]}
+            {
+                "names": branches[bi]["names"] or [branches[bi]["kind"]],
+                "rating_mw": branches[bi]["rating_mw"],
+                "rating_src": branches[bi].get("rating_src"),
+                "km": branches[bi]["km"],
+            }
             for bi in local
         ],
         "hours": rows,

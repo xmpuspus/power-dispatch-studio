@@ -18,7 +18,7 @@ days, up to about 19 PhP/kWh, but only 1.18 percent of clean-day
 node-hours). The SMP is region-constant per interval, so most within-region
 locational separation rides LMP_LOSS, inter-regional congestion appears as
 the regional SMPs splitting, and the small nodal congestion that is priced
-is sparse rather than a persistent per-node charge. The artifact
+is sparse rather than a persistent per-node charge. The output
 therefore stores, per node, the hourly mean DEVIATION from the node's
 regional SMP (loss + congestion, PhP/kWh), plus the regional SMP series
 and the day's pricing-flag tally (OK / PSM / SEC), and keeps a sparse
@@ -41,7 +41,7 @@ Semantics and gates:
     1.0217x higher, observed 2026-05-08 and 2026-06-25). The regional
     reference series therefore takes the per-interval MODE, and the day
     records how many intervals were multimodal instead of refusing.
-  - prices are divided by 1,000 to PhP/kWh, matching every other artifact.
+  - prices are divided by 1,000 to PhP/kWh, matching the other generated files.
 
     python3 pipeline/nodal_prices.py --derive             # top up missing days
     python3 pipeline/nodal_prices.py --derive --limit 3   # bounded run
@@ -266,6 +266,6 @@ if __name__ == "__main__":
         limit = int(sys.argv[sys.argv.index("--limit") + 1])
     if "--derive" in sys.argv:
         n = derive(limit)
-        print(f"derived {n} day(s)")
+        print(f"derived {n} day{'' if n == 1 else 's'}")
     else:
         print(__doc__)

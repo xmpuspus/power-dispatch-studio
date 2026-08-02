@@ -15,7 +15,7 @@ jobs:
         run: pipx run --spec ruff==0.16.1 ruff check .
       - name: Solver (the LP engine's only dependency)
         run: python3 -m pip install highspy==1.15.1
-      - name: Bake from the committed archive
+      - name: Generate from the committed archive
         run: python3 pipeline/build_data.py
       - name: Data pins + banned-framing gate
         run: |
@@ -41,14 +41,14 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
       - name: Install (the HiGHS wasm build ships via npm)
         run: npm ci
-      - name: Baked data + wasm into public/
+      - name: Generated data and wasm into public/
         run: node scripts/copy-data.mjs
       - name: Types, lint, format
         run: |
           npm run typecheck
           npm run lint
           npm run format:check
-      - name: Parity suite (LP text hashes + golden outputs through the wasm solver)
+      - name: Browser and Python calculation agreement
         run: npm test -- --run
       - name: Production build
         run: npm run build -- --base=/studio/

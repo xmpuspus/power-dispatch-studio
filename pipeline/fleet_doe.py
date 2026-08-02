@@ -4,7 +4,7 @@
 Source documents are the DOE's own per-grid PDFs. doe.gov.ph and
 legacy.doe.gov.ph refuse non-PH requests (403), so the files in
 data/external/doe/ are the Internet Archive's captures of the same DOE URLs;
-each edition's original URL, capture URL, and as-of date ship in the artifact.
+each edition's original URL, capture URL, and as-of date ship in the output.
 Text is extracted with pdftotext -layout (committed alongside the PDFs).
 
 The parser is defensive the same way the archiver is: every fuel section in the
@@ -12,6 +12,7 @@ PDF prints its own installed/dependable subtotal, and build_fleet() refuses to
 emit a grid whose parsed rows do not reconcile to those subtotals. No silent
 partial fleets.
 """
+
 from __future__ import annotations
 
 import os
@@ -25,25 +26,25 @@ EDITIONS = {
         "file": "doe_luzon_2025-04-30.txt",
         "as_of": "2025-04-30",
         "original_url": "https://legacy.doe.gov.ph/sites/default/files/pdf/"
-                        "electric_power/01_Luzon%20Grid_2.pdf",
+        "electric_power/01_Luzon%20Grid_2.pdf",
         "src": "https://web.archive.org/web/20251104021000/https://legacy.doe."
-               "gov.ph/sites/default/files/pdf/electric_power/01_Luzon%20Grid_2.pdf",
+        "gov.ph/sites/default/files/pdf/electric_power/01_Luzon%20Grid_2.pdf",
     },
     "visayas": {
         "file": "doe_visayas_2025-03-31.txt",
         "as_of": "2025-03-31",
         "original_url": "https://legacy.doe.gov.ph/sites/default/files/pdf/"
-                        "electric_power/02_%20Visayas%20Grid.pdf",
+        "electric_power/02_%20Visayas%20Grid.pdf",
         "src": "https://web.archive.org/web/20250515115334/https://legacy.doe."
-               "gov.ph/sites/default/files/pdf/electric_power/02_%20Visayas%20Grid.pdf",
+        "gov.ph/sites/default/files/pdf/electric_power/02_%20Visayas%20Grid.pdf",
     },
     "mindanao": {
         "file": "doe_mindanao_2025-04-30.txt",
         "as_of": "2025-04-30",
         "original_url": "https://legacy.doe.gov.ph/sites/default/files/pdf/"
-                        "electric_power/03_Mindanao%20Grid_2.pdf",
+        "electric_power/03_Mindanao%20Grid_2.pdf",
         "src": "https://web.archive.org/web/20250712234701/https://legacy.doe."
-               "gov.ph/sites/default/files/pdf/electric_power/03_Mindanao%20Grid_2.pdf",
+        "gov.ph/sites/default/files/pdf/electric_power/03_Mindanao%20Grid_2.pdf",
     },
 }
 
@@ -63,7 +64,8 @@ SECTION_FUEL = {
 
 # a fuel-section header line: NAME  <installed subtotal>  <dependable subtotal>
 SECTION_RE = re.compile(
-    r"^\s*([A-Z][A-Z ()\-/]*[A-Z)])\s+([\d,]+\.\d+)\s+([\d,]+\.\d+)\s*$")
+    r"^\s*([A-Z][A-Z ()\-/]*[A-Z)])\s+([\d,]+\.\d+)\s+([\d,]+\.\d+)\s*$"
+)
 TOTAL_RE = re.compile(r"^TOTAL\s+(LUZON|VISAYAS|MINDANAO)\s+([\d,]+\.\d+)")
 CONN_RE = re.compile(r"\b(Grid|Embedded)\b")
 NUM_RE = re.compile(r"[\d,]+\.\d+|\b\d{1,3}\b")
@@ -90,8 +92,10 @@ def parse_grid(grid: str) -> dict:
     meta = EDITIONS[grid]
     path = os.path.join(DOE_DIR, meta["file"])
     if not os.path.exists(path):
-        return {"available": False,
-                "note": f"{meta['file']} absent; run the DOE fetch first"}
+        return {
+            "available": False,
+            "note": f"{meta['file']} absent; run the DOE fetch first",
+        }
     with open(path, encoding="utf-8", errors="replace") as fh:
         lines = fh.read().splitlines()
 
@@ -113,8 +117,10 @@ def parse_grid(grid: str) -> dict:
 
     for idx, line in enumerate(lines):
         if "INSTALLED" in line and "DEPENDABLE" in line:
-            cols = {"installed": line.index("INSTALLED") + len("INSTALLED"),
-                    "dependable": line.index("DEPENDABLE") + len("DEPENDABLE")}
+            cols = {
+                "installed": line.index("INSTALLED") + len("INSTALLED"),
+                "dependable": line.index("DEPENDABLE") + len("DEPENDABLE"),
+            }
             if "UNITS" in line:
                 cols["units"] = line.index("UNITS") + len("UNITS")
             continue
@@ -126,8 +132,10 @@ def parse_grid(grid: str) -> dict:
         ms = SECTION_RE.match(line.rstrip())
         if ms and ms.group(1).strip() in SECTION_FUEL:
             section = SECTION_FUEL[ms.group(1).strip()]
-            subtotals[section] = {"installed": _num(ms.group(2)),
-                                  "dependable": _num(ms.group(3))}
+            subtotals[section] = {
+                "installed": _num(ms.group(2)),
+                "dependable": _num(ms.group(3)),
+            }
             continue
         if not section or section == "storage" or not cols:
             continue
@@ -149,10 +157,19 @@ def parse_grid(grid: str) -> dict:
         name_cell = re.split(r"\s{2,}", line.strip())[0].strip()
         mc = CONN_RE.search(line)
         if mc and line[:1].strip() and name_cell not in SECTION_FUEL:
-            records.append({"line": idx, "name": name_cell,
-                            "conn": mc.group(1).lower(), "fuel": section})
-        elif (line[:1].strip() and name_cell not in SECTION_FUEL
-              and ("installed" in line_tokens or "dependable" in line_tokens)):
+            records.append(
+                {
+                    "line": idx,
+                    "name": name_cell,
+                    "conn": mc.group(1).lower(),
+                    "fuel": section,
+                }
+            )
+        elif (
+            line[:1].strip()
+            and name_cell not in SECTION_FUEL
+            and ("installed" in line_tokens or "dependable" in line_tokens)
+        ):
             # wrapped record: the name line carries the numbers, the connection
             # sits alone on the next line or two, and a trailing short line may
             # finish the name (ARAYAT ... PHASE 2, CENTRAL MALL ... PROJECT)
@@ -164,15 +181,22 @@ def parse_grid(grid: str) -> dict:
                     for k in range(j + 1, min(j + 3, len(lines))):
                         frag = lines[k]
                         frag_cell = re.split(r"\s{2,}", frag.strip())[0].strip()
-                        if (frag[:1].strip() and frag_cell
-                                and not CONN_RE.search(frag)
-                                and not any(col_of(m.end()) for m in
-                                            NUM_RE.finditer(frag))):
+                        if (
+                            frag[:1].strip()
+                            and frag_cell
+                            and not CONN_RE.search(frag)
+                            and not any(col_of(m.end()) for m in NUM_RE.finditer(frag))
+                        ):
                             name = f"{name} {frag_cell}"
                         break
-                    records.append({"line": idx, "name": name,
-                                    "conn": mnc.group(1).lower(),
-                                    "fuel": section})
+                    records.append(
+                        {
+                            "line": idx,
+                            "name": name,
+                            "conn": mnc.group(1).lower(),
+                            "fuel": section,
+                        }
+                    )
                     break
 
     # each record claims its own line's tokens, then the nearest unclaimed
@@ -203,15 +227,17 @@ def parse_grid(grid: str) -> dict:
                 claimed.add((best, c))
         if "installed" not in got:
             continue  # reconciliation below decides if this miss matters
-        plants.append({
-            "name": rec["name"],
-            "grid": grid,
-            "fuel": rec["fuel"],
-            "connection": rec["conn"],
-            "installed_mw": got["installed"],
-            "dependable_mw": got.get("dependable", 0.0),
-            "units": int(got.get("units", 1)),
-        })
+        plants.append(
+            {
+                "name": rec["name"],
+                "grid": grid,
+                "fuel": rec["fuel"],
+                "connection": rec["conn"],
+                "installed_mw": got["installed"],
+                "dependable_mw": got.get("dependable", 0.0),
+                "units": int(got.get("units", 1)),
+            }
+        )
 
     # reconcile parsed rows against the PDF's own per-section subtotals; a
     # section that does not reconcile fails the whole grid loudly
@@ -220,15 +246,15 @@ def parse_grid(grid: str) -> dict:
     for fuel, sub in subtotals.items():
         if fuel == "storage":
             continue
-        got = round(sum(p["installed_mw"] for p in plants
-                        if p["fuel"] == fuel), 1)
+        got = round(sum(p["installed_mw"] for p in plants if p["fuel"] == fuel), 1)
         want = sub["installed"]
         tol = max(1.0, want * 0.005)
         match = abs(got - want) <= tol
         ok = ok and match
         recon[fuel] = {"subtotal_mw": want, "parsed_mw": got, "ok": match}
-    non_storage = round(sum(s["installed"] for f, s in subtotals.items()
-                            if f != "storage"), 1)
+    non_storage = round(
+        sum(s["installed"] for f, s in subtotals.items() if f != "storage"), 1
+    )
     return {
         "available": ok,
         "as_of": meta["as_of"],
@@ -245,23 +271,35 @@ def build_fleet() -> dict:
     grids = {g: parse_grid(g) for g in EDITIONS}
     bad = [g for g, v in grids.items() if not v.get("available")]
     if bad:
-        raise SystemExit(f"DOE fleet parse failed reconciliation: {bad}; "
-                         f"details: "
-                         f"{ {g: grids[g].get('reconciliation') for g in bad} }")
+        raise SystemExit(
+            f"DOE fleet parse failed reconciliation: {bad}; "
+            f"details: "
+            f"{ {g: grids[g].get('reconciliation') for g in bad} }"
+        )
     plants = [p for g in grids.values() for p in g["plants"]]
     return {
         "available": True,
         "note": "DOE List of Existing Power Plants (grid-connected), parsed "
-                "per unit from the DOE's own per-grid PDFs (Internet Archive "
-                "captures of legacy.doe.gov.ph, which refuses non-PH "
-                "requests). Every fuel section reconciles to the PDF's own "
-                "subtotal before this file is written. Dependable capacity is "
-                "the DOE's figure, not a model derate. ESS rows are carried "
-                "by the storage layer, not here.",
-        "editions": {g: {k: grids[g][k] for k in
-                         ("as_of", "src", "original_url", "sections_total_mw",
-                          "doe_total_mw", "reconciliation")}
-                     for g in grids},
+        "per unit from the DOE's own per-grid PDFs (Internet Archive "
+        "captures of legacy.doe.gov.ph, which refuses non-PH "
+        "requests). Every fuel section reconciles to the PDF's own "
+        "subtotal before this file is written. Dependable capacity is "
+        "the DOE's figure, not a model derate. ESS rows are carried "
+        "by the storage layer, not here.",
+        "editions": {
+            g: {
+                k: grids[g][k]
+                for k in (
+                    "as_of",
+                    "src",
+                    "original_url",
+                    "sections_total_mw",
+                    "doe_total_mw",
+                    "reconciliation",
+                )
+            }
+            for g in grids
+        },
         "n_plants": len(plants),
         "plants": plants,
     }

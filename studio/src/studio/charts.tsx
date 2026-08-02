@@ -15,7 +15,7 @@ export function MeritStack({ blocks, demand }: { blocks: Block[]; demand: number
       className="chart"
       viewBox={`0 0 ${W} ${H}`}
       role="img"
-      aria-label="Merit-order supply stack"
+      aria-label="Lowest-cost-first supply stack (merit order)"
     >
       {sorted.map((b, i) => {
         const w = (b.mw / scale) * W
@@ -504,7 +504,7 @@ export function SocChart({
         )
       })}
       <text x={padL} y={H - 2} className="chart__ax">
-        state of charge MWh; charge down, discharge up
+        stored energy in MWh, charging below and discharging above
       </text>
     </svg>
   )
@@ -605,7 +605,7 @@ export function BandChart({
         h0
       </text>
       <text x={W - padR} y={H - 8} textAnchor="end" className="chart__ax">
-        h23; band = 10th to 90th percentile across days
+        h23, shaded range covers the 10th to 90th percentile across days
       </text>
     </svg>
   )

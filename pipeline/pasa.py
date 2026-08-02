@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Bake the PASA layer: the operator's own scheduled-outage files, per archive day.
+"""Generate the PASA layer: the operator's own scheduled-outage files, per archive day.
 
 OUTRTD (RTDOS files) lists resources whose STATUS was OUT in each 5-minute RTD
 run, with the outage window. The files carry resource codes and no MW, so this
 module maps each code to its DOE-fleet plant through a hand-maintained alias
-table, VERIFIED against fleet.json at bake time: an alias whose fleet row is
+table, VERIFIED against fleet.json at data build time: an alias whose fleet row is
 missing, or whose grid disagrees with the code's area prefix, fails loudly.
-Resources with no confident alias stay in the artifact as unmatched rows with
+Resources with no confident alias stay in the output as unmatched rows with
 no MW; coverage is stated, never guessed.
 
 Grid from the resource code's area prefix (labeled INFERRED, like the reserve
@@ -20,6 +20,7 @@ takes the row as-is (the row IS the unit or the plant the code names); mode
 one unit of an aggregated row). _BAT codes are grid batteries; the fleet list
 excludes ESS, so they carry kind "storage" and no MW.
 """
+
 from __future__ import annotations
 
 import csv
@@ -112,37 +113,67 @@ def _alias_for(resource: str) -> tuple[str, str] | None:
 
 
 def build_pasa(fleet: dict) -> dict:
-    files = sorted(
-        os.path.join(RAW, "OUTRTD", n)
-        for n in os.listdir(os.path.join(RAW, "OUTRTD"))
-        if not n.startswith(".")
-    ) if os.path.isdir(os.path.join(RAW, "OUTRTD")) else []
+    files = (
+        sorted(
+            os.path.join(RAW, "OUTRTD", n)
+            for n in os.listdir(os.path.join(RAW, "OUTRTD"))
+            if not n.startswith(".")
+        )
+        if os.path.isdir(os.path.join(RAW, "OUTRTD"))
+        else []
+    )
     if not files:
-        return {"available": False,
-                "note": "OUTRTD absent; scheduled-outage layer unavailable."}
+        return {
+            "available": False,
+            "note": "OUTRTD absent; scheduled-outage layer unavailable.",
+        }
 
     rows_by_name = {p["name"]: p for p in fleet.get("plants", [])}
 
     def resolve(resource: str) -> dict:
         grid = grid_of_prefix(resource)
         if resource.endswith("_BAT"):
-            return {"resource": resource, "grid": grid, "plant": None,
-                    "fuel": "storage", "unit_mw": None, "match": "storage"}
+            return {
+                "resource": resource,
+                "grid": grid,
+                "plant": None,
+                "fuel": "storage",
+                "unit_mw": None,
+                "match": "storage",
+            }
         alias = _alias_for(resource)
         if not alias:
-            return {"resource": resource, "grid": grid, "plant": None,
-                    "fuel": None, "unit_mw": None, "match": "unmatched"}
+            return {
+                "resource": resource,
+                "grid": grid,
+                "plant": None,
+                "fuel": None,
+                "unit_mw": None,
+                "match": "unmatched",
+            }
         row_name, mode = alias
         row = rows_by_name.get(row_name)
         if row is None:
-            raise SystemExit(f"pasa: alias {resource} -> {row_name!r} not in fleet.json")
+            raise SystemExit(
+                f"pasa: alias {resource} -> {row_name!r} not in fleet.json"
+            )
         if grid and row["grid"] != grid:
-            raise SystemExit(f"pasa: alias {resource} grid {grid} != fleet "
-                             f"{row['grid']} for {row_name!r}")
+            raise SystemExit(
+                f"pasa: alias {resource} grid {grid} != fleet "
+                f"{row['grid']} for {row_name!r}"
+            )
         units = max(1, int(row.get("units") or 1))
-        mw = row["dependable_mw"] / units if mode == "per_unit" else row["dependable_mw"]
-        return {"resource": resource, "grid": row["grid"], "plant": row_name,
-                "fuel": row["fuel"], "unit_mw": round(mw, 1), "match": "verified"}
+        mw = (
+            row["dependable_mw"] / units if mode == "per_unit" else row["dependable_mw"]
+        )
+        return {
+            "resource": resource,
+            "grid": row["grid"],
+            "plant": row_name,
+            "fuel": row["fuel"],
+            "unit_mw": round(mw, 1),
+            "match": "verified",
+        }
 
     resolved: dict[str, dict] = {}
     days = []
@@ -177,15 +208,19 @@ def build_pasa(fleet: dict) -> dict:
                 fm[rr["fuel"]] = fm.get(rr["fuel"], 0.0) + rr["unit_mw"]
             elif rr["match"] == "unmatched":
                 n_unmatched += 1
-        days.append({
-            "date": date,
-            "out": out,
-            "matched_mw": {g: round(v, 1) for g, v in matched_mw.items()},
-            "matched_fuel_mw": {g: {f: round(v, 1) for f, v in fm.items()}
-                                for g, fm in matched_fuel_mw.items()},
-            "n_out": len(out),
-            "n_unmatched": n_unmatched,
-        })
+        days.append(
+            {
+                "date": date,
+                "out": out,
+                "matched_mw": {g: round(v, 1) for g, v in matched_mw.items()},
+                "matched_fuel_mw": {
+                    g: {f: round(v, 1) for f, v in fm.items()}
+                    for g, fm in matched_fuel_mw.items()
+                },
+                "n_out": len(out),
+                "n_unmatched": n_unmatched,
+            }
+        )
 
     resources = sorted(resolved.values(), key=lambda r: r["resource"])
     n_verified = sum(1 for r in resources if r["match"] == "verified")
@@ -203,25 +238,31 @@ def build_pasa(fleet: dict) -> dict:
             "Grid per resource comes from the WESM code's numeric area prefix "
             "(01-03 Luzon, 04-08 Visayas, 09-14 Mindanao), an INFERRED mapping "
             "spot-checked against named plants; IEMOP does not publish a code "
-            "key on this dataset."),
+            "key on this dataset."
+        ),
         "coverage_note": (
             f"{n_verified} of {len(resources)} outage codes in this window map "
             f"to a DOE-fleet plant with a dependable MW; {n_unmatched} stay "
             f"unmatched and carry no MW (their outage is listed, not sized), "
             f"and {n_storage} are grid batteries outside the generation list. "
-            "Matched MW is therefore a floor on the true scheduled-outage MW."),
+            "Matched MW is therefore a floor on the true scheduled-outage MW."
+        ),
         "note": (
             "The operator's own outage schedules used in real-time dispatch "
             "(IEMOP OUTRTD), one row per resource out per day. This is the "
-            "observed maintenance-plus-forced outage state, not a forecast."),
+            "observed maintenance-plus-forced outage state, not a forecast."
+        ),
         "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-rtd/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
 if __name__ == "__main__":
     import json
+
     fleet = json.load(open(os.path.join(HERE, "..", "web", "data", "fleet.json")))
     out = build_pasa(fleet)
     print(json.dumps({k: v for k, v in out.items() if k != "days"}, indent=1)[:3000])

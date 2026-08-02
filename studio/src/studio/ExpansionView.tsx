@@ -1,7 +1,5 @@
-// Expansion mix (roadmap item 12): a least-cost greenfield capacity build over
-// the DOE PDP demand path, next to the DOE's own pipeline. The point is not to
-// replace the plan but to check it: a least-cost optimizer with generic NREL ATB
-// costs should land renewable-heavy the way the DOE plan does, and it does.
+// A lowest-cost new-build capacity mix over the DOE demand path, shown beside
+// the DOE project list. Technology costs come from NREL ATB.
 
 import { useExpansion } from '../lib/data'
 import { Panel, StatTile, EmptyNote } from '../ui/kit'
@@ -33,11 +31,11 @@ export function ExpansionView() {
     return (
       <div className="view">
         <Panel
-          title="Expansion mix"
-          subtitle="Least-cost greenfield build vs the DOE plan."
+          title="Lowest-cost new capacity compared with the DOE plan"
+          subtitle="A new-build capacity mix is compared with the DOE project list."
         >
           <EmptyNote>
-            No expansion result baked yet. Run pipeline/expansion.py and rebake.
+            The new-capacity calculation is not available in this data release.
           </EmptyNote>
         </Panel>
       </div>
@@ -58,7 +56,7 @@ export function ExpansionView() {
     },
     {
       key: 'doe',
-      header: 'DOE pipeline',
+      header: 'DOE announced projects',
       align: 'right',
       mono: true,
       render: (r) => `${r.doe.toFixed(1)}%`,
@@ -68,17 +66,17 @@ export function ExpansionView() {
   return (
     <div className="view">
       <Panel
-        title={`Expansion mix to ${d.horizon_year}`}
-        subtitle="A least-cost greenfield capacity build over the DOE PDP peak demand, beside the DOE's own pipeline. Check the plan, not replace it."
+        title={`Lowest-cost capacity mix through ${d.horizon_year}`}
+        subtitle="The lowest-cost mix of new capacity that covers DOE PDP peak demand is compared with the DOE's announced projects. This checks the plan's direction but does not replace it."
       >
         <div className="stat-row">
           <StatTile
-            label="Least-cost RE share"
+            label="Renewable share in lowest-cost mix"
             value={`${d.optimized.re_share_pct}%`}
-            hint="solar, wind, hydro, geo"
+            hint="solar, wind, hydro, geothermal"
           />
           <StatTile
-            label="DOE pipeline RE share"
+            label="Renewable share of DOE announced projects"
             value={`${d.doe_pipeline.re_share_pct}%`}
             hint="the plan"
           />
@@ -90,10 +88,12 @@ export function ExpansionView() {
         </div>
         <DataGrid columns={cols} rows={rows} getKey={(r) => r.fuel} />
         <p className="note">
-          {d.verdict} {d.costs_note} The least-cost build and the DOE pipeline are both
-          renewable-heavy, wind and solar led, so the plan's direction survives a cost
-          test it was never shown. This is an adequacy-and-cost screen, not the DOE's full
-          resource plan: LOLE detail, transmission, and siting stay with the DOE model.
+          {d.verdict} {d.costs_note} The lowest-cost build and the DOE project list both
+          have large renewable shares led by wind and solar. This cost check supports the
+          plan's general direction. It is a supply-adequacy and cost check, not the DOE's
+          full resource plan. The DOE model also covers loss-of-load expectation (LOLE),
+          which counts periods when supply cannot meet demand, plus transmission and
+          siting.
         </p>
       </Panel>
     </div>

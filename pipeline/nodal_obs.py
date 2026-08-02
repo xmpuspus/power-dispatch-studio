@@ -14,13 +14,13 @@ Semantics, stated on every surface that shows this:
     suspension window and small and intermittent after real-time pricing
     resumed on 2026-05-01 (it touches 1.18 percent of clean-day
     node-hours, the figure this module computes), so the deviation is
-    loss-dominated. The honest name is
+    loss-dominated. The accurate name is
     "persistent locational price deviation", never "congestion premium".
   - a node makes the table when it has data on at least 80 percent of the
     clean days.
   - map placement reuses the station-token matcher (nodal_dcopf.map_resources):
     only nodes whose station resolves onto the OSM-mapped grid get
-    coordinates, and the artifact reports that count against the total.
+    coordinates, and the output reports that count against the total.
 """
 
 from __future__ import annotations
@@ -59,7 +59,7 @@ def build_nodal_obs() -> dict:
         with open(os.path.join(NODAL_DIR, name)) as f:
             d = json.load(f)
         # published-congestion summary over every sampled day (not just clean),
-        # so the "nonzero on N of M days" claim is baked and oracle-guarded (F1)
+        # so the "nonzero on N of M days" claim is generated and test-checked (F1)
         day_nonzero = False
         for _hrs in (d.get("congestion_php_kwh") or {}).values():
             for _v in _hrs.values():
@@ -78,8 +78,11 @@ def build_nodal_obs() -> dict:
         # instead of hand-written: it rides on six public surfaces and nothing
         # recomputed it, so it could drift with the archive unnoticed
         clean_cong_nh += sum(
-            1 for _hrs in (d.get("congestion_php_kwh") or {}).values()
-            for _v in _hrs.values() if abs(_v) > 1e-9)
+            1
+            for _hrs in (d.get("congestion_php_kwh") or {}).values()
+            for _v in _hrs.values()
+            if abs(_v) > 1e-9
+        )
         for _nd in d["nodes"].values():
             clean_node_hours += len(_nd.get("dev_php_kwh") or [])
         for res, nd in d["nodes"].items():
@@ -175,7 +178,9 @@ def build_nodal_obs() -> dict:
             "clean_day_nonzero_node_hours": clean_cong_nh,
             "clean_day_nonzero_share_pct": (
                 round(100 * clean_cong_nh / clean_node_hours, 2)
-                if clean_node_hours else None),
+                if clean_node_hours
+                else None
+            ),
         },
         "n_nodes": len(nodes),
         "n_placed": len(placed),

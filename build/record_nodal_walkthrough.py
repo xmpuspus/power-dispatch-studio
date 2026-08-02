@@ -1,15 +1,14 @@
-"""The nodal walkthrough: four real decisions through the per-node price lens,
-recorded on the running app with every number read live from the baked artifact.
+"""Record four uses of the per-node price data from the running app.
 
-The four cases the clip narrates:
-  consumers  who pays for a radial: Pitogo and Zamboanga settle far above the
-             Mindanao price on every clean market day
+The recording covers:
+  consumers  Pitogo and Zamboanga settle above the Mindanao price on average
+             across clean market days
   siting     the same 100 MW data center pays hundreds of millions more per
              year behind a premium delivery point than beside generation
   revenue    the same MWh earns less behind an export constraint: Leyte
              geothermal at the Ormoc converter settles under the Visayas price
-  forward    the honest nodal forecast: the regional forward band plus the
-             node's persistent adder, held constant and labeled
+  forward    the regional future range plus a node's recorded average price
+             difference, held constant as a stated assumption
 
 Needs the COMBINED single-origin serve (map at /, studio at /studio/):
 
@@ -37,24 +36,36 @@ CAP_JS = r"""
 (args) => {
   const { title, sub, intro } = args;
   let el = document.getElementById('walk-cap');
-  if (!el) { el = document.createElement('div'); el.id = 'walk-cap'; document.body.appendChild(el); }
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'walk-cap';
+    document.body.appendChild(el);
+  }
   const base = `position:fixed;left:50%;z-index:2147483647;box-sizing:border-box;
     font-family:'Fira Sans','Inter',system-ui,sans-serif;
     background:rgba(12,17,24,.94);color:#eef2f7;
     border:1px solid #2b3a4d;border-radius:14px;box-shadow:0 12px 44px rgba(0,0,0,.5);`;
   if (intro) {
-    el.style.cssText = base + `top:50%;transform:translate(-50%,-50%);width:860px;padding:40px 46px;text-align:center;`;
-    el.innerHTML = `<div style="font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:#7f8ea0;margin-bottom:14px;">Power Dispatch Studio</div>
+    el.style.cssText = base + `top:50%;transform:translate(-50%,-50%);
+      width:860px;padding:40px 46px;text-align:center;`;
+    el.innerHTML = `<div style="font-size:14px;letter-spacing:.16em;
+      text-transform:uppercase;color:#7f8ea0;margin-bottom:14px;">
+      Power Dispatch Studio</div>
       <div style="font-size:30px;font-weight:700;line-height:1.28;">${title}</div>
       <div style="font-size:18px;color:#9fb0c9;margin-top:14px;">${sub||''}</div>`;
     return;
   }
-  el.style.cssText = base + `bottom:26px;transform:translateX(-50%);width:1200px;max-width:calc(100% - 40px);padding:16px 24px;`;
-  el.innerHTML = `<div style="font-size:19px;font-weight:650;line-height:1.3;">${title}</div>
+  el.style.cssText = base + `bottom:26px;transform:translateX(-50%);
+    width:1200px;max-width:calc(100% - 40px);padding:16px 24px;`;
+  el.innerHTML = `<div style="font-size:19px;font-weight:650;
+    line-height:1.3;">${title}</div>
     <div style="font-size:15px;color:#a9b7c8;margin-top:4px;">${sub||''}</div>`;
 }
 """
-CLEAR_JS = "() => { const e = document.getElementById('walk-cap'); if (e) e.remove(); }"
+CLEAR_JS = """() => {
+  const e = document.getElementById('walk-cap');
+  if (e) e.remove();
+}"""
 
 
 async def cap(page: Page, title: str, sub: str = "", intro: bool = False):
@@ -67,7 +78,11 @@ async def clear_cap(page: Page):
 
 async def click_js(page: Page, selector: str) -> bool:
     return await page.evaluate(
-        """(sel) => { const el = document.querySelector(sel); if (el) { el.click(); return true; } return false; }""",
+        """(sel) => {
+          const el = document.querySelector(sel);
+          if (el) { el.click(); return true; }
+          return false;
+        }""",
         selector,
     )
 
@@ -83,19 +98,27 @@ async def click_text(page: Page, text: str) -> bool:
 
 async def sim_tab(page: Page):
     await page.evaluate(
-        """() => { document.querySelectorAll('.rail__grouphead').forEach(b => { if (b.getAttribute('aria-expanded') === 'false') b.click() }) }"""
+        """() => {
+          document.querySelectorAll('.rail__grouphead').forEach(b => {
+            if (b.getAttribute('aria-expanded') === 'false') b.click()
+          })
+        }"""
     )
     await asyncio.sleep(0.5)
 
 
 async def scroll_top(page: Page):
     await page.evaluate(
-        """() => { const s=document.querySelector('.studio__scroll'); if(s) s.scrollTo({top:0,behavior:'smooth'}); }"""
+        """() => {
+          const s = document.querySelector('.studio__scroll');
+          if (s) s.scrollTo({top:0, behavior:'smooth'});
+        }"""
     )
 
 
-async def fly(page: Page, lon: float, lat: float, zoom: float,
-              ms: int = 2200, hold: float = 0.4):
+async def fly(
+    page: Page, lon: float, lat: float, zoom: float, ms: int = 2200, hold: float = 0.4
+):
     """Smooth cinematic camera move; sleeps through the flight so the
     recording captures the pan/zoom, not a hard cut."""
     await page.evaluate(
@@ -117,7 +140,7 @@ async def hover_node(page: Page, lon: float, lat: float, settle: float = 0.6):
     await asyncio.sleep(settle)
 
 
-def load_artifact() -> dict:
+def load_nodal_data() -> dict:
     with urllib.request.urlopen(BASE + "/data/nodal_obs.json") as r:
         return json.load(r)
 
@@ -129,7 +152,7 @@ def peso_m_per_year(mw: float, dev_php_kwh: float) -> float:
 
 
 async def main():
-    obs = load_artifact()
+    obs = load_nodal_data()
     placed = {p["res"]: p for p in obs["placed"]}
     pitogo = placed["09PITOGO_SS"]
     zambo = placed["09ZAMBO_SS"]
@@ -150,74 +173,72 @@ async def main():
         )
         page = await ctx.new_page()
 
-        # ---- map: the observed nodal layer ----------------------------------
+        # Recorded node-price map.
         await page.goto(BASE + "/", wait_until="networkidle")
         await asyncio.sleep(4.5)
         await cap(
             page,
             "Where you plug in changes what you pay",
-            f"Under the three regional WESM prices, {obs['n_nodes']:,} nodes each "
-            "settle at their own. Here is the whole field, then four decisions.",
+            f"Recorded prices differ across {obs['n_nodes']:,} WESM nodes. "
+            "The map shows how those differences affect four common decisions.",
             intro=True,
         )
         await asyncio.sleep(3.6)
         await clear_cap(page)
 
-        # establishing shot: switch to Prices and hold on the national field
+        # Switch to Prices and show all placed nodes.
         await click_js(page, "[data-mode=price]")
         await asyncio.sleep(2.4)
         await cap(
             page,
-            f"Every WESM node, priced at its own deviation ({obs['n_placed']} "
-            "placed of the whole grid)",
+            f"{obs['n_placed']} WESM nodes have a mapped location",
             "Red settles above its region's price, blue below; size is the "
             f"magnitude, each a mean over {clean} clean market days.",
         )
         await asyncio.sleep(3.6)
 
-        # push into the Luzon field so the dots read AS a network: the price
-        # dots sit on the faint transmission grid they actually connect to
+        # Zoom into Luzon so node locations and transmission lines are legible.
         await fly(page, 121.15, 15.1, 6.35, ms=2600)
         await cap(
             page,
-            "The nodes sit on the real transmission grid",
-            "The faint grey web is the OpenStreetMap network; each price dot is "
-            "a node on it, so the price field IS the grid, coloured.",
+            "Price records are tied to transmission-grid locations",
+            "Grey lines come from OpenStreetMap. Each colored point is a market "
+            "node placed on that network.",
         )
         await asyncio.sleep(4.4)
         await clear_cap(page)
 
-        # sweep south to prove the field is national, not a Luzon artefact
+        # Move south to show the Visayas and Mindanao nodes.
         await fly(page, 123.4, 9.7, 6.15, ms=2800)
         await cap(
             page,
-            "The whole archipelago, node by node",
-            "Visayas and Mindanao carry the same per-node structure; the widest "
-            "premiums sit at the ends of the long radial lines.",
+            "The largest premiums appear at the ends of long radial lines",
+            "Visayas and Mindanao use the same comparison of each node with its "
+            "regional market price.",
         )
         await asyncio.sleep(3.8)
         await clear_cap(page)
 
-        # decision 1, consumers behind a radial: zoom keeps the peninsula's
-        # dots and the single 138 kV line in frame, not one lonely pin
+        # Keep the peninsula and its 138 kV line in frame.
         await fly(page, pitogo["lon"] + 0.35, pitogo["lat"] - 0.1, 7.1, ms=2400)
         await hover_node(page, pitogo["lon"], pitogo["lat"])
         await cap(
             page,
-            "Consumers: who pays for a radial line",
+            "Pitogo and Zamboanga pay more than the Mindanao regional price",
             f"Pitogo settles +P{pitogo['dev']:.2f}/kWh and Zamboanga "
-            f"+P{zambo['dev']:.2f} above the Mindanao price, every clean day, "
+            f"+P{zambo['dev']:.2f} above the Mindanao price on average across "
+            "clean market days, "
             "at the far end of one 138 kV line.",
         )
         await asyncio.sleep(4.4)
         await clear_cap(page)
 
-        # decision 2, siting: the same data center at two Luzon nodes
+        # Compare the same data center at two Luzon nodes.
         await fly(page, gamu["lon"] - 0.2, gamu["lat"] - 0.3, 7.0, ms=2600)
         await hover_node(page, gamu["lon"], gamu["lat"])
         await cap(
             page,
-            "Siting: the same 100 MW data center, two nodes",
+            f"Gamu adds P{gamu['dev']:.2f}/kWh to a 100 MW data-center load",
             f"Behind the {gamu['station']} delivery point it pays "
             f"+P{gamu['dev']:.2f}/kWh over the Luzon price.",
         )
@@ -226,7 +247,7 @@ async def main():
         await hover_node(page, calaca["lon"], calaca["lat"])
         await cap(
             page,
-            "Beside generation, the sign flips",
+            f"Calaca is P{abs(calaca['dev']):.2f}/kWh below the Luzon price",
             f"At {calaca['station']} the deviation is P{calaca['dev']:.2f}. The "
             f"swing is P{swing:.2f}/kWh: about P{dc_cost_m:,.0f}M per year on a "
             f"flat {dc_mw} MW load, before a single contract is negotiated.",
@@ -234,8 +255,12 @@ async def main():
         await asyncio.sleep(4.8)
         await clear_cap(page)
 
-        # ---- studio: table, revenue, forward --------------------------------
-        await cap(page, "The full table lives in the studio", "Every node, searchable.")
+        # Searchable node table, generator revenue, and future range.
+        await cap(
+            page,
+            "The studio lists every recorded node-price difference",
+            "The table can be searched by node code.",
+        )
         await asyncio.sleep(1.6)
         await click_js(page, "#studiolink")
         await page.wait_for_load_state("networkidle")
@@ -244,12 +269,12 @@ async def main():
         await page.wait_for_selector('[data-testid="studio"]', timeout=8000)
         await asyncio.sleep(1.0)
         await sim_tab(page)
-        await click_text(page, "Nodal prices")
+        await click_text(page, "Prices at grid connection points")
         await asyncio.sleep(1.6)
         await scroll_top(page)
         await cap(
             page,
-            "Analysis: Nodal prices",
+            "Recorded prices at grid connection points",
             "Per-grid percentiles, the widest premium and discount, and every "
             "node in a searchable table.",
         )
@@ -257,54 +282,54 @@ async def main():
         await page.fill('input[aria-label="Filter nodes"]', "_T1L1")
         await cap(
             page,
-            "Procurement: the delivery points",
-            "Filter to _T1L1 and each bulk delivery point's persistent adder is "
-            "the locational line in a supply contract.",
+            "Filter to bulk delivery points used in supply contracts",
+            "The _T1L1 filter shows each point's average difference from its "
+            "regional price.",
         )
         await asyncio.sleep(3.8)
 
-        # revenue: Leyte geothermal under the Visayas price
+        # Leyte geothermal revenue under the Visayas price.
         await click_text(page, "Visayas")
         await asyncio.sleep(1.2)
         await page.fill('input[aria-label="Filter nodes"]', "LEYTE")
         await cap(
             page,
-            "Revenue: the export constraint, priced",
+            f"Leyte geothermal earns P{abs(leyte['dev']):.2f}/kWh less "
+            "than the Visayas price",
             f"Leyte geothermal settles P{leyte['dev']:.2f}/kWh under the Visayas "
-            "price at the Ormoc converter. Node choice is capture-price "
-            "material for any new plant.",
+            "price at the Ormoc converter. The connection point can therefore "
+            "change a plant's average market revenue.",
         )
         await asyncio.sleep(4.2)
         await clear_cap(page)
 
-        # forward translation (back on Luzon, where the siting story ran)
+        # Apply the recorded Luzon node difference to a regional future range.
         await click_text(page, "Luzon")
         await asyncio.sleep(0.8)
-        await click_text(page, "Forward prices")
-        await page.wait_for_selector("text=Forward price band", timeout=15000)
+        await click_text(page, "Possible future price range")
+        await page.wait_for_selector("text=Possible price range", timeout=15000)
         await asyncio.sleep(0.8)
         await scroll_top(page)
         await cap(
             page,
-            "Forecasting: the honest nodal forward",
-            f"The regional forward band plus the node's persistent adder, held "
-            f"constant and labeled: Gamu's +P{gamu['dev']:.2f} rides on top of "
-            "every Luzon percentile here. No invented nodal model.",
+            "Add the recorded node-price difference to the regional future range",
+            f"Gamu's recorded average difference of +P{gamu['dev']:.2f}/kWh is "
+            "added to each Luzon percentile and held constant as a labeled "
+            "assumption. This is not a future nodal-price model.",
         )
         await asyncio.sleep(4.6)
         await clear_cap(page)
 
-        # close on the proof: the loss-surface validation view
+        # Compare estimated loss rankings with market records.
         await sim_tab(page)
-        await click_text(page, "Loss validation")
+        await click_text(page, "Transmission-loss check")
         await asyncio.sleep(1.6)
         await scroll_top(page)
         await cap(
             page,
-            "And it is validated against the market's own record",
-            "WESM's within-region nodal structure is loss-dominated, so network "
-            "physics is a testable prediction: Luzon and Mindanao rank at "
-            "Spearman +0.72 and +0.83, Visayas shown failing, recomputed nightly.",
+            "Market records test the transmission-loss calculation",
+            "Estimated loss ranks correlate with recorded node-price differences "
+            "at +0.72 in Luzon and +0.83 in Mindanao. Visayas reverses at -0.57.",
         )
         await asyncio.sleep(4.8)
         await clear_cap(page)

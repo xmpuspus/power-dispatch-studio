@@ -7,7 +7,7 @@ Both engines (this pipeline via highspy, the studio via the HiGHS wasm build)
 construct the SAME linear program as the SAME text, byte for byte: fixed
 variable order, fixed row order, one term per line, and every coefficient
 serialized from integer micro-units (round(x * 1e6)) so no float-formatting
-divergence can exist between Python and JavaScript. The parity harness pins
+divergence can exist between Python and JavaScript. The comparison test pins
 the sha256 of this text; a model-construction drift on either side fails the
 hash before any solver runs.
 
@@ -27,6 +27,7 @@ optimum is unique on the model's flat cost plateaus and both solver builds
 must land on the same vertex. The epsilons top out well below one centavo
 and are stated in the methodology.
 """
+
 from __future__ import annotations
 
 import math
@@ -38,8 +39,15 @@ G_SHORT = {"luzon": "l", "visayas": "v", "mindanao": "m"}
 # 'offer' is the observed-book fuel: the book cannot say which MW are
 # reserve-capable, so offer-mode withholding applies to the whole book, a
 # stated approximation (never reached by cost-mode stacks)
-RESERVE_FUELS = ("coal", "natural_gas", "oil", "geothermal", "hydro",
-                 "biomass", "offer")
+RESERVE_FUELS = (
+    "coal",
+    "natural_gas",
+    "oil",
+    "geothermal",
+    "hydro",
+    "biomass",
+    "offer",
+)
 
 
 def micro(x: float) -> int:
@@ -57,11 +65,18 @@ def mtext(k: int) -> str:
     return f"{sign}{whole}.{frac:06d}"
 
 
-def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
-                 storage: list[dict], reserve_req: dict | None,
-                 voll: float, hydro_budget: dict | None = None,
-                 gas_budget: dict | None = None,
-                 hydro_day_hours: int | None = None) -> str:
+def build_day_lp(
+    stacks: dict,
+    demand: dict,
+    caps: dict,
+    wheel: float,
+    storage: list[dict],
+    reserve_req: dict | None,
+    voll: float,
+    hydro_budget: dict | None = None,
+    gas_budget: dict | None = None,
+    hydro_day_hours: int | None = None,
+) -> str:
     """The canonical LP text.
 
     stacks:  {grid: [blocks per hour]} with blocks [{fuel, cost, mw}, ...]
@@ -109,10 +124,8 @@ def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
         for h in range(H):
             obj.append(f" + {mtext(k * H + h + 1)} ch_{k}_{h}")
             bounds.append(f" 0 <= ch_{k}_{h} <= {mtext(micro(st['power_mw']))}")
-            bounds.append(
-                f" 0 <= dis_{k}_{h} <= {mtext(micro(st['power_mw']))}")
-            bounds.append(
-                f" 0 <= soc_{k}_{h} <= {mtext(micro(st['energy_mwh']))}")
+            bounds.append(f" 0 <= dis_{k}_{h} <= {mtext(micro(st['power_mw']))}")
+            bounds.append(f" 0 <= soc_{k}_{h} <= {mtext(micro(st['energy_mwh']))}")
 
     # unserved load
     for h in range(H):
@@ -133,8 +146,7 @@ def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
     for h in range(H):
         for g in GRID_KEYS:
             s = G_SHORT[g]
-            terms = [f" + x_{s}_{h}_{i}"
-                     for i in range(len(stacks[g][h]))]
+            terms = [f" + x_{s}_{h}_{i}" for i in range(len(stacks[g][h]))]
             for name, sign in flow_terms[g]:
                 terms.append(f" {sign} {name}_{h}")
             for k, st in enumerate(storage):
@@ -142,16 +154,19 @@ def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
                     terms.append(f" + dis_{k}_{h}")
                     terms.append(f" - ch_{k}_{h}")
             terms.append(f" + u_{s}_{h}")
-            rows.append(f" bal_{s}_{h}:" + "".join(terms)
-                        + f" = {mtext(micro(demand[g][h]))}")
+            rows.append(
+                f" bal_{s}_{h}:" + "".join(terms) + f" = {mtext(micro(demand[g][h]))}"
+            )
 
     # state of charge: soc_h - soc_(h-1) - eff * ch_h + dis_h = 0
     for k, st in enumerate(storage):
         eff_m = mtext(micro(st["eff"]))
         for h in range(H):
             prev = f" - soc_{k}_{h - 1}" if h > 0 else ""
-            rows.append(f" soc_{k}_{h}: soc_{k}_{h}{prev}"
-                        f" - {eff_m} ch_{k}_{h} + dis_{k}_{h} = 0")
+            rows.append(
+                f" soc_{k}_{h}: soc_{k}_{h}{prev}"
+                f" - {eff_m} ch_{k}_{h} + dis_{k}_{h} = 0"
+            )
 
     # reserve: dispatch on reserve-capable blocks plus storage discharge must
     # leave headroom >= requirement. Written with a constant right side:
@@ -179,8 +194,7 @@ def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
                 # headroom (all capable capacity withheld) instead of writing
                 # an infeasible row
                 rhs = max(0, cap_m - micro(req))
-                rows.append(f" res_{s}_{h}:" + "".join(terms)
-                            + f" <= {mtext(rhs)}")
+                rows.append(f" res_{s}_{h}:" + "".join(terms) + f" <= {mtext(rhs)}")
 
     # hydro is energy-limited by the observed water: hydro dispatch may not
     # exceed the budget. In a native multi-day (168h) LP the water stays
@@ -207,8 +221,9 @@ def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
                 if not terms:
                     continue
                 name = f"hyd_{s}" if ndays == 1 else f"hyd_{s}_{dd}"
-                rows.append(f" {name}:" + "".join(terms)
-                            + f" <= {mtext(micro(budget))}")
+                rows.append(
+                    f" {name}:" + "".join(terms) + f" <= {mtext(micro(budget))}"
+                )
 
     # gas is energy-limited by the day's fuel supply (the Malampaya budget):
     # the sum of natural-gas dispatch across the hours may not exceed the
@@ -227,25 +242,38 @@ def build_day_lp(stacks: dict, demand: dict, caps: dict, wheel: float,
                         terms.append(f" + x_{s}_{h}_{i}")
             if not terms:
                 continue
-            rows.append(f" gas_{s}:" + "".join(terms)
-                        + f" <= {mtext(micro(budget))}")
+            rows.append(f" gas_{s}:" + "".join(terms) + f" <= {mtext(micro(budget))}")
 
-    return ("\\ power-dispatch-studio day LP v1\n"
-            "minimize\n obj:" + "".join(obj) + "\n"
-            "subject to\n" + "\n".join(rows) + "\n"
-            "bounds\n" + "\n".join(bounds) + "\n"
-            "end\n")
+    return (
+        "\\ power-dispatch-studio day LP v1\n"
+        "minimize\n obj:" + "".join(obj) + "\n"
+        "subject to\n" + "\n".join(rows) + "\n"
+        "bounds\n" + "\n".join(bounds) + "\n"
+        "end\n"
+    )
 
 
 if __name__ == "__main__":
     import hashlib
-    stacks = {g: [[{"fuel": "coal", "cost": 4.14, "mw": 1000.0},
-                   {"fuel": "oil", "cost": 12.0, "mw": 200.0}]]
-              for g in GRID_KEYS}
+
+    stacks = {
+        g: [
+            [
+                {"fuel": "coal", "cost": 4.14, "mw": 1000.0},
+                {"fuel": "oil", "cost": 12.0, "mw": 200.0},
+            ]
+        ]
+        for g in GRID_KEYS
+    }
     demand = {"luzon": [900.0], "visayas": [300.0], "mindanao": [200.0]}
-    text = build_day_lp(stacks, demand, {"leyte": 250.0, "mvip": 450.0},
-                        0.02, [{"grid": "luzon", "power_mw": 100.0,
-                                "energy_mwh": 200.0, "eff": 0.8}],
-                        {"luzon": 500.0}, 12.0)
+    text = build_day_lp(
+        stacks,
+        demand,
+        {"leyte": 250.0, "mvip": 450.0},
+        0.02,
+        [{"grid": "luzon", "power_mw": 100.0, "energy_mwh": 200.0, "eff": 0.8}],
+        {"luzon": 500.0},
+        12.0,
+    )
     print(text)
     print("sha256:", hashlib.sha256(text.encode()).hexdigest())

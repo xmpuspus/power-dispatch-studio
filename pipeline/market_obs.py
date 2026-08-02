@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
-"""Observed market operations, from the 2026-07-07 dataset expansion.
+"""Build market-operation measures from IEMOP public files.
 
-Five IEMOP datasets joined the daily archive because the analyst-parity
-review showed each one replaces a modeled guess with the operator's own
-record:
+Five IEMOP datasets replace modeled inputs with the operator's own record:
 
   MCP    rtd-market-clearing-price: names the marginal RESOURCE and its
          price per region per 5-minute interval. Two uses: the observed
          price-setter table (who actually set the price, vs the model's
          marginal block), and the hourly regional clearing-price series the
-         backcast scores against (per_grid_mcp), the target commensurate
-         with a dispatch dual.
-  RSVPR  rtd-regional-reserve-prices: the official co-optimised regional
-         reserve prices, superseding the two-day per-resource sample as the
-         reserve view's price series.
+         historical replay scores against (per_grid_mcp), for comparison
+         with the calculated marginal price.
+  RSVPR  rtd-regional-reserve-prices: the official regional reserve prices
+         after energy and reserves are bought together. This replaces the
+         two-day plant-level sample as the reserve view's price series.
   MPI    mpi-advisories: the NSO advisory stream (HVDC blocks and
          de-blocks, alert states, trips), the operator's own event log.
   WAPOS  outage-schedules-used-in-wap: the week-ahead projection outage
@@ -24,6 +22,7 @@ Resource codes map to DOE-fleet plants through the pasa alias table;
 anything without a confident alias stays unmatched and carries no MW
 (coverage stated, never guessed).
 """
+
 from __future__ import annotations
 
 import functools
@@ -49,7 +48,9 @@ def _resolve(resource: str, rows_by_name: dict) -> tuple[str | None, float | Non
     if row is None:
         return None, None
     units = max(1, int(row.get("units") or 1))
-    mw = row["dependable_mw"] / units if alias[1] == "per_unit" else row["dependable_mw"]
+    mw = (
+        row["dependable_mw"] / units if alias[1] == "per_unit" else row["dependable_mw"]
+    )
     return row["fuel"], round(mw, 1)
 
 
@@ -80,8 +81,7 @@ def _interval_means(path: str) -> dict[str, dict[str, list[float]]]:
         if not grid or (r.get("COMMODITY_TYPE") or "").strip() != "En":
             continue
         ts = (r.get("TIME_INTERVAL") or "").strip()
-        acc[grid.lower()].setdefault(ts, []).append(
-            f(r.get("MARGINAL_PRICE")) / 1000)
+        acc[grid.lower()].setdefault(ts, []).append(f(r.get("MARGINAL_PRICE")) / 1000)
     return acc
 
 
@@ -109,9 +109,10 @@ def build_price_setters(fleet: dict) -> dict:
     marginal, their share of intervals and mean price when setting."""
     files = dataset_files("MCP")
     if not files:
-        return {"available": False,
-                "note": "MCP dataset absent; observed price setters "
-                        "unavailable."}
+        return {
+            "available": False,
+            "note": "MCP dataset absent; observed price setters unavailable.",
+        }
     rows_by_name = {p["name"]: p for p in fleet.get("plants", [])}
     # interval-weighted: a tied interval (k marginal resources named at once)
     # credits each setter 1/k, so shares sum to 100 and a tie cannot
@@ -121,8 +122,7 @@ def build_price_setters(fleet: dict) -> dict:
     price_n: dict[str, dict[str, int]] = {g: {} for g in GRIDS_L}
     n_int: dict[str, int] = {g: 0 for g in GRIDS_L}
     for path in files:
-        by_res: dict[str, dict[str, dict[str, list[float]]]] = {
-            g: {} for g in GRIDS_L}
+        by_res: dict[str, dict[str, dict[str, list[float]]]] = {g: {} for g in GRIDS_L}
         for r in rows_of(path):
             grid = REGION_MAP.get((r.get("REGION_NAME") or "").strip())
             if not grid or (r.get("COMMODITY_TYPE") or "").strip() != "En":
@@ -133,15 +133,15 @@ def build_price_setters(fleet: dict) -> dict:
             if not res or not ts:
                 continue
             by_res[g].setdefault(ts, {}).setdefault(res, []).append(
-                f(r.get("MARGINAL_PRICE")) / 1000)
+                f(r.get("MARGINAL_PRICE")) / 1000
+            )
         for g in GRIDS_L:
             for ts, setters in by_res[g].items():
                 n_int[g] += 1
                 share = 1.0 / len(setters)
                 for res, prices in setters.items():
                     credit[g][res] = credit[g].get(res, 0.0) + share
-                    price_sum[g][res] = (price_sum[g].get(res, 0.0)
-                                         + sum(prices))
+                    price_sum[g][res] = price_sum[g].get(res, 0.0) + sum(prices)
                     price_n[g][res] = price_n[g].get(res, 0) + len(prices)
     per_grid = {}
     for g in GRIDS_L:
@@ -151,36 +151,44 @@ def build_price_setters(fleet: dict) -> dict:
             fuel, _ = _resolve(res, rows_by_name)
             if fuel:
                 matched += n
-            rows.append({
-                "resource": res,
-                "fuel": fuel,
-                "share_pct": round(100 * n / n_int[g], 1),
-                "mean_price_php_kwh": round(
-                    price_sum[g][res] / price_n[g][res], 3),
-            })
+            rows.append(
+                {
+                    "resource": res,
+                    "fuel": fuel,
+                    "share_pct": round(100 * n / n_int[g], 1),
+                    "mean_price_php_kwh": round(price_sum[g][res] / price_n[g][res], 3),
+                }
+            )
         per_grid[g] = {
             "n_intervals": n_int[g],
             "n_setters": len(rows),
-            "fuel_matched_share_pct": (round(100 * matched / n_int[g], 1)
-                                       if n_int[g] else None),
+            "fuel_matched_share_pct": (
+                round(100 * matched / n_int[g], 1) if n_int[g] else None
+            ),
             "top": rows[:12],
         }
     return {
         "available": True,
         "days": len(files),
         "per_grid": per_grid,
-        "note": ("The marginal resource IEMOP names per region per 5-minute "
-                 "RTD interval (MCP files): the observed price setter. "
-                 "Shares are interval-weighted; an interval naming several "
-                 "tied resources splits its credit among them. The modeled "
-                 "marginal-block table stays alongside as the model's own "
-                 "view; this one is the market's."),
-        "fuel_note": ("Fuel per setter comes from the pasa alias table into "
-                      "the DOE fleet; codes without a confident alias show "
-                      "no fuel rather than a guessed one."),
+        "note": (
+            "The marginal resource IEMOP names per region per 5-minute "
+            "RTD interval (MCP files): the observed price setter. "
+            "Shares are interval-weighted; an interval naming several "
+            "tied resources splits its credit among them. The modeled "
+            "marginal-block table stays alongside as the model's own "
+            "view; this one is the market's."
+        ),
+        "fuel_note": (
+            "Fuel per setter comes from the pasa alias table into "
+            "the DOE fleet; codes without a confident alias show "
+            "no fuel rather than a guessed one."
+        ),
         "src": "https://www.iemop.ph/market-data/rtd-market-clearing-price/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -189,9 +197,10 @@ def build_reserve_prices() -> dict:
     reserve commodity, PhP/kWh."""
     files = dataset_files("RSVPR")
     if not files:
-        return {"available": False,
-                "note": "RSVPR dataset absent; official reserve prices "
-                        "unavailable."}
+        return {
+            "available": False,
+            "note": "RSVPR dataset absent; official reserve prices unavailable.",
+        }
     dates: list[str] = []
     series: dict[str, dict[str, list[float | None]]] = {g: {} for g in GRIDS_L}
     for path in files:
@@ -204,12 +213,12 @@ def build_reserve_prices() -> dict:
             com = (r.get("COMMODITY_TYPE") or "").strip()
             if not com:
                 continue
-            acc[grid.lower()].setdefault(com, []).append(
-                f(r.get("PRICE")) / 1000)
+            acc[grid.lower()].setdefault(com, []).append(f(r.get("PRICE")) / 1000)
         for g in GRIDS_L:
             for com, vals in acc[g].items():
                 series[g].setdefault(com, [None] * (len(dates) - 1)).append(
-                    round(sum(vals) / len(vals), 4))
+                    round(sum(vals) / len(vals), 4)
+                )
             for com, s in series[g].items():
                 if len(s) < len(dates):
                     s.append(None)
@@ -219,20 +228,26 @@ def build_reserve_prices() -> dict:
         for com, s in series[g].items():
             vals = [v for v in s if v is not None]
             if vals:
-                stats[g][com] = {"mean": round(sum(vals) / len(vals), 4),
-                                 "max": round(max(vals), 4)}
+                stats[g][com] = {
+                    "mean": round(sum(vals) / len(vals), 4),
+                    "max": round(max(vals), 4),
+                }
     return {
         "available": True,
         "dates": dates,
         "series": series,
         "stats": stats,
         "unit": "PhP/kWh (daily mean of 5-minute regional reserve prices)",
-        "commodity_note": ("Commodity codes as published (Dr, Fr, Ru, Rd...); "
-                           "IEMOP publishes no key, so the product mapping "
-                           "stays the reserve view's labeled inference."),
+        "commodity_note": (
+            "IEMOP publishes the product codes Dr, Fr, Ru, and Rd without a "
+            "public key. The plain product names shown here are inferred and "
+            "the original codes remain beside them."
+        ),
         "src": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -259,13 +274,13 @@ def hvdc_unblocked_fractions() -> dict[str, list[float]]:
     for path in dataset_files("MPI"):
         with open(path, newline="", encoding="utf-8", errors="replace") as fh:
             import csv as _csv
+
             for r in _csv.DictReader(fh):
                 msg = (r.get("ADV_TEXT_MESSAGE") or "").strip()
                 mk = _BLOCK_RE.search(msg)
                 if not mk or not _ORMOC_RE.search(msg):
                     continue
-                kind = ("deblock" if "de" in mk.group(1).lower()
-                        else "block")
+                kind = "deblock" if "de" in mk.group(1).lower() else "block"
                 md = _ADV_TS_RE.search(msg)
                 if not md:
                     continue
@@ -273,8 +288,7 @@ def hvdc_unblocked_fractions() -> dict[str, list[float]]:
                 mt = _AT_RE.search(msg)
                 if mt:
                     hhmm = mt.group(1).zfill(4)
-                    ts = day.replace(hour=int(hhmm[:2]) % 24,
-                                     minute=int(hhmm[2:]))
+                    ts = day.replace(hour=int(hhmm[:2]) % 24, minute=int(hhmm[2:]))
                 else:
                     hh, mm = md.group(2).split(":")
                     ts = day.replace(hour=int(hh), minute=int(mm))
@@ -282,8 +296,11 @@ def hvdc_unblocked_fractions() -> dict[str, list[float]]:
     events.sort()
     dedup: list[tuple[datetime, str]] = []
     for ts, kind in events:
-        if (dedup and dedup[-1][1] == kind
-                and (ts - dedup[-1][0]).total_seconds() <= 300):
+        if (
+            dedup
+            and dedup[-1][1] == kind
+            and (ts - dedup[-1][0]).total_seconds() <= 300
+        ):
             continue
         dedup.append((ts, kind))
     windows: list[tuple[datetime, datetime]] = []
@@ -309,8 +326,10 @@ def hvdc_unblocked_fractions() -> dict[str, list[float]]:
             key = cur.date().isoformat()
             blocked.setdefault(key, [0.0] * 24)[cur.hour] += seg
             cur = hour_end
-    return {d: [round(max(0.0, 1.0 - min(1.0, b)), 3) for b in hrs]
-            for d, hrs in blocked.items()}
+    return {
+        d: [round(max(0.0, 1.0 - min(1.0, b)), 3) for b in hrs]
+        for d, hrs in blocked.items()
+    }
 
 
 def build_advisories() -> dict:
@@ -318,8 +337,10 @@ def build_advisories() -> dict:
     advisories, the operator's own event log per day."""
     files = dataset_files("MPI")
     if not files:
-        return {"available": False,
-                "note": "MPI dataset absent; advisory stream unavailable."}
+        return {
+            "available": False,
+            "note": "MPI dataset absent; advisory stream unavailable.",
+        }
     days = []
     hvdc_events = []
     alert_events = []
@@ -335,31 +356,38 @@ def build_advisories() -> dict:
             if _HVDC_RE.search(msg):
                 n_hvdc += 1
                 if len(hvdc_events) < 400:
-                    hvdc_events.append({"date": day, "ts": ts,
-                                        "text": msg[:240]})
+                    hvdc_events.append({"date": day, "ts": ts, "text": msg[:240]})
             m = _ALERT_RE.search(msg)
             if m:
                 n_alert += 1
                 if len(alert_events) < 400:
-                    alert_events.append({"date": day, "ts": ts,
-                                         "level": m.group(1).lower(),
-                                         "text": msg[:240]})
-        days.append({"date": day, "n": n, "n_hvdc": n_hvdc,
-                     "n_alert": n_alert})
+                    alert_events.append(
+                        {
+                            "date": day,
+                            "ts": ts,
+                            "level": m.group(1).lower(),
+                            "text": msg[:240],
+                        }
+                    )
+        days.append({"date": day, "n": n, "n_hvdc": n_hvdc, "n_alert": n_alert})
     return {
         "available": True,
         "days": days,
         "hvdc_events": hvdc_events,
         "alert_events": alert_events,
-        "note": ("IEMOP market-participant-information advisories (NSO "
-                 "stream): HVDC blockings and de-blockings, alert states, "
-                 "trips, as the operator announced them. This is the event "
-                 "log behind the alert-streak and corridor-separation "
-                 "stories, replacing news citations with the operator's "
-                 "own record inside the window."),
+        "note": (
+            "IEMOP market-participant-information advisories (NSO "
+            "stream): HVDC blockings and de-blockings, alert states, "
+            "trips, as the operator announced them. This is the event "
+            "log behind the alert-streak and corridor-separation "
+            "stories, replacing news citations with the operator's "
+            "own record inside the window."
+        ),
         "src": "https://www.iemop.ph/market-data/mpi-advisories/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -388,20 +416,25 @@ def build_outlook(fleet: dict) -> dict:
                 "until": (r.get("END_TIME") or "").strip(),
             }
         rows = sorted(seen.values(), key=lambda x: -(x["mw"] or 0.0))
-        out.update({
-            "as_of": as_of,
-            "scheduled_out": rows,
-            "matched_mw": {
-                g: round(sum(x["mw"] or 0.0 for x in rows
-                             if x["grid"] == g), 1) for g in GRIDS_L},
-            "n_unmatched": sum(1 for x in rows if x["mw"] is None),
-            "note": ("The operator's week-ahead projection outage schedule "
-                     "(WAPOS), the archive's only forward-looking file: "
-                     "what is scheduled out for the coming days, matched to "
-                     "DOE-fleet MW where the alias is confident. A schedule, "
-                     "not a forecast of forced outages."),
-            "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-wap/",
-        })
+        out.update(
+            {
+                "as_of": as_of,
+                "scheduled_out": rows,
+                "matched_mw": {
+                    g: round(sum(x["mw"] or 0.0 for x in rows if x["grid"] == g), 1)
+                    for g in GRIDS_L
+                },
+                "n_unmatched": sum(1 for x in rows if x["mw"] is None),
+                "note": (
+                    "The operator's week-ahead projection outage schedule "
+                    "(WAPOS), the archive's only forward-looking file: "
+                    "what is scheduled out for the coming days, matched to "
+                    "DOE-fleet MW where the alias is confident. A schedule, "
+                    "not a forecast of forced outages."
+                ),
+                "src": "https://www.iemop.ph/market-data/outage-schedules-used-in-wap/",
+            }
+        )
     if mru:
         path = mru[-1]
         per_res: dict[str, dict] = {}
@@ -409,28 +442,38 @@ def build_outlook(fleet: dict) -> dict:
             res = (r.get("RESOURCE_NAME") or "").strip()
             if not res:
                 continue
-            e = per_res.setdefault(res, {
-                "resource": res,
-                "region": (r.get("REGION") or "").strip(),
-                "category": (r.get("CATEGORY") or "").strip(),
-                "n_intervals": 0, "max_mw": 0.0})
+            e = per_res.setdefault(
+                res,
+                {
+                    "resource": res,
+                    "region": (r.get("REGION") or "").strip(),
+                    "category": (r.get("CATEGORY") or "").strip(),
+                    "n_intervals": 0,
+                    "max_mw": 0.0,
+                },
+            )
             e["n_intervals"] += 1
             e["max_mw"] = max(e["max_mw"], f(r.get("SO_MW_INSTRUCTION")))
         out["must_run"] = {
             "week_file": os.path.basename(path),
-            "units": sorted(per_res.values(),
-                            key=lambda x: -x["n_intervals"]),
-            "note": ("Processed must-run-unit instructions from the system "
-                     "operator's dispatch report (weekly file): the units "
-                     "run out of merit for grid security, with the stated "
-                     "reason. These intervals are administered, not market "
-                     "outcomes."),
-            "src": ("https://www.iemop.ph/market-data/"
-                    "list-of-must-run-units-based-on-so-dispatch-"
-                    "instruction-report/"),
+            "units": sorted(per_res.values(), key=lambda x: -x["n_intervals"]),
+            "note": (
+                "Processed must-run-unit instructions from the system "
+                "operator's dispatch report (weekly file): the units "
+                "run out of merit for grid security, with the stated "
+                "reason. These intervals are administered, not market "
+                "outcomes."
+            ),
+            "src": (
+                "https://www.iemop.ph/market-data/"
+                "list-of-must-run-units-based-on-so-dispatch-"
+                "instruction-report/"
+            ),
         }
-    out["disclaimer"] = ("Statistical indicators derived from public data. "
-                         "Patterns may have legitimate explanations.")
+    out["disclaimer"] = (
+        "Statistical indicators derived from public data. "
+        "Patterns may have legitimate explanations."
+    )
     return out
 
 
@@ -443,11 +486,18 @@ def build_not_offered() -> dict:
     legitimate explanations and says so."""
     from pasa import grid_of_prefix as _gof
 
-    offer_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             "..", "data", "derived", "offer_daily")
+    offer_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "offer_daily",
+    )
     if not os.path.isdir(offer_dir):
-        return {"available": False,
-                "note": "no derived offer days; run pipeline/offers.py"}
+        return {
+            "available": False,
+            "note": "no derived offer days; run pipeline/offers.py",
+        }
     import csv as _csv
     import json as _json
 
@@ -456,8 +506,7 @@ def build_not_offered() -> dict:
     for path in dataset_files("CAPEG"):
         day = day_of(path)
         acc = {g: 0.0 for g in GRIDS_L}
-        with open(path, newline="", encoding="utf-8",
-                  errors="replace") as fh:
+        with open(path, newline="", encoding="utf-8", errors="replace") as fh:
             for r in _csv.DictReader(fh):
                 g = _gof((r.get("RESOURCE_NAME") or "").strip())
                 if not g:
@@ -468,9 +517,10 @@ def build_not_offered() -> dict:
                     continue
         reg[day] = {g: round(v, 1) for g, v in acc.items()}
 
-    # matched scheduled-out MW per grid per day (PASA bake input)
-    pasa_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             "..", "web", "data", "pasa.json")
+    # matched scheduled-out MW per grid per day (PASA data build input)
+    pasa_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "web", "data", "pasa.json"
+    )
     out_by_day: dict[str, dict[str, float]] = {}
     if os.path.isfile(pasa_path):
         pas = _json.load(open(pasa_path))
@@ -496,13 +546,11 @@ def build_not_offered() -> dict:
                 "registered_mw": reg[date][g],
                 "book_max_mw": round(book_max, 1),
                 "scheduled_out_mw": round(out_mw, 1),
-                "not_offered_mw": round(
-                    max(0.0, reg[date][g] - book_max - out_mw), 1),
+                "not_offered_mw": round(max(0.0, reg[date][g] - book_max - out_mw), 1),
             }
         rows.append(row)
     if not rows:
-        return {"available": False,
-                "note": "no overlapping CAPEG + offer days yet"}
+        return {"available": False, "note": "no overlapping CAPEG + offer days yet"}
     stats = {}
     for g in GRIDS_L:
         vals = [r[g]["not_offered_mw"] for r in rows if g in r]
@@ -514,29 +562,34 @@ def build_not_offered() -> dict:
                 "median_not_offered_mw": svals[len(svals) // 2],
                 "max_not_offered_mw": max(vals),
                 "median_share_of_registered_pct": round(
-                    100 * svals[len(svals) // 2]
-                    / (sum(regs) / len(regs)), 1),
+                    100 * svals[len(svals) // 2] / (sum(regs) / len(regs)), 1
+                ),
             }
     return {
         "available": True,
         "days": rows,
         "stats": stats,
-        "note": ("Registered generation capacity (CAPEG) minus the offer "
-                 "book's fullest hour (offers plus self-scheduled) minus "
-                 "the operator's matched scheduled-out MW, per market day: "
-                 "capacity the register carries that neither offered nor "
-                 "appears in the matched outage schedules. This is a data "
-                 "cut, not an accusation: the residual has many "
-                 "legitimate explanations the public files cannot "
-                 "separate: outages beyond the matched subset, derates, "
-                 "testing and commissioning, registration lag on retired "
-                 "or embedded units, and non-market obligations. The grid "
-                 "mapping uses the same inferred code prefix as the PASA "
-                 "layer."),
-        "src_registered": ("https://www.iemop.ph/market-data/"
-                           "registered-capacity-generation/"),
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "note": (
+            "Registered generation capacity (CAPEG) minus the offer "
+            "book's fullest hour (offers plus self-scheduled) minus "
+            "the operator's matched scheduled-out MW, per market day: "
+            "capacity the register carries that neither offered nor "
+            "appears in the matched outage schedules. This is a data "
+            "cut, not an accusation: the residual has many "
+            "legitimate explanations the public files cannot "
+            "separate: outages beyond the matched subset, derates, "
+            "testing and commissioning, registration lag on retired "
+            "or embedded units, and non-market obligations. The grid "
+            "mapping uses the same inferred code prefix as the PASA "
+            "layer."
+        ),
+        "src_registered": (
+            "https://www.iemop.ph/market-data/registered-capacity-generation/"
+        ),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -549,11 +602,18 @@ def build_reserve_registration() -> dict:
     an accusation. It gives the reserve book a registration base."""
     import json as _json
 
-    res_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "data", "derived", "reserve_daily")
+    res_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "reserve_daily",
+    )
     if not os.path.isdir(res_dir):
-        return {"available": False,
-                "note": "no derived reserve days; run pipeline/reserve_offers.py"}
+        return {
+            "available": False,
+            "note": "no derived reserve days; run pipeline/reserve_offers.py",
+        }
     commodities = ("Fr", "Dr", "Ru", "Rd")
     comm_canon = {"FR": "Fr", "DR": "Dr", "RU": "Ru", "RD": "Rd"}
     # registered AS capacity per grid x commodity per day (CAPER)
@@ -596,15 +656,15 @@ def build_reserve_registration() -> dict:
         if len(row) > 1:
             rows.append(row)
     if not rows:
-        return {"available": False,
-                "note": "no overlapping CAPER + reserve-book days yet"}
+        return {
+            "available": False,
+            "note": "no overlapping CAPER + reserve-book days yet",
+        }
     stats: dict = {}
     for g in GRIDS_L:
         for c in commodities:
-            regs = [r[g][c]["registered_mw"] for r in rows
-                    if g in r and c in r[g]]
-            noff = [r[g][c]["not_offered_mw"] for r in rows
-                    if g in r and c in r[g]]
+            regs = [r[g][c]["registered_mw"] for r in rows if g in r and c in r[g]]
+            noff = [r[g][c]["not_offered_mw"] for r in rows if g in r and c in r[g]]
             if not regs:
                 continue
             snoff = sorted(noff)
@@ -613,29 +673,36 @@ def build_reserve_registration() -> dict:
                 "days": len(regs),
                 "median_registered_mw": round(sorted(regs)[len(regs) // 2], 1),
                 "median_not_offered_mw": round(snoff[len(snoff) // 2], 1),
-                "median_share_of_registered_pct": (round(
-                    100 * snoff[len(snoff) // 2] / med_reg, 1)
-                    if med_reg > 0 else None),
+                "median_share_of_registered_pct": (
+                    round(100 * snoff[len(snoff) // 2] / med_reg, 1)
+                    if med_reg > 0
+                    else None
+                ),
             }
     return {
         "available": True,
         "days": rows,
         "stats": stats,
-        "note": ("Registered ancillary-services capacity (CAPER) minus the "
-                 "reserve offer book's fullest hour (RTDOR), per grid x "
-                 "commodity per market day: registered reserve capacity that "
-                 "did not appear in the operator's reserve offer book. The "
-                 "same data cut as the generation not-offered screen and the "
-                 "same caveats: a resource can be committed to energy, on "
-                 "outage or derate, testing, or holding reserve under a "
-                 "non-market obligation; registered capacity is a ceiling, "
-                 "not an expectation. It sizes the reserve book against its "
-                 "registration base. Grid via the inferred code prefix."),
-        "src_registered": ("https://www.iemop.ph/market-data/"
-                           "registered-capacity-ancillary-services/"),
+        "note": (
+            "Registered ancillary-services capacity (CAPER) minus the "
+            "reserve offer book's fullest hour (RTDOR), per grid x "
+            "commodity per market day: registered reserve capacity that "
+            "did not appear in the operator's reserve offer book. The "
+            "same data cut as the generation not-offered screen and the "
+            "same caveats: a resource can be committed to energy, on "
+            "outage or derate, testing, or holding reserve under a "
+            "non-market obligation; registered capacity is a ceiling, "
+            "not an expectation. It sizes the reserve book against its "
+            "registration base. Grid via the inferred code prefix."
+        ),
+        "src_registered": (
+            "https://www.iemop.ph/market-data/registered-capacity-ancillary-services/"
+        ),
         "src_offered": "https://www.iemop.ph/market-data/rtd-reserve-offers/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -648,8 +715,7 @@ def _corr(xs: list[float], ys: list[float]) -> float | None:
     sy = sum((y - my) ** 2 for y in ys) ** 0.5
     if sx < 1e-9 or sy < 1e-9:
         return None
-    return round(sum((x - mx) * (y - my) for x, y in zip(xs, ys))
-                 / (sx * sy), 3)
+    return round(sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / (sx * sy), 3)
 
 
 def _rsvpr_open(path: str) -> dict[str, dict[str, dict[int, float]]]:
@@ -671,8 +737,7 @@ def _rsvpr_open(path: str) -> dict[str, dict[str, dict[int, float]]]:
             dt = datetime.strptime(ts, "%m/%d/%Y %I:%M:%S %p")
         except ValueError:
             continue
-        out[grid.lower()].setdefault(com, {})[dt.hour] = (
-            f(r.get("PRICE")) / 1000)
+        out[grid.lower()].setdefault(com, {})[dt.hour] = f(r.get("PRICE")) / 1000
     return out
 
 
@@ -695,15 +760,23 @@ def build_reserve_validation() -> dict:
     price at that interval, per grid x commodity pool."""
     import json as _json
 
-    res_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "data", "derived", "reserve_daily")
+    res_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "reserve_daily",
+    )
     if not os.path.isdir(res_dir):
-        return {"available": False,
-                "note": "no derived reserve days; run pipeline/reserve_offers.py"}
+        return {
+            "available": False,
+            "note": "no derived reserve days; run pipeline/reserve_offers.py",
+        }
     rsvpr_by_day = {day_of(p): p for p in dataset_files("RSVPR")}
     commodities = ("Fr", "Dr", "Ru", "Rd")
     pairs: dict[tuple[str, str], list[tuple[float, float, bool]]] = {
-        (g, c): [] for g in GRIDS_L for c in commodities}
+        (g, c): [] for g in GRIDS_L for c in commodities
+    }
     n_days = 0
     n_short = 0
     n_over = 0
@@ -717,7 +790,7 @@ def build_reserve_validation() -> dict:
         if rsvpr is None:
             continue
         obs = _rsvpr_open(rsvpr)
-        # artifacts derived from schema 4 on record the book's interval;
+        # files derived from schema 4 on record the book's interval;
         # pairing assumes the HH:05 opening interval, so a recorded
         # off-minute hour is skipped and counted instead of mispaired
         book_at = day.get("book_at") or [None] * 24
@@ -762,16 +835,21 @@ def build_reserve_validation() -> dict:
                 "mae_php_kwh": round(sum(abs(m - o) for m, o, _ in pts) / n, 3),
                 "bias_php_kwh": round(sum(m - o for m, o, _ in pts) / n, 3),
                 "correlation": _corr(mod, ob),
-                "exact_hours_pct": round(100 * sum(
-                    1 for m, o, _ in pts if abs(m - o) <= 0.005) / n, 1),
+                "exact_hours_pct": round(
+                    100 * sum(1 for m, o, _ in pts if abs(m - o) <= 0.005) / n, 1
+                ),
                 "n_scarcity_hours": sum(1 for _, _, s in pts if s),
-                "mae_nonscarcity_php_kwh": (round(sum(
-                    abs(m - o) for m, o in calm) / len(calm), 3)
-                    if calm else None),
+                "mae_nonscarcity_php_kwh": (
+                    round(sum(abs(m - o) for m, o in calm) / len(calm), 3)
+                    if calm
+                    else None
+                ),
             }
     if not pools:
-        return {"available": False,
-                "note": "no overlapping reserve-book + RSVPR days yet"}
+        return {
+            "available": False,
+            "note": "no overlapping reserve-book + RSVPR days yet",
+        }
     n_hours_total = sum(len(v) for v in pairs.values())
     return {
         "available": True,
@@ -781,58 +859,69 @@ def build_reserve_validation() -> dict:
         "hours_model_above_pct": round(100 * n_over / n_hours_total, 1),
         "max_model_above_php_kwh": round(max_over, 3),
         "pools": pools,
-        "note": ("Each grid x commodity reserve book (RTDOR, the hour's "
-                 "opening 5-minute interval) cleared at the MW the operator "
-                 "actually scheduled at that same interval (RTDSUM); the "
-                 "marginal offer is the modeled reserve price, scored "
-                 "against the official regional reserve price (RSVPR) at "
-                 "that exact interval. Exact hours match within half a "
-                 "centavo."),
-        "wedge_note": ("Every pool's mean residual is negative: the "
-                       "book-only replay under-prices the official "
-                       "co-optimised price, and the hours where the "
-                       "marginal offer sits above it are noise-level "
-                       "(hours_model_above_pct of scored hours, at most "
-                       "max_model_above_php_kwh). WESM pays reserves the "
-                       "forgone ENERGY margin, not just the reserve offer, "
-                       "so the one-signed pool residual is the "
-                       "co-optimisation opportunity-cost wedge, measured "
-                       "per pool. Closing it needs a joint energy+reserve "
-                       "clear with per-resource books on both sides, which "
-                       "the compacted artifacts drop; that build stays "
-                       "named in the methodology."),
-        "scarcity_note": ("Hours where the scheduled MW sits under the "
-                          "market requirement (RTDSUM MKT_REQT, hourly "
-                          "mean) are counted per pool and excluded from "
-                          "the non-scarcity MAE: when reserves are short, "
-                          "administrative pricing can set RSVPR above any "
-                          "offer in the book."),
+        "note": (
+            "For each grid and reserve product, the calculation uses the "
+            "first 5-minute offer book of the hour and the reserve capacity "
+            "the operator scheduled in that interval. The last offer needed "
+            "sets the calculated reserve price. That price is compared with "
+            "the operator's published regional reserve price for the same "
+            "interval. A match means the difference is no more than half a "
+            "centavo per kWh."
+        ),
+        "wedge_note": (
+            f"The offer-book calculation is lower than the official average "
+            f"price for every grid and product. It is higher in "
+            f"{round(100 * n_over / n_hours_total, 1)}% of scored hours; the "
+            f"largest excess is P{round(max_over, 3):.3f}/kWh. Official reserve "
+            "prices can include the energy revenue a plant gives up when it "
+            "holds capacity in reserve. The public summary data do not identify "
+            "each plant's energy and reserve offer, so this calculation reports "
+            "the measured price difference without assigning all of it to one "
+            "cause."
+        ),
+        "scarcity_note": (
+            "Hours with less scheduled reserve than the market requirement are "
+            "counted for each grid and product. They are excluded from the "
+            "normal-hour mean absolute error because an operator-set scarcity "
+            "price can exceed every offer in the book when reserves are short."
+        ),
         "src": "https://www.iemop.ph/market-data/rtd-reserve-offers/",
         "src_obs": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
 def build_reserve_results() -> dict:
     """The per-resource reserve validation. DIPC reserve results final
     (DIPCRF) is IEMOP's final per-resource cleared reserve, schedule and
-    price per commodity. Two comparisons the pooled RTDOR replay could not
-    make: the final cleared price against the real-time RSVPR (how far the
-    final re-solve moves the reserve price), and the RTDOR book replay's
-    marginal against the same final cleared price (does the book replay
-    reproduce the authoritative final clearing, tighter than against the RTD
-    price). The per-resource cleared schedules it archives are the input the
-    queued joint energy+reserve LP needs."""
+    price per product. It compares the final cleared price with the real-time
+    regional price and compares the price calculated from reserve offers with
+    the final cleared price. The archived plant schedules also support tests
+    that buy energy and reserves together."""
     import json as _json
 
-    rr_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          "..", "data", "derived", "reserve_results_daily")
-    res_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           "..", "data", "derived", "reserve_daily")
+    rr_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "reserve_results_daily",
+    )
+    res_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "reserve_daily",
+    )
     if not os.path.isdir(rr_dir):
-        return {"available": False,
-                "note": "no DIPCRF days; run pipeline/reserve_results.py"}
+        return {
+            "available": False,
+            "note": "no DIPCRF days; run pipeline/reserve_results.py",
+        }
     rsvpr_by_day = {day_of(p): p for p in dataset_files("RSVPR")}
     books_by_day = {}
     if os.path.isdir(res_dir):
@@ -859,15 +948,14 @@ def build_reserve_results() -> dict:
             for c in commodities:
                 final_p = day["cleared_price"][g][c]
                 final_s = day["sched_mw"][g][c]
-                gap = (day.get("rtd_schedule_gap_mw", {})
-                       .get(g, {}).get(c, {}) or {})
+                gap = day.get("rtd_schedule_gap_mw", {}).get(g, {}).get(c, {}) or {}
                 if gap.get("mean") is not None:
                     sched_rev[(g, c)].append(gap["mean"])
                 for h in range(24):
                     fp = final_p[h]
                     if fp is None:
                         continue
-                    for res, _mw, _pr in (day["hours"][g][c][h] or []):
+                    for res, _mw, _pr in day["hours"][g][c][h] or []:
                         resources.add(res)
                     o = obs.get(g, {}).get(c, {}).get(h)
                     if o is not None:
@@ -888,26 +976,19 @@ def build_reserve_results() -> dict:
                 n = len(fp_rtd)
                 pool["vs_rtd_price"] = {
                     "n_hours": n,
-                    "final_mean_php_kwh": round(
-                        sum(a for a, _ in fp_rtd) / n, 3),
-                    "rtd_mean_php_kwh": round(
-                        sum(b for _, b in fp_rtd) / n, 3),
-                    "mae_php_kwh": round(
-                        sum(abs(a - b) for a, b in fp_rtd) / n, 3),
-                    "bias_php_kwh": round(
-                        sum(a - b for a, b in fp_rtd) / n, 3),
+                    "final_mean_php_kwh": round(sum(a for a, _ in fp_rtd) / n, 3),
+                    "rtd_mean_php_kwh": round(sum(b for _, b in fp_rtd) / n, 3),
+                    "mae_php_kwh": round(sum(abs(a - b) for a, b in fp_rtd) / n, 3),
+                    "bias_php_kwh": round(sum(a - b for a, b in fp_rtd) / n, 3),
                 }
             rp = replay[(g, c)]
             if rp:
                 n = len(rp)
                 pool["replay_vs_final"] = {
                     "n_hours": n,
-                    "mae_php_kwh": round(
-                        sum(abs(a - b) for a, b in rp) / n, 3),
-                    "bias_php_kwh": round(
-                        sum(a - b for a, b in rp) / n, 3),
-                    "correlation": _corr([a for a, _ in rp],
-                                         [b for _, b in rp]),
+                    "mae_php_kwh": round(sum(abs(a - b) for a, b in rp) / n, 3),
+                    "bias_php_kwh": round(sum(a - b for a, b in rp) / n, 3),
+                    "correlation": _corr([a for a, _ in rp], [b for _, b in rp]),
                 }
             rev = sched_rev[(g, c)]
             if rev:
@@ -923,44 +1004,48 @@ def build_reserve_results() -> dict:
         "days": n_days,
         "resources_named": len(resources),
         "pools": pools,
-        "note": ("IEMOP's final per-resource cleared reserve (DIPCRF), per "
-                 "commodity. vs_rtd_price compares the final schedule-weighted "
-                 "clearing price against the real-time RSVPR at the same "
-                 "opening interval: the final re-solve's reserve-price "
-                 "movement. replay_vs_final clears the RTDOR reserve book at "
-                 "the final scheduled MW and scores its marginal offer against "
-                 "the final cleared price, a tighter check than against the "
-                 "RTD price. final_vs_rtd_schedule_mw is the mean daily "
-                 "revision of the pool's scheduled reserve between the "
-                 "real-time and final solves (near zero on Luzon, larger on "
-                 "the tight island reserve pools). The per-resource cleared "
-                 "schedules are archived under data/derived/"
-                 "reserve_results_daily/ as the input for the queued joint "
-                 "energy+reserve clear."),
-        "src": ("https://www.iemop.ph/market-data/"
-                "dipc-reserve-results-final/"),
-        "src_rtd": ("https://www.iemop.ph/market-data/"
-                    "rtd-regional-reserve-prices/"),
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "note": (
+            "IEMOP's final plant-level reserve results (DIPCRF), grouped by "
+            "reserve product. The first comparison measures how the final "
+            "price differs from the real-time regional price (RSVPR) in the "
+            "same interval. The second calculates a price from the published "
+            "reserve offers (RTDOR) at the final scheduled capacity and "
+            "compares it with the final price. The schedule field reports the "
+            "average change in scheduled reserve between real-time and final "
+            "results. Plant-level schedules are archived under "
+            "data/derived/reserve_results_daily/."
+        ),
+        "src": ("https://www.iemop.ph/market-data/dipc-reserve-results-final/"),
+        "src_rtd": ("https://www.iemop.ph/market-data/rtd-regional-reserve-prices/"),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
 def build_settlement_side() -> dict:
-    """The sampled settlement-side price record (Pass B measure): the
+    """Load the sampled settlement-side price record: the
     indicative administered price (a cost-substitute, sitting in the cost
     regime on Luzon), the settlement congestion component (empty at the
     one-price-per-island granularity WESM settles at), and the day-ahead
     projection's signed spread to the real-time settlement (a projection,
     out of the replay's scope). Read from the committed sample; each family
-    was measured, not built into the replay."""
+    stays outside the replay for the reasons stated in the sample."""
     import json as _json
 
-    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                     "..", "data", "derived", "settlement_sample.json")
+    p = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "settlement_sample.json",
+    )
     if not os.path.isfile(p):
-        return {"available": False,
-                "note": "no settlement sample; run pipeline/settlement_side.py"}
+        return {
+            "available": False,
+            "note": "no settlement sample; run pipeline/settlement_side.py",
+        }
     s = _json.load(open(p))
     days = s.get("days") or []
     if not days:
@@ -979,15 +1064,18 @@ def build_settlement_side() -> dict:
             continue
         per_grid[g] = {
             "admin_lmp_mean_php_kwh": round(sum(admin) / len(admin), 3),
-            "settlement_lmp_mean_php_kwh": (round(sum(settle) / len(settle), 3)
-                                            if settle else None),
-            "settlement_congestion_max_abs_php_kwh": (round(
-                max(abs(x) for x in cong), 4) if cong else None),
-            "dap_vs_rt_spread_mean_php_kwh": (round(sum(spread) / len(spread), 3)
-                                              if spread else None),
-            "dap_vs_rt_spread_range_php_kwh": ([round(min(spread), 3),
-                                                round(max(spread), 3)]
-                                               if spread else None),
+            "settlement_lmp_mean_php_kwh": (
+                round(sum(settle) / len(settle), 3) if settle else None
+            ),
+            "settlement_congestion_max_abs_php_kwh": (
+                round(max(abs(x) for x in cong), 4) if cong else None
+            ),
+            "dap_vs_rt_spread_mean_php_kwh": (
+                round(sum(spread) / len(spread), 3) if spread else None
+            ),
+            "dap_vs_rt_spread_range_php_kwh": (
+                [round(min(spread), 3), round(max(spread), 3)] if spread else None
+            ),
         }
     return {
         "available": True,
@@ -997,8 +1085,10 @@ def build_settlement_side() -> dict:
         "src_admin": s.get("src_admin"),
         "src_settlement": s.get("src_settlement"),
         "src_dayahead": s.get("src_dayahead"),
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -1006,11 +1096,16 @@ def solar_observed_by_day() -> dict[str, dict[str, float]]:
     """{date: {grid: observed WESM-dispatched solar MWh}} from the committed
     DIPCEF dailies, same SOL/SPV resource classification as
     build_solar_wind_observed. The per-day observed solar energy a replay can
-    reproduce instead of the flat clear-sky credit (roadmap item 8)."""
+    reproduce instead of the flat clear-sky credit."""
     import json as _json
 
-    dd_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          "..", "data", "derived", "dipcef_daily")
+    dd_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "dipcef_daily",
+    )
     if not os.path.isdir(dd_dir):
         return {}
     out: dict[str, dict[str, float]] = {}
@@ -1045,17 +1140,26 @@ def build_solar_wind_observed() -> dict:
     named-alias set for renewable farms whose code carries no fuel token."""
     import json as _json
 
-    dd_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          "..", "data", "derived", "dipcef_daily")
+    dd_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "dipcef_daily",
+    )
     if not os.path.isdir(dd_dir):
-        return {"available": False,
-                "note": "no DIPCEF dailies; run pipeline/fuelmix.py"}
+        return {
+            "available": False,
+            "note": "no DIPCEF dailies; run pipeline/fuelmix.py",
+        }
     from fleet_ph import GRID_FUEL_MW
-    prof_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             "..", "web", "data", "profiles.json")
+
+    prof_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "web", "data", "profiles.json"
+    )
     shape = 5.9
     if os.path.isfile(prof_path):
-        sp = (_json.load(open(prof_path)).get("solar_profile") or [])
+        sp = _json.load(open(prof_path)).get("solar_profile") or []
         if sp:
             shape = sum(sp)
     obs: dict = {(f, g): [] for f in ("solar", "wind") for g in GRIDS_L}
@@ -1073,9 +1177,13 @@ def build_solar_wind_observed() -> dict:
             # farms whose resource code carries no fuel token (BURGOS is the
             # ~150 MW EDC wind farm in Ilocos Norte; its daily energy is
             # wind-scale, impossible for its few MW of co-located solar)
-            fuel = ("solar" if ("SOL" in up or "SPV" in up)
-                    else "wind" if ("WIND" in up or "WPP" in up
-                                    or "BURGOS" in up) else None)
+            fuel = (
+                "solar"
+                if ("SOL" in up or "SPV" in up)
+                else "wind"
+                if ("WIND" in up or "WPP" in up or "BURGOS" in up)
+                else None
+            )
             if fuel:
                 per[(fuel, g)] = per.get((fuel, g), 0.0) + (v.get("mwh") or 0.0)
         for k in obs:
@@ -1091,10 +1199,10 @@ def build_solar_wind_observed() -> dict:
         per_grid[g] = {
             "observed_solar_mwh_day": obs_solar,
             "model_clearsky_solar_mwh_day": model_solar,
-            "observed_over_model_solar": (round(obs_solar / model_solar, 2)
-                                          if obs_solar and model_solar else None),
-            "observed_wind_mwh_day": (round(sum(wnd) / len(wnd), 0)
-                                      if wnd else None),
+            "observed_over_model_solar": (
+                round(obs_solar / model_solar, 2) if obs_solar and model_solar else None
+            ),
+            "observed_wind_mwh_day": (round(sum(wnd) / len(wnd), 0) if wnd else None),
             "installed_solar_mw_assumed": gf.get("solar"),
             "installed_wind_mw_assumed": gf.get("wind"),
         }
@@ -1103,83 +1211,116 @@ def build_solar_wind_observed() -> dict:
         "days": len(obs[("solar", "luzon")]),
         "per_grid": per_grid,
         "clearsky_flh_equiv": round(shape, 2),
-        "note": ("Observed WESM-dispatched solar and wind daily energy per "
-                 "grid (DIPCEF SCHED_MW, post-curtailment), beside the model's "
-                 "clear-sky solar credit (the labeled GRID_FUEL_MW installed "
-                 "solar times the clear-sky hourly shape). The observed/model "
-                 "ratio is not a single curtailment gap: it runs above one on "
-                 "Luzon and below one on the islands, which is the model's "
-                 "national solar SPLIT being approximate, not curtailment. "
-                 "Wind installed capacity is small and its shape is not "
-                 "modeled, so only the observed wind series is shown. Solar "
-                 "and wind are code-classified (SOL/SPV, WIND/WPP) plus a "
-                 "named-alias set for renewable farms whose code carries no "
-                 "fuel token (the Burgos wind farm), a labeled inference. A "
-                 "clean split of "
-                 "curtailment from the installed-split error needs the "
-                 "per-resource registered-capacity join (CAPEG), a named "
-                 "refinement; solar's dominance of the security-pinned "
-                 "operating-point list (security_limits) is the curtailment "
-                 "evidence meanwhile."),
-        "src": ("https://www.iemop.ph/market-data/"
-                "dipc-energy-results-final/"),
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "note": (
+            "Observed WESM-dispatched solar and wind daily energy per "
+            "grid (DIPCEF SCHED_MW, post-curtailment), beside the model's "
+            "clear-sky solar credit (the labeled GRID_FUEL_MW installed "
+            "solar times the clear-sky hourly shape). The observed/model "
+            "ratio is not a single curtailment gap: it runs above one on "
+            "Luzon and below one on the islands, which is the model's "
+            "national solar SPLIT being approximate, not curtailment. "
+            "Wind installed capacity is small and its shape is not "
+            "modeled, so only the observed wind series is shown. Solar "
+            "and wind are code-classified (SOL/SPV, WIND/WPP) plus a "
+            "named-alias set for renewable farms whose code carries no "
+            "fuel token (the Burgos wind farm), a labeled inference. A "
+            "clean split of "
+            "curtailment from the installed-split error needs the "
+            "per-resource registered-capacity join (CAPEG), a named "
+            "refinement; solar's dominance of the security-pinned "
+            "operating-point list (security_limits) is the curtailment "
+            "evidence meanwhile."
+        ),
+        "src": ("https://www.iemop.ph/market-data/dipc-energy-results-final/"),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
 def build_admin_dispatch() -> dict:
-    """The administered-dispatch overlay measurement (Pass E): the MOT-raise
-    record is material in MW but price-inert in the per-fuel block engines
-    (coal is the marginal fuel on ~90 percent of raise hours), so it is
-    measured and documented, not built. Read from the committed derivation
+    """Load the administered-dispatch comparison. The MOT-raise record is large
+    in MW but does not change prices in the per-fuel block models because coal
+    is already marginal on about 90 percent of raise hours. Read the committed
+    calculation
     (pipeline/admin_dispatch.py)."""
     import json as _json
 
-    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                     "..", "data", "derived", "admin_dispatch.json")
+    p = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "admin_dispatch.json",
+    )
     if not os.path.isfile(p):
-        return {"available": False,
-                "note": "no admin-dispatch measure; run pipeline/admin_dispatch.py"}
+        return {
+            "available": False,
+            "note": "no admin-dispatch measure; run pipeline/admin_dispatch.py",
+        }
     d = _json.load(open(p))
-    d.setdefault("disclaimer", "Statistical indicators derived from public "
-                 "data. Patterns may have legitimate explanations.")
+    d.setdefault(
+        "disclaimer",
+        "Statistical indicators derived from public "
+        "data. Patterns may have legitimate explanations.",
+    )
     return d
 
 
 def build_joint_lp_probe() -> dict:
-    """The per-resource joint energy+reserve LP probe (Pass F): prototyped on
-    a sample of grid-hours, it does not reproduce the official co-optimised
-    reserve price, so the reserve wedge stays measured, not closed. Read from
+    """Load the sampled joint energy-and-reserve calculation. It does not
+    reproduce the official co-optimized reserve price, so the model reports
+    the price difference without assigning it. Read from
     the committed derivation (pipeline/joint_lp_probe.py)."""
     import json as _json
 
-    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                     "..", "data", "derived", "joint_lp_probe.json")
+    p = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "joint_lp_probe.json",
+    )
     if not os.path.isfile(p):
-        return {"available": False,
-                "note": "no joint-LP probe; run pipeline/joint_lp_probe.py"}
+        return {
+            "available": False,
+            "note": "no joint-LP probe; run pipeline/joint_lp_probe.py",
+        }
     d = _json.load(open(p))
-    d.setdefault("disclaimer", "Statistical indicators derived from public "
-                 "data. Patterns may have legitimate explanations.")
+    d.setdefault(
+        "disclaimer",
+        "Statistical indicators derived from public "
+        "data. Patterns may have legitimate explanations.",
+    )
     return d
 
 
 def build_subhourly_probe() -> dict:
-    """The sub-hourly negative-price probe (Pass G): the 5-minute sign flips
-    are a knife-edge, sub-hourly resolution is necessary but the crossing
-    margin is finer than the offers pin down. Read from the committed
+    """Load the 5-minute negative-price comparison. A 5-minute calculation is
+    needed, but the public offers do not pin down enough supply detail to
+    reproduce each crossing below zero. Read from the committed
     derivation (pipeline/subhourly_probe.py)."""
     import json as _json
 
-    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                     "..", "data", "derived", "subhourly_probe.json")
+    p = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "subhourly_probe.json",
+    )
     if not os.path.isfile(p):
-        return {"available": False,
-                "note": "no sub-hourly probe; run pipeline/subhourly_probe.py"}
+        return {
+            "available": False,
+            "note": "no sub-hourly probe; run pipeline/subhourly_probe.py",
+        }
     d = _json.load(open(p))
-    d.setdefault("disclaimer", "Statistical indicators derived from public "
-                 "data. Patterns may have legitimate explanations.")
+    d.setdefault(
+        "disclaimer",
+        "Statistical indicators derived from public "
+        "data. Patterns may have legitimate explanations.",
+    )
     return d
 
 
@@ -1276,15 +1417,13 @@ def hvdc_binding_caps() -> dict[str, dict[str, list[float]]]:
     return out
 
 
-def build_reserve_aware(reserve_validation: dict, reserve_prices: dict,
-                        prices: dict) -> dict:
-    """The co-optimized reserve-aware price per grid (roadmap item 4): the
-    energy price plus the reserve price, split into the part the offer stack
-    prices (the pool-level joint clear that reproduces RSVPR on requirement-met
-    hours) and the administered scarcity wedge (observed minus modeled, the
-    empirical adder on short hours that is not in the public offers). The wedge
-    stays reported, not hidden: this is the honest partial, energy plus the
-    reserve stack clear, with the scarcity uplift labeled."""
+def build_reserve_aware(
+    reserve_validation: dict, reserve_prices: dict, prices: dict
+) -> dict:
+    """Calculate the energy price plus the reserve price for each grid.
+
+    Split the reserve price into the price calculated from published offers and
+    the operator-set scarcity addition used when scheduled reserve is short."""
     pv = reserve_validation.get("pools") or {}
     grids = {}
     for g in ("luzon", "visayas", "mindanao"):
@@ -1292,10 +1431,16 @@ def build_reserve_aware(reserve_validation: dict, reserve_prices: dict,
         if not pools:
             continue
         # requirement-weighted-ish mean across the reserve commodities
-        obs = [p["observed_mean_php_kwh"] for p in pools.values()
-               if p.get("observed_mean_php_kwh") is not None]
-        mod = [p["modeled_mean_php_kwh"] for p in pools.values()
-               if p.get("modeled_mean_php_kwh") is not None]
+        obs = [
+            p["observed_mean_php_kwh"]
+            for p in pools.values()
+            if p.get("observed_mean_php_kwh") is not None
+        ]
+        mod = [
+            p["modeled_mean_php_kwh"]
+            for p in pools.values()
+            if p.get("modeled_mean_php_kwh") is not None
+        ]
         if not obs or not mod:
             continue
         series = prices.get("series", {}).get(g) or []
@@ -1309,72 +1454,101 @@ def build_reserve_aware(reserve_validation: dict, reserve_prices: dict,
             "reserve_offer_clear_php_kwh": r_mod,
             "reserve_scarcity_wedge_php_kwh": wedge,
             "reserve_total_php_kwh": r_obs,
-            "reserve_aware_php_kwh": (round(energy + r_obs, 3)
-                                      if energy is not None else None),
+            "reserve_aware_php_kwh": (
+                round(energy + r_obs, 3) if energy is not None else None
+            ),
         }
     return {
         "available": bool(grids),
         "by_grid": grids,
-        "note": ("The reserve-aware price is the energy price plus the reserve "
-                 "price. The reserve price splits into what the reserve offer "
-                 "stack itself clears (the pool-level joint clear, which "
-                 "reproduces the official RSVPR on requirement-met hours) and "
-                 "the administered scarcity wedge on short hours (observed "
-                 "minus modeled), an empirical adder that is not in the public "
-                 "offers. The wedge is reported here, not tuned away: capacity "
-                 "holding reserve cannot also sell energy, and scarce hours "
-                 "price on an administered curve the offers do not carry."),
+        "note": (
+            "The combined price is the energy price plus the official reserve "
+            "price. The reserve price is split into the price calculated from "
+            "published reserve offers and the operator-set scarcity addition "
+            "used when scheduled reserve is short. The public offers do not "
+            "contain that scarcity addition, so it is shown separately."
+        ),
         "src": "https://www.iemop.ph/market-data/rtd-regional-reserve-prices/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
 def build_corridor_cap_probe() -> dict:
-    """The RTDHS corridor-cap experiment (roadmap item 7): feeding the
+    """Read the RTDHS corridor-cap comparison.
+
+    Feeding the
     operator's own binding-schedule caps into the LP lowers Luzon price MAE a
-    little but worsens price correlation on every grid, so the shipped engine
+    little but worsens price correlation on every grid, so the current engine
     keeps the advisory-based caps. Read from the committed derivation
     (pipeline/corridor_cap_probe.py)."""
     import json as _json
 
-    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                     "..", "data", "derived", "corridor_cap_probe.json")
+    p = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "corridor_cap_probe.json",
+    )
     if not os.path.isfile(p):
-        return {"available": False,
-                "note": ("no corridor-cap probe; run "
-                         "pipeline/corridor_cap_probe.py --derive")}
+        return {
+            "available": False,
+            "note": (
+                "no corridor-cap probe; run pipeline/corridor_cap_probe.py --derive"
+            ),
+        }
     return _json.load(open(p))
 
 
 def build_vre_probe() -> dict:
-    """The observed-solar backcast experiment (roadmap item 8): replaying each
+    """Read the recorded-solar historical comparison.
+
+    Replaying each
     day's DIPCEF solar energy on the flat clear-sky shape worsens the price
-    correlation, so the shipped backcast keeps the clear-sky credit. Read from
+    correlation, so the current historical replay keeps the clear-sky credit. Read from
     the committed derivation (pipeline/vre_probe.py)."""
     import json as _json
 
-    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                     "..", "data", "derived", "vre_probe.json")
+    p = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "vre_probe.json",
+    )
     if not os.path.isfile(p):
-        return {"available": False,
-                "note": "no VRE probe; run pipeline/vre_probe.py --derive"}
+        return {
+            "available": False,
+            "note": "no VRE probe; run pipeline/vre_probe.py --derive",
+        }
     return _json.load(open(p))
 
 
 def build_uc_probe() -> dict:
-    """The unit-commitment backcast experiment (roadmap item 9): adding binary
+    """Read the unit-commitment historical comparison.
+
+    Adding binary
     commitment and a generic minimum-stable floor to the thermal blocks worsens
     the price correlation everywhere (block-level min-stable is too coarse; a
     per-PH-unit registry would be needed), so the LP stays the default engine.
     Read from the committed derivation (pipeline/uc_probe.py)."""
     import json as _json
 
-    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                     "..", "data", "derived", "uc_probe.json")
+    p = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "uc_probe.json",
+    )
     if not os.path.isfile(p):
-        return {"available": False,
-                "note": "no UC probe; run pipeline/uc_probe.py --derive"}
+        return {
+            "available": False,
+            "note": "no UC probe; run pipeline/uc_probe.py --derive",
+        }
     return _json.load(open(p))
 
 
@@ -1393,11 +1567,18 @@ def build_ramp_probe(profiles: dict | None = None) -> dict:
     and quietly overstate the headroom."""
     import json as _json
 
-    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                     "..", "data", "derived", "ramp_probe.json")
+    p = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "ramp_probe.json",
+    )
     if not os.path.isfile(p):
-        return {"available": False,
-                "note": "no ramp probe; run pipeline/ramp_probe.py --derive"}
+        return {
+            "available": False,
+            "note": "no ramp probe; run pipeline/ramp_probe.py --derive",
+        }
     out = _json.load(open(p))
     if not (out.get("available") and profiles):
         return out
@@ -1409,16 +1590,24 @@ def build_ramp_probe(profiles: dict | None = None) -> dict:
     floors = {}
     for basis in ("offered_best", "offered_slow", "online_best", "online_slow"):
         floors[basis] = {
-            g: (round(min(h[basis][g] for h in per_hour.values()) / worst[g], 2)
-                if per_hour and worst.get(g) else None) for g in worst}
+            g: (
+                round(min(h[basis][g] for h in per_hour.values()) / worst[g], 2)
+                if per_hour and worst.get(g)
+                else None
+            )
+            for g in worst
+        }
     out["headroom_floors"] = floors
     out["fleet_ramp_over_worst_demand_rise"] = floors["offered_best"]
     out["strict_headroom_online_slowest_band"] = floors["online_slow"]
     # the verdict rests on the STRICT basis (online units, slowest band, worst
     # of the sampled hours), never the flattering offered-best read
     strict = [v for v in floors["online_slow"].values() if v is not None]
-    out["verdict"] = ("would_bind" if any(v < 1.0 for v in strict)
-                      else "measured_inert_at_hourly_resolution")
+    out["verdict"] = (
+        "would_bind"
+        if any(v < 1.0 for v in strict)
+        else "does_not_bind_at_hourly_resolution"
+    )
     out["headroom_min"] = min(strict) if strict else None
     out["headroom_max"] = max(strict) if strict else None
     return out
@@ -1431,12 +1620,13 @@ def build_flow_record(profiles: dict) -> dict:
     plus the operator's binding-interval shares."""
     hs = rtdhs_hourly()
     if not hs:
-        return {"available": False,
-                "note": "RTDHS dataset absent; corridor record unavailable."}
+        return {
+            "available": False,
+            "note": "RTDHS dataset absent; corridor record unavailable.",
+        }
     prof_by_date = {d["date"]: d for d in profiles.get("days", [])}
     corridors = {}
-    for key, label in (("lv", "Luzon to Visayas"),
-                       ("vm", "Visayas to Mindanao")):
+    for key, label in (("lv", "Luzon to Visayas"), ("vm", "Visayas to Mindanao")):
         pts = []
         for date, rec in hs.items():
             nf = (prof_by_date.get(date) or {}).get("net_flow") or {}
@@ -1464,22 +1654,27 @@ def build_flow_record(profiles: dict) -> dict:
         "available": bool(corridors),
         "days": len(hs),
         "corridors": corridors,
-        "note": ("The corridor flows the replay's demand construction "
-                 "implies (net market imports and exports in the RTD "
-                 "regional summaries) against the flows the operator "
-                 "itself scheduled per 5-minute interval (RTDHS): two "
-                 "independent published records of the same wire. The "
-                 "binding share is the fraction of intervals the operator "
-                 "flagged the corridor CONGESTION_FLAG=Y, per-interval "
-                 "binding truth the advisory-window inference never had."),
+        "note": (
+            "The corridor flows the replay's demand construction "
+            "implies (net market imports and exports in the RTD "
+            "regional summaries) against the flows the operator "
+            "itself scheduled per 5-minute interval (RTDHS): two "
+            "independent published records of the same wire. The "
+            "binding share is the fraction of intervals the operator "
+            "flagged the corridor CONGESTION_FLAG=Y, per-interval "
+            "binding truth the advisory-window inference never had."
+        ),
         "src": "https://www.iemop.ph/market-data/rtd-hvdc-schedules/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
-def build_gwap_trigger(chrono_golden: dict | None = None,
-                       profiles: dict | None = None) -> dict:
+def build_gwap_trigger(
+    chrono_golden: dict | None = None, profiles: dict | None = None
+) -> dict:
     """The ERC secondary-cap trigger, computed instead of cited: the
     72-hour rolling mean of the published 5-minute GWAP per region, its
     headroom to the P12.413/kWh trigger (breach imposes the P7.423/kWh
@@ -1490,8 +1685,10 @@ def build_gwap_trigger(chrono_golden: dict | None = None,
 
     files = dataset_files("GWAPF")
     if not files:
-        return {"available": False,
-                "note": "GWAPF dataset absent; trigger series unavailable."}
+        return {
+            "available": False,
+            "note": "GWAPF dataset absent; trigger series unavailable.",
+        }
     from constants_ph import MARKET_ANCHORS
     from fleet_ph import WESM_OFFER_CAP_PHP_KWH as OFFER_CAP
 
@@ -1501,8 +1698,13 @@ def build_gwap_trigger(chrono_golden: dict | None = None,
     # pricing region, which is the operative regional entity while the
     # interconnection is in service; dropping it silently loses the row that
     # matters most for the regional test below.
-    region_key = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao",
-                  "System": "system", "CLUZ_CVIS": "luzon_visayas"}
+    region_key = {
+        "CLUZ": "luzon",
+        "CVIS": "visayas",
+        "CMIN": "mindanao",
+        "System": "system",
+        "CLUZ_CVIS": "luzon_visayas",
+    }
     series: dict[str, dict] = {k: {} for k in region_key.values()}
     for path in files:
         for r in rows_of(path):
@@ -1513,8 +1715,11 @@ def build_gwap_trigger(chrono_golden: dict | None = None,
             # the midnight-ending interval is serialized as a bare date;
             # midnight of that printed date IS the interval-ending moment
             try:
-                dt = (datetime.strptime(ts, "%m/%d/%Y") if ":" not in ts
-                      else datetime.strptime(ts, "%m/%d/%Y %I:%M:%S %p"))
+                dt = (
+                    datetime.strptime(ts, "%m/%d/%Y")
+                    if ":" not in ts
+                    else datetime.strptime(ts, "%m/%d/%Y %I:%M:%S %p")
+                )
             except ValueError:
                 continue
             series[k][dt] = f(r.get("GWAP")) / 1000
@@ -1542,8 +1747,10 @@ def build_gwap_trigger(chrono_golden: dict | None = None,
                     breaches += 1
         if best is None:
             return None, 0
-        return {"ends": best[0].isoformat(sep=" "),
-                "rolling_php_kwh": round(best[1], 3)}, breaches
+        return {
+            "ends": best[0].isoformat(sep=" "),
+            "rolling_php_kwh": round(best[1], 3),
+        }, breaches
 
     # Intervals priced ABOVE the market's own P32/kWh offer cap are not market
     # clears: they are the dispatch engine's violation/scarcity coefficients
@@ -1563,17 +1770,21 @@ def build_gwap_trigger(chrono_golden: dict | None = None,
         per_region[k] = {
             "n_intervals": len(vals),
             "max_interval_php_kwh": round(max(vals.values()), 3),
-            "n_intervals_above_offer_cap": sum(1 for v in vals.values()
-                                               if v > OFFER_CAP),
+            "n_intervals_above_offer_cap": sum(
+                1 for v in vals.values() if v > OFFER_CAP
+            ),
             "max_rolling_72h": peak,
-            "headroom_php_kwh": (round(trigger - peak["rolling_php_kwh"], 3)
-                                 if peak else None),
+            "headroom_php_kwh": (
+                round(trigger - peak["rolling_php_kwh"], 3) if peak else None
+            ),
             "n_breach_windows": breaches,
             "offer_cap_held": {
                 "max_rolling_72h": capped_peak,
                 "headroom_php_kwh": (
                     round(trigger - capped_peak["rolling_php_kwh"], 3)
-                    if capped_peak else None),
+                    if capped_peak
+                    else None
+                ),
                 "n_breach_windows": capped_breaches,
             },
         }
@@ -1591,52 +1802,59 @@ def build_gwap_trigger(chrono_golden: dict | None = None,
                     continue
                 for g in GRIDS_L:
                     hrs = (d.get("lwap") or {}).get(g) or []
-                    if sum(1 for v in hrs
-                           if v is not None and abs(v - lvl) < 0.05) >= 4:
+                    if (
+                        sum(1 for v in hrs if v is not None and abs(v - lvl) < 0.05)
+                        >= 4
+                    ):
                         pinned += 1
             clamp_scan[str(lvl)] = pinned
 
-    marquee = None
+    reference_case = None
     cases = {c["label"]: c for c in (chrono_golden or {}).get("cases", [])}
-    base = cases.get("observed offer book, no levers")
-    wave = cases.get("DICT 1.5 GW on the observed offer book")
-    if base and wave and series["luzon"]:
+    base = cases.get("observed offer book, unchanged scenario")
+    demand_case = cases.get("DICT 1.5 GW on the observed offer book")
+    if base and demand_case and series["luzon"]:
         gday = chrono_golden["date"]
-        uplift = round(wave["expect"]["summary"]["mean_price"]["luzon"]
-                       - base["expect"]["summary"]["mean_price"]["luzon"], 2)
+        uplift = round(
+            demand_case["expect"]["summary"]["mean_price"]["luzon"]
+            - base["expect"]["summary"]["mean_price"]["luzon"],
+            2,
+        )
         d0 = datetime.strptime(gday, "%Y-%m-%d")
         d1 = d0 + timedelta(days=1)
-        lifted = {t: v + uplift if d0 < t <= d1 else v
-                  for t, v in series["luzon"].items()}
+        lifted = {
+            t: v + uplift if d0 < t <= d1 else v for t, v in series["luzon"].items()
+        }
         # score only windows that end on the scenario day or inside the
         # 72 hours after it, against the SAME windows unlifted: otherwise
         # the whole baseline rides along and a May breach would flag a
         # June scenario
         horizon = d1 + window
-        peak, _ = _roll({t: v for t, v in lifted.items() if t <= horizon},
-                        after=d0)
-        base_peak, _ = _roll({t: v for t, v in series["luzon"].items()
-                              if t <= horizon}, after=d0)
-        marquee = {
+        peak, _ = _roll({t: v for t, v in lifted.items() if t <= horizon}, after=d0)
+        base_peak, _ = _roll(
+            {t: v for t, v in series["luzon"].items() if t <= horizon}, after=d0
+        )
+        reference_case = {
             "scenario_day": gday,
             "uplift_php_kwh": uplift,
             "scenario_max_rolling_72h": peak,
             "baseline_max_rolling_72h": base_peak,
-            "trips_trigger": bool(peak
-                                  and peak["rolling_php_kwh"] > trigger),
-            "baseline_trips": bool(base_peak
-                                   and base_peak["rolling_php_kwh"]
-                                   > trigger),
-            "note": ("The studio's widest-swing as-bid scenario adds the "
-                     "DICT wave's Luzon daily-mean uplift uniformly to the "
-                     "scenario day's observed Luzon GWAP intervals and "
-                     "recomputes the rolling trigger over the windows "
-                     "ending on that day or in the 72 hours after it, "
-                     "beside the same windows unlifted. An arithmetic flag "
-                     "under the rule's stated numbers, not a prediction: "
-                     "the window's own record (mechanism_note) shows the "
-                     "operational trigger did not clamp even above the "
-                     "threshold."),
+            "trips_trigger": bool(peak and peak["rolling_php_kwh"] > trigger),
+            "baseline_trips": bool(
+                base_peak and base_peak["rolling_php_kwh"] > trigger
+            ),
+            "note": (
+                "The studio's widest-swing as-bid scenario adds the "
+                "DICT demand case's Luzon daily-mean increase uniformly to the "
+                "scenario day's observed Luzon GWAP intervals and "
+                "recomputes the rolling trigger over the windows "
+                "ending on that day or in the 72 hours after it, "
+                "beside the same windows unlifted. An arithmetic flag "
+                "under the rule's stated numbers, not a prediction: "
+                "the window's own record (mechanism_note) shows the "
+                "operational trigger did not clamp even above the "
+                "threshold."
+            ),
         }
 
     return {
@@ -1646,65 +1864,75 @@ def build_gwap_trigger(chrono_golden: dict | None = None,
         "cap_php_kwh": cap,
         "per_region": per_region,
         "clamp_scan_days_pinned": clamp_scan,
-        "marquee": marquee,
-        "note": ("The secondary price cap's own arithmetic, run on the "
-                 "operator's published series: the 72-hour rolling mean of "
-                 "the 5-minute generator-weighted average price (GWAPF), "
-                 "per region, for the combined Luzon-Visayas region, and "
-                 "for the System row as published. Only windows with all "
-                 "864 intervals present are scored, so archive gaps cannot "
-                 "fake a calm window."),
-        "applies_note": ("Which row is the operative trigger is published, "
-                         "not a guess. Under ERC Res. 26 s.2025 the "
-                         "system-wide rolling average is the default "
-                         "trigger; the regional or island cap applies ONLY "
-                         "while a grid interconnection is on outage, using "
-                         "the same cap value, threshold, and 72-hour "
-                         "period. So the per-region breach counts below are "
-                         "not exposure on their own: they are exposure only "
-                         "for intervals when the interconnection was out. "
-                         "Read the system row first."),
-        "series_note": ("One named difference rather than an unknown: the "
-                        "rule monitors the EX-ANTE rolling GWAP, and GWAPF "
-                        "is the final (ex-post) series. The final series is "
-                        "the closest published proxy and is what runs here, "
-                        "but it is not byte-for-byte the series the "
-                        "operational trigger reads."),
-        "mechanism_note": ("Read the offer-cap-held numbers, not the raw "
-                           "ones. The raw file carries intervals priced far "
-                           "above the market's own P32/kWh offer cap (up to "
-                           "P165.05/kWh here), which are violation and "
-                           "scarcity coefficients rather than market "
-                           "clears; the market's own price-substitution "
-                           "record caps at exactly the offer cap with no "
-                           "exceptions. Holding the series at the cap does "
-                           "NOT make the breach story go away, and this "
-                           "block should not be read as if it does. It "
-                           "removes the story for LUZON only, where the "
-                           "above-cap intervals generate the entire breach "
-                           "count: held at the cap Luzon breaches zero "
-                           "windows and peaks BELOW the threshold. The "
-                           "operative System row still breaches held at the "
-                           "cap, and so does the combined Luzon-Visayas "
-                           "row; Visayas and Mindanao run hot either way, "
-                           "and those two are the rows that bind only "
-                           "during an interconnection outage "
-                           "(applies_note). Both the raw and held counts "
-                           "are in per_region so the reader can check "
-                           "which is which. Against all of that, the "
-                           "observed price record shows no day pinned at "
-                           "either the current (P7.423) or prior (P6.245) "
-                           "cap level (clamp_scan), so the gap between the "
-                           "computed trigger and the operational one is "
-                           "narrowed by the offer-cap correction but not "
-                           "closed. The residual unknown is the weighting "
-                           "and the imposition and lifting mechanics, "
-                           "which the public file alone does not "
-                           "reproduce."),
+        "reference_case": reference_case,
+        "note": (
+            "The secondary price cap's own arithmetic, run on the "
+            "operator's published series: the 72-hour rolling mean of "
+            "the 5-minute generator-weighted average price (GWAPF), "
+            "per region, for the combined Luzon-Visayas region, and "
+            "for the System row as published. Only windows with all "
+            "864 intervals present are scored, so archive gaps cannot "
+            "fake a calm window."
+        ),
+        "applies_note": (
+            "Which row is the operative trigger is published, "
+            "not a guess. Under ERC Res. 26 s.2025 the "
+            "system-wide rolling average is the default "
+            "trigger; the regional or island cap applies ONLY "
+            "while a grid interconnection is on outage, using "
+            "the same cap value, threshold, and 72-hour "
+            "period. So the per-region breach counts below are "
+            "not exposure on their own: they are exposure only "
+            "for intervals when the interconnection was out. "
+            "Read the system row first."
+        ),
+        "series_note": (
+            "One named difference rather than an unknown: the "
+            "rule monitors the EX-ANTE rolling GWAP, and GWAPF "
+            "is the final (ex-post) series. The final series is "
+            "the closest published proxy and is what runs here, "
+            "but it is not byte-for-byte the series the "
+            "operational trigger reads."
+        ),
+        "mechanism_note": (
+            "Read the offer-cap-held numbers, not the raw "
+            "ones. The raw file carries intervals priced far "
+            "above the market's own P32/kWh offer cap (up to "
+            "P165.05/kWh here), which are violation and "
+            "scarcity coefficients rather than market "
+            "clears; the market's own price-substitution "
+            "record caps at exactly the offer cap with no "
+            "exceptions. Holding the series at the cap does "
+            "NOT make the breach story go away, and this "
+            "block should not be read as if it does. It "
+            "removes the story for LUZON only, where the "
+            "above-cap intervals generate the entire breach "
+            "count: held at the cap Luzon breaches zero "
+            "windows and peaks BELOW the threshold. The "
+            "operative System row still breaches held at the "
+            "cap, and so does the combined Luzon-Visayas "
+            "row; Visayas and Mindanao run hot either way, "
+            "and those two are the rows that bind only "
+            "during an interconnection outage "
+            "(applies_note). Both the raw and held counts "
+            "are in per_region so the reader can check "
+            "which is which. Against all of that, the "
+            "observed price record shows no day pinned at "
+            "either the current (P7.423) or prior (P6.245) "
+            "cap level (clamp_scan), so the gap between the "
+            "computed trigger and the operational one is "
+            "narrowed by the offer-cap correction but not "
+            "closed. The residual unknown is the weighting "
+            "and the imposition and lifting mechanics, "
+            "which the public file alone does not "
+            "reproduce."
+        ),
         "src": "https://www.iemop.ph/market-data/generator-weighted-average-price-final/",
         "src_rule": MARKET_ANCHORS["src_secondary_cap"],
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -1715,12 +1943,12 @@ def build_constrained_on(fleet: dict) -> dict:
     the congestion story with unit names, not just shadow prices."""
     files = dataset_files("PSMCOG")
     if not files:
-        return {"available": False,
-                "note": "PSMCOG dataset absent; constrained-on roster "
-                        "unavailable."}
+        return {
+            "available": False,
+            "note": "PSMCOG dataset absent; constrained-on roster unavailable.",
+        }
     rows_by_name = {p["name"]: p for p in fleet.get("plants", [])}
-    grids_upper = {"LUZON": "luzon", "VISAYAS": "visayas",
-                   "MINDANAO": "mindanao"}
+    grids_upper = {"LUZON": "luzon", "VISAYAS": "visayas", "MINDANAO": "mindanao"}
     per_res: dict[str, dict] = {}
     per_grid = {g: 0 for g in GRIDS_L}
     days = []
@@ -1739,26 +1967,40 @@ def build_constrained_on(fleet: dict) -> dict:
             res_seen.add(res)
             pmax = max(pmax, price)
             per_grid[g] += 1
-            e = per_res.setdefault(res, {
-                "resource": res, "grid": g, "n_intervals": 0,
-                "price_sum": 0.0, "max_price_php_kwh": 0.0})
+            e = per_res.setdefault(
+                res,
+                {
+                    "resource": res,
+                    "grid": g,
+                    "n_intervals": 0,
+                    "price_sum": 0.0,
+                    "max_price_php_kwh": 0.0,
+                },
+            )
             e["n_intervals"] += 1
             e["price_sum"] += price
             e["max_price_php_kwh"] = max(e["max_price_php_kwh"], price)
-        days.append({"date": day, "n_intervals": n,
-                     "n_resources": len(res_seen),
-                     "max_price_php_kwh": round(pmax, 3)})
+        days.append(
+            {
+                "date": day,
+                "n_intervals": n,
+                "n_resources": len(res_seen),
+                "max_price_php_kwh": round(pmax, 3),
+            }
+        )
     top = []
     for e in sorted(per_res.values(), key=lambda x: -x["n_intervals"])[:15]:
         fuel, _ = _resolve(e["resource"], rows_by_name)
-        top.append({
-            "resource": e["resource"],
-            "grid": e["grid"],
-            "fuel": fuel,
-            "n_intervals": e["n_intervals"],
-            "mean_price_php_kwh": round(e["price_sum"] / e["n_intervals"], 3),
-            "max_price_php_kwh": round(e["max_price_php_kwh"], 3),
-        })
+        top.append(
+            {
+                "resource": e["resource"],
+                "grid": e["grid"],
+                "fuel": fuel,
+                "n_intervals": e["n_intervals"],
+                "mean_price_php_kwh": round(e["price_sum"] / e["n_intervals"], 3),
+                "max_price_php_kwh": round(e["max_price_php_kwh"], 3),
+            }
+        )
     return {
         "available": True,
         "days": days,
@@ -1766,21 +2008,27 @@ def build_constrained_on(fleet: dict) -> dict:
         "n_resources": len(per_res),
         "per_grid_intervals": per_grid,
         "top": top,
-        "note": ("The generators the operator names as constrained ON per "
-                 "5-minute interval (PSM constrained-on list): units that "
-                 "network or security constraints forced to run out of "
-                 "merit, with the cleared or substituted price. These are "
-                 "administered outcomes the pricing methodology carries, "
-                 "not market clearing, and they put unit names on the "
-                 "congestion story the shadow-price league tells in "
-                 "equipment terms. A final-calculation dataset, published "
-                 "about two weeks behind the market day."),
-        "fuel_note": ("Fuel per resource comes from the pasa alias table "
-                      "into the DOE fleet; codes without a confident alias "
-                      "show no fuel rather than a guessed one."),
+        "note": (
+            "The generators the operator names as constrained ON per "
+            "5-minute interval (PSM constrained-on list): units that "
+            "network or security constraints forced to run out of "
+            "merit, with the cleared or substituted price. These are "
+            "administered outcomes the pricing methodology carries, "
+            "not market clearing, and they put unit names on the "
+            "congestion story the shadow-price league tells in "
+            "equipment terms. A final-calculation dataset, published "
+            "about two weeks behind the market day."
+        ),
+        "fuel_note": (
+            "Fuel per resource comes from the pasa alias table "
+            "into the DOE fleet; codes without a confident alias "
+            "show no fuel rather than a guessed one."
+        ),
         "src": "https://www.iemop.ph/market-data/psm-constrained-on-generators/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -1793,15 +2041,21 @@ def build_security_limits(fleet: dict) -> dict:
     pinned share is computed below and guarded in the methodology prose."""
     files = dataset_files("RTDSL")
     if not files:
-        return {"available": False,
-                "note": "RTDSL dataset absent; security limits unavailable."}
+        return {
+            "available": False,
+            "note": "RTDSL dataset absent; security limits unavailable.",
+        }
     rows_by_name = {p["name"]: p for p in fleet.get("plants", [])}
-    # RTDSL region values are the CLUZ/CVIS/CMIN codes, not the full names
-    # PSMCOG uses (the round-8 diff review caught the full-name map baking
-    # a dead grid field)
-    grid_names = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao",
-                  "LUZON": "luzon", "VISAYAS": "visayas",
-                  "MINDANAO": "mindanao"}
+    # RTDSL uses CLUZ/CVIS/CMIN while PSMCOG uses full region names. Both
+    # forms must map to a grid.
+    grid_names = {
+        "CLUZ": "luzon",
+        "CVIS": "visayas",
+        "CMIN": "mindanao",
+        "LUZON": "luzon",
+        "VISAYAS": "visayas",
+        "MINDANAO": "mindanao",
+    }
     per_res: dict[str, dict] = {}
     days = []
     n_windows_total = 0
@@ -1817,10 +2071,14 @@ def build_security_limits(fleet: dict) -> dict:
             pt = (r.get("PARAMETER_TYPE") or "").strip()
             if not res or pt not in ("MAX_OPERATING_MW", "MIN_OPERATING_MW"):
                 continue
-            k = (res, (r.get("START_TIME") or "").strip(),
-                 (r.get("END_TIME") or "").strip())
-            w = wins.setdefault(k, {
-                "grid": grid_names.get((r.get("REGION_NAME") or "").strip())})
+            k = (
+                res,
+                (r.get("START_TIME") or "").strip(),
+                (r.get("END_TIME") or "").strip(),
+            )
+            w = wins.setdefault(
+                k, {"grid": grid_names.get((r.get("REGION_NAME") or "").strip())}
+            )
             w[pt] = f(r.get("PARAMETER_VALUE"))
         n_win = n_pin = 0
         res_seen = set()
@@ -1836,57 +2094,68 @@ def build_security_limits(fleet: dict) -> dict:
             pinned = abs(w["MAX_OPERATING_MW"] - w["MIN_OPERATING_MW"]) < 0.05
             if pinned:
                 n_pin += 1
-            e = per_res.setdefault(res, {
-                "resource": res, "grid": w.get("grid"), "n_windows": 0,
-                "max_mw": 0.0})
+            e = per_res.setdefault(
+                res,
+                {"resource": res, "grid": w.get("grid"), "n_windows": 0, "max_mw": 0.0},
+            )
             e["n_windows"] += 1
             e["max_mw"] = max(e["max_mw"], w["MAX_OPERATING_MW"])
         n_windows_total += n_win
         n_pinned_total += n_pin
-        days.append({"date": day, "n_windows": n_win,
-                     "n_resources": len(res_seen)})
+        days.append({"date": day, "n_windows": n_win, "n_resources": len(res_seen)})
     top = []
     for e in sorted(per_res.values(), key=lambda x: -x["n_windows"])[:15]:
         fuel, _ = _resolve(e["resource"], rows_by_name)
-        top.append({
-            "resource": e["resource"],
-            "grid": e["grid"],
-            "fuel": fuel,
-            "n_windows": e["n_windows"],
-            "max_mw": round(e["max_mw"], 1),
-        })
+        top.append(
+            {
+                "resource": e["resource"],
+                "grid": e["grid"],
+                "fuel": fuel,
+                "n_windows": e["n_windows"],
+                "max_mw": round(e["max_mw"], 1),
+            }
+        )
     return {
         "available": True,
         "days": days,
         "n_days": len(days),
         "n_resources": len(per_res),
         "n_windows": n_windows_total,
-        "pinned_share_pct": (round(100 * n_pinned_total / n_windows_total, 1)
-                             if n_windows_total else None),
+        "pinned_share_pct": (
+            round(100 * n_pinned_total / n_windows_total, 1)
+            if n_windows_total
+            else None
+        ),
         "top": top,
-        "note": ("The per-resource security limits the operator used in "
-                 "real-time dispatch (RTDSL): each window names a resource "
-                 "and the MAX and MIN operating MW security constraints "
-                 "held it to. Where the two are equal (pinned_share_pct of "
-                 "archived windows), the constraint is a fixed "
-                 "security-constrained operating point, the physical "
-                 "record of which units the grid's security limits held "
-                 "and to what MW. Published next-day. A window revised "
-                 "within a file resolves to the latest run's value; a "
-                 "window spanning midnight appears in both daily files "
-                 "and counts once."),
-        "fuel_note": ("Fuel per resource comes from the pasa alias table "
-                      "into the DOE fleet; codes without a confident alias "
-                      "show no fuel rather than a guessed one."),
+        "note": (
+            "The per-resource security limits the operator used in "
+            "real-time dispatch (RTDSL): each window names a resource "
+            "and the MAX and MIN operating MW security constraints "
+            "held it to. Where the two are equal (pinned_share_pct of "
+            "archived windows), the constraint is a fixed "
+            "security-constrained operating point, the physical "
+            "record of which units the grid's security limits held "
+            "and to what MW. Published next-day. A window revised "
+            "within a file resolves to the latest run's value; a "
+            "window spanning midnight appears in both daily files "
+            "and counts once."
+        ),
+        "fuel_note": (
+            "Fuel per resource comes from the pasa alias table "
+            "into the DOE fleet; codes without a confident alias "
+            "show no fuel rather than a guessed one."
+        ),
         "src": "https://www.iemop.ph/market-data/security-limits-used-in-rtd/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
 def build_so_instructions(fleet: dict) -> dict:
     """The System Operator's own out-of-merit dispatch record, three
-    sibling publications the round-9 audit surfaced: the weekly processed
+    related publications found in a later source check: the weekly processed
     MOT-raise re-dispatch list (MOTRD; same schema and cadence as the
     must-run list, but the full record), the per-grid dispatch
     instruction log (SODIR; dailies plus weekly compilations, dailies
@@ -1897,15 +2166,21 @@ def build_so_instructions(fleet: dict) -> dict:
     motrd = dataset_files("MOTRD")
     sodir = dataset_files("SODIR")
     if not motrd or not sodir:
-        return {"available": False,
-                "note": "MOTRD/SODIR datasets absent; SO instruction "
-                        "record unavailable."}
+        return {
+            "available": False,
+            "note": "MOTRD/SODIR datasets absent; SO instruction record unavailable.",
+        }
     rows_by_name = {p["name"]: p for p in fleet.get("plants", [])}
     # MOTRD REGION carries the CLUZ/CVIS/CMIN codes (same trap the RTDSL
     # review caught); cover both forms
-    grid_names = {"CLUZ": "luzon", "CVIS": "visayas", "CMIN": "mindanao",
-                  "LUZON": "luzon", "VISAYAS": "visayas",
-                  "MINDANAO": "mindanao"}
+    grid_names = {
+        "CLUZ": "luzon",
+        "CVIS": "visayas",
+        "CMIN": "mindanao",
+        "LUZON": "luzon",
+        "VISAYAS": "visayas",
+        "MINDANAO": "mindanao",
+    }
 
     # the weekly processed MOT-raise list: the full out-of-merit record
     weeks = []
@@ -1927,18 +2202,27 @@ def build_so_instructions(fleet: dict) -> dict:
             cat = (r.get("CATEGORY") or "").strip()
             if cat:
                 cats[cat] = cats.get(cat, 0) + 1
-            e = per_res.setdefault(res, {
-                "resource": res,
-                "grid": grid_names.get((r.get("REGION") or "").strip()),
-                "n_rows": 0, "max_mw": 0.0})
+            e = per_res.setdefault(
+                res,
+                {
+                    "resource": res,
+                    "grid": grid_names.get((r.get("REGION") or "").strip()),
+                    "n_rows": 0,
+                    "max_mw": 0.0,
+                },
+            )
             e["n_rows"] += 1
             e["max_mw"] = max(e["max_mw"], mw)
         all_mw.extend(wk_mw)
-        weeks.append({"week": day_of(path), "n_rows": wk_rows,
-                      "n_resources": len(wk_res),
-                      "median_mw": (round(_stats.median(wk_mw), 1)
-                                    if wk_mw else None),
-                      "max_mw": round(max(wk_mw), 1) if wk_mw else None})
+        weeks.append(
+            {
+                "week": day_of(path),
+                "n_rows": wk_rows,
+                "n_resources": len(wk_res),
+                "median_mw": (round(_stats.median(wk_mw), 1) if wk_mw else None),
+                "max_mw": round(max(wk_mw), 1) if wk_mw else None,
+            }
+        )
     top = []
     for e in sorted(per_res.values(), key=lambda x: -x["n_rows"])[:12]:
         fuel, _ = _resolve(e["resource"], rows_by_name)
@@ -1947,8 +2231,12 @@ def build_so_instructions(fleet: dict) -> dict:
     # the must-run subset, measured beside it: the inertness claim is
     # scoped to THIS series and stays true; the full record is not inert
     mru_files = dataset_files("MRU")
-    mru_mw = [f(r.get("SO_MW_INSTRUCTION")) for p in mru_files
-              for r in rows_of(p) if (r.get("RESOURCE_NAME") or "").strip()]
+    mru_mw = [
+        f(r.get("SO_MW_INSTRUCTION"))
+        for p in mru_files
+        for r in rows_of(p)
+        if (r.get("RESOURCE_NAME") or "").strip()
+    ]
     # grid-hour scale: the peak instruction in each (region, date, hour)
     # bucket, so the median is the busiest interval of a typical instructed
     # hour. Even that peak is tiny against the multi-GW offer books, which is
@@ -1963,8 +2251,9 @@ def build_so_instructions(fleet: dict) -> dict:
             if h is None:
                 continue
             key = ((r.get("REGION") or "").strip(), ts[:10], h)
-            mru_gh_peak[key] = max(mru_gh_peak.get(key, 0.0),
-                                   f(r.get("SO_MW_INSTRUCTION")))
+            mru_gh_peak[key] = max(
+                mru_gh_peak.get(key, 0.0), f(r.get("SO_MW_INSTRUCTION"))
+            )
 
     # the daily per-grid instruction log: causes, named. The remarks are
     # free text, so the cause screen is a substring count (labeled), not
@@ -1979,11 +2268,11 @@ def build_so_instructions(fleet: dict) -> dict:
     n_daily = 0
     import csv as _csv
     import io as _io
+
     for path in sodir:
         # range-stamped names are the operator's WEEKLY compilations (and
         # occasional revisions) of the dailies; counting both would double
-        # 84 of the window's 90 days (the round-9 diff review caught the
-        # inflated counts)
+        # 84 of the window's 90 days.
         if re.search(r"\d{8}-\d{8}", os.path.basename(path)):
             n_weekly += 1
             continue
@@ -2008,8 +2297,8 @@ def build_so_instructions(fleet: dict) -> dict:
                 n_limit += 1
                 # the operator writes the corridor as "Leyte-Cebu",
                 # "Leyte - Cebu", and "Leyte Cebu"; squeeze separators so
-                # all three count (the round-10 critic found 118 remarks
-                # in the unhyphenated spellings misfiled as 'other')
+                # all three count. The archive contains 118 unhyphenated
+                # remarks that would otherwise be filed as "other."
                 squeezed = re.sub(r"[\s-]+", "", rem)
                 if "leytecebu" in squeezed:
                     causes["leyte-cebu"] += 1
@@ -2029,9 +2318,9 @@ def build_so_instructions(fleet: dict) -> dict:
         if wk not in vd_by_week or asof > vd_by_week[wk][0]:
             vd_by_week[wk] = (asof, path)
     vd_rows = sum(
-        sum(1 for r in rows_of(p) if any((v or "").strip()
-                                         for v in r.values()))
-        for _, p in vd_by_week.values())
+        sum(1 for r in rows_of(p) if any((v or "").strip() for v in r.values()))
+        for _, p in vd_by_week.values()
+    )
 
     return {
         "available": True,
@@ -2046,74 +2335,88 @@ def build_so_instructions(fleet: dict) -> dict:
             "n_at_least_100mw": sum(1 for m in all_mw if m >= 100),
             "categories": dict(sorted(cats.items(), key=lambda kv: -kv[1])),
             "top": top,
-            "src": ("https://www.iemop.ph/market-data/list-of-mot-raise-"
-                    "re-dispatch-based-on-so-dispatch-instruction-report/"),
+            "src": (
+                "https://www.iemop.ph/market-data/list-of-mot-raise-"
+                "re-dispatch-based-on-so-dispatch-instruction-report/"
+            ),
         },
         "mru_contrast": {
-            "mru_median_mw": (round(_stats.median(mru_mw), 1)
-                              if mru_mw else None),
+            "mru_median_mw": (round(_stats.median(mru_mw), 1) if mru_mw else None),
             "mru_max_mw": round(max(mru_mw), 1) if mru_mw else None,
             "mru_n_weeks": len(mru_files),
             "mru_grid_hours": len(mru_gh_peak),
-            "mru_gh_peak_median_mw": (round(_stats.median(mru_gh_peak.values()), 1)
-                                      if mru_gh_peak else None),
-            "note": ("The must-run list the methodology measured as inert "
-                     "is the SUBSET; its median instruction sits at "
-                     "roughly a tenth of the full MOT-raise record's, so "
-                     "the inertness finding is scoped to must-run and "
-                     "does not extend to this layer."),
+            "mru_gh_peak_median_mw": (
+                round(_stats.median(mru_gh_peak.values()), 1) if mru_gh_peak else None
+            ),
+            "note": (
+                "The must-run list the methodology measured as inert "
+                "is the SUBSET; its median instruction sits at "
+                "roughly a tenth of the full MOT-raise record's, so "
+                "the inertness finding is scoped to must-run and "
+                "does not extend to this layer."
+            ),
         },
         "sodir": {
             "n_files": n_daily,
             "n_weekly_files_archived": n_weekly,
             "n_days": len(day_set),
             "n_instructions": n_instr,
-            "categories": dict(sorted(sodir_cats.items(),
-                                      key=lambda kv: -kv[1])[:10]),
+            "categories": dict(sorted(sodir_cats.items(), key=lambda kv: -kv[1])[:10]),
             "n_limitation_remarks": n_limit,
             "limitation_causes": causes,
-            "cause_note": ("The cause screen is a substring count over "
-                           "the free-text REMARKS column, labeled as "
-                           "such: a remark containing 'limitation' flags "
-                           "the instruction, and the corridor tallies "
-                           "count which named element the operator wrote "
-                           "(the Leyte-Cebu corridor dominates). Counts "
-                           "cover the DAILY files only; the operator's "
-                           "weekly compilations are archived beside them "
-                           "but not counted, or the window's days would "
-                           "double."),
-            "src": ("https://www.iemop.ph/market-data/"
-                    "so-dispatch-instruction-report/"),
+            "cause_note": (
+                "The cause screen is a substring count over "
+                "the free-text REMARKS column, labeled as "
+                "such: a remark containing 'limitation' flags "
+                "the instruction, and the corridor tallies "
+                "count which named element the operator wrote "
+                "(the Leyte-Cebu corridor dominates). Counts "
+                "cover the DAILY files only; the operator's "
+                "weekly compilations are archived beside them "
+                "but not counted, or the window's days would "
+                "double."
+            ),
+            "src": ("https://www.iemop.ph/market-data/so-dispatch-instruction-report/"),
         },
         "discrepancies": {
             "n_weeks": len(vd_by_week),
             "n_rows_newest_revisions": vd_rows,
-            "note": ("The operator's own valid-discrepancy list on the "
-                     "dispatch instruction report, newest revision per "
-                     "week: the data-quality flag that travels with "
-                     "anything built from this family."),
-            "src": ("https://www.iemop.ph/market-data/valid-discrepancies-"
-                    "on-so-dispatch-instruction-report/"),
+            "note": (
+                "The operator's own valid-discrepancy list on the "
+                "dispatch instruction report, newest revision per "
+                "week: the data-quality flag that travels with "
+                "anything built from this family."
+            ),
+            "src": (
+                "https://www.iemop.ph/market-data/valid-discrepancies-"
+                "on-so-dispatch-instruction-report/"
+            ),
         },
-        "note": ("The System Operator's out-of-merit dispatch record, "
-                 "measured: every MOT-raise re-dispatch instruction per "
-                 "5-minute interval with its MW (weekly processed files), "
-                 "the per-grid daily instruction log with the operator's "
-                 "stated cause, and the operator's own discrepancy list. "
-                 "Consuming this record as an engine layer (an "
-                 "administered-dispatch overlay on the replay) is a named "
-                 "queued build; this block is the measured record that "
-                 "sizes it."),
-        "fuel_note": ("Fuel per resource comes from the pasa alias table "
-                      "into the DOE fleet; codes without a confident alias "
-                      "show no fuel rather than a guessed one."),
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "note": (
+            "The System Operator's out-of-merit dispatch record, "
+            "measured: every MOT-raise re-dispatch instruction per "
+            "5-minute interval with its MW (weekly processed files), "
+            "the per-grid daily instruction log with the operator's "
+            "stated cause, and the operator's own discrepancy list. "
+            "The current per-fuel model does not apply these instructions "
+            "because they identify individual resources. This record reports "
+            "their frequency, size, cause, and data-quality flags."
+        ),
+        "fuel_note": (
+            "Fuel per resource comes from the pasa alias table "
+            "into the DOE fleet; codes without a confident alias "
+            "show no fuel rather than a guessed one."
+        ),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
-def build_drivers(prices: dict, profiles: dict, pasa: dict,
-                  advisories: dict, reserve_prices: dict) -> dict:
+def build_drivers(
+    prices: dict, profiles: dict, pasa: dict, advisories: dict, reserve_prices: dict
+) -> dict:
     """The per-day drivers timeline: what moved prices, joined from the
     layers the archive already carries. One row per archive day."""
     prof_by_date = {d["date"]: d for d in profiles.get("days", [])}
@@ -2145,11 +2448,13 @@ def build_drivers(prices: dict, profiles: dict, pasa: dict,
         row = {
             "date": date,
             "market": date >= (prices.get("resumed") or "2026-05-01"),
-            "lwap": {g: (prices["series"][g][i]
-                         if i < len(prices["series"][g]) else None)
-                     for g in GRIDS_L},
+            "lwap": {
+                g: (prices["series"][g][i] if i < len(prices["series"][g]) else None)
+                for g in GRIDS_L
+            },
             "spread": (prices.get("spread") or [None] * (i + 1))[i]
-            if i < len(prices.get("spread") or []) else None,
+            if i < len(prices.get("spread") or [])
+            else None,
             "curtailed_mwh": prof.get("curtailed_mwh"),
             "out_matched_mw": pas.get("matched_mw"),
             "hydro_budget_mwh": prof.get("hydro_budget_mwh"),
@@ -2171,15 +2476,19 @@ def build_drivers(prices: dict, profiles: dict, pasa: dict,
     return {
         "available": bool(rows),
         "days": rows,
-        "note": ("One row per archive day: observed daily LWAP per grid, "
-                 "the Visayas-Luzon spread, recorded curtailment, the "
-                 "operator's matched scheduled-out MW, the day's observed "
-                 "hydro water, advisory counts (HVDC events, alerts), the "
-                 "day's real-time binding constraints, and the dearest "
-                 "regional reserve price. Every column is observed data "
-                 "from the archive; nothing here is modeled."),
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "note": (
+            "One row per archive day: observed daily LWAP per grid, "
+            "the Visayas-Luzon spread, recorded curtailment, the "
+            "operator's matched scheduled-out MW, the day's observed "
+            "hydro water, advisory counts (HVDC events, alerts), the "
+            "day's real-time binding constraints, and the dearest "
+            "regional reserve price. Every column is observed data "
+            "from the archive; nothing here is modeled."
+        ),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
@@ -2198,37 +2507,49 @@ def build_mot_dispatch_cut() -> dict:
     """
     import json as _json
 
-    src = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                       "..", "data", "derived", "merit_order_daily")
+    src = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "data",
+        "derived",
+        "merit_order_daily",
+    )
     if not os.path.isdir(src):
-        return {"available": False,
-                "note": "no MOT days; run pipeline/merit_order.py --derive"}
+        return {
+            "available": False,
+            "note": "no MOT days; run pipeline/merit_order.py --derive",
+        }
     days = []
     for name in sorted(os.listdir(src)):
         if name.startswith("MOTD_") and name.endswith(".json"):
             days.append(_json.load(open(os.path.join(src, name))))
     if not days:
-        return {"available": False,
-                "note": "no MOT days; run pipeline/merit_order.py --derive"}
+        return {
+            "available": False,
+            "note": "no MOT days; run pipeline/merit_order.py --derive",
+        }
 
     per_grid = {}
     for g in GRIDS_L:
-        head = [v for d in days for v in d["not_dispatched_mw"][g]
-                if v is not None]
-        disp = [v for d in days for v in d["dispatched_mw"][g]
-                if v is not None]
+        head = [v for d in days for v in d["not_dispatched_mw"][g] if v is not None]
+        disp = [v for d in days for v in d["dispatched_mw"][g] if v is not None]
         agree_n = sum(d["mcp_agreement"][g]["n_intervals"] for d in days)
         # weight each day's rate by the intervals MCP actually named, so a
         # thin day cannot swing the pooled number
         pooled = {}
         for field in ("agree_pct", "null_pct", "head_of_dispatched_pct"):
-            num = sum((d["mcp_agreement"][g][field] or 0)
-                      * d["mcp_agreement"][g]["n_intervals"] for d in days)
+            num = sum(
+                (d["mcp_agreement"][g][field] or 0)
+                * d["mcp_agreement"][g]["n_intervals"]
+                for d in days
+            )
             pooled[field] = round(num / agree_n, 1) if agree_n else None
-        pairs = [(h, dd) for d in days
-                 for h, dd in zip(d["not_dispatched_mw"][g],
-                                  d["dispatched_mw"][g])
-                 if h is not None and dd is not None]
+        pairs = [
+            (h, dd)
+            for d in days
+            for h, dd in zip(d["not_dispatched_mw"][g], d["dispatched_mw"][g])
+            if h is not None and dd is not None
+        ]
         per_grid[g] = {
             "n_intervals": len(head),
             "headroom_mw": {
@@ -2236,24 +2557,32 @@ def build_mot_dispatch_cut() -> dict:
                 "min": round(min(head), 1) if head else None,
                 "max": round(max(head), 1) if head else None,
             },
-            "dispatched_mw_mean": (round(sum(disp) / len(disp), 1)
-                                   if disp else None),
+            "dispatched_mw_mean": (round(sum(disp) / len(disp), 1) if disp else None),
             "headroom_share_pct": (
-                round(100 * sum(h for h, _ in pairs)
-                      / sum(h + dd for h, dd in pairs), 1) if pairs else None),
+                round(
+                    100 * sum(h for h, _ in pairs) / sum(h + dd for h, dd in pairs), 1
+                )
+                if pairs
+                else None
+            ),
             "mcp_agreement_pct": pooled["agree_pct"],
             "mcp_null_pct": pooled["null_pct"],
             "mcp_head_of_dispatched_pct": pooled["head_of_dispatched_pct"],
             "mcp_n_intervals": agree_n,
             "rtdsum_ratio": round(
-                sum(d["rtdsum_ratio"][g] for d in days) / len(days), 4),
+                sum(d["rtdsum_ratio"][g] for d in days) / len(days), 4
+            ),
         }
-    lz_probe = [d.get("luzon_residual_probe") for d in days
-                if d.get("luzon_residual_probe")]
+    lz_probe = [
+        d.get("luzon_residual_probe") for d in days if d.get("luzon_residual_probe")
+    ]
 
     def _pool(field):
-        vals = [(p[field], p["n"]) for p in lz_probe
-                if p.get(field) is not None and p.get("n")]
+        vals = [
+            (p[field], p["n"])
+            for p in lz_probe
+            if p.get(field) is not None and p.get("n")
+        ]
         n = sum(w for _, w in vals)
         return round(sum(v * w for v, w in vals) / n, 1) if n else None
 
@@ -2285,52 +2614,59 @@ def build_mot_dispatch_cut() -> dict:
             "balance_residual_mw_mean": _pool("balance_residual_mw_mean"),
             "import_mw_mean": _pool("import_mw_mean"),
         },
-        "note": ("The operator's own dispatch cut per region per 5-minute "
-                 "RTD interval, from IEMOP's Regional Merit Order Table "
-                 "(MOT files). Each interval's offer stack is published "
-                 "split into an offers-dispatched and an "
-                 "offers-not-dispatched section. headroom_mw is the "
-                 "not-dispatched total: the MW offered into the market and "
-                 "not taken, the operator's own published economic "
-                 "headroom, which is a tighter read of room to grow than "
-                 "registered capacity because every MW in it was actually "
-                 "offered. dispatched_mw is cleared MW, not as-bid: summed "
-                 "per region it tracks RTDSUM generation at rtdsum_ratio, "
-                 "and that reconciliation is NOT clean everywhere. The "
-                 "Visayas and Mindanao sit inside 1 percent, which is "
-                 "what a cleared-MW reading predicts. Luzon runs about "
-                 f"{_high_pct} percent HIGH and we do not know why. The obvious "
-                 "candidate is ruled out: pumped storage and batteries "
-                 "charging would count as dispatched offers while not "
-                 "being generation, but they total 0.2 MW on a sampled "
-                 f"Luzon interval, nowhere near the roughly {_gap_round} MW gap. "
-                 "The RTDSUM import, export and loss columns are a "
-                 "measured no-op, not an untested lead: import is about "
-                 f"{_import_frac} percent of the gap and it tracks RTDSUM's own about {_residual_pct} "
-                 "percent energy-balance residual at a correlation near "
-                 "0.9, so it is the term those columns leave over rather "
-                 "than one they explain. The open cause is most likely a "
-                 "self-scheduled or must-run generation split IEMOP does "
-                 "not publish. Read the Luzon headroom knowing that "
-                 "residual is open rather than explained. "
-                 "MOT carries no price column and its Block index is the "
-                 "same tranche index as the RTDOE offer books, so it is "
-                 "not a finer view of supply than those books give."),
-        "validation_note": ("mcp_agreement_pct is how often the marginal "
-                            "resource IEMOP names in the MCP dataset falls "
-                            "inside the partially-cleared set this module "
-                            "reads off the cut (the resources named on both "
-                            "sides at once). mcp_null_pct is the same score "
-                            "for the same number of names drawn at random "
-                            "from that interval's dispatched resources, "
-                            "which is what the rate has to beat to mean "
-                            "anything. MCP and MOT come out of the same RTD "
-                            "solve, so this checks the cut parse rather "
-                            "than confirming the setter independently."),
-        "src": ("https://www.iemop.ph/market-data/"
-                "regional-merit-order-table-mot-files/"),
-        "src_setters": ("https://www.iemop.ph/market-data/"
-                        "rtd-market-clearing-price/"),
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "note": (
+            "The operator's own dispatch cut per region per 5-minute "
+            "RTD interval, from IEMOP's Regional Merit Order Table "
+            "(MOT files). Each interval's offer stack is published "
+            "split into an offers-dispatched and an "
+            "offers-not-dispatched section. headroom_mw is the "
+            "not-dispatched total: the MW offered into the market and "
+            "not taken, the operator's own published economic "
+            "headroom, which is a tighter read of room to grow than "
+            "registered capacity because every MW in it was actually "
+            "offered. dispatched_mw is cleared MW, not as-bid: summed "
+            "per region it tracks RTDSUM generation at rtdsum_ratio, "
+            "and that reconciliation is NOT clean everywhere. The "
+            "Visayas and Mindanao sit inside 1 percent, which is "
+            "what a cleared-MW reading predicts. Luzon runs about "
+            f"{_high_pct} percent higher and we do not know why. The obvious "
+            "candidate is ruled out: pumped storage and batteries "
+            "charging would count as dispatched offers while not "
+            "being generation, but they total 0.2 MW on a sampled "
+            f"Luzon interval, nowhere near the roughly {_gap_round} MW gap. "
+            "The RTDSUM import, export and loss columns do not explain the "
+            "mismatch. Imports account for about "
+            f"{_import_frac} percent of the gap and it tracks RTDSUM's own "
+            f"about {_residual_pct} "
+            "percent energy-balance residual at a correlation near "
+            "0.9, so it is the term those columns leave over rather "
+            "than one they explain. The open cause is most likely a "
+            "self-scheduled or must-run generation split IEMOP does "
+            "not publish. Read the Luzon headroom knowing that "
+            "residual is open rather than explained. "
+            "MOT carries no price column and its Block index is the "
+            "same tranche index as the RTDOE offer books, so it is "
+            "not a finer view of supply than those books give."
+        ),
+        "validation_note": (
+            "mcp_agreement_pct is how often the marginal "
+            "resource IEMOP names in the MCP dataset falls "
+            "inside the partially-cleared set this module "
+            "reads off the cut (the resources named on both "
+            "sides at once). mcp_null_pct is the same score "
+            "for the same number of names drawn at random "
+            "from that interval's dispatched resources. The "
+            "named-resource agreement must exceed this random "
+            "baseline. MCP and MOT come out of the same RTD "
+            "solve, so this checks the cut parse rather "
+            "than confirming the setter independently."
+        ),
+        "src": (
+            "https://www.iemop.ph/market-data/regional-merit-order-table-mot-files/"
+        ),
+        "src_setters": ("https://www.iemop.ph/market-data/rtd-market-clearing-price/"),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }

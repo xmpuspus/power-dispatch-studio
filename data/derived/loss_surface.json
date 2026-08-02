@@ -10,7 +10,7 @@
  "failing_grids": [
   "visayas"
  ],
- "finding": "Network physics ranks the market's own per-node deviations in luzon, mindanao; visayas fails the same test with a stable negative rank correlation across the clean days, reported as failing, not hidden; the sign reversal is not yet diagnosed (a reference-bus or PTDF-orientation artifact is the leading suspect, unconfirmed). Validated at Spearman >= 0.4, a moderate-correlation reporting convention rather than a power calculation; each grid's spearman_ci95 gives the uncertainty at the independent bus count.",
+ "finding": "Modeled marginal-loss ranks agree with recorded per-node differences at Spearman 0.4 or higher in Luzon, Mindanao. Visayas has a stable negative rank correlation across the clean days. The cause has not been established; the reference bus or power-transfer-factor direction may contribute. The 0.4 threshold is a reporting choice, not a power-system standard. Each grid includes a 95 percent confidence interval based on its independent bus count.",
  "per_day": [
   {
    "date": "2026-05-01",
@@ -2282,5 +2282,5 @@
   },
   "note": "Resistances are class-typical per-km values scaled by real routed length: labeled estimates, like the reactances. MLFs come from the replay of observed injections on the reduced OSM backbone; the loss reference is a per-grid affine convention, so slope and intercept are fitted and reported."
  },
- "reading": "Spearman is the claim: does network physics rank the market's own per-node deviations? MAE after the affine fit says how far each node sits from the fitted surface, in PhP/kWh."
+ "reading": "Spearman rank correlation tests whether the model orders nodes like the market record. Mean absolute error after the affine fit measures the remaining node difference in PhP/kWh."
 }

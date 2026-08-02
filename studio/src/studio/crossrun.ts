@@ -1,7 +1,5 @@
-// Cross-run analytics (roadmap item 17): a one-at-a-time lever tornado. Sweep
-// each Quick lever a fixed step around a base scenario, re-clear, and rank the
-// levers by how far they move the selected grid's price. Pure, so the view can
-// memoize it and the test can pin the ranking.
+// Change each Quick setting by a fixed step around a base scenario, recalculate,
+// and rank the settings by how far they move the selected grid's price.
 
 import type { Dispatch, GridKey } from '../lib/types'
 import { solveScenario, type Levers, type TrippableUnit } from './engine'
@@ -14,7 +12,7 @@ export interface TornadoBar {
 }
 
 // the perturbation applied to each lever, and how to describe it. addDC is the
-// DICT data-center wave; the supply levers are a round GW; coalPrice and
+// DICT data-center demand; supply settings change by 1 GW; coalPrice and
 // hydrology are the administered and weather what-ifs.
 type Sweep = {
   key: keyof Levers
@@ -98,7 +96,7 @@ const SWEEPS: Sweep[] = [
   },
 ]
 
-/** The one-at-a-time lever tornado for a base scenario on a grid: each lever's
+/** One-at-a-time sensitivity ranking for a base scenario on a grid: each setting's
  * effect on the selected grid's coupled clearing price, largest swing first. */
 export function leverTornado(
   d: Dispatch,

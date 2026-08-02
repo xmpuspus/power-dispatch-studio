@@ -19,7 +19,7 @@ import { ScrollBox } from '../ui/ScrollBox'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 
-// ---- editable Properties grid (the object authoring surface) -----------------
+// Editable properties grid.
 
 export function PropertiesGrid({
   cls,
@@ -43,7 +43,7 @@ export function PropertiesGrid({
       <table className="propgrid">
         <thead>
           <tr>
-            <th className="propgrid__obj">Object</th>
+            <th className="propgrid__obj">Plant or system item</th>
             {specs.map((s) => (
               <th key={s.key} className={s.editable ? 'propgrid__num' : ''}>
                 {s.label}
@@ -90,7 +90,7 @@ export function PropertiesGrid({
                     {overridden && (
                       <button
                         className="propgrid__revert"
-                        title={`Revert to base (${num(raw, s.dp ?? 0)})`}
+                        title={`Restore base value (${num(raw, s.dp ?? 0)})`}
                         aria-label="Revert to base value"
                         onClick={() => onRevert(cls, r.id, s.key)}
                       >
@@ -108,7 +108,7 @@ export function PropertiesGrid({
   )
 }
 
-// ---- Solution views that read the solved model (recomputed on Run) -----------
+// Solution views that read the model after each run.
 
 export function SolvedMeritView({ s, grid }: { s: SolvedModel; grid: GridKey }) {
   const price = s.coupled.price[grid]
@@ -124,15 +124,15 @@ export function SolvedMeritView({ s, grid }: { s: SolvedModel; grid: GridKey }) 
         <StatTile label="Available" value={num(s.avail[grid])} unit="MW" />
         <StatTile label="Load (evening)" value={num(s.demand[grid])} unit="MW" />
         <StatTile
-          label="Reserve margin"
+          label="Spare dependable capacity (reserve margin)"
           value={pct(s.reserveMarginPct[grid] / 100, 1)}
           hint="firm evening capacity vs the evening peak"
           tone={s.reserveMarginPct[grid] < 10 ? 'danger' : 'default'}
         />
       </div>
       <Panel
-        title="Merit-order supply stack"
-        subtitle={`${cap(grid)}, solved from the current model. Blocks by marginal cost against the load cursor.`}
+        title="Plants dispatched from lowest to highest cost (merit order)"
+        subtitle={`${cap(grid)}, solved from the current settings. Each block shows available capacity at one marginal cost. The demand marker shows how far through the stack the grid must dispatch.`}
       >
         <MeritStack blocks={s.stacks[grid]} demand={s.demand[grid]} />
       </Panel>
@@ -165,8 +165,8 @@ export function SolvedFlowsView({ s }: { s: SolvedModel }) {
   return (
     <div className="view">
       <Panel
-        title="Coupled inter-island dispatch"
-        subtitle="The three grids cleared together over the HVDC links, from the current model."
+        title="Power and prices across the three connected island grids"
+        subtitle="The current model clears all three grids together over the high-voltage direct-current (HVDC) links."
       >
         <FlowDiagram prices={prices} corridors={corridors} />
         <div className="stat-row">
@@ -175,7 +175,11 @@ export function SolvedFlowsView({ s }: { s: SolvedModel }) {
               key={c}
               label={c === 'leyte' ? 'Leyte-Luzon' : 'MVIP'}
               value={`${num(Math.abs(s.coupled[c].flow))} MW`}
-              hint={s.coupled[c].sat ? `bound, rent ${php(s.coupled[c].rent)}` : 'open'}
+              hint={
+                s.coupled[c].sat
+                  ? `at its limit, price-gap value ${php(s.coupled[c].rent)}`
+                  : 'below its limit'
+              }
               tone={s.coupled[c].sat ? 'danger' : 'default'}
             />
           ))}
@@ -214,8 +218,8 @@ export function SolvedN1View({ s, grid }: { s: SolvedModel; grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title={`N-1 contingency on ${cap(grid)}`}
-        subtitle="Trip each named plant and read the price move and the load shed, solved from the current model. Multi-unit stations (Sual, Ilijan, Masinloc) lose all their units, so their move exceeds a single-unit N-1."
+        title={`Effect of losing one named plant in ${cap(grid)} (N-1 test)`}
+        subtitle="Each named plant is removed in turn. The table reports the price change and unmet demand. Multi-unit stations such as Sual, Ilijan, and Masinloc lose all their units, so their result is larger than a single-unit N-1 test."
       >
         <DataGrid
           columns={cols}
@@ -231,7 +235,7 @@ export function SolvedN1View({ s, grid }: { s: SolvedModel; grid: GridKey }) {
 export function SolvedRegionsView({ s }: { s: SolvedModel }) {
   const grids: GridKey[] = ['luzon', 'visayas', 'mindanao']
   const cols: Column<GridKey>[] = [
-    { key: 'g', header: 'Region', render: (g) => cap(g) },
+    { key: 'g', header: 'Island grid', render: (g) => cap(g) },
     {
       key: 'price',
       header: 'Clearing price',
@@ -255,7 +259,7 @@ export function SolvedRegionsView({ s }: { s: SolvedModel }) {
     },
     {
       key: 'rm',
-      header: 'Reserve margin',
+      header: 'Spare capacity (reserve margin)',
       align: 'right',
       mono: true,
       render: (g) => pct(s.reserveMarginPct[g] / 100, 1),
@@ -263,11 +267,15 @@ export function SolvedRegionsView({ s }: { s: SolvedModel }) {
   ]
   return (
     <div className="view">
-      <Panel title="Regions" subtitle="Solved clearing price and adequacy by grid.">
+      <Panel
+        title="Clearing price and available supply in each island grid"
+        subtitle="A negative spare-capacity percentage means demand exceeds available supply."
+      >
         <DataGrid columns={cols} rows={grids} getKey={(g) => g} />
         <p className="note">
-          Shortfall shown as a negative reserve margin. Prices come from the coupled solve
-          of the current model; the Analysis views read the calibrated base case.
+          Prices come from clearing the three connected grids together with the current
+          settings. Historical analysis views use the base case checked against recorded
+          prices.
         </p>
       </Panel>
     </div>
@@ -279,16 +287,16 @@ export function SolvedReliabilityView({ s }: { s: SolvedModel }) {
   return (
     <div className="view">
       <Panel
-        title="Probabilistic reliability"
-        subtitle={`${num(s.reliability.luzon.draws)} Monte Carlo draws on the current model. Each trips the named units at their forced-outage rate against a sampled evening load.`}
+        title="Chance that available supply cannot meet evening demand"
+        subtitle={`${num(s.reliability.luzon.draws)} repeated simulations use the current settings. Each simulation applies random outages to named units at their forced-outage rates and samples evening demand.`}
       >
         <div className="stat-row">
           {grids.map((g) => (
             <StatTile
               key={g}
-              label={`LOLP ${cap(g)}`}
+              label={`Shortfall chance, ${cap(g)} (LOLP)`}
               value={pct(s.reliability[g].lolp_pct / 100, 2)}
-              hint={`E[shed] ${num(s.reliability[g].expected_shortfall_mw)} MW`}
+              hint={`average unmet demand ${num(s.reliability[g].expected_shortfall_mw)} MW`}
               tone={s.reliability[g].lolp_pct > 1 ? 'danger' : 'positive'}
             />
           ))}
@@ -305,12 +313,12 @@ export function SolvedReliabilityView({ s }: { s: SolvedModel }) {
           ))}
         </div>
         <p className="note">
-          Loss-of-load probability is the share of tight evenings that go short. Only the
-          named units carry an outage rate; the rest of the fleet holds at its
-          deterministic availability, so the draws add outage variance, not a lower mean.
-          Edit a unit's forced outage or capacity, or a region's load, and Run to move it.
-          The 20,000-draw pipeline distribution and the storage buy-back are shown below
-          as base-case reference.
+          Loss-of-load probability (LOLP) is the share of simulated tight evenings when
+          available supply cannot meet demand. Only named units have random outage rates.
+          All other capacity stays at its stated availability, so the simulations add
+          outage variation without lowering average supply. Edit a unit's outage rate or
+          capacity, or an island grid's demand, then press Run. The 20,000-simulation base
+          case and the effect of storage appear below for comparison.
         </p>
       </Panel>
     </div>
@@ -373,7 +381,8 @@ export function MembershipsView({
           { label: 'Region', value: String(s.props.grid) },
           {
             label: 'Participates in',
-            value: 'Chronology runs (optimised by the LP; cycles when the spread pays)',
+            value:
+              'Hourly market replay. Storage moves energy only when the price difference covers its losses.',
           },
         ],
       })
@@ -456,17 +465,17 @@ export function CompareView({
       raw: (s) => s.coupled.leyte.rent,
     },
     {
-      label: 'Luzon reserve margin',
+      label: 'Luzon spare capacity (reserve margin)',
       fmt: (s) => pct(s.reserveMarginPct.luzon / 100, 1),
       raw: (s) => s.reserveMarginPct.luzon,
     },
     {
-      label: 'Luzon LOLP',
+      label: 'Luzon shortfall chance (LOLP)',
       fmt: (s) => pct(s.reliability.luzon.lolp_pct / 100, 2),
       raw: (s) => s.reliability.luzon.lolp_pct,
     },
     {
-      label: 'Visayas reserve margin',
+      label: 'Visayas spare capacity (reserve margin)',
       fmt: (s) => pct(s.reserveMarginPct.visayas / 100, 1),
       raw: (s) => s.reserveMarginPct.visayas,
     },
@@ -475,7 +484,7 @@ export function CompareView({
     <div className="view">
       <Panel
         title="Compare scenarios"
-        subtitle="Every scenario solved side by side. The Base Case is the reference; a changed cell is highlighted."
+        subtitle="Every scenario is solved side by side. The Base Case is the reference. Changed values are highlighted."
       >
         {scenarios.length < 2 && (
           <EmptyNote>

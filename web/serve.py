@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Static file server with HTTP Range support, for local dev.
 
-power-dispatch-studio serves plain GeoJSON/JSON, but the Range handler is kept so any large
-binary asset added later streams with 206 Partial Content instead of the stdlib
+power-dispatch-studio serves plain GeoJSON/JSON. The Range handler lets any
+large binary asset stream with 206 Partial Content instead of the stdlib
 SimpleHTTPRequestHandler's whole-file 200. Production hosts support ranges
 natively; this only matters for `python3 serve.py` during dev.
 
@@ -19,10 +19,8 @@ PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8789
 
 class RangeHandler(SimpleHTTPRequestHandler):
     def end_headers(self):
-        # never let a dev-server response be cached: recorders (agent-browser's
-        # persistent daemon, any warm browser) otherwise replay a stale bake,
-        # so a re-record silently ships old data. no-store forces the current
-        # web/data on every load.
+        # Do not cache local responses. A warm browser can otherwise record stale
+        # data after a rebuild. no-store forces the current web/data on every load.
         self.send_header("Cache-Control", "no-store, must-revalidate")
         super().end_headers()
 

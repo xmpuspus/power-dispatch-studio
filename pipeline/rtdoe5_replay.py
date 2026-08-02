@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-"""Replay the captured sample days at 5-minute resolution (roadmap item 10b).
+"""Replay the captured sample days at 5-minute resolution.
 
 The hourly engine samples one offer book per hour (the HH:05 book). The sample
 days archived by pipeline/archive_rtdoe.py keep the FULL per-5-minute books, so
 this deriver clears each 5-minute interval's book against that grid's own
 dispatched generation (RTDSUM) to a marginal price, giving a 288-point intraday
-price series per grid that the hourly replay smooths away. It is the only public
-5-minute WESM price replay anywhere, a deep-dive on the sample days, not a
-window-wide engine.
+price series per grid that the hourly replay smooths away. It covers only the
+captured sample days, not the full archive window.
 
-Writes data/derived/rtdoe5_replay.json; build_data bakes it to
+Writes data/derived/rtdoe5_replay.json; build_data copies it to
 web/data/rtdoe5.json for the studio's 5-minute view.
 
     python3 pipeline/rtdoe5_replay.py --derive
 """
+
 from __future__ import annotations
 
 import argparse
@@ -88,18 +88,25 @@ def replay_day(date: str) -> dict | None:
         for g in GRIDS:
             blocks = iv.get(g) or []
             demand = (gen.get(k) or {}).get(g, 0.0)
-            series[g].append(_clear(blocks, demand) if blocks and demand > 0
-                             else None)
+            series[g].append(_clear(blocks, demand) if blocks and demand > 0 else None)
     # hourly mean per grid, for the "what the hourly replay sees" overlay
     hourly = {g: [] for g in GRIDS}
     for g in GRIDS:
         for h in range(24):
-            vals = [series[g][i] for i, lab in enumerate(labels)
-                    if lab.startswith(f"{h:02d}:") and series[g][i] is not None]
+            vals = [
+                series[g][i]
+                for i, lab in enumerate(labels)
+                if lab.startswith(f"{h:02d}:") and series[g][i] is not None
+            ]
             hourly[g].append(round(sum(vals) / len(vals), 3) if vals else None)
     n = sum(1 for v in series["luzon"] if v is not None)
-    return {"date": date, "labels": labels, "series": series,
-            "hourly": hourly, "n_priced": n}
+    return {
+        "date": date,
+        "labels": labels,
+        "series": series,
+        "hourly": hourly,
+        "n_priced": n,
+    }
 
 
 def derive() -> dict:
@@ -107,7 +114,7 @@ def derive() -> dict:
     for name in sorted(os.listdir(RTDOE5)):
         if not name.startswith("RTDOE5_") or not name.endswith(".json"):
             continue
-        s = name[len("RTDOE5_"):-len(".json")]
+        s = name[len("RTDOE5_") : -len(".json")]
         date = f"{s[:4]}-{s[4:6]}-{s[6:]}"
         d = replay_day(date)
         if d and d["n_priced"] > 200:
@@ -117,13 +124,18 @@ def derive() -> dict:
         "available": bool(days),
         "unit": "PhP/kWh",
         "days": days,
-        "note": ("Each 5-minute interval's offer book (RTDOE) cleared to that "
-                 "grid's own dispatched generation (RTDSUM) at merit order, the "
-                 "intraday price volatility the hourly replay smooths away. "
-                 "Sample days only; own-stack marginal, not the coupled clear."),
+        "note": (
+            "Each 5-minute interval's offer book (RTDOE) cleared to that "
+            "grid's own dispatched generation (RTDSUM) at merit order, the "
+            "intraday price volatility the hourly replay smooths away. "
+            "Sample days only. Each grid is calculated separately, so the "
+            "result excludes inter-grid transfers."
+        ),
         "src": "https://www.iemop.ph/market-data/rtd-generation-offers/",
-        "disclaimer": ("Statistical indicators derived from public data. "
-                       "Patterns may have legitimate explanations."),
+        "disclaimer": (
+            "Statistical indicators derived from public data. "
+            "Patterns may have legitimate explanations."
+        ),
     }
 
 
