@@ -35,6 +35,7 @@ import subprocess
 import matplotlib
 
 matplotlib.use("Agg")
+import matplotlib.text  # noqa: E402  (check_fit walks Text artists)
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 from matplotlib.patches import FancyBboxPatch  # noqa: E402
@@ -47,10 +48,20 @@ BODY = "#c3ccd8"  # sentence ink
 MUTE = "#8592a3"  # axis labels, captions, context
 FAINT = "#28313f"  # gridlines, rules, the quietest geometry
 
-STEEL = "#4cc9f0"  # the primary series, legible on charcoal
-CORAL = "#ff5c39"  # the subject, the thing to look at
-GREEN = "#3ddc97"  # the third grid, or a relieved state
-GOLD = "#f0b429"  # a fourth series, used sparingly
+# The series set, stepped for this charcoal ground and checked with the
+# data-viz validator: all three inside the dark lightness band, worst ALL-PAIRS
+# colour-vision separation 11.9 and worst normal-vision separation 17.1. The
+# three run together as lines in price_spread, so all pairs is the right test,
+# not adjacent pairs.
+#
+# The previous set sat at OKLCH L 0.78 to 0.80, every mark at one brightness,
+# so nothing led and the card read flat. The accent was #ff5c39, in the bright
+# orange family; Xavier picked this muted rust instead on 2026-08-03.
+STEEL = "#157399"  # luzon, and the context series on a single-subject card
+CORAL = "#a65e46"  # the subject, the thing to look at. Also visayas.
+ACCENT = CORAL  # the name that says what it does
+GREEN = "#43a891"  # mindanao, or a relieved state
+GOLD = "#8a6f14"  # a fourth series. No card uses it today.
 WHITE = "#ffffff"
 
 # the three grids, matching the map and every other figure in the repo
@@ -92,9 +103,14 @@ def apply():
 def card(figsize=(8.6, 5.0), field="dusk", rect=(0.075, 0.175, 0.90, 0.60)):
     """A figure carrying one gradient ground, and one axes to draw on.
 
-    `rect` is explicit because the title, main result, and source line are
-    placed in figure coordinates. A shorter card needs a shorter plot, or the
-    source runs off the bottom edge.
+    `rect` is explicit because the title and the source line are placed in
+    figure coordinates. A shorter card needs a shorter plot, or the source runs
+    off the bottom edge.
+
+    The width defaults to the full 0.90. Every card used to cut it to 0.615 to
+    clear a column for the payoff number, which spent 38 percent of the canvas
+    on one line of text and left a dead gutter down the right. The number goes
+    inside the plot's own empty corner now, through `payoff()`.
     """
     apply()
     fig = plt.figure(figsize=figsize, facecolor=BG)
@@ -178,6 +194,101 @@ def result_label(fig, x, y, big, small=None, color=CORAL, size=34):
             ha="left",
             zorder=6,
         )
+
+
+def payoff(ax, x, y, big, small=None, color=None, size=34, ha="left", va="center"):
+    """The number the reader carries away, inside the plot's own empty corner.
+
+    Axes coordinates, so it moves with the data area rather than sitting in a
+    reserved column. `result_label` put it in figure space, which is what
+    forced every card to give up a third of its width.
+    """
+    color = ACCENT if color is None else color
+    ax.text(
+        x,
+        y,
+        big,
+        transform=ax.transAxes,
+        fontsize=size,
+        color=color,
+        weight="bold",
+        ha=ha,
+        va=va,
+        zorder=8,
+    )
+    if small:
+        # The caption hangs a fixed number of POINTS below the figure, never a
+        # fraction of the axes: a fraction is a different distance on every card
+        # and it put the caption straight through the number on the first try.
+        drop = size * 0.92 if va == "top" else size * 0.62
+        ax.annotate(
+            small,
+            xy=(x, y),
+            xycoords=ax.transAxes,
+            xytext=(0, -drop),
+            textcoords="offset points",
+            fontsize=9.2,
+            color=MUTE,
+            ha=ha,
+            va="top",
+            zorder=8,
+            annotation_clip=False,
+        )
+
+
+def evidence(ax, xs, ys, color=None, n_max=9000, seed=0):
+    """The per-interval dots a caption promises, drawn so they are visible.
+
+    Both scatter cards said "every faint dot is one 5-minute interval" and drew
+    them at s=4 with alpha low enough that the layer disappeared. A caption
+    that names a mark the reader cannot find is a broken promise, so the size
+    and the alpha are set here once and thinned by sampling, never by fading.
+    """
+    color = STEEL if color is None else color
+    xs = np.asarray(xs)
+    ys = np.asarray(ys)
+    if xs.size > n_max:
+        idx = np.random.default_rng(seed).choice(xs.size, n_max, replace=False)
+        xs, ys = xs[idx], ys[idx]
+    ax.scatter(
+        xs,
+        ys,
+        s=6.5,
+        color=color,
+        alpha=0.16,
+        linewidths=0,
+        zorder=2,
+        rasterized=True,
+    )
+
+
+def check_fit(fig, margin=0.004):
+    """Fail loudly when any text runs past the canvas.
+
+    price_shape shipped "larger price increase for the same adde" and
+    price_spread shipped a source line cut mid-sentence. Both rendered without
+    an error and both read as unfinished work, so the check is mechanical now.
+    """
+    fig.canvas.draw()
+    w, h = fig.canvas.get_width_height()
+    bad = []
+    for t in fig.findobj(matplotlib.text.Text):
+        s = t.get_text()
+        if not s.strip() or not t.get_visible():
+            continue
+        try:
+            bb = t.get_window_extent(renderer=fig.canvas.get_renderer())
+        except Exception:
+            continue
+        if (
+            bb.x0 < -margin * w
+            or bb.x1 > w * (1 + margin)
+            or bb.y0 < -margin * h
+            or bb.y1 > h * (1 + margin)
+        ):
+            bad.append(f"{s[:46]!r} at x {bb.x0:.0f}..{bb.x1:.0f} of {w}")
+    if bad:
+        raise SystemExit("text runs off the card:\n  " + "\n  ".join(bad))
 
 
 def source(fig, text, y=0.045):

@@ -53,10 +53,12 @@ def main():
         for sp in gnd.spines.values():
             sp.set_visible(False)
 
+        axes = []
         for i, g in enumerate(GRIDS):
             ax = fig.add_axes(
-                [0.068 + i * 0.243, 0.235, 0.200, 0.470], facecolor="none", zorder=2
+                [0.068 + i * 0.302, 0.235, 0.258, 0.470], facecolor="none", zorder=2
             )
+            axes.append(ax)
             cs.tufte(ax, ygrid=False)
             ax.grid(color=cs.FAINT, lw=0.6, alpha=0.7, zorder=0)
             ax.set_axisbelow(True)
@@ -131,14 +133,16 @@ def main():
         )
         if t > 0.9:
             vis = d["window"]["visayas"]["spearman"]
-            cs.result_label(
-                fig,
-                0.815,
-                0.565,
+            cs.payoff(
+                axes[1],
+                0.985,
+                0.97,
                 f"{vis:+.2f}",
-                "Visayas ranks the wrong way,\nand the sign is not yet diagnosed",
-                cs.CORAL,
-                29,
+                "Visayas ranks the wrong way,\nand the sign is not diagnosed",
+                cs.ACCENT,
+                26,
+                ha="right",
+                va="top",
             )
         cs.source(
             fig,

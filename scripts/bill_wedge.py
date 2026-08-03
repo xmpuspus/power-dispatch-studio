@@ -55,7 +55,7 @@ def main():
 
     for fi, (stage, t) in enumerate(seq):
         fig, ax = cs.card(
-            figsize=(9.0, 4.5), field="money", rect=(0.075, 0.30, 0.615, 0.30)
+            figsize=(9.0, 4.5), field="money", rect=(0.075, 0.255, 0.885, 0.395)
         )
         shown_total = total * (t if stage == "grow" else 1.0)
         left = 0.0
@@ -69,9 +69,9 @@ def main():
                 alpha = 0.74 + 0.26 * (0.5 + 0.5 * math.cos(2 * math.pi * t))
             ax.add_patch(
                 FancyBboxPatch(
-                    (left, -0.30),
+                    (left, -0.50),
                     w,
-                    0.60,
+                    1.00,
                     boxstyle="round,pad=0,rounding_size=0.06",
                     fc=col,
                     ec="none",
@@ -94,32 +94,36 @@ def main():
 
         if stage == "pulse":
             ax.annotate(
-                "a spot swing moves ONLY this slice,\nand only on next month's bill",
-                xy=(wesm / 2, 0.34),
-                xytext=(total * 0.10, 1.15),
+                "a spot swing moves this slice alone,\nand only on next month's bill",
+                xy=(wesm / 2, 0.52),
+                xytext=(total * 0.055, 1.10),
                 fontsize=9.2,
                 color=cs.CORAL,
                 ha="left",
                 zorder=8,
                 arrowprops=dict(arrowstyle="->", color=cs.CORAL, lw=1.2),
             )
-            ax.text(
-                wesm / 2,
-                -0.42,
-                f"P{wesm:.2f}",
-                ha="center",
-                va="top",
-                fontsize=9.0,
-                color=cs.CORAL,
-                zorder=6,
-            )
 
         ax.set_xlim(-0.15, total + 0.15)
-        ax.set_ylim(-1.15, 1.65)
+        ax.set_ylim(-1.30, 1.30)
         ax.set_yticks([])
-        ax.set_xticks([0, total])
-        ax.set_xticklabels(["P0", f"P{total:.2f} per kWh"])
+        # The scale sits above the bar. Below it, the tick label ran straight
+        # through the payoff caption, and a bar this wide needs no axis line.
+        ax.set_xticks([])
+        ax.text(0, 0.62, "P0", fontsize=8.6, color=cs.MUTE, ha="left", va="bottom")
+        ax.text(
+            total,
+            0.62,
+            f"P{total:.2f} per kWh",
+            fontsize=8.6,
+            color=cs.MUTE,
+            ha="right",
+            va="bottom",
+        )
         ax.grid(False)
+        # no baseline: this bar floats in the card, so the axis rule was just a
+        # hairline drawn through the payoff caption
+        ax.spines["bottom"].set_visible(False)
 
         cs.title(
             fig,
@@ -127,14 +131,15 @@ def main():
             "and only next month",
             f"The June 2026 residential rate, P{total:.2f}/kWh, split three ways.",
         )
-        cs.result_label(
-            fig,
-            0.745,
-            0.585,
+        cs.payoff(
+            ax,
+            0.0,
+            0.27,
             f"P{wesm:.2f}",
-            f"of the P{total:.2f} rate rides\non the spot market",
-            cs.CORAL,
+            f"of the P{total:.2f} rate rides on the spot market",
+            cs.ACCENT,
             34,
+            va="top",
         )
         cs.source(
             fig,
@@ -144,6 +149,8 @@ def main():
             f"{100 - espc * 100:.0f}% sits under contracts whose prices do "
             "not move with the spot market. From the Meralco June 2026 advisory.",
         )
+        if fi == 0:
+            cs.check_fit(fig)
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

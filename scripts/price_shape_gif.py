@@ -14,6 +14,7 @@ import json
 import os
 import sys
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -51,41 +52,56 @@ def main():
     fdir = cs.frames_dir("shape")
     for fi, xc in enumerate(seq):
         fig, ax = cs.card(
-            figsize=(8.8, 5.1), field="day", rect=(0.075, 0.185, 0.615, 0.585)
+            figsize=(8.8, 5.1), field="day", rect=(0.075, 0.185, 0.875, 0.585)
         )
-        ax.scatter(
-            sx,
-            sy,
-            s=4,
-            alpha=0.05,
-            color=cs.STEEL,
-            edgecolors="none",
-            zorder=1,
-            rasterized=True,
-        )
-        cs.glow(ax, x, y, cs.STEEL, lw=2.0, zorder=3, passes=((6.0, 0.07), (3.0, 0.12)))
+        # the dots the subtitle promises. They used to be drawn at s=4 and
+        # alpha 0.05, which is invisible, so the card named a mark the reader
+        # could not find.
+        cs.evidence(ax, sx, sy, cs.STEEL)
+        # the curve is the relationship, so it wears ink, not a series hue. The
+        # two hues are spent on the two answers being compared.
+        cs.glow(ax, x, y, cs.BODY, lw=1.9, zorder=3, passes=((5.5, 0.05), (2.8, 0.09)))
 
         # both answers, always on screen
         for xa, col, lab in (
             (quiet, cs.STEEL, "grid with room"),
-            (full, cs.CORAL, "grid nearly full"),
+            (full, cs.ACCENT, "grid nearly full"),
         ):
             ya, yb = float(np.interp(xa, x, y)), float(np.interp(xa + DC_MW, x, y))
             ax.plot(
-                [xa, xa], [ya, yb], color=col, lw=2.4, zorder=6, solid_capstyle="round"
+                [xa, xa], [ya, yb], color=col, lw=3.0, zorder=6, solid_capstyle="round"
             )
             cs.dot(ax, xa, ya, col, size=34, zorder=6)
-            cs.chip(ax, xa, yb + 1.5, f"+P{yb - ya:.2f}/kWh", col, 9.4)
+            cs.chip(ax, xa, yb + 1.4, f"+P{yb - ya:.2f}/kWh", col, 9.6)
+            # the state name rides under its own mark, on the curve. It used to
+            # sit at a fixed y below every datum, attached to nothing.
             ax.text(
-                xa, -1.6, lab, fontsize=8.4, color=col, ha="center", va="top", zorder=6
+                xa,
+                ya - 0.9,
+                lab,
+                fontsize=8.6,
+                color=col,
+                ha="center",
+                va="top",
+                zorder=6,
             )
 
         # the moving marker, showing that the answer changes continuously
         ym = float(np.interp(xc, x, y))
         cs.dot(ax, xc, ym, cs.WHITE, size=16, zorder=8)
 
-        ax.set_xlim(x.min() - 250, x.max() + 250)
-        ax.set_ylim(-3.4, max(y) * 1.16)
+        ax.set_xlim(x.min() - 160, x.max() + 160)
+        # The floor sits just under the cheapest hour, never at zero. Position
+        # encodes here, not length, so the no-truncated-baseline rule does not
+        # bind: it binds bars. A zero floor spent a quarter of the card on an
+        # empty band and flattened the very steepening the title claims.
+        # The floor follows the CURVE, never the scatter: the scatter is clipped
+        # to -5 for display, and letting that set the view spent a third of the
+        # card on a band holding a handful of negative-price intervals.
+        ax.set_ylim(y.min() - 1.5, max(y) * 1.12)
+        # prune the outermost tick: at full width its label overhangs the card,
+        # which cs.check_fit refuses to let ship
+        ax.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=6, prune="both"))
         ax.set_xlabel("Luzon generation meeting demand, MW", fontsize=9)
         ax.set_ylabel("WESM price, PhP per kWh", fontsize=9)
 
@@ -95,23 +111,17 @@ def main():
             "Every faint dot is one 5-minute interval on the Luzon grid. "
             "The line is the average price at each load.",
         )
-        cs.result_label(
-            fig,
-            0.745,
-            0.615,
+        # upper left is the one empty quadrant of a curve that rises to the right
+        cs.payoff(
+            ax,
+            0.018,
+            0.93,
             f"{times:.0f}x",
-            "larger price increase for the same added demand",
-            cs.CORAL,
-            40,
-        )
-        fig.text(
-            0.745,
-            0.475,
+            f"the same {DC_MW} MW, {times:.0f} times the price move\n"
             f"with room  +P{b_quiet:.2f}/kWh\nnearly full  +P{b_full:.2f}/kWh",
-            fontsize=9.0,
-            color=cs.BODY,
+            cs.ACCENT,
+            42,
             va="top",
-            zorder=6,
         )
         cs.source(
             fig,
@@ -119,6 +129,8 @@ def main():
             "does to the price depends on how busy the grid already is.\n"
             "From IEMOP RTDSUM generation joined to LWAPF price, archived.",
         )
+        if fi == 0:
+            cs.check_fit(fig)
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

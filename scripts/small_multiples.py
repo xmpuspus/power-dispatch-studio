@@ -55,10 +55,14 @@ def main():
         for s in gnd.spines.values():
             s.set_visible(False)
 
+        axes = []
         for i, (key, label) in enumerate(GRIDS):
+            # panels widened from 0.205 to 0.262: the old three ended at 0.756
+            # and the last quarter of the card carried one line of text
             ax = fig.add_axes(
-                [0.065 + i * 0.243, 0.235, 0.205, 0.495], facecolor="none", zorder=2
+                [0.068 + i * 0.302, 0.235, 0.262, 0.495], facecolor="none", zorder=2
             )
+            axes.append(ax)
             cs.tufte(ax)
             curve = D["curve"][key]
             x = np.array([c["gen_mw"] for c in curve], float)
@@ -67,15 +71,12 @@ def main():
             n = max(2, int(round(len(x) * t)))
             col = cs.REGION[key]
 
-            ax.scatter(
+            # the dots the caption promises, at a size and an alpha that show
+            cs.evidence(
+                ax,
                 [p[0] for p in scat],
                 [min(max(p[1], -3), pmax) for p in scat],
-                s=3.5,
-                alpha=0.05,
-                color=col,
-                edgecolors="none",
-                zorder=1,
-                rasterized=True,
+                col,
             )
             cs.glow(
                 ax,
@@ -120,20 +121,21 @@ def main():
             "over the archive window. One shared price axis.",
         )
         if t > 0.9:
-            cs.result_label(
-                fig,
-                0.815,
-                0.575,
+            cs.payoff(
+                axes[-1],
+                0.03,
+                0.95,
                 f"P{tops[steep]:.0f}",
-                f"{steep.capitalize()} at its busiest, against\n"
-                f"P{tops[flat]:.0f} on {flat.capitalize()}",
+                f"{steep.capitalize()} at its busiest,\n"
+                f"against P{tops[flat]:.0f} on {flat.capitalize()}",
                 cs.REGION[steep],
-                30,
+                28,
+                va="top",
             )
         cs.source(
             fig,
             "Each faint dot is one 5-minute interval. All three panels use "
-            "the same price scale, so their levels can be compared directly.\n"
+            "the same price scale, so their levels compare directly. Each panel covers its own grid's load range, so the slopes do not.\n"
             "From IEMOP RTDSUM generation joined "
             "to LWAPF price, archived.",
         )

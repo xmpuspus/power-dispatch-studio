@@ -46,7 +46,7 @@ def main():
 
     for fi, t in enumerate(seq):
         fig, ax = cs.card(
-            figsize=(8.8, 5.0), field="dusk", rect=(0.075, 0.195, 0.615, 0.575)
+            figsize=(8.8, 5.0), field="dusk", rect=(0.075, 0.195, 0.885, 0.575)
         )
         upto = max(2, int(round(n * t)))
 
@@ -84,6 +84,19 @@ def main():
                 zorder=6,
             )
 
+        # Direct labels ride at each line's last value, so two grids that end
+        # close together printed one name over the other. Push them apart by a
+        # minimum gap first, keeping their order.
+        ends = sorted(
+            ((series[g][:upto][-1], g) for g in ("luzon", "visayas", "mindanao")),
+        )
+        gap = ymax * 0.055
+        placed = {}
+        prev = None
+        for val, g in ends:
+            yy = val if prev is None else max(val, prev + gap)
+            placed[g] = yy
+            prev = yy
         for g in ("luzon", "visayas", "mindanao"):
             ys = [v for v in series[g][:upto]]
             xs = list(range(len(ys)))
@@ -92,7 +105,7 @@ def main():
             if t > 0.45:
                 ax.text(
                     xs[-1] + 1.4,
-                    ys[-1],
+                    placed[g],
                     g.capitalize(),
                     fontsize=9,
                     color=cs.REGION[g],
@@ -112,32 +125,29 @@ def main():
             f"{pretty(dates[0])} to {pretty(dates[-1])}.",
         )
         if t > 0.9:
-            cs.result_label(
-                fig,
-                0.745,
-                0.625,
+            # the lower left is empty: the three grids ran together and cheap
+            # while the market was suspended
+            cs.payoff(
+                ax,
+                0.015,
+                0.60,
                 f"P{widest['php']:.2f}",
-                f"widest gap in one day, {pretty(widest['date'])}",
-                cs.CORAL,
-                30,
-            )
-            fig.text(
-                0.745,
-                0.495,
+                f"widest gap in one day, {pretty(widest['date'])}\n"
                 f"{reg['market']['days_spread_gt5']} of "
-                f"{reg['market']['days']} market days\nsplit by more than P5",
-                fontsize=8.8,
-                color=cs.BODY,
+                f"{reg['market']['days']} days split\nby more than P5",
+                cs.ACCENT,
+                26,
                 va="top",
-                zorder=6,
             )
         cs.source(
             fig,
             "Each line is one island grid's daily average of IEMOP's "
-            "load-weighted 5-minute prices. Limited transfer capacity lets "
-            "regional prices separate when local supply and demand differ.\n"
+            "load-weighted 5-minute prices.\nLimited transfer capacity lets "
+            "regional prices separate when local supply and demand differ. "
             "From IEMOP LWAPF, archived.",
         )
+        if fi == 0:
+            cs.check_fit(fig)
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

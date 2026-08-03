@@ -81,20 +81,28 @@ def main():
         cs.apply()
         fig = plt.figure(figsize=(8.8, 5.3), facecolor=cs.BG)
         ground(fig)
-        ax1 = fig.add_axes([0.085, 0.470, 0.605, 0.300], facecolor="none", zorder=2)
-        ax2 = fig.add_axes([0.085, 0.180, 0.605, 0.230], facecolor="none", zorder=2)
+        ax1 = fig.add_axes([0.085, 0.470, 0.880, 0.300], facecolor="none", zorder=2)
+        ax2 = fig.add_axes([0.085, 0.180, 0.880, 0.230], facecolor="none", zorder=2)
         for a in (ax1, ax2):
             cs.tufte(a)
 
-        ax1.fill_between(hours[:n], 0, gen[:n], color=cs.STEEL, alpha=0.15, zorder=3)
+        # The band, not the slab. A fill from zero drew a solid block whose
+        # top edge carried every value, so the shape had to compete with its
+        # own 10,000 MW of dead fill.
+        base = gen.min() - (gen.max() - gen.min()) * 0.30
+        ax1.fill_between(hours[:n], base, gen[:n], color=cs.STEEL, alpha=0.13, zorder=3)
         cs.glow(ax1, hours[:n], gen[:n], cs.STEEL, lw=1.7, zorder=4)
-        ax1.set_ylim(0, gen.max() * 1.20)
+        # The title claims demand moves 22 percent. A zero floor rendered that
+        # swing as a flat line, so the card argued against its own headline.
+        # Position encodes here, not length, so no baseline rule is broken.
+        ax1.set_ylim(base, gen.max() + (gen.max() - gen.min()) * 0.30)
         ax1.set_xlim(0, 24)
         ax1.set_xticks([])
         ax1.set_ylabel("generation meeting\ndemand, MW", fontsize=8.4)
 
         cs.glow(ax2, hours[:n], pr[:n], cs.CORAL, lw=1.7, zorder=4)
-        ax2.set_ylim(min(0.0, pr.min() * 1.2), pr.max() * 1.30)
+        span = float(pr.max() - pr.min())
+        ax2.set_ylim(pr.min() - span * 0.14, pr.max() + span * 0.26)
         ax2.set_xlim(0, 24)
         ax2.set_xticks([0, 6, 12, 18, 24])
         ax2.set_xticklabels(["12am", "6am", "noon", "6pm", "12am"])
@@ -115,7 +123,7 @@ def main():
                 ax2,
                 hours[trough_i],
                 pr[trough_i] + pr.max() * 0.17,
-                f"P{pr[trough_i]:.2f} overnight",
+                f"{'-' if pr[trough_i] < 0 else ''}P{abs(pr[trough_i]):.2f} overnight",
                 cs.MUTE,
                 8.4,
             )
@@ -127,15 +135,18 @@ def main():
             f"One Luzon day from the archive, {day}, every 5-minute interval.",
         )
         if t > 0.9:
-            cs.result_label(
-                fig,
-                0.735,
-                0.585,
+            cs.payoff(
+                ax1,
+                0.015,
+                0.94,
                 f"P{swing:.2f}",
-                "overnight low to evening peak,\non the same day",
-                cs.CORAL,
-                31,
+                "the price gap from the overnight low\nto the evening peak, on this one day",
+                cs.ACCENT,
+                30,
+                va="top",
             )
+        if fi == 0:
+            cs.check_fit(fig)
         cs.source(
             fig,
             "Generation and price use the same time axis. Each chart has its "

@@ -703,7 +703,7 @@ shorter recordings show these tasks.
 [studio/README.md](studio/README.md) carries one recorded clip per analysis view,
 14 in all.
 
-**This page downloads 15.7 MB of media across 15 files.** The earlier version
+**This page downloads 15.8 MB of media across 15 files.** The earlier version
 downloaded 87.2 MB across 22 files. Browser tests show that GitHub downloads
 media inside closed detail blocks. Longer recordings are links, and the 39 views
 use one contact sheet plus 39 direct links.
