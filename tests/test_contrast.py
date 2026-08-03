@@ -117,8 +117,14 @@ run("studio dark", dark, STUDIO_PAIRS)
 html = open(MAP).read()
 map_light = block_vars(html, r":root")
 run("map", map_light, MAP_PAIRS)
-map_dark = block_vars(html, r"@media \(prefers-color-scheme:\s*dark\)\s*\{\s*:root")
+# the map switches on the data-theme attribute, not a media query, so it can
+# honour the pds.theme pin the studio writes
+map_dark = block_vars(html, r":root\[data-theme='dark'\]")
 check("map declares a dark theme", bool(map_dark))
+check(
+    "map reads the studio's pds.theme key",
+    "pds.theme" in html and "data-theme" in html,
+)
 if map_dark:
     merged = dict(map_light)
     merged.update(map_dark)
