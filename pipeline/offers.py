@@ -400,7 +400,12 @@ if __name__ == "__main__":
     a = ap.parse_args()
     if a.derive:
         dates = _market_dates(a.frm, a.to)
-        if a.limit:
+        if a.limit is not None:
+            # a bare truthiness test let --limit 0 mean "no limit" and fetch the
+            # whole range, and a negative value inverted the slice to nearly all
+            # of it. Both start a large remote pull from a flag meant to bound one.
+            if a.limit < 1:
+                ap.error("--limit must be 1 or more")
             underived = [
                 dt
                 for dt in dates

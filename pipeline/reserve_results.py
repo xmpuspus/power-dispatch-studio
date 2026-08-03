@@ -274,7 +274,7 @@ def derive(
             json.dump(day, fh, indent=1)
         done += 1
         print(f"derived {date}", flush=True)
-        if limit and done >= limit:
+        if limit is not None and done >= limit:
             break
     return done
 
@@ -287,6 +287,8 @@ if __name__ == "__main__":
     ap.add_argument("--limit", type=int, default=None)
     a = ap.parse_args()
     if a.derive:
+        if a.limit is not None and a.limit < 1:
+            ap.error("--limit must be 1 or more")
         n = derive(a.limit, a.frm, a.to)
         print(f"derived {n} day{'' if n == 1 else 's'}")
     else:
