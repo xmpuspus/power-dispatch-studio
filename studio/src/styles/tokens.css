@@ -21,10 +21,15 @@
   --surface-2: #f8fafc;
   --surface-3: #eef2f7;
   --border: #d8e0ec;
-  --border-strong: #b8c4d6;
+  /* border-strong draws the edge of a control (input, select, slider track).
+     WCAG 1.4.11 asks for 3:1 against what is next to it; the old #b8c4d6
+     measured 1.76:1 on a card, so the controls had no visible edge. */
+  --border-strong: #7b8ba5;
   --text: #0f172a;
   --text-muted: #475569;
-  --text-faint: #94a3b8;
+  /* text-faint carries real labels (units, hints, axis ticks) at 11-13px, so
+     it needs the 4.5:1 body floor. The old #94a3b8 measured 2.56:1 on a card. */
+  --text-faint: #5d6f86;
 
   /* second-tier surface/line/text aliases used by the loss-validation and
      cross-run panels; kept distinct from surface-2/border/text-muted so those
@@ -120,10 +125,10 @@
   --surface-2: #0e1626;
   --surface-3: #16223a;
   --border: #24314c;
-  --border-strong: #35476b;
+  --border-strong: #5f77a4;
   --text: #e6edf7;
   --text-muted: #9fb0c9;
-  --text-faint: #64748b;
+  --text-faint: #78889f;
 
   --surface-1: #0e1626;
   --panel-2: #16223a;

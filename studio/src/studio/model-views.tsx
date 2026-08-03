@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import type { Dispatch, GridKey } from '../lib/types'
-import { num, php, pct, fuelLabel } from '../lib/data'
+import { num, php, pct, fuelLabel, fuelColor } from '../lib/data'
 import { Panel, StatTile, Chip, EmptyNote } from '../ui/kit'
-import { MeritStack, FlowDiagram } from './charts'
+import { MeritCurve, FlowDiagram } from './charts'
 import { DataGrid, type Column } from '../ui/DataGrid'
 import {
   CLASSES,
@@ -131,10 +131,22 @@ export function SolvedMeritView({ s, grid }: { s: SolvedModel; grid: GridKey }) 
         />
       </div>
       <Panel
-        title="Plants dispatched from lowest to highest cost (merit order)"
-        subtitle={`${cap(grid)}, solved from the current settings. Each block shows available capacity at one marginal cost. The demand marker shows how far through the stack the grid must dispatch.`}
+        title="The last plant the grid has to start sets the price for all of them"
+        subtitle={`${cap(grid)}, solved from the current settings. Each step is the capacity available at one marginal cost, cheapest first. Read the clearing price where the demand line crosses the staircase.`}
       >
-        <MeritStack blocks={s.stacks[grid]} demand={s.demand[grid]} />
+        <MeritCurve blocks={s.stacks[grid]} demand={s.demand[grid]} />
+        {/* the narrow blocks have no room for a label inside the step, and the
+            chart gets screenshotted without its tooltips */}
+        <div className="legend legend--wrap">
+          {[...s.stacks[grid]]
+            .sort((a, b) => a.cost - b.cost)
+            .map((b, i) => (
+              <span className="legend__item" key={i}>
+                <i style={{ background: fuelColor(b.fuel), height: 8, width: 8 }} />
+                {fuelLabel(b.fuel)} ₱{b.cost.toFixed(2)}
+              </span>
+            ))}
+        </div>
       </Panel>
     </div>
   )
@@ -287,7 +299,7 @@ export function SolvedReliabilityView({ s }: { s: SolvedModel }) {
   return (
     <div className="view">
       <Panel
-        title="Chance that available supply cannot meet evening demand"
+        title="Shortfall chance in each grid, re-solved from your current settings"
         subtitle={`${num(s.reliability.luzon.draws)} repeated simulations use the current settings. Each simulation applies random outages to named units at their forced-outage rates and samples evening demand.`}
       >
         <div className="stat-row">

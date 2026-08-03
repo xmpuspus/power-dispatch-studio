@@ -1,6 +1,163 @@
 import type { Block, DurationPoint } from '../lib/types'
 import { fuelColor, fuelLabel } from '../lib/data'
 
+/**
+ * Merit-order supply curve: cumulative megawatts across, marginal cost up.
+ *
+ * MeritStack below draws the same blocks as one flat strip, which fits a card
+ * but drops the cost axis, and the cost axis is the whole point: where the
+ * demand line crosses the staircase IS the clearing price. Drawn flat, the
+ * price has to be asserted in a tile beside the chart; drawn as a staircase,
+ * the reader reads it off the picture and can see how far the next step is.
+ */
+export function MeritCurve({ blocks, demand }: { blocks: Block[]; demand: number }) {
+  const sorted = [...blocks].sort((a, b) => a.cost - b.cost)
+  const total = sorted.reduce((s, b) => s + b.mw, 0)
+  const W = 900
+  const H = 380
+  const padL = 54
+  const padR = 132
+  const padT = 20
+  const padB = 46
+  const xmax = Math.max(total, demand) * 1.02 || 1
+  const ymax = Math.max(...sorted.map((b) => b.cost), 1) * 1.14
+  const X = (mw: number) => padL + ((W - padL - padR) * mw) / xmax
+  const Y = (c: number) => padT + (H - padT - padB) * (1 - c / ymax)
+
+  // walk the sorted blocks once: cumulative left edge, and the block the
+  // demand line lands in, whose cost is the clearing price
+  let cum = 0
+  const segs = sorted.map((b) => {
+    const seg = { ...b, x0: cum, x1: cum + b.mw }
+    cum += b.mw
+    return seg
+  })
+  const setter = segs.find((s) => demand > s.x0 && demand <= s.x1)
+  const price = setter ? setter.cost : null
+
+  const step = ymax > 20 ? 5 : ymax > 8 ? 2 : 1
+  const yTicks: number[] = []
+  for (let v = 0; v <= ymax; v += step) yTicks.push(v)
+
+  return (
+    <svg
+      className="chart chart--tall"
+      viewBox={`0 0 ${W} ${H}`}
+      role="img"
+      aria-label={
+        `Merit-order supply curve. Cumulative capacity ${Math.round(total).toLocaleString()} megawatts ` +
+        `against marginal cost. Demand of ${Math.round(demand).toLocaleString()} megawatts is met by ` +
+        (setter ? `${fuelLabel(setter.fuel)} at ${price?.toFixed(2)} pesos per kilowatt-hour.` : 'no block.')
+      }
+    >
+      {yTicks.map((v) => (
+        <g key={v}>
+          <line
+            x1={padL}
+            y1={Y(v)}
+            x2={W - padR}
+            y2={Y(v)}
+            stroke="var(--border)"
+            strokeWidth={0.75}
+          />
+          <text x={padL - 8} y={Y(v) + 4} textAnchor="end" className="chart__ax">
+            ₱{v}
+          </text>
+        </g>
+      ))}
+
+      {segs.map((b, i) => {
+        const w = Math.max(0, X(b.x1) - X(b.x0))
+        const needed = b.x0 < demand
+        return (
+          <g key={i} opacity={needed ? 1 : 0.34}>
+            <rect
+              x={X(b.x0)}
+              y={Y(b.cost)}
+              width={w}
+              height={Math.max(0, Y(0) - Y(b.cost))}
+              fill={fuelColor(b.fuel)}
+              opacity={0.88}
+            />
+            <line
+              x1={X(b.x0)}
+              y1={Y(b.cost)}
+              x2={X(b.x1)}
+              y2={Y(b.cost)}
+              stroke={fuelColor(b.fuel)}
+              strokeWidth={2.5}
+            />
+            {w > 66 && (
+              <text
+                x={X(b.x0) + w / 2}
+                y={Y(b.cost) - 7}
+                textAnchor="middle"
+                className="chart__lbl"
+              >
+                {fuelLabel(b.fuel)}
+              </text>
+            )}
+            <title>
+              {fuelLabel(b.fuel)}: {Math.round(b.mw).toLocaleString()} MW at ₱
+              {b.cost.toFixed(2)}/kWh
+            </title>
+          </g>
+        )
+      })}
+
+      {price != null && (
+        <>
+          <line
+            x1={padL}
+            y1={Y(price)}
+            x2={W - padR + 6}
+            y2={Y(price)}
+            stroke="var(--accent)"
+            strokeWidth={1.6}
+            strokeDasharray="4 3"
+          />
+          <text x={W - padR + 12} y={Y(price) - 4} className="chart__key">
+            ₱{price.toFixed(2)}/kWh
+          </text>
+          <text x={W - padR + 12} y={Y(price) + 12} className="chart__ax">
+            clearing price
+          </text>
+        </>
+      )}
+
+      <line
+        x1={X(demand)}
+        y1={padT - 6}
+        x2={X(demand)}
+        y2={Y(0)}
+        stroke="var(--text)"
+        strokeWidth={1.6}
+        strokeDasharray="3 2"
+      />
+      <text
+        x={X(demand) - 8}
+        y={padT + 4}
+        textAnchor="end"
+        className="chart__key"
+      >
+        demand {Math.round(demand).toLocaleString()} MW
+      </text>
+
+      <line x1={padL} y1={Y(0)} x2={W - padR} y2={Y(0)} stroke="var(--border-strong)" />
+      <text x={padL} y={H - 24} className="chart__ax">
+        0 MW
+      </text>
+      <text x={W - padR} y={H - 24} textAnchor="end" className="chart__ax">
+        {Math.round(total).toLocaleString()} MW available
+      </text>
+      <text x={padL} y={H - 8} className="chart__ax">
+        Cumulative capacity, cheapest first. Faded blocks are not needed at this
+        demand.
+      </text>
+    </svg>
+  )
+}
+
 /** Merit-order supply stack: blocks by marginal cost, with the demand cursor. */
 export function MeritStack({ blocks, demand }: { blocks: Block[]; demand: number }) {
   const sorted = [...blocks].sort((a, b) => a.cost - b.cost)

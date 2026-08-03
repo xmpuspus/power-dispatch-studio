@@ -17,22 +17,90 @@
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"
   integrity="sha384-SYKAG6cglRMN0RVvhNeBY0r3FYKNOJtznwA0v7B5Vp9tr31xAHsZC0DqkQ/pZDmj" crossorigin="anonymous"></script>
 <style>
+  /* Two themes. The dark values are the studio's own dark tokens
+     (studio/src/styles/tokens.css), so the map at / and the studio at /studio/
+     are one surface rather than two products that disagree about the dark.
+     --on-fill is the label on a saturated fill and stays white in both. */
   :root{ --ink:#10212b; --muted:#5b6b75; --line:#e2e8ec; --bg:#f7f9fa;
-    --op:#1a7f48; --uc:#b8860b; --plan:#8a97a0; --hvdc:#9c3d12; --ac:#3a6b8a; --sual:#b3261e; }
+    --paper:#fff; --paper-2:#f2f7fa; --paper-3:#f4f7f8; --paper-hi:#e7f0f5; --track:#eef1f3;
+    --on-fill:#fff; --navy:#12335c; --shadow:rgba(16,33,43,.10); --fade:rgba(16,33,43,.16);
+    --warn-bg:#fff6f5; --warn-line:#e2664b; --warn-ink:#7a2a17;
+    --op:#1a7f48; --uc:#b8860b; --plan:#8a97a0; --hvdc:#9c3d12; --ac:#3a6b8a; --sual:#b3261e;
+    --op-line:#125c34; --uc-line:#8a6508; --plan-line:#5b6b75;
+    --gas:#4e79a7; --coal:#6b6b6b;
+    --ac138:#a8b8c4; --ac230:#7d94a6; --ac500:#41586b; --pinline:#333; --halo:#fff;
+    --ctrl-icon:none; }
+  @media (prefers-color-scheme: dark){
+    :root{ --ink:#e6edf7; --muted:#9fb0c9; --line:#24314c; --bg:#0b1220;
+      --paper:#111a2b; --paper-2:#16223a; --paper-3:#0e1626; --paper-hi:#1f2c48; --track:#24314c;
+      --navy:#7fb8d4; --shadow:rgba(0,0,0,.5); --fade:rgba(0,0,0,.55);
+      --warn-bg:#2d1512; --warn-line:#a8492f; --warn-ink:#f5b8a6;
+      /* the site and corridor colors lift so they still read on a dark basemap */
+      --op:#4ade80; --uc:#e0b155; --plan:#94a3b8; --hvdc:#e07a45; --ac:#7fb8d4; --sual:#f87171;
+      /* voltage ramp inverts: on a dark basemap the 500 kV backbone is the lightest */
+      --op-line:#166534; --uc-line:#8a6508; --plan-line:#475569;
+      --gas:#7aa5cc; --coal:#a1a1a1;
+      --ac138:#5b7080; --ac230:#8aa3b5; --ac500:#cbd9e6; --pinline:#0b1220; --halo:#0b1220;
+      --ctrl-icon:invert(1) hue-rotate(180deg); }
+  }
+  html{ color-scheme:light dark; }
   *{ box-sizing:border-box; }
+
+  /* Keyboard focus. Every control here was custom-styled, so the browser ring
+     is the only thing a keyboard user had, and on the tinted buttons it is
+     almost invisible. One ring, drawn outside the box so it never clips. */
+  :where(button, a, input, select, summary, [tabindex]):focus-visible{
+    outline:2px solid var(--ac); outline-offset:2px; border-radius:6px; }
+
+  /* maplibre's own chrome is light-only out of the box: the zoom buttons, the
+     attribution bar and the popups all ship white. Repaint them with the page
+     tokens so the dark theme does not leave four white rectangles on the map. */
+  .maplibregl-ctrl-group{ background:var(--paper) !important; box-shadow:0 0 0 1px var(--line) !important; }
+  .maplibregl-ctrl-group button+button{ border-top:1px solid var(--line) !important; }
+  .maplibregl-ctrl-group button .maplibregl-ctrl-icon{ filter:var(--ctrl-icon); }
+  .maplibregl-ctrl-attrib{ background:var(--paper) !important; color:var(--muted) !important; }
+  .maplibregl-ctrl-attrib a{ color:var(--muted) !important; }
+  .maplibregl-ctrl-attrib-button{ filter:var(--ctrl-icon); }
+  .maplibregl-popup-content{ background:var(--paper); color:var(--ink); }
+  .maplibregl-popup-anchor-top .maplibregl-popup-tip{ border-bottom-color:var(--paper); }
+  .maplibregl-popup-anchor-bottom .maplibregl-popup-tip{ border-top-color:var(--paper); }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important;
+      transition-duration:.01ms !important; scroll-behavior:auto !important; }
+  }
   html,body{ margin:0; height:100%; font-family:-apple-system,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); }
   #map{ position:absolute; inset:0; }
-  .panel{ position:absolute; z-index:2; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 1px 8px rgba(16,33,43,.08); }
+  .panel{ position:absolute; z-index:2; background:var(--paper); border:1px solid var(--line); border-radius:10px; box-shadow:0 1px 8px var(--shadow); }
   button{ font-family:inherit; }
-  #head{ top:12px; left:12px; max-width:392px; padding:14px 16px; }
+  /* The head panel used to be as tall as its content, so on a 800px-tall
+     window its bottom ran into the story rail. Cap it against the rail's
+     own height and let it scroll instead of colliding. */
+  #head{ top:12px; left:12px; max-width:392px; padding:14px 16px;
+    max-height:calc(100dvh - 330px); overflow-y:auto; }
+  /* A clipped panel edge with no mark reads as the end of the content. This is
+     the same local-attachment trick #side uses: the shadow shows only while
+     there is something above or below to scroll to. */
+  #head, #side{ scrollbar-width:thin; scrollbar-color:var(--line) transparent;
+    background:
+      linear-gradient(var(--paper) 30%, transparent) center top,
+      linear-gradient(transparent, var(--paper) 70%) center bottom,
+      radial-gradient(farthest-side at 50% 0, var(--fade), transparent) center top,
+      radial-gradient(farthest-side at 50% 100%, var(--fade), transparent) center bottom;
+    background-repeat:no-repeat;
+    background-size:100% 30px, 100% 30px, 100% 11px, 100% 11px;
+    background-attachment:local, local, scroll, scroll;
+    background-color:var(--paper); }
+  #head::-webkit-scrollbar, #side::-webkit-scrollbar{ width:8px; }
+  #head::-webkit-scrollbar-thumb, #side::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
   #head h1{ margin:0 0 2px; font-size:18px; letter-spacing:-.2px; }
   #head p{ margin:5px 0 0; font-size:13px; line-height:1.45; color:var(--muted); }
-  #head .scope{ margin-top:8px; font-size:11.5px; color:var(--muted); background:#f4f7f8; border:1px solid var(--line); border-radius:7px; padding:7px 9px; line-height:1.4; }
+  #head .scope{ margin-top:8px; font-size:11.5px; color:var(--muted); background:var(--paper-3); border:1px solid var(--line); border-radius:7px; padding:7px 9px; line-height:1.4; }
   #modebar{ top:12px; left:50%; transform:translateX(-50%); padding:6px 7px; display:flex; gap:5px; flex-wrap:wrap; justify-content:center; max-width:calc(100% - 24px); }
-  .mode{ border:1px solid var(--line); background:#fff; border-radius:6px; padding:6px 11px; cursor:pointer; font-size:12.5px; color:var(--muted); white-space:nowrap; }
-  .mode.on{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  .mode{ border:1px solid var(--line); background:var(--paper); border-radius:6px; padding:6px 11px; cursor:pointer; font-size:12.5px; color:var(--muted); white-space:nowrap; }
+  .mode.on{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
   #headtoggle{ display:none; position:absolute; top:8px; right:10px; align-items:center; gap:4px;
-    border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:22px;
+    border:1px solid var(--line); background:var(--paper); color:var(--muted); border-radius:22px;
     padding:0 14px; font-size:12px; font-weight:600; cursor:pointer; min-height:44px; }
   #headtoggle .chev{ transition:transform .18s; font-size:10px; }
   body.head-open #headtoggle .chev{ transform:rotate(180deg); }
@@ -40,61 +108,59 @@
   #legend b{ font-size:12px; }
   .keys{ margin-top:6px; display:flex; flex-direction:column; gap:3px; }
   .keys .k{ display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--muted); }
-  .keys .sw{ width:12px; height:12px; border-radius:3px; border:1px solid rgba(0,0,0,.15); }
-  .keys .ln{ width:16px; height:0; border-top:3px solid #000; }
+  .keys .sw{ width:12px; height:12px; border-radius:3px; border:1px solid var(--line); }
+  .keys .ln{ width:16px; height:0; border-top:3px solid currentColor; }
   #lg-note{ margin-top:7px; font-size:11px; color:var(--muted); line-height:1.4; }
   /* right panel (mode content) */
-  #side{ right:12px; top:12px; width:336px; max-width:calc(100% - 24px); max-height:calc(100% - 120px); overflow-y:auto; padding:12px 14px 16px;
-    scrollbar-width:thin; scrollbar-color:#cbd5db transparent;
-    background:
-      linear-gradient(#fff 30%, rgba(255,255,255,0)) center top,
-      linear-gradient(rgba(255,255,255,0), #fff 70%) center bottom,
-      radial-gradient(farthest-side at 50% 0, rgba(16,33,43,.16), rgba(16,33,43,0)) center top,
-      radial-gradient(farthest-side at 50% 100%, rgba(16,33,43,.16), rgba(16,33,43,0)) center bottom;
-    background-repeat:no-repeat;
-    background-size:100% 30px, 100% 30px, 100% 11px, 100% 11px;
-    background-attachment:local, local, scroll, scroll;
-    background-color:#fff; }
-  #side::-webkit-scrollbar{ width:8px; }
-  #side::-webkit-scrollbar-thumb{ background:#cbd5db; border-radius:4px; }
+  #side{ right:12px; top:12px; width:336px; max-width:calc(100% - 24px);
+    max-height:calc(100% - 120px); overflow-y:auto; padding:12px 14px 16px; }
   #side h2{ margin:0 0 2px; font-size:14px; }
   #side .sub{ font-size:11.5px; color:var(--muted); margin:0 0 8px; line-height:1.4; }
   .stat{ font-size:24px; font-weight:700; letter-spacing:-.4px; margin:4px 0 0; }
   .stat small{ font-size:12px; font-weight:500; color:var(--muted); }
   .kv{ display:flex; justify-content:space-between; gap:10px; padding:4px 0; border-bottom:1px dashed var(--line); font-size:12.5px; }
+  /* rows in a different unit from the bars above them get their own block, so
+     the absent bar reads as a change of measure and not as a zero */
+  .kvgroup{ margin-top:13px; padding-top:9px; border-top:1px solid var(--border-strong,var(--line)); }
+  .kvgroup__h{ font-size:11.5px; font-weight:700; color:var(--ink); line-height:1.35; margin-bottom:3px; }
   .kv span:last-child{ text-align:right; color:var(--muted); font-variant-numeric:tabular-nums; }
   table{ width:100%; border-collapse:collapse; font-size:11.5px; margin-top:6px; }
   th{ text-align:left; color:var(--muted); font-weight:600; padding:3px 4px; border-bottom:1px solid var(--line); }
   td{ padding:3px 4px; border-bottom:1px dashed var(--line); font-variant-numeric:tabular-nums; }
   td.num{ text-align:right; }
   .note{ margin-top:9px; font-size:11px; color:var(--muted); line-height:1.45; }
-  .export-links a{ color:var(--navy,#12335c); font-weight:600; text-decoration:none; border-bottom:1px solid rgba(18,51,92,.3); }
-  .export-links a:hover{ border-bottom-color:var(--navy,#12335c); }
+  .export-links a{ color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--ac); }
+  .export-links a:hover{ border-bottom-color:var(--navy); }
   .barrow{ margin:7px 0 2px; }
-  .barrow .lab{ font-size:11.5px; display:flex; justify-content:space-between; color:var(--muted); }
-  .barrow .lab b{ color:var(--ink); font-variant-numeric:tabular-nums; }
-  .barrow .tr{ height:9px; background:#eef1f3; border-radius:3px; margin-top:3px; position:relative; overflow:hidden; }
+  /* the value column never shrinks and never wraps, so a long label can no
+     longer run under the megawatt figure and read as one word */
+  .barrow .lab{ font-size:11.5px; display:flex; justify-content:space-between;
+    align-items:baseline; gap:10px; color:var(--muted); }
+  .barrow .lab span{ min-width:0; }
+  .barrow .lab b{ flex:0 0 auto; white-space:nowrap; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .barrow .tr{ height:9px; background:var(--track); border-radius:3px; margin-top:3px; position:relative; overflow:hidden; }
   .barrow .fl{ position:absolute; inset:0 auto 0 0; border-radius:3px; }
   #spark svg{ display:block; width:100%; height:auto; }
   .fkeys{ display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:6px; }
   .fkey{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; color:var(--muted); text-transform:capitalize; }
-  .fsw{ width:10px; height:10px; border-radius:2px; border:1px solid rgba(0,0,0,.12); }
-  .sual-btn{ width:100%; margin-top:9px; border:1px solid var(--line); background:#fff; color:var(--ink);
+  .fsw{ width:10px; height:10px; border-radius:2px; border:1px solid var(--line); }
+  .sual-btn{ width:100%; margin-top:9px; border:1px solid var(--line); background:var(--paper); color:var(--ink);
     border-radius:7px; padding:7px 10px; cursor:pointer; font-size:12.5px; font-weight:600; }
-  .sual-btn.on{ background:var(--sual); border-color:var(--sual); color:#fff; }
+  .sual-btn.on{ background:var(--sual); border-color:var(--sual); color:var(--on-fill); }
   /* simulate panel */
   .gselrow{ display:flex; gap:6px; margin:2px 0 8px; }
-  .gsel{ flex:1; border:1px solid var(--line); background:#fff; color:var(--muted);
+  .gsel{ flex:1; border:1px solid var(--line); background:var(--paper); color:var(--muted);
     border-radius:6px; padding:5px 6px; cursor:pointer; font-size:12px; }
-  .gsel.on{ background:var(--navy,#12335c); border-color:var(--navy,#12335c); color:#fff; }
+  .gsel.on{ background:var(--navy); border-color:var(--navy); color:var(--bg); }
   .simctl{ margin:8px 0 2px; display:flex; flex-direction:column; gap:8px; }
   .simctl label{ font-size:11.5px; color:var(--muted); display:flex; flex-direction:column; gap:3px; }
   .simctl label b{ color:var(--ink); font-variant-numeric:tabular-nums; }
-  .simctl input[type=range]{ width:100%; accent-color:var(--navy,#12335c); }
+  .simctl input[type=range]{ width:100%; accent-color:var(--navy); }
   .simctl .tick{ font-size:10px; color:var(--muted); opacity:.8; }
-  .simctl select{ padding:5px 6px; border:1px solid var(--line); border-radius:6px; font-size:12px; }
-  .kv.shortfall span:last-child{ color:var(--sual,#b3261e); }
-  .bdg{ display:inline-block; color:#fff; border-radius:3px; padding:0 5px;
+  .simctl select{ padding:5px 6px; border:1px solid var(--line); border-radius:6px; font-size:12px;
+    background:var(--paper); color:var(--ink); }
+  .kv.shortfall span:last-child{ color:var(--sual); }
+  .bdg{ display:inline-block; color:var(--on-fill); border-radius:3px; padding:0 5px;
     font-size:10px; line-height:16px; vertical-align:1px; }
   details.drv{ border-bottom:1px dashed var(--line); padding:4px 0; }
   details.drv summary{ cursor:pointer; font-size:12px; line-height:1.5; }
@@ -109,9 +175,9 @@
   #rail-chev{ display:none; margin-left:8px; font-size:10px; color:var(--muted); transition:transform .18s; }
   body.rail-open #rail-chev{ transform:rotate(180deg); }
   .r-body{ display:flex; align-items:stretch; gap:8px; padding:10px 10px 6px; }
-  .r-nav{ flex:0 0 auto; width:38px; border:1px solid var(--line); background:#fff; border-radius:8px; cursor:pointer; color:var(--ink); font-size:20px; line-height:1; }
-  .r-nav:hover{ background:#f5f8f9; } .r-nav:disabled{ opacity:.35; cursor:default; }
-  .r-card{ flex:1; text-align:left; border:1px solid var(--line); background:#fff; border-radius:8px; padding:9px 11px; display:block; }
+  .r-nav{ flex:0 0 auto; width:38px; border:1px solid var(--line); background:var(--paper); border-radius:8px; cursor:pointer; color:var(--ink); font-size:20px; line-height:1; }
+  .r-nav:hover{ background:var(--paper-2); } .r-nav:disabled{ opacity:.35; cursor:default; }
+  .r-card{ flex:1; text-align:left; border:1px solid var(--line); background:var(--paper); border-radius:8px; padding:9px 11px; display:block; }
   .r-tag{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
   .r-title{ display:block; font-size:13.5px; font-weight:600; line-height:1.32; margin:3px 0 4px; }
   .r-stat{ display:block; font-size:12.5px; font-weight:700; color:var(--ink); line-height:1.35; }
@@ -136,40 +202,44 @@
     body.show-side #legend{ display:block; z-index:10; left:8px; right:8px;
       bottom:70px; top:auto; max-width:none; max-height:34vh; overflow-y:auto; }
   }
-  .hovpop .maplibregl-popup-content{ padding:6px 9px; font-size:11.5px; border-radius:7px; box-shadow:0 1px 6px rgba(16,33,43,.14); max-width:260px; }
+  .hovpop .maplibregl-popup-content{ padding:6px 9px; font-size:11.5px; border-radius:7px; box-shadow:0 1px 6px var(--shadow); max-width:260px;
+    background:var(--paper); color:var(--ink); border:1px solid var(--line); }
   .hovpop .maplibregl-popup-content b{ font-size:12px; } .hovpop .maplibregl-popup-tip{ display:none; }
   /* findings drawer */
-  #fopen{ width:100%; margin-top:9px; border:1px solid var(--line); background:#fff;
+  #fopen{ width:100%; margin-top:9px; border:1px solid var(--line); background:var(--paper);
     color:var(--ink); border-radius:7px; padding:7px 10px; cursor:pointer; font-size:12.5px; font-weight:600;
     text-align:left; display:flex; justify-content:space-between; align-items:center; }
-  #fopen:hover{ background:#f5f8f9; }
-  #studiolink, #paxlink{ display:block; margin-top:7px; border:1px solid var(--ac); background:#f2f7fa;
+  #fopen:hover{ background:var(--paper-2); }
+  #studiolink, #paxlink{ display:block; margin-top:7px; border:1px solid var(--ac); background:var(--paper-2);
     color:var(--ac); border-radius:7px; padding:7px 10px; font-size:12px; font-weight:600;
     text-decoration:none; line-height:1.35; }
-  #studiolink:hover, #paxlink:hover{ background:#e7f0f5; }
+  #studiolink b, #paxlink b{ display:block; white-space:nowrap; }
+  #studiolink span, #paxlink span{ display:block; margin-top:3px; font-weight:400;
+    font-size:11.5px; color:var(--muted); }
+  #studiolink:hover, #paxlink:hover{ background:var(--paper-hi); }
   #paxlink{ border-color:#d98a74; }
   #findbox{ margin-top:9px; position:relative; }
   #findq{ width:100%; box-sizing:border-box; border:1px solid var(--line); border-radius:7px;
-    padding:7px 10px; font-size:12.5px; color:var(--ink); background:#fff; }
+    padding:7px 10px; font-size:12.5px; color:var(--ink); background:var(--paper); }
   #findq:focus{ outline:none; border-color:var(--ac); }
-  #findres{ position:absolute; left:0; right:0; top:34px; z-index:8; background:#fff;
-    border:1px solid var(--line); border-radius:7px; box-shadow:0 4px 14px rgba(16,33,43,.12);
+  #findres{ position:absolute; left:0; right:0; top:34px; z-index:8; background:var(--paper);
+    border:1px solid var(--line); border-radius:7px; box-shadow:0 4px 14px var(--shadow);
     overflow:hidden; display:none; }
   #findres.on{ display:block; }
-  #findres button{ display:block; width:100%; text-align:left; border:0; border-bottom:1px solid #eef1f2;
-    background:#fff; padding:6px 10px; cursor:pointer; font-size:12px; color:var(--ink); line-height:1.3; }
+  #findres button{ display:block; width:100%; text-align:left; border:0; border-bottom:1px solid var(--line);
+    background:var(--paper); padding:6px 10px; cursor:pointer; font-size:12px; color:var(--ink); line-height:1.3; }
   #findres button:last-child{ border-bottom:0; }
-  #findres button:hover, #findres button.hi{ background:#f2f7fa; }
+  #findres button:hover, #findres button.hi{ background:var(--paper-2); }
   #findres .k{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; }
   #findres .s{ color:var(--muted); font-size:11px; }
   #findres .findnote{ padding:9px 11px; font-size:11.5px; color:var(--muted); line-height:1.5; }
   #findres button.findjump{ display:inline-flex; width:auto; margin-top:7px; border:1px solid var(--line);
-    border-radius:6px; padding:4px 10px; font-size:11.5px; font-weight:600; color:var(--ac); background:#f2f7fa; }
-  #findres button.findjump:hover{ background:#e7f0f5; }
+    border-radius:6px; padding:4px 10px; font-size:11.5px; font-weight:600; color:var(--ac); background:var(--paper-2); }
+  #findres button.findjump:hover{ background:var(--paper-hi); }
   #findisl{ margin-top:7px; display:flex; gap:6px; align-items:center; font-size:11.5px; color:var(--muted); }
-  #findisl button{ border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:6px;
+  #findisl button{ border:1px solid var(--line); background:var(--paper); color:var(--ink); border-radius:6px;
     padding:3px 9px; cursor:pointer; font-size:11.5px; font-weight:600; }
-  #findisl button:hover{ background:#f2f7fa; border-color:var(--ac); color:var(--ac); }
+  #findisl button:hover{ background:var(--paper-2); border-color:var(--ac); color:var(--ac); }
   #findings{ position:absolute; z-index:6; top:12px; left:12px; bottom:12px; width:356px;
     max-width:calc(100% - 24px); display:none; flex-direction:column; padding:0; }
   #findings.open{ display:flex; }
@@ -179,7 +249,7 @@
   #fclose{ border:0; background:none; font-size:20px; cursor:pointer; color:var(--muted); line-height:1; }
   #flist{ overflow-y:auto; padding:10px 12px 12px; }
   .fcard{ border:1px solid var(--line); border-radius:8px; padding:9px 11px; margin-bottom:8px; cursor:pointer; }
-  .fcard:hover{ background:#f7fafb; }
+  .fcard:hover{ background:var(--paper-2); }
   .fcard.on{ border-color:var(--ink); box-shadow:0 0 0 1px var(--ink) inset; }
   .ftag{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
   .fcard h3{ margin:3px 0 4px; font-size:13.5px; line-height:1.32; }
@@ -187,7 +257,7 @@
   .fblurb{ font-size:12px; color:var(--muted); line-height:1.45; margin-top:5px; }
   .fsrc{ font-size:10.5px; color:var(--muted); font-style:italic; margin-top:5px; }
   #banner{ position:absolute; z-index:7; top:62px; left:50%; transform:translateX(-50%);
-    background:#fff6f5; border:1px solid #e2664b; color:#7a2a17; border-radius:8px;
+    background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink); border-radius:8px;
     padding:7px 12px; font-size:12px; display:none; max-width:min(560px, calc(100% - 24px)); }
   #mside{ display:none; }
   @media(max-width:640px){
@@ -202,9 +272,13 @@
     /* search results flow inline so they never clip inside the head */
     #findres{ position:static; margin-top:6px; max-height:190px; overflow-y:auto; box-shadow:none; }
 
-    /* modes: docked to the bottom, full width, horizontal scroll */
+    /* modes: docked to the bottom, full width, horizontal scroll. The last tab
+       sits past the right edge, so fade that edge: without it the bar reads as
+       three tabs and the user never finds Simulate. */
     #modebar{ top:auto; bottom:10px; left:8px; right:8px; transform:none; max-width:none;
-      flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; padding:6px 8px; }
+      flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; padding:6px 8px;
+      scrollbar-width:none; -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 34px),transparent); }
+    #modebar::-webkit-scrollbar{ display:none; }
     .mode{ flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:0 14px; }
 
     /* three questions: a bottom sheet above the mode bar, collapsed to a handle by default */
@@ -222,15 +296,16 @@
     /* the details pill opens the mode panel as an overlay, clear of the map controls */
     #findings{ right:8px; left:8px; width:auto; }
     #mside{ display:inline-flex; align-items:center; position:absolute; z-index:5; left:12px; bottom:130px;
-      min-height:44px; border:1px solid var(--line); background:#fff; border-radius:22px; padding:0 16px;
+      min-height:44px; border:1px solid var(--line); background:var(--paper); border-radius:22px; padding:0 16px;
       font-size:12.5px; font-weight:600; color:var(--ink); cursor:pointer;
-      box-shadow:0 1px 8px rgba(16,33,43,.14); }
+      box-shadow:0 1px 8px var(--shadow); }
     body.show-side #side{ display:block; position:absolute; z-index:9; left:8px; right:8px;
       top:56px; bottom:66px; width:auto; max-height:none; }
     body.rail-open #mside{ display:none; }
 
-    /* lift the map credits above the bottom cluster; drop the zoom buttons (pinch works) */
-    .maplibregl-ctrl-bottom-right{ bottom:128px; }
+    /* lift the map credits clear of the details pill; drop the zoom buttons
+       (pinch works). At 128px the credit line ran straight through the pill. */
+    .maplibregl-ctrl-bottom-right{ bottom:180px; }
     .maplibregl-ctrl-bottom-right .maplibregl-ctrl-group{ display:none; }
   }
 </style>
@@ -258,8 +333,10 @@
       <button data-isl="mindanao">Mindanao</button>
     </div>
   </div>
-  <a id="studiolink" href="studio/">Open the dispatch studio, edit the fleet, replay recorded days, and check the historical replay &rarr;</a>
-  <a id="paxlink" href="pax-silica.html">Pax Silica would use more power than the Visayas grid and up to 1.9 times Makati's daily water use &rarr;</a>
+  <a id="studiolink" href="studio/"><b>Open the dispatch studio &rarr;</b>
+    <span>Edit the fleet, replay recorded days, check the model against the market record.</span></a>
+  <a id="paxlink" href="pax-silica.html"><b>Read the Pax Silica page &rarr;</b>
+    <span>One announced campus would draw more power than the Visayas grid, and up to 1.9 times Makati's daily water use.</span></a>
 </div>
 
 <div id="banner" role="alert"></div>
@@ -273,9 +350,9 @@
 <button id="mside" class="panel" aria-expanded="false">Show map details</button>
 
 <div id="modebar" class="panel" role="tablist">
-  <button class="mode on" data-mode="supply" role="tab" aria-selected="true">1 Supply</button>
-  <button class="mode" data-mode="choke" role="tab" aria-selected="false">2 Choke points</button>
-  <button class="mode" data-mode="price" role="tab" aria-selected="false">3 Prices</button>
+  <button class="mode on" data-mode="supply" role="tab" aria-selected="true">Supply</button>
+  <button class="mode" data-mode="choke" role="tab" aria-selected="false">Choke points</button>
+  <button class="mode" data-mode="price" role="tab" aria-selected="false">Prices</button>
   <button class="mode" data-mode="drivers" role="tab" aria-selected="false">Daily market record</button>
   <button class="mode" data-mode="simulate" role="tab" aria-selected="false">Simulate</button>
 </div>
@@ -344,13 +421,27 @@ async function loadAll(){
   }
 }
 
+// One declaration per color. The stylesheet holds it, both themes redeclare it
+// in the same place, and the map layers, the legend swatches and the margin
+// bars all read it back from there. Before this, each color was written out
+// three times and a dark theme would have had to find all three.
+const DARKQ = window.matchMedia("(prefers-color-scheme: dark)");
+const CSSV = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function pal(){
+  const k = ["op","uc","plan","hvdc","ac","sual","op-line","uc-line","plan-line",
+    "gas","coal","ac138","ac230","ac500","pinline","halo","ink","muted","line"];
+  return Object.fromEntries(k.map(n => [n, CSSV("--" + n)]));
+}
+let P = pal();
+const tileUrls = () => ["a","b"].map(s =>
+  `https://${s}.basemaps.cartocdn.com/${DARKQ.matches ? "dark_all" : "light_all"}/{z}/{x}/{y}@2x.png`);
+
 const map = new maplibregl.Map({
   container: "map",
   style: {
     version: 8,
     sources: { carto: { type: "raster",
-      tiles: ["https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
-              "https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"],
+      tiles: tileUrls(),
       tileSize: 256,
       attribution: "&copy; OpenStreetMap contributors &copy; CARTO" } },
     layers: [{ id: "carto", type: "raster", source: "carto" }]
@@ -358,6 +449,20 @@ const map = new maplibregl.Map({
   center: [122.3, 12.1], zoom: 5.15, minZoom: 4.4, maxZoom: 11,
   attributionControl: { compact: true }
 });
+
+// The four panels cover roughly half the window, so a centred fit puts the
+// archipelago behind them and spends the visible strip on the South China Sea.
+// Fit to the islands with the panels' own widths as padding, so the land lands
+// in the gap the reader can actually see.
+const PH_BOUNDS = [[117.0, 4.6], [126.7, 19.6]];
+function frameIslands(animate){
+  const w = map.getContainer().clientWidth;
+  const pad = w >= 1024
+    ? { top: 30, bottom: 300, left: 424, right: 364 }   // head, rail, side
+    : (w >= 640 ? { top: 30, bottom: 190, left: 30, right: 30 }
+                : { top: 70, bottom: 150, left: 14, right: 14 });
+  map.fitBounds(PH_BOUNDS, { padding: pad, duration: animate ? 600 : 0, maxZoom: 7.2 });
+}
 map.addControl(new maplibregl.NavigationControl({ showCompass:false }), "bottom-right");
 
 const pop = new maplibregl.Popup({ closeButton:false, closeOnClick:false, className:"hovpop" });
@@ -373,27 +478,27 @@ function addLayers(){
     // real routed geometry, under the corridor arcs; visible in choke mode
     map.addLayer({ id:"grid-138", type:"line", source:"grid",
       filter:["==",["get","kind"],"ac138"], layout:{ visibility:"none" },
-      paint:{ "line-color":"#a8b8c4", "line-width":.8, "line-opacity":.7 }});
+      paint:{ "line-color":P.ac138, "line-width":.8, "line-opacity":.7 }});
     map.addLayer({ id:"grid-230", type:"line", source:"grid",
       filter:["==",["get","kind"],"ac230"], layout:{ visibility:"none" },
-      paint:{ "line-color":"#7d94a6", "line-width":1.2, "line-opacity":.8 }});
+      paint:{ "line-color":P.ac230, "line-width":1.2, "line-opacity":.8 }});
     map.addLayer({ id:"grid-500", type:"line", source:"grid",
       filter:["==",["get","kind"],"ac500"], layout:{ visibility:"none" },
-      paint:{ "line-color":"#41586b", "line-width":2, "line-opacity":.9 }});
+      paint:{ "line-color":P.ac500, "line-width":2, "line-opacity":.9 }});
     map.addLayer({ id:"grid-cable", type:"line", source:"grid",
       filter:["==",["get","kind"],"cable"], layout:{ visibility:"none" },
       paint:{ "line-color":"#7a5c99", "line-width":1.6,
               "line-dasharray":[1,1.6], "line-opacity":.85 }});
     map.addLayer({ id:"grid-bound", type:"line", source:"grid",
       filter:["has","binding"], layout:{ visibility:"none" },
-      paint:{ "line-color":"#b3261e", "line-width":2.6, "line-opacity":.9 }});
+      paint:{ "line-color":P.sual, "line-width":2.6, "line-opacity":.9 }});
     map.addLayer({ id:"grid-sub", type:"circle", source:"gridsub",
       layout:{ visibility:"none" },
       paint:{ "circle-radius": ["case", ["has","binding"], 5,
                 ["to-boolean", ["get","hv"]], 3.4, 1.9],
-        "circle-color": ["case", ["has","binding"], "#b3261e", "#41586b"],
+        "circle-color": ["case", ["has","binding"], P.sual, P.ac500],
         "circle-opacity": .85, "circle-stroke-width": .8,
-        "circle-stroke-color": "#fff" }});
+        "circle-stroke-color": P.halo }});
     n++;
   }
   if (D["chokepoints.geojson"]){
@@ -401,7 +506,7 @@ function addLayers(){
     map.addLayer({ id:"choke-line", type:"line", source:"choke",
       layout:{ "line-cap":"round" },
       paint:{
-        "line-color": ["match", ["get","kind"], "hvdc", "#9c3d12", "#3a6b8a"],
+        "line-color": ["match", ["get","kind"], "hvdc", P.hvdc, P.ac],
         "line-width": ["case", ["==", ["get","kind"], "hvdc"], 3.4, 2.4],
         "line-dasharray": [1.6, 1.4],
         "line-opacity": .9
@@ -415,19 +520,19 @@ function addLayers(){
         "circle-radius": ["case", ["to-boolean", ["get","mw"]],
           ["interpolate", ["linear"], ["get","mw"], 3, 5, 50, 11, 300, 20], 4.5],
         "circle-color": ["match", ["get","status"],
-          "operational", "#1a7f48", "under_construction", "#b8860b", "#8a97a0"],
+          "operational", P.op, "under_construction", P.uc, P.plan],
         "circle-opacity": ["case", ["to-boolean", ["get","mw"]], .82, .18],
         "circle-stroke-width": 1.4,
         "circle-stroke-color": ["match", ["get","status"],
-          "operational", "#125c34", "under_construction", "#8a6508", "#5b6b75"]
+          "operational", P["op-line"], "under_construction", P["uc-line"], P["plan-line"]]
       }});
     n++;
   }
   if (D["sual.geojson"]){
     map.addSource("sual", { type:"geojson", data: D["sual.geojson"] });
     map.addLayer({ id:"sual-pt", type:"circle", source:"sual",
-      paint:{ "circle-radius": 8, "circle-color":"#fff",
-        "circle-stroke-width": 3, "circle-stroke-color": "#b3261e" }});
+      paint:{ "circle-radius": 8, "circle-color":P.halo,
+        "circle-stroke-width": 3, "circle-stroke-color": P.sual }});
     n++;
   }
   const NO = D["nodal_obs.json"];
@@ -448,9 +553,9 @@ function addLayers(){
         "circle-radius": ["interpolate", ["linear"], ["abs", ["get","dev"]],
           0, 3, 0.8, 8],
         "circle-color": ["interpolate", ["linear"], ["get","dev"],
-          -0.8, "#2b6a9d", 0, "#b9b3a8", 0.8, "#b3261e"],
+          -0.8, P.ac, 0, P.plan, 0.8, P.sual],
         "circle-opacity": .9,
-        "circle-stroke-color": "#fff", "circle-stroke-width": 1 }});
+        "circle-stroke-color": P.halo, "circle-stroke-width": 1 }});
     n++;
   }
   if (D["generators.geojson"]){
@@ -461,9 +566,9 @@ function addLayers(){
         "circle-radius": ["interpolate", ["linear"], ["get","capacity_mw"],
           200, 6, 1340, 15],
         "circle-color": ["match", ["get","fuel"],
-          "natural_gas", "#4e79a7", "coal", "#6b6b6b", "#8a97a0"],
+          "natural_gas", P.gas, "coal", P.coal, P.plan],
         "circle-opacity": .82,
-        "circle-stroke-width": 1.6, "circle-stroke-color": "#333" }});
+        "circle-stroke-width": 1.6, "circle-stroke-color": P.pinline }});
     n++;
   }
   window.__diag.layers = n;
@@ -633,11 +738,11 @@ function sideSupply(){
   let bars = "";
   const items = an.filter(a => a.kind !== "contested");
   const maxmw = Math.max(...items.map(a => a.mw || a.mw_high || 0), margin || 0);
-  const color = { forecast:"#8a97a0", commitment:"#b8860b", pipeline:"#3a6b8a" };
-  bars += barRow("System supply margin, May 2026 (IEMOP)", margin, maxmw, "#1a7f48");
+  const color = { forecast:P.plan, commitment:P.uc, pipeline:P.ac };
+  bars += barRow("System supply margin, May 2026 (IEMOP)", margin, maxmw, P.op);
   for (const a of items){
     bars += barRow(a.label + " [" + a.kind + "]", a.mw || a.mw_high, maxmw,
-                   color[a.kind] || "#8a97a0", a.mw_low);
+                   color[a.kind] || P.plan, a.mw_low);
   }
   const contested = an.find(a => a.kind === "contested");
   const R = D["reliability.json"];
@@ -646,8 +751,13 @@ function sideSupply(){
     const t = R.totals;
     const cd = ["luzon","visayas","mindanao"].reduce((s,g)=>s+(t[g]?t[g].curtailment_days:0),0);
     const cm = ["luzon","visayas","mindanao"].reduce((s,g)=>s+(t[g]?t[g].curtailed_mwh_total:0),0);
-    rec = `<div class="kv"><span>Grid-days with load curtailed in 5-minute real-time dispatch schedules</span><span>${fmt(cd)}</span></div>
-    <div class="kv"><span>Energy curtailed in those schedules</span><span>${fmt(cm)} MWh</span></div>`;
+    // These two are days and megawatt-hours, not megawatts, so they cannot sit
+    // on the bar scale above. Without the break a reader takes the missing bar
+    // for a zero.
+    rec = `<div class="kvgroup">
+    <div class="kvgroup__h">The operator's own schedules already curtailed load in this window</div>
+    <div class="kv"><span>Grid-days with load curtailed in 5-minute real-time dispatch schedules</span><span>${fmt(cd)}</span></div>
+    <div class="kv"><span>Energy curtailed in those schedules</span><span>${fmt(cm)} MWh</span></div></div>`;
   }
   return `<h2>Announced demand is compared with the ${fmt(margin)} MW May 2026 supply margin</h2>
   <p class="sub">Announced and forecast data-center megawatts against the whole
@@ -892,7 +1002,7 @@ function sideDrivers(){
 }
 function sparkSVG(P){
   const W = 300, H = 90, pad = 6;
-  const series = [["luzon","#3a6b8a"],["visayas","#9c3d12"],["mindanao","#1a7f48"]];
+  const series = [["luzon",P.ac],["visayas",P.hvdc],["mindanao",P.op]];
   const all = series.flatMap(([k]) => (P.series[k] || []).filter(v => v != null));
   if (!all.length) return "";
   const mn = Math.min(...all), mx = Math.max(...all);
@@ -915,35 +1025,35 @@ function sparkSVG(P){
 
 const LEGENDS = {
   supply: { title:"Data-center sites (public record)", keys: [
-    ["sw","#1a7f48","Operational (public MW shown by size)"],
-    ["sw","#b8860b","Under construction"],
-    ["sw","#8a97a0","Planned or announced"],
-    ["sw","#fff;border:2px solid #b3261e","Sual coal plant (2 x 647 MW)"]],
+    ["sw",P.op,"Operational (public MW shown by size)"],
+    ["sw",P.uc,"Under construction"],
+    ["sw",P.plan,"Planned or announced"],
+    ["sw",P.halo+";border:2px solid "+P.sual,"Sual coal plant (2 x 647 MW)"]],
     note:"Hollow dots have no public MW figure. Pins are city-precision. Not a complete inventory: Cushman counts 24 operational facilities; DataCenterMap lists 44." },
   choke: { title:"Grid choke points", keys: [
-    ["ln","#9c3d12","High-voltage direct-current inter-island link (real route)"],
-    ["ln","#3a6b8a","AC transmission line named congested in primary sources"],
-    ["ln","#b3261e","Line at its limit in the real-time dispatch record"],
-    ["ln","#41586b","500 kV backbone"],
-    ["ln","#7d94a6","230 kV (thin grey = 138 kV)"]],
+    ["ln",P.hvdc,"High-voltage direct-current inter-island link (real route)"],
+    ["ln",P.ac,"AC transmission line named congested in primary sources"],
+    ["ln",P.sual,"Line at its limit in the real-time dispatch record"],
+    ["ln",P.ac500,"500 kV backbone"],
+    ["ln",P.ac230,"230 kV (thin grey = 138 kV)"]],
     note:"Transmission lines follow real routes mapped in OpenStreetMap (community data, ODbL), not NGCP documents. Red marks equipment that IEMOP recorded at its limit; hover for the public record." },
   price: { title:"Prices and the links", keys: [
-    ["ln","#9aa7b3","The transmission network (faint) that the nodes sit on"],
-    ["ln","#9c3d12","High-voltage direct-current links: regional prices separate at their limits"],
-    ["sw","#b3261e","Node above its regional price (persistent, observed)"],
+    ["ln",P.ac138,"The transmission network (faint) that the nodes sit on"],
+    ["ln",P.hvdc,"High-voltage direct-current links: regional prices separate at their limits"],
+    ["sw",P.sual,"Node above its regional price (persistent, observed)"],
     ["sw","#b9b3a8","Node near its regional price"],
     ["sw","#2b6a9d","Node below its regional price"],
-    ["sw","#1a7f48","Data-center sites for reference"]],
+    ["sw",P.op,"Data-center sites for reference"]],
     note:"Each dot is one WESM node, drawn on the transmission grid it sits on and coloured by its recorded difference from the region's final per-node dispatch price. Dot size shows the size of the difference across clean market days. Stations and plants use exact mapped sites; locality centroids use city-level placement. The panel lists unresolved sites. This is not a congestion premium because WESM prices intra-regional congestion administratively." },
   simulate: { title:"Named generators (price movers)", keys: [
     ["sw","#6b6b6b","Coal unit (size by capacity)"],
     ["sw","#4e79a7","Natural-gas unit"]],
     note:"These units are large enough for one outage to affect the grid. Pins are placed to city precision. Remove one unit in the panel to run the loss-of-one-unit test (N-1)." },
   drivers: { title:"Day-by-day drivers", keys: [
-    ["sw","#9c3d12","Curtailment recorded"],
-    ["sw","#3a6b8a","Inter-island link advisory (block or de-block)"],
+    ["sw",P.hvdc,"Curtailment recorded"],
+    ["sw",P.ac,"Inter-island link advisory (block or de-block)"],
     ["sw","#8a6bb0","Alert advisory"],
-    ["sw","#b3261e","Regional price spread (P5/kWh or more)"]],
+    ["sw",P.sual,"Regional price spread (P5/kWh or more)"]],
     note:"Every column in the panel comes from the archive: prices, outages, curtailment, advisories, and binding constraints. Scenario settings do not alter these records." }
 };
 function legendRender(){
@@ -994,7 +1104,7 @@ function setMode(m, syncRail = true){
     map.setLayoutProperty(id, "visibility", gridVis);
     map.setPaintProperty(id, "line-opacity", faint ? 0.32 : (id === "grid-500" ? 0.9 : 0.8));
     map.setPaintProperty(id, "line-color",
-      faint ? "#9aa7b3" : (id === "grid-500" ? "#41586b" : "#7d94a6"));
+      faint ? P.ac138 : (id === "grid-500" ? P.ac500 : P.ac230));
   });
   ["grid-cable","grid-bound","grid-sub"].forEach(id => {
     if (map.getLayer(id))
@@ -1067,10 +1177,17 @@ function sualToggle(btn){
 }
 
 /* Merit-order dispatch recalculated in the browser. */
-const FUELCOL = { solar:"#e0b93b", wind:"#7fb2d6", hydro:"#3a6b8a",
+// Fuel colors for the merit-order stack. The dark set lifts the five that a
+// dark panel would swallow (firm, import, shortage, coal, oil); the rest are
+// already light enough to keep their hue across both themes.
+const FUELCOL_LIGHT = { solar:"#e0b93b", wind:"#7fb2d6", hydro:"#3a6b8a",
   geothermal:"#8a6bb0", natural_gas:"#4e79a7", biomass:"#5a9e6f", coal:"#6b6b6b",
   oil:"#b3261e", import:"#1a7f48", firm:"#125c34", storage:"#c77dff",
   shortage:"#5c0e0e" };
+const FUELCOL_DARK = { ...FUELCOL_LIGHT, hydro:"#6fa3c4", geothermal:"#b39ddb",
+  natural_gas:"#7aa5cc", coal:"#a1a1a1", oil:"#f87171", import:"#4ade80",
+  firm:"#2f9e5f", shortage:"#c0392b" };
+let FUELCOL = DARKQ.matches ? FUELCOL_DARK : FUELCOL_LIGHT;
 const HVDC_IMPORT_LIMIT = { luzon:250, visayas:250, mindanao:450 };
 let SIM = { grid:"luzon", addDC:0, addFirm:0, imp:0, stor:0, trip:"" };
 
@@ -1231,7 +1348,7 @@ function durationSVG(pd){
   const zero = (ymin < 0 && ymax > 0)
     ? `<line x1="${padL}" y1="${y(0).toFixed(1)}" x2="${W-padR}" y2="${y(0).toFixed(1)}" stroke="#ccc" stroke-width="0.5" stroke-dasharray="2 2"/>` : "";
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Price-duration curve, modeled versus observed">
-    ${zero}${line(pd.observed, "#b3261e")}${line(pd.modeled, "#333")}
+    ${zero}${line(pd.observed, P.sual)}${line(pd.modeled, P.ink)}
     <text x="2" y="${(y(ymax)+3).toFixed(1)}" font-size="7" fill="#888">P${fmt(ymax,0)}</text>
     <text x="2" y="${(y(ymin)+2).toFixed(1)}" font-size="7" fill="#888">P${fmt(ymin,0)}</text>
     <text x="${padL}" y="${H-2}" font-size="7" fill="#888">0%</text>
@@ -1670,10 +1787,56 @@ loadAll().then(() => {
     window.__diag.generators = (D["generators.geojson"]||{features:[]}).features.length;
     window.__diag.dispatch = !!(D["dispatch.json"] && D["dispatch.json"].available);
     railRender(); setMode("supply", false);
+    frameIslands(false);
     URL_READY = true; applyURL();
     window.__diag.ready = true;
   };
+  // re-fit on resize only while the user has not moved the map themselves
+  let userMoved = false;
+  map.on("dragstart", () => { userMoved = true; });
+  map.on("zoomstart", e => { if (e.originalEvent) userMoved = true; });
+  let rt = 0;
+  window.addEventListener("resize", () => {
+    if (userMoved) return;
+    clearTimeout(rt);
+    rt = setTimeout(() => frameIslands(false), 180);
+  });
   if (map.isStyleLoaded()) draw(); else map.once("load", draw);
+
+  // The user can flip the system theme while the page is open. Re-read the
+  // palette, swap the basemap tiles, and repaint every layer whose color came
+  // from a token. Without this the panels turn dark and the map stays light.
+  DARKQ.addEventListener("change", () => {
+    P = pal();
+    FUELCOL = DARKQ.matches ? FUELCOL_DARK : FUELCOL_LIGHT;
+    const src = map.getSource("carto");
+    if (src && src.setTiles) src.setTiles(tileUrls());
+    const repaint = [
+      ["grid-138", "line-color", P.ac138],
+      ["grid-230", "line-color", P.ac230],
+      ["grid-500", "line-color", P.ac500],
+      ["grid-bound", "line-color", P.sual],
+      ["grid-sub", "circle-color",
+        ["case", ["has", "binding"], P.sual, P.ac500]],
+      ["grid-sub", "circle-stroke-color", P.halo],
+      ["sual-pt", "circle-color", P.halo],
+      ["sual-pt", "circle-stroke-color", P.sual],
+      ["nodal-pt", "circle-stroke-color", P.halo],
+      ["gen-pt", "circle-stroke-color", P.pinline],
+      ["dc-pt", "circle-color", ["match", ["get", "status"],
+        "operational", P.op, "under_construction", P.uc, P.plan]],
+      ["dc-pt", "circle-stroke-color", ["match", ["get", "status"],
+        "operational", P["op-line"], "under_construction", P["uc-line"], P["plan-line"]]],
+      ["choke-line", "line-color",
+        ["match", ["get", "kind"], "hvdc", P.hvdc, P.ac]],
+      ["nodal-pt", "circle-color", ["interpolate", ["linear"], ["get", "dev"],
+        -0.8, P.ac, 0, P.plan, 0.8, P.sual]],
+    ];
+    for (const [id, prop, val] of repaint)
+      if (map.getLayer(id)) map.setPaintProperty(id, prop, val);
+    railRender();
+    setMode(MODE, false);
+  });
 });
 </script>
 </body>

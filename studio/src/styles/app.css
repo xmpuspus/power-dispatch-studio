@@ -110,6 +110,11 @@
   border-bottom: 1px solid var(--border);
   background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
 }
+/* The hero used to be one left column inside a 1180px box: the headline broke
+   over three lines against a 20ch cap, the numbers sat under the paragraph, and
+   the right half of a wide window held nothing. Copy left, numbers right, so
+   the headline gets two lines, the hero gets shorter, and the map comes up
+   sooner. Below 900px it stacks back to one column. */
 .hero__copy {
   max-width: 1180px;
   margin: 0 auto;
@@ -117,19 +122,32 @@
 .hero__title {
   font-size: clamp(1.6rem, 3.4vw, var(--fs-28));
   letter-spacing: -0.02em;
-  max-width: 20ch;
+  max-width: 26ch;
+  text-wrap: balance;
 }
 .hero__lede {
-  margin: var(--sp-3) 0 var(--sp-5);
+  margin: var(--sp-3) 0 0;
   color: var(--text-muted);
-  max-width: 68ch;
+  max-width: 62ch;
   font-size: var(--fs-16);
 }
 .hero__stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: var(--sp-3);
-  max-width: 860px;
+  margin-top: var(--sp-5);
+}
+@media (min-width: 900px) {
+  .hero__copy {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    gap: var(--sp-6);
+    align-items: start;
+  }
+  .hero__stats {
+    grid-template-columns: 1fr;
+    margin-top: 0;
+  }
 }
 .hero__loading {
   color: var(--text-muted);
@@ -597,6 +615,47 @@
   font-size: var(--fs-13);
 }
 
+/* An empty view is where a reader decides whether the thing is worth learning,
+   so it carries the steps rather than one sentence naming another view. */
+.empty-steps {
+  margin: 4px 0 16px;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  display: grid;
+  gap: var(--sp-2);
+  max-width: 62ch;
+}
+/* exactly two children: the ::before counter and the one <span> the markup
+   wraps every step in. A bare text node beside the <b> would become a third
+   grid item and break each step onto one word per line. */
+.empty-steps li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: var(--sp-3);
+  align-items: center;
+  color: var(--text-muted);
+  font-size: var(--fs-13);
+  line-height: var(--lh-body);
+}
+.empty-steps li::before {
+  content: counter(step);
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  color: var(--text-faint);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+}
+.empty-steps b {
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* ============ Segmented control ============ */
 .segmented {
   display: inline-flex;
@@ -645,6 +704,24 @@
   font-size: 9px;
   fill: var(--text-muted);
   font-family: var(--font-mono);
+}
+/* The named value a reader is meant to take away: the demand cursor and the
+   clearing price. Heavier than an axis tick so it reads before the ticks do. */
+.chart__key {
+  font-size: 9px;
+  font-weight: 700;
+  fill: var(--text);
+  font-family: var(--font-mono);
+}
+/* A 900-unit viewBox renders about 1.4x wider than the 640-unit charts, so a
+   9px glyph would land near 9px on screen instead of the ~14px the others get.
+   Size the text to the box it is drawn in. */
+.chart--tall .chart__ax,
+.chart--tall .chart__lbl {
+  font-size: 12px;
+}
+.chart--tall .chart__key {
+  font-size: 13px;
 }
 .chart__rent {
   font-size: 9px;
@@ -1330,6 +1407,11 @@
   display: flex;
   align-items: center;
   gap: var(--sp-3);
+}
+.datapane__hinttext {
+  margin: 0;
+  max-width: 96ch;
+  line-height: var(--lh-body);
 }
 .datapane__run {
   margin-left: auto;

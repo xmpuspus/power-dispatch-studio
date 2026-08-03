@@ -4,7 +4,7 @@
 import { useState } from 'react'
 import type { GridKey } from '../lib/types'
 import { num, php, useEmissions } from '../lib/data'
-import { Chip, EmptyNote, Panel } from '../ui/kit'
+import { Chip, Panel } from '../ui/kit'
 import { HourLines } from './charts'
 import { buildRunReport, downloadReport } from './report'
 import {
@@ -43,10 +43,12 @@ export function RunsView({
   runs,
   onRunsChange,
   onRestore,
+  onOpenReplay,
 }: {
   runs: SavedRun[]
   onRunsChange: (runs: SavedRun[]) => void
   onRestore: (run: SavedRun) => void
+  onOpenReplay: () => void
 }) {
   const [aId, setAId] = useState<string>('')
   const [bId, setBId] = useState<string>('')
@@ -88,20 +90,38 @@ export function RunsView({
     )
   }
 
+  // The empty state used to name the view that creates a run and then leave the
+  // reader to find it. It now names the three steps and opens step one.
   if (!runs.length)
     return (
       <div className="view">
         <Panel
-          title="Saved simulation runs"
-          subtitle="Save an hourly market replay to compare it with other runs."
+          title="A saved run freezes one replay so you can compare it with another"
+          subtitle="Nothing is saved in this browser yet. Runs stay on this machine; nothing is uploaded."
         >
-          <EmptyNote>
-            No saved runs yet. Open Hourly market replay, configure a scenario and a date
-            range, then press Save run.
-          </EmptyNote>
+          <ol className="empty-steps">
+            <li>
+              <span>
+                <b>Open Hourly market replay</b> and pick a date range.
+              </span>
+            </li>
+            <li>
+              <span>
+                <b>Edit the scenario</b>, then press Run to solve it.
+              </span>
+            </li>
+            <li>
+              <span>
+                <b>Press Save run</b> to keep that solve. It appears here.
+              </span>
+            </li>
+          </ol>
           <div className="runs__archive-bar">
+            <button className="btn btn--primary btn--sm" onClick={onOpenReplay}>
+              Open Hourly market replay
+            </button>
             <label className="btn btn--ghost btn--sm">
-              Import runs
+              Import runs from a file
               <input
                 type="file"
                 accept="application/json,.json"
