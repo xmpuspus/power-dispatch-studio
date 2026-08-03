@@ -56,7 +56,10 @@ def check_html_static_text(c, p, s, w, wa, pr, SITE):
     has("sun-alone land, prose", f"{s['sun_alone_km2']:.0f} square kilometers")
     # the land chart projects the panel area onto a real basemap: guard that
     # the overlay's size comes from the data build and the map is attributed
-    script = re.search(r"<script>(.*?)</script>", html, re.S).group(1)
+    # every script block, not the first one: the page carries a small pre-paint
+    # theme script in its head, and reading only the first block checked that
+    # one and reported the figure code missing
+    script = "\n".join(re.findall(r"<script>(.*?)</script>", html, re.S))
     pin(
         "map overlay side computed from the generated km2",
         "Math.sqrt(P.sun.sun_alone_km2) * 1000 / mpp" in script,

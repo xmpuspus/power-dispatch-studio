@@ -5,14 +5,54 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Pax Silica needs 3,000 MW and 65 to 90 million liters of water daily</title>
 <meta name="description" content="Nine sourced charts compare Pax Silica demand with Philippine power, transmission, solar, water, and land records." />
+<script>
+// Same pre-paint script and pds.theme key as the map, the studio and the
+// methods page, so a pinned theme survives every link between them.
+(function(){
+  try {
+    var s = localStorage.getItem('pds.theme');
+    var dark = s === 'dark' || (s !== 'light' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  } catch (e) { document.documentElement.dataset.theme = 'light'; }
+})();
+</script>
 <style>
   :root{
     /* measured from informationisbeautiful.net (site CSS + graphics pixels) */
-    --ink:#02000D; --body:#3d3d47; --muted:#7d7d85; --line:#e3d9cc;
+    --ink:#02000D; --body:#3d3d47; --line:#e3d9cc;
+    /* was #7d7d85, which measured 3.51:1 on the cream page and 4.08:1 on a
+       white plate. Figure captions run at 12.5px, so they need the 4.5:1 body
+       floor; this clears it on both (4.55 and 5.28). */
+    --muted:#6b6b73;
     --bg:#f4ede4; --pink:#f06292;
     --red:#A65E46; --blue:#07203F; --navy:#07203F; --gold:#A65E46;
     --steel:#4e79a7; --coral:#e2664b; --green:#1a7f48; --fill:#eef1f4;
+    --plate:#fff; --platetext:#3d3d47; --platemute:#6b6b73; --plateink:#02000D;
+    --platefill:#eef1f4; --plateline:#e3d9cc;
   }
+  /* Dark mode keeps every figure on a light plate. The nine charts are built
+     out of a palette measured from a print-style source, terracotta and deep
+     navy on cream, and inverting those marks one by one would be redrawing the
+     charts rather than theming the page. Dark reading chrome around a light
+     plate is how a document reader shows a printed page, and it keeps the
+     chart palette exactly as it was measured. */
+  :root[data-theme='dark']{
+    --ink:#e6edf7; --body:#c3cfe0; --muted:#9fb0c9; --line:#24314c;
+    --bg:#0b1220;
+  }
+  html{ color-scheme:light; }
+  html[data-theme='dark']{ color-scheme:dark; }
+  /* Inside a plate, put the reading tokens back to their light values. They are
+     custom properties, so redeclaring them here fixes every descendant at once;
+     patching class by class missed .figsub, .fignote, .srcline and .rawline and
+     left four caption lines almost invisible on the white plate. */
+  [data-theme='dark'] .fig{
+    --ink:var(--plateink); --body:var(--platetext); --muted:var(--platemute);
+    --line:var(--plateline); --fill:var(--platefill);
+    color:var(--platetext);
+  }
+  [data-theme='dark'] .fig a{ color:var(--blue); }
   *{ box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
   body{ margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
