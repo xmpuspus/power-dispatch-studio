@@ -181,5 +181,17 @@ if map_dark:
     merged.update(map_dark)
     run("map dark", merged, MAP_PAIRS)
 
+# Every fuel the charts can draw must resolve to a declared token. A shortage
+# block once pointed at an undeclared --negative and painted near-black, which
+# is the one state a reader most needs to see. Hue collisions between fuels are
+# a separate, larger job: six adjacent pairs in the stack fail CVD separation
+# and they need a validated re-step of the whole fuel ramp, not a token rename.
+data_ts = open(os.path.join(ROOT, "studio", "src", "lib", "data.ts")).read()
+fuel_map = dict(re.findall(r"^\s*(\w+): 'var\((--[a-z0-9-]+)\)',", data_ts, re.M))
+check("every fuel color maps to a token", len(fuel_map) >= 12, f"{len(fuel_map)} fuels")
+for mode, tokens in (("light", light), ("dark", dark)):
+    for fuel, tok in sorted(fuel_map.items()):
+        check(f"fuel {mode}: {fuel} -> {tok} is declared", tok in tokens)
+
 print("\n" + ("contrast: all pairs clear AA" if not fails else f"{len(fails)} FAILED"))
 sys.exit(1 if fails else 0)

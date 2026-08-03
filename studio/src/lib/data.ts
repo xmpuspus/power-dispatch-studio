@@ -155,6 +155,8 @@ const FUEL_VAR: Record<string, string> = {
   firm: 'var(--primary)',
   import: 'var(--series-flow)',
   export: 'var(--series-flow)',
-  shortage: 'var(--negative)',
+  // --negative was never declared in tokens.css, so the shortage block, the one
+  // that says this demand went unserved, painted near-black instead of red
+  shortage: 'var(--destructive)',
 }
 export const fuelColor = (f: string): string => FUEL_VAR[f] ?? 'var(--text-faint)'

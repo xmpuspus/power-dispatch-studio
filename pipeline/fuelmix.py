@@ -197,7 +197,7 @@ def derive(limit: int | None = None) -> int:
             json.dump(day, f, indent=1)
         done += 1
         print(f"derived {date}: {day['per_grid_total_mwh']}", flush=True)
-        if limit and done >= limit:
+        if limit is not None and done >= limit:
             break
     return done
 
@@ -205,7 +205,11 @@ def derive(limit: int | None = None) -> int:
 if __name__ == "__main__":
     limit = None
     if "--limit" in sys.argv:
+        # a bare truthiness test on the limit let --limit 0 mean "no limit"
+        # and pull the whole range from a flag meant to bound one run
         limit = int(sys.argv[sys.argv.index("--limit") + 1])
+        if limit < 1:
+            sys.exit("--limit must be 1 or more")
     if "--derive" in sys.argv:
         n = derive(limit)
         print(f"derived {n} day{'' if n == 1 else 's'}")
