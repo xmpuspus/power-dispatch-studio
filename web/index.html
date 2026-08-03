@@ -12,6 +12,19 @@
 <meta property="og:image" content="https://power-dispatch-studio.vercel.app/og.png" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://power-dispatch-studio.vercel.app/og.png" />
+<script>
+// Runs before the first paint, so the page never shows one theme and swaps.
+// pds.theme is the studio's key at /studio/; no stored value means follow the
+// system. Kept inline and tiny on purpose: a deferred file would flash.
+(function(){
+  try {
+    var s = localStorage.getItem('pds.theme');
+    var dark = s === 'dark' || (s !== 'light' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  } catch (e) { document.documentElement.dataset.theme = 'light'; }
+})();
+</script>
 <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet"
   integrity="sha384-MinO0mNliZ3vwppuPOUnGa+iq619pfMhLVUXfC4LHwSCvF9H+6P/KO4Q7qBOYV5V" crossorigin="anonymous" />
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"
@@ -30,8 +43,12 @@
     --gas:#4e79a7; --coal:#6b6b6b;
     --ac138:#a8b8c4; --ac230:#7d94a6; --ac500:#41586b; --pinline:#333; --halo:#fff;
     --ctrl-icon:none; }
-  @media (prefers-color-scheme: dark){
-    :root{ --ink:#e6edf7; --muted:#9fb0c9; --line:#24314c; --bg:#0b1220;
+  /* The theme is an attribute, not a media query, because the studio at
+     /studio/ lets a reader pin one and stores it under pds.theme. Reading the
+     same key here means a reader who pins light in the studio and clicks back
+     to the map does not get dark. The head script below sets the attribute
+     from that key, falling back to the system preference. */
+  :root[data-theme='dark']{ --ink:#e6edf7; --muted:#9fb0c9; --line:#24314c; --bg:#0b1220;
       --paper:#111a2b; --paper-2:#16223a; --paper-3:#0e1626; --paper-hi:#1f2c48; --track:#24314c;
       --navy:#7fb8d4; --shadow:rgba(0,0,0,.5); --fade:rgba(0,0,0,.55);
       --warn-bg:#2d1512; --warn-line:#a8492f; --warn-ink:#f5b8a6;
@@ -42,8 +59,8 @@
       --gas:#7aa5cc; --coal:#a1a1a1;
       --ac138:#5b7080; --ac230:#8aa3b5; --ac500:#cbd9e6; --pinline:#0b1220; --halo:#0b1220;
       --ctrl-icon:invert(1) hue-rotate(180deg); }
-  }
-  html{ color-scheme:light dark; }
+  html{ color-scheme:light; }
+  html[data-theme='dark']{ color-scheme:dark; }
   *{ box-sizing:border-box; }
 
   /* Keyboard focus. Every control here was custom-styled, so the browser ring
@@ -236,7 +253,13 @@
   #findres button.findjump{ display:inline-flex; width:auto; margin-top:7px; border:1px solid var(--line);
     border-radius:6px; padding:4px 10px; font-size:11.5px; font-weight:600; color:var(--ac); background:var(--paper-2); }
   #findres button.findjump:hover{ background:var(--paper-hi); }
-  #findisl{ margin-top:7px; display:flex; gap:6px; align-items:center; font-size:11.5px; color:var(--muted); }
+  #findisl{ margin-top:7px; display:flex; gap:6px; align-items:center; flex-wrap:wrap; font-size:11.5px; color:var(--muted); }
+  /* the theme control gets its own row. Sharing the island row made it read as
+     a fourth island grid. */
+  #themerow{ margin-top:8px; display:flex; justify-content:flex-end; }
+  #themebtn{ border:1px solid var(--line); background:var(--paper); color:var(--muted);
+    border-radius:6px; padding:4px 10px; cursor:pointer; font-size:11.5px; font-weight:600; }
+  #themebtn:hover{ background:var(--paper-2); border-color:var(--ac); color:var(--ac); }
   #findisl button{ border:1px solid var(--line); background:var(--paper); color:var(--ink); border-radius:6px;
     padding:3px 9px; cursor:pointer; font-size:11.5px; font-weight:600; }
   #findisl button:hover{ background:var(--paper-2); border-color:var(--ac); color:var(--ac); }
@@ -263,11 +286,13 @@
   @media(max-width:640px){
     /* full-screen map; head collapses to a title bar, modes dock to the bottom */
     #headtoggle{ display:inline-flex; }
-    #head p, #head #scope, #head #fopen, #head #findbox, #head #studiolink, #head #paxlink{ display:none; }
+    #head p, #head #scope, #head #fopen, #head #findbox, #head #studiolink,
+    #head #paxlink, #head #themerow{ display:none; }
     body.head-open #head{ max-height:82vh; overflow-y:auto; }
     body.head-open #head p, body.head-open #head #scope,
     body.head-open #head #fopen, body.head-open #head #findbox,
     body.head-open #head #studiolink, body.head-open #head #paxlink{ display:block; }
+    body.head-open #head #themerow{ display:flex; }
 
     /* search results flow inline so they never clip inside the head */
     #findres{ position:static; margin-top:6px; max-height:190px; overflow-y:auto; box-shadow:none; }
@@ -337,6 +362,7 @@
     <span>Edit the fleet, replay recorded days, check the model against the market record.</span></a>
   <a id="paxlink" href="pax-silica.html"><b>Read the Pax Silica page &rarr;</b>
     <span>One announced campus would draw more power than the Visayas grid, and up to 1.9 times Makati's daily water use.</span></a>
+  <div id="themerow"><button id="themebtn" type="button">Dark theme</button></div>
 </div>
 
 <div id="banner" role="alert"></div>
@@ -426,6 +452,8 @@ async function loadAll(){
 // bars all read it back from there. Before this, each color was written out
 // three times and a dark theme would have had to find all three.
 const DARKQ = window.matchMedia("(prefers-color-scheme: dark)");
+const THEME_KEY = "pds.theme";  // shared with the studio at /studio/
+const isDark = () => document.documentElement.dataset.theme === "dark";
 const CSSV = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 function pal(){
   const k = ["op","uc","plan","hvdc","ac","sual","op-line","uc-line","plan-line",
@@ -434,7 +462,7 @@ function pal(){
 }
 let PAL = pal();
 const tileUrls = () => ["a","b"].map(s =>
-  `https://${s}.basemaps.cartocdn.com/${DARKQ.matches ? "dark_all" : "light_all"}/{z}/{x}/{y}@2x.png`);
+  `https://${s}.basemaps.cartocdn.com/${isDark() ? "dark_all" : "light_all"}/{z}/{x}/{y}@2x.png`);
 
 const map = new maplibregl.Map({
   container: "map",
@@ -1736,7 +1764,9 @@ function wireFind(){
     bs.forEach((b,i) => b.classList.toggle("hi", i === hi));
   });
   document.addEventListener("click", e => { if (!$("findbox").contains(e.target)) close(); });
-  document.querySelectorAll("#findisl button").forEach(b => b.onclick = () => {
+  // scoped to the island buttons: the row also holds the theme control, and an
+  // unscoped selector overwrote its handler with an island jump to undefined
+  document.querySelectorAll("#findisl button[data-isl]").forEach(b => b.onclick = () => {
     const isl = ISLANDS[b.dataset.isl];
     if (isl) map.flyTo({ center: isl.c, zoom: isl.z, duration: 900 });
   });
@@ -1803,12 +1833,12 @@ loadAll().then(() => {
   });
   if (map.isStyleLoaded()) draw(); else map.once("load", draw);
 
-  // The user can flip the system theme while the page is open. Re-read the
-  // palette, swap the basemap tiles, and repaint every layer whose color came
-  // from a token. Without this the panels turn dark and the map stays light.
-  DARKQ.addEventListener("change", () => {
+  // Re-read the palette, swap the basemap tiles, and repaint every layer whose
+  // color came from a token. Without this the panels turn dark and the map
+  // stays light. Called by the toggle and by a system flip.
+  function retheme(){
     PAL = pal();
-    FUELCOL = DARKQ.matches ? FUELCOL_DARK : FUELCOL_LIGHT;
+    FUELCOL = isDark() ? FUELCOL_DARK : FUELCOL_LIGHT;
     const src = map.getSource("carto");
     if (src && src.setTiles) src.setTiles(tileUrls());
     const repaint = [
@@ -1838,7 +1868,30 @@ loadAll().then(() => {
       if (map.getLayer(id)) map.setPaintProperty(id, prop, val);
     railRender();
     setMode(MODE, false);
+  }
+
+  // The system flip only decides while the reader has pinned nothing.
+  DARKQ.addEventListener("change", e => {
+    if (localStorage.getItem(THEME_KEY)) return;
+    document.documentElement.dataset.theme = e.matches ? "dark" : "light";
+    retheme();
   });
+
+  const themeBtn = $("themebtn");
+  const paintThemeBtn = () => {
+    const label = isDark() ? "Light theme" : "Dark theme";
+    themeBtn.textContent = label;
+    themeBtn.setAttribute("aria-label", "Switch to the " + label.toLowerCase());
+    themeBtn.title = themeBtn.getAttribute("aria-label");
+  };
+  paintThemeBtn();
+  themeBtn.onclick = () => {
+    const next = isDark() ? "light" : "dark";
+    localStorage.setItem(THEME_KEY, next);
+    document.documentElement.dataset.theme = next;
+    paintThemeBtn();
+    retheme();
+  };
 });
 </script>
 </body>
