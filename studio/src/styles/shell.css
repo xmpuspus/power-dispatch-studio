@@ -290,6 +290,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  /* the hint takes the slack, so a long one no longer squeezes the buttons at
+     the end of the strip until their labels wrap onto two lines */
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.viewhead > .btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 /* ---------- question rail ---------- */
