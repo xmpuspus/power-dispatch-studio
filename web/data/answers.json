@@ -1,7 +1,7 @@
 {
  "window": {
   "from": "2026-04-07",
-  "to": "2026-08-01"
+  "to": "2026-08-02"
  },
  "q1": {
   "title": "Can the grid handle more data centers? Is there supply?",
@@ -13,7 +13,7 @@
  "q2": {
   "title": "Is the infrastructure ready? Where would they have to sit?",
   "verdict": "Public records name the grid limits. New sites behind those limits face the same constraint.",
-  "stat": "80 distinct pieces of equipment (95 monitored constraints) hit limits across the real-time and day-ahead runs on 117 archive days; the Leyte-Luzon HVDC ran at max or offline 69% of Dec 2025",
+  "stat": "80 distinct pieces of equipment (95 monitored constraints) hit limits across the real-time and day-ahead runs on 118 archive days; the Leyte-Luzon HVDC ran at max or offline 69% of Dec 2025",
   "blurb": "The inter-island links and named 230 kV lines already reach their limits often; the table names the affected equipment. Nearly every announced data-center megawatt sits on Luzon, which already supplies power south over those links. One Sual unit (647 MW) equals 18% of the May system margin, which is why a single trip moves the whole grid. Luzon scheduled reserves fell below the stated requirement in at least one 5-minute interval on 73 of the window's days.",
   "src": "IEMOP congestions-manifesting files; IEMOP Dec 2025 report; IEMOP outage schedules"
  },
@@ -21,7 +21,7 @@
   "title": "What would it do to market and retail prices?",
   "verdict": "The market already prices the geography daily; the bill follows monthly.",
   "stat": "May 2026: P7.79/kWh system (+38.5% vs April); Luzon P7.02, Visayas P10.2, Mindanao P9.28",
-  "blurb": "One market on paper, three prices in practice: when a link binds, the islands price apart. While WESM ran administered prices (through 2026-05-01), the three grids stayed within P0.015/kWh of each other; once trading resumed the mean daily high-to-low spread across the three grids was P5.88/kWh. Widest daily regional spread in the archive: P15.722/kWh on 2026-06-08. WESM passes into the Meralco generation charge monthly, and only on the share of energy actually bought on the spot market: June paid P7.0281/kWh for the 10% it drew from WESM, about P0.70/kWh of the P9.0704/kWh generation charge. The rest is contracted and does not move with the spot price. New flat 24/7 load raises the demand the market clears against in every interval.",
+  "blurb": "One market on paper, three prices in practice: when a link binds, the islands price apart. While WESM ran administered prices (through 2026-05-01), the three grids stayed within P0.015/kWh of each other; once trading resumed the mean daily high-to-low spread across the three grids was P5.29/kWh. Widest daily regional spread in the archive: P15.722/kWh on 2026-06-08. WESM passes into the Meralco generation charge monthly, and only on the share of energy actually bought on the spot market: June paid P7.0281/kWh for the 10% it drew from WESM, about P0.70/kWh of the P9.0704/kWh generation charge. The rest is contracted and does not move with the spot price. New flat 24/7 load raises the demand the market clears against in every interval.",
   "src": "IEMOP monthly reports; archived LWAP files; Meralco June 2026 advisory"
  }
 }

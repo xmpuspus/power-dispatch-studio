@@ -1,8 +1,8 @@
 {
- "built_utc": "2026-08-02T01:07:04+00:00",
+ "built_utc": "2026-08-03T12:28:24+00:00",
  "window": {
   "from": "2026-04-07",
-  "to": "2026-08-01"
+  "to": "2026-08-02"
  },
  "note": "Tidy CSV exports generated from public IEMOP files. Free to reuse under CC-BY-4.0; cite Power Dispatch Studio. Regenerated on every data build.",
  "files": [
@@ -40,7 +40,7 @@
   },
   {
    "file": "market_by_day.csv",
-   "rows": 80,
+   "rows": 110,
    "columns": [
     "date",
     "market",

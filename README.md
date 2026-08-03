@@ -45,12 +45,12 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 ## Contents
 
 - [The Leyte-Cebu link reached a binding limit on 114 of 117 days](#the-leyte-cebu-link-reached-a-binding-limit-on-114-of-117-days)
-- [Luzon reserves fell short on 73 of the window's 117 days](#luzon-reserves-fell-short-on-73-of-the-windows-117-days)
+- [Luzon reserves fell short on 73 of the window's 118 days](#luzon-reserves-fell-short-on-73-of-the-windows-118-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
 - [Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.83) but reverse in Visayas (-0.57)](#modeled-loss-ranks-agree-in-luzon-072-and-mindanao-083-but-reverse-in-visayas--057)
 - [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
 - [The cost stack stays near P6 while recorded evening prices include scarcity and offer premiums](#the-cost-stack-stays-near-p6-while-recorded-evening-prices-include-scarcity-and-offer-premiums)
-- [Offer-book replay correlations range from 0.68 to 0.87](#offer-book-replay-correlations-range-from-068-to-087)
+- [Offer-book replay correlations range from 0.69 to 0.86](#offer-book-replay-correlations-range-from-069-to-086)
 - [The studio is 39 views, and every one of them is a URL you can send](#the-studio-is-39-views-and-every-one-of-them-is-a-url-you-can-send)
 - [IEMOP's public window rolls at 90 days, so the git history is the archive](#iemops-public-window-rolls-at-90-days-so-the-git-history-is-the-archive)
 - [The model states six limits](#the-model-states-six-limits) · [Where the data comes from](#where-the-data-comes-from) · [Reproduce locally](#reproduce-locally) · [Data products](#data-products) · [Method](#method)
@@ -70,9 +70,9 @@ change to the bill.
 IEMOP publishes a "congestions manifesting" file that names transmission
 equipment at its binding limit for each 5-minute interval. This project archives
 and ranks those records. A row **literally named
-`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **93 of the window's 117 days**.
+`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **94 of the window's 118 days**.
 The 230 kV lines that carry that link, Tabango (Leyte) to Daanbantayan (Cebu),
-top the league. They are at a binding limit in the hourly day-ahead runs on **114 of 117
+top the league. They are at a binding limit in the hourly day-ahead runs on **115 of 118
 days**, and binding in the 5-minute real-time dispatch, the run settlement
 actually sees, on **23 days** of the window.
 
@@ -86,7 +86,7 @@ behind that statement.
 
 The same league as plain ranked bars, with no map, is [docs/constraint-league.gif](docs/constraint-league.gif).
 
-Across the 117-day window, **80 distinct pieces of equipment** hit a limit at least
+Across the 118-day window, **80 distinct pieces of equipment** hit a limit at least
 once, in **95 monitored constraints** (a transformer is listed under each winding
 voltage and a line at each terminal, so one physical asset can have more than one limit ID).
 The map ranks the constraints by days at a limit (a day counts once, so a day-ahead
@@ -113,7 +113,7 @@ The archived files pin them to one MW value in
 They record which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
-The System Operator's instruction log states why it changed dispatch. Across 114
+The System Operator's instruction log states why it changed dispatch. Across 115
 daily logs, its instructions carry a remark
 citing a line limitation **1,740 times, and 1,713 of those name the
 Leyte-Cebu link** ("Advise to discharge under MOT Raise due to
@@ -131,10 +131,10 @@ The must-run subset has a **6½ MW** median.
 
 The `so_instructions` section in the same file has both records.
 
-## Luzon reserves fell short on 73 of the window's 117 days
+## Luzon reserves fell short on 73 of the window's 118 days
 
 In the operator's real-time schedules, **Luzon reserves fell below the stated need
-on 73 of the window's 117 days**. Across the three grids, the schedules curtailed
+on 73 of the window's 118 days**. Across the three grids, the schedules curtailed
 load on **105 grid-days (5,221.0 MWh)**. These figures describe published
 schedules and do not forecast brownouts.
 
@@ -163,8 +163,8 @@ suspended under administered pricing (through May 1, 2026), the three island gri
 priced within **P0.015/kWh** of each other. Once trading resumed, they split.
 
 Over
-the market-priced days the average was **Luzon P7.65, Visayas P12.96, Mindanao
-P11.52 per kWh**, with **28 days spreading beyond P5/kWh** and a widest daily spread
+the market-priced days the average was **Luzon P7.53, Visayas P12.38, Mindanao
+P11.13 per kWh**, with **38 days spreading beyond P5/kWh** and a widest daily spread
 of **P15.72/kWh on June 8**. Constrained inter-island links contribute to regional
 price separation, alongside local offers, outages, losses, and settlement rules.
 The map keeps the two regimes labeled so the suspension is never folded into a
@@ -199,7 +199,7 @@ Prices at grid connection points view.
 
 WESM decomposes every published locational marginal price (LMP) into an energy, a loss, and a congestion
 part, and the congestion part is small and sparse (zero through the market
-suspension, nonzero on 1.18 percent of clean-day node-hours afterward), so the
+suspension, nonzero on 1.11 percent of clean-day node-hours afterward), so the
 within-region nodal price structure the market reports is loss-dominated.
 About a thousand resources report per clean day, and the ones that resolve to a
 mapped bus become the comparison set.
@@ -211,7 +211,7 @@ So the model is
 checked against it. Marginal loss factors from the OpenStreetMap-geometry
 backbone are compared, grid by grid, against each node's recorded deviation
 from its regional price. Luzon ranks at Spearman **+0.72** over 314 nodes (72
-distinct buses, 95% confidence interval +0.58 to +0.81) and Mindanao at **+0.83** over 118
+distinct buses, 95% confidence interval +0.59 to +0.82) and Mindanao at **+0.83** over 118
 (37 buses, +0.69 to +0.91). Visayas fails with a stable negative rank
 correlation (**-0.57**, negative on all 15 clean days). The report keeps Visayas
 as a failed check, with the sign reversal not yet diagnosed. The comparison
@@ -304,7 +304,7 @@ under-prices the evening peak. The calculation excludes the suspension's adminis
 
 Scarcity and generator offers explain the evening gap in this historical period.
 The model does not attribute it to data-center load. On the Visayas grid, tight through the 52-day yellow-alert streak,
-the evening gap runs **P14.85/kWh** above the cost stack. The model attributes the
+the evening gap runs **P14.93/kWh** above the cost stack. The model attributes the
 daily shape and island spread to commitment, scarcity, and generator offers.
 
 A simple unit-commitment calculation cuts the overnight error.
@@ -317,15 +317,15 @@ below the committed tranche.
 
 In the current calculated data, with the recorded water budgets, the fleet-derived
 hydro split, and native-load demand (each grid's generation plus its net market
-imports) all in the stack, Visayas sits at a correlation of **0.35** with an MAE
-of **P8.43**. Luzon is **0.16** with an MAE of **P4.47**.
+imports) all in the stack, Visayas sits at a correlation of **0.36** with an MAE
+of **P8.04**. Luzon is **0.17** with an MAE of **P4.42**.
 
 The grid whose light
 load now dips below the committed tranche is Mindanao, the big net exporter, which
-commitment takes from a flat, undefined correlation to **0.18**.
+commitment takes from a flat, undefined correlation to **0.20**.
 
 After the layer,
-Luzon averages a modeled **P5.99/kWh** against a recorded **P7.65/kWh**. The evening-peak gap is unchanged. Commitment affects only light
+Luzon averages a modeled **P5.97/kWh** against a recorded **P7.53/kWh**. The evening-peak gap is unchanged. Commitment affects only light
 load, so the scarcity signal stays exactly where it was.
 
 The adequacy number is the checkable one, and it has to keep one clock. Luzon's gross
@@ -347,13 +347,13 @@ calculates a range of outcomes from sourced outage rates.
 A Monte Carlo of **20,000** draws trips the 11 named
 units at their sourced forced-outage rates (NERC GADS for coal ~10% and gas ~5%. The
 rest is labeled industry-typical) and draws an evening-peak load each time. Today Luzon
-loses load in only **0.09%** of tight evenings. The worst draw sheds
-**956 MW** when a big unit trips into a high load.
+loses load in only **0.10%** of tight evenings. The worst draw sheds
+**991 MW** when a big unit trips into a high load.
 
 Add the DICT 1.5 GW demand forecast and the
-loss-of-load probability climbs more than tenfold to **2.2%**. A 1-in-100 draw sheds
-**481 MW**, and the expected unserved energy over the evening-peak window is
-**3,946 MWh**. The single reserve-margin value stays positive. The simulation
+loss-of-load probability climbs more than tenfold to **1.8%**. A 1-in-100 draw sheds
+**344 MW**, and the expected unserved energy over the evening-peak window is
+**4,274 MWh**. The single reserve-margin value stays positive. The simulation
 estimates how often a forced outage produces a shortfall and how large it becomes.
 
 Storage can serve demand during peak hours. Luzon already has **634 MW** of batteries
@@ -364,8 +364,8 @@ cost stack clears on oil at **P12.00/kWh**. The **1,319 MW** of storage on the g
 shaves that back to coal at **P6.00**.
 
 Storage decreases the power-shortfall risk. The
-loss-of-load probability with the added demand falls from **2.40%** to **0.17%** and the expected
-unserved energy from **4,143 MWh** to **217 MWh**. Limited stored energy supports
+loss-of-load probability with the added demand falls from **1.86%** to **0.14%** and the expected
+unserved energy from **4,286 MWh** to **289 MWh**. Limited stored energy supports
 the peak interval only. Existing storage is already inside the recorded prices,
 so this scenario changes future demand without changing the fit to past prices.
 
@@ -380,9 +380,9 @@ turns negative during midday oversupply.
 
 The daily means in `prices.json` average those
 5-minute extremes away, which is why that series sits in a tighter band. The **who-sets-the-
-price** table counts the marginal block. On Luzon coal is on the margin **98%** of
+price** table counts the marginal block. On Luzon coal is on the margin **97%** of
 the time (why the modeled line is so flat). With native-load demand the committed
-overnight tranche is rarely the MARGINAL block anywhere (**2.0%** of Mindanao
+overnight tranche is rarely the MARGINAL block anywhere (**2.3%** of Mindanao
 intervals, less elsewhere), and the commitment layer's work now shows in the
 accuracy table instead, where it takes Mindanao from an undefined correlation
 to **0.18**. Block dispatch cannot name the individual plant, so both stay at the fuel
@@ -425,7 +425,7 @@ still leaves **331 MW** unmet the moment a single 600 MW unit trips. The remaini
 The page separates BCDA's
 published figures, calculated results, and model assumptions.
 
-### The base model explains 0.5% of the Visayas-Luzon price difference. The recorded outage explains 87.9%
+### The base model explains 0.4% of the Visayas-Luzon price difference. The recorded outage explains 89.9%
 
 The coupled calculation clears all three island grids together. Lower-cost Luzon
 power can flow south over the Leyte-Luzon HVDC (a sourced **250 MW** operating
@@ -439,7 +439,7 @@ Demand here is native load. It equals each grid's generation plus its net market
 from the same IEMOP files. The replay so moves power over the links
 to serve Visayas, which imports roughly a quarter of what it consumes.
 
-The operator blocked the Leyte-Luzon link for **9.5%** of market-window
+The operator blocked the Leyte-Luzon link for **9.9%** of market-window
 intervals.
 
 With the full fleet available, the link reaches its limit in **0.0%** of the
@@ -448,16 +448,16 @@ window.
 A blocked link carries no flow and earns no congestion rent. A full link can
 earn congestion rent.
 
-The coupled model explains only **0.5%** of the recorded **P5.31/kWh**
+The coupled model explains only **0.4%** of the recorded **P4.85/kWh**
 Visayas-Luzon difference. The cost stacks price the three islands nearly alike,
 so they do not capture the scarcity and offer premium during the 52-day alert
 streak.
 
 The scenario changes below come from the cost model. The published-offer
 calculation produces larger changes for the widest-swing day. On that day, the same DICT
-1.5 GW demand increase raises the Luzon daily mean by **+P4.50/kWh** on the cost
-stack but **+P12.01/kWh** replayed on the market's own bids, and the
-published-offer change reaches the Visayas (**+P2.29**) and Mindanao (**+P2.29**),
+1.5 GW demand increase raises the Luzon daily mean by **+P0.50/kWh** on the cost
+stack but **+P13.27/kWh** replayed on the market's own bids, and the
+published-offer change reaches the Visayas (**+P9.44**) and Mindanao (**+P7.45**),
 where the cost stack shows no change. Reference cases check both calculations.
 Choose "Observed offers" in Hourly market replay to reproduce them. For this
 case, the cost result is the lower of the two estimates.
@@ -467,7 +467,7 @@ price cap's stated numbers (P7.423/kWh
 imposed when the 72-hour rolling GWAP breaches P12.413, ERC Res. 26
 s.2025), the widest-swing day now lands just under the threshold.
 
-The published-offer case lifts the computed 72-hour rolling series to P12.23
+The published-offer case lifts the computed 72-hour rolling series to P11.33
 against the P12.413 trigger.
 
 An earlier version reported that this day tripped the trigger. The old hourly
@@ -497,7 +497,7 @@ direction agreement on Visayas-Mindanao
 against a 375 MW mean recorded flow, now scored against the operator's own
 per-interval high-voltage direct-current schedule rather than only the net-import identity
 the demand is built from, the Visayas settlement bias collapsing from
-**-P6.96** to **-P0.64/kWh**, and Mindanao clearing-price correlation **0.87**.
+**-P6.39** to **-P0.80/kWh**, and Mindanao clearing-price correlation **0.86**.
 
 The operator's congestion flags add a target the replay still misses in one
 direction, and the tables say so. The real links reached a limit in 45 to 61
@@ -527,8 +527,8 @@ the [studio's comparison tables](studio/README.md).
 The recorded outage explains most of the modeled regional price difference.
 Recalculate the streak window with the
 **935 MW** of Visayas capacity that NGCP recorded as unavailable on
-July 1 and the 250 MW link saturates in **93.5%** of intervals at a mean
-congestion rent of **P5.74/kWh**, and the coupled model now reproduces **87.9%** of
+July 1 and the 250 MW link saturates in **93.2%** of intervals at a mean
+congestion rent of **P5.74/kWh**, and the coupled model now reproduces **89.9%** of
 the recorded spread. This labeled scenario was not used to tune the model.
 
 At a typical evening, just **275 MW** of added Visayas load fills the
@@ -547,10 +547,10 @@ The two other results follow from the modeled flows. A Manila data center
 saturates the link by importing lower-cost Visayas power. Adding 1 GW of solar
 cuts fuel use and emissions but does not change the 7 pm peak.
 
-The dated 935 MW outage historical replay explains 87.9% of the price
+The dated 935 MW outage historical replay explains 89.9% of the price
 difference. The studio README has the full scorecard.
 
-## Offer-book replay correlations range from 0.68 to 0.87
+## Offer-book replay correlations range from 0.69 to 0.86
 
 The check uses the operator's published prices rather than a synthetic benchmark. The
 studio replays every full-coverage market day and scores each calculation two
@@ -558,10 +558,10 @@ ways. The simple cost model is a floor. It clears near the **P6 coal baseline**
 and under-prices scarcity, so read its levels as a lower bound.
 
 Replaying the operator's offer book tracks the recorded price shape hour by hour.
-The correlation ranges from **0.68 to 0.87** across the quarter, and modeled
-inter-island flow matches the recorded direction **87 to 99 percent** of the time.
+The correlation ranges from **0.69 to 0.86** across the quarter, and modeled
+inter-island flow matches the recorded direction **84 to 100 percent** of the time.
 
-The **935 MW** Visayas outage on July 1 reproduces **87.9 percent** of the recorded
+The **935 MW** Visayas outage on July 1 reproduces **89.9 percent** of the recorded
 island price gap. The model did not use this constraint to tune its inputs. The
 difference between the cost floor and the offer-book replay is a model-derived
 offer premium based on the market's published bids.
