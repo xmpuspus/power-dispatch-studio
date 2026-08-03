@@ -47,7 +47,9 @@ export function MeritCurve({ blocks, demand }: { blocks: Block[]; demand: number
       aria-label={
         `Merit-order supply curve. Cumulative capacity ${Math.round(total).toLocaleString()} megawatts ` +
         `against marginal cost. Demand of ${Math.round(demand).toLocaleString()} megawatts is met by ` +
-        (setter ? `${fuelLabel(setter.fuel)} at ${price?.toFixed(2)} pesos per kilowatt-hour.` : 'no block.')
+        (setter
+          ? `${fuelLabel(setter.fuel)} at ${price?.toFixed(2)} pesos per kilowatt-hour.`
+          : 'no block.')
       }
     >
       {yTicks.map((v) => (
@@ -134,12 +136,7 @@ export function MeritCurve({ blocks, demand }: { blocks: Block[]; demand: number
         strokeWidth={1.6}
         strokeDasharray="3 2"
       />
-      <text
-        x={X(demand) - 8}
-        y={padT + 4}
-        textAnchor="end"
-        className="chart__key"
-      >
+      <text x={X(demand) - 8} y={padT + 4} textAnchor="end" className="chart__key">
         demand {Math.round(demand).toLocaleString()} MW
       </text>
 
@@ -151,8 +148,7 @@ export function MeritCurve({ blocks, demand }: { blocks: Block[]; demand: number
         {Math.round(total).toLocaleString()} MW available
       </text>
       <text x={padL} y={H - 8} className="chart__ax">
-        Cumulative capacity, cheapest first. Faded blocks are not needed at this
-        demand.
+        Cumulative capacity, cheapest first. Faded blocks are not needed at this demand.
       </text>
     </svg>
   )
