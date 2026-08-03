@@ -27,7 +27,7 @@ export function MarketPowerView({ d }: { d: Dispatch }) {
   return (
     <div className="view">
       <Panel
-        title="Who owns the fleet"
+        title="Two firms hold close to half of national generation capacity"
         subtitle={`ERC national generation-capacity shares, ${mp.as_of}. Lowest-cost-first dispatch (merit order) prices energy but does not show who controls the capacity.`}
         right={<Source href={mp.src} label="ERC source" />}
       >
