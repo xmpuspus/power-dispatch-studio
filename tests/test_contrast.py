@@ -120,7 +120,10 @@ def block_vars(text, start_pat):
     if not m:
         return {}
     return {
-        k: v for k, v in re.findall(r"(--[a-z0-9-]+)\s*:\s*(#[0-9a-fA-F]{3,8})\s*;", m.group(1))
+        k: v
+        for k, v in re.findall(
+            r"(--[a-z0-9-]+)\s*:\s*(#[0-9a-fA-F]{3,8})\s*;", m.group(1)
+        )
     }
 
 
