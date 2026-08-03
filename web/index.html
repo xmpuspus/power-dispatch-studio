@@ -54,7 +54,7 @@
   :root{ --ink:#10212b; --muted:#5b6b75; --line:#e2e8ec; --bg:#f7f9fa;
     --paper:#fff; --paper-2:#f2f7fa; --paper-3:#f4f7f8; --paper-hi:#e7f0f5; --track:#eef1f3;
     --on-fill:#fff; --navy:#12335c; --shadow:rgba(16,33,43,.10); --fade:rgba(16,33,43,.16);
-    --scrim:rgba(16,33,43,.34);
+    --scrim:rgba(16,33,43,.34); --scroll-edge:rgba(16,33,43,.26);
     --warn-bg:#fff6f5; --warn-line:#e2664b; --warn-ink:#7a2a17;
     --op:#1a7f48; --uc:#b8860b; --plan:#8a97a0; --hvdc:#9c3d12; --ac:#3a6b8a; --sual:#b3261e;
     --op-line:#125c34; --uc-line:#8a6508; --plan-line:#5b6b75;
@@ -86,7 +86,7 @@
   :root[data-theme='dark']{ --ink:#e6edf7; --muted:#9fb0c9; --line:#24314c; --bg:#0b1220;
       --paper:#111a2b; --paper-2:#16223a; --paper-3:#0e1626; --paper-hi:#1f2c48; --track:#24314c;
       --navy:#7fb8d4; --shadow:rgba(0,0,0,.5); --fade:rgba(0,0,0,.55);
-      --scrim:rgba(4,8,16,.58);
+      --scrim:rgba(4,8,16,.58); --scroll-edge:rgba(0,0,0,.62);
       --warn-bg:#2d1512; --warn-line:#a8492f; --warn-ink:#f5b8a6;
       /* the site and corridor colors lift so they still read on a dark basemap */
       --op:#4ade80; --uc:#e0b155; --plan:#94a3b8; --hvdc:#e07a45; --ac:#7fb8d4; --sual:#f87171;
@@ -154,12 +154,12 @@
   .rail__scroll{ overflow-y:auto; overscroll-behavior:contain; flex:1;
     scrollbar-width:thin; scrollbar-color:var(--line) transparent;
     background:
-      linear-gradient(var(--paper) 30%, transparent) center top,
-      linear-gradient(transparent, var(--paper) 70%) center bottom,
-      radial-gradient(farthest-side at 50% 0, var(--fade), transparent) center top,
-      radial-gradient(farthest-side at 50% 100%, var(--fade), transparent) center bottom;
+      linear-gradient(var(--paper) 40%, transparent) center top,
+      linear-gradient(transparent, var(--paper) 60%) center bottom,
+      linear-gradient(to bottom, var(--scroll-edge), transparent) center top,
+      linear-gradient(to top, var(--scroll-edge), transparent) center bottom;
     background-repeat:no-repeat;
-    background-size:100% 34px, 100% 34px, 100% 12px, 100% 12px;
+    background-size:100% 40px, 100% 40px, 100% 20px, 100% 20px;
     background-attachment:local, local, scroll, scroll;
     background-color:var(--paper); }
   .rail__scroll::-webkit-scrollbar{ width:8px; }
@@ -187,6 +187,16 @@
   .d-sub{ margin:9px 0 0; font-size:var(--fs-small); color:var(--muted);
     line-height:1.45; }
   .d-sub b{ color:var(--ink); font-weight:400; }
+  /* The one primary action, inside the hero rather than 454px down the rail.
+     At 1280x800 the rail's foot is below the fold, so a reader on a laptop
+     never saw the link to the thing the page is a front door for. */
+  #studiolink{ display:inline-flex; align-items:center; gap:7px; margin-top:15px;
+    background:var(--ink); color:var(--bg); border:1px solid var(--ink);
+    border-radius:var(--r-ctrl); padding:9px 15px; font-size:var(--fs-small);
+    font-weight:600; text-decoration:none; min-height:38px;
+    transition:background .16s, border-color .16s; }
+  #studiolink:hover{ background:var(--ac); border-color:var(--ac); }
+  #studiolink:active{ transform:translateY(1px); }
 
   /* the three questions, docked. The carousel showed one and hid two; all
      three are visible now and the open one drives the map mode, which is what
@@ -526,13 +536,12 @@
       <p class="d-fig" id="d-fig">&hellip;</p>
       <h1 class="d-claim" id="d-claim">Announced data centers are measured against the whole system's spare capacity.</h1>
       <p class="d-sub" id="d-sub">Loading the archive.</p>
+      <a id="studiolink" href="studio/">Open the dispatch studio <span aria-hidden="true">&rarr;</span></a>
     </div>
     <div id="qs" role="group" aria-label="The three questions"></div>
     <div id="qextra" hidden></div>
     <div id="tools">
       <p class="tools__h">Go deeper</p>
-      <a id="studiolink" class="golink" href="studio/">Open the dispatch studio &rarr;
-        <span>Edit the fleet, replay recorded days, check the model against the market record.</span></a>
       <button id="fopen" aria-expanded="false"><span>Key findings, computed from the archive</span><span aria-hidden="true">&rarr;</span></button>
       <a id="paxlink" class="golink" href="pax-silica.html">Read the Pax Silica page &rarr;
         <span>One announced campus would draw more power than the Visayas grid, and up to 1.9 times Makati's daily water use.</span></a>
