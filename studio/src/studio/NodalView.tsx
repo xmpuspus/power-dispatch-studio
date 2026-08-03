@@ -70,7 +70,7 @@ export function NodalView({ grid }: { grid: GridKey }) {
     return (
       <div className="view">
         <Panel
-          title="Recorded prices at individual grid connection points (nodal prices)"
+          title="A connection point's price leaves the regional price by the losses and limits on the way there"
           subtitle="Each value is the difference from the island grid's regional price."
         >
           <EmptyNote>
@@ -129,7 +129,7 @@ export function NodalView({ grid }: { grid: GridKey }) {
       </Panel>
 
       <Panel
-        title="Price differences for every connection point in the grid"
+        title="Every connection point carries its own gap from the regional price"
         subtitle="Search by resource code, or click a column to sort (plants end _Gxx, loads _Lxx, delivery points _T1L1)."
       >
         <input

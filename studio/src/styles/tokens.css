@@ -45,12 +45,26 @@
   --series-offer: #1d4ed8;
   --series-flow: #0e7490;
   --series-storage: #7c3aed;
-  --fuel-coal: #64748b;
-  --fuel-oil: #b3261e;
-  --fuel-gas: #2563eb;
-  --fuel-hydro: #0e7490;
-  --fuel-geothermal: #7c3aed;
-  --fuel-solar: #d97706;
+  /* Fuel colours. One declared token per fuel, so nothing borrows a series
+     token that already carries another job. That aliasing is what painted wind
+     and hydro one colour, storage and geothermal another, and (in dark) gas
+     and firm a third. The steps come from a search against the /dataviz gates
+     on the pairs that share an edge in the stack, and tests/test_palette.py
+     runs the skill's own validator in make qa.
+     Light, on #ffffff: worst adjacent CVD 11.9 (>=8), normal 18.7 (>=15). */
+  --fuel-solar: #ba8c29;
+  --fuel-wind: #11a3bb;
+  --fuel-hydro: #1e5d97;
+  --fuel-geothermal: #9d05f4;
+  --fuel-gas: #8e86fa;
+  --fuel-biomass: #17845c;
+  --fuel-coal: #7b3e0d;
+  --fuel-storage: #fe50a6;
+  --fuel-oil: #ca4029;
+  /* not fuels: a scenario addition, a flow, and one reserved status colour */
+  --fuel-firm: #2f6f4f;
+  --fuel-import: #1a7f48;
+  --fuel-shortage: #b3261e;
   /* warm/cool diverging pair for two-series charts (tornado up/down, 5-minute
      replay fine/hourly, forward band/median) */
   --coral: #e0603a;
@@ -140,12 +154,20 @@
   --series-offer: #60a5fa;
   --series-flow: #22d3ee;
   --series-storage: #c4b5fd;
-  --fuel-coal: #94a3b8;
-  --fuel-oil: #f87171;
-  --fuel-gas: #60a5fa;
-  --fuel-hydro: #22d3ee;
-  --fuel-geothermal: #c4b5fd;
-  --fuel-solar: #fbbf24;
+  /* Dark, on the #111a2b card these bands are drawn on:
+     worst adjacent CVD 10.0 (>=8), worst adjacent normal 16.5 (>=15). */
+  --fuel-solar: #bc8106;
+  --fuel-wind: #0aa6b8;
+  --fuel-hydro: #1d6aa9;
+  --fuel-geothermal: #9e1afc;
+  --fuel-gas: #6686dc;
+  --fuel-biomass: #059d5f;
+  --fuel-coal: #915b00;
+  --fuel-storage: #cf00ac;
+  --fuel-oil: #b24254;
+  --fuel-firm: #4ade80;
+  --fuel-import: #34d399;
+  --fuel-shortage: #f87171;
   --coral: #ef8a68;
   --steel: #7fb8d4;
   --navy: #38618f;

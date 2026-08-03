@@ -73,6 +73,7 @@ qa:
 	$(PY) tests/test_engine_sync.py
 	$(PY) tests/test_readme_views.py
 	$(PY) tests/test_contrast.py
+	$(PY) tests/test_palette.py
 	$(PY) tests/qa_gate.py
 	$(PY) scripts/verify_claims.py
 

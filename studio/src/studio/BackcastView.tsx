@@ -81,7 +81,7 @@ export function BackcastView({
       <div className="view">
         <div className="chrono__controls">{engineToggle}</div>
         <Panel
-          title="Historical replay against recorded prices"
+          title="The model is scored on every recorded day, not on a chosen sample"
           subtitle="The model is checked against market records."
         >
           <p className="note">
@@ -213,7 +213,7 @@ export function BackcastView({
       </div>
 
       <Panel
-        title="Modeled prices compared with recorded load-weighted prices (LWAP)"
+        title="A load-weighted price is what buyers paid, so the model is scored against that"
         subtitle={`Every full-coverage market day since ${bc.window?.from} replayed with ${engineLabel}.`}
         right={
           <button
@@ -252,7 +252,7 @@ export function BackcastView({
 
       {bc.flows ? (
         <Panel
-          title="Modeled inter-grid flows compared with recorded imports and exports"
+          title="Serving native load forces the replay to move power between grids"
           subtitle="Native-load demand requires the replay to move power between grids. This table measures how closely the flows match."
         >
           <DataGrid
@@ -303,7 +303,7 @@ export function BackcastView({
 
       {bc.flows_rtdhs ? (
         <Panel
-          title="Modeled inter-island flows compared with the operator's records"
+          title="The operator schedules each 5-minute interval on its own, so this is an independent check"
           subtitle="The operator's real-time inter-grid schedule records each 5-minute interval independently of the demand calculation. Its congestion flag shows how often a link reached its limit."
         >
           <DataGrid
@@ -364,7 +364,7 @@ export function BackcastView({
 
       {bc.per_grid_mcp ? (
         <Panel
-          title="The same replays compared with the recorded market clearing price (MCP)"
+          title="MCP is calculated before dispatch, so it is the record a model can be measured against"
           subtitle="MCP is the regional price calculated before dispatch. It is the recorded measure that can be compared with the model's marginal price."
         >
           <DataGrid

@@ -149,14 +149,17 @@ const FUEL_VAR: Record<string, string> = {
   hydro: 'var(--fuel-hydro)',
   geothermal: 'var(--fuel-geothermal)',
   solar: 'var(--fuel-solar)',
-  wind: 'var(--series-flow)',
-  biomass: 'var(--positive)',
-  storage: 'var(--series-storage)',
-  firm: 'var(--primary)',
-  import: 'var(--series-flow)',
-  export: 'var(--series-flow)',
+  // Every fuel names its own token. These five used to borrow a series token
+  // that already had another job, which drew wind and hydro as one block,
+  // storage and geothermal as another, and in dark gas and firm as a third.
+  wind: 'var(--fuel-wind)',
+  biomass: 'var(--fuel-biomass)',
+  storage: 'var(--fuel-storage)',
+  firm: 'var(--fuel-firm)',
+  import: 'var(--fuel-import)',
+  export: 'var(--fuel-import)',
   // --negative was never declared in tokens.css, so the shortage block, the one
   // that says this demand went unserved, painted near-black instead of red
-  shortage: 'var(--destructive)',
+  shortage: 'var(--fuel-shortage)',
 }
 export const fuelColor = (f: string): string => FUEL_VAR[f] ?? 'var(--text-faint)'

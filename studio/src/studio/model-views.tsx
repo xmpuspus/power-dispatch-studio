@@ -177,7 +177,7 @@ export function SolvedFlowsView({ s }: { s: SolvedModel }) {
   return (
     <div className="view">
       <Panel
-        title="Power and prices across the three connected island grids"
+        title="The three grids clear as one problem, because power moves between them"
         subtitle="The current model clears all three grids together over the high-voltage direct-current (HVDC) links."
       >
         <FlowDiagram prices={prices} corridors={corridors} />
@@ -280,7 +280,7 @@ export function SolvedRegionsView({ s }: { s: SolvedModel }) {
   return (
     <div className="view">
       <Panel
-        title="Clearing price and available supply in each island grid"
+        title="Each grid keeps its own price, because the links between them have limits"
         subtitle="A negative spare-capacity percentage means demand exceeds available supply."
       >
         <DataGrid columns={cols} rows={grids} getKey={(g) => g} />
@@ -495,7 +495,7 @@ export function CompareView({
   return (
     <div className="view">
       <Panel
-        title="Compare scenarios"
+        title="Every scenario solves the same model, so only the settings you changed move it"
         subtitle="Every scenario is solved side by side. The Base Case is the reference. Changed values are highlighted."
       >
         {scenarios.length < 2 && (

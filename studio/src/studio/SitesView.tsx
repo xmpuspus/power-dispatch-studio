@@ -396,7 +396,7 @@ export function SitesView() {
           </Panel>
 
           <Panel
-            title="What its lines can take, hour by hour"
+            title="The limit moves through the day, because the circuits already carry other load"
             subtitle="Click any hour to move to it. The gold shape is when its own solar produces, which is why the evening is the hard part."
           >
             <DayStrip
@@ -428,7 +428,7 @@ export function SitesView() {
           ) : null}
 
           <Panel
-            title="The circuits this site is connected to"
+            title="Every megawatt this site draws passes through these circuits"
             subtitle="Ratings are estimates unless the market record named a limit."
           >
             <table className="grid-table">

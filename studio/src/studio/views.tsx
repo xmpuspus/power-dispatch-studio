@@ -12,7 +12,7 @@ export function DurationView({ d, grid }: { d: Dispatch; grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title="Price-duration curve"
+        title="The average price hides a spread from the recorded floor to the recorded peak"
         subtitle={`${cap(grid)} modeled and recorded prices, sorted from highest to lowest over the market window.`}
         right={<Source href={pd.src} label="cap source" />}
       >
@@ -52,7 +52,7 @@ export function MarginalView({ d, grid }: { d: Dispatch; grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title="Who sets the price"
+        title="One fuel block sets the price that every running plant is paid"
         subtitle={`${cap(grid)} share of ${num(mf.n_intervals)} market intervals in which each fuel block sets the price.`}
       >
         <ShareBars rows={mf.by_block} />
@@ -170,7 +170,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title="WESM backup-capacity market (reserves)"
+        title="Holding megawatts in reserve takes them out of the energy stack"
         subtitle={`Operating since ${res.commercial_since}. Real-time dispatch buys energy and reserve capacity together. The studio's Hourly market replay holds the scheduled reserve requirement out of the energy supply stack but does not calculate reserve prices. The sample covers ${num(res.n_intervals)} intervals on ${res.sample_days?.join(', ')}.`}
         right={<Source href={res.src_market} label="market source" />}
       >
@@ -197,7 +197,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
 
       {dearest && (
         <Panel
-          title="Backup-capacity price compared with the energy price"
+          title="Reserve capacity carries its own price, cleared in the same dispatch"
           subtitle={`${dearest.label} is the scarcest product. Compared with the observed energy clearing price on ${cap(grid)}.`}
         >
           <CompareBars

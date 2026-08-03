@@ -126,7 +126,7 @@ export function LossValidationView() {
     return (
       <div className="view">
         <Panel
-          title="Estimated transmission losses compared with recorded per-node prices"
+          title="A correct loss estimate reproduces the recorded price gaps between connection points"
           subtitle="The network calculation is checked against the market's prices at individual grid connection points."
         >
           <EmptyNote>

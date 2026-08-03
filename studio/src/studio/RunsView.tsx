@@ -152,7 +152,7 @@ export function RunsView({
   return (
     <div className="view">
       <Panel
-        title="Saved simulation runs"
+        title="Saved runs stay in this browser and nothing is uploaded"
         subtitle="Each saved run keeps its scenario settings, date range, calculation version, and hourly results."
       >
         <div className="runs__archive-bar">
@@ -272,7 +272,7 @@ export function RunsView({
 
       {runs.length >= 2 && a && b && (
         <Panel
-          title="Compare two runs"
+          title="Run A against run B, with only the changed values marked"
           subtitle="Run A is compared with Run B. Changed values are highlighted."
         >
           <div className="chrono__controls">

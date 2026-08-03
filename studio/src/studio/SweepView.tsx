@@ -218,7 +218,7 @@ export function SweepView({
       </Panel>
 
       <Panel
-        title="Price, spare capacity, and unmet demand at every demand step"
+        title="Price climbs in steps, one for each next plant the grid has to start"
         subtitle="Each step solves the evening reference hour. A single hour has no daily water limit, so hydro can offer its full available capacity here. Hourly market replay solves whole days and applies the daily water limit."
       >
         <DataGrid columns={cols} rows={steps} getKey={(r) => String(r.addMw)} />

@@ -25,11 +25,28 @@
   } catch (e) { document.documentElement.dataset.theme = 'light'; }
 })();
 </script>
+<link rel="preload" href="fonts/fira-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/fira-sans-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/fira-code-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet"
   integrity="sha384-MinO0mNliZ3vwppuPOUnGa+iq619pfMhLVUXfC4LHwSCvF9H+6P/KO4Q7qBOYV5V" crossorigin="anonymous" />
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"
   integrity="sha384-SYKAG6cglRMN0RVvhNeBY0r3FYKNOJtznwA0v7B5Vp9tr31xAHsZC0DqkQ/pZDmj" crossorigin="anonymous"></script>
 <style>
+  /* Fira Sans and Fira Code, self-hosted. The studio at /studio/ already loads
+     both through @fontsource; this page ran the system stack, so the two halves
+     of one product set type differently. Latin subset, 124 KB for five files. */
+  @font-face{ font-family:'Fira Sans'; font-style:normal; font-weight:400;
+    font-display:swap; src:url('fonts/fira-sans-latin-400-normal.woff2') format('woff2'); }
+  @font-face{ font-family:'Fira Sans'; font-style:normal; font-weight:500;
+    font-display:swap; src:url('fonts/fira-sans-latin-500-normal.woff2') format('woff2'); }
+  @font-face{ font-family:'Fira Sans'; font-style:normal; font-weight:600;
+    font-display:swap; src:url('fonts/fira-sans-latin-600-normal.woff2') format('woff2'); }
+  @font-face{ font-family:'Fira Code'; font-style:normal; font-weight:400;
+    font-display:swap; src:url('fonts/fira-code-latin-400-normal.woff2') format('woff2'); }
+  @font-face{ font-family:'Fira Code'; font-style:normal; font-weight:500;
+    font-display:swap; src:url('fonts/fira-code-latin-500-normal.woff2') format('woff2'); }
+
   /* Two themes. The dark values are the studio's own dark tokens
      (studio/src/styles/tokens.css), so the map at / and the studio at /studio/
      are one surface rather than two products that disagree about the dark.
@@ -37,28 +54,52 @@
   :root{ --ink:#10212b; --muted:#5b6b75; --line:#e2e8ec; --bg:#f7f9fa;
     --paper:#fff; --paper-2:#f2f7fa; --paper-3:#f4f7f8; --paper-hi:#e7f0f5; --track:#eef1f3;
     --on-fill:#fff; --navy:#12335c; --shadow:rgba(16,33,43,.10); --fade:rgba(16,33,43,.16);
+    --scrim:rgba(16,33,43,.34);
     --warn-bg:#fff6f5; --warn-line:#e2664b; --warn-ink:#7a2a17;
     --op:#1a7f48; --uc:#b8860b; --plan:#8a97a0; --hvdc:#9c3d12; --ac:#3a6b8a; --sual:#b3261e;
     --op-line:#125c34; --uc-line:#8a6508; --plan-line:#5b6b75;
-    --gas:#4e79a7; --coal:#6b6b6b;
     --ac138:#a8b8c4; --ac230:#7d94a6; --ac500:#41586b; --pinline:#333; --halo:#fff;
-    --ctrl-icon:none; }
-  /* The theme is an attribute, not a media query, because the studio at
-     /studio/ lets a reader pin one and stores it under pds.theme. Reading the
-     same key here means a reader who pins light in the studio and clicks back
-     to the map does not get dark. The head script below sets the attribute
-     from that key, falling back to the system preference. */
+    --ctrl-icon:none;
+    /* Fuel colours. One declared token per fuel, in both themes, searched
+       against the /dataviz gates on the pairs that share an edge in the stack.
+       Light: worst adjacent CVD 11.9 (>=8), worst adjacent normal 18.7 (>=15).
+       tests/test_palette.py runs the skill's own validator in make qa.
+       Nothing here borrows another series' token: that aliasing is what made
+       wind and hydro one colour, and storage and geothermal another. */
+    --fuel-solar:#ba8c29; --fuel-wind:#11a3bb; --fuel-hydro:#1e5d97;
+    --fuel-geothermal:#9d05f4; --fuel-natural-gas:#8e86fa; --fuel-biomass:#17845c;
+    --fuel-coal:#7b3e0d; --fuel-storage:#fe50a6; --fuel-oil:#ca4029;
+    /* not fuels: a scenario addition, a flow, and one status colour */
+    --fuel-firm:#2f6f4f; --fuel-import:#1a7f48; --fuel-shortage:#b3261e;
+
+    /* type scale. The page had none: everything sat between 11.5px and 18px. */
+    --font-ui:'Fira Sans',system-ui,-apple-system,sans-serif;
+    --font-mono:'Fira Code',ui-monospace,'SF Mono',Menlo,monospace;
+    --fs-display:76px; --fs-h1:27px; --fs-h2:15px; --fs-body:13.5px;
+    --fs-small:12px; --fs-label:11.5px;
+    /* one radius rule: the rails are flush to the viewport, so their outer
+       corners are square; every interactive control is 6px; nothing else has
+       a radius at all */
+    --r-ctrl:6px;
+    --rail-l:400px; --rail-r:356px;
+  }
   :root[data-theme='dark']{ --ink:#e6edf7; --muted:#9fb0c9; --line:#24314c; --bg:#0b1220;
       --paper:#111a2b; --paper-2:#16223a; --paper-3:#0e1626; --paper-hi:#1f2c48; --track:#24314c;
       --navy:#7fb8d4; --shadow:rgba(0,0,0,.5); --fade:rgba(0,0,0,.55);
+      --scrim:rgba(4,8,16,.58);
       --warn-bg:#2d1512; --warn-line:#a8492f; --warn-ink:#f5b8a6;
       /* the site and corridor colors lift so they still read on a dark basemap */
       --op:#4ade80; --uc:#e0b155; --plan:#94a3b8; --hvdc:#e07a45; --ac:#7fb8d4; --sual:#f87171;
       /* voltage ramp inverts: on a dark basemap the 500 kV backbone is the lightest */
       --op-line:#166534; --uc-line:#8a6508; --plan-line:#475569;
-      --gas:#7aa5cc; --coal:#a1a1a1;
       --ac138:#5b7080; --ac230:#8aa3b5; --ac500:#cbd9e6; --pinline:#0b1220; --halo:#0b1220;
-      --ctrl-icon:invert(1) hue-rotate(180deg); }
+      --ctrl-icon:invert(1) hue-rotate(180deg);
+      /* Dark: worst adjacent CVD 10.0 (>=8), worst adjacent normal 16.5 (>=15),
+         measured against the #111a2b panel these bands are drawn on. */
+      --fuel-solar:#bc8106; --fuel-wind:#0aa6b8; --fuel-hydro:#1d6aa9;
+      --fuel-geothermal:#9e1afc; --fuel-natural-gas:#6686dc; --fuel-biomass:#059d5f;
+      --fuel-coal:#915b00; --fuel-storage:#cf00ac; --fuel-oil:#b24254;
+      --fuel-firm:#4ade80; --fuel-import:#34d399; --fuel-shortage:#f87171; }
   html{ color-scheme:light; }
   html[data-theme='dark']{ color-scheme:dark; }
   *{ box-sizing:border-box; }
@@ -67,7 +108,7 @@
      is the only thing a keyboard user had, and on the tinted buttons it is
      almost invisible. One ring, drawn outside the box so it never clips. */
   :where(button, a, input, select, summary, [tabindex]):focus-visible{
-    outline:2px solid var(--ac); outline-offset:2px; border-radius:6px; }
+    outline:2px solid var(--ac); outline-offset:2px; border-radius:var(--r-ctrl); }
 
   /* maplibre's own chrome is light-only out of the box: the zoom buttons, the
      attribution bar and the popups all ship white. Repaint them with the page
@@ -86,256 +127,386 @@
     *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important;
       transition-duration:.01ms !important; scroll-behavior:auto !important; }
   }
-  html,body{ margin:0; height:100%; font-family:-apple-system,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); }
+  html,body{ margin:0; height:100%; font-family:var(--font-ui); color:var(--ink);
+    background:var(--bg); font-size:var(--fs-body); line-height:1.5;
+    -webkit-font-smoothing:antialiased; }
   #map{ position:absolute; inset:0; }
-  .panel{ position:absolute; z-index:2; background:var(--paper); border:1px solid var(--line); border-radius:10px; box-shadow:0 1px 8px var(--shadow); }
-  button{ font-family:inherit; }
-  /* The head panel used to be as tall as its content, so on a 800px-tall
-     window its bottom ran into the story rail. Cap it against the rail's
-     own height and let it scroll instead of colliding. */
-  #head{ top:12px; left:12px; max-width:392px; padding:14px 16px;
-    max-height:calc(100dvh - 330px); overflow-y:auto; }
-  /* A clipped panel edge with no mark reads as the end of the content. This is
-     the same local-attachment trick #side uses: the shadow shows only while
-     there is something above or below to scroll to. */
-  #head, #side{ scrollbar-width:thin; scrollbar-color:var(--line) transparent;
+  button, input, select{ font-family:inherit; }
+  /* every figure on this page is mono and tabular, so a column of numbers
+     lines up and a changing number does not shift the words beside it */
+  .fig, .stat, .kv span:last-child, td.num, .barrow .lab b, .simctl label b,
+  .r-stat, .fstat, .d-fig, .d-sub b{ font-family:var(--font-mono);
+    font-variant-numeric:tabular-nums; font-feature-settings:'tnum' 1; }
+
+  /* ---- the two docked rails ------------------------------------------------
+     The archipelago is thin and tall, so a wide frame around it is mostly sea.
+     The rails take that water and the map keeps a centre column shaped like
+     the landmass. They are flush to the viewport edge, opaque, and carry one
+     hairline on their inner edge only: chrome, not cards floating on a map. */
+  .rail{ position:absolute; top:0; bottom:0; z-index:4; background:var(--paper);
+    display:flex; flex-direction:column; overflow:hidden; }
+  #railL{ left:0; width:var(--rail-l); border-right:1px solid var(--line); }
+  #readout{ right:0; width:var(--rail-r); border-left:1px solid var(--line); }
+  /* A card cut off by the scroll edge with no mark reads as broken markup, so
+     the shadow shows only while there is something above or below to reach.
+     background-attachment:local pins the two paper layers to the content and
+     scroll pins the two shadows to the frame, which is what makes it work. */
+  .rail__scroll{ overflow-y:auto; overscroll-behavior:contain; flex:1;
+    scrollbar-width:thin; scrollbar-color:var(--line) transparent;
     background:
       linear-gradient(var(--paper) 30%, transparent) center top,
       linear-gradient(transparent, var(--paper) 70%) center bottom,
       radial-gradient(farthest-side at 50% 0, var(--fade), transparent) center top,
       radial-gradient(farthest-side at 50% 100%, var(--fade), transparent) center bottom;
     background-repeat:no-repeat;
-    background-size:100% 30px, 100% 30px, 100% 11px, 100% 11px;
+    background-size:100% 34px, 100% 34px, 100% 12px, 100% 12px;
     background-attachment:local, local, scroll, scroll;
     background-color:var(--paper); }
-  #head::-webkit-scrollbar, #side::-webkit-scrollbar{ width:8px; }
-  #head::-webkit-scrollbar-thumb, #side::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
-  #head h1{ margin:0 0 2px; font-size:18px; letter-spacing:-.2px; }
-  #head p{ margin:5px 0 0; font-size:13px; line-height:1.45; color:var(--muted); }
-  #head .scope{ margin-top:8px; font-size:11.5px; color:var(--muted); background:var(--paper-3); border:1px solid var(--line); border-radius:7px; padding:7px 9px; line-height:1.4; }
-  #modebar{ top:12px; left:50%; transform:translateX(-50%); padding:6px 7px; display:flex; gap:5px; flex-wrap:wrap; justify-content:center; max-width:calc(100% - 24px); }
-  .mode{ border:1px solid var(--line); background:var(--paper); border-radius:6px; padding:6px 11px; cursor:pointer; font-size:12.5px; color:var(--muted); white-space:nowrap; }
-  .mode.on{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
-  #headtoggle{ display:none; position:absolute; top:8px; right:10px; align-items:center; gap:4px;
-    border:1px solid var(--line); background:var(--paper); color:var(--muted); border-radius:22px;
-    padding:0 14px; font-size:12px; font-weight:600; cursor:pointer; min-height:44px; }
-  #headtoggle .chev{ transition:transform .18s; font-size:10px; }
-  body.head-open #headtoggle .chev{ transform:rotate(180deg); }
-  #legend{ bottom:16px; left:12px; padding:11px 13px; font-size:12px; max-width:264px; }
-  #legend b{ font-size:12px; }
-  .keys{ margin-top:6px; display:flex; flex-direction:column; gap:3px; }
-  .keys .k{ display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--muted); }
-  .keys .sw{ width:12px; height:12px; border-radius:3px; border:1px solid var(--line); }
-  .keys .ln{ width:16px; height:0; border-top:3px solid currentColor; }
-  #lg-note{ margin-top:7px; font-size:11px; color:var(--muted); line-height:1.4; }
-  /* right panel (mode content) */
-  #side{ right:12px; top:12px; width:336px; max-width:calc(100% - 24px);
-    max-height:calc(100% - 120px); overflow-y:auto; padding:12px 14px 16px; }
-  #side h2{ margin:0 0 2px; font-size:14px; }
-  #side .sub{ font-size:11.5px; color:var(--muted); margin:0 0 8px; line-height:1.4; }
-  .stat{ font-size:24px; font-weight:700; letter-spacing:-.4px; margin:4px 0 0; }
-  .stat small{ font-size:12px; font-weight:500; color:var(--muted); }
-  .kv{ display:flex; justify-content:space-between; gap:10px; padding:4px 0; border-bottom:1px dashed var(--line); font-size:12.5px; }
-  /* rows in a different unit from the bars above them get their own block, so
-     the absent bar reads as a change of measure and not as a zero */
-  .kvgroup{ margin-top:13px; padding-top:9px; border-top:1px solid var(--border-strong,var(--line)); }
-  .kvgroup__h{ font-size:11.5px; font-weight:700; color:var(--ink); line-height:1.35; margin-bottom:3px; }
-  .kv span:last-child{ text-align:right; color:var(--muted); font-variant-numeric:tabular-nums; }
-  table{ width:100%; border-collapse:collapse; font-size:11.5px; margin-top:6px; }
-  th{ text-align:left; color:var(--muted); font-weight:600; padding:3px 4px; border-bottom:1px solid var(--line); }
-  td{ padding:3px 4px; border-bottom:1px dashed var(--line); font-variant-numeric:tabular-nums; }
-  td.num{ text-align:right; }
-  .note{ margin-top:9px; font-size:11px; color:var(--muted); line-height:1.45; }
-  .export-links a{ color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--ac); }
-  .export-links a:hover{ border-bottom-color:var(--navy); }
-  .barrow{ margin:7px 0 2px; }
-  /* the value column never shrinks and never wraps, so a long label can no
-     longer run under the megawatt figure and read as one word */
-  .barrow .lab{ font-size:11.5px; display:flex; justify-content:space-between;
-    align-items:baseline; gap:10px; color:var(--muted); }
-  .barrow .lab span{ min-width:0; }
-  .barrow .lab b{ flex:0 0 auto; white-space:nowrap; color:var(--ink); font-variant-numeric:tabular-nums; }
-  .barrow .tr{ height:9px; background:var(--track); border-radius:3px; margin-top:3px; position:relative; overflow:hidden; }
-  .barrow .fl{ position:absolute; inset:0 auto 0 0; border-radius:3px; }
-  #spark svg{ display:block; width:100%; height:auto; }
-  .fkeys{ display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:6px; }
-  .fkey{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; color:var(--muted); text-transform:capitalize; }
-  .fsw{ width:10px; height:10px; border-radius:2px; border:1px solid var(--line); }
-  .sual-btn{ width:100%; margin-top:9px; border:1px solid var(--line); background:var(--paper); color:var(--ink);
-    border-radius:7px; padding:7px 10px; cursor:pointer; font-size:12.5px; font-weight:600; }
-  .sual-btn.on{ background:var(--sual); border-color:var(--sual); color:var(--on-fill); }
-  /* simulate panel */
-  .gselrow{ display:flex; gap:6px; margin:2px 0 8px; }
-  .gsel{ flex:1; border:1px solid var(--line); background:var(--paper); color:var(--muted);
-    border-radius:6px; padding:5px 6px; cursor:pointer; font-size:12px; }
-  .gsel.on{ background:var(--navy); border-color:var(--navy); color:var(--bg); }
-  .simctl{ margin:8px 0 2px; display:flex; flex-direction:column; gap:8px; }
-  .simctl label{ font-size:11.5px; color:var(--muted); display:flex; flex-direction:column; gap:3px; }
-  .simctl label b{ color:var(--ink); font-variant-numeric:tabular-nums; }
-  .simctl input[type=range]{ width:100%; accent-color:var(--navy); }
-  .simctl .tick{ font-size:10px; color:var(--muted); opacity:.8; }
-  .simctl select{ padding:5px 6px; border:1px solid var(--line); border-radius:6px; font-size:12px;
-    background:var(--paper); color:var(--ink); }
-  .kv.shortfall span:last-child{ color:var(--sual); }
-  .bdg{ display:inline-block; color:var(--on-fill); border-radius:3px; padding:0 5px;
-    font-size:10px; line-height:16px; vertical-align:1px; }
-  details.drv{ border-bottom:1px dashed var(--line); padding:4px 0; }
-  details.drv summary{ cursor:pointer; font-size:12px; line-height:1.5; }
-  details.drv summary::-webkit-details-marker{ display:none; }
-  /* story rail */
-  #rail{ left:50%; transform:translateX(-50%); bottom:16px; width:min(600px, calc(100% - 24px)); padding:0; overflow:hidden; }
-  .r-top{ display:flex; align-items:center; gap:8px; padding:9px 13px 7px; border-bottom:1px solid var(--line); }
-  .r-kick{ font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); }
-  #r-dots{ display:flex; gap:4px; margin-left:auto; }
-  #r-dots i{ width:6px; height:6px; border-radius:50%; background:var(--line); display:block; }
-  #r-dots i.on{ background:var(--ink); }
-  #rail-chev{ display:none; margin-left:8px; font-size:10px; color:var(--muted); transition:transform .18s; }
-  body.rail-open #rail-chev{ transform:rotate(180deg); }
-  .r-body{ display:flex; align-items:stretch; gap:8px; padding:10px 10px 6px; }
-  .r-nav{ flex:0 0 auto; width:38px; border:1px solid var(--line); background:var(--paper); border-radius:8px; cursor:pointer; color:var(--ink); font-size:20px; line-height:1; }
-  .r-nav:hover{ background:var(--paper-2); } .r-nav:disabled{ opacity:.35; cursor:default; }
-  .r-card{ flex:1; text-align:left; border:1px solid var(--line); background:var(--paper); border-radius:8px; padding:9px 11px; display:block; }
-  .r-tag{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
-  .r-title{ display:block; font-size:13.5px; font-weight:600; line-height:1.32; margin:3px 0 4px; }
-  .r-stat{ display:block; font-size:12.5px; font-weight:700; color:var(--ink); line-height:1.35; }
-  .r-blurb{ display:block; font-size:12px; color:var(--muted); line-height:1.45; margin-top:6px; }
-  .r-src{ display:block; font-size:10.5px; color:var(--muted); font-style:italic; margin-top:6px; }
-  .r-foot{ padding:7px 13px 9px; border-top:1px solid var(--line); font-size:10.5px; color:var(--muted); line-height:1.4; }
-  .r-foot a{ color:var(--ink); }
-  #r-extra{ display:none; padding:10px 13px 8px; }
-  #r-extra .x-tag{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
-  #r-extra .x-title{ display:block; font-size:13.5px; font-weight:600; line-height:1.32; margin:3px 0 4px; }
-  #r-extra .x-blurb{ display:block; font-size:12px; color:var(--muted); line-height:1.45; }
-  body.mode-extra .r-body{ display:none; }
-  body.mode-extra #r-dots{ display:none; }
-  body.mode-extra #r-extra{ display:block; }
-  @media(max-width:640px){
-    #head{ max-width:none; left:8px; right:8px; top:8px; padding:8px 12px; }
-    #head h1{ font-size:16px; padding-right:76px; margin:0; line-height:1.3; min-height:44px; }
-    #side{ display:none; }
-    #legend{ display:none; }
-    /* the color key has no room on the map at phone width; surface it inside the
-       Details drawer the user opens on purpose, pinned to the bottom of it */
-    body.show-side #legend{ display:block; z-index:10; left:8px; right:8px;
-      bottom:70px; top:auto; max-width:none; max-height:34vh; overflow-y:auto; }
-  }
-  .hovpop .maplibregl-popup-content{ padding:6px 9px; font-size:11.5px; border-radius:7px; box-shadow:0 1px 6px var(--shadow); max-width:260px;
-    background:var(--paper); color:var(--ink); border:1px solid var(--line); }
-  .hovpop .maplibregl-popup-content b{ font-size:12px; } .hovpop .maplibregl-popup-tip{ display:none; }
-  /* findings drawer */
-  #fopen{ width:100%; margin-top:9px; border:1px solid var(--line); background:var(--paper);
-    color:var(--ink); border-radius:7px; padding:7px 10px; cursor:pointer; font-size:12.5px; font-weight:600;
-    text-align:left; display:flex; justify-content:space-between; align-items:center; }
-  #fopen:hover{ background:var(--paper-2); }
-  #studiolink, #paxlink{ display:block; margin-top:7px; border:1px solid var(--ac); background:var(--paper-2);
-    color:var(--ac); border-radius:7px; padding:7px 10px; font-size:12px; font-weight:600;
-    text-decoration:none; line-height:1.35; }
-  #studiolink b, #paxlink b{ display:block; white-space:nowrap; }
-  #studiolink span, #paxlink span{ display:block; margin-top:3px; font-weight:400;
-    font-size:11.5px; color:var(--muted); }
-  #studiolink:hover, #paxlink:hover{ background:var(--paper-hi); }
-  #paxlink{ border-color:#d98a74; }
+  .rail__scroll::-webkit-scrollbar{ width:8px; }
+  .rail__scroll::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
+
+  /* masthead: a wordmark and the theme control, one line, 56px */
+  #mast{ flex:0 0 auto; display:flex; align-items:center; gap:10px;
+    padding:0 20px; min-height:56px; border-bottom:1px solid var(--line); }
+  #mast .bar{ width:3px; height:19px; background:var(--ac); flex:0 0 auto; }
+  #mast .wm{ font-size:var(--fs-small); font-weight:600; letter-spacing:.04em; }
+  #themebtn{ margin-left:auto; border:1px solid var(--line); background:var(--paper);
+    color:var(--muted); border-radius:var(--r-ctrl); padding:5px 10px; cursor:pointer;
+    font-size:var(--fs-label); font-weight:500; min-height:30px;
+    transition:background .16s, color .16s, border-color .16s; }
+  #themebtn:hover{ background:var(--paper-2); border-color:var(--ac); color:var(--ac); }
+  #themebtn:active{ transform:translateY(1px); }
+
+  /* the one display moment. A figure, because a figure is short enough to be
+     set large in a 400px rail and because every number here is already mono. */
+  #hero{ flex:0 0 auto; padding:22px 20px 18px; border-bottom:1px solid var(--line); }
+  .d-fig{ font-size:var(--fs-display); font-weight:500; line-height:.92;
+    letter-spacing:-.045em; color:var(--ac); margin:0; }
+  .d-claim{ margin:9px 0 0; font-size:var(--fs-h1); font-weight:600;
+    line-height:1.16; letter-spacing:-.015em; }
+  .d-sub{ margin:9px 0 0; font-size:var(--fs-small); color:var(--muted);
+    line-height:1.45; }
+  .d-sub b{ color:var(--ink); font-weight:400; }
+
+  /* the three questions, docked. The carousel showed one and hid two; all
+     three are visible now and the open one drives the map mode, which is what
+     clicking through the carousel already did. */
+  #qs{ padding:4px 0 0; }
+  .q{ border-bottom:1px solid var(--line); }
+  .q__btn{ width:100%; text-align:left; border:0; background:none; cursor:pointer;
+    color:var(--ink); display:flex; gap:11px; align-items:flex-start;
+    padding:13px 20px; font-size:var(--fs-body); line-height:1.35;
+    transition:background .16s; }
+  .q__btn:hover{ background:var(--paper-2); }
+  .q__n{ flex:0 0 auto; font-family:var(--font-mono); font-size:var(--fs-label);
+    font-weight:500; color:var(--muted); padding-top:2px; width:20px; }
+  .q__t{ font-weight:600; }
+  .q.on .q__n{ color:var(--ac); }
+  .q.on .q__btn{ background:var(--paper-2); }
+  .q__body{ display:none; padding:0 20px 15px 51px; }
+  .q.on .q__body{ display:block; animation:qin .26s ease both; }
+  @keyframes qin{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:none; } }
+  .q__stat{ display:block; font-family:var(--font-mono); font-variant-numeric:tabular-nums;
+    font-size:var(--fs-small); font-weight:500; line-height:1.45; }
+  .q__blurb{ display:block; margin-top:7px; font-size:var(--fs-small);
+    color:var(--muted); line-height:1.5; }
+  .q__src{ display:block; margin-top:7px; font-size:var(--fs-label);
+    color:var(--muted); font-style:italic; line-height:1.4; }
+
+  /* Drivers and Simulate answer none of the three questions, so this block
+     replaces the open question rather than adding a sixth surface */
+  #qextra{ padding:13px 20px 15px; border-bottom:1px solid var(--line);
+    animation:qin .26s ease both; }
+  #qextra b{ display:block; font-size:var(--fs-body); font-weight:600; line-height:1.35; }
+  #qextra span{ display:block; margin-top:6px; font-size:var(--fs-small);
+    color:var(--muted); line-height:1.5; }
+
+  /* the rail's foot: search, the two page links, the archive scope */
+  #tools{ padding:15px 20px 20px; }
+  .tools__h{ font-size:var(--fs-label); font-weight:600; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--muted); margin:0 0 9px; }
+  #fopen{ width:100%; border:1px solid var(--line); background:var(--paper);
+    color:var(--ink); border-radius:var(--r-ctrl); padding:9px 11px; cursor:pointer;
+    font-size:var(--fs-small); font-weight:600; text-align:left;
+    display:flex; justify-content:space-between; align-items:center; gap:8px;
+    transition:background .16s, border-color .16s; }
+  #fopen:hover{ background:var(--paper-2); border-color:var(--ac); }
+  #fopen:active{ transform:translateY(1px); }
   #findbox{ margin-top:9px; position:relative; }
-  #findq{ width:100%; box-sizing:border-box; border:1px solid var(--line); border-radius:7px;
-    padding:7px 10px; font-size:12.5px; color:var(--ink); background:var(--paper); }
-  #findq:focus{ outline:none; border-color:var(--ac); }
-  #findres{ position:absolute; left:0; right:0; top:34px; z-index:8; background:var(--paper);
-    border:1px solid var(--line); border-radius:7px; box-shadow:0 4px 14px var(--shadow);
+  #findq{ width:100%; border:1px solid var(--line); border-radius:var(--r-ctrl);
+    padding:9px 11px; font-size:var(--fs-small); color:var(--ink); background:var(--paper); }
+  #findq::placeholder{ color:var(--muted); }
+  #findq:focus{ outline:none; border-color:var(--ac); box-shadow:0 0 0 2px var(--paper-hi); }
+  #findres{ position:absolute; left:0; right:0; top:38px; z-index:8; background:var(--paper);
+    border:1px solid var(--line); border-radius:var(--r-ctrl); box-shadow:0 4px 14px var(--shadow);
     overflow:hidden; display:none; }
   #findres.on{ display:block; }
   #findres button{ display:block; width:100%; text-align:left; border:0; border-bottom:1px solid var(--line);
-    background:var(--paper); padding:6px 10px; cursor:pointer; font-size:12px; color:var(--ink); line-height:1.3; }
+    background:var(--paper); padding:7px 11px; cursor:pointer; font-size:var(--fs-small);
+    color:var(--ink); line-height:1.35; }
   #findres button:last-child{ border-bottom:0; }
   #findres button:hover, #findres button.hi{ background:var(--paper-2); }
-  #findres .k{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; }
-  #findres .s{ color:var(--muted); font-size:11px; }
-  #findres .findnote{ padding:9px 11px; font-size:11.5px; color:var(--muted); line-height:1.5; }
-  #findres button.findjump{ display:inline-flex; width:auto; margin-top:7px; border:1px solid var(--line);
-    border-radius:6px; padding:4px 10px; font-size:11.5px; font-weight:600; color:var(--ac); background:var(--paper-2); }
+  #findres .k{ font-size:var(--fs-label); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+  #findres .s{ color:var(--muted); font-size:var(--fs-label); }
+  #findres .findnote{ padding:10px 12px; font-size:var(--fs-small); color:var(--muted); line-height:1.5; }
+  #findres button.findjump{ display:inline-flex; width:auto; margin-top:8px; border:1px solid var(--line);
+    border-radius:var(--r-ctrl); padding:5px 11px; font-size:var(--fs-label); font-weight:600;
+    color:var(--ac); background:var(--paper-2); }
   #findres button.findjump:hover{ background:var(--paper-hi); }
-  #findisl{ margin-top:7px; display:flex; gap:6px; align-items:center; flex-wrap:wrap; font-size:11.5px; color:var(--muted); }
-  /* the theme control gets its own row. Sharing the island row made it read as
-     a fourth island grid. */
-  #themerow{ margin-top:8px; display:flex; justify-content:flex-end; }
-  #themebtn{ border:1px solid var(--line); background:var(--paper); color:var(--muted);
-    border-radius:6px; padding:4px 10px; cursor:pointer; font-size:11.5px; font-weight:600;
-    /* the same 44px touch target every other control on this page uses; it only
-       appears inside the opened menu, so a collapsed-state shot never shows it */
-    min-height:32px; }
-  #themebtn:hover{ background:var(--paper-2); border-color:var(--ac); color:var(--ac); }
-  #findisl button{ border:1px solid var(--line); background:var(--paper); color:var(--ink); border-radius:6px;
-    padding:3px 9px; cursor:pointer; font-size:11.5px; font-weight:600; }
+  #findisl{ margin-top:9px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;
+    font-size:var(--fs-label); color:var(--muted); }
+  #findisl button{ border:1px solid var(--line); background:var(--paper); color:var(--ink);
+    border-radius:var(--r-ctrl); padding:4px 10px; cursor:pointer; font-size:var(--fs-label); font-weight:500;
+    transition:background .16s, border-color .16s, color .16s; }
   #findisl button:hover{ background:var(--paper-2); border-color:var(--ac); color:var(--ac); }
-  #findings{ position:absolute; z-index:6; top:12px; left:12px; bottom:12px; width:356px;
-    max-width:calc(100% - 24px); display:none; flex-direction:column; padding:0; }
-  #findings.open{ display:flex; }
-  #fhead{ display:flex; align-items:center; justify-content:space-between; padding:11px 14px 9px;
-    border-bottom:1px solid var(--line); }
-  #fhead h2{ margin:0; font-size:14px; }
-  #fclose{ border:0; background:none; font-size:20px; cursor:pointer; color:var(--muted); line-height:1; }
-  #flist{ overflow-y:auto; padding:10px 12px 12px; }
-  .fcard{ border:1px solid var(--line); border-radius:8px; padding:9px 11px; margin-bottom:8px; cursor:pointer; }
-  .fcard:hover{ background:var(--paper-2); }
-  .fcard.on{ border-color:var(--ink); box-shadow:0 0 0 1px var(--ink) inset; }
-  .ftag{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
-  .fcard h3{ margin:3px 0 4px; font-size:13.5px; line-height:1.32; }
-  .fstat{ font-size:12.5px; font-weight:700; }
-  .fblurb{ font-size:12px; color:var(--muted); line-height:1.45; margin-top:5px; }
-  .fsrc{ font-size:10.5px; color:var(--muted); font-style:italic; margin-top:5px; }
-  #banner{ position:absolute; z-index:7; top:62px; left:50%; transform:translateX(-50%);
-    background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink); border-radius:8px;
-    padding:7px 12px; font-size:12px; display:none; max-width:min(560px, calc(100% - 24px)); }
-  #mside{ display:none; }
-  @media(max-width:640px){
-    /* full-screen map; head collapses to a title bar, modes dock to the bottom */
-    #headtoggle{ display:inline-flex; }
-    #head p, #head #scope, #head #fopen, #head #findbox, #head #studiolink,
-    #head #paxlink, #head #themerow{ display:none; }
-    body.head-open #head{ max-height:82vh; overflow-y:auto; }
-    body.head-open #head p, body.head-open #head #scope,
-    body.head-open #head #fopen, body.head-open #head #findbox,
-    body.head-open #head #studiolink, body.head-open #head #paxlink{ display:block; }
-    body.head-open #head #themerow{ display:flex; }
-    /* full touch target on a phone, like #headtoggle, .mode and #mside */
-    #themebtn{ min-height:44px; padding:0 16px; font-size:12.5px; }
+  #findisl button:active{ transform:translateY(1px); }
+  .golink{ display:block; margin-top:9px; border:1px solid var(--line); border-left:3px solid var(--ac);
+    background:var(--paper-2); color:var(--ink); border-radius:var(--r-ctrl); padding:10px 12px;
+    font-size:var(--fs-small); font-weight:600; text-decoration:none; line-height:1.35;
+    transition:background .16s, border-color .16s; }
+  .golink span{ display:block; margin-top:4px; font-weight:400; color:var(--muted); }
+  .golink:hover{ background:var(--paper-hi); }
+  #paxlink{ border-left-color:var(--hvdc); }
+  #scope{ margin-top:14px; padding-top:12px; border-top:1px solid var(--line);
+    font-size:var(--fs-label); color:var(--muted); line-height:1.5; }
+  #railfoot{ flex:0 0 auto; border-top:1px solid var(--line); padding:11px 20px;
+    font-size:var(--fs-label); color:var(--muted); line-height:1.45; }
+  #railfoot a{ color:var(--ink); }
 
-    /* search results flow inline so they never clip inside the head */
-    #findres{ position:static; margin-top:6px; max-height:190px; overflow-y:auto; box-shadow:none; }
+  /* ---- the mode switch, the primary control -------------------------------
+     One line, over the map column, with an indicator that slides to the
+     segment you picked. The slide is the state transition, and it is the only
+     thing on this page that moves without being pressed. */
+  #modebar{ position:absolute; z-index:5; top:14px; padding:4px; display:flex; gap:0;
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--r-ctrl);
+    box-shadow:0 2px 10px var(--shadow);
+    /* centred on the map column, not on the window: the rails are not equal */
+    left:calc(var(--rail-l) + (100% - var(--rail-l) - var(--rail-r)) / 2);
+    transform:translateX(-50%); }
+  #modeind{ position:absolute; top:4px; bottom:4px; left:0; width:0;
+    background:var(--ink); border-radius:4px; z-index:0;
+    transition:left .28s cubic-bezier(.22,1,.36,1), width .28s cubic-bezier(.22,1,.36,1); }
+  .mode{ position:relative; z-index:1; border:0; background:none; border-radius:4px;
+    padding:0 14px; min-height:34px; cursor:pointer; font-size:var(--fs-small);
+    font-weight:500; color:var(--muted); white-space:nowrap;
+    transition:color .2s; }
+  .mode:hover{ color:var(--ink); }
+  .mode.on{ color:var(--bg); font-weight:600; }
+  .mode:active{ transform:translateY(1px); }
+
+  /* ---- the readout --------------------------------------------------------- */
+  #rohead{ flex:0 0 auto; padding:15px 18px 12px; border-bottom:1px solid var(--line); }
+  #side{ padding:14px 18px 18px; }
+  /* the rows stagger in when the mode changes, because the content changed */
+  #side.swap > *{ animation:sidein .3s ease both; }
+  #side.swap > *:nth-child(2){ animation-delay:.018s; }
+  #side.swap > *:nth-child(3){ animation-delay:.036s; }
+  #side.swap > *:nth-child(4){ animation-delay:.054s; }
+  #side.swap > *:nth-child(n+5){ animation-delay:.072s; }
+  @keyframes sidein{ from{ opacity:0; transform:translateY(5px); } to{ opacity:1; transform:none; } }
+  #side h2{ margin:0 0 4px; font-size:var(--fs-h2); font-weight:600; line-height:1.3;
+    letter-spacing:-.005em; }
+  #side .sub{ font-size:var(--fs-small); color:var(--muted); margin:0 0 11px; line-height:1.5; }
+  .stat{ font-size:22px; font-weight:500; letter-spacing:-.02em; margin:4px 0 0; }
+  .stat small{ font-size:var(--fs-small); font-weight:400; color:var(--muted);
+    font-family:var(--font-ui); }
+  .kv{ display:flex; justify-content:space-between; gap:10px; padding:5px 0;
+    border-bottom:1px solid var(--line); font-size:var(--fs-small); }
+  /* rows in a different unit from the bars above them get their own block, so
+     the absent bar reads as a change of measure and not as a zero */
+  .kvgroup{ margin-top:14px; padding-top:11px; border-top:2px solid var(--line); }
+  .kvgroup__h{ font-size:var(--fs-small); font-weight:600; color:var(--ink);
+    line-height:1.4; margin-bottom:5px; }
+  .kv span:last-child{ text-align:right; color:var(--muted); }
+  table{ width:100%; border-collapse:collapse; font-size:var(--fs-label); margin-top:8px; }
+  th{ text-align:left; color:var(--muted); font-weight:600; padding:4px 4px;
+    border-bottom:1px solid var(--line); }
+  td{ padding:4px; border-bottom:1px solid var(--line); }
+  td.num{ text-align:right; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+  .note{ margin-top:11px; font-size:var(--fs-label); color:var(--muted); line-height:1.5; }
+  .export-links a{ color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--ac); }
+  .export-links a:hover{ border-bottom-color:var(--navy); }
+  .barrow{ margin:9px 0 2px; }
+  /* the value column never shrinks and never wraps, so a long label can no
+     longer run under the megawatt figure and read as one word */
+  .barrow .lab{ font-size:var(--fs-small); display:flex; justify-content:space-between;
+    align-items:baseline; gap:10px; color:var(--muted); }
+  .barrow .lab span{ min-width:0; }
+  .barrow .lab b{ flex:0 0 auto; white-space:nowrap; color:var(--ink); font-weight:500; }
+  .barrow .tr{ height:9px; background:var(--track); border-radius:2px; margin-top:4px;
+    position:relative; overflow:hidden; }
+  .barrow .fl{ position:absolute; inset:0 auto 0 0; border-radius:2px;
+    transition:width .4s cubic-bezier(.22,1,.36,1); }
+  #spark svg{ display:block; width:100%; height:auto; }
+  .fkeys{ display:flex; flex-wrap:wrap; gap:5px 11px; margin-top:8px; }
+  .fkey{ display:inline-flex; align-items:center; gap:5px; font-size:var(--fs-label);
+    color:var(--muted); text-transform:capitalize; }
+  .fsw{ width:10px; height:10px; border-radius:2px; }
+  .sual-btn{ width:100%; margin-top:11px; border:1px solid var(--line); background:var(--paper);
+    color:var(--ink); border-radius:var(--r-ctrl); padding:9px 11px; cursor:pointer;
+    font-size:var(--fs-small); font-weight:600; transition:background .16s, border-color .16s; }
+  .sual-btn:hover{ background:var(--paper-2); }
+  .sual-btn:active{ transform:translateY(1px); }
+  .sual-btn.on{ background:var(--sual); border-color:var(--sual); color:var(--on-fill); }
+  /* simulate panel */
+  .gselrow{ display:flex; gap:6px; margin:2px 0 10px; }
+  .gsel{ flex:1; border:1px solid var(--line); background:var(--paper); color:var(--muted);
+    border-radius:var(--r-ctrl); padding:6px; cursor:pointer; font-size:var(--fs-small);
+    transition:background .16s, color .16s, border-color .16s; }
+  .gsel:active{ transform:translateY(1px); }
+  .gsel.on{ background:var(--navy); border-color:var(--navy); color:var(--bg); font-weight:500; }
+  .simctl{ margin:10px 0 2px; display:flex; flex-direction:column; gap:9px; }
+  .simctl label{ font-size:var(--fs-label); color:var(--muted); display:flex;
+    flex-direction:column; gap:3px; }
+  .simctl label b{ color:var(--ink); font-weight:500; font-size:var(--fs-small); }
+  .simctl input[type=range]{ width:100%; accent-color:var(--navy); }
+  .simctl .tick{ font-size:var(--fs-label); color:var(--muted); opacity:.85; }
+  .simctl select{ padding:6px; border:1px solid var(--line); border-radius:var(--r-ctrl);
+    font-size:var(--fs-small); background:var(--paper); color:var(--ink); }
+  .kv.shortfall span:last-child{ color:var(--sual); }
+  /* a figure the browser just recalculated flashes once, so the slider you
+     moved has a visible consequence up in the readout */
+  .flash{ animation:flash .5s ease; }
+  @keyframes flash{ 0%{ background:var(--paper-hi); } 100%{ background:transparent; } }
+  .bdg{ display:inline-block; color:var(--on-fill); border-radius:3px; padding:0 5px;
+    font-size:var(--fs-label); line-height:16px; vertical-align:1px; }
+  details.drv{ border-bottom:1px solid var(--line); padding:5px 0; }
+  details.drv summary{ cursor:pointer; font-size:var(--fs-small); line-height:1.5; }
+  details.drv summary::-webkit-details-marker{ display:none; }
+  /* the legend sits at the foot of the readout, because it names the marks the
+     readout describes. It was a fifth floating card on the map. */
+  #legend{ flex:0 0 auto; border-top:1px solid var(--line); padding:12px 18px 14px;
+    background:var(--paper-3); }
+  #lg-title{ font-size:var(--fs-label); font-weight:600; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--muted); }
+  .keys{ margin-top:7px; display:flex; flex-direction:column; gap:4px; }
+  .keys .k{ display:flex; align-items:center; gap:8px; font-size:var(--fs-label); color:var(--muted); }
+  .keys .sw{ width:11px; height:11px; border-radius:2px; }
+  .keys .ln{ width:16px; height:0; border-top:3px solid currentColor; }
+  #lg-note{ margin-top:8px; font-size:var(--fs-label); color:var(--muted); line-height:1.45; }
+
+  /* ---- overlays ------------------------------------------------------------ */
+  #banner{ position:absolute; z-index:7; top:62px; left:calc(var(--rail-l) + 16px);
+    right:calc(var(--rail-r) + 16px); margin:0 auto; width:fit-content; max-width:560px;
+    background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink);
+    border-radius:var(--r-ctrl); padding:8px 13px; font-size:var(--fs-small); display:none; }
+  .hovpop .maplibregl-popup-content{ padding:7px 10px; font-size:var(--fs-label);
+    border-radius:var(--r-ctrl); box-shadow:0 1px 6px var(--shadow); max-width:260px;
+    background:var(--paper); color:var(--ink); border:1px solid var(--line); }
+  .hovpop .maplibregl-popup-content b{ font-size:var(--fs-small); } .hovpop .maplibregl-popup-tip{ display:none; }
+  /* the findings drawer is a real overlay: a scrim dims the page behind it, so
+     it reads as one layer above and not as a sixth panel beside */
+  #fscrim{ position:absolute; inset:0; z-index:8; background:var(--scrim); display:none; }
+  #fscrim.open{ display:block; animation:fade .2s ease both; }
+  @keyframes fade{ from{ opacity:0; } to{ opacity:1; } }
+  #findings{ position:absolute; z-index:9; top:0; left:0; bottom:0; width:var(--rail-l);
+    max-width:100%; display:none; flex-direction:column; background:var(--paper);
+    border-right:1px solid var(--line); box-shadow:8px 0 28px var(--shadow); }
+  #findings.open{ display:flex; animation:slidein .26s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes slidein{ from{ transform:translateX(-14px); opacity:0; } to{ transform:none; opacity:1; } }
+  #fhead{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    padding:15px 18px 12px; border-bottom:1px solid var(--line); }
+  #fhead h2{ margin:0; font-size:var(--fs-h2); font-weight:600; line-height:1.3; }
+  #fclose{ border:0; background:none; font-size:22px; cursor:pointer; color:var(--muted);
+    line-height:1; flex:0 0 auto; }
+  #flist{ overflow-y:auto; padding:12px 14px 14px; }
+  .fcard{ border:1px solid var(--line); border-radius:var(--r-ctrl); padding:11px 12px;
+    margin-bottom:9px; cursor:pointer; transition:background .16s, border-color .16s; }
+  .fcard:hover{ background:var(--paper-2); }
+  .fcard.on{ border-color:var(--ac); background:var(--paper-2);
+    box-shadow:inset 3px 0 0 var(--ac); }
+  .ftag{ font-size:var(--fs-label); font-weight:600; text-transform:uppercase;
+    letter-spacing:.05em; color:var(--muted); }
+  .fcard h3{ margin:4px 0 5px; font-size:var(--fs-body); font-weight:600; line-height:1.35; }
+  .fstat{ font-size:var(--fs-small); font-weight:500; }
+  .fblurb{ font-size:var(--fs-small); color:var(--muted); line-height:1.5; margin-top:6px; }
+  .fsrc{ font-size:var(--fs-label); color:var(--muted); font-style:italic; margin-top:6px; }
+
+  /* controls that only exist on a phone */
+  #headtoggle, #mside{ display:none; }
+
+  /* A laptop is short before it is narrow. The display moment gives up height
+     first, because the rail's job below it is to be reachable. */
+  @media(min-width:641px) and (max-height:900px){
+    :root{ --fs-display:56px; --fs-h1:22px; }
+    #hero{ padding-top:16px; padding-bottom:14px; }
+    #mast{ min-height:50px; }
+  }
+  @media(min-width:641px) and (max-height:760px){
+    :root{ --fs-display:44px; --fs-h1:19px; }
+  }
+
+  /* ---- narrower desktops --------------------------------------------------- */
+  @media(max-width:1440px){
+    :root{ --rail-l:352px; --rail-r:320px; --fs-display:60px; --fs-h1:24px; }
+  }
+  @media(max-width:1180px){
+    :root{ --rail-l:312px; --rail-r:288px; --fs-display:52px; --fs-h1:21px; }
+    #mast, #hero, #tools, #railfoot{ padding-left:16px; padding-right:16px; }
+    .q__btn{ padding-left:16px; padding-right:16px; }
+    .q__body{ padding-left:47px; padding-right:16px; }
+    #side, #rohead, #legend{ padding-left:14px; padding-right:14px; }
+  }
+
+  /* ---- phone ---------------------------------------------------------------
+     The map is already the whole screen here, so the rails collapse: the left
+     one becomes a title bar that opens, the readout becomes a sheet, and the
+     modes dock to the bottom edge where a thumb reaches them. */
+  @media(max-width:640px){
+    :root{ --fs-display:44px; --fs-h1:18px; }
+    .rail{ position:absolute; }
+    #railL{ width:auto; left:0; right:0; top:0; bottom:auto; border-right:0;
+      border-bottom:1px solid var(--line); max-height:56px; }
+    body.head-open #railL{ max-height:86vh; bottom:auto; }
+    #railL .rail__scroll{ display:none; }
+    body.head-open #railL .rail__scroll{ display:block; }
+    #railfoot{ display:none; }
+    body.head-open #railfoot{ display:block; }
+    #mast{ padding:0 14px; }
+    #mast .wm{ font-size:var(--fs-body); }
+    #headtoggle{ display:inline-flex; align-items:center; gap:5px; margin-left:auto;
+      border:1px solid var(--line); background:var(--paper); color:var(--ink);
+      border-radius:22px; padding:0 15px; font-size:var(--fs-small); font-weight:600;
+      cursor:pointer; min-height:40px; }
+    #headtoggle .chev{ transition:transform .2s; font-size:10px; }
+    body.head-open #headtoggle .chev{ transform:rotate(180deg); }
+    /* the masthead only fits a wordmark and one control at 390px, so the
+       theme button moves into the menu the reader opens */
+    #themebtn{ display:none; }
+    body.head-open #themebtn{ display:inline-flex; align-items:center; margin-left:0;
+      min-height:44px; padding:0 16px; font-size:var(--fs-small); }
+    body.head-open #mast{ flex-wrap:wrap; gap:8px; padding-bottom:10px; padding-top:8px; }
+    body.head-open #mast .wm{ flex:1 1 auto; }
+    /* search results flow inline so they never clip inside the rail */
+    #findres{ position:static; margin-top:7px; max-height:190px; overflow-y:auto; box-shadow:none; }
 
     /* modes: docked to the bottom, full width, horizontal scroll. The last tab
        sits past the right edge, so fade that edge: without it the bar reads as
        three tabs and the user never finds Simulate. */
-    #modebar{ top:auto; bottom:10px; left:8px; right:8px; transform:none; max-width:none;
-      flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; padding:6px 8px;
+    #modebar{ top:auto; bottom:10px; left:8px; right:8px; max-width:none; transform:none;
+      overflow-x:auto; justify-content:flex-start; padding:4px 6px;
       scrollbar-width:none; -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 34px),transparent); }
     #modebar::-webkit-scrollbar{ display:none; }
+    #modeind{ display:none; }
     .mode{ flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:0 14px; }
+    .mode.on{ background:var(--ink); }
 
-    /* three questions: a bottom sheet above the mode bar, collapsed to a handle by default */
-    #rail{ left:8px; right:8px; bottom:78px; transform:none; width:auto; border-radius:14px; max-height:none; }
-    #rail .r-top{ cursor:pointer; min-height:44px; }
-    #rail-chev{ display:inline-block; }
-    #rail .r-body, #rail .r-foot{ display:none; }
-    body.rail-open #rail{ max-height:54vh; overflow-y:auto; }
-    body.rail-open #rail .r-body{ display:flex; }
-    body.rail-open #rail .r-foot{ display:block; }
-    body.mode-extra #r-extra{ display:none; }
-    body.rail-open.mode-extra #r-extra{ display:block; }
-    .r-blurb{ display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden; }
-
-    /* the details pill opens the mode panel as an overlay, clear of the map controls */
-    #findings{ right:8px; left:8px; width:auto; }
-    #mside{ display:inline-flex; align-items:center; position:absolute; z-index:5; left:12px; bottom:130px;
-      min-height:44px; border:1px solid var(--line); background:var(--paper); border-radius:22px; padding:0 16px;
-      font-size:12.5px; font-weight:600; color:var(--ink); cursor:pointer;
-      box-shadow:0 1px 8px var(--shadow); }
-    body.show-side #side{ display:block; position:absolute; z-index:9; left:8px; right:8px;
-      top:56px; bottom:66px; width:auto; max-height:none; }
-    body.rail-open #mside{ display:none; }
+    /* the readout becomes a sheet the reader opens on purpose */
+    #readout{ display:none; }
+    body.show-side #readout{ display:flex; position:absolute; z-index:9; left:8px; right:8px;
+      top:64px; bottom:66px; width:auto; border-left:0; border:1px solid var(--line);
+      border-radius:10px; box-shadow:0 8px 28px var(--shadow); overflow:hidden; }
+    #mside{ display:inline-flex; align-items:center; position:absolute; z-index:5; left:12px;
+      bottom:66px; min-height:44px; border:1px solid var(--line); background:var(--paper);
+      border-radius:22px; padding:0 16px; font-size:var(--fs-small); font-weight:600;
+      color:var(--ink); cursor:pointer; box-shadow:0 1px 8px var(--shadow); }
+    body.show-side #mside, body.head-open #mside{ display:none; }
+    #findings{ width:auto; left:0; right:0; }
+    #banner{ left:8px; right:8px; top:66px; }
 
     /* lift the map credits clear of the details pill; drop the zoom buttons
        (pinch works). At 128px the credit line ran straight through the pill. */
-    .maplibregl-ctrl-bottom-right{ bottom:180px; }
+    .maplibregl-ctrl-bottom-right{ bottom:120px; }
     .maplibregl-ctrl-bottom-right .maplibregl-ctrl-group{ display:none; }
   }
 </style>
@@ -343,44 +514,61 @@
 <body>
 <div id="map" aria-label="Map of the Philippines with grid choke points and data-center sites"></div>
 
-<div id="head" class="panel">
-  <button id="headtoggle" aria-label="Show intro, search, and the studio link" aria-expanded="false">Menu <span class="chev">&#9662;</span></button>
-  <h1>Test how much data-center demand the Philippine grid can carry</h1>
-  <p>Power Dispatch Studio uses the market operator's public files to name transmission
-  equipment already at its limit, place announced demand on the grid, and estimate how
-  modeled spot prices and a sample Meralco household bill change.</p>
-  <div class="scope" id="scope">Archive window loading. Transmission and grid lines
-  follow real routes as mapped in OpenStreetMap. Data-center pins are city-precision.</div>
-  <button id="fopen" aria-expanded="false"><span>Key findings, computed from the archive</span><span>&rarr;</span></button>
-  <div id="findbox">
-    <input id="findq" type="search" autocomplete="off"
-      placeholder="Find your plant or data center" aria-label="Find a power plant or data center on the map">
-    <div id="findres" role="listbox" aria-label="Search results"></div>
-    <div id="findisl" role="group" aria-label="Jump to an island grid">
-      <span>Jump to</span>
-      <button data-isl="luzon">Luzon</button>
-      <button data-isl="visayas">Visayas</button>
-      <button data-isl="mindanao">Mindanao</button>
+<div id="railL" class="rail">
+  <div id="mast">
+    <span class="bar" aria-hidden="true"></span>
+    <span class="wm">Power Dispatch Studio</span>
+    <button id="headtoggle" aria-label="Show the questions, search, and the studio link" aria-expanded="false">Menu <span class="chev">&#9662;</span></button>
+    <button id="themebtn" type="button">Dark theme</button>
+  </div>
+  <div class="rail__scroll">
+    <div id="hero">
+      <p class="d-fig" id="d-fig">&hellip;</p>
+      <h1 class="d-claim" id="d-claim">Announced data centers are measured against the whole system's spare capacity.</h1>
+      <p class="d-sub" id="d-sub">Loading the archive.</p>
+    </div>
+    <div id="qs" role="group" aria-label="The three questions"></div>
+    <div id="qextra" hidden></div>
+    <div id="tools">
+      <p class="tools__h">Go deeper</p>
+      <a id="studiolink" class="golink" href="studio/">Open the dispatch studio &rarr;
+        <span>Edit the fleet, replay recorded days, check the model against the market record.</span></a>
+      <button id="fopen" aria-expanded="false"><span>Key findings, computed from the archive</span><span aria-hidden="true">&rarr;</span></button>
+      <a id="paxlink" class="golink" href="pax-silica.html">Read the Pax Silica page &rarr;
+        <span>One announced campus would draw more power than the Visayas grid, and up to 1.9 times Makati's daily water use.</span></a>
+      <div id="findbox">
+        <input id="findq" type="search" autocomplete="off"
+          placeholder="Find your plant or data center" aria-label="Find a power plant or data center on the map">
+        <div id="findres" role="listbox" aria-label="Search results"></div>
+        <div id="findisl" role="group" aria-label="Jump to an island grid">
+          <span>Jump to</span>
+          <button data-isl="luzon">Luzon</button>
+          <button data-isl="visayas">Visayas</button>
+          <button data-isl="mindanao">Mindanao</button>
+        </div>
+      </div>
+      <div id="scope">Archive window loading. Transmission and grid lines
+      follow real routes as mapped in OpenStreetMap. Data-center pins are city-precision.</div>
     </div>
   </div>
-  <a id="studiolink" href="studio/"><b>Open the dispatch studio &rarr;</b>
-    <span>Edit the fleet, replay recorded days, check the model against the market record.</span></a>
-  <a id="paxlink" href="pax-silica.html"><b>Read the Pax Silica page &rarr;</b>
-    <span>One announced campus would draw more power than the Visayas grid, and up to 1.9 times Makati's daily water use.</span></a>
-  <div id="themerow"><button id="themebtn" type="button">Dark theme</button></div>
+  <div id="railfoot">Statistical indicators from public records (IEMOP, NGCP, Meralco,
+  PCIJ, company filings). Patterns may have legitimate explanations. Forecasts are
+  labeled with their owner. <a href="methodology.html">Methods, sources, and assumptions</a>.</div>
 </div>
 
 <div id="banner" role="alert"></div>
 
-<div id="findings" class="panel" aria-label="Key findings">
+<div id="fscrim"></div>
+<div id="findings" aria-label="Key findings">
   <div id="fhead"><h2>The archive links new demand, grid limits, and market prices</h2>
     <button id="fclose" title="close" aria-label="close">&times;</button></div>
   <div id="flist"></div>
 </div>
 
-<button id="mside" class="panel" aria-expanded="false">Show map details</button>
+<button id="mside" aria-expanded="false">Show map details</button>
 
-<div id="modebar" class="panel" role="tablist">
+<div id="modebar" role="tablist" aria-label="Map mode">
+  <span id="modeind" aria-hidden="true"></span>
   <button class="mode on" data-mode="supply" role="tab" aria-selected="true">Supply</button>
   <button class="mode" data-mode="choke" role="tab" aria-selected="false">Choke points</button>
   <button class="mode" data-mode="price" role="tab" aria-selected="false">Prices</button>
@@ -388,37 +576,14 @@
   <button class="mode" data-mode="simulate" role="tab" aria-selected="false">Simulate</button>
 </div>
 
-<div id="side" class="panel"></div>
-
-<div id="legend" class="panel">
-  <b id="lg-title">Visible map items</b>
-  <div class="keys" id="lg-keys"></div>
-  <div id="lg-note"></div>
-</div>
-
-<div id="rail" class="panel">
-  <div class="r-top">
-    <span class="r-kick" id="r-kick">The three questions</span>
-    <div id="r-dots"><i class="on"></i><i></i><i></i></div>
-    <span id="rail-chev" class="chev" aria-hidden="true">&#9662;</span>
+<div id="readout" class="rail">
+  <div class="rail__scroll"><div id="side"></div></div>
+  <div id="legend">
+    <b id="lg-title">Visible map items</b>
+    <div class="keys" id="lg-keys"></div>
+    <div id="lg-note"></div>
   </div>
-  <div class="r-body">
-    <button class="r-nav" id="r-prev" aria-label="Previous">&#8249;</button>
-    <div class="r-card" id="r-card">
-      <span class="r-tag" id="r-tag">Q1</span>
-      <span class="r-title" id="r-title">Loading results.</span>
-      <span class="r-stat" id="r-stat"></span>
-      <span class="r-blurb" id="r-blurb"></span>
-      <span class="r-src" id="r-src"></span>
-    </div>
-    <button class="r-nav" id="r-next" aria-label="Next">&#8250;</button>
-  </div>
-  <div id="r-extra"></div>
-  <div class="r-foot">Statistical indicators from public records (IEMOP, NGCP, Meralco,
-  PCIJ, company filings). Patterns may have legitimate explanations. Forecasts are
-  labeled with their owner. <a href="methodology.html">Methods, sources, and assumptions</a>.</div>
 </div>
-
 <script>
 window.__diag = { ready:false, mode:"supply", chokepoints:0, dcs:0, league:0,
   priceDays:0, railIndex:0, answers:false, sual:false, layers:0,
@@ -461,9 +626,15 @@ const THEME_KEY = "pds.theme";  // shared with the studio at /studio/
 const isDark = () => document.documentElement.dataset.theme === "dark";
 const CSSV = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 function pal(){
+  // maplibre paints with real hex, never with var(), so every token a layer
+  // uses is resolved here. gas and coal read the fuel tokens: the generator
+  // pins and the merit stack name the same two fuels and must agree.
   const k = ["op","uc","plan","hvdc","ac","sual","op-line","uc-line","plan-line",
-    "gas","coal","ac138","ac230","ac500","pinline","halo","ink","muted","line"];
-  return Object.fromEntries(k.map(n => [n, CSSV("--" + n)]));
+    "ac138","ac230","ac500","pinline","halo","ink","muted","line"];
+  const out = Object.fromEntries(k.map(n => [n, CSSV("--" + n)]));
+  out.gas = CSSV("--fuel-natural-gas");
+  out.coal = CSSV("--fuel-coal");
+  return out;
 }
 let PAL = pal();
 const tileUrls = () => ["a","b"].map(s =>
@@ -483,17 +654,16 @@ const map = new maplibregl.Map({
   attributionControl: { compact: true }
 });
 
-// The four panels cover roughly half the window, so a centred fit puts the
-// archipelago behind them and spends the visible strip on the South China Sea.
-// Fit to the islands with the panels' own widths as padding, so the land lands
-// in the gap the reader can actually see.
+// The two rails dock over the map, so the land has to land in the column
+// between them. Read their real widths off the tokens rather than repeating
+// the numbers here, or a breakpoint change silently re-hides the archipelago.
 const PH_BOUNDS = [[117.0, 4.6], [126.7, 19.6]];
 function frameIslands(animate){
   const w = map.getContainer().clientWidth;
-  const pad = w >= 1024
-    ? { top: 30, bottom: 300, left: 424, right: 364 }   // head, rail, side
-    : (w >= 640 ? { top: 30, bottom: 190, left: 30, right: 30 }
-                : { top: 70, bottom: 150, left: 14, right: 14 });
+  const railPx = n => parseInt(CSSV(n), 10) || 0;
+  const pad = w >= 641
+    ? { top: 64, bottom: 40, left: railPx("--rail-l") + 24, right: railPx("--rail-r") + 24 }
+    : { top: 84, bottom: 132, left: 14, right: 14 };
   map.fitBounds(PH_BOUNDS, { padding: pad, duration: animate ? 600 : 0, maxZoom: 7.2 });
 }
 map.addControl(new maplibregl.NavigationControl({ showCompass:false }), "bottom-right");
@@ -742,22 +912,72 @@ function addLayers(){
   }
 }
 
-/* ---------- rail ---------- */
+/* ---------- the three questions ----------
+   A carousel showed one question and hid two behind a click. All three are
+   listed now, the open one carries its figure and its source, and opening one
+   still moves the map to that question's mode, which is what the carousel's
+   arrows already did. */
 let RAIL = [], RAIL_I = 0;
-function railRender(){
-  const c = RAIL[RAIL_I]; if (!c) return;
-  $("r-tag").textContent = c.tag; $("r-title").textContent = c.title;
-  $("r-stat").textContent = c.stat || ""; $("r-blurb").textContent = c.blurb || "";
-  $("r-src").textContent = c.src || "";
-  document.querySelectorAll("#r-dots i").forEach((el, i) =>
-    el.classList.toggle("on", i === RAIL_I));
-  $("r-prev").disabled = RAIL_I === 0; $("r-next").disabled = RAIL_I === RAIL.length - 1;
-  window.__diag.railIndex = RAIL_I;
-  const modes = ["supply","choke","price"];
-  setMode(modes[RAIL_I], false);
+const RAIL_MODES = ["supply","choke","price"];
+function railBuild(){
+  $("qs").innerHTML = RAIL.map((c, i) => `
+    <div class="q${i === RAIL_I ? " on" : ""}" data-q="${i}">
+      <button class="q__btn" type="button" aria-expanded="${i === RAIL_I}">
+        <span class="q__n">Q${i + 1}</span>
+        <span class="q__t">${esc(c.title)}</span>
+      </button>
+      <div class="q__body">
+        <span class="q__stat">${esc(c.stat || "")}</span>
+        <span class="q__blurb">${esc(c.blurb || "")}</span>
+        <span class="q__src">${esc(c.src || "")}</span>
+      </div>
+    </div>`).join("");
+  document.querySelectorAll("#qs .q__btn").forEach((b, i) => {
+    b.onclick = () => { if (i === RAIL_I) return; clearActive(); RAIL_I = i; railRender(); };
+  });
 }
-$("r-prev").onclick = () => { if (RAIL_I > 0){ clearActive(); RAIL_I--; railRender(); } };
-$("r-next").onclick = () => { if (RAIL_I < RAIL.length - 1){ clearActive(); RAIL_I++; railRender(); } };
+/* ---------- the one display moment ----------
+   The largest thing on the old page was an 18px heading inside a box. This is
+   a figure, because a figure is short enough to set at 76px in a 400px rail
+   and because every number on this page is already mono and tabular.
+   Both operands are read from the archive at render time, so the figure moves
+   when the data moves and no prose has to be re-synced by hand. */
+function heroRender(){
+  const A = D["market_anchors.json"] || {};
+  const an = D["demand_anchors.json"] || [];
+  const margin = A.wesm_may2026_margin_mw;
+  const dict = an.find(a => a.owner === "DICT" && a.kind === "forecast");
+  if (!margin || !dict || !dict.mw){
+    // never leave the placeholder standing: an ellipsis that never resolves
+    // reads as a broken page, and this is the largest thing on it
+    $("d-fig").textContent = "n/a";
+    $("d-claim").textContent =
+      "The supply-margin comparison is not available in this data build.";
+    $("d-sub").textContent =
+      "The map, the modes, and the three questions below still work.";
+    return;
+  }
+  const pct = Math.round(100 * dict.mw / margin);
+  $("d-fig").textContent = pct + "%";
+  $("d-claim").textContent =
+    "One 2028 data-center forecast is " + pct +
+    "% of the whole system's spare capacity.";
+  $("d-sub").innerHTML =
+    `<b>${fmt(dict.mw)} MW</b> forecast by DICT for 2028, against the ` +
+    `<b>${fmt(margin)} MW</b> system supply margin IEMOP reported for May 2026.`;
+}
+
+function railRender(){
+  if (!RAIL[RAIL_I]) return;
+  document.querySelectorAll("#qs .q").forEach((el, i) => {
+    const on = i === RAIL_I;
+    el.classList.toggle("on", on);
+    const b = el.querySelector(".q__btn");
+    if (b) b.setAttribute("aria-expanded", on ? "true" : "false");
+  });
+  window.__diag.railIndex = RAIL_I;
+  setMode(RAIL_MODES[RAIL_I], false);
+}
 
 /* ---------- side panel per mode ---------- */
 let MODE = "supply", SUAL_ON = false, GRID138_ON = false;
@@ -792,7 +1012,14 @@ function sideSupply(){
     <div class="kv"><span>Grid-days with load curtailed in 5-minute real-time dispatch schedules</span><span>${fmt(cd)}</span></div>
     <div class="kv"><span>Energy curtailed in those schedules</span><span>${fmt(cm)} MWh</span></div></div>`;
   }
-  return `<h2>Announced demand is compared with the ${fmt(margin)} MW May 2026 supply margin</h2>
+  const cdays = R && R.totals
+    ? ["luzon","visayas","mindanao"].reduce((s,g)=>s+(R.totals[g]?R.totals[g].curtailment_days:0),0)
+    : null;
+  const head = cdays
+    ? `The margin is ${fmt(margin)} MW, and the operator already cut load on ` +
+      `${fmt(cdays)} grid days`
+    : `One ${fmt(margin)} MW margin carries every announced data center`;
+  return `<h2>${head}</h2>
   <p class="sub">Announced and forecast data-center megawatts against the whole
   system's May 2026 supply margin. A data center is close to flat 24/7 load, so it
   consumes margin around the clock, not just at the evening peak.</p>
@@ -1110,6 +1337,11 @@ function setMode(m, syncRail = true){
   S.innerHTML = m === "supply" ? sideSupply() : m === "choke" ? sideChoke()
     : m === "simulate" ? sideSimulate()
     : m === "drivers" ? sideDrivers() : sideprice();
+  // the rows stagger in, because the content under this heading just changed.
+  // Removing the class first restarts the animation on a repeated switch.
+  S.classList.remove("swap");
+  void S.offsetWidth;
+  S.classList.add("swap");
   legendRender();
   if (m === "choke"){
     const btn = $("sualbtn");
@@ -1159,23 +1391,38 @@ function setMode(m, syncRail = true){
     };
   }
   if (syncRail){
-    const idx = ["supply","choke","price"].indexOf(m);
+    const idx = RAIL_MODES.indexOf(m);
     if (idx >= 0 && idx !== RAIL_I){ RAIL_I = idx; railRender(); }
   }
-  const inRail = ["supply","choke","price"].includes(m);
-  document.body.classList.toggle("mode-extra", !inRail);
-  $("r-kick").textContent = inRail ? "The three questions"
-    : (m === "drivers" ? "Drivers" : "Simulate");
-  if (!inRail){
-    $("r-extra").innerHTML = m === "drivers"
-      ? `<span class="x-tag">Beyond the three questions</span>
-         <span class="x-title">Daily price, curtailment, outage, link, and alert records</span>
-         <span class="x-blurb">Every column is observed archive data: prices, curtailment, advisories, binding constraints. Open Details for the day-by-day feed.</span>`
-      : `<span class="x-tag">Beyond the three questions</span>
-         <span class="x-title">Change demand or supply and recalculate the clearing price</span>
-         <span class="x-blurb">A simplified lowest-cost-first model (merit order). Move the sliders in Show map details and the browser recalculates the price.</span>`;
+  // Drivers and Simulate answer no one of the three questions, so all three
+  // collapse and a short block says what the reader is now looking at.
+  const inRail = RAIL_MODES.includes(m);
+  if (!inRail) document.querySelectorAll("#qs .q").forEach(el => {
+    el.classList.remove("on");
+    const b = el.querySelector(".q__btn");
+    if (b) b.setAttribute("aria-expanded", "false");
+  });
+  const qx = $("qextra");
+  if (qx){
+    qx.hidden = inRail;
+    if (!inRail) qx.innerHTML = m === "drivers"
+      ? `<b>Daily price, curtailment, outage, link, and alert records</b>
+         <span>Every column is observed archive data. Open the readout for the day-by-day feed.</span>`
+      : `<b>Change demand or supply and recalculate the clearing price</b>
+         <span>A simplified lowest-cost-first model (merit order). Move the sliders in the readout.</span>`;
   }
+  moveModeIndicator();
   syncURL();
+}
+
+// The indicator slides to the segment the reader picked. That slide is the
+// only motion on this page that no press caused, and it reports one thing:
+// the mode changed.
+function moveModeIndicator(){
+  const ind = $("modeind"), on = document.querySelector(".mode.on");
+  if (!ind || !on) return;
+  ind.style.left = on.offsetLeft + "px";
+  ind.style.width = on.offsetWidth + "px";
 }
 function clearActive(){
   if (ACTIVE != null){
@@ -1210,17 +1457,14 @@ function sualToggle(btn){
 }
 
 /* Merit-order dispatch recalculated in the browser. */
-// Fuel colors for the merit-order stack. The dark set lifts the five that a
-// dark panel would swallow (firm, import, shortage, coal, oil); the rest are
-// already light enough to keep their hue across both themes.
-const FUELCOL_LIGHT = { solar:"#e0b93b", wind:"#7fb2d6", hydro:"#3a6b8a",
-  geothermal:"#8a6bb0", natural_gas:"#4e79a7", biomass:"#5a9e6f", coal:"#6b6b6b",
-  oil:"#b3261e", import:"#1a7f48", firm:"#125c34", storage:"#c77dff",
-  shortage:"#5c0e0e" };
-const FUELCOL_DARK = { ...FUELCOL_LIGHT, hydro:"#6fa3c4", geothermal:"#b39ddb",
-  natural_gas:"#7aa5cc", coal:"#a1a1a1", oil:"#f87171", import:"#4ade80",
-  firm:"#2f9e5f", shortage:"#c0392b" };
-let FUELCOL = DARKQ.matches ? FUELCOL_DARK : FUELCOL_LIGHT;
+// Fuel colours come from the tokens, so the theme flip repaints the stack with
+// no JavaScript and the map and the studio cannot drift apart. The page used to
+// hold its own two hex tables here, and they disagreed with the studio's.
+const FUELCOL = new Proxy({}, {
+  get: (_, f) => typeof f === "string"
+    ? `var(--fuel-${f.replace(/_/g, "-")}, var(--muted))` : undefined,
+  has: () => true,
+});
 const HVDC_IMPORT_LIMIT = { luzon:250, visayas:250, mindanao:450 };
 let SIM = { grid:"luzon", addDC:0, addFirm:0, imp:0, stor:0, trip:"" };
 
@@ -1643,6 +1887,7 @@ function selectFinding(f){
 }
 function openDrawer(o){
   $("findings").classList.toggle("open", o);
+  $("fscrim").classList.toggle("open", o);
   window.__diag.drawerOpen = o;
   const fo = $("fopen");
   if (fo) fo.setAttribute("aria-expanded", o ? "true" : "false");
@@ -1650,6 +1895,10 @@ function openDrawer(o){
 }
 $("fopen").onclick = () => openDrawer(true);
 $("fclose").onclick = () => { openDrawer(false); };
+$("fscrim").onclick = () => { openDrawer(false); };
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && $("findings").classList.contains("open")) openDrawer(false);
+});
 $("mside").onclick = () => {
   const open = document.body.classList.toggle("show-side");
   $("mside").setAttribute("aria-expanded", open ? "true" : "false");
@@ -1658,8 +1907,6 @@ $("headtoggle").onclick = () => {
   const open = document.body.classList.toggle("head-open");
   $("headtoggle").setAttribute("aria-expanded", open ? "true" : "false");
 };
-document.querySelector("#rail .r-top").addEventListener("click", () =>
-  document.body.classList.toggle("rail-open"));
 
 /* ---------- URL state (deep-linkable mode + finding) ---------- */
 let URL_READY = false;
@@ -1812,6 +2059,8 @@ loadAll().then(() => {
     { tag:"Q2", title:"Where would they have to sit?", stat:"Data unavailable" },
     { tag:"Q3", title:"What happens to prices?", stat:"Data unavailable" },
   ];
+  railBuild();
+  heroRender();
   const draw = () => {
     addLayers();
     wireFind();
@@ -1823,6 +2072,11 @@ loadAll().then(() => {
     window.__diag.dispatch = !!(D["dispatch.json"] && D["dispatch.json"].available);
     railRender(); setMode("supply", false);
     frameIslands(false);
+    // the indicator has no width until the segments are laid out, and a webfont
+    // that lands late changes those widths, so measure once more when it does
+    moveModeIndicator();
+    if (document.fonts && document.fonts.ready)
+      document.fonts.ready.then(moveModeIndicator);
     URL_READY = true; applyURL();
     window.__diag.ready = true;
   };
@@ -1832,6 +2086,7 @@ loadAll().then(() => {
   map.on("zoomstart", e => { if (e.originalEvent) userMoved = true; });
   let rt = 0;
   window.addEventListener("resize", () => {
+    moveModeIndicator();
     if (userMoved) return;
     clearTimeout(rt);
     rt = setTimeout(() => frameIslands(false), 180);
@@ -1843,7 +2098,6 @@ loadAll().then(() => {
   // stays light. Called by the toggle and by a system flip.
   function retheme(){
     PAL = pal();
-    FUELCOL = isDark() ? FUELCOL_DARK : FUELCOL_LIGHT;
     const src = map.getSource("carto");
     if (src && src.setTiles) src.setTiles(tileUrls());
     const repaint = [
@@ -1871,7 +2125,9 @@ loadAll().then(() => {
     ];
     for (const [id, prop, val] of repaint)
       if (map.getLayer(id)) map.setPaintProperty(id, prop, val);
-    railRender();
+    // Not railRender(): it re-opens the question for RAIL_I, and RAIL_I still
+    // points at Supply while the reader sits in Drivers or Simulate, so a theme
+    // flip threw them back to Supply and emptied the panel they were reading.
     setMode(MODE, false);
   }
 

@@ -148,7 +148,7 @@ export function EmissionsView({
       </Panel>
 
       <Panel
-        title="Each emission factor is shown with its source"
+        title="Every emission factor names its source"
         subtitle={em.data.unit}
         right={ngef ? <Source href={ngef.src} label="DOE grid factor" /> : undefined}
       >

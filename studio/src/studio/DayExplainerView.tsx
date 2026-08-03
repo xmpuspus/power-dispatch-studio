@@ -97,7 +97,10 @@ export function DayExplainerView({
   if (!day)
     return (
       <div className="view">
-        <Panel title="Explain a day" subtitle="Decompose any market day's evening peak.">
+        <Panel
+          title="Every hour of a recorded day has its own price setter"
+          subtitle="Decompose any market day's evening peak."
+        >
           <p className="note">No full-coverage market day in the archive window yet.</p>
         </Panel>
       </div>
