@@ -466,10 +466,24 @@
     :root{ --fs-display:44px; --fs-h1:18px; }
     .rail{ position:absolute; }
     #railL{ width:auto; left:0; right:0; top:0; bottom:auto; border-right:0;
-      border-bottom:1px solid var(--line); max-height:56px; }
+      border-bottom:1px solid var(--line); max-height:118px; }
     body.head-open #railL{ max-height:86vh; bottom:auto; }
-    #railL .rail__scroll{ display:none; }
-    body.head-open #railL .rail__scroll{ display:block; }
+    /* The finding still has to land on a phone. The old page carried its
+       question in the collapsed title bar; a wordmark alone says less than
+       that did. So the hero stays, folded onto one line, and everything else
+       waits behind Menu. */
+    #railL .rail__scroll{ display:block; }
+    #qs, #qextra, #tools{ display:none; }
+    body.head-open #qs, body.head-open #qextra, body.head-open #tools{ display:block; }
+    #hero{ display:flex; align-items:baseline; gap:11px; padding:9px 14px 11px; }
+    .d-fig{ flex:0 0 auto; font-size:32px; line-height:1; }
+    .d-claim{ margin:0; font-size:13px; line-height:1.3; font-weight:600; }
+    .d-sub, #studiolink{ display:none; }
+    body.head-open #hero{ display:block; padding:14px; }
+    body.head-open .d-fig{ font-size:var(--fs-display); line-height:.92; }
+    body.head-open .d-claim{ font-size:var(--fs-h1); line-height:1.16; margin-top:9px; }
+    body.head-open .d-sub{ display:block; }
+    body.head-open #studiolink{ display:inline-flex; }
     #railfoot{ display:none; }
     body.head-open #railfoot{ display:block; }
     #mast{ padding:0 14px; }
@@ -504,7 +518,7 @@
     /* the readout becomes a sheet the reader opens on purpose */
     #readout{ display:none; }
     body.show-side #readout{ display:flex; position:absolute; z-index:9; left:8px; right:8px;
-      top:64px; bottom:66px; width:auto; border-left:0; border:1px solid var(--line);
+      top:126px; bottom:66px; width:auto; border-left:0; border:1px solid var(--line);
       border-radius:10px; box-shadow:0 8px 28px var(--shadow); overflow:hidden; }
     #mside{ display:inline-flex; align-items:center; position:absolute; z-index:5; left:12px;
       bottom:66px; min-height:44px; border:1px solid var(--line); background:var(--paper);
@@ -512,7 +526,7 @@
       color:var(--ink); cursor:pointer; box-shadow:0 1px 8px var(--shadow); }
     body.show-side #mside, body.head-open #mside{ display:none; }
     #findings{ width:auto; left:0; right:0; }
-    #banner{ left:8px; right:8px; top:66px; }
+    #banner{ left:8px; right:8px; top:126px; }
 
     /* lift the map credits clear of the details pill; drop the zoom buttons
        (pinch works). At 128px the credit line ran straight through the pill. */
@@ -672,7 +686,7 @@ function frameIslands(animate){
   const railPx = n => parseInt(CSSV(n), 10) || 0;
   const pad = w >= 641
     ? { top: 64, bottom: 40, left: railPx("--rail-l") + 24, right: railPx("--rail-r") + 24 }
-    : { top: 84, bottom: 132, left: 14, right: 14 };
+    : { top: 132, bottom: 132, left: 14, right: 14 };
   map.fitBounds(PH_BOUNDS, { padding: pad, duration: animate ? 600 : 0, maxZoom: 7.2 });
 }
 map.addControl(new maplibregl.NavigationControl({ showCompass:false }), "bottom-right");
