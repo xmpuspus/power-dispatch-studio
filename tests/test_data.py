@@ -1920,10 +1920,14 @@ check(
 # the README quotes the offer-mode Visayas settlement bias at -P0.60
 # (also registered in verify_claims as offer_vis_bias so --write keeps README synced)
 # moved -0.60 -> -0.64 when the interval-ending hour binning was corrected
-# (every hourly observed cell shifted five minutes onto the operator's clock)
+# (every hourly observed cell shifted five minutes onto the operator's clock),
+# then -0.64 -> -0.80 when the 2026-08-03 archive added days to the rolling
+# window. The 08-03 archive commit landed without its bake because this pin
+# stopped it, which is the pin working: a measured value moved and a person
+# had to agree the move came from the window, not from a pipeline change.
 check(
     "README's quoted Visayas offer-mode settlement bias matches the data build",
-    abs(prof["offer_backcast"]["per_grid"]["visayas"]["bias_php_kwh"] - (-0.64))
+    abs(prof["offer_backcast"]["per_grid"]["visayas"]["bias_php_kwh"] - (-0.80))
     <= 0.01,
 )
 
