@@ -23,7 +23,7 @@ simplified dispatch calculation. The project formerly used the name gridbill-ph.
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![PyPI](https://img.shields.io/pypi/v/power-dispatch-studio?color=blue)](https://pypi.org/project/power-dispatch-studio/)
 
-[<img width="820" alt="The map through its five modes. The head panel asks whether the Philippine grid can carry the announced data-center demand. Supply compares the May 2026 system margin with the announced megawatts. Choke points lists the named 230 kV equipment at a binding limit. Prices shows the three island grids separating after the market reopened. Daily market record shows the archive by date, and Simulate recalculates the lowest-cost-first price as data-center demand increases." src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
+[<img width="820" alt="The map through its five modes. A question rail on the left opens on the figure 41 percent, with the three questions under it. That is the share of the May 2026 supply margin one 2028 data-center forecast would take. The readout on the right changes with the mode. Supply compares that margin with announced megawatts, and Choke points names the 230 kV equipment at a limit. Prices separates the three grids, Daily market record shows the archive by date, and Simulate recalculates the price." src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
 
 The map has five views. In the final view, added data-center demand changes the
 lowest-cost-first dispatch (merit order) from coal at P6.00 to oil at P12.00 in
@@ -703,7 +703,7 @@ shorter recordings show these tasks.
 [studio/README.md](studio/README.md) carries one recorded clip per analysis view,
 14 in all.
 
-**This page downloads 18.1 MB of media across 15 files.** The earlier version
+**This page downloads 15.7 MB of media across 15 files.** The earlier version
 downloaded 87.2 MB across 22 files. Browser tests show that GitHub downloads
 media inside closed detail blocks. Longer recordings are links, and the 39 views
 use one contact sheet plus 39 direct links.
