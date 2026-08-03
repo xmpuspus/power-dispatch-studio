@@ -53,7 +53,33 @@ MAP_PAIRS = [
     ("--ink", "--paper", 4.5, "map body text on a panel"),
     ("--muted", "--paper", 4.5, "map secondary text on a panel"),
     ("--muted", "--bg", 4.5, "map secondary text on the page background"),
-    ("--line", "--paper", 1.3, "map panel edge"),
+    # the panel hairline separates a panel from whatever the map draws behind
+    # it, which is not a token pair, so no floor here would mean anything
+]
+
+# The methods page and the Pax Silica page carry the same theme key, so they
+# get the same floor. Pax Silica keeps every figure on a light plate, so its
+# plate tokens are checked against the plate and not against the page.
+METHODOLOGY_PAIRS = [
+    ("--ink", "--bg", 4.5, "heading on the page background"),
+    ("--ink", "--card", 4.5, "heading on a card"),
+    ("--muted", "--card", 4.5, "secondary text on a card"),
+    ("--muted", "--bg", 4.5, "secondary text on the page background"),
+    ("--link", "--bg", 4.5, "link on the page background"),
+    ("--link", "--card", 4.5, "link on a card"),
+    ("--ink", "--code-bg", 4.5, "inline code"),
+]
+PAX_PAIRS = [
+    ("--ink", "--bg", 4.5, "heading on the page background"),
+    ("--body", "--bg", 4.5, "body text on the page background"),
+    ("--muted", "--bg", 4.5, "secondary text on the page background"),
+]
+PAX_PLATE_PAIRS = [
+    ("--plateink", "--plate", 4.5, "figure title on its light plate"),
+    ("--platetext", "--plate", 4.5, "figure body text on its light plate"),
+    ("--platemute", "--plate", 4.5, "figure caption on its light plate"),
+    ("--blue", "--plate", 4.5, "figure link on its light plate"),
+    ("--red", "--plate", 4.5, "the figure accent mark on its light plate"),
 ]
 
 fails = []
@@ -85,8 +111,12 @@ def ratio(fg, bg):
 
 
 def block_vars(text, start_pat):
-    """Pull `--name: #hex;` pairs out of the first rule matching start_pat."""
-    m = re.search(start_pat + r"\s*\{(.*?)\n\}", text, re.S)
+    """Pull `--name: #hex;` pairs out of the first rule matching start_pat.
+
+    Stops at the first closing brace, so it reads a rule written on one line as
+    happily as one closing in the first column.
+    """
+    m = re.search(start_pat + r"\s*\{([^}]*)\}", text, re.S)
     if not m:
         return {}
     return {
@@ -125,6 +155,24 @@ check(
     "map reads the studio's pds.theme key",
     "pds.theme" in html and "data-theme" in html,
 )
+
+# every public page follows the same key, so a pin made on one holds on all
+for fname, light_pairs, dark_extra in [
+    ("methodology.html", METHODOLOGY_PAIRS, None),
+    ("pax-silica.html", PAX_PAIRS, PAX_PLATE_PAIRS),
+]:
+    page = open(os.path.join(ROOT, "web", fname)).read()
+    label = fname.replace(".html", "")
+    check(f"{label} reads the pds.theme key", "pds.theme" in page)
+    lt = block_vars(page, r":root")
+    dk = dict(lt)
+    dk.update(block_vars(page, r":root\[data-theme='dark'\]"))
+    check(f"{label} declares a dark theme", dk != lt)
+    run(f"{label} light", lt, light_pairs)
+    run(f"{label} dark", dk, light_pairs)
+    if dark_extra:
+        # the plate keeps its light values in both themes, so one run covers both
+        run(f"{label} plate", lt, dark_extra)
 if map_dark:
     merged = dict(map_light)
     merged.update(map_dark)

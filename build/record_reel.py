@@ -11,7 +11,24 @@ Needs the COMBINED single-origin serve (map at /, studio at /studio/) so the
     (cd .vercel_out && python3 serve.py 5200)
     python3 build/record_reel.py
 
-Outputs /tmp/reel/reel.webm; convert with the ffmpeg recipe in the README.
+Outputs /tmp/reel/reel.webm. The recipe used to live in the README and was lost
+in the 2026-07-31 rebuild, which meant the next regeneration re-improvised it
+and the reel changed size and quality with no record of why. It lives here now.
+The two commands below give 3.3 MB of mp4 and 11.8 MB of gif from a 70-second
+1440x900 capture:
+
+    ffmpeg -y -i /tmp/reel/reel.webm -c:v libx264 -pix_fmt yuv420p -crf 26 \
+      -preset slow -movflags +faststart docs/reel.mp4
+
+    ffmpeg -y -i /tmp/reel/reel.webm \
+      -vf "fps=5,scale=900:-1:flags=lanczos,palettegen=max_colors=192:stats_mode=diff" \
+      /tmp/reel/pal.png
+    ffmpeg -y -i /tmp/reel/reel.webm -i /tmp/reel/pal.png \
+      -lavfi "fps=5,scale=900:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" \
+      docs/reel.gif
+
+Delete any older webm in /tmp/reel first and check the mtime before converting.
+A stale webm converts without complaint and ships a demo of the previous build.
 """
 
 import asyncio
