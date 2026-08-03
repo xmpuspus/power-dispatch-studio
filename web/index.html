@@ -432,7 +432,7 @@ function pal(){
     "gas","coal","ac138","ac230","ac500","pinline","halo","ink","muted","line"];
   return Object.fromEntries(k.map(n => [n, CSSV("--" + n)]));
 }
-let P = pal();
+let PAL = pal();
 const tileUrls = () => ["a","b"].map(s =>
   `https://${s}.basemaps.cartocdn.com/${DARKQ.matches ? "dark_all" : "light_all"}/{z}/{x}/{y}@2x.png`);
 
@@ -478,27 +478,27 @@ function addLayers(){
     // real routed geometry, under the corridor arcs; visible in choke mode
     map.addLayer({ id:"grid-138", type:"line", source:"grid",
       filter:["==",["get","kind"],"ac138"], layout:{ visibility:"none" },
-      paint:{ "line-color":P.ac138, "line-width":.8, "line-opacity":.7 }});
+      paint:{ "line-color":PAL.ac138, "line-width":.8, "line-opacity":.7 }});
     map.addLayer({ id:"grid-230", type:"line", source:"grid",
       filter:["==",["get","kind"],"ac230"], layout:{ visibility:"none" },
-      paint:{ "line-color":P.ac230, "line-width":1.2, "line-opacity":.8 }});
+      paint:{ "line-color":PAL.ac230, "line-width":1.2, "line-opacity":.8 }});
     map.addLayer({ id:"grid-500", type:"line", source:"grid",
       filter:["==",["get","kind"],"ac500"], layout:{ visibility:"none" },
-      paint:{ "line-color":P.ac500, "line-width":2, "line-opacity":.9 }});
+      paint:{ "line-color":PAL.ac500, "line-width":2, "line-opacity":.9 }});
     map.addLayer({ id:"grid-cable", type:"line", source:"grid",
       filter:["==",["get","kind"],"cable"], layout:{ visibility:"none" },
       paint:{ "line-color":"#7a5c99", "line-width":1.6,
               "line-dasharray":[1,1.6], "line-opacity":.85 }});
     map.addLayer({ id:"grid-bound", type:"line", source:"grid",
       filter:["has","binding"], layout:{ visibility:"none" },
-      paint:{ "line-color":P.sual, "line-width":2.6, "line-opacity":.9 }});
+      paint:{ "line-color":PAL.sual, "line-width":2.6, "line-opacity":.9 }});
     map.addLayer({ id:"grid-sub", type:"circle", source:"gridsub",
       layout:{ visibility:"none" },
       paint:{ "circle-radius": ["case", ["has","binding"], 5,
                 ["to-boolean", ["get","hv"]], 3.4, 1.9],
-        "circle-color": ["case", ["has","binding"], P.sual, P.ac500],
+        "circle-color": ["case", ["has","binding"], PAL.sual, PAL.ac500],
         "circle-opacity": .85, "circle-stroke-width": .8,
-        "circle-stroke-color": P.halo }});
+        "circle-stroke-color": PAL.halo }});
     n++;
   }
   if (D["chokepoints.geojson"]){
@@ -506,7 +506,7 @@ function addLayers(){
     map.addLayer({ id:"choke-line", type:"line", source:"choke",
       layout:{ "line-cap":"round" },
       paint:{
-        "line-color": ["match", ["get","kind"], "hvdc", P.hvdc, P.ac],
+        "line-color": ["match", ["get","kind"], "hvdc", PAL.hvdc, PAL.ac],
         "line-width": ["case", ["==", ["get","kind"], "hvdc"], 3.4, 2.4],
         "line-dasharray": [1.6, 1.4],
         "line-opacity": .9
@@ -520,19 +520,19 @@ function addLayers(){
         "circle-radius": ["case", ["to-boolean", ["get","mw"]],
           ["interpolate", ["linear"], ["get","mw"], 3, 5, 50, 11, 300, 20], 4.5],
         "circle-color": ["match", ["get","status"],
-          "operational", P.op, "under_construction", P.uc, P.plan],
+          "operational", PAL.op, "under_construction", PAL.uc, PAL.plan],
         "circle-opacity": ["case", ["to-boolean", ["get","mw"]], .82, .18],
         "circle-stroke-width": 1.4,
         "circle-stroke-color": ["match", ["get","status"],
-          "operational", P["op-line"], "under_construction", P["uc-line"], P["plan-line"]]
+          "operational", PAL["op-line"], "under_construction", PAL["uc-line"], PAL["plan-line"]]
       }});
     n++;
   }
   if (D["sual.geojson"]){
     map.addSource("sual", { type:"geojson", data: D["sual.geojson"] });
     map.addLayer({ id:"sual-pt", type:"circle", source:"sual",
-      paint:{ "circle-radius": 8, "circle-color":P.halo,
-        "circle-stroke-width": 3, "circle-stroke-color": P.sual }});
+      paint:{ "circle-radius": 8, "circle-color":PAL.halo,
+        "circle-stroke-width": 3, "circle-stroke-color": PAL.sual }});
     n++;
   }
   const NO = D["nodal_obs.json"];
@@ -553,9 +553,9 @@ function addLayers(){
         "circle-radius": ["interpolate", ["linear"], ["abs", ["get","dev"]],
           0, 3, 0.8, 8],
         "circle-color": ["interpolate", ["linear"], ["get","dev"],
-          -0.8, P.ac, 0, P.plan, 0.8, P.sual],
+          -0.8, PAL.ac, 0, PAL.plan, 0.8, PAL.sual],
         "circle-opacity": .9,
-        "circle-stroke-color": P.halo, "circle-stroke-width": 1 }});
+        "circle-stroke-color": PAL.halo, "circle-stroke-width": 1 }});
     n++;
   }
   if (D["generators.geojson"]){
@@ -566,9 +566,9 @@ function addLayers(){
         "circle-radius": ["interpolate", ["linear"], ["get","capacity_mw"],
           200, 6, 1340, 15],
         "circle-color": ["match", ["get","fuel"],
-          "natural_gas", P.gas, "coal", P.coal, P.plan],
+          "natural_gas", PAL.gas, "coal", PAL.coal, PAL.plan],
         "circle-opacity": .82,
-        "circle-stroke-width": 1.6, "circle-stroke-color": P.pinline }});
+        "circle-stroke-width": 1.6, "circle-stroke-color": PAL.pinline }});
     n++;
   }
   window.__diag.layers = n;
@@ -738,11 +738,11 @@ function sideSupply(){
   let bars = "";
   const items = an.filter(a => a.kind !== "contested");
   const maxmw = Math.max(...items.map(a => a.mw || a.mw_high || 0), margin || 0);
-  const color = { forecast:P.plan, commitment:P.uc, pipeline:P.ac };
-  bars += barRow("System supply margin, May 2026 (IEMOP)", margin, maxmw, P.op);
+  const color = { forecast:PAL.plan, commitment:PAL.uc, pipeline:PAL.ac };
+  bars += barRow("System supply margin, May 2026 (IEMOP)", margin, maxmw, PAL.op);
   for (const a of items){
     bars += barRow(a.label + " [" + a.kind + "]", a.mw || a.mw_high, maxmw,
-                   color[a.kind] || P.plan, a.mw_low);
+                   color[a.kind] || PAL.plan, a.mw_low);
   }
   const contested = an.find(a => a.kind === "contested");
   const R = D["reliability.json"];
@@ -1002,7 +1002,7 @@ function sideDrivers(){
 }
 function sparkSVG(P){
   const W = 300, H = 90, pad = 6;
-  const series = [["luzon",P.ac],["visayas",P.hvdc],["mindanao",P.op]];
+  const series = [["luzon",PAL.ac],["visayas",PAL.hvdc],["mindanao",PAL.op]];
   const all = series.flatMap(([k]) => (P.series[k] || []).filter(v => v != null));
   if (!all.length) return "";
   const mn = Math.min(...all), mx = Math.max(...all);
@@ -1025,35 +1025,35 @@ function sparkSVG(P){
 
 const LEGENDS = {
   supply: { title:"Data-center sites (public record)", keys: [
-    ["sw",P.op,"Operational (public MW shown by size)"],
-    ["sw",P.uc,"Under construction"],
-    ["sw",P.plan,"Planned or announced"],
-    ["sw",P.halo+";border:2px solid "+P.sual,"Sual coal plant (2 x 647 MW)"]],
+    ["sw",PAL.op,"Operational (public MW shown by size)"],
+    ["sw",PAL.uc,"Under construction"],
+    ["sw",PAL.plan,"Planned or announced"],
+    ["sw",PAL.halo+";border:2px solid "+PAL.sual,"Sual coal plant (2 x 647 MW)"]],
     note:"Hollow dots have no public MW figure. Pins are city-precision. Not a complete inventory: Cushman counts 24 operational facilities; DataCenterMap lists 44." },
   choke: { title:"Grid choke points", keys: [
-    ["ln",P.hvdc,"High-voltage direct-current inter-island link (real route)"],
-    ["ln",P.ac,"AC transmission line named congested in primary sources"],
-    ["ln",P.sual,"Line at its limit in the real-time dispatch record"],
-    ["ln",P.ac500,"500 kV backbone"],
-    ["ln",P.ac230,"230 kV (thin grey = 138 kV)"]],
+    ["ln",PAL.hvdc,"High-voltage direct-current inter-island link (real route)"],
+    ["ln",PAL.ac,"AC transmission line named congested in primary sources"],
+    ["ln",PAL.sual,"Line at its limit in the real-time dispatch record"],
+    ["ln",PAL.ac500,"500 kV backbone"],
+    ["ln",PAL.ac230,"230 kV (thin grey = 138 kV)"]],
     note:"Transmission lines follow real routes mapped in OpenStreetMap (community data, ODbL), not NGCP documents. Red marks equipment that IEMOP recorded at its limit; hover for the public record." },
   price: { title:"Prices and the links", keys: [
-    ["ln",P.ac138,"The transmission network (faint) that the nodes sit on"],
-    ["ln",P.hvdc,"High-voltage direct-current links: regional prices separate at their limits"],
-    ["sw",P.sual,"Node above its regional price (persistent, observed)"],
+    ["ln",PAL.ac138,"The transmission network (faint) that the nodes sit on"],
+    ["ln",PAL.hvdc,"High-voltage direct-current links: regional prices separate at their limits"],
+    ["sw",PAL.sual,"Node above its regional price (persistent, observed)"],
     ["sw","#b9b3a8","Node near its regional price"],
     ["sw","#2b6a9d","Node below its regional price"],
-    ["sw",P.op,"Data-center sites for reference"]],
+    ["sw",PAL.op,"Data-center sites for reference"]],
     note:"Each dot is one WESM node, drawn on the transmission grid it sits on and coloured by its recorded difference from the region's final per-node dispatch price. Dot size shows the size of the difference across clean market days. Stations and plants use exact mapped sites; locality centroids use city-level placement. The panel lists unresolved sites. This is not a congestion premium because WESM prices intra-regional congestion administratively." },
   simulate: { title:"Named generators (price movers)", keys: [
     ["sw","#6b6b6b","Coal unit (size by capacity)"],
     ["sw","#4e79a7","Natural-gas unit"]],
     note:"These units are large enough for one outage to affect the grid. Pins are placed to city precision. Remove one unit in the panel to run the loss-of-one-unit test (N-1)." },
   drivers: { title:"Day-by-day drivers", keys: [
-    ["sw",P.hvdc,"Curtailment recorded"],
-    ["sw",P.ac,"Inter-island link advisory (block or de-block)"],
+    ["sw",PAL.hvdc,"Curtailment recorded"],
+    ["sw",PAL.ac,"Inter-island link advisory (block or de-block)"],
     ["sw","#8a6bb0","Alert advisory"],
-    ["sw",P.sual,"Regional price spread (P5/kWh or more)"]],
+    ["sw",PAL.sual,"Regional price spread (P5/kWh or more)"]],
     note:"Every column in the panel comes from the archive: prices, outages, curtailment, advisories, and binding constraints. Scenario settings do not alter these records." }
 };
 function legendRender(){
@@ -1104,7 +1104,7 @@ function setMode(m, syncRail = true){
     map.setLayoutProperty(id, "visibility", gridVis);
     map.setPaintProperty(id, "line-opacity", faint ? 0.32 : (id === "grid-500" ? 0.9 : 0.8));
     map.setPaintProperty(id, "line-color",
-      faint ? P.ac138 : (id === "grid-500" ? P.ac500 : P.ac230));
+      faint ? PAL.ac138 : (id === "grid-500" ? PAL.ac500 : PAL.ac230));
   });
   ["grid-cable","grid-bound","grid-sub"].forEach(id => {
     if (map.getLayer(id))
@@ -1348,7 +1348,7 @@ function durationSVG(pd){
   const zero = (ymin < 0 && ymax > 0)
     ? `<line x1="${padL}" y1="${y(0).toFixed(1)}" x2="${W-padR}" y2="${y(0).toFixed(1)}" stroke="#ccc" stroke-width="0.5" stroke-dasharray="2 2"/>` : "";
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Price-duration curve, modeled versus observed">
-    ${zero}${line(pd.observed, P.sual)}${line(pd.modeled, P.ink)}
+    ${zero}${line(pd.observed, PAL.sual)}${line(pd.modeled, PAL.ink)}
     <text x="2" y="${(y(ymax)+3).toFixed(1)}" font-size="7" fill="#888">P${fmt(ymax,0)}</text>
     <text x="2" y="${(y(ymin)+2).toFixed(1)}" font-size="7" fill="#888">P${fmt(ymin,0)}</text>
     <text x="${padL}" y="${H-2}" font-size="7" fill="#888">0%</text>
@@ -1807,30 +1807,32 @@ loadAll().then(() => {
   // palette, swap the basemap tiles, and repaint every layer whose color came
   // from a token. Without this the panels turn dark and the map stays light.
   DARKQ.addEventListener("change", () => {
-    P = pal();
+    PAL = pal();
     FUELCOL = DARKQ.matches ? FUELCOL_DARK : FUELCOL_LIGHT;
     const src = map.getSource("carto");
     if (src && src.setTiles) src.setTiles(tileUrls());
     const repaint = [
-      ["grid-138", "line-color", P.ac138],
-      ["grid-230", "line-color", P.ac230],
-      ["grid-500", "line-color", P.ac500],
-      ["grid-bound", "line-color", P.sual],
+      ["grid-138", "line-color", PAL.ac138],
+      ["grid-230", "line-color", PAL.ac230],
+      ["grid-500", "line-color", PAL.ac500],
+      ["grid-bound", "line-color", PAL.sual],
       ["grid-sub", "circle-color",
-        ["case", ["has", "binding"], P.sual, P.ac500]],
-      ["grid-sub", "circle-stroke-color", P.halo],
-      ["sual-pt", "circle-color", P.halo],
-      ["sual-pt", "circle-stroke-color", P.sual],
-      ["nodal-pt", "circle-stroke-color", P.halo],
-      ["gen-pt", "circle-stroke-color", P.pinline],
+        ["case", ["has", "binding"], PAL.sual, PAL.ac500]],
+      ["grid-sub", "circle-stroke-color", PAL.halo],
+      ["sual-pt", "circle-color", PAL.halo],
+      ["sual-pt", "circle-stroke-color", PAL.sual],
+      ["nodal-pt", "circle-stroke-color", PAL.halo],
+      ["gen-pt", "circle-stroke-color", PAL.pinline],
+      ["gen-pt", "circle-color", ["match", ["get", "fuel"],
+        "natural_gas", PAL.gas, "coal", PAL.coal, PAL.plan]],
       ["dc-pt", "circle-color", ["match", ["get", "status"],
-        "operational", P.op, "under_construction", P.uc, P.plan]],
+        "operational", PAL.op, "under_construction", PAL.uc, PAL.plan]],
       ["dc-pt", "circle-stroke-color", ["match", ["get", "status"],
-        "operational", P["op-line"], "under_construction", P["uc-line"], P["plan-line"]]],
+        "operational", PAL["op-line"], "under_construction", PAL["uc-line"], PAL["plan-line"]]],
       ["choke-line", "line-color",
-        ["match", ["get", "kind"], "hvdc", P.hvdc, P.ac]],
+        ["match", ["get", "kind"], "hvdc", PAL.hvdc, PAL.ac]],
       ["nodal-pt", "circle-color", ["interpolate", ["linear"], ["get", "dev"],
-        -0.8, P.ac, 0, P.plan, 0.8, P.sual]],
+        -0.8, PAL.ac, 0, PAL.plan, 0.8, PAL.sual]],
     ];
     for (const [id, prop, val] of repaint)
       if (map.getLayer(id)) map.setPaintProperty(id, prop, val);
