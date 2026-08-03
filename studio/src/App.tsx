@@ -15,14 +15,37 @@ const HAS_SHARE_HASH = /[#&](m=[A-Za-z0-9_-]+|v=[a-z0-9-]+)/
 
 type Theme = 'light' | 'dark'
 
+const THEME_KEY = 'pds.theme'
+
+// The choice survives a reload. Without this, an analyst who picks light on a
+// dark-set machine gets dark back on every refresh and every deep link.
+// No stored choice means the system preference still decides, and the app keeps
+// following it as the system flips.
 function useTheme(): [Theme, () => void] {
-  const [theme, setTheme] = useState<Theme>(() =>
-    window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  )
+  const [theme, setTheme] = useState<Theme>(() => {
+    const saved = localStorage.getItem(THEME_KEY)
+    if (saved === 'light' || saved === 'dark') return saved
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  })
   useEffect(() => {
     document.documentElement.dataset.theme = theme
   }, [theme])
-  return [theme, () => setTheme((t) => (t === 'light' ? 'dark' : 'light'))]
+  useEffect(() => {
+    const mq = window.matchMedia?.('(prefers-color-scheme: dark)')
+    if (!mq) return
+    const follow = (e: MediaQueryListEvent) => {
+      if (!localStorage.getItem(THEME_KEY)) setTheme(e.matches ? 'dark' : 'light')
+    }
+    mq.addEventListener('change', follow)
+    return () => mq.removeEventListener('change', follow)
+  }, [])
+  const toggle = () =>
+    setTheme((t) => {
+      const next = t === 'light' ? 'dark' : 'light'
+      localStorage.setItem(THEME_KEY, next)
+      return next
+    })
+  return [theme, toggle]
 }
 
 export default function App() {
@@ -72,16 +95,18 @@ export default function App() {
       <main className="app__main">
         <section className="hero">
           <div className="hero__copy">
-            <h1 className="hero__title">
-              Test how much data-center demand the grid can carry
-            </h1>
-            <p className="hero__lede">
-              This lowest-cost-first dispatch model (merit order) uses IEMOP's public
-              5-minute files and checks its results against recorded prices. It clears the
-              three grids together over the high-voltage direct-current (HVDC) links,
-              accounts for baseload commitments and random plant outages, and tests where
-              storage can cover a shortfall.
-            </p>
+            <div className="hero__lead">
+              <h1 className="hero__title">
+                Test how much data-center demand the grid can carry
+              </h1>
+              <p className="hero__lede">
+                This lowest-cost-first dispatch model (merit order) uses IEMOP's public
+                5-minute files and checks its results against recorded prices. It clears
+                the three grids together over the high-voltage direct-current (HVDC)
+                links, accounts for baseload commitments and random plant outages, and
+                tests where storage can cover a shortfall.
+              </p>
+            </div>
             <div className="hero__stats">
               {d ? (
                 <>

@@ -74,7 +74,7 @@ export function ReliabilityView({ d }: { d: Dispatch }) {
   return (
     <div className="view">
       <Panel
-        title="Chance that available supply cannot meet evening demand"
+        title="Adding the announced DICT demand raises the modeled Luzon shortfall chance"
         subtitle={`${num(mc.draws)} repeated simulations apply random plant outages at sourced rates. The result is loss-of-load probability (LOLP), not one predicted outcome.`}
         right={<Source href={mc.src_for} label="plant-outage source" />}
       >

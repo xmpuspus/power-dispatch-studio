@@ -409,6 +409,7 @@ export function Studio({
                   runsList={runsList}
                   onRunsChange={setRunsList}
                   onRestore={restoreRun}
+                  onNav={setNav}
                   dirty={dirty}
                   onEdit={edit}
                   onRevert={revert}
@@ -508,6 +509,7 @@ function DataPane({
   runsList,
   onRunsChange,
   onRestore,
+  onNav,
   dirty,
   onEdit,
   onRevert,
@@ -533,6 +535,7 @@ function DataPane({
   runsList: SavedRun[]
   onRunsChange: (runs: SavedRun[]) => void
   onRestore: (run: SavedRun) => void
+  onNav: (n: Nav) => void
   dirty: boolean
   onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
   onRevert: (cls: ClassId, id: string, prop: string) => void
@@ -544,7 +547,14 @@ function DataPane({
   if (nav.kind === 'compare')
     return <CompareView d={d} objects={objects} scenarios={scenarios} />
   if (nav.kind === 'runs')
-    return <RunsView runs={runsList} onRunsChange={onRunsChange} onRestore={onRestore} />
+    return (
+      <RunsView
+        runs={runsList}
+        onRunsChange={onRunsChange}
+        onRestore={onRestore}
+        onOpenReplay={() => onNav({ kind: 'sol', id: 'chrono' })}
+      />
+    )
   if (nav.kind === 'class') {
     return (
       <ClassPane
@@ -732,16 +742,21 @@ function ClassPane({
       {tab === 'properties' && (
         <>
           <div className="datapane__hint">
-            Edit a value and it is tagged to the active scenario. Press <b>Run</b> to
-            re-solve. The base value returns with the × on a changed cell.
-            {cls === 'generator' && rows.length > 40 && (
-              <span>
-                {' '}
-                Units and dependable capacities are the DOE list of existing power plants
-                (2025 editions). Units with less than 20 MW of dependable capacity remain
-                in the source data but are not shown in this table.
-              </span>
-            )}
+            {/* one flex item, not five: the bare text nodes and the <b> used to
+                become separate flex children and the sentence broke into
+                misaligned columns across the pane */}
+            <p className="datapane__hinttext">
+              Edit a value and it is tagged to the active scenario. Press <b>Run</b> to
+              re-solve. The base value returns with the × on a changed cell.
+              {cls === 'generator' && rows.length > 40 && (
+                <span>
+                  {' '}
+                  Units and dependable capacities are the DOE list of existing power
+                  plants (2025 editions). Units with less than 20 MW of dependable
+                  capacity remain in the source data but are not shown in this table.
+                </span>
+              )}
+            </p>
             {dirty && (
               <button className="btn btn--run btn--sm datapane__run" onClick={onRun}>
                 <PlayIcon /> Run
