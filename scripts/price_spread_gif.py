@@ -108,7 +108,7 @@ def main():
                     placed[g],
                     g.capitalize(),
                     fontsize=9,
-                    color=cs.REGION[g],
+                    color=cs.REGION_TEXT[g],
                     va="center",
                     zorder=8,
                 )
@@ -146,7 +146,9 @@ def main():
             "regional prices separate when local supply and demand differ. "
             "From IEMOP LWAPF, archived.",
         )
-        if fi == 0:
+        # the payoff only exists on the late frames, so the overflow
+        # check has to run on the last one, never on frame 0
+        if fi == len(seq) - 1:
             cs.check_fit(fig)
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)

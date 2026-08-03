@@ -80,7 +80,7 @@ def main():
                 ya - 0.9,
                 lab,
                 fontsize=8.6,
-                color=col,
+                color=cs.text_of(col),
                 ha="center",
                 va="top",
                 zorder=6,
@@ -129,7 +129,9 @@ def main():
             "does to the price depends on how busy the grid already is.\n"
             "From IEMOP RTDSUM generation joined to LWAPF price, archived.",
         )
-        if fi == 0:
+        # the payoff only exists on the late frames, so the overflow
+        # check has to run on the last one, never on frame 0
+        if fi == len(seq) - 1:
             cs.check_fit(fig)
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)

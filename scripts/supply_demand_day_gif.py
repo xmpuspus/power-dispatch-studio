@@ -76,7 +76,8 @@ def main():
     dem_pct = 100.0 * (gen.max() - gen.min()) / gen.max()
 
     fdir = cs.frames_dir("sdd")
-    for fi, t in enumerate(cs.reveal(40, 18)):
+    FRAMES = cs.reveal(40, 18)
+    for fi, t in enumerate(FRAMES):
         n = max(2, int(round(len(rows) * t)))
         cs.apply()
         fig = plt.figure(figsize=(8.8, 5.3), facecolor=cs.BG)
@@ -145,14 +146,16 @@ def main():
                 30,
                 va="top",
             )
-        if fi == 0:
-            cs.check_fit(fig)
         cs.source(
             fig,
             "Generation and price use the same time axis. Each chart has its "
             "own vertical scale.\nFrom IEMOP RTDSUM generation and LWAPF "
             "price, archived.",
         )
+        # the payoff only exists on the late frames, so the overflow
+        # check has to run on the last one, never on frame 0
+        if fi == len(FRAMES) - 1:
+            cs.check_fit(fig)
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

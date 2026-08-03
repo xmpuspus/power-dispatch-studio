@@ -67,6 +67,23 @@ WHITE = "#ffffff"
 # the three grids, matching the map and every other figure in the repo
 REGION = {"luzon": STEEL, "visayas": CORAL, "mindanao": GREEN}
 
+# A mark only has to clear 3:1 against its ground; a LABEL is body text and has
+# to clear 4.5:1. The mark steps above sit at 3.55 and 3.88, so a direct label
+# painted in the series colour fails a floor tests/test_contrast.py already
+# enforces everywhere else in this repo. These are the same hues, lifted until
+# the text clears, and they are used at label sites only.
+REGION_TEXT = {"luzon": "#3087ad", "visayas": "#b56b53", "mindanao": "#43a891"}
+ACCENT_TEXT = REGION_TEXT["visayas"]
+
+
+def text_of(color):
+    """The label-safe step of a series colour, or the colour itself."""
+    for k, mark in REGION.items():
+        if color == mark:
+            return REGION_TEXT[k]
+    return color
+
+
 # One gradient per card, chosen for the subject rather than for variety:
 # a day runs night to day, a bottleneck goes aubergine, money stays cool.
 FIELDS = {
@@ -177,7 +194,7 @@ def result_label(fig, x, y, big, small=None, color=CORAL, size=34):
         y,
         big,
         fontsize=size,
-        color=color,
+        color=text_of(color),
         weight="bold",
         va="center",
         ha="left",
@@ -203,7 +220,8 @@ def payoff(ax, x, y, big, small=None, color=None, size=34, ha="left", va="center
     reserved column. `result_label` put it in figure space, which is what
     forced every card to give up a third of its width.
     """
-    color = ACCENT if color is None else color
+    # a payoff is text, so it takes the label-safe step of its series colour
+    color = text_of(ACCENT if color is None else color)
     ax.text(
         x,
         y,
@@ -303,7 +321,7 @@ def chip(ax, x, y, s, color=TEXT, size=9.0, ha="center", va="center", pad=0.28):
         y,
         s,
         fontsize=size,
-        color=color,
+        color=text_of(color),
         ha=ha,
         va=va,
         zorder=9,

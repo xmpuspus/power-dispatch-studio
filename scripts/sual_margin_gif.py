@@ -106,12 +106,17 @@ def main():
             size=37,
         )
         if stage != "fill":
-            n = 1 if stage == "one" else 2
+            # Report what is subtracted RIGHT NOW, not what the stage is
+            # heading for. The old label said "2 of 2 units trip, -1,294 MW"
+            # through the whole second stage while the figure beside it still
+            # read a partly-subtracted margin, so the two did not add up.
+            removed = gone * BLOCK_MW
+            n = 1 if removed <= unit else 2
             word = "unit trips" if n == 1 else "units trip"
             fig.text(
                 0.30,
                 0.225,
-                f"{n} of 2 {word}, -{n * unit:,} MW",
+                f"{n} of 2 {word}, -{removed:,.0f} MW",
                 fontsize=9.6,
                 color=cs.BODY,
                 va="top",
@@ -124,6 +129,10 @@ def main():
             "dispatch simulation. The margin itself moves daily.\n"
             "From the IEMOP May 2026 report and Sual Power Station unit ratings.",
         )
+        # the payoff only exists on the late frames, so the overflow
+        # check has to run on the last one, never on frame 0
+        if fi == len(seq) - 1:
+            cs.check_fit(fig)
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

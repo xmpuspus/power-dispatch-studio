@@ -38,7 +38,8 @@ def main():
     flat = min(tops, key=tops.get)
 
     fdir = cs.frames_dir("smult")
-    for fi, t in enumerate(cs.reveal(30, 16)):
+    FRAMES = cs.reveal(30, 16)
+    for fi, t in enumerate(FRAMES):
         cs.apply()
         fig = plt.figure(figsize=(10.6, 5.0), facecolor=cs.BG)
         lo, hi = cs.FIELDS["dusk"]
@@ -94,7 +95,7 @@ def main():
                 label,
                 transform=ax.transAxes,
                 fontsize=11.5,
-                color=col,
+                color=cs.text_of(col),
                 ha="left",
                 va="bottom",
                 zorder=6,
@@ -139,6 +140,10 @@ def main():
             "From IEMOP RTDSUM generation joined "
             "to LWAPF price, archived.",
         )
+        # the payoff only exists on the late frames, so the overflow
+        # check has to run on the last one, never on frame 0
+        if fi == len(FRAMES) - 1:
+            cs.check_fit(fig)
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=100, facecolor=cs.BG)
         plt.close(fig)
 
