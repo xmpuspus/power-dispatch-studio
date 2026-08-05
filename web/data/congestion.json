@@ -1,25 +1,25 @@
 {
  "window": {
   "from": "2026-04-07",
-  "to": "2026-08-03"
+  "to": "2026-08-04"
  },
- "days_covered": 119,
- "days_with_base_case_binding": 119,
+ "days_covered": 120,
+ "days_with_base_case_binding": 120,
  "distinct_equipment": 81,
  "constraint_records": 96,
  "total_rtd_intervals": 8810,
- "total_dap_rows": 42225,
+ "total_dap_rows": 42540,
  "league": [
   {
    "equipment": "5DAAN_4TAB2",
    "station": "05DAANBN",
    "voltage": "230",
-   "days": 116,
+   "days": 117,
    "rtd_intervals": 77,
    "rtd_days": 23,
-   "dap_rows": 11895,
-   "dap_days": 116,
-   "base_case_rows": 11972,
+   "dap_rows": 12077,
+   "dap_days": 117,
+   "base_case_rows": 12154,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5
   },
@@ -53,12 +53,12 @@
    "equipment": "LEYTE_TO_CEBU",
    "station": "LEYTE_TO",
    "voltage": "",
-   "days": 95,
+   "days": 96,
    "rtd_intervals": 0,
    "rtd_days": 0,
-   "dap_rows": 3064,
-   "dap_days": 95,
-   "base_case_rows": 3064,
+   "dap_rows": 3139,
+   "dap_days": 96,
+   "base_case_rows": 3139,
    "max_overload_mw": 0.0,
    "max_pct_of_limit": 100.0
   },
@@ -66,12 +66,12 @@
    "equipment": "5DAAN_4TAB1",
    "station": "04TABANG",
    "voltage": "230",
-   "days": 90,
+   "days": 91,
    "rtd_intervals": 34,
    "rtd_days": 6,
-   "dap_rows": 4599,
-   "dap_days": 89,
-   "base_case_rows": 4633,
+   "dap_rows": 4657,
+   "dap_days": 90,
+   "base_case_rows": 4691,
    "max_overload_mw": 11.89,
    "max_pct_of_limit": 105.9
   },
@@ -403,25 +403,25 @@
  ],
  "corridor_receipts": {
   "leyte_cebu_230kv": {
-   "days": 116,
+   "days": 117,
    "rtd_intervals": 139,
    "rtd_days": 27,
-   "dap_rows": 21642,
-   "dap_days": 116,
+   "dap_rows": 21957,
+   "dap_days": 117,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5,
    "matched_equipment": [
     {
      "name": "5DAAN_4TAB2",
-     "rows": 12283
+     "rows": 12465
     },
     {
      "name": "5DAAN_4TAB1",
-     "rows": 6434
+     "rows": 6492
     },
     {
      "name": "LEYTE_TO_CEBU",
-     "rows": 3064
+     "rows": 3139
     }
    ]
   }
