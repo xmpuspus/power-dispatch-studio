@@ -1,25 +1,25 @@
 {
  "window": {
   "from": "2026-04-07",
-  "to": "2026-08-05"
+  "to": "2026-08-06"
  },
- "days_covered": 121,
- "days_with_base_case_binding": 121,
+ "days_covered": 122,
+ "days_with_base_case_binding": 122,
  "distinct_equipment": 81,
  "constraint_records": 96,
- "total_rtd_intervals": 8810,
- "total_dap_rows": 42833,
+ "total_rtd_intervals": 8840,
+ "total_dap_rows": 43233,
  "league": [
   {
    "equipment": "5DAAN_4TAB2",
    "station": "05DAANBN",
    "voltage": "230",
-   "days": 118,
+   "days": 119,
    "rtd_intervals": 77,
    "rtd_days": 23,
-   "dap_rows": 12272,
-   "dap_days": 118,
-   "base_case_rows": 12349,
+   "dap_rows": 12538,
+   "dap_days": 119,
+   "base_case_rows": 12615,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5
   },
@@ -53,12 +53,12 @@
    "equipment": "LEYTE_TO_CEBU",
    "station": "LEYTE_TO",
    "voltage": "",
-   "days": 97,
+   "days": 98,
    "rtd_intervals": 0,
    "rtd_days": 0,
-   "dap_rows": 3195,
-   "dap_days": 97,
-   "base_case_rows": 3195,
+   "dap_rows": 3286,
+   "dap_days": 98,
+   "base_case_rows": 3286,
    "max_overload_mw": 0.0,
    "max_pct_of_limit": 100.0
   },
@@ -66,12 +66,12 @@
    "equipment": "5DAAN_4TAB1",
    "station": "04TABANG",
    "voltage": "230",
-   "days": 92,
+   "days": 93,
    "rtd_intervals": 34,
    "rtd_days": 6,
-   "dap_rows": 4699,
-   "dap_days": 91,
-   "base_case_rows": 4733,
+   "dap_rows": 4742,
+   "dap_days": 92,
+   "base_case_rows": 4776,
    "max_overload_mw": 11.89,
    "max_pct_of_limit": 105.9
   },
@@ -403,25 +403,25 @@
  ],
  "corridor_receipts": {
   "leyte_cebu_230kv": {
-   "days": 118,
+   "days": 119,
    "rtd_intervals": 139,
    "rtd_days": 27,
-   "dap_rows": 22250,
-   "dap_days": 118,
+   "dap_rows": 22650,
+   "dap_days": 119,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5,
    "matched_equipment": [
     {
      "name": "5DAAN_4TAB2",
-     "rows": 12660
+     "rows": 12926
     },
     {
      "name": "5DAAN_4TAB1",
-     "rows": 6534
+     "rows": 6577
     },
     {
      "name": "LEYTE_TO_CEBU",
-     "rows": 3195
+     "rows": 3286
     }
    ]
   }

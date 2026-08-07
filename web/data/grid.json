@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 118,
+   "days": 119,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -49,7 +49,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 97,
+   "days": 98,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 92,
+   "days": 93,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -291,6 +291,20 @@
    "path_edges": 1
   },
   {
+   "equipment": "11JASA_12BUT1",
+   "days": 4,
+   "rtd_intervals": 51,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Jasaan Substation",
+    "Butuan Substation"
+   ],
+   "path_km": 98.5,
+   "path_edges": 2
+  },
+  {
    "equipment": "3BINA_3DAS1",
    "days": 4,
    "rtd_intervals": 43,
@@ -336,20 +350,6 @@
    "max_overload_mw": 0.0,
    "matched": false,
    "why": "no plausible path in the graph"
-  },
-  {
-   "equipment": "11JASA_12BUT1",
-   "days": 3,
-   "rtd_intervals": 21,
-   "max_overload_mw": 0.0,
-   "matched": true,
-   "kind": "line",
-   "stations": [
-    "Jasaan Substation",
-    "Butuan Substation"
-   ],
-   "path_km": 98.5,
-   "path_edges": 2
   },
   {
    "equipment": "3DASMA_TR1",
