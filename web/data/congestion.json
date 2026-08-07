@@ -1,25 +1,25 @@
 {
  "window": {
   "from": "2026-04-07",
-  "to": "2026-08-06"
+  "to": "2026-08-07"
  },
- "days_covered": 122,
- "days_with_base_case_binding": 122,
+ "days_covered": 123,
+ "days_with_base_case_binding": 123,
  "distinct_equipment": 81,
  "constraint_records": 96,
- "total_rtd_intervals": 8840,
- "total_dap_rows": 43233,
+ "total_rtd_intervals": 8869,
+ "total_dap_rows": 43249,
  "league": [
   {
    "equipment": "5DAAN_4TAB2",
    "station": "05DAANBN",
    "voltage": "230",
-   "days": 119,
+   "days": 120,
    "rtd_intervals": 77,
    "rtd_days": 23,
-   "dap_rows": 12538,
-   "dap_days": 119,
-   "base_case_rows": 12615,
+   "dap_rows": 12552,
+   "dap_days": 120,
+   "base_case_rows": 12629,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5
   },
@@ -336,6 +336,19 @@
    "max_pct_of_limit": 100.0
   },
   {
+   "equipment": "11JASA_12BUT1",
+   "station": "11JASAA",
+   "voltage": "138",
+   "days": 5,
+   "rtd_intervals": 80,
+   "rtd_days": 5,
+   "dap_rows": 0,
+   "dap_days": 0,
+   "base_case_rows": 80,
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
+  },
+  {
    "equipment": "1HERM_1DUH1",
    "station": "01HERMOS",
    "voltage": "230",
@@ -386,34 +399,21 @@
    "base_case_rows": 0,
    "max_overload_mw": 48.26,
    "max_pct_of_limit": 104.0
-  },
-  {
-   "equipment": "1MEXI_1HER2",
-   "station": "01HERMOS",
-   "voltage": "230",
-   "days": 4,
-   "rtd_intervals": 72,
-   "rtd_days": 4,
-   "dap_rows": 0,
-   "dap_days": 0,
-   "base_case_rows": 0,
-   "max_overload_mw": 125.71,
-   "max_pct_of_limit": 123.3
   }
  ],
  "corridor_receipts": {
   "leyte_cebu_230kv": {
-   "days": 119,
+   "days": 120,
    "rtd_intervals": 139,
    "rtd_days": 27,
-   "dap_rows": 22650,
-   "dap_days": 119,
+   "dap_rows": 22664,
+   "dap_days": 120,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5,
    "matched_equipment": [
     {
      "name": "5DAAN_4TAB2",
-     "rows": 12926
+     "rows": 12940
     },
     {
      "name": "5DAAN_4TAB1",

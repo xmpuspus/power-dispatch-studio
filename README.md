@@ -45,7 +45,7 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 ## Contents
 
 - [The Leyte-Cebu link reached a binding limit on 114 of 117 days](#the-leyte-cebu-link-reached-a-binding-limit-on-114-of-117-days)
-- [Luzon reserves fell short on 74 of the window's 122 days](#luzon-reserves-fell-short-on-74-of-the-windows-122-days)
+- [Luzon reserves fell short on 74 of the window's 123 days](#luzon-reserves-fell-short-on-74-of-the-windows-123-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
 - [Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.83) but reverse in Visayas (-0.57)](#modeled-loss-ranks-agree-in-luzon-072-and-mindanao-083-but-reverse-in-visayas--057)
 - [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
@@ -70,9 +70,9 @@ change to the bill.
 IEMOP publishes a "congestions manifesting" file that names transmission
 equipment at its binding limit for each 5-minute interval. This project archives
 and ranks those records. A row **literally named
-`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **98 of the window's 122 days**.
+`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **98 of the window's 123 days**.
 The 230 kV lines that carry that link, Tabango (Leyte) to Daanbantayan (Cebu),
-top the league. They are at a binding limit in the hourly day-ahead runs on **119 of 122
+top the league. They are at a binding limit in the hourly day-ahead runs on **120 of 123
 days**, and binding in the 5-minute real-time dispatch, the run settlement
 actually sees, on **23 days** of the window.
 
@@ -86,7 +86,7 @@ behind that statement.
 
 The same league as plain ranked bars, with no map, is [docs/constraint-league.gif](docs/constraint-league.gif).
 
-Across the 122-day window, **81 distinct pieces of equipment** hit a limit at least
+Across the 123-day window, **81 distinct pieces of equipment** hit a limit at least
 once, in **96 monitored constraints** (a transformer is listed under each winding
 voltage and a line at each terminal, so one physical asset can have more than one limit ID).
 The map ranks the constraints by days at a limit (a day counts once, so a day-ahead
@@ -113,9 +113,9 @@ The archived files pin them to one MW value in
 They record which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
-The System Operator's instruction log states why it changed dispatch. Across 119
+The System Operator's instruction log states why it changed dispatch. Across 120
 daily logs, its instructions carry a remark
-citing a line limitation **1,806 times, and 1,779 of those name the
+citing a line limitation **1,865 times, and 1,838 of those name the
 Leyte-Cebu link** ("Advise to discharge under MOT Raise due to
 Leyte-Cebu Line Limitation"), the same link the constraint league
 ranks first by shadow-price days. This link appears in 99 percent of
@@ -131,11 +131,11 @@ The must-run subset has a **6½ MW** median.
 
 The `so_instructions` section in the same file has both records.
 
-## Luzon reserves fell short on 74 of the window's 122 days
+## Luzon reserves fell short on 74 of the window's 123 days
 
 In the operator's real-time schedules, **Luzon reserves fell below the stated need
-on 74 of the window's 122 days**. Across the three grids, the schedules curtailed
-load on **112 grid-days (5,923.9 MWh)**. These figures describe published
+on 74 of the window's 123 days**. Across the three grids, the schedules curtailed
+load on **114 grid-days (6,156.6 MWh)**. These figures describe published
 schedules and do not forecast brownouts.
 
 The Visayas grid ran **52 consecutive days on grid alert from May 11 to July 1,
@@ -199,7 +199,7 @@ Prices at grid connection points view.
 
 WESM decomposes every published locational marginal price (LMP) into an energy, a loss, and a congestion
 part, and the congestion part is small and sparse (zero through the market
-suspension, nonzero on 1.11 percent of clean-day node-hours afterward), so the
+suspension, nonzero on 1.04 percent of clean-day node-hours afterward), so the
 within-region nodal price structure the market reports is loss-dominated.
 About a thousand resources report per clean day, and the ones that resolve to a
 mapped bus become the comparison set.
@@ -210,10 +210,10 @@ its network data and per-node accuracy are not published.
 So the model is
 checked against it. Marginal loss factors from the OpenStreetMap-geometry
 backbone are compared, grid by grid, against each node's recorded deviation
-from its regional price. Luzon ranks at Spearman **+0.72** over 314 nodes (72
-distinct buses, 95% confidence interval +0.59 to +0.82) and Mindanao at **+0.83** over 118
-(37 buses, +0.69 to +0.91). Visayas fails with a stable negative rank
-correlation (**-0.57**, negative on all 15 clean days). The report keeps Visayas
+from its regional price. Luzon ranks at Spearman **+0.73** over 314 nodes (72
+distinct buses, 95% confidence interval +0.60 to +0.82) and Mindanao at **+0.83** over 118
+(37 buses, +0.70 to +0.91). Visayas fails with a stable negative rank
+correlation (**-0.58**, negative on all 15 clean days). The report keeps Visayas
 as a failed check, with the sign reversal not yet diagnosed. The comparison
 recomputes nightly as clean market days accumulate
 (`data/derived/loss_surface.json`), and the studio carries the same three
@@ -497,7 +497,7 @@ direction agreement on Visayas-Mindanao
 against a 375 MW mean recorded flow, now scored against the operator's own
 per-interval high-voltage direct-current schedule rather than only the net-import identity
 the demand is built from, the Visayas settlement bias collapsing from
-**-P6.39** to **-P0.80/kWh**, and Mindanao clearing-price correlation **0.86**.
+**-P6.38** to **-P0.80/kWh**, and Mindanao clearing-price correlation **0.86**.
 
 The operator's congestion flags add a target the replay still misses in one
 direction, and the tables say so. The real links reached a limit in 45 to 61

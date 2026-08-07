@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 119,
+   "days": 120,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -247,6 +247,20 @@
    "station": "Hermosa Substation"
   },
   {
+   "equipment": "11JASA_12BUT1",
+   "days": 5,
+   "rtd_intervals": 80,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Jasaan Substation",
+    "Butuan Substation"
+   ],
+   "path_km": 98.5,
+   "path_edges": 2
+  },
+  {
    "equipment": "1HERM_1DUH1",
    "days": 5,
    "rtd_intervals": 35,
@@ -291,20 +305,6 @@
    "path_edges": 1
   },
   {
-   "equipment": "11JASA_12BUT1",
-   "days": 4,
-   "rtd_intervals": 51,
-   "max_overload_mw": 0.0,
-   "matched": true,
-   "kind": "line",
-   "stations": [
-    "Jasaan Substation",
-    "Butuan Substation"
-   ],
-   "path_km": 98.5,
-   "path_edges": 2
-  },
-  {
    "equipment": "3BINA_3DAS1",
    "days": 4,
    "rtd_intervals": 43,
@@ -334,6 +334,14 @@
    "matched": true,
    "kind": "station",
    "station": "Marawi Substation"
+  },
+  {
+   "equipment": "5SIGPIT_TR2",
+   "days": 4,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
   },
   {
    "equipment": "2QUEZ_2ARA1",
@@ -415,14 +423,6 @@
   },
   {
    "equipment": "3TANAWN_TR1",
-   "days": 3,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": false,
-   "why": "station token unresolved"
-  },
-  {
-   "equipment": "5SIGPIT_TR2",
    "days": 3,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
