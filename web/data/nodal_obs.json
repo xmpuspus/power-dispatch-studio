@@ -2,14 +2,14 @@
  "available": true,
  "window": {
   "first": "2026-04-17",
-  "last": "2026-07-13",
-  "days_derived": 88,
+  "last": "2026-07-16",
+  "days_derived": 91,
   "clean_days": 17,
   "clean_criterion": "at least 90% of the day's rows OK-flagged (administered PSM/SEC days excluded)"
  },
  "congestion": {
-  "days_sampled": 88,
-  "days_nonzero": 34,
+  "days_sampled": 91,
+  "days_nonzero": 35,
   "max_php_kwh": 28.24,
   "clean_day_node_hours": 486672,
   "clean_day_nonzero_node_hours": 5060,

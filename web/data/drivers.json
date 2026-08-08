@@ -4054,7 +4054,11 @@
     "visayas": 0.0,
     "mindanao": 163.5
    },
-   "hydro_budget_mwh": null,
+   "hydro_budget_mwh": {
+    "luzon": 5548.2,
+    "visayas": 481.8,
+    "mindanao": 16167.9
+   },
    "n_advisories": 44,
    "n_hvdc_advisories": 8,
    "n_alert_advisories": 5,
@@ -4092,7 +4096,11 @@
     "visayas": 0.0,
     "mindanao": 163.5
    },
-   "hydro_budget_mwh": null,
+   "hydro_budget_mwh": {
+    "luzon": 5072.9,
+    "visayas": 483.7,
+    "mindanao": 15377.8
+   },
    "n_advisories": 40,
    "n_hvdc_advisories": 8,
    "n_alert_advisories": 3,
@@ -4132,7 +4140,11 @@
     "visayas": 0.0,
     "mindanao": 145.5
    },
-   "hydro_budget_mwh": null,
+   "hydro_budget_mwh": {
+    "luzon": 4684.2,
+    "visayas": 424.5,
+    "mindanao": 14646.4
+   },
    "n_advisories": 34,
    "n_hvdc_advisories": 4,
    "n_alert_advisories": 6,

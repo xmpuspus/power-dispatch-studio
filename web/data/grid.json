@@ -9,15 +9,15 @@
    "hvdc": 21,
    "cable": 33
   },
-  "bound_line_features": 28,
+  "bound_line_features": 30,
   "bound_stations": 19,
-  "equipment_total": 81,
-  "equipment_matched": 45
+  "equipment_total": 83,
+  "equipment_matched": 46
  },
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 120,
+   "days": 121,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -49,7 +49,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 98,
+   "days": 99,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 93,
+   "days": 94,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -102,9 +102,23 @@
    "station": "Olongapo Substation"
   },
   {
+   "equipment": "1BAUA_1LAT2",
+   "days": 24,
+   "rtd_intervals": 597,
+   "max_overload_mw": 69.11,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Bauang Substation",
+    "La Trinidad Substation"
+   ],
+   "path_km": 36.0,
+   "path_edges": 1
+  },
+  {
    "equipment": "1BAUA_1LAT1",
    "days": 24,
-   "rtd_intervals": 579,
+   "rtd_intervals": 581,
    "max_overload_mw": 69.11,
    "matched": true,
    "kind": "line",
@@ -128,20 +142,6 @@
    ],
    "path_km": 34.5,
    "path_edges": 2
-  },
-  {
-   "equipment": "1BAUA_1LAT2",
-   "days": 23,
-   "rtd_intervals": 594,
-   "max_overload_mw": 69.11,
-   "matched": true,
-   "kind": "line",
-   "stations": [
-    "Bauang Substation",
-    "La Trinidad Substation"
-   ],
-   "path_km": 36.0,
-   "path_edges": 1
   },
   {
    "equipment": "1TGERAO_TR3",
@@ -656,6 +656,20 @@
    "station": "Maasin Substation"
   },
   {
+   "equipment": "12BISL_13NAB1",
+   "days": 1,
+   "rtd_intervals": 1,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Bislig Substation",
+    "Nabunturan Substation"
+   ],
+   "path_km": 96.5,
+   "path_edges": 2
+  },
+  {
    "equipment": "1ANGAT_TR4",
    "days": 1,
    "rtd_intervals": 1,
@@ -701,6 +715,14 @@
    ],
    "path_km": 84.3,
    "path_edges": 2
+  },
+  {
+   "equipment": "14KIDAP_TR1",
+   "days": 1,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
   },
   {
    "equipment": "14SARANG_TR1",
