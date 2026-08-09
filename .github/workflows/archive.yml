@@ -80,6 +80,13 @@ jobs:
         run: |
           cp web/data/dispatch.json web/data/profiles.json web/data/meta.json src/power_dispatch/data/
           cp data/derived/offer_daily/OFFERD_*.json src/power_dispatch/data/offers/
+      - name: Re-mark the worked contract position on the fresh window
+        # The README says this case runs on "the archive's most recent day", and
+        # the window rolls every night. Without this the prose keeps yesterday's
+        # pesos under a sentence that claims today's day. Two solves, seconds.
+        run: |
+          python3 pipeline/position_probe.py --derive
+          python3 pipeline/build_data.py
       - name: Sync the public prose to the fresh data build
         # the window rolls a day forward every night; keep every rolling count in
         # README, studio/README, and methodology in lockstep with the map (incl.
@@ -97,8 +104,11 @@ jobs:
           # every file verify_claims --write can rewrite has to be staged here.
           # A file it rewrites and this list misses gets its rewrite thrown away,
           # and the next --check run turns CI red days later with no local signal.
-          git add web/data src/power_dispatch/data README.md studio/README.md \
-            web/methodology.html web/for-analysts.html
+          # data/derived rides here too: the position probe re-derives AFTER the
+          # archive commit above, so its source file would otherwise stay a day
+          # behind the web/data copy that this step does commit.
+          git add web/data data/derived src/power_dispatch/data README.md \
+            studio/README.md web/methodology.html web/for-analysts.html
           git diff --cached --quiet && echo "generated data unchanged" || {
             git commit -m "data: $(date -u +%Y-%m-%d)"
             git push
