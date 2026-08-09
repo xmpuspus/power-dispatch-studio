@@ -2110,3 +2110,25 @@
 .ctr__load input {
   width: 92px;
 }
+
+/* The model description moved below the controls. Closed by default, because a
+   reader who wants a slider should not scroll past an explanation to reach it. */
+.scn__about {
+  margin: var(--sp-4) 0 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.scn__about > summary {
+  cursor: pointer;
+  font-size: var(--fs-13);
+  font-weight: 600;
+  color: var(--text);
+}
+.scn__about p {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-13);
+  line-height: var(--lh-body);
+  color: var(--text-muted);
+}

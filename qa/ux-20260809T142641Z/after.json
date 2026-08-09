@@ -1,0 +1,26 @@
+{
+ "desktop": {
+  "first_slider_top": 314,
+  "viewport_h": 900,
+  "slider_in_view": true,
+  "controls_in_view": 10,
+  "words_before_first_control": 10,
+  "run_button_present": false,
+  "solved_chip": "Solved",
+  "region_state": "chips",
+  "close_labelled": true,
+  "about_closed": true
+ },
+ "phone": {
+  "first_slider_top": 632,
+  "viewport_h": 812,
+  "slider_in_view": true,
+  "controls_in_view": 3,
+  "words_before_first_control": 10,
+  "run_button_present": false,
+  "solved_chip": "Solved",
+  "region_state": "chips",
+  "close_labelled": true,
+  "about_closed": true
+ }
+}

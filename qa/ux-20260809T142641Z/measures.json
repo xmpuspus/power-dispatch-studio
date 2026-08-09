@@ -1,0 +1,120 @@
+{
+ "desktop": {
+  "first_slider_top_px": 438,
+  "viewport_h": 900,
+  "slider_below_fold": false,
+  "px_to_scroll_to_first_control": 0,
+  "run_button": {
+   "text": "Solved",
+   "disabled": true,
+   "prominent": "rgb(23, 34, 58)"
+  },
+  "bar_buttons": [
+   {
+    "label": null,
+    "aria": "Open the view list",
+    "title": "Open view list"
+   },
+   {
+    "label": "Quick what-if\u2318K",
+    "aria": "Find a view",
+    "title": null
+   },
+   {
+    "label": "Luzon",
+    "aria": null,
+    "title": "Quick what-if reads all three grids together"
+   },
+   {
+    "label": "Visayas",
+    "aria": null,
+    "title": "Quick what-if reads all three grids together"
+   },
+   {
+    "label": "Mindanao",
+    "aria": null,
+    "title": "Quick what-if reads all three grids together"
+   },
+   {
+    "label": null,
+    "aria": "New scenario",
+    "title": "Create a copy of this scenario"
+   },
+   {
+    "label": "Solved",
+    "aria": "Run the simulation",
+    "title": "Solved and current. Edit a value to re-run."
+   },
+   {
+    "label": null,
+    "aria": "Switch to dark theme",
+    "title": "Change color theme"
+   },
+   {
+    "label": null,
+    "aria": "Close the studio",
+    "title": "Close the studio"
+   }
+  ],
+  "words_before_first_control": 77
+ },
+ "phone": {
+  "first_slider_top_px": 843,
+  "viewport_h": 812,
+  "slider_below_fold": true,
+  "px_to_scroll_to_first_control": 91,
+  "run_button": {
+   "text": "Solved",
+   "disabled": true,
+   "prominent": "rgb(23, 34, 58)"
+  },
+  "bar_buttons": [
+   {
+    "label": null,
+    "aria": "Open the view list",
+    "title": "Open view list"
+   },
+   {
+    "label": "Quick what-if\u2318K",
+    "aria": "Find a view",
+    "title": null
+   },
+   {
+    "label": "Luzon",
+    "aria": null,
+    "title": "Quick what-if reads all three grids together"
+   },
+   {
+    "label": "Visayas",
+    "aria": null,
+    "title": "Quick what-if reads all three grids together"
+   },
+   {
+    "label": "Mindanao",
+    "aria": null,
+    "title": "Quick what-if reads all three grids together"
+   },
+   {
+    "label": null,
+    "aria": "New scenario",
+    "title": "Create a copy of this scenario"
+   },
+   {
+    "label": "Solved",
+    "aria": "Run the simulation",
+    "title": "Solved and current. Edit a value to re-run."
+   },
+   {
+    "label": null,
+    "aria": "Switch to dark theme",
+    "title": "Change color theme"
+   },
+   {
+    "label": null,
+    "aria": "Close the studio",
+    "title": "Close the studio"
+   }
+  ],
+  "words_before_first_control": 77
+ }
+}

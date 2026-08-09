@@ -90,24 +90,26 @@ export function TopBar({
         <kbd className="bar__kbd">⌘K</kbd>
       </button>
 
-      <div className="bar__group" role="group" aria-label="Region">
-        {GRIDS.map((g) => (
-          <button
-            key={g}
-            className={`bar__seg ${g === grid ? 'is-on' : ''}`}
-            aria-pressed={g === grid}
-            disabled={!gridScoped}
-            title={
-              gridScoped
-                ? `Read ${GRID_LABEL[g]}`
-                : `${dest?.label ?? 'This view'} reads all three grids together`
-            }
-            onClick={() => onGrid(g)}
-          >
-            {GRID_LABEL[g]}
-          </button>
-        ))}
-      </div>
+      {/* The chips kept the selected-grid highlight on views that read all
+          three, so an inert control looked live and its reason lived in a
+          title, which a touch screen never shows. */}
+      {gridScoped ? (
+        <div className="bar__group" role="group" aria-label="Region">
+          {GRIDS.map((g) => (
+            <button
+              key={g}
+              className={`bar__seg ${g === grid ? 'is-on' : ''}`}
+              aria-pressed={g === grid}
+              title={`Read ${GRID_LABEL[g]}`}
+              onClick={() => onGrid(g)}
+            >
+              {GRID_LABEL[g]}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <span className="bar__allgrids">All three grids</span>
+      )}
 
       <label className="bar__scn">
         <span className="bar__scnlabel">Active scenario</span>
@@ -135,20 +137,27 @@ export function TopBar({
 
       <div className="bar__spacer" />
 
-      <button
-        className={`bar__run ${dirty ? 'is-dirty' : ''}`}
-        onClick={onRun}
-        disabled={!dirty}
-        aria-label="Run the simulation"
-        title={
-          dirty
-            ? `Re-solve with ${editCount} edit${editCount === 1 ? '' : 's'}`
-            : 'Solved and current. Edit a value to re-run.'
-        }
-      >
-        <IconPlay />
-        {dirty ? `Run ${editCount} edit${editCount === 1 ? '' : 's'}` : 'Solved'}
-      </button>
+      {/* The filled primary slot used to hold a disabled button reading
+          "Solved", so the loudest control on the page was the one that did
+          nothing, and its aria-label said "Run the simulation" while the screen
+          said "Solved". Prominence now follows actionability: a status chip
+          while nothing waits, a real button the moment something does. */}
+      {dirty ? (
+        <button
+          className="bar__run is-dirty"
+          onClick={onRun}
+          aria-label={`Re-solve with ${editCount} edit${editCount === 1 ? '' : 's'}`}
+          title={`Re-solve with ${editCount} edit${editCount === 1 ? '' : 's'}`}
+        >
+          <IconPlay />
+          {`Run ${editCount} edit${editCount === 1 ? '' : 's'}`}
+        </button>
+      ) : (
+        <span className="bar__solved" title="Solved and current. Edit a value to re-run.">
+          <IconCheck />
+          Solved
+        </span>
+      )}
 
       {/* the Run button already carries the solve state in its own label and
           colour, so a second chip beside it would report the same thing twice */}
@@ -164,13 +173,16 @@ export function TopBar({
       >
         {theme === 'light' ? <IconMoon /> : <IconSun />}
       </button>
+      {/* Close sat unlabelled beside the theme toggle, so the one action that
+          leaves the tool looked like the one that recolours it. */}
       <button
-        className="bar__icon"
+        className="bar__exit"
         onClick={onExit}
         aria-label="Close the studio"
         title="Close the studio"
       >
         <IconClose />
+        <span className="bar__exitlabel">Close</span>
       </button>
     </header>
   )
@@ -599,6 +611,21 @@ function IconPlus() {
     </svg>
   )
 }
+function IconCheck() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M20 6L9 17l-5-5"
+      />
+    </svg>
+  )
+}
+
 function IconPlay() {
   return (
     <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">

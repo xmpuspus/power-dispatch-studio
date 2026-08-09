@@ -976,3 +976,55 @@
 .dock__previewrow .dock__k {
   flex: 1;
 }
+
+/* The solved state is a fact, not an action, so it reads as a chip and never
+   takes the filled primary slot a disabled button used to hold. */
+.bar__solved {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 34px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--chrome-2);
+  color: var(--chrome-muted);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  white-space: nowrap;
+}
+/* A view that reads all three grids says so in words, where a touch screen can
+   read it, instead of dimming a segmented control and hiding the reason in a
+   title attribute. */
+.bar__allgrids {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 10px;
+  color: var(--chrome-muted);
+  font-size: var(--fs-12);
+  white-space: nowrap;
+}
+.bar__exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--chrome-muted);
+  font-size: var(--fs-12);
+  cursor: pointer;
+}
+.bar__exit:hover,
+.bar__exit:focus-visible {
+  color: var(--chrome-text);
+  border-color: var(--chrome-2);
+}
+@media (max-width: 900px) {
+  .bar__exitlabel,
+  .bar__allgrids {
+    display: none;
+  }
+}

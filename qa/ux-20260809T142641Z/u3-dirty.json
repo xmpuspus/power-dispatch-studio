@@ -1,0 +1,17 @@
+{
+ "clean": {
+  "chip": true,
+  "run": false
+ },
+ "dirty": {
+  "chip": false,
+  "run_text": "Run 1 edit",
+  "run_disabled": false,
+  "run_aria": "Re-solve with 1 edit",
+  "run_bg": "rgb(251, 191, 36)"
+ },
+ "after_run": {
+  "chip": true,
+  "run": false
+ }
+}

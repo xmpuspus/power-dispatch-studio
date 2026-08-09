@@ -184,17 +184,11 @@ export function ScenarioView({
 
   return (
     <div className="view" data-testid="scenario">
-      <p className="scn__how">
-        Move a slider below and all three grids recalculate immediately. The carbon-price
-        and Malampaya gas settings apply to Hourly market replay and Emissions, not to
-        this evening-hour calculation.
-      </p>
-      <p className="scn__lede">
-        This <b>lowest-cost-first model (merit order)</b> stacks the sourced fleet from
-        lowest to highest operating cost, then calculates all three island grids together.
-        Prices are the cost of serving one additional unit of demand in each island grid.
-        The model is checked against recorded prices but does not predict them.
-      </p>
+      {/* Seventy-seven words used to sit between the reader and the first
+          slider, which put the control below the fold on a phone. One line
+          stays, and the model description moves under the controls where a
+          reader goes looking for it rather than past it. */}
+      <p className="scn__how">Move a slider and all three grids recalculate at once.</p>
 
       <div className="scn">
         <Panel
@@ -531,6 +525,24 @@ export function ScenarioView({
           </Panel>
         </div>
       </div>
+
+      {/* the model description that used to sit above the first slider. A
+          reader who wants it goes looking; a reader who wants a slider does not
+          have to scroll past it. */}
+      <details className="scn__about">
+        <summary>What this calculation does, and what it leaves out</summary>
+        <p>
+          This <b>lowest-cost-first model (merit order)</b> stacks the sourced fleet from
+          lowest to highest operating cost, then calculates all three island grids
+          together. Prices are the cost of serving one additional unit of demand in each
+          island grid. The model is checked against recorded prices but does not predict
+          them.
+        </p>
+        <p>
+          The carbon-price and Malampaya gas settings apply to Hourly market replay and
+          Emissions, and not to this evening-hour calculation.
+        </p>
+      </details>
 
       <p className="note">
         The evening solar availability is near zero, so added solar barely changes this
