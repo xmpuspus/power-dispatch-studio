@@ -1,0 +1,50 @@
+{
+ "T1.1": {
+  "names_a_site": true,
+  "hourly_limit": "769",
+  "at_hour": true
+ },
+ "T1.2_default": {
+  "selected_range": "to +500 MW",
+  "at_0": "6.00",
+  "at_top": "6.00",
+  "flat": true,
+  "holds_for_mw": "1,521"
+ },
+ "T1.2_plus3000": {
+  "at_0": "6.00",
+  "at_top": "12.00",
+  "steps": true
+ },
+ "T1.3": {
+  "lever_at": [
+   300,
+   2500
+  ],
+  "price_300": "\u20b16.00",
+  "price_2500": "\u20b112.00",
+  "run_at_300": {
+   "label": "Solved",
+   "disabled": true
+  },
+  "moved": true
+ },
+ "T2.1": {
+  "names_units": true,
+  "has_price_col": true
+ },
+ "T2.2": {
+  "per_grid_pct": 3
+ },
+ "T3.1_2": {
+  "slider": {
+   "max": 20
+  },
+  "text_moved": true,
+  "spot_share_shown": true
+ },
+ "T3.3": {
+  "shows_error": true
+ },
+ "_pageerrors": []
+}
