@@ -27,6 +27,7 @@ jobs:
           python3 tests/test_scenario_file.py
           python3 tests/test_unit_probe.py
           python3 tests/test_writable_staged.py
+          python3 tests/test_contracts.py
           python3 tests/test_readme_views.py
           python3 tests/qa_gate.py
           python3 scripts/verify_claims.py

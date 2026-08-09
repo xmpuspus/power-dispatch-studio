@@ -26,6 +26,9 @@ from .engine.lp_dispatch import run_chronology_lp
 from .schema import SCHEMA as SCENARIO_SCHEMA
 from .schema import load as load_scenario
 from .schema import validate as validate_scenario
+from .contracts import compare as compare_position
+from .contracts import settle
+from .contracts import validate_book
 
 __version__ = "0.1.0"
 
@@ -39,6 +42,9 @@ __all__ = [
     "validate_scenario",
     "load_scenario",
     "SCENARIO_SCHEMA",
+    "settle",
+    "compare_position",
+    "validate_book",
 ]
 
 _HERE = os.path.dirname(os.path.abspath(__file__))

@@ -7,10 +7,11 @@ had to assemble it from five separate clips.
 
 The recording follows one person through it:
 
-    for-analysts.html   the capability table, and the five No rows
+    for-analysts.html   the ability table, and the four No rows
     #v=commitment-test  a limit that carries a measurement, not an opinion
     #v=future-year      2028 solved day by day, on published plans
-    #v=regions          edit the model itself, then Run
+    #v=fuels            take both Sual units out of the model, then Run
+    #v=contract-position  what that edit does to a book of contracts, in pesos
     #v=quick-scenario   drag a data center onto Luzon, watch the price move
     Take this scenario to Python   the same run as a file the CLI reads
 
@@ -85,15 +86,15 @@ async def main() -> None:
         await asyncio.sleep(2.0)
         await cap(
             page,
-            "It solves seven things fully, two partly, and refuses five",
+            "It solves seven things fully, three partly, and refuses four",
             "power-dispatch-studio.vercel.app/for-analysts.html",
         )
         await asyncio.sleep(2.0)
         await scroll_to(page, ".t-cap")
         await asyncio.sleep(3.4)
         rows = await page.evaluate("() => document.querySelectorAll('.t-cap .n').length")
-        if rows != 5:
-            raise SystemExit(f"expected 5 refusals on the capability table, saw {rows}")
+        if rows != 4:
+            raise SystemExit(f"expected 4 refusals on the ability table, saw {rows}")
 
         # 2. how close it gets, from the nightly build
         await cap(page, "Every refusal states a reason, and two carry a measurement")
@@ -134,13 +135,14 @@ async def main() -> None:
         # and wrong for a demo of a downloadable run.
         await cap(
             page,
-            "Edit a value in the model, and Run re-solves every grid",
-            "/studio/#v=regions",
+            "Take both 647 MW Sual units out of the model, and press Run",
+            "/studio/#v=fuels",
         )
-        await page.evaluate("() => { window.location.hash = 'v=regions' }")
+        await page.evaluate("() => { window.location.hash = 'v=fuels' }")
         await asyncio.sleep(2.4)
-        box = page.get_by_label("Luzon Load (evening)")
-        await box.fill("12000")
+        box = page.get_by_label("coal Luzon avail")
+        before_mw = float(await box.input_value())
+        await box.fill(str(before_mw - 1294))
         await box.press("Tab")
         await asyncio.sleep(1.6)
         # the Run button's accessible name is its aria-label, never its text
@@ -149,6 +151,21 @@ async def main() -> None:
             raise SystemExit(f"the model edit did not reach Run, which reads {label!r}")
         await page.click(".bar__run")
         await asyncio.sleep(2.4)
+
+        # 6. the question a supplier actually brought, answered in pesos
+        await cap(
+            page,
+            "The same edit, priced against your own contract book",
+            "/studio/#v=contract-position",
+        )
+        await page.evaluate("() => { window.location.hash = 'v=contract-position' }")
+        await asyncio.sleep(4.2)
+        pos = await page.inner_text(".view")
+        if "Cover on your Luzon load" not in pos:
+            raise SystemExit("the contract view is not showing a settled position")
+        if "does not move" in pos:
+            raise SystemExit("the scenario left the position flat, so the beat is dead")
+        print(f"  position headline: {pos.splitlines()[0]}")
 
         await cap(page, "Drag a data center onto Luzon, and every grid re-clears")
         await page.evaluate("() => { window.location.hash = 'v=quick-scenario' }")

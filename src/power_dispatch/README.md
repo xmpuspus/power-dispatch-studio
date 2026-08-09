@@ -86,6 +86,20 @@ pd.validate_scenario(scenario)      # a list of messages, and never raises
 pd.load_scenario("myscenario.json") # raises ValueError carrying all of them
 ```
 
+### Your contract position
+
+A scenario file can carry a contract book, and the engine never reads it.
+`settle` marks the book against the modeled spot price, and `compare_position`
+reports what a scenario does to it.
+
+```python
+pos = pd.compare_position(base, scenario, book, load_mw={"luzon": 400})
+pos["net_change_php"]     # the contract gain less the open position's extra cost
+```
+
+It marks energy against modeled spot and stops there. No capacity fee, no
+wheeling charge, no tax, and no credit terms.
+
 The full key table is in the
 [scenario schema](https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/scenario-schema.md).
 

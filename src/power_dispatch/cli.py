@@ -23,7 +23,13 @@ import csv
 import json
 import sys
 
-from . import __version__, list_days, run_scenario, validate_scenario
+from . import (
+    __version__,
+    compare_position,
+    list_days,
+    run_scenario,
+    validate_scenario,
+)
 from .schema import OPT_SPEC, SCHEMA
 
 GRIDS = ("luzon", "visayas", "mindanao")
@@ -141,6 +147,11 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="emit the full result as JSON instead of hourly CSV",
     )
+    r.add_argument(
+        "--position",
+        action="store_true",
+        help="settle the scenario file's contract book against this run",
+    )
 
     v = sub.add_parser("validate", help="check a scenario file and say what is wrong")
     v.add_argument("scenario", help="scenario JSON file")
@@ -179,6 +190,19 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "run":
         scenario = _build_scenario(args)
         result = run_scenario(scenario, data_dir=args.data_dir)
+        if args.position:
+            port = scenario.get("portfolio") or {}
+            book = port.get("contracts") or []
+            if not book:
+                raise SystemExit(
+                    "--position needs a portfolio.contracts block in the scenario file"
+                )
+            base = run_scenario(
+                {"date": scenario["date"], "opts": {}}, data_dir=args.data_dir
+            )
+            cmp = compare_position(base, result, book, port.get("load_mw"))
+            print(json.dumps(cmp, indent=2))
+            return 0
         if args.json:
             text = json.dumps(result, indent=2)
             if args.out:

@@ -49,6 +49,43 @@ names what is wrong.
 Grids are `luzon`, `visayas`, `mindanao`. Fuels are the keys in
 `dispatch.json`'s `fuel_avail_mw`.
 
+## The contract book rides in the same file
+
+The engine never reads `portfolio`, and `power_dispatch.settle` does. So one
+file carries both the run and the position question a reader brought to it.
+
+```json
+{
+  "schema": "pds-scenario/1",
+  "date": "2026-06-17",
+  "opts": { "fuel_avail_delta": { "luzon": { "coal": -1294 } } },
+  "portfolio": {
+    "contracts": [
+      { "name": "PSA", "grid": "luzon", "mw": 250, "strike_php_kwh": 6.4, "side": "buy" },
+      { "name": "Peak", "grid": "luzon", "mw": 100, "strike_php_kwh": 9.0,
+        "side": "buy", "hours": [18, 19, 20, 21] }
+    ],
+    "load_mw": { "luzon": 400 }
+  }
+}
+```
+
+| Key | Value shape | Meaning |
+| --- | --- | --- |
+| `portfolio.contracts[].grid` | grid name | Where the contract settles |
+| `portfolio.contracts[].mw` | number | Volume. Never negative, because `side` picks the direction |
+| `portfolio.contracts[].strike_php_kwh` | number | The fixed price |
+| `portfolio.contracts[].side` | `buy` or `sell` | Buy fixes what you pay, sell fixes what you receive |
+| `portfolio.contracts[].hours` | `[0..23]` | Hours covered. Absent means the whole day |
+| `portfolio.load_mw` | `{grid: MW}` | Your own load, which decides the open position |
+
+```bash
+power-dispatch run --scenario mybook.json --position
+```
+
+That prints the position in the base case, the position in the scenario, and the
+change, per contract and net.
+
 ## Check a file before you run it
 
 ```bash

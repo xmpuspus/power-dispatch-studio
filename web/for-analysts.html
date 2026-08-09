@@ -82,7 +82,7 @@
 <body>
 <main>
   <a class="back" href="index.html">Back to the map</a>
-  <h1>A three-zone economic dispatch you can run in a browser, and five things it refuses to do</h1>
+  <h1>A three-zone economic dispatch you can run in a browser, and four things it refuses to do</h1>
   <p class="lede">Written for an analyst who reads production-cost model output
   and has no license. This page states what the engine solves, what it leaves
   out, how close it lands on recorded Philippine prices, and the four ways to
@@ -106,7 +106,7 @@
     </section>
   </div>
 
-  <h2>The engine solves seven things fully, two partly, and skips five</h2>
+  <h2>The engine solves seven things fully, three partly, and skips four</h2>
   <div class="table-wrap">
     <table class="t-cap">
       <thead><tr><th>Capability</th><th>Here</th><th>What that means in this engine</th></tr></thead>
@@ -123,13 +123,13 @@
         <tr><td>Unit commitment</td><td class="n">No</td><td>Built and measured. It lowered the price correlation in all five scored series, so it stays off</td></tr>
         <tr><td>Named units</td><td class="n">No</td><td>The program holds fuel blocks per zone. You can raise a fuel's MW and cannot add "Unit 3"</td></tr>
         <tr><td>Security-constrained nodal dispatch</td><td class="n">No</td><td>A reduced loss surface over mapped routes, checked per zone. It is not a network model</td></tr>
-        <tr><td>Contracts and settlement</td><td class="n">No</td><td>No bilateral position, no strike price, no hedge accounting</td></tr>
+        <tr><td>Contracts and settlement</td><td class="p">Partly</td><td>A contract book marks against modeled spot, per contract and net. No capacity fee, no wheeling charge, no tax, no credit terms</td></tr>
         <tr><td>Stochastic multi-stage</td><td class="n">No</td><td>Repeated draws over one stage, never a scenario tree</td></tr>
       </tbody>
     </table>
   </div>
   <p class="fine">The two <span class="n">No</span> rows at the top are one
-  limit, not two. The linear program dispatches fuel blocks, so a named unit has
+  limit rather than two. The linear program dispatches fuel blocks, so a named unit has
   nowhere to live and commitment has nothing to commit. The
   <a href="methodology.html">method page</a> carries the measurement that kept it
   that way.</p>
@@ -177,6 +177,7 @@
         <tr><td>Reserve co-optimization</td><td><a href="studio/#v=reserve-market">Backup capacity market</a></td></tr>
         <tr><td>Capacity expansion, least cost</td><td><a href="studio/#v=expansion-mix">Lowest-cost expansion mix</a></td></tr>
         <tr><td>Market power, HHI, residual supply</td><td><a href="studio/#v=market-power">Supplier concentration</a></td></tr>
+        <tr><td>Contract position, hedge cover</td><td><a href="studio/#v=contract-position">Your contract position</a></td></tr>
         <tr><td>Backcast, model validation</td><td><a href="studio/#v=backcast">Historical replay</a></td></tr>
         <tr><td>Unit commitment</td><td><a href="studio/#v=commitment-test">The test, and why it stays off</a></td></tr>
         <tr><td>Input database</td><td><a href="studio/#v=generators">Generators</a>, <a href="studio/#v=fuels">Fuels</a>, <a href="studio/#v=interfaces">Inter-grid links</a></td></tr>
@@ -188,7 +189,7 @@
   <h2>Four ways to run it, and the fastest one takes no install</h2>
   <ul>
     <li><b>The map.</b> <a href="index.html">Five modes over the archive</a>, plus a simulate that re-solves in the browser.</li>
-    <li><b>The studio.</b> <a href="studio/">Forty-one views</a>, a command palette, and a scenario that travels as a link.</li>
+    <li><b>The studio.</b> <a href="studio/">Forty-two views</a>, a command palette, and a scenario that travels as a link.</li>
     <li><b>Python.</b> <code>pip install power-dispatch-studio</code>, then one line in a notebook. A dated archive snapshot ships inside the wheel, so it runs offline.</li>
     <li><b>A clone.</b> <code>make data</code> rebuilds every number from the committed raw files, with no network.</li>
   </ul>
@@ -205,13 +206,12 @@ power-dispatch run --data-dir ./mysystem --date 2030-01-01</code></pre>
   system that runs. A test builds that system, solves it, and fails when the
   document stops matching the engine.</p>
 
-  <h2>Five things a licensed tool gives you that this does not</h2>
+  <h2>Four things a licensed tool gives you that this does not</h2>
   <p>Say it plainly, because you will find it in the first hour anyway.</p>
   <ul>
     <li>No named unit, so no per-unit commitment, start cost, or minimum run time.</li>
     <li>No full network model. Transmission geometry comes from OpenStreetMap, and the ratings are class defaults.</li>
     <li>No multi-year chronology. A year of days is 365 separate 24-hour programs, with storage reset at each midnight.</li>
-    <li>No contract, hedge, or settlement position.</li>
     <li>Three zones, so nothing below the island grid except the reduced loss surface.</li>
   </ul>
   <p>Everything in that list is a stated limit with a reason, and two of them

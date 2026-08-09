@@ -359,7 +359,7 @@ on the demand-peak day shows which hours move from coal to oil. Save the run,
 restore the base, save it, and open Compare scenarios to see the price and
 congestion-rent difference.
 
-![Data-center case. Luzon mean price rises from P6.01 to P11.50/kWh. The Leyte-Luzon link fills.](docs/workflow-1-datacenter.gif)
+![Data-center case. The Luzon mean price rises from P6.00 to P11.50/kWh, which is P5.50 more, and the run adds P32.55M of congestion rent. The Leyte-Luzon link fills.](docs/workflow-1-datacenter.gif)
 
 **Turn off the two biggest units.** Open Review and edit model inputs > Generators,
 set SPI U1 and SPI U2 (the two 647 MW Sual units) to zero, and press Run. Loss of
@@ -527,7 +527,7 @@ src/
   lib/       types.ts (generated-model types), data.ts (loader hooks + formatters)
   ui/        kit.tsx (Panel, StatTile, Chip, Segmented, ThemeToggle), DataGrid.tsx
   map/       MapView.tsx (MapLibre network view)
-  shell/     nav.ts (41 destinations, grouped by question), Shell.tsx (bar, rail, palette, run dock)
+  shell/     nav.ts (42 destinations, grouped by question), Shell.tsx (bar, rail, palette, run dock)
   studio/    Studio.tsx (model state, panes, Run button, share links and direct links)
              model.ts (object model + scenario overrides + solveModel)
              lpText.ts (canonical LP text, byte-mirror of pipeline/lp_model.py)

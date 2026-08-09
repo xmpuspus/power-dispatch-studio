@@ -237,6 +237,24 @@
   that coarseness is the most likely reason the committed run scores worse. The
   linear model stays the default because the measurement chose it.</p>
 
+  <h2>A contract book marks against modeled spot, and stops at energy</h2>
+  <p>The dispatch model answers half of "what does this scenario do to my
+  position". It produces an hourly spot price for each grid. The other half is a
+  contract book, and the book belongs to the reader, so the studio holds an
+  editable one that stays in the browser and never uploads.</p>
+  <p>One contract is a volume at a strike price over a set of hours. A buy
+  contract fixes what the holder pays, so a spot price above the strike is a gain
+  against buying at spot. A sell contract fixes what the holder receives, so the
+  same move is a loss. The load a reader declares and has not contracted is the
+  open position, and it prices at spot.</p>
+  <p>The arithmetic is the same in both places. <code>studio/src/studio/contracts.ts</code>
+  runs it in the browser and <code>src/power_dispatch/contracts.py</code> runs it
+  on the command line, and both test suites check the same worked numbers, so a
+  position marked in one re-marks in the other.</p>
+  <p>What it leaves out: no capacity fee, no wheeling or line-rental charge, no
+  tax, no take-or-pay, and no credit terms. A settlement statement carries more
+  lines than this. It marks energy against modeled spot and nothing else.</p>
+
   <h2>Named units dispatch the same daily energy as fuel blocks, so the engine keeps its blocks</h2>
   <p>The model holds one block per fuel per grid, so it cannot say which plant
   ran. <code>pipeline/unit_probe.py</code> tests what a per-unit model would

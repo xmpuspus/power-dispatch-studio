@@ -218,6 +218,9 @@ def canonical():
     # the named-unit dispatch probe (`python3 pipeline/unit_probe.py --derive`)
     up = _load("unit_probe.json")
     up_on = bool(up.get("generated_by"))
+    # the worked contract position (`python3 pipeline/position_probe.py --derive`)
+    pp = _load("position_probe.json")
+    pp_on = bool(pp.get("generated_by"))
 
     league = cg["league"]
 
@@ -568,6 +571,14 @@ def canonical():
         "bc_flows": _bc_flows_table(bc["flows"], "Link"),
         "bc_offer_target": _bc_offer_target(ob),
         "bc_offer_html": _bc_offer_html(ob),
+        # --- the worked contract position
+        "pp_book_mw": str(int(pp["book_mw"])) if pp_on else "",
+        "pp_cover": f"{pp['covered_share_pct']:.0f}" if pp_on else "",
+        "pp_base_spot": f"{pp['base_mean_spot_php_kwh']:.2f}" if pp_on else "",
+        "pp_scen_spot": f"{pp['scenario_mean_spot_php_kwh']:.2f}" if pp_on else "",
+        "pp_pos": f"{pp['position_change_php']:,.0f}" if pp_on else "",
+        "pp_open": f"{pp['open_cost_change_php']:,.0f}" if pp_on else "",
+        "pp_net": f"{pp['net_change_php']:,.0f}" if pp_on else "",
         # --- the named-unit dispatch probe
         "up_units": (
             str(sum(up["n_units_dispatched"].values())) if up_on else ""
@@ -1163,6 +1174,37 @@ REGISTRY = [
         "README.md",
         re.compile(r"stable negative rank\s+correlation \(\*\*(-[\d.]+)\*\*"),
         ["loss_vis_spearman"],
+    ),
+    # --- the worked contract position
+    (
+        "README.md",
+        re.compile(r"moves a (\d+) MW contract book by P([\d,]+) in one day"),
+        ["pp_book_mw", "pp_net"],
+    ),
+    (
+        "README.md",
+        re.compile(r"which leaves the book \*\*(\d+) percent\*\*"),
+        ["pp_cover"],
+    ),
+    (
+        "README.md",
+        re.compile(r"spot rises from\s*\n?\s*P([\d.]+)/kWh to P([\d.]+)/kWh"),
+        ["pp_base_spot", "pp_scen_spot"],
+    ),
+    (
+        "README.md",
+        re.compile(r"\| The contracts gain \| \*\*\+P([\d,]+)\*\* \|"),
+        ["pp_pos"],
+    ),
+    (
+        "README.md",
+        re.compile(r"\| The uncontracted load costs more \| \*\*\+P([\d,]+)\*\* \|"),
+        ["pp_open"],
+    ),
+    (
+        "README.md",
+        re.compile(r"\| Net \| \*\*\+P([\d,]+)\*\* \|"),
+        ["pp_net"],
     ),
     # --- the named-unit dispatch probe
     (

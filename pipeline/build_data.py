@@ -1211,6 +1211,11 @@ def main() -> int:
     # published plans rather than the nightly archive, so it derives on demand
     # and rides through here the same way the other probes do
     # the named-unit dispatch probe (pipeline/unit_probe.py), derived on demand
+    # the worked contract position the README carries (pipeline/position_probe.py)
+    pp_path = os.path.join(HERE, "..", "data", "derived", "position_probe.json")
+    position_probe = (
+        json.load(open(pp_path)) if os.path.isfile(pp_path) else {"available": False}
+    )
     up_path = os.path.join(HERE, "..", "data", "derived", "unit_probe.json")
     unit_probe = (
         json.load(open(up_path)) if os.path.isfile(up_path) else {"available": False}
@@ -1229,6 +1234,7 @@ def main() -> int:
         ("loss_surface.json", loss_surface),
         ("future_year.json", future_year),
         ("unit_probe.json", unit_probe),
+        ("position_probe.json", position_probe),
         ("reliability.json", reliability),
         ("prices.json", prices),
         ("price_load.json", price_load),

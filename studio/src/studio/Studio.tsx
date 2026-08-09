@@ -44,6 +44,7 @@ import { SitesView } from './SitesView'
 import { LossValidationView } from './LossValidationView'
 import { UcProbeView } from './UcProbeView'
 import { FutureYearView } from './FutureYearView'
+import { ContractView } from './ContractView'
 import { WeekView } from './WeekView'
 import { ForwardView } from './ForwardView'
 import { MultiYearView } from './MultiYearView'
@@ -72,7 +73,7 @@ import {
   SolvedReliabilityView,
 } from './model-views'
 
-// The nav shape, the 41 destinations, and which of them read one grid at a time
+// The nav shape, the 42 destinations, and which of them read one grid at a time
 // all live in shell/nav.ts. Studio keeps the model state and the panes; the
 // shell owns how an analyst reaches them.
 
@@ -671,6 +672,20 @@ function DataPane({
     if (nav.id === 'lossval') return <LossValidationView />
     if (nav.id === 'commitment') return <UcProbeView />
     if (nav.id === 'futureyear') return <FutureYearView grid={grid} />
+    if (nav.id === 'contracts') {
+      if (!profiles)
+        return <div className="basecase-banner">Loading recorded market days.</div>
+      return (
+        <ContractView
+          d={d}
+          profiles={profiles}
+          objects={objects}
+          overrides={ranOv}
+          date={chronoDate ?? profiles.default_day ?? ''}
+          scenarioName={scenarioName}
+        />
+      )
+    }
     if (nav.id === 'forward' && profiles)
       return <ForwardView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'multiyear' && profiles)

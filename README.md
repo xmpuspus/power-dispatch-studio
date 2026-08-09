@@ -1,7 +1,7 @@
 # Power Dispatch Studio
 
 **Test whether the Philippine grid can carry announced data-center demand.** The
-project combines a map, a 41-view browser dispatch studio, and a daily archive
+project combines a map, a 42-view browser dispatch studio, and a daily archive
 built from the market operator's public files. It names transmission equipment
 that reached a limit in 5-minute records, places announced demand on the grid,
 and estimates how modeled spot prices and a sample Meralco household bill change.
@@ -32,7 +32,7 @@ the browser.
 | Start here | What it gives you |
 |---|---|
 | **[Open the map](https://power-dispatch-studio.vercel.app)** | Five modes over the archive, plus an in-browser simulate |
-| **[Open the studio](https://power-dispatch-studio.vercel.app/studio/)** | 41 analyst views, a command palette, and scenarios that travel as a link |
+| **[Open the studio](https://power-dispatch-studio.vercel.app/studio/)** | 42 analyst views, a command palette, and scenarios that travel as a link |
 | **[Methods, sources, and assumptions](web/methodology.html)** | The calculation, unit conversions, sources, assumptions, and limits |
 | **`pip install power-dispatch-studio`** | The same LP engine, offline, with a bundled archive snapshot |
 | **[If you already use a licensed production-cost model](web/for-analysts.html)** | What this solves, what it refuses to solve, and how close it gets |
@@ -46,7 +46,7 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 
 ## Contents
 
-- [Six steps take an analyst from the ability list to a file the command line runs](#six-steps-take-an-analyst-from-the-ability-list-to-a-file-the-command-line-runs)
+- [Seven steps take an analyst from the ability list to pesos, then to a file](#seven-steps-take-an-analyst-from-the-ability-list-to-pesos-then-to-a-file)
 - [The Leyte-Cebu link reached a binding limit on 114 of 117 days](#the-leyte-cebu-link-reached-a-binding-limit-on-114-of-117-days)
 - [Luzon reserves fell short on 73 of the window's 118 days](#luzon-reserves-fell-short-on-73-of-the-windows-118-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
@@ -55,9 +55,10 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 - [The cost stack stays near P6 while recorded evening prices include scarcity and offer premiums](#the-cost-stack-stays-near-p6-while-recorded-evening-prices-include-scarcity-and-offer-premiums)
 - [Offer-book replay correlations range from 0.69 to 0.86](#offer-book-replay-correlations-range-from-069-to-086)
 - [The committed build list covers all 366 days of 2028, and it retires nothing](#the-committed-build-list-covers-all-366-days-of-2028-and-it-retires-nothing)
+- [Both Sual units out moves a 350 MW contract book by P954,000 in one day](#both-sual-units-out-moves-a-350-mw-contract-book-by-p954000-in-one-day)
 - [Naming all 141 units changes no daily energy, so the model keeps its fuel blocks](#naming-all-141-units-changes-no-daily-energy-so-the-model-keeps-its-fuel-blocks)
 - [Unit commitment lowered the price correlation in all five scored series, so the linear model stays](#unit-commitment-lowered-the-price-correlation-in-all-five-scored-series-so-the-linear-model-stays)
-- [The studio is 41 views, and every one of them is a URL you can send](#the-studio-is-41-views-and-every-one-of-them-is-a-url-you-can-send)
+- [The studio is 42 views, and every one of them is a URL you can send](#the-studio-is-42-views-and-every-one-of-them-is-a-url-you-can-send)
 - [IEMOP's public window rolls at 90 days, so the git history is the archive](#iemops-public-window-rolls-at-90-days-so-the-git-history-is-the-archive)
 - [The model states six limits](#the-model-states-six-limits) · [Where the data comes from](#where-the-data-comes-from) · [Reproduce locally](#reproduce-locally) · [Data products](#data-products) · [Method](#method)
 
@@ -71,21 +72,22 @@ change to the bill.
 
 ![Four dark cards tiled into one summary. The constrained substations drawn on the Philippine grid, with the Leyte-Cebu link on top. The Luzon price-against-load curve, where the same 300 MW adds about P0.32/kWh on a quiet grid and about five times that on a full one. The May 2026 margin as 36 blocks of 100 MW, with Sual's two units taking 13 of them. The Meralco June 2026 bill split three ways, where the spot slice is about a twentieth of the whole rate](docs/story-montage.gif)
 
-## Six steps take an analyst from the ability list to a file the command line runs
+## Seven steps take an analyst from the ability list to pesos, then to a file
 
 One recording, no cuts, of the path an analyst who lost a licensed tool actually
-walks. It reads the ability table and the five refusals, then the replay error,
-then a limit that carries a measurement. It then opens a whole year solved on
-published plans, makes a model edit, and watches a live re-clear. It ends by
-downloading the run as a file that `power-dispatch run --scenario` reads back.
+walks. It reads the ability table and the four refusals, then the replay error,
+then a limit that carries a measurement. It opens a whole year solved on
+published plans, takes both Sual units out of the model, and reads what that
+costs a contract book in pesos. It ends by downloading the run as a file that
+`power-dispatch run --scenario` reads back.
 
-[![The recording opens on the analyst page, where a table marks seven abilities Yes, two Partly, and five as refusals. It scrolls to the replay accuracy table, then opens the studio on the unit-commitment test. There Visayas drops from 0.442 to -0.003, and the correlation falls in all five scored series. A whole solved year follows, where 2028 Luzon peaks at 16,180 MW and no day runs short. It edits Luzon's evening load, presses Run, and drags a data center on, which moves the price from P6.00 to P12.00 there. It ends on Download scenario, which writes three options for the recorded day.](docs/analyst-walkthrough.gif)](docs/analyst-walkthrough.mp4)
+[![The recording opens on the analyst page, where a table marks seven abilities Yes, three Partly, and four as refusals. It scrolls to the replay accuracy table, then opens the studio on the unit-commitment test. There Visayas drops from 0.442 to -0.003, and the correlation falls in all five scored series. A whole solved year follows, where 2028 Luzon peaks at 16,180 MW and no day runs short. It takes both 647 MW Sual units out of the fuels table, presses Run, and the contract view reports plus P1.05M on the book, plus P150k on the uncontracted load, and plus P900k net. It ends on Download scenario, which writes three options for the recorded day.](docs/analyst-walkthrough.gif)](docs/analyst-walkthrough.mp4)
 
 Recorded from the running app by
 [`build/record_analyst_walkthrough.py`](build/record_analyst_walkthrough.py). It
-fails if the ability table stops carrying five refusals, if the commitment view
-stops showing its measured delta, or if the download produces no file. Sharper
-as [MP4](docs/analyst-walkthrough.mp4).
+fails if the ability table stops carrying four refusals, if the commitment view
+stops showing its measured delta, if the scenario leaves the position flat, or if
+the download produces no file. Sharper as [MP4](docs/analyst-walkthrough.mp4).
 
 ## The Leyte-Cebu link reached a binding limit on 114 of 117 days
 
@@ -636,6 +638,43 @@ make future YEAR=2028
 power-dispatch run --data-dir data/derived/future/2028 --date 2028-06-17
 ```
 
+## Both Sual units out moves a 350 MW contract book by P954,000 in one day
+
+The model produces an hourly spot price. A supplier, a plant owner, or a factory
+buyer wants the next step: what does that price do to my position? That is
+arithmetic on a contract book, and the book is yours.
+
+A worked case, on the archive's most recent day. The book holds a 250 MW power
+supply agreement struck at P6.40/kWh and a 100 MW evening block at P9.00/kWh,
+against a declared Luzon load of 400 MW, which leaves the book **67 percent**
+covered. Trip both 647 MW Sual units and the mean Luzon spot rises from
+P5.56/kWh to P5.96/kWh.
+
+| Line | Change for the day |
+|---|---|
+| The contracts gain | **+P2,385,000** |
+| The uncontracted load costs more | **+P1,431,000** |
+| Net | **+P954,000** |
+
+Read the sign carefully. The supply agreement is a buy at a strike above spot, so
+a higher spot makes it worth more against buying at spot. The one third of the
+load with no cover costs more at the same time. The net is positive here only
+because the covered volume is larger than the open volume.
+
+```bash
+power-dispatch run --scenario mybook.json --position
+```
+
+The studio holds an editable book at
+[#v=contract-position](https://power-dispatch-studio.vercel.app/studio/#v=contract-position),
+and it stays in the browser. `studio/src/studio/contracts.ts` and
+`src/power_dispatch/contracts.py` run the same arithmetic, and both suites check
+the same worked numbers.
+
+It marks energy against modeled spot and stops there. No capacity fee, no
+wheeling charge, no tax, no take-or-pay, and no credit terms. A settlement
+statement carries more lines than this.
+
 ## Naming all 141 units changes no daily energy, so the model keeps its fuel blocks
 
 The engine holds one block per fuel per grid, so it cannot say which plant ran.
@@ -696,7 +735,7 @@ The linear model stays the default because the measurement chose it.
 studio shows them at
 [#v=commitment-test](https://power-dispatch-studio.vercel.app/studio/#v=commitment-test).
 
-## The studio is 41 views, and every one of them is a URL you can send
+## The studio is 42 views, and every one of them is a URL you can send
 
 The full browser interface lives at
 [/studio/](https://power-dispatch-studio.vercel.app/studio/). It takes the
@@ -729,7 +768,7 @@ scheduled build writes them to [`web/data/exports/`](web/data/exports/), linked 
 Drivers panel and documented in
 [`web/data/exports/index.json`](web/data/exports/index.json).
 
-### Search and question groups organize all 41 views
+### Search and question groups organize all 42 views
 
 The navigation groups views by the question they answer. The clip below shows
 three ways to move through the studio.
@@ -737,7 +776,7 @@ three ways to move through the studio.
 - **A command palette.** Cmd K, then type what you want to know. The ranker
   matches the label, the hint and a per-view alias list, so "price setter"
   finds Marginal units.
-- **Question navigation.** The 41 views sit in 8 groups, and each group is a
+- **Question navigation.** The 42 views sit in 8 groups, and each group is a
   question. The eight are How today's market clears, Can supply cover demand,
   Where new demand can connect, Prices and bills, What new capacity is needed,
   Build and compare scenarios, Check the model against market records, and
@@ -746,25 +785,25 @@ three ways to move through the studio.
   all three grids while you move around. Move a slider and it re-prices live,
   labelled a preview until you press Run.
 
-![The studio shell in four parts. The command palette opens over the studio, and the query 'price setter' ranks Marginal units first. Pressing Enter opens that view and writes its link into the address bar. The question rail expands to show all 41 views in eight groups, and Loss of one major unit opens from it. A data-center slider then moves in the Quick scenario, and the run summary recalculates the Luzon clearing price from P6.00 to P12.00.](docs/studio-shell.gif)
+![The studio shell in four parts. The command palette opens over the studio, and the query 'price setter' ranks Marginal units first. Pressing Enter opens that view and writes its link into the address bar. The question rail expands to show all 42 views in eight groups, and Loss of one major unit opens from it. A data-center slider then moves in the Quick scenario, and the run summary recalculates the Luzon clearing price from P6.00 to P12.00.](docs/studio-shell.gif)
 
 **Every view has a URL.** The interface writes `#v=<slug>` as you move, beside the
 `#m=` scenario share, so
 [`/studio/#v=backcast&g=visayas`](https://power-dispatch-studio.vercel.app/studio/#v=backcast&g=visayas)
 opens the Visayas historical replay for whoever you send it to. This lets the
-README link to all 41 views without embedding 41 clips. GitHub does not defer
-GIF downloads, and 41 clips would total about 200 MB.
+README link to all 42 views without embedding 42 clips. GitHub does not defer
+GIF downloads, and 42 clips would total about 200 MB.
 
-Here are all 41 in one frame, each tile a real screenshot of the running app.
+Here are all 42 in one frame, each tile a real screenshot of the running app.
 Click it to open the sheet full size, because inline the tile names read and
 the numbers inside them do not. `build/shoot_view_sheet.py` opens each view by
 its deep link. It checks that the shell landed on the view it asked for, and
-fails on any mismatch. The sheet checks all 41 links in one run.
+fails on any mismatch. The sheet checks all 42 links in one run.
 
-[![A contact sheet of all 41 studio views, five across. Each tile is a real screenshot of the running app, labeled with its view name and question group. The rows cover today's market, supply adequacy, new-demand siting, prices and bills, new capacity, scenarios, checks against market records, and model inputs.](docs/views-contact-sheet.png)](docs/views-contact-sheet.png)
+[![A contact sheet of all 42 studio views, five across. Each tile is a real screenshot of the running app, labeled with its view name and question group. The rows cover today's market, supply adequacy, new-demand siting, prices and bills, new capacity, scenarios, checks against market records, and model inputs.](docs/views-contact-sheet.png)](docs/views-contact-sheet.png)
 
 <details>
-<summary><b>Open any of the 41 views directly</b></summary>
+<summary><b>Open any of the 42 views directly</b></summary>
 
 <!-- views table start -->
 
@@ -787,6 +826,7 @@ fails on any mismatch. The sheet checks all 41 links in one run.
 |  | [Prices at grid connection points (nodal prices)](https://power-dispatch-studio.vercel.app/studio/#v=nodal-prices) | How each connection point differs from its regional price |
 |  | [Generation by island grid](https://power-dispatch-studio.vercel.app/studio/#v=regional-split) | How the solved dispatch divides across the three grids |
 | Prices and bills | [Bill impact](https://power-dispatch-studio.vercel.app/studio/#v=bill-impact) | How a spot-price change in WESM affects a Meralco household bill |
+|  | [Your contract position](https://power-dispatch-studio.vercel.app/studio/#v=contract-position) | What a scenario does to a book of contracts, in pesos |
 |  | [Average price earned by each technology (capture price)](https://power-dispatch-studio.vercel.app/studio/#v=capture-prices) | What each technology earns compared with the market average |
 |  | [Possible future price range](https://power-dispatch-studio.vercel.app/studio/#v=forward-prices) | The forward band the archive window supports |
 |  | [Supplier concentration and market power](https://power-dispatch-studio.vercel.app/studio/#v=market-power) | How much capacity the largest suppliers control and whether the grid can replace them |
@@ -817,7 +857,7 @@ fails on any mismatch. The sheet checks all 41 links in one run.
 </details>
 
 The end-to-end recording is the
-[analyst walkthrough](#six-steps-take-an-analyst-from-the-ability-list-to-a-file-the-command-line-runs)
+[analyst walkthrough](#seven-steps-take-an-analyst-from-the-ability-list-to-pesos-then-to-a-file)
 at the top of this page, and
 [`build/record_analyst_walkthrough.py`](build/record_analyst_walkthrough.py)
 rebuilds it from the running app. An older studio recording sat here with no
@@ -864,10 +904,10 @@ carries the key table and says which three settings a round trip through the
 browser drops. One fixture, `tests/fixtures/scenario_example.json`, is read by
 the Python test and the browser test, so the two sides cannot drift apart.
 
-**This page downloads 19.8 MB of media across 16 files.** The earlier version
+**This page downloads 19.9 MB of media across 16 files.** The earlier version
 downloaded 87.2 MB across 22 files. Browser tests show that GitHub downloads
-media inside closed detail blocks. Longer recordings are links, and the 41 views
-use one contact sheet plus 41 direct links.
+media inside closed detail blocks. Longer recordings are links, and the 42 views
+use one contact sheet plus 42 direct links.
 
 `python3 tests/test_readme_views.py` re-measures that total against the files on
 disk and fails when the stated number drifts.

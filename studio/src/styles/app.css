@@ -2085,3 +2085,28 @@
 .assum b {
   color: var(--text);
 }
+
+/* contract position: an editable book, so the cells hold controls rather than
+   text. .propgrid__input is 84px, which is right for a number and too narrow
+   for a contract name, so the name cell overrides it at equal specificity. */
+.propgrid__input.ctr__name {
+  width: 148px;
+  min-width: 148px;
+}
+.ctr__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  margin-top: var(--sp-3);
+}
+.ctr__load {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+}
+.ctr__load input {
+  width: 92px;
+}

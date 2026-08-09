@@ -1,0 +1,41 @@
+{
+ "generated_by": "pipeline/position_probe.py",
+ "date": "2026-08-02",
+ "scenario": "both Sual units out, 1294 MW of Luzon coal",
+ "storage_mw": 1319,
+ "storage_note": "the existing storage fleet is in both runs, the same way the studio carries it, so the browser reproduces these figures",
+ "book": [
+  {
+   "name": "Power supply agreement",
+   "grid": "luzon",
+   "mw": 250,
+   "strike_php_kwh": 6.4,
+   "side": "buy"
+  },
+  {
+   "name": "Evening peak block",
+   "grid": "luzon",
+   "mw": 100,
+   "strike_php_kwh": 9.0,
+   "side": "buy",
+   "hours": [
+    18,
+    19,
+    20,
+    21
+   ]
+  }
+ ],
+ "load_mw": {
+  "luzon": 400
+ },
+ "contracted_mw": 250,
+ "book_mw": 350,
+ "covered_share_pct": 66.7,
+ "base_mean_spot_php_kwh": 5.5617,
+ "scenario_mean_spot_php_kwh": 5.9592,
+ "position_change_php": 2385000.0,
+ "open_cost_change_php": 1431000.0,
+ "net_change_php": 954000.0,
+ "note": "Energy marked against modeled spot. No capacity fee, no wheeling charge, no tax, and no credit terms."
+}

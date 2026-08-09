@@ -84,6 +84,27 @@ def validate(scenario: Any) -> list[str]:
     if "meta" in scenario and not isinstance(scenario["meta"], dict):
         e.append("'meta' must be an object. Nothing in it reaches the engine")
 
+    # the contract book. The engine never reads it; power_dispatch.settle does,
+    # so a scenario file can carry the position question with the run.
+    port = scenario.get("portfolio")
+    if port is not None:
+        if not isinstance(port, dict):
+            e.append("'portfolio' must be an object with contracts and load_mw")
+        else:
+            from .contracts import validate_book
+
+            e += [f"portfolio.{m}" for m in validate_book(port.get("contracts") or [])]
+            load = port.get("load_mw")
+            if load is not None:
+                if not isinstance(load, dict):
+                    e.append("'portfolio.load_mw' must be an object keyed by grid")
+                else:
+                    for g, v in load.items():
+                        if g not in GRIDS:
+                            e.append(f"'portfolio.load_mw' names {g!r}, not a grid")
+                        elif not _num(v):
+                            e.append(f"'portfolio.load_mw.{g}' must be MW")
+
     opts = scenario.get("opts", {})
     if not isinstance(opts, dict):
         return e + ["'opts' must be an object"]

@@ -1,11 +1,11 @@
-"""Open all 41 studio views by deep link, shoot each one, tile them into a sheet.
+"""Open all 42 studio views by deep link, shoot each one, tile them into a sheet.
 
-The README has to show what the studio can do without downloading 41 clips.
+The README has to show what the studio can do without downloading 42 clips.
 GitHub applies no lazy loading, so an embedded GIF per view would cost about
 200 MB on open. One contact sheet costs well under a megabyte and every tile is
 a real screenshot of the running app.
 
-It also checks all 41 deep links. `#v=<slug>` is
+It also checks all 42 deep links. `#v=<slug>` is
 read by `studio/src/shell/nav.ts`, and nothing else opens every slug. A slug
 that stops resolving leaves the shell on its previous view, so the script
 compares the shell's own current-view label against the label `nav.ts` declares
