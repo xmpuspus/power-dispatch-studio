@@ -970,6 +970,11 @@ attribution, and will honor any takedown request from the publisher.
 Use this attribution when you redistribute the calculated data. *Power Dispatch Studio (2026), IEMOP
 public market data archive, https://github.com/xmpuspus/power-dispatch-studio*.
 
+`CITATION.cff` carries the machine-readable citation. A software-paper draft sits
+in [`paper/paper.md`](paper/paper.md), and a 90-minute teaching lab that runs
+three tasks in the browser and again in Python sits in
+[`docs/workshop/`](docs/workshop/README.md).
+
 ## Public-record disclaimer
 
 Recorded inputs cite public records from IEMOP, NGCP, Meralco, PCIJ, and company
