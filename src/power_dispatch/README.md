@@ -63,8 +63,31 @@ the following override keys.
 | `storage` | `[{grid, power_mw, energy_mwh}]` | added BESS |
 | `reserve_deduction` | `bool` | withhold scheduled reserve |
 | `offer_mode` | `bool` | replay the recorded offer book. False uses the cost calculation |
+| `gas_budget` | `{grid: MWh}` | daily gas-energy limit, for a lower-supply case |
 
 `grid` is one of `luzon`, `visayas`, `mindanao`.
+
+## The scenario file
+
+A scenario carries a schema stamp, so a file written in one place runs in
+another. The studio writes it, this package reads it, and `validate` says what is
+wrong before the solver ever sees it.
+
+```bash
+power-dispatch validate myscenario.json
+power-dispatch validate --keys myscenario.json   # every option, with its meaning
+power-dispatch run --scenario myscenario.json -o out.csv
+```
+
+```python
+import power_dispatch as pd
+
+pd.validate_scenario(scenario)      # a list of messages, and never raises
+pd.load_scenario("myscenario.json") # raises ValueError carrying all of them
+```
+
+The full key table is in the
+[scenario schema](https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/scenario-schema.md).
 
 ## The data snapshot
 

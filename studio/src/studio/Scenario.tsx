@@ -33,6 +33,8 @@ export function ScenarioView({
   onRevert,
   onImportCsv,
   importedKeys,
+  onScenarioFile,
+  scenarioMsg,
   onLive,
 }: {
   d: Dispatch
@@ -43,6 +45,10 @@ export function ScenarioView({
   onRevert: (cls: ClassId, id: string, prop: string) => void
   onImportCsv?: (text: string) => ImportResult
   importedKeys?: string[]
+  /** Write the scenario to a file, or read one back. Studio owns both sides. */
+  onScenarioFile?: (mode: 'save' | 'load', file?: File) => void
+  /** What the last save or load did, shown under the buttons. */
+  scenarioMsg?: string
   /** Reports the live coupled clear so the run summary can show it beside the
       solved scenario. These controls preview; they do not write the model. */
   onLive?: (p: Record<GridKey, number> | null) => void
@@ -407,6 +413,37 @@ export function ScenarioView({
                   hourly market replay, not these individual input overrides. They cannot
                   be imported here.
                 </p>
+              </div>
+            )}
+            {onScenarioFile && (
+              <div className="byo">
+                <div className="byo__head">Take this scenario to Python</div>
+                <p className="note">
+                  The same file runs here and on the command line. Download it, then
+                  <code> power-dispatch run --scenario yours.json</code>, or load a file
+                  someone sent you.
+                </p>
+                <div className="byo__actions">
+                  <button
+                    className="btn btn--ghost btn--sm"
+                    onClick={() => onScenarioFile('save')}
+                  >
+                    Download scenario
+                  </button>
+                  <label className="btn btn--ghost btn--sm">
+                    Load scenario
+                    <input
+                      type="file"
+                      accept="application/json,.json"
+                      style={{ display: 'none' }}
+                      onChange={(e) => {
+                        onScenarioFile('load', e.target.files?.[0])
+                        e.target.value = ''
+                      }}
+                    />
+                  </label>
+                </div>
+                {scenarioMsg && <p className="byo__msg note">{scenarioMsg}</p>}
               </div>
             )}
           </div>

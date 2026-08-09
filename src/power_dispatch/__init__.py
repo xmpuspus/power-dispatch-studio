@@ -23,6 +23,9 @@ import json
 import os
 
 from .engine.lp_dispatch import run_chronology_lp
+from .schema import SCHEMA as SCENARIO_SCHEMA
+from .schema import load as load_scenario
+from .schema import validate as validate_scenario
 
 __version__ = "0.1.0"
 
@@ -33,6 +36,9 @@ __all__ = [
     "list_days",
     "run_scenario",
     "run_chronology_lp",
+    "validate_scenario",
+    "load_scenario",
+    "SCENARIO_SCHEMA",
 ]
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
@@ -50,6 +56,10 @@ OPT_KEYS = (
     "storage",  # [{grid, power_mw, energy_mwh}] added BESS
     "reserve_deduction",  # bool, withhold scheduled reserve from the book
     "offer_mode",  # bool, replay the observed offer book (item: loads it)
+    # a daily gas-energy limit, {grid: MWh}, for a lower-supply case. The engine
+    # has read it since the Malampaya lever landed and this list did not name it,
+    # which tests/test_scenario_file.py now fails on.
+    "gas_budget",
 )
 
 

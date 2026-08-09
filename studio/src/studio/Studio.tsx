@@ -48,7 +48,8 @@ import { WeekView } from './WeekView'
 import { ForwardView } from './ForwardView'
 import { MultiYearView } from './MultiYearView'
 import { ExpansionView } from './ExpansionView'
-import { decodeShare, loadRuns, type SavedRun } from './runs'
+import { decodeShare, downloadCsv, loadRuns, type SavedRun } from './runs'
+import { fromScenarioFile, scenarioFileText, toScenarioFile } from './scenarioFile'
 import {
   baseObjects,
   overrideKey,
@@ -246,6 +247,46 @@ export function Studio({
     }
     return res
   }
+  // The scenario file: the same bytes the command line reads. Saving writes the
+  // current edits, loading replaces them and reports what the object tables
+  // could not hold, because a silent half-load is worse than no load.
+  const [scenarioMsg, setScenarioMsg] = useState('')
+  const scenarioFile = (mode: 'save' | 'load', file?: File) => {
+    const date = chronoDate ?? profiles.data?.default_day ?? ''
+    if (mode === 'save') {
+      const f = toScenarioFile(active.name, date, objects, active.overrides)
+      downloadCsv(
+        `${active.name.replace(/\W+/g, '-').toLowerCase()}.json`,
+        scenarioFileText(f)
+      )
+      const n = Object.keys(f.opts).length
+      setScenarioMsg(`Wrote ${n} option${n === 1 ? '' : 's'} for ${date}.`)
+      return
+    }
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const r = fromScenarioFile(JSON.parse(String(reader.result ?? '')), objects)
+        setScenarios((prev) => [
+          ...prev,
+          { name: `${r.name} (file)`, overrides: r.overrides },
+        ])
+        setAi(scenarios.length)
+        if (profiles.data?.days.some((x) => x.date === r.date)) setChronoDate(r.date)
+        setDirty(true)
+        setScenarioMsg(
+          `Loaded ${Object.keys(r.overrides).length} edits.` +
+            (r.warnings.length ? ` ${r.warnings.join(' ')}` : '')
+        )
+      } catch (e) {
+        setScenarioMsg(e instanceof Error ? e.message : 'Could not read that file.')
+      }
+    }
+    reader.onerror = () => setScenarioMsg('Could not read that file.')
+    reader.readAsText(file)
+  }
+
   const pickScenario = (idx: number) => {
     setAi(idx)
     setDirty(true) // must Run to see the switched scenario's solution
@@ -417,6 +458,8 @@ export function Studio({
                   onRevert={revert}
                   onImportCsv={importCsv}
                   importedKeys={active.importedKeys}
+                  onScenarioFile={scenarioFile}
+                  scenarioMsg={scenarioMsg}
                   onRun={run}
                   onLive={onLive}
                 />
@@ -518,6 +561,8 @@ function DataPane({
   onRevert,
   onImportCsv,
   importedKeys,
+  onScenarioFile,
+  scenarioMsg,
   onRun,
   onLive,
 }: {
@@ -543,6 +588,8 @@ function DataPane({
   onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
   onRevert: (cls: ClassId, id: string, prop: string) => void
   onImportCsv: (text: string) => ImportResult
+  onScenarioFile: (mode: 'save' | 'load', file?: File) => void
+  scenarioMsg: string
   importedKeys: string[] | undefined
   onRun: () => void
   onLive: (p: Record<GridKey, number> | null) => void
@@ -582,6 +629,8 @@ function DataPane({
         onEdit={onEdit}
         onRevert={onRevert}
         onImportCsv={onImportCsv}
+        onScenarioFile={onScenarioFile}
+        scenarioMsg={scenarioMsg}
         importedKeys={importedKeys}
         onLive={onLive}
       />

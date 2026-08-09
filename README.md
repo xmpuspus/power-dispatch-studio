@@ -788,10 +788,29 @@ already exist and nothing on this page named them until now.
 | Run report | [Saved runs](https://power-dispatch-studio.vercel.app/studio/#v=saved-runs), or the run dock's take-away button | One self-contained HTML file: inputs, sources, and the frozen hourly result |
 | Hourly CSV | The same view, plus six analysis views | One row per hour with price, demand, shortfall, flows, and storage |
 | Archive CSVs | [/data/exports/](https://power-dispatch-studio.vercel.app/data/exports/index.json) | `market_by_day.csv`, `congestion_league.csv`, `backcast_by_grid.csv`, rebuilt nightly |
+| Scenario file | Quick what-if, "Take this scenario to Python" | The run's own settings as JSON, which the command line reads back |
 
 The report reads years after the browser storage that held the run is gone. The
 archive CSVs carry a CC-BY-4.0 license and an `index.json` that documents each
 column.
+
+### A scenario drags out of a slider and runs on the command line
+
+The studio used to keep its edits in a URL hash and the command line took its own
+JSON, so a scenario built in one could not run in the other. Both now read
+`pds-scenario/1`.
+
+```bash
+power-dispatch validate myscenario.json   # names every problem, one per line
+power-dispatch run --scenario myscenario.json -o out.csv
+```
+
+A broken file prints what is wrong instead of a traceback: an unknown option
+suggests the real one, a misspelled grid is named, and a text value where a
+number belongs says which field. [`docs/scenario-schema.md`](docs/scenario-schema.md)
+carries the key table and says which three settings a round trip through the
+browser drops. One fixture, `tests/fixtures/scenario_example.json`, is read by
+the Python test and the browser test, so the two sides cannot drift apart.
 
 **This page downloads 15.8 MB of media across 15 files.** The earlier version
 downloaded 87.2 MB across 22 files. Browser tests show that GitHub downloads

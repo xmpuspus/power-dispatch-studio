@@ -81,6 +81,7 @@ qa:
 	$(PY) tests/test_engine_sync.py
 	$(PY) tests/test_data_contract.py
 	$(PY) tests/test_future_year.py
+	$(PY) tests/test_scenario_file.py
 	$(PY) tests/test_readme_views.py
 	$(PY) tests/test_contrast.py
 	$(PY) tests/test_palette.py

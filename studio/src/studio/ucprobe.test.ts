@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import type { MarketOps, UcProbe } from '../lib/types'
-import { ucRows } from './UcProbeView'
+import { ucRows } from './ucprobe'
 
 const mo: MarketOps = JSON.parse(
   readFileSync(

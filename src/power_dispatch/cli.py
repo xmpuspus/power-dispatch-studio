@@ -23,7 +23,8 @@ import csv
 import json
 import sys
 
-from . import __version__, list_days, run_scenario
+from . import __version__, list_days, run_scenario, validate_scenario
+from .schema import OPT_SPEC, SCHEMA
 
 GRIDS = ("luzon", "visayas", "mindanao")
 
@@ -67,6 +68,16 @@ def _build_scenario(args) -> dict:
             scenario = json.load(fh)
         if args.date:
             scenario["date"] = args.date
+        # A file that carries the schema stamp gets checked before the solver
+        # sees it, so a typo prints one readable line instead of a traceback
+        # forty frames deep. A file without the stamp is the older shape and
+        # still runs, because breaking it would break every saved scenario.
+        if scenario.get("schema"):
+            problems = validate_scenario(scenario)
+            if problems:
+                raise SystemExit(
+                    "scenario file has problems:\n  " + "\n  ".join(problems)
+                )
         return scenario
     if not args.date:
         raise SystemExit("run: pass --scenario FILE or --date YYYY-MM-DD")
@@ -131,7 +142,34 @@ def main(argv: list[str] | None = None) -> int:
         help="emit the full result as JSON instead of hourly CSV",
     )
 
+    v = sub.add_parser("validate", help="check a scenario file and say what is wrong")
+    v.add_argument("scenario", help="scenario JSON file")
+    v.add_argument(
+        "--keys", action="store_true", help="print every option the engine honors"
+    )
+
     args = ap.parse_args(argv)
+
+    if args.cmd == "validate":
+        if args.keys:
+            print(f"schema: {SCHEMA}")
+            for k, meaning in OPT_SPEC.items():
+                print(f"  {k:<18} {meaning}")
+        with open(args.scenario, encoding="utf-8") as fh:
+            try:
+                scenario = json.load(fh)
+            except json.JSONDecodeError as exc:
+                print(f"not valid JSON: {exc}", file=sys.stderr)
+                return 1
+        problems = validate_scenario(scenario)
+        if problems:
+            print(f"{args.scenario}: {len(problems)} problem(s)", file=sys.stderr)
+            for p in problems:
+                print(f"  {p}", file=sys.stderr)
+            return 1
+        n = len(scenario.get("opts") or {})
+        print(f"{args.scenario}: valid, {n} option(s), date {scenario['date']}")
+        return 0
 
     if args.cmd == "days":
         for d in list_days():

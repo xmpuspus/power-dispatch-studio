@@ -1,0 +1,21 @@
+{
+  "schema": "pds-scenario/1",
+  "name": "DICT 1.5 GW on Luzon, one Sual unit out, storage added",
+  "date": "2026-06-17",
+  "opts": {
+    "demand_delta": { "luzon": 1500 },
+    "fuel_avail_delta": { "luzon": { "coal": -647 } },
+    "fuel_cost": { "natural_gas": 9.5 },
+    "solar_delta_mw": { "luzon": 400 },
+    "caps": { "leyte": 250, "mvip": 450 },
+    "storage": [
+      { "id": "bess_luzon", "grid": "luzon", "power_mw": 300, "energy_mwh": 1200 }
+    ],
+    "hydrology": 0.85,
+    "reserve_deduction": true
+  },
+  "meta": {
+    "note": "The round-trip fixture. Both the Python test and the browser test read this exact file, so the two sides cannot drift apart.",
+    "source": "tests/fixtures/scenario_example.json"
+  }
+}
