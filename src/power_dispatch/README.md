@@ -87,4 +87,10 @@ their own sources. Caller inputs and model assumptions have separate labels. The
 Historical replay view and method page report the calculation error. Read the
 [full method](https://power-dispatch-studio.vercel.app/methodology.html).
 
+The engine dispatches fuel blocks per island grid, so it holds no named units and
+no unit commitment. That is a measured choice. Committing each thermal block with
+a generic minimum-stable floor lowered the price correlation in all five scored
+series, from 0.442 to -0.003 in Visayas. `pipeline/uc_probe.py` in the repository
+carries the test.
+
 MIT licensed.

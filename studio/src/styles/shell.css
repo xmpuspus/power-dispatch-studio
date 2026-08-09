@@ -3,7 +3,7 @@
 
    Three regions, one grid: a chrome bar that holds every scenario
    control, a question-first rail on the left, and a run dock on the
-   right that keeps the answer on screen in all 39 views.
+   right that keeps the answer on screen in all 40 views.
    ============================================================ */
 
 .studio {
@@ -643,6 +643,34 @@
   font-size: var(--fs-11);
   line-height: var(--lh-body);
   color: var(--text-faint);
+}
+/* The run report and the hourly CSV already existed and nothing named them,
+   so the dock now says where a run goes when it leaves the browser. */
+.dock__take {
+  display: block;
+  width: 100%;
+  margin: var(--sp-2) 0 0;
+  padding: var(--sp-2);
+  text-align: left;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--primary);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  cursor: pointer;
+}
+.dock__take:hover,
+.dock__take:focus-visible {
+  border-color: var(--primary);
+}
+.dock__takehint {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: var(--fs-11);
+  font-weight: 400;
+  line-height: var(--lh-body);
 }
 .delta {
   font-family: var(--font-mono);

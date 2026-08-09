@@ -1,6 +1,6 @@
-"""Render the README's 39-view deep-link table straight out of nav.ts.
+"""Render the README's 40-view deep-link table straight out of nav.ts.
 
-Every studio view is addressable as `#v=<slug>`, so the README can carry all 39
+Every studio view is addressable as `#v=<slug>`, so the README can carry all 40
 for the price of some text rather than 39 embedded clips. GitHub applies no
 lazy loading, so those clips would be about 200 MB fetched on open.
 

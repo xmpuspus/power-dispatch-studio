@@ -31,6 +31,14 @@ def get(p):
 checks = []
 ans = get("/data/answers.json")
 checks.append(("answers has q1/q2/q3", all(k in ans for k in ("q1","q2","q3"))))
+# the take-it-away CSVs: the README and the map both point here, so a missing
+# index or a renamed file has to fail a command, not a reader's click
+ex = get("/data/exports/index.json")
+exf = ex.get("files") if isinstance(ex, dict) else None
+checks.append(("exports index documents 3 CSVs", isinstance(exf, list) and len(exf) == 3))
+for name in ("market_by_day.csv", "congestion_league.csv", "backcast_by_grid.csv"):
+    checks.append((f"export {name} is documented", any(
+        name in json.dumps(x) for x in (exf or []))))
 ck = get("/data/chokepoints.geojson")
 checks.append(("5 chokepoint features", len(ck["features"]) == 5))
 checks.append(("corridors ride real routes", all(

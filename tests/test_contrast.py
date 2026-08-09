@@ -32,6 +32,8 @@ STUDIO_PAIRS = [
     ("--text-faint", "--bg", 4.5, "faint text on the app background"),
     ("--primary", "--surface", 4.5, "link and accent text on a card"),
     ("--primary", "--bg", 4.5, "link and accent text on the background"),
+    ("--primary", "--surface-2", 4.5, "the run dock's take-away action"),
+    ("--text-muted", "--surface-3", 4.5, "secondary text on a raised panel"),
     ("--on-primary", "--primary", 4.5, "primary button label"),
     ("--accent", "--surface", 4.5, "highlight figure on a card"),
     ("--accent", "--bg", 4.5, "highlight figure on the background"),

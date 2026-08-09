@@ -1,4 +1,4 @@
-// The studio groups its 39 views by the questions users ask about the market.
+// The studio groups its 40 views by the questions users ask about the market.
 // Each destination keeps its existing Nav value so the view routing stays stable.
 
 import type { ClassId } from '../studio/model'
@@ -34,6 +34,7 @@ export type AnalysisId =
   | 'nodal'
   | 'sites'
   | 'lossval'
+  | 'commitment'
 export type PhaseId = 'lt' | 'pasa'
 
 export type Nav =
@@ -146,7 +147,7 @@ export const GROUPS: Group[] = [
       {
         slug: 'n-1',
         label: 'Loss of one major unit (N-1)',
-        hint: 'How spare capacity changes when the largest unit trips',
+        hint: 'What the price does when any one unit trips at the evening peak',
         nav: { kind: 'sol', id: 'n1' },
         live: true,
         scoped: true,
@@ -164,7 +165,7 @@ export const GROUPS: Group[] = [
       {
         slug: 'window-band',
         label: 'Price range across recorded days',
-        hint: 'The price band the archive window actually produced',
+        hint: 'The price band the model produces when it replays every recorded day',
         nav: { kind: 'sol', id: 'distribution' },
         live: true,
         scoped: true,
@@ -366,6 +367,13 @@ export const GROUPS: Group[] = [
         alias: 'losses surface nodal check',
       },
       {
+        slug: 'commitment-test',
+        label: 'Unit-commitment test',
+        hint: 'What happened when each thermal block had to commit and hold a floor',
+        nav: { kind: 'analysis', id: 'commitment' },
+        alias: 'uc mixed integer milp minimum stable start cost why linear',
+      },
+      {
         slug: 'assumptions',
         label: 'Assumptions',
         hint: 'Every constant, its source, and the date it was read',
@@ -446,7 +454,7 @@ export function phaseOf(nav: Nav): string {
 
 // --- deep links -------------------------------------------------------------
 // A scenario share already owns `#m=<payload>`; the view slug rides beside it
-// as `v=<slug>` so both survive the same link. Any of the 39 destinations is
+// as `v=<slug>` so both survive the same link. Any of the 40 destinations is
 // now addressable, which is what makes "look at the Visayas backcast" sendable.
 
 export function readHashView(hash: string): { slug?: string; grid?: string } {

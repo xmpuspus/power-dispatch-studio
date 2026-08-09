@@ -3,7 +3,7 @@
 // It replaces a three-tab ribbon plus a two-tab object tree plus a breadcrumb,
 // which together spent 190 of a 900-pixel laptop before any data appeared and
 // clipped at 390. The rule here is that the scenario controls never move and
-// the answer never leaves the screen, whichever of the 39 views is open.
+// the answer never leaves the screen, whichever of the 40 views is open.
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { GridKey } from '../lib/types'
@@ -317,7 +317,7 @@ export function CommandPalette({
             ref={input}
             className="pal__input"
             value={q}
-            placeholder="Search 39 views, such as bill, site, historical replay, or reserve"
+            placeholder="Search 40 views, such as bill, site, historical replay, or reserve"
             aria-label="Search views"
             onChange={(e) => {
               setQ(e.target.value)
@@ -393,6 +393,7 @@ export function RunDock({
   dirty,
   open,
   onToggle,
+  onTakeAway,
 }: {
   solved: SolvedModel
   base: SolvedModel
@@ -404,6 +405,8 @@ export function RunDock({
   dirty: boolean
   open: boolean
   onToggle: () => void
+  /** opens Saved runs, where a run leaves as an HTML report or a CSV */
+  onTakeAway?: () => void
 }) {
   const isBase = scenarioName === 'Base Case'
   // The what-if controls preview against the calibrated base; they do not write the
@@ -483,6 +486,14 @@ export function RunDock({
               ? 'The base case checked against recorded prices, at the evening reference hour. Edit a table value and press Run to change it.'
               : 'Change against Base Case, at the evening reference hour.'}
         </p>
+        {onTakeAway && (
+          <button className="dock__take" onClick={onTakeAway}>
+            Take this run away
+            <span className="dock__takehint">
+              Saved runs writes a standalone HTML report and an hourly CSV
+            </span>
+          </button>
+        )}
       </div>
     </aside>
   )

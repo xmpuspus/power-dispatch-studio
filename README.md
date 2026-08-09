@@ -1,7 +1,7 @@
 # Power Dispatch Studio
 
 **Test whether the Philippine grid can carry announced data-center demand.** The
-project combines a map, a 39-view browser dispatch studio, and a daily archive
+project combines a map, a 40-view browser dispatch studio, and a daily archive
 built from the market operator's public files. It names transmission equipment
 that reached a limit in 5-minute records, places announced demand on the grid,
 and estimates how modeled spot prices and a sample Meralco household bill change.
@@ -32,7 +32,7 @@ the browser.
 | Start here | What it gives you |
 |---|---|
 | **[Open the map](https://power-dispatch-studio.vercel.app)** | Five modes over the archive, plus an in-browser simulate |
-| **[Open the studio](https://power-dispatch-studio.vercel.app/studio/)** | 39 analyst views, a command palette, and scenarios that travel as a link |
+| **[Open the studio](https://power-dispatch-studio.vercel.app/studio/)** | 40 analyst views, a command palette, and scenarios that travel as a link |
 | **[Methods, sources, and assumptions](web/methodology.html)** | The calculation, unit conversions, sources, assumptions, and limits |
 | **`pip install power-dispatch-studio`** | The same LP engine, offline, with a bundled archive snapshot |
 
@@ -51,7 +51,8 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 - [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
 - [The cost stack stays near P6 while recorded evening prices include scarcity and offer premiums](#the-cost-stack-stays-near-p6-while-recorded-evening-prices-include-scarcity-and-offer-premiums)
 - [Offer-book replay correlations range from 0.69 to 0.86](#offer-book-replay-correlations-range-from-069-to-086)
-- [The studio is 39 views, and every one of them is a URL you can send](#the-studio-is-39-views-and-every-one-of-them-is-a-url-you-can-send)
+- [Unit commitment lowered the price correlation in all five scored series, so the linear model stays](#unit-commitment-lowered-the-price-correlation-in-all-five-scored-series-so-the-linear-model-stays)
+- [The studio is 40 views, and every one of them is a URL you can send](#the-studio-is-40-views-and-every-one-of-them-is-a-url-you-can-send)
 - [IEMOP's public window rolls at 90 days, so the git history is the archive](#iemops-public-window-rolls-at-90-days-so-the-git-history-is-the-archive)
 - [The model states six limits](#the-model-states-six-limits) · [Where the data comes from](#where-the-data-comes-from) · [Reproduce locally](#reproduce-locally) · [Data products](#data-products) · [Method](#method)
 
@@ -389,7 +390,7 @@ to **0.18**. Block dispatch cannot name the individual plant, so both stay at th
 level.
 
 The panel recalculates the sourced supply stack in the browser. Move the controls (add a data
-center as flat 24/7 load, trip any of the 11 named units for an N-1, add firm
+center as flat 24/7 load, trip any named unit for an N-1, add firm
 capacity, relieve a choke point, discharge storage) and the clearing price and any
 supply shortfall update live, on the same stack the Python engine produced.
 
@@ -575,7 +576,37 @@ the inter-island flow scores, are in [studio/README.md](studio/README.md). It is
 congestion-and-siting model checked against recorded prices. It does not forecast
 prices or brownouts.
 
-## The studio is 39 views, and every one of them is a URL you can send
+## Unit commitment lowered the price correlation in all five scored series, so the linear model stays
+
+A licensed production-cost tool commits each thermal unit as a binary decision,
+with a minimum-stable level and a start cost. This project built that variant,
+priced the committed schedule the way a market operator does, and scored it
+against the same recorded prices. The correlation fell everywhere.
+
+| Recorded series | Linear model | With commitment | Change |
+|---|---|---|---|
+| Luzon load-weighted average price | 0.297 | 0.128 | -0.169 |
+| Visayas load-weighted average price | 0.442 | -0.003 | -0.445 |
+| Mindanao load-weighted average price | 0.109 | -0.011 | -0.120 |
+| Luzon market clearing price | 0.437 | 0.137 | -0.300 |
+| Mindanao market clearing price | 0.113 | -0.006 | -0.119 |
+
+Mean absolute error moves by less than **P0.03/kWh** in every series, so only the
+correlation falls. The Visayas market clearing price has no paired hours in the
+window, so five series carry the test.
+
+The minimum-stable levels are generic thermal values, applied per fuel block and
+labeled generic. No public Philippine unit registry publishes a per-unit floor or
+heat rate, so a per-unit test needs data that does not exist yet. A fuel-block
+floor is coarser than a per-unit floor, and that coarseness is the most likely
+reason the committed run scores worse.
+
+The linear model stays the default because the measurement chose it.
+`pipeline/uc_probe.py` writes the rows, `tests/test_data.py` pins them, and the
+studio shows them at
+[#v=commitment-test](https://power-dispatch-studio.vercel.app/studio/#v=commitment-test).
+
+## The studio is 40 views, and every one of them is a URL you can send
 
 The full browser interface lives at
 [/studio/](https://power-dispatch-studio.vercel.app/studio/). It takes the
@@ -608,7 +639,7 @@ scheduled build writes them to [`web/data/exports/`](web/data/exports/), linked 
 Drivers panel and documented in
 [`web/data/exports/index.json`](web/data/exports/index.json).
 
-### Search and question groups organize all 39 views
+### Search and question groups organize all 40 views
 
 The navigation groups views by the question they answer. The clip below shows
 three ways to move through the studio.
@@ -616,7 +647,7 @@ three ways to move through the studio.
 - **A command palette.** Cmd K, then type what you want to know. The ranker
   matches the label, the hint and a per-view alias list, so "price setter"
   finds Marginal units.
-- **Question navigation.** The 39 views sit in 8 groups, and each group is a
+- **Question navigation.** The 40 views sit in 8 groups, and each group is a
   question. The eight are How today's market clears, Can supply cover demand,
   Where new demand can connect, Prices and bills, What new capacity is needed,
   Build and compare scenarios, Check the model against market records, and
@@ -625,25 +656,25 @@ three ways to move through the studio.
   all three grids while you move around. Move a slider and it re-prices live,
   labelled a preview until you press Run.
 
-![The studio shell in four parts. The command palette opens over the studio, and the query 'price setter' ranks Marginal units first. Pressing Enter opens that view and writes its link into the address bar. The question rail expands to show all 39 views in eight groups, and Loss of one major unit opens from it. A data-center slider then moves in the Quick scenario, and the run summary recalculates the Luzon clearing price from P6.00 to P12.00.](docs/studio-shell.gif)
+![The studio shell in four parts. The command palette opens over the studio, and the query 'price setter' ranks Marginal units first. Pressing Enter opens that view and writes its link into the address bar. The question rail expands to show all 40 views in eight groups, and Loss of one major unit opens from it. A data-center slider then moves in the Quick scenario, and the run summary recalculates the Luzon clearing price from P6.00 to P12.00.](docs/studio-shell.gif)
 
 **Every view has a URL.** The interface writes `#v=<slug>` as you move, beside the
 `#m=` scenario share, so
 [`/studio/#v=backcast&g=visayas`](https://power-dispatch-studio.vercel.app/studio/#v=backcast&g=visayas)
 opens the Visayas historical replay for whoever you send it to. This lets the
-README link to all 39 views without embedding 39 clips. GitHub does not defer
-GIF downloads, and 39 clips would total about 200 MB.
+README link to all 40 views without embedding 40 clips. GitHub does not defer
+GIF downloads, and 40 clips would total about 200 MB.
 
-Here are all 39 in one frame, each tile a real screenshot of the running app.
+Here are all 40 in one frame, each tile a real screenshot of the running app.
 Click it to open the sheet full size, because inline the tile names read and
 the numbers inside them do not. `build/shoot_view_sheet.py` opens each view by
 its deep link. It checks that the shell landed on the view it asked for, and
-fails on any mismatch. The sheet checks all 39 links in one run.
+fails on any mismatch. The sheet checks all 40 links in one run.
 
-[![A contact sheet of all 39 studio views, five across. Each tile is a real screenshot of the running app, labeled with its view name and question group. The rows cover today's market, supply adequacy, new-demand siting, prices and bills, new capacity, scenarios, checks against market records, and model inputs.](docs/views-contact-sheet.png)](docs/views-contact-sheet.png)
+[![A contact sheet of all 40 studio views, five across. Each tile is a real screenshot of the running app, labeled with its view name and question group. The rows cover today's market, supply adequacy, new-demand siting, prices and bills, new capacity, scenarios, checks against market records, and model inputs.](docs/views-contact-sheet.png)](docs/views-contact-sheet.png)
 
 <details>
-<summary><b>Open any of the 39 views directly</b></summary>
+<summary><b>Open any of the 40 views directly</b></summary>
 
 <!-- views table start -->
 
@@ -657,9 +688,9 @@ fails on any mismatch. The sheet checks all 39 links in one run.
 |  | [Inter-day storage (168 hours)](https://power-dispatch-studio.vercel.app/studio/#v=native-week) | 168 hours solved as one program, storage carried across midnight |
 | Can supply cover demand | [Power-shortfall risk](https://power-dispatch-studio.vercel.app/studio/#v=reliability) | Chance of a shortfall (LOLP) across simulated random plant outages |
 |  | [Supply after scheduled outages](https://power-dispatch-studio.vercel.app/studio/#v=adequacy) | Whether supply covers demand across the outage schedule |
-|  | [Loss of one major unit (N-1)](https://power-dispatch-studio.vercel.app/studio/#v=n-1) | How spare capacity changes when the largest unit trips |
+|  | [Loss of one major unit (N-1)](https://power-dispatch-studio.vercel.app/studio/#v=n-1) | What the price does when any one unit trips at the evening peak |
 |  | [Price as demand grows](https://power-dispatch-studio.vercel.app/studio/#v=load-sweep) | Price against demand, swept across the whole range |
-|  | [Price range across recorded days](https://power-dispatch-studio.vercel.app/studio/#v=window-band) | The price band the archive window actually produced |
+|  | [Price range across recorded days](https://power-dispatch-studio.vercel.app/studio/#v=window-band) | The price band the model produces when it replays every recorded day |
 |  | [Hours above each price](https://power-dispatch-studio.vercel.app/studio/#v=price-duration) | Hours at or above each price, sorted |
 | Where new demand can connect | [Siting a new load](https://power-dispatch-studio.vercel.app/studio/#v=siting) | Hourly load a named site can draw through its own lines |
 |  | [Power between island grids](https://power-dispatch-studio.vercel.app/studio/#v=coupled-flows) | What moves over the high-voltage direct-current links and when a link reaches its limit |
@@ -682,6 +713,7 @@ fails on any mismatch. The sheet checks all 39 links in one run.
 |  | [Range across repeated simulations](https://power-dispatch-studio.vercel.app/studio/#v=ensembles) | Repeated simulations of one scenario and the range of results |
 | Check the model against market records | [Historical replay](https://power-dispatch-studio.vercel.app/studio/#v=backcast) | Every market day replayed against the observed price |
 |  | [Transmission-loss check](https://power-dispatch-studio.vercel.app/studio/#v=loss-validation) | Whether estimated transmission losses reproduce recorded price differences between connection points |
+|  | [Unit-commitment test](https://power-dispatch-studio.vercel.app/studio/#v=commitment-test) | What happened when each thermal block had to commit and hold a floor |
 |  | [Assumptions](https://power-dispatch-studio.vercel.app/studio/#v=assumptions) | Every constant, its source, and the date it was read |
 | Review and edit model inputs | [Generators](https://power-dispatch-studio.vercel.app/studio/#v=generators) | Each sourced unit and its capacity, fuel price, and random-outage rate |
 |  | [Fuels](https://power-dispatch-studio.vercel.app/studio/#v=fuels) | Fuel prices and how much of each is available per grid |
@@ -703,10 +735,25 @@ shorter recordings show these tasks.
 [studio/README.md](studio/README.md) carries one recorded clip per analysis view,
 14 in all.
 
+### Every run leaves the browser as a standalone HTML report or an hourly CSV
+
+A number you cannot attach to a memo is a number you cannot use. Three exits
+already exist and nothing on this page named them until now.
+
+| Exit | Where | What you get |
+|---|---|---|
+| Run report | [Saved runs](https://power-dispatch-studio.vercel.app/studio/#v=saved-runs), or the run dock's take-away button | One self-contained HTML file: inputs, sources, and the frozen hourly result |
+| Hourly CSV | The same view, plus six analysis views | One row per hour with price, demand, shortfall, flows, and storage |
+| Archive CSVs | [/data/exports/](https://power-dispatch-studio.vercel.app/data/exports/index.json) | `market_by_day.csv`, `congestion_league.csv`, `backcast_by_grid.csv`, rebuilt nightly |
+
+The report reads years after the browser storage that held the run is gone. The
+archive CSVs carry a CC-BY-4.0 license and an `index.json` that documents each
+column.
+
 **This page downloads 15.8 MB of media across 15 files.** The earlier version
 downloaded 87.2 MB across 22 files. Browser tests show that GitHub downloads
-media inside closed detail blocks. Longer recordings are links, and the 39 views
-use one contact sheet plus 39 direct links.
+media inside closed detail blocks. Longer recordings are links, and the 40 views
+use one contact sheet plus 40 direct links.
 
 `python3 tests/test_readme_views.py` re-measures that total against the files on
 disk and fails when the stated number drifts.

@@ -42,6 +42,7 @@ import { Rtdoe5View } from './Rtdoe5View'
 import { NodalView } from './NodalView'
 import { SitesView } from './SitesView'
 import { LossValidationView } from './LossValidationView'
+import { UcProbeView } from './UcProbeView'
 import { WeekView } from './WeekView'
 import { ForwardView } from './ForwardView'
 import { MultiYearView } from './MultiYearView'
@@ -69,7 +70,7 @@ import {
   SolvedReliabilityView,
 } from './model-views'
 
-// The nav shape, the 39 destinations, and which of them read one grid at a time
+// The nav shape, the 40 destinations, and which of them read one grid at a time
 // all live in shell/nav.ts. Studio keeps the model state and the panes; the
 // shell owns how an analyst reaches them.
 
@@ -433,6 +434,7 @@ export function Studio({
           dirty={dirty}
           open={dockOpen}
           onToggle={() => setDockOpen((v) => !v)}
+          onTakeAway={() => setNav({ kind: 'runs' })}
         />
       </div>
 
@@ -617,6 +619,7 @@ function DataPane({
     if (nav.id === 'nodal') return <NodalView grid={grid} />
     if (nav.id === 'sites') return <SitesView />
     if (nav.id === 'lossval') return <LossValidationView />
+    if (nav.id === 'commitment') return <UcProbeView />
     if (nav.id === 'forward' && profiles)
       return <ForwardView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'multiyear' && profiles)
@@ -674,7 +677,7 @@ function DataPane({
   if (sol === 'reliability')
     return (
       <div>
-        <SolvedReliabilityView s={solved} />
+        <SolvedReliabilityView s={solved} d={d} units={objects.generator.length} />
         <div className="basecase-banner">
           Base case reference. These results come from 20,000 outage simulations and the
           storage comparison. They were checked against recorded prices and do not update

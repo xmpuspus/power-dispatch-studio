@@ -428,6 +428,35 @@ export interface MarketOps {
   }
   advisories?: { available: boolean }
   outlook?: { available: boolean }
+  uc_probe?: UcProbe
+}
+
+export interface UcScore {
+  n_hours: number
+  observed_mean_php_kwh: number
+  modeled_mean_php_kwh: number
+  mae_php_kwh: number
+  bias_php_kwh: number
+  correlation: number
+  high_hour_hit_rate_pct: number
+}
+
+/** The mixed-integer commitment comparison written by pipeline/uc_probe.py. */
+export interface UcProbe {
+  available?: boolean
+  note?: string
+  generated_by?: string
+  min_stable_generic?: Record<string, number>
+  min_stable_label?: string
+  overgen_penalty_php_kwh?: number
+  lp?: Record<string, Partial<Record<GridKey, UcScore | null>>>
+  uc?: Record<string, Partial<Record<GridKey, UcScore | null>>>
+  corr_delta?: Record<
+    string,
+    Partial<Record<GridKey, { lp_corr: number; uc_corr: number; delta: number }>>
+  >
+  verdict?: string
+  engine_default?: string
 }
 
 export interface MixMonth {

@@ -190,12 +190,38 @@
   node values recorded price deviations. Read the
   <a href="../docs/source-notes.md">source notes</a> for the longer explanation.</p>
 
+  <h2>Unit commitment was built, measured, and left off, because it lowered the price correlation in all five scored series</h2>
+  <p>A licensed production-cost tool commits each thermal unit as a binary
+  decision, with a minimum-stable level, a start cost, and minimum run times.
+  This project built that variant, priced the committed schedule the way a
+  market operator does, and scored it against the same recorded prices.
+  <code>pipeline/uc_probe.py</code> writes the result and the studio shows it
+  under Unit-commitment test.</p>
+  <table>
+    <thead><tr><th>Recorded series</th><th>Linear model</th><th>With commitment</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td>Luzon load-weighted average price</td><td>0.297</td><td>0.128</td><td>-0.169</td></tr>
+      <tr><td>Visayas load-weighted average price</td><td>0.442</td><td>-0.003</td><td>-0.445</td></tr>
+      <tr><td>Mindanao load-weighted average price</td><td>0.109</td><td>-0.011</td><td>-0.120</td></tr>
+      <tr><td>Luzon market clearing price</td><td>0.437</td><td>0.137</td><td>-0.300</td></tr>
+      <tr><td>Mindanao market clearing price</td><td>0.113</td><td>-0.006</td><td>-0.119</td></tr>
+    </tbody>
+  </table>
+  <p>Mean absolute error moves by less than P0.03/kWh in every series, so only
+  the correlation falls. The Visayas market clearing price has no paired hours in
+  the window, so five series carry the test.</p>
+  <p>The minimum-stable levels are generic thermal values, applied per fuel block
+  and labeled generic. No public Philippine unit registry publishes a per-unit
+  floor or heat rate. A fuel-block floor is coarser than a per-unit floor, and
+  that coarseness is the most likely reason the committed run scores worse. The
+  linear model stays the default because the measurement chose it.</p>
+
   <h2>Six stated limits keep scenario results in scope</h2>
   <ul>
     <li>The model does not claim that data centers caused recorded electricity prices.</li>
     <li>Recorded curtailment and reserve shortfalls do not forecast brownouts.</li>
     <li>Future demand, fuel, hydrology, outage, and build cases are scenarios. They are not forecasts.</li>
-    <li>The model has three zones and two inter-island links. It omits within-zone security constraints and unit commitment.</li>
+    <li>The model has three zones and two inter-island links. It omits within-zone security constraints. It runs unit commitment only as the measured test above.</li>
     <li>OpenStreetMap routes and class line ratings do not replace an NGCP planning model or interconnection study.</li>
     <li>Company and project records come from cited public sources. Specific allegations need separate evidence.</li>
   </ul>
