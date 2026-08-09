@@ -18,28 +18,28 @@
    "luzon": {
     "n_hours": 2064,
     "observed_mean_php_kwh": 7.528,
-    "modeled_mean_php_kwh": 5.989,
-    "mae_php_kwh": 4.243,
-    "bias_php_kwh": -1.539,
-    "correlation": 0.101,
-    "high_hour_hit_rate_pct": 18.8
+    "modeled_mean_php_kwh": 5.999,
+    "mae_php_kwh": 4.252,
+    "bias_php_kwh": -1.529,
+    "correlation": 0.064,
+    "high_hour_hit_rate_pct": 22.6
    },
    "visayas": {
     "n_hours": 2064,
     "observed_mean_php_kwh": 12.381,
-    "modeled_mean_php_kwh": 5.989,
-    "mae_php_kwh": 8.188,
-    "bias_php_kwh": -6.391,
-    "correlation": 0.123,
-    "high_hour_hit_rate_pct": 37.5
+    "modeled_mean_php_kwh": 5.999,
+    "mae_php_kwh": 8.197,
+    "bias_php_kwh": -6.382,
+    "correlation": 0.103,
+    "high_hour_hit_rate_pct": 35.1
    },
    "mindanao": {
     "n_hours": 2064,
     "observed_mean_php_kwh": 11.127,
-    "modeled_mean_php_kwh": 5.988,
-    "mae_php_kwh": 7.229,
-    "bias_php_kwh": -5.139,
-    "correlation": 0.093,
+    "modeled_mean_php_kwh": 5.998,
+    "mae_php_kwh": 7.237,
+    "bias_php_kwh": -5.129,
+    "correlation": 0.046,
     "high_hour_hit_rate_pct": 6.2
    }
   },
@@ -47,11 +47,11 @@
    "luzon": {
     "n_hours": 1920,
     "observed_mean_php_kwh": 6.701,
-    "modeled_mean_php_kwh": 5.988,
-    "mae_php_kwh": 3.872,
-    "bias_php_kwh": -0.713,
-    "correlation": 0.151,
-    "high_hour_hit_rate_pct": 23.8
+    "modeled_mean_php_kwh": 5.999,
+    "mae_php_kwh": 3.882,
+    "bias_php_kwh": -0.703,
+    "correlation": 0.077,
+    "high_hour_hit_rate_pct": 28.0
    },
    "visayas": null,
    "mindanao": {
@@ -60,7 +60,7 @@
     "modeled_mean_php_kwh": 5.999,
     "mae_php_kwh": 6.146,
     "bias_php_kwh": -3.13,
-    "correlation": 0.129,
+    "correlation": 0.133,
     "high_hour_hit_rate_pct": 2.3
    }
   }
@@ -70,28 +70,28 @@
    "luzon": {
     "n_hours": 2064,
     "observed_mean_php_kwh": 7.528,
-    "modeled_mean_php_kwh": 5.991,
-    "mae_php_kwh": 4.242,
-    "bias_php_kwh": -1.536,
-    "correlation": 0.107,
-    "high_hour_hit_rate_pct": 18.8
+    "modeled_mean_php_kwh": 6.001,
+    "mae_php_kwh": 4.252,
+    "bias_php_kwh": -1.527,
+    "correlation": 0.079,
+    "high_hour_hit_rate_pct": 22.6
    },
    "visayas": {
     "n_hours": 2064,
     "observed_mean_php_kwh": 12.381,
-    "modeled_mean_php_kwh": 5.992,
-    "mae_php_kwh": 8.187,
-    "bias_php_kwh": -6.389,
-    "correlation": 0.13,
-    "high_hour_hit_rate_pct": 37.5
+    "modeled_mean_php_kwh": 6.001,
+    "mae_php_kwh": 8.196,
+    "bias_php_kwh": -6.379,
+    "correlation": 0.12,
+    "high_hour_hit_rate_pct": 35.1
    },
    "mindanao": {
     "n_hours": 2064,
     "observed_mean_php_kwh": 11.127,
-    "modeled_mean_php_kwh": 5.99,
-    "mae_php_kwh": 7.228,
-    "bias_php_kwh": -5.137,
-    "correlation": 0.099,
+    "modeled_mean_php_kwh": 6.0,
+    "mae_php_kwh": 7.237,
+    "bias_php_kwh": -5.127,
+    "correlation": 0.061,
     "high_hour_hit_rate_pct": 6.2
    }
   },
@@ -99,20 +99,20 @@
    "luzon": {
     "n_hours": 1920,
     "observed_mean_php_kwh": 6.701,
-    "modeled_mean_php_kwh": 5.99,
-    "mae_php_kwh": 3.872,
-    "bias_php_kwh": -0.711,
-    "correlation": 0.156,
-    "high_hour_hit_rate_pct": 23.8
+    "modeled_mean_php_kwh": 6.001,
+    "mae_php_kwh": 3.881,
+    "bias_php_kwh": -0.7,
+    "correlation": 0.089,
+    "high_hour_hit_rate_pct": 28.0
    },
    "visayas": null,
    "mindanao": {
     "n_hours": 864,
     "observed_mean_php_kwh": 9.129,
     "modeled_mean_php_kwh": 6.002,
-    "mae_php_kwh": 6.146,
+    "mae_php_kwh": 6.145,
     "bias_php_kwh": -3.127,
-    "correlation": 0.241,
+    "correlation": 0.243,
     "high_hour_hit_rate_pct": 2.3
    }
   }
@@ -120,52 +120,52 @@
  "delta": {
   "lwap": {
    "luzon": {
-    "block_corr": 0.101,
-    "unit_corr": 0.107,
-    "block_mae": 4.243,
-    "unit_mae": 4.242,
-    "corr_delta": 0.006,
-    "mae_delta": -0.001
+    "block_corr": 0.064,
+    "unit_corr": 0.079,
+    "block_mae": 4.252,
+    "unit_mae": 4.252,
+    "corr_delta": 0.015,
+    "mae_delta": 0.0
    },
    "visayas": {
-    "block_corr": 0.123,
-    "unit_corr": 0.13,
-    "block_mae": 8.188,
-    "unit_mae": 8.187,
-    "corr_delta": 0.007,
+    "block_corr": 0.103,
+    "unit_corr": 0.12,
+    "block_mae": 8.197,
+    "unit_mae": 8.196,
+    "corr_delta": 0.017,
     "mae_delta": -0.001
    },
    "mindanao": {
-    "block_corr": 0.093,
-    "unit_corr": 0.099,
-    "block_mae": 7.229,
-    "unit_mae": 7.228,
-    "corr_delta": 0.006,
-    "mae_delta": -0.001
+    "block_corr": 0.046,
+    "unit_corr": 0.061,
+    "block_mae": 7.237,
+    "unit_mae": 7.237,
+    "corr_delta": 0.015,
+    "mae_delta": 0.0
    }
   },
   "mcp": {
    "luzon": {
-    "block_corr": 0.151,
-    "unit_corr": 0.156,
-    "block_mae": 3.872,
-    "unit_mae": 3.872,
-    "corr_delta": 0.005,
-    "mae_delta": 0.0
+    "block_corr": 0.077,
+    "unit_corr": 0.089,
+    "block_mae": 3.882,
+    "unit_mae": 3.881,
+    "corr_delta": 0.012,
+    "mae_delta": -0.001
    },
    "visayas": null,
    "mindanao": {
-    "block_corr": 0.129,
-    "unit_corr": 0.241,
+    "block_corr": 0.133,
+    "unit_corr": 0.243,
     "block_mae": 6.146,
-    "unit_mae": 6.146,
-    "corr_delta": 0.112,
-    "mae_delta": 0.0
+    "unit_mae": 6.145,
+    "corr_delta": 0.11,
+    "mae_delta": -0.001
    }
   }
  },
- "largest_absolute_change": 0.112,
- "verdict": "named units burn the same daily energy and price within P0.004/kWh of the blocks in every hour. The correlation still moves by up to 0.112, because a correlation against a recorded series is hypersensitive when the modeled series is nearly flat",
+ "largest_absolute_change": 0.11,
+ "verdict": "named units burn the same daily energy and price within P0.004/kWh of the blocks in every hour. The correlation still moves by up to 0.11, because a correlation against a recorded series is hypersensitive when the modeled series is nearly flat",
  "what_would_change_it": "a per-unit heat rate or a per-unit offer. Every unit of a fuel carries that fuel's cost here, so splitting a block into units cannot reorder the stack. No public Philippine source publishes either, so a unit-level run buys attribution and not accuracy.",
  "engine_default": "block"
 }

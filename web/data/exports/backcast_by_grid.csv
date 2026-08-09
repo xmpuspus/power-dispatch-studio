@@ -2,6 +2,6 @@ engine,grid,days,observed_mean_php_kwh,modeled_mean_php_kwh,mae_php_kwh,bias_php
 offer_replay,luzon,83,7.519,9.301,3.028,1.783,0.731,55.2
 offer_replay,visayas,83,12.261,11.463,4.761,-0.798,0.693,38.3
 offer_replay,mindanao,83,10.924,9.861,3.971,-1.062,0.741,49.3
-cost_model,luzon,86,7.528,5.989,4.243,-1.539,0.101,18.8
-cost_model,visayas,86,12.381,5.989,8.188,-6.391,0.123,37.5
-cost_model,mindanao,86,11.127,5.988,7.229,-5.139,0.093,6.2
+cost_model,luzon,86,7.528,5.999,4.252,-1.529,0.064,22.6
+cost_model,visayas,86,12.381,5.999,8.197,-6.382,0.103,35.1
+cost_model,mindanao,86,11.127,5.998,7.237,-5.129,0.046,6.2

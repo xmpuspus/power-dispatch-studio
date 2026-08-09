@@ -48,14 +48,14 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 
 - [Seven steps take an analyst from the ability list to pesos, then to a file](#seven-steps-take-an-analyst-from-the-ability-list-to-pesos-then-to-a-file)
 - [The Leyte-Cebu link reached a binding limit on 114 of 117 days](#the-leyte-cebu-link-reached-a-binding-limit-on-114-of-117-days)
-- [Luzon reserves fell short on 73 of the window's 118 days](#luzon-reserves-fell-short-on-73-of-the-windows-118-days)
+- [Luzon reserves fell short on 74 of the window's 124 days](#luzon-reserves-fell-short-on-74-of-the-windows-124-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
 - [Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.83) but reverse in Visayas (-0.57)](#modeled-loss-ranks-agree-in-luzon-072-and-mindanao-083-but-reverse-in-visayas--057)
 - [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
 - [The cost stack stays near P6 while recorded evening prices include scarcity and offer premiums](#the-cost-stack-stays-near-p6-while-recorded-evening-prices-include-scarcity-and-offer-premiums)
 - [Offer-book replay correlations range from 0.69 to 0.86](#offer-book-replay-correlations-range-from-069-to-086)
 - [The committed build list covers all 366 days of 2028, and it retires nothing](#the-committed-build-list-covers-all-366-days-of-2028-and-it-retires-nothing)
-- [Both Sual units out moves a 350 MW contract book by P954,000 in one day](#both-sual-units-out-moves-a-350-mw-contract-book-by-p954000-in-one-day)
+- [Both Sual units out gains a 350 MW contract book more than it costs the open position](#both-sual-units-out-gains-a-350-mw-contract-book-more-than-it-costs-the-open-position)
 - [Naming all 141 units changes no daily energy, so the model keeps its fuel blocks](#naming-all-141-units-changes-no-daily-energy-so-the-model-keeps-its-fuel-blocks)
 - [Unit commitment lowered the price correlation in all five scored series, so the linear model stays](#unit-commitment-lowered-the-price-correlation-in-all-five-scored-series-so-the-linear-model-stays)
 - [The studio is 42 views, and every one of them is a URL you can send](#the-studio-is-42-views-and-every-one-of-them-is-a-url-you-can-send)
@@ -94,9 +94,9 @@ the download produces no file. Sharper as [MP4](docs/analyst-walkthrough.mp4).
 IEMOP publishes a "congestions manifesting" file that names transmission
 equipment at its binding limit for each 5-minute interval. This project archives
 and ranks those records. A row **literally named
-`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **94 of the window's 118 days**.
+`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **99 of the window's 124 days**.
 The 230 kV lines that carry that link, Tabango (Leyte) to Daanbantayan (Cebu),
-top the league. They are at a binding limit in the hourly day-ahead runs on **115 of 118
+top the league. They are at a binding limit in the hourly day-ahead runs on **121 of 124
 days**, and binding in the 5-minute real-time dispatch, the run settlement
 actually sees, on **23 days** of the window.
 
@@ -110,8 +110,8 @@ behind that statement.
 
 The same league as plain ranked bars, with no map, is [docs/constraint-league.gif](docs/constraint-league.gif).
 
-Across the 118-day window, **80 distinct pieces of equipment** hit a limit at least
-once, in **95 monitored constraints** (a transformer is listed under each winding
+Across the 124-day window, **83 distinct pieces of equipment** hit a limit at least
+once, in **98 monitored constraints** (a transformer is listed under each winding
 voltage and a line at each terminal, so one physical asset can have more than one limit ID).
 The map ranks the constraints by days at a limit (a day counts once, so a day-ahead
 re-run cannot inflate it) and keeps the real-time and day-ahead counts in separate
@@ -132,34 +132,34 @@ The same file has the security limits used in real-time dispatch. These are
 per-resource operating points.
 
 The archived files pin them to one MW value in
-99.3 percent of windows. Regulating hydro at the Agus units is the exception.
+99.4 percent of windows. Regulating hydro at the Agus units is the exception.
 
 They record which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
-The System Operator's instruction log states why it changed dispatch. Across 115
+The System Operator's instruction log states why it changed dispatch. Across 121
 daily logs, its instructions carry a remark
-citing a line limitation **1,740 times, and 1,713 of those name the
+citing a line limitation **1,881 times, and 1,854 of those name the
 Leyte-Cebu link** ("Advise to discharge under MOT Raise due to
 Leyte-Cebu Line Limitation"), the same link the constraint league
-ranks first by shadow-price days. This link appears in 98 percent of
+ranks first by shadow-price days. This link appears in 99 percent of
 every line-limitation instruction the operator wrote down.
 
 "MOT Raise" is the operator's label for this out-of-merit redispatch.
 
 The full record has
-**108,842 MOT-raise instructions** across the window at a **55
+**117,933 MOT-raise instructions** across the window at a **55
 MW** median.
 
 The must-run subset has a **6½ MW** median.
 
 The `so_instructions` section in the same file has both records.
 
-## Luzon reserves fell short on 73 of the window's 118 days
+## Luzon reserves fell short on 74 of the window's 124 days
 
 In the operator's real-time schedules, **Luzon reserves fell below the stated need
-on 73 of the window's 118 days**. Across the three grids, the schedules curtailed
-load on **105 grid-days (5,221.0 MWh)**. These figures describe published
+on 74 of the window's 124 days**. Across the three grids, the schedules curtailed
+load on **116 grid-days (6,526.8 MWh)**. These figures describe published
 schedules and do not forecast brownouts.
 
 The Visayas grid ran **52 consecutive days on grid alert from May 11 to July 1,
@@ -223,7 +223,7 @@ Prices at grid connection points view.
 
 WESM decomposes every published locational marginal price (LMP) into an energy, a loss, and a congestion
 part, and the congestion part is small and sparse (zero through the market
-suspension, nonzero on 1.11 percent of clean-day node-hours afterward), so the
+suspension, nonzero on 1.04 percent of clean-day node-hours afterward), so the
 within-region nodal price structure the market reports is loss-dominated.
 About a thousand resources report per clean day, and the ones that resolve to a
 mapped bus become the comparison set.
@@ -234,10 +234,10 @@ its network data and per-node accuracy are not published.
 So the model is
 checked against it. Marginal loss factors from the OpenStreetMap-geometry
 backbone are compared, grid by grid, against each node's recorded deviation
-from its regional price. Luzon ranks at Spearman **+0.72** over 314 nodes (72
-distinct buses, 95% confidence interval +0.59 to +0.82) and Mindanao at **+0.83** over 118
-(37 buses, +0.69 to +0.91). Visayas fails with a stable negative rank
-correlation (**-0.57**, negative on all 15 clean days). The report keeps Visayas
+from its regional price. Luzon ranks at Spearman **+0.73** over 314 nodes (72
+distinct buses, 95% confidence interval +0.60 to +0.82) and Mindanao at **+0.83** over 118
+(37 buses, +0.70 to +0.91). Visayas fails with a stable negative rank
+correlation (**-0.58**, negative on all 15 clean days). The report keeps Visayas
 as a failed check, with the sign reversal not yet diagnosed. The comparison
 recomputes nightly as clean market days accumulate
 (`data/derived/loss_surface.json`), and the studio carries the same three
@@ -521,7 +521,7 @@ direction agreement on Visayas-Mindanao
 against a 375 MW mean recorded flow, now scored against the operator's own
 per-interval high-voltage direct-current schedule rather than only the net-import identity
 the demand is built from, the Visayas settlement bias collapsing from
-**-P6.39** to **-P0.80/kWh**, and Mindanao clearing-price correlation **0.86**.
+**-P6.38** to **-P0.80/kWh**, and Mindanao clearing-price correlation **0.86**.
 
 The operator's congestion flags add a target the replay still misses in one
 direction, and the tables say so. The real links reached a limit in 45 to 61
@@ -638,7 +638,7 @@ make future YEAR=2028
 power-dispatch run --data-dir data/derived/future/2028 --date 2028-06-17
 ```
 
-## Both Sual units out moves a 350 MW contract book by P954,000 in one day
+## Both Sual units out gains a 350 MW contract book more than it costs the open position
 
 The model produces an hourly spot price. A supplier, a plant owner, or a factory
 buyer wants the next step: what does that price do to my position? That is
@@ -648,13 +648,13 @@ A worked case, on the archive's most recent day. The book holds a 250 MW power
 supply agreement struck at P6.40/kWh and a 100 MW evening block at P9.00/kWh,
 against a declared Luzon load of 400 MW, which leaves the book **67 percent**
 covered. Trip both 647 MW Sual units and the mean Luzon spot rises from
-P5.56/kWh to P5.96/kWh.
+P5.22/kWh to P5.77/kWh.
 
 | Line | Change for the day |
 |---|---|
-| The contracts gain | **+P2,385,000** |
-| The uncontracted load costs more | **+P1,431,000** |
-| Net | **+P954,000** |
+| The contracts gain | **+P3,271,750** |
+| The uncontracted load costs more | **+P1,959,850** |
+| Net | **+P1,311,900** |
 
 Read the sign carefully. The supply agreement is a buy at a strike above spot, so
 a higher spot makes it worth more against buying at spot. The one third of the
@@ -695,7 +695,7 @@ optimum unique rides the variable index and the two models number their variable
 differently.
 
 One score still moves: the Mindanao market clearing price correlation goes from
-0.129 to 0.241. Read that as a warning about the metric rather than a gain. The
+0.133 to 0.243. Read that as a warning about the metric rather than a gain. The
 cost model clears near flat, and a correlation against a moving recorded series
 is hypersensitive when the modeled series barely varies. Four tenths of a centavo
 reorders it.

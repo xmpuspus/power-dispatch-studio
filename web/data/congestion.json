@@ -1,25 +1,25 @@
 {
  "window": {
   "from": "2026-04-07",
-  "to": "2026-08-02"
+  "to": "2026-08-08"
  },
- "days_covered": 118,
- "days_with_base_case_binding": 118,
- "distinct_equipment": 80,
- "constraint_records": 95,
- "total_rtd_intervals": 8810,
- "total_dap_rows": 41878,
+ "days_covered": 124,
+ "days_with_base_case_binding": 124,
+ "distinct_equipment": 83,
+ "constraint_records": 98,
+ "total_rtd_intervals": 8875,
+ "total_dap_rows": 43362,
  "league": [
   {
    "equipment": "5DAAN_4TAB2",
    "station": "05DAANBN",
    "voltage": "230",
-   "days": 115,
+   "days": 121,
    "rtd_intervals": 77,
    "rtd_days": 23,
-   "dap_rows": 11667,
-   "dap_days": 115,
-   "base_case_rows": 11744,
+   "dap_rows": 12636,
+   "dap_days": 121,
+   "base_case_rows": 12713,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5
   },
@@ -27,11 +27,11 @@
    "equipment": "1EHVNGS_TR2",
    "station": "01EHVNAG",
    "voltage": "230",
-   "days": 112,
+   "days": 113,
    "rtd_intervals": 3030,
    "rtd_days": 96,
-   "dap_rows": 5663,
-   "dap_days": 110,
+   "dap_rows": 5664,
+   "dap_days": 111,
    "base_case_rows": 0,
    "max_overload_mw": 0.0,
    "max_pct_of_limit": 100.0
@@ -40,11 +40,11 @@
    "equipment": "1EHVNGS_TR1",
    "station": "01EHVNAG",
    "voltage": "230",
-   "days": 112,
+   "days": 113,
    "rtd_intervals": 996,
    "rtd_days": 85,
-   "dap_rows": 5745,
-   "dap_days": 110,
+   "dap_rows": 5752,
+   "dap_days": 111,
    "base_case_rows": 0,
    "max_overload_mw": 0.0,
    "max_pct_of_limit": 100.0
@@ -53,12 +53,12 @@
    "equipment": "LEYTE_TO_CEBU",
    "station": "LEYTE_TO",
    "voltage": "",
-   "days": 94,
+   "days": 99,
    "rtd_intervals": 0,
    "rtd_days": 0,
-   "dap_rows": 2987,
-   "dap_days": 94,
-   "base_case_rows": 2987,
+   "dap_rows": 3291,
+   "dap_days": 99,
+   "base_case_rows": 3291,
    "max_overload_mw": 0.0,
    "max_pct_of_limit": 100.0
   },
@@ -66,12 +66,12 @@
    "equipment": "5DAAN_4TAB1",
    "station": "04TABANG",
    "voltage": "230",
-   "days": 89,
+   "days": 94,
    "rtd_intervals": 34,
    "rtd_days": 6,
-   "dap_rows": 4566,
-   "dap_days": 88,
-   "base_case_rows": 4600,
+   "dap_rows": 4755,
+   "dap_days": 93,
+   "base_case_rows": 4789,
    "max_overload_mw": 11.89,
    "max_pct_of_limit": 105.9
   },
@@ -128,6 +128,19 @@
    "max_pct_of_limit": 100.0
   },
   {
+   "equipment": "1BAUA_1LAT2",
+   "station": "01BAUANG",
+   "voltage": "230",
+   "days": 24,
+   "rtd_intervals": 395,
+   "rtd_days": 17,
+   "dap_rows": 83,
+   "dap_days": 16,
+   "base_case_rows": 0,
+   "max_overload_mw": 3.86,
+   "max_pct_of_limit": 101.3
+  },
+  {
    "equipment": "1BAUA_1LAT1",
    "station": "01BAUANG",
    "voltage": "230",
@@ -155,16 +168,16 @@
   },
   {
    "equipment": "1BAUA_1LAT2",
-   "station": "01BAUANG",
+   "station": "01LATRIN",
    "voltage": "230",
-   "days": 23,
-   "rtd_intervals": 394,
-   "rtd_days": 16,
-   "dap_rows": 83,
-   "dap_days": 16,
+   "days": 15,
+   "rtd_intervals": 202,
+   "rtd_days": 13,
+   "dap_rows": 269,
+   "dap_days": 9,
    "base_case_rows": 0,
-   "max_overload_mw": 3.86,
-   "max_pct_of_limit": 101.3
+   "max_overload_mw": 69.11,
+   "max_pct_of_limit": 124.8
   },
   {
    "equipment": "1TGERAO_TR3",
@@ -180,25 +193,12 @@
    "max_pct_of_limit": 100.0
   },
   {
-   "equipment": "1BAUA_1LAT2",
-   "station": "01LATRIN",
-   "voltage": "230",
-   "days": 14,
-   "rtd_intervals": 200,
-   "rtd_days": 12,
-   "dap_rows": 269,
-   "dap_days": 9,
-   "base_case_rows": 0,
-   "max_overload_mw": 69.11,
-   "max_pct_of_limit": 124.8
-  },
-  {
    "equipment": "1BAUA_1LAT1",
    "station": "01LATRIN",
    "voltage": "230",
-   "days": 12,
-   "rtd_intervals": 233,
-   "rtd_days": 10,
+   "days": 13,
+   "rtd_intervals": 235,
+   "rtd_days": 11,
    "dap_rows": 291,
    "dap_days": 9,
    "base_case_rows": 0,
@@ -336,6 +336,19 @@
    "max_pct_of_limit": 100.0
   },
   {
+   "equipment": "11JASA_12BUT1",
+   "station": "11JASAA",
+   "voltage": "138",
+   "days": 5,
+   "rtd_intervals": 80,
+   "rtd_days": 5,
+   "dap_rows": 0,
+   "dap_days": 0,
+   "base_case_rows": 80,
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
+  },
+  {
    "equipment": "1HERM_1DUH1",
    "station": "01HERMOS",
    "voltage": "230",
@@ -386,42 +399,29 @@
    "base_case_rows": 0,
    "max_overload_mw": 48.26,
    "max_pct_of_limit": 104.0
-  },
-  {
-   "equipment": "1MEXI_1HER2",
-   "station": "01HERMOS",
-   "voltage": "230",
-   "days": 4,
-   "rtd_intervals": 72,
-   "rtd_days": 4,
-   "dap_rows": 0,
-   "dap_days": 0,
-   "base_case_rows": 0,
-   "max_overload_mw": 125.71,
-   "max_pct_of_limit": 123.3
   }
  ],
  "corridor_receipts": {
   "leyte_cebu_230kv": {
-   "days": 115,
+   "days": 121,
    "rtd_intervals": 139,
    "rtd_days": 27,
-   "dap_rows": 21304,
-   "dap_days": 115,
+   "dap_rows": 22766,
+   "dap_days": 121,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5,
    "matched_equipment": [
     {
      "name": "5DAAN_4TAB2",
-     "rows": 12055
+     "rows": 13024
     },
     {
      "name": "5DAAN_4TAB1",
-     "rows": 6401
+     "rows": 6590
     },
     {
      "name": "LEYTE_TO_CEBU",
-     "rows": 2987
+     "rows": 3291
     }
    ]
   }

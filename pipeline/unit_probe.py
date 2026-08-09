@@ -350,9 +350,10 @@ def derive(dispatch: dict, profiles: dict, fleet: dict) -> dict:
         "largest_absolute_change": round3(worst),
         "verdict": (
             "named units burn the same daily energy and price within "
-            "P0.004/kWh of the blocks in every hour. The correlation still "
-            "moves by up to 0.112, because a correlation against a recorded "
-            "series is hypersensitive when the modeled series is nearly flat"
+            f"P{gap['hourly_price_php_kwh']}/kWh of the blocks in every hour. "
+            f"The correlation still moves by up to {round3(worst)}, because a "
+            "correlation against a recorded series is hypersensitive when the "
+            "modeled series is nearly flat"
             if same
             else "named units burn different daily energy from the blocks; "
             "read the generation gap before reading either score"

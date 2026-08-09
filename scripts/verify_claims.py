@@ -588,6 +588,12 @@ def canonical():
             f"{up['generation_gap']['hourly_mw']:,.0f}" if up_on else ""
         ),
         "up_days": str(up["generation_gap_days"]) if up_on else "",
+        "up_min_mcp_block": (
+            f"{up['delta']['mcp']['mindanao']['block_corr']:.3f}" if up_on else ""
+        ),
+        "up_min_mcp_unit": (
+            f"{up['delta']['mcp']['mindanao']['unit_corr']:.3f}" if up_on else ""
+        ),
         "up_price_gap": (
             f"{up['generation_gap']['hourly_price_php_kwh']:.3f}" if up_on else ""
         ),
@@ -1178,8 +1184,8 @@ REGISTRY = [
     # --- the worked contract position
     (
         "README.md",
-        re.compile(r"moves a (\d+) MW contract book by P([\d,]+) in one day"),
-        ["pp_book_mw", "pp_net"],
+        re.compile(r"gains a (\d+) MW contract book more than it costs"),
+        ["pp_book_mw"],
     ),
     (
         "README.md",
@@ -1231,6 +1237,22 @@ REGISTRY = [
         "README.md",
         re.compile(r"move, by up to\s*\n?\s*\*\*([\d,]+) MW\*\*"),
         ["up_hourly_gap"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"Mindanao market clearing price correlation goes from\s*\n?\s*"
+            r"([\d.]+) to ([\d.]+)\."
+        ),
+        ["up_min_mcp_block", "up_min_mcp_unit"],
+    ),
+    (
+        "web/methodology.html",
+        re.compile(
+            r"Mindanao market clearing price correlation goes\s*\n?\s*from "
+            r"([\d.]+) to ([\d.]+),"
+        ),
+        ["up_min_mcp_block", "up_min_mcp_unit"],
     ),
     # --- the solved future year (`make future`)
     (
@@ -1310,7 +1332,12 @@ BLOCKS = [
 # Every public prose file now uses generated data and is updated by the nightly
 # cron: the scalar registry above plus the reserve-table block below cover all of
 # the rolling numbers in each, so none can silently freeze behind the map.
-WRITABLE = {"README.md", "studio/README.md", "web/for-analysts.html"}
+WRITABLE = {
+    "README.md",
+    "studio/README.md",
+    "web/for-analysts.html",
+    "web/methodology.html",
+}
 
 
 def _check_file(path, text, canon, write):
@@ -1331,8 +1358,15 @@ def _check_file(path, text, canon, write):
             for g, w in zip(got, want):
                 if g != w:
                     # digit-boundary (not \b): \b fails when the number is
-                    # preceded by a word char, e.g. the P in "-P6.91"
-                    new = re.sub(rf"(?<![\d.]){re.escape(g)}(?![\d.])", w, new, count=1)
+                    # preceded by a word char, e.g. the P in "-P6.91".
+                    # The trailing guard must let a full stop through: a
+                    # registered number that ENDS a sentence is followed by
+                    # ".", and blocking on any "." made --write report a
+                    # rewrite it never performed. Only a digit, or a period
+                    # with a digit behind it, means the number continues.
+                    new = re.sub(
+                        rf"(?<![\d.]){re.escape(g)}(?!\d|\.\d)", w, new, count=1
+                    )
             text = text[: m.start()] + new + text[m.end() :]
             fixed += 1
         else:

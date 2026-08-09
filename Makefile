@@ -88,6 +88,7 @@ qa:
 	$(PY) tests/test_scenario_file.py
 	$(PY) tests/test_unit_probe.py
 	$(PY) tests/test_writable_staged.py
+	$(PY) tests/test_claims_write.py
 	$(PY) tests/test_contracts.py
 	$(PY) tests/test_readme_views.py
 	$(PY) tests/test_contrast.py

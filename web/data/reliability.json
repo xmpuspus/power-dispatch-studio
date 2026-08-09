@@ -117,7 +117,13 @@
   "2026-07-30",
   "2026-07-31",
   "2026-08-01",
-  "2026-08-02"
+  "2026-08-02",
+  "2026-08-03",
+  "2026-08-04",
+  "2026-08-05",
+  "2026-08-06",
+  "2026-08-07",
+  "2026-08-08"
  ],
  "series": {
   "luzon": [
@@ -942,6 +948,48 @@
    },
    {
     "date": "2026-08-02",
+    "load_bid_peak_mw": 466.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-08-03",
+    "load_bid_peak_mw": 308.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-08-04",
+    "load_bid_peak_mw": 308.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-08-05",
+    "load_bid_peak_mw": 308.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": -26.5,
+    "reserve_shortfall_intervals": 1
+   },
+   {
+    "date": "2026-08-06",
+    "load_bid_peak_mw": 148.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-08-07",
+    "load_bid_peak_mw": 148.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-08-08",
     "load_bid_peak_mw": 466.0,
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": 0.0,
@@ -1774,6 +1822,48 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": -2.8,
     "reserve_shortfall_intervals": 1
+   },
+   {
+    "date": "2026-08-03",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 1.4,
+    "reserve_slack_min_mw": -122.9,
+    "reserve_shortfall_intervals": 78
+   },
+   {
+    "date": "2026-08-04",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 87.02,
+    "reserve_slack_min_mw": -123.0,
+    "reserve_shortfall_intervals": 119
+   },
+   {
+    "date": "2026-08-05",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 78.71,
+    "reserve_slack_min_mw": -123.0,
+    "reserve_shortfall_intervals": 161
+   },
+   {
+    "date": "2026-08-06",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 68.35,
+    "reserve_slack_min_mw": -123.0,
+    "reserve_shortfall_intervals": 192
+   },
+   {
+    "date": "2026-08-07",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 1.47,
+    "reserve_slack_min_mw": -123.0,
+    "reserve_shortfall_intervals": 219
+   },
+   {
+    "date": "2026-08-08",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 17.16,
+    "reserve_slack_min_mw": -123.0,
+    "reserve_shortfall_intervals": 187
    }
   ],
   "mindanao": [
@@ -2602,12 +2692,54 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": 0.0,
     "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-08-03",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": -110.2,
+    "reserve_shortfall_intervals": 68
+   },
+   {
+    "date": "2026-08-04",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 84.87,
+    "reserve_slack_min_mw": -120.7,
+    "reserve_shortfall_intervals": 128
+   },
+   {
+    "date": "2026-08-05",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 98.9,
+    "reserve_slack_min_mw": -135.0,
+    "reserve_shortfall_intervals": 175
+   },
+   {
+    "date": "2026-08-06",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 283.72,
+    "reserve_slack_min_mw": -133.1,
+    "reserve_shortfall_intervals": 185
+   },
+   {
+    "date": "2026-08-07",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 231.18,
+    "reserve_slack_min_mw": -135.0,
+    "reserve_shortfall_intervals": 232
+   },
+   {
+    "date": "2026-08-08",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 353.11,
+    "reserve_slack_min_mw": -126.5,
+    "reserve_shortfall_intervals": 202
    }
   ]
  },
  "totals": {
   "luzon": {
-   "days": 118,
+   "days": 124,
    "curtailment_days": 55,
    "curtailed_mwh_total": 1961.5,
    "worst_curtailment": {
@@ -2617,13 +2749,13 @@
     "reserve_slack_min_mw": -59.8,
     "reserve_shortfall_intervals": 29
    },
-   "reserve_shortfall_days": 73,
-   "median_daily_min_reserve_slack_mw": -17.1
+   "reserve_shortfall_days": 74,
+   "median_daily_min_reserve_slack_mw": -14.8
   },
   "visayas": {
-   "days": 118,
-   "curtailment_days": 36,
-   "curtailed_mwh_total": 2813.7,
+   "days": 124,
+   "curtailment_days": 42,
+   "curtailed_mwh_total": 3067.8,
    "worst_curtailment": {
     "date": "2026-06-25",
     "load_bid_peak_mw": 0.0,
@@ -2631,21 +2763,21 @@
     "reserve_slack_min_mw": -93.0,
     "reserve_shortfall_intervals": 168
    },
-   "reserve_shortfall_days": 71,
-   "median_daily_min_reserve_slack_mw": -23.1
+   "reserve_shortfall_days": 77,
+   "median_daily_min_reserve_slack_mw": -36.2
   },
   "mindanao": {
-   "days": 118,
-   "curtailment_days": 14,
-   "curtailed_mwh_total": 445.8,
+   "days": 124,
+   "curtailment_days": 19,
+   "curtailed_mwh_total": 1497.5,
    "worst_curtailment": {
-    "date": "2026-06-10",
+    "date": "2026-08-08",
     "load_bid_peak_mw": 0.0,
-    "curtailed_mwh": 120.85,
-    "reserve_slack_min_mw": -138.0,
-    "reserve_shortfall_intervals": 190
+    "curtailed_mwh": 353.11,
+    "reserve_slack_min_mw": -126.5,
+    "reserve_shortfall_intervals": 202
    },
-   "reserve_shortfall_days": 33,
+   "reserve_shortfall_days": 39,
    "median_daily_min_reserve_slack_mw": 0.0
   }
  }
