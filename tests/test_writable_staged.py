@@ -14,7 +14,6 @@ Plain python, no pytest dependency. Run: python3 tests/test_writable_staged.py
 """
 
 import os
-import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -32,9 +31,9 @@ def check(name, cond):
         fails.append(name)
 
 
-lines = open(
-    os.path.join(ROOT, ".github", "workflows", "archive.yml")
-).read().split("\n")
+lines = (
+    open(os.path.join(ROOT, ".github", "workflows", "archive.yml")).read().split("\n")
+)
 staged: set[str] = set()
 for i, line in enumerate(lines):
     if "git add " not in line:
@@ -53,16 +52,16 @@ for path in sorted(vc.WRITABLE):
 
 # the reverse direction is a warning, not a failure: the job stages generated
 # data directories that the oracle never touches, and that is correct
-extra = [
-    s
-    for s in staged
-    if s not in vc.WRITABLE and s.endswith((".md", ".html"))
-]
+extra = [s for s in staged if s not in vc.WRITABLE and s.endswith((".md", ".html"))]
 if extra:
     print(f"note: staged prose the oracle does not rewrite: {', '.join(extra)}")
 
 check("the oracle knows it can write more than one file", len(vc.WRITABLE) >= 2)
 
 print()
-print(f"writable staging: {len(fails)} failures" if fails else "writable staging: all green")
+print(
+    f"writable staging: {len(fails)} failures"
+    if fails
+    else "writable staging: all green"
+)
 sys.exit(1 if fails else 0)

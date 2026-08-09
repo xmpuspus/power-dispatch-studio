@@ -23,7 +23,9 @@ OUT = sys.argv[1] if len(sys.argv) > 1 else "sweep.csv"
 days = pd.list_days()
 if len(sys.argv) > 2:
     days = days[-int(sys.argv[2]) :]
-print(f"{len(days)} days x {len(LEVELS_MW)} load levels = {len(days) * len(LEVELS_MW)} runs")
+print(
+    f"{len(days)} days x {len(LEVELS_MW)} load levels = {len(days) * len(LEVELS_MW)} runs"
+)
 
 rows = []
 for i, date in enumerate(days, 1):
@@ -55,5 +57,7 @@ top = [r for r in rows if r["added_luzon_mw"] == LEVELS_MW[-1]]
 mb = sum(r["mean_price_luzon_php_kwh"] for r in base) / len(base)
 mt = sum(r["mean_price_luzon_php_kwh"] for r in top) / len(top)
 tight = sum(1 for r in top if r["unserved_luzon_mwh"] > 0)
-print(f"Window mean Luzon price PhP/kWh: {mb:.3f} at +0 MW, {mt:.3f} at +{LEVELS_MW[-1]} MW")
+print(
+    f"Window mean Luzon price PhP/kWh: {mb:.3f} at +0 MW, {mt:.3f} at +{LEVELS_MW[-1]} MW"
+)
 print(f"{tight} of {len(top)} days leave load unserved at +{LEVELS_MW[-1]} MW")

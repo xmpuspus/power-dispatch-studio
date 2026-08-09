@@ -65,7 +65,9 @@ def derive(data_dir: str | None = None) -> dict:
         {"grid": s["grid"], "power_mw": s["power_mw"], "energy_mwh": s["energy_mwh"]}
         for s in profiles.get("storage_defaults") or []
     ]
-    base = pdx.run_scenario({"date": day, "opts": {"storage": storage}}, data_dir=data_dir)
+    base = pdx.run_scenario(
+        {"date": day, "opts": {"storage": storage}}, data_dir=data_dir
+    )
     trip = pdx.run_scenario(
         {
             "date": day,

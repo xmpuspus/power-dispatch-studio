@@ -92,7 +92,9 @@ async def main() -> None:
         await asyncio.sleep(2.0)
         await scroll_to(page, ".t-cap")
         await asyncio.sleep(3.4)
-        rows = await page.evaluate("() => document.querySelectorAll('.t-cap .n').length")
+        rows = await page.evaluate(
+            "() => document.querySelectorAll('.t-cap .n').length"
+        )
         if rows != 4:
             raise SystemExit(f"expected 4 refusals on the ability table, saw {rows}")
 
@@ -101,7 +103,9 @@ async def main() -> None:
         await asyncio.sleep(2.2)
         await scroll_to(page, ".t-acc")
         await asyncio.sleep(3.0)
-        await cap(page, "The replay error is on the page, and the build rewrites it nightly")
+        await cap(
+            page, "The replay error is on the page, and the build rewrites it nightly"
+        )
         await asyncio.sleep(2.6)
 
         # 3. a limit that was measured, not asserted
@@ -220,22 +224,60 @@ async def main() -> None:
     vf = "fps=10,scale=860:-1:flags=lanczos"
     pal = REC / "pal.png"
     subprocess.run(
-        ["ffmpeg", "-y", "-ss", ss, "-i", str(webm), "-vf",
-         f"{vf},palettegen=max_colors=96:stats_mode=diff", str(pal)],
-        check=True, capture_output=True,
+        [
+            "ffmpeg",
+            "-y",
+            "-ss",
+            ss,
+            "-i",
+            str(webm),
+            "-vf",
+            f"{vf},palettegen=max_colors=96:stats_mode=diff",
+            str(pal),
+        ],
+        check=True,
+        capture_output=True,
     )
     subprocess.run(
-        ["ffmpeg", "-y", "-ss", ss, "-i", str(webm), "-i", str(pal), "-lavfi",
-         f"{vf}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle",
-         str(OUT)],
-        check=True, capture_output=True,
+        [
+            "ffmpeg",
+            "-y",
+            "-ss",
+            ss,
+            "-i",
+            str(webm),
+            "-i",
+            str(pal),
+            "-lavfi",
+            f"{vf}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle",
+            str(OUT),
+        ],
+        check=True,
+        capture_output=True,
     )
     subprocess.run(["gifsicle", "-O3", str(OUT), "-o", str(OUT)], capture_output=True)
     mp4 = OUT.with_suffix(".mp4")
     subprocess.run(
-        ["ffmpeg", "-y", "-ss", ss, "-i", str(webm), "-vf", "scale=1280:-2",
-         "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "24", "-an", str(mp4)],
-        check=True, capture_output=True,
+        [
+            "ffmpeg",
+            "-y",
+            "-ss",
+            ss,
+            "-i",
+            str(webm),
+            "-vf",
+            "scale=1280:-2",
+            "-c:v",
+            "libx264",
+            "-pix_fmt",
+            "yuv420p",
+            "-crf",
+            "24",
+            "-an",
+            str(mp4),
+        ],
+        check=True,
+        capture_output=True,
     )
     print(
         f"wrote {OUT} ({OUT.stat().st_size // 1024} KB) and "

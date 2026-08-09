@@ -310,9 +310,7 @@ def summarize(year: int, data_dir: str, limit: int | None) -> dict:
     def _mean(key, g):
         return round(sum(x[key][g] for x in rows) / len(rows), 3)
 
-    short_days = {
-        g: sum(1 for x in rows if x["unserved_mwh"][g] > 0) for g in GRIDS
-    }
+    short_days = {g: sum(1 for x in rows if x["unserved_mwh"][g] > 0) for g in GRIDS}
     return {
         "year": year,
         "days_solved": len(rows),
@@ -353,7 +351,9 @@ def main():
         help="solve the year and write the studio summary into web/data/",
     )
     ap.add_argument(
-        "--limit", type=int, help="solve this many evenly spaced days, for a quick check"
+        "--limit",
+        type=int,
+        help="solve this many evenly spaced days, for a quick check",
     )
     args = ap.parse_args()
 
@@ -361,7 +361,9 @@ def main():
     out = write(args.year, built)
     m = built["meta"]
     print(f"wrote {out}")
-    print(f"  {m['calendar']['days']} days, demand ratio {m['demand']['ratio_per_grid']}")
+    print(
+        f"  {m['calendar']['days']} days, demand ratio {m['demand']['ratio_per_grid']}"
+    )
     print(f"  added stack MW {m['supply']['added_stack_mw']}")
     print(f"  added solar MW {m['supply']['added_solar_mw']}")
     print(f"  added link MW {m['links']['added_mw']}")

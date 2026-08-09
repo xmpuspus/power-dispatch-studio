@@ -45,9 +45,18 @@ d, p, m = built["dispatch"], built["profiles"], built["meta"]
 days = p["days"]
 expected = (dt.date(YEAR + 1, 1, 1) - dt.date(YEAR, 1, 1)).days
 check(f"{YEAR} carries all {expected} dates", len(days) == expected)
-check("2028 is a leap year and February 29 is present", any(x["date"] == "2028-02-29" for x in days))
-check("dates are unique and sorted", [x["date"] for x in days] == sorted({x["date"] for x in days}))
-check("every day names the recorded day it borrowed", all(x.get("source_day") for x in days))
+check(
+    "2028 is a leap year and February 29 is present",
+    any(x["date"] == "2028-02-29" for x in days),
+)
+check(
+    "dates are unique and sorted",
+    [x["date"] for x in days] == sorted({x["date"] for x in days}),
+)
+check(
+    "every day names the recorded day it borrowed",
+    all(x.get("source_day") for x in days),
+)
 
 # each date borrows a day of its own kind, weekday or weekend
 kind_ok = True
@@ -63,7 +72,10 @@ check("a weekday borrows a weekday and a weekend borrows a weekend", kind_ok)
 path = json.load(open(os.path.join(ROOT, "web", "data", "demand_path.json")))
 years = path["years"]
 for g in GRIDS:
-    want = path["per_grid_mw"][g][years.index(YEAR)] / path["per_grid_mw"][g][years.index(BASE)]
+    want = (
+        path["per_grid_mw"][g][years.index(YEAR)]
+        / path["per_grid_mw"][g][years.index(BASE)]
+    )
     got = m["demand"]["ratio_per_grid"][g]
     check(f"{g} growth ratio matches the DOE path ({got})", abs(got - want) < 5e-4)
 
@@ -83,31 +95,44 @@ check(
         for a, b in zip(sample["demand"]["luzon"], base_hours)
     ),
 )
-check("every day still carries 24 hours per grid",
-      all(len(x["demand"][g]) == 24 for x in days for g in GRIDS))
+check(
+    "every day still carries 24 hours per grid",
+    all(len(x["demand"][g]) == 24 for x in days for g in GRIDS),
+)
 
 # --- supply -----------------------------------------------------------------
 projects = json.load(open(os.path.join(ROOT, "web", "data", "projects.json")))
 late = [
-    r for r in projects["rows"]
+    r
+    for r in projects["rows"]
     if r["status"] == "committed" and (r.get("target_year") or 9999) > YEAR
 ]
-check(f"{len(late)} committed projects land after {YEAR} and none of them count",
-      all((r.get("target_year") or 9999) <= YEAR
-          for r in projects["rows"]
-          if r["status"] == "committed" and r.get("counted")))
+check(
+    f"{len(late)} committed projects land after {YEAR} and none of them count",
+    all(
+        (r.get("target_year") or 9999) <= YEAR
+        for r in projects["rows"]
+        if r["status"] == "committed" and r.get("counted")
+    ),
+)
 
 base_dispatch = json.load(open(os.path.join(ROOT, "web", "data", "dispatch.json")))
 for g in GRIDS:
     for fuel, add in m["supply"]["added_stack_mw"][g].items():
         was = base_dispatch["merit_order"][g]["fuel_avail_mw"].get(fuel, 0.0)
         now = d["merit_order"][g]["fuel_avail_mw"][fuel]
-        check(f"{g} {fuel} rises by exactly the added MW", abs(now - (was + add)) < 0.15)
+        check(
+            f"{g} {fuel} rises by exactly the added MW", abs(now - (was + add)) < 0.15
+        )
 
-check("solar stays out of the dispatchable stack",
-      all("solar" not in d["merit_order"][g]["fuel_avail_mw"] for g in GRIDS))
-check("storage projects are reported and never added to the stack",
-      all("storage" not in d["merit_order"][g]["fuel_avail_mw"] for g in GRIDS))
+check(
+    "solar stays out of the dispatchable stack",
+    all("solar" not in d["merit_order"][g]["fuel_avail_mw"] for g in GRIDS),
+)
+check(
+    "storage projects are reported and never added to the stack",
+    all("storage" not in d["merit_order"][g]["fuel_avail_mw"] for g in GRIDS),
+)
 check("the build states that it retires nothing", "none" in m["supply"]["retirements"])
 check("the build labels itself a scenario", "not a forecast" in m["label"])
 
@@ -115,8 +140,10 @@ check("the build labels itself a scenario", "not a forecast" in m["label"])
 base_caps = {c["id"]: c["limit_mw"] for c in base_dispatch["coupling"]["corridors"]}
 for c in d["coupling"]["corridors"]:
     add = m["links"]["added_mw"].get(c["id"], 0.0)
-    check(f"{c['id']} limit rises by exactly its upgrade",
-          abs(c["limit_mw"] - (base_caps[c["id"]] + add)) < 0.15)
+    check(
+        f"{c['id']} limit rises by exactly its upgrade",
+        abs(c["limit_mw"] - (base_caps[c["id"]] + add)) < 0.15,
+    )
 
 # --- it actually solves -----------------------------------------------------
 import tempfile  # noqa: E402
@@ -135,9 +162,19 @@ with tempfile.TemporaryDirectory() as tmp:
 
     env = dict(os.environ, PYTHONPATH=os.path.join(ROOT, "src"))
     cli = subprocess.run(
-        [sys.executable, "-m", "power_dispatch.cli", "run",
-         "--data-dir", tmp, "--date", f"{YEAR}-06-17"],
-        capture_output=True, text=True, env=env,
+        [
+            sys.executable,
+            "-m",
+            "power_dispatch.cli",
+            "run",
+            "--data-dir",
+            tmp,
+            "--date",
+            f"{YEAR}-06-17",
+        ],
+        capture_output=True,
+        text=True,
+        env=env,
     )
     check("the published CLI command runs a future year", cli.returncode == 0)
     check(
@@ -146,8 +183,10 @@ with tempfile.TemporaryDirectory() as tmp:
     )
 
     peak = max(h["demand"]["luzon"] for h in r["hours"])
-    check(f"the day's Luzon peak ({peak:,.0f} MW) exceeds the recorded base",
-          peak > max(by_date[days[168]["source_day"]]["demand"]["luzon"]))
+    check(
+        f"the day's Luzon peak ({peak:,.0f} MW) exceeds the recorded base",
+        peak > max(by_date[days[168]["source_day"]]["demand"]["luzon"]),
+    )
 
 print()
 print(f"future year: {len(fails)} failures" if fails else "future year: all green")

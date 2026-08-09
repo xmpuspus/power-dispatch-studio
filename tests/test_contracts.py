@@ -47,7 +47,9 @@ book = [{"grid": "luzon", "mw": 100, "strike_php_kwh": 5.0, "side": "buy"}]
 
 # 100 MW for 24 h at P1.00/kWh above strike: 100 * 1000 kWh/h * 24 h * P1.00
 s = pdx.settle(flat(6.0), book)
-check("one peso above strike on 100 MW for a day is P2.4M", s["position_php"] == 2_400_000)
+check(
+    "one peso above strike on 100 MW for a day is P2.4M", s["position_php"] == 2_400_000
+)
 check("the mwh column counts MW times hours", s["contracts"][0]["mwh"] == 2400)
 check(
     "the mean spot reads back",
@@ -55,7 +57,10 @@ check(
 )
 
 s = pdx.settle(flat(4.0), book)
-check("one peso below strike is the same size, the other way", s["position_php"] == -2_400_000)
+check(
+    "one peso below strike is the same size, the other way",
+    s["position_php"] == -2_400_000,
+)
 
 sell = [{"grid": "luzon", "mw": 100, "strike_php_kwh": 5.0, "side": "sell"}]
 check(
@@ -64,9 +69,7 @@ check(
 )
 
 # --- hour coverage -----------------------------------------------------------
-peak = [
-    {"grid": "luzon", "mw": 100, "strike_php_kwh": 5.0, "hours": [18, 19, 20, 21]}
-]
+peak = [{"grid": "luzon", "mw": 100, "strike_php_kwh": 5.0, "hours": [18, 19, 20, 21]}]
 s = pdx.settle(flat(6.0), peak)
 check("a four-hour block settles four hours", s["contracts"][0]["hours_covered"] == 4)
 check("a four-hour block is one sixth of a day", s["position_php"] == 400_000)
@@ -164,7 +167,13 @@ golden = next(
 gold_hours = {
     "summary": {"date": golden["input"]["date"]},
     "hours": [
-        {"hour": h, "price": {g: golden["expect"]["price"][g][h] for g in ("luzon", "visayas", "mindanao")}}
+        {
+            "hour": h,
+            "price": {
+                g: golden["expect"]["price"][g][h]
+                for g in ("luzon", "visayas", "mindanao")
+            },
+        }
         for h in range(24)
     ],
 }

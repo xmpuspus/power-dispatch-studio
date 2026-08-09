@@ -70,7 +70,7 @@ def validate(scenario: Any) -> list[str]:
 
     got = scenario.get("schema")
     if got is None:
-        e.append(f"missing 'schema'. Add \"schema\": \"{SCHEMA}\"")
+        e.append(f'missing \'schema\'. Add "schema": "{SCHEMA}"')
     elif got != SCHEMA:
         e.append(f"'schema' is {got!r}, and this build reads {SCHEMA!r}")
 

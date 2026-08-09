@@ -51,7 +51,9 @@ def validate_book(book: list) -> list[str]:
             if not isinstance(v, (int, float)) or isinstance(v, bool):
                 e.append(f"contract[{i}].{f} must be a number")
         if c.get("mw", 0) < 0:
-            e.append(f"contract[{i}].mw must not be negative. Use side to pick direction")
+            e.append(
+                f"contract[{i}].mw must not be negative. Use side to pick direction"
+            )
         side = c.get("side", "buy")
         if side not in SIDES:
             e.append(f"contract[{i}].side must be buy or sell")
@@ -157,7 +159,9 @@ def settle(result: dict, book: list, load_mw: dict | None = None) -> dict:
     }
 
 
-def compare(base: dict, scenario: dict, book: list, load_mw: dict | None = None) -> dict:
+def compare(
+    base: dict, scenario: dict, book: list, load_mw: dict | None = None
+) -> dict:
     """What one scenario does to the position, which is the question people ask.
 
     Settles the same book twice and reports the change. A trip, a price move, or

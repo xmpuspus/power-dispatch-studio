@@ -201,9 +201,21 @@ with tempfile.TemporaryDirectory() as tmp:
     out_csv = os.path.join(tmp, "out.csv")
     env = dict(os.environ, PYTHONPATH=os.path.join(ROOT, "src"))
     r = subprocess.run(
-        [sys.executable, "-m", "power_dispatch.cli", "run",
-         "--data-dir", tmp, "--date", "2030-01-01", "-o", out_csv],
-        capture_output=True, text=True, env=env,
+        [
+            sys.executable,
+            "-m",
+            "power_dispatch.cli",
+            "run",
+            "--data-dir",
+            tmp,
+            "--date",
+            "2030-01-01",
+            "-o",
+            out_csv,
+        ],
+        capture_output=True,
+        text=True,
+        env=env,
     )
     check("the documented CLI command runs a hand-written system", r.returncode == 0)
     if os.path.isfile(out_csv):

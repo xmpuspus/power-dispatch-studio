@@ -158,7 +158,10 @@ def _unit_text(m: dict, units: dict) -> str:
                 continue
             s = G_SHORT[g]
             terms = [
-                f" + {v}" for h in range(H) for v, f, _mw, _c in idx[(g, h)] if f == "hydro"
+                f" + {v}"
+                for h in range(H)
+                for v, f, _mw, _c in idx[(g, h)]
+                if f == "hydro"
             ]
             if terms:
                 rows.append(
@@ -176,7 +179,9 @@ def _unit_text(m: dict, units: dict) -> str:
     )
 
 
-def run_chronology_units(dispatch: dict, profiles: dict, date: str, units: dict) -> dict:
+def run_chronology_units(
+    dispatch: dict, profiles: dict, date: str, units: dict
+) -> dict:
     m = _assemble(dispatch, profiles, date, {})
     text = _unit_text(m, units)
     sol = _highs_solve(text)
@@ -227,7 +232,9 @@ def _pairs(dispatch: dict, profiles: dict, units: dict | None) -> dict:
     }
 
 
-def generation_gap(dispatch: dict, profiles: dict, units: dict, dates: list[str]) -> dict:
+def generation_gap(
+    dispatch: dict, profiles: dict, units: dict, dates: list[str]
+) -> dict:
     """How far the two runs differ, measured two ways over the given days.
 
     `daily_mwh` is the load-bearing number: the largest difference in a fuel's

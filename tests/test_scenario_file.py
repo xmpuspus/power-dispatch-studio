@@ -49,8 +49,10 @@ runnable = dict(fixture)
 runnable["date"] = days[-1]  # the fixture's date can age out of the rolling window
 res = pdx.run_scenario(runnable)
 check("the fixture solves 24 hours", len(res["hours"]) == 24)
-check("its edits move the price off the flat base",
-      len({h["price"]["luzon"] for h in res["hours"]}) > 1)
+check(
+    "its edits move the price off the flat base",
+    len({h["price"]["luzon"] for h in res["hours"]}) > 1,
+)
 
 base = pdx.run_scenario({"date": days[-1], "opts": {}})
 moved = res["summary"]["mean_price"]["luzon"] != base["summary"]["mean_price"]["luzon"]
@@ -88,10 +90,11 @@ check("a missing energy rating is caught", any("energy_mwh" in m for m in msgs))
 check("a text flag is caught", any("offer_mode" in m for m in msgs))
 check("nothing raises on a broken file", isinstance(msgs, list))
 
-check("an empty scenario still needs a schema and a date",
-      len(validate({})) >= 2)
-check("a scenario that is not an object says so",
-      validate([1, 2, 3]) == ["the scenario must be a JSON object"])
+check("an empty scenario still needs a schema and a date", len(validate({})) >= 2)
+check(
+    "a scenario that is not an object says so",
+    validate([1, 2, 3]) == ["the scenario must be a JSON object"],
+)
 
 # 4. dumps stamps the schema, and the CLI agrees with the library
 text = dumps({"date": "2026-06-17", "opts": {}})
@@ -100,7 +103,9 @@ check("dumps stamps the schema first", json.loads(text)["schema"] == SCHEMA)
 env = dict(os.environ, PYTHONPATH=os.path.join(ROOT, "src"))
 ok = subprocess.run(
     [sys.executable, "-m", "power_dispatch.cli", "validate", FIXTURE],
-    capture_output=True, text=True, env=env,
+    capture_output=True,
+    text=True,
+    env=env,
 )
 check("the CLI accepts the fixture", ok.returncode == 0)
 check("the CLI counts the options", "8 option(s)" in ok.stdout)
@@ -110,7 +115,9 @@ with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as fh:
     bad_path = fh.name
 no = subprocess.run(
     [sys.executable, "-m", "power_dispatch.cli", "validate", bad_path],
-    capture_output=True, text=True, env=env,
+    capture_output=True,
+    text=True,
+    env=env,
 )
 check("the CLI rejects a broken file", no.returncode == 1)
 check("the CLI prints every problem", no.stderr.count("\n") >= len(msgs))
@@ -123,7 +130,9 @@ with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as fh:
     old_path = fh.name
 ran = subprocess.run(
     [sys.executable, "-m", "power_dispatch.cli", "run", "--scenario", old_path],
-    capture_output=True, text=True, env=env,
+    capture_output=True,
+    text=True,
+    env=env,
 )
 check("an unstamped scenario from before this schema still runs", ran.returncode == 0)
 os.unlink(old_path)
