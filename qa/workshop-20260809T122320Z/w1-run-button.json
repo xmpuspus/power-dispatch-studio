@@ -1,0 +1,11 @@
+{
+ "run_before_lever": {
+  "label": "Solved",
+  "disabled": true
+ },
+ "run_after_lever": {
+  "label": "Solved",
+  "disabled": true
+ },
+ "rail_footer": "No edits yet. Open Quick what-if to change a scenario setting.\nCapability list, "
+}

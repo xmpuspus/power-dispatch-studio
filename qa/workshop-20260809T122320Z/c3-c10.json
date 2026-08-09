@@ -1,0 +1,22 @@
+{
+ "C3": {
+  "slider": {
+   "max": 4000,
+   "now": 300
+  },
+  "price_before": "\u20b16.00",
+  "price_after": "\u20b16.00",
+  "preview_shown": false
+ },
+ "C3b": {
+  "price_at_2500": "\u20b112.00"
+ },
+ "C10": {
+  "range_inputs": 1,
+  "slider": {
+   "max": 20,
+   "now": 20
+  },
+  "text_changed": true
+ }
+}

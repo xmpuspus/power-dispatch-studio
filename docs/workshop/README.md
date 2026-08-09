@@ -4,9 +4,17 @@ Written for a class or a team session. Every task runs in a browser and again in
 Python, so a participant sees the same number twice and learns that the two are
 one engine. No account, no key, no install for the browser half.
 
-Before the session, ask each person to open
-[power-dispatch-studio.vercel.app/studio/](https://power-dispatch-studio.vercel.app/studio/)
-and run `pip install power-dispatch-studio`.
+Before the session, ask each person to do both of these. The browser half needs
+only the first.
+
+```bash
+pip install power-dispatch-studio
+git clone https://github.com/xmpuspus/power-dispatch-studio
+```
+
+The clone is for one step: `examples/` ships in the repository and not in the
+package, so Task 1 step 4 needs it. Everything else in Python runs from the
+installed package alone.
 
 ## Task 1, 25 minutes. Site a 300 MW load and find where it stops fitting
 
@@ -16,10 +24,16 @@ and what does that do to the price?
 1. Open [Siting a new load](https://power-dispatch-studio.vercel.app/studio/#v=siting).
    Pick a named site and read the hourly load it can draw through its own lines.
 2. Open [Price as demand grows](https://power-dispatch-studio.vercel.app/studio/#v=load-sweep).
-   Find the load level where the curve bends. Ask the room why it bends there.
-3. Open [Quick what-if](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario),
-   add 300 MW to Luzon, and press Run. Compare the price with the sweep.
-4. In Python, run the same thing across every recorded day:
+   It opens on the +1,500 MW range, where the line is flat. Ask the room why a
+   flat line is the answer to a real question, then press **to +3,000 MW** and
+   find the step. The "Price holds for another" tile names the MW that separates
+   the two.
+3. Open [Quick what-if](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario)
+   and drag the data-center lever to 300 MW. The price does not move, and the
+   levers preview live, so Run correctly stays disabled. Now drag to 2,500 MW and
+   watch it step. That contrast is the lesson: a small load is free until the
+   block that sets the price runs out.
+4. In Python, from the clone, run the same thing across every recorded day:
 
 ```bash
 python3 examples/03_sweep_the_window.py sweep.csv 10
@@ -59,7 +73,7 @@ the other makes the most common error in this subject.
 
 ## Closing, 15 minutes. What this model refuses to do
 
-Read the five limits on
+Read the four limits on
 [the analyst page](https://power-dispatch-studio.vercel.app/for-analysts.html)
 together. Two of them carry a measurement rather than an opinion: the
 unit-commitment test, and the loss surface that validates in two grids and fails

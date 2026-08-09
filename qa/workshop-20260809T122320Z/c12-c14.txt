@@ -1,0 +1,14 @@
+=== C12/C13: the limits the closing sends the room to read ===
+ limits listed: 4
+   - No named unit, so no per-unit commitment, start cost, or minimum run tim
+   - No full network model. Transmission geometry comes from OpenStreetMap, a
+   - No multi-year chronology. A year of days is 365 separate 24-hour program
+   - Three zones, so nothing below the island grid except the reduced loss su
+ the closing says two carry a measurement; the page says: 1
+ No rows in the ability table: 5
+ Partly rows: 3
+=== C14: the two follow-on documents ===
+  local docs/data-contract.md ok      130 lines
+  github docs/data-contract.md -> 200
+  local docs/scenario-schema.md ok      138 lines
+  github docs/scenario-schema.md -> 200
