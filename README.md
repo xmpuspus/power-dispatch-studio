@@ -46,6 +46,7 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 
 ## Contents
 
+- [Six steps take an analyst from the ability list to a file the command line runs](#six-steps-take-an-analyst-from-the-ability-list-to-a-file-the-command-line-runs)
 - [The Leyte-Cebu link reached a binding limit on 114 of 117 days](#the-leyte-cebu-link-reached-a-binding-limit-on-114-of-117-days)
 - [Luzon reserves fell short on 73 of the window's 118 days](#luzon-reserves-fell-short-on-73-of-the-windows-118-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
@@ -69,6 +70,22 @@ Meralco's supply passes a spot-price
 change to the bill.
 
 ![Four dark cards tiled into one summary. The constrained substations drawn on the Philippine grid, with the Leyte-Cebu link on top. The Luzon price-against-load curve, where the same 300 MW adds about P0.32/kWh on a quiet grid and about five times that on a full one. The May 2026 margin as 36 blocks of 100 MW, with Sual's two units taking 13 of them. The Meralco June 2026 bill split three ways, where the spot slice is about a twentieth of the whole rate](docs/story-montage.gif)
+
+## Six steps take an analyst from the ability list to a file the command line runs
+
+One recording, no cuts, of the path an analyst who lost a licensed tool actually
+walks. It reads the ability table and the five refusals, then the replay error,
+then a limit that carries a measurement. It then opens a whole year solved on
+published plans, makes a model edit, and watches a live re-clear. It ends by
+downloading the run as a file that `power-dispatch run --scenario` reads back.
+
+[![The recording opens on the analyst page, where a table marks seven abilities Yes, two Partly, and five as refusals. It scrolls to the replay accuracy table, then opens the studio on the unit-commitment test. There Visayas drops from 0.442 to -0.003, and the correlation falls in all five scored series. A whole solved year follows, where 2028 Luzon peaks at 16,180 MW and no day runs short. It edits Luzon's evening load, presses Run, and drags a data center on, which moves the price from P6.00 to P12.00 there. It ends on Download scenario, which writes three options for the recorded day.](docs/analyst-walkthrough.gif)](docs/analyst-walkthrough.mp4)
+
+Recorded from the running app by
+[`build/record_analyst_walkthrough.py`](build/record_analyst_walkthrough.py). It
+fails if the ability table stops carrying five refusals, if the commitment view
+stops showing its measured delta, or if the download produces no file. Sharper
+as [MP4](docs/analyst-walkthrough.mp4).
 
 ## The Leyte-Cebu link reached a binding limit on 114 of 117 days
 
@@ -793,9 +810,13 @@ fails on any mismatch. The sheet checks all 41 links in one run.
 
 </details>
 
-The full recording, from opening the studio to tripping both Sual units, is
-available as [MP4](docs/studio-e2e.mp4) and [GIF](docs/studio-e2e.gif). Four
-shorter recordings show these tasks.
+The end-to-end recording is the
+[analyst walkthrough](#six-steps-take-an-analyst-from-the-ability-list-to-a-file-the-command-line-runs)
+at the top of this page, and
+[`build/record_analyst_walkthrough.py`](build/record_analyst_walkthrough.py)
+rebuilds it from the running app. An older studio recording sat here with no
+script to rebuild it, so it went stale on every shell change with nothing to
+catch it. Four shorter recordings show these tasks.
 [Explain a day](studio/docs/view-explain.gif),
 [the DICT 1.5 GW data-center build](studio/docs/workflow-1-datacenter.gif),
 [tripping both 647 MW Sual units](studio/docs/workflow-2-contingency.gif), and
@@ -837,7 +858,7 @@ carries the key table and says which three settings a round trip through the
 browser drops. One fixture, `tests/fixtures/scenario_example.json`, is read by
 the Python test and the browser test, so the two sides cannot drift apart.
 
-**This page downloads 15.8 MB of media across 15 files.** The earlier version
+**This page downloads 19.8 MB of media across 16 files.** The earlier version
 downloaded 87.2 MB across 22 files. Browser tests show that GitHub downloads
 media inside closed detail blocks. Longer recordings are links, and the 41 views
 use one contact sheet plus 41 direct links.
@@ -848,9 +869,9 @@ disk and fails when the stated number drifts.
 **Long recordings have MP4 versions.** Short chart and analysis previews stay
 GIF-only. The longer browser recordings are listed below.
 
+- [The analyst walkthrough](docs/analyst-walkthrough.mp4), and its [GIF](docs/analyst-walkthrough.gif)
 - [The map and studio](docs/reel.mp4), and its [GIF](docs/reel.gif)
 - [The map hero](docs/hero.mp4) and [the studio shell](docs/studio-shell.mp4)
-- [The studio end to end](docs/studio-e2e.mp4), and its [gif](docs/studio-e2e.gif)
 - [The nodal walkthrough](docs/nodal-walkthrough.mp4), and its [gif](docs/nodal-walkthrough.gif)
 - [Siting a load at Pax Silica](docs/siting-walkthrough.mp4), and its [gif](docs/siting-walkthrough.gif)
 - [The Pax Silica montage](docs/pax-silica-scale.mp4), and its [gif](docs/pax-silica-scale.gif)
