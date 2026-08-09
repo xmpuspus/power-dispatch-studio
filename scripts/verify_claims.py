@@ -577,6 +577,9 @@ def canonical():
             f"{up['generation_gap']['hourly_mw']:,.0f}" if up_on else ""
         ),
         "up_days": str(up["generation_gap_days"]) if up_on else "",
+        "up_price_gap": (
+            f"{up['generation_gap']['hourly_price_php_kwh']:.3f}" if up_on else ""
+        ),
         # --- the solved future year
         "fy_year": str(fy["year"]) if fy_on else "",
         "fy_days": str(fy["days_solved"]) if fy_on else "",
@@ -1179,7 +1182,12 @@ REGISTRY = [
     ),
     (
         "README.md",
-        re.compile(r"move, by up to \*\*([\d,]+) MW\*\*, across hours"),
+        re.compile(r"price differs by more than\s*\n?\s*\*\*P([\d.]+)/kWh\*\*"),
+        ["up_price_gap"],
+    ),
+    (
+        "README.md",
+        re.compile(r"move, by up to\s*\n?\s*\*\*([\d,]+) MW\*\*"),
         ["up_hourly_gap"],
     ),
     # --- the solved future year (`make future`)

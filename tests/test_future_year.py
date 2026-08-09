@@ -130,6 +130,21 @@ with tempfile.TemporaryDirectory() as tmp:
     r = pdx.run_scenario({"date": f"{YEAR}-06-17", "opts": {}}, data_dir=tmp)
     check("a future day solves 24 hours", len(r["hours"]) == 24)
     check("every hour prices", all(h["price"]["luzon"] > 0 for h in r["hours"]))
+    # the exact command the README, the analyst page, and the contract publish
+    import subprocess  # noqa: E402
+
+    env = dict(os.environ, PYTHONPATH=os.path.join(ROOT, "src"))
+    cli = subprocess.run(
+        [sys.executable, "-m", "power_dispatch.cli", "run",
+         "--data-dir", tmp, "--date", f"{YEAR}-06-17"],
+        capture_output=True, text=True, env=env,
+    )
+    check("the published CLI command runs a future year", cli.returncode == 0)
+    check(
+        "it writes a header plus 24 hourly rows",
+        len(cli.stdout.strip().split("\n")) == 25,
+    )
+
     peak = max(h["demand"]["luzon"] for h in r["hours"])
     check(f"the day's Luzon peak ({peak:,.0f} MW) exceeds the recorded base",
           peak > max(by_date[days[168]["source_day"]]["demand"]["luzon"]))

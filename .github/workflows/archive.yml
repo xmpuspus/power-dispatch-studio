@@ -94,7 +94,11 @@ jobs:
           python3 tests/qa_gate.py
       - name: Commit rebuilt web data
         run: |
-          git add web/data src/power_dispatch/data README.md studio/README.md web/methodology.html
+          # every file verify_claims --write can rewrite has to be staged here.
+          # A file it rewrites and this list misses gets its rewrite thrown away,
+          # and the next --check run turns CI red days later with no local signal.
+          git add web/data src/power_dispatch/data README.md studio/README.md \
+            web/methodology.html web/for-analysts.html
           git diff --cached --quiet && echo "generated data unchanged" || {
             git commit -m "data: $(date -u +%Y-%m-%d)"
             git push

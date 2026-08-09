@@ -245,11 +245,16 @@
   the block model exactly. The two runs then hold the same MW at the same costs,
   cut into different pieces.</p>
   <p>Across ten sampled market days the two runs burn the same daily energy of
-  every fuel on every grid, to <b>0.0 MWh</b>. The hour an energy-limited fuel
-  lands in does move, by up to 1,408 MW, across hours that cost the same. The
-  tiny epsilon that makes the optimum unique rides the variable index, and the
-  two models number their variables differently, so that reallocation is a
-  tie-break rather than a result.</p>
+  every fuel on every grid, to <b>0.0 MWh</b>, and no hour's price differs by more
+  than <b>P0.004/kWh</b>. The hour an energy-limited fuel lands in does move, by
+  up to 1,408 MW, across hours that cost the same, because the epsilon that makes
+  the optimum unique rides the variable index and the two models number their
+  variables differently.</p>
+  <p>One score still moves. The Mindanao market clearing price correlation goes
+  from 0.129 to 0.241, and that is a warning about the metric rather than a gain.
+  The cost model clears near flat, and a correlation against a moving recorded
+  series is hypersensitive when the modeled series barely varies. Four tenths of
+  a centavo reorders it.</p>
   <p>So a per-unit model buys attribution and not accuracy. Every unit of a fuel
   carries that fuel's cost here, so splitting a block into units cannot reorder
   the stack. A per-unit heat rate or a per-unit offer would change that, and no

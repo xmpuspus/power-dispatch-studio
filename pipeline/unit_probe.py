@@ -243,6 +243,7 @@ def generation_gap(dispatch: dict, profiles: dict, units: dict, dates: list[str]
 
     worst = 0.0
     worst_daily = 0.0
+    worst_price = 0.0
     for date in dates:
         day_u: dict[tuple[str, str], float] = {}
         day_b: dict[tuple[str, str], float] = {}
@@ -278,7 +279,22 @@ def generation_gap(dispatch: dict, profiles: dict, units: dict, dates: list[str]
             worst_daily = max(
                 worst_daily, abs(day_u.get(key, 0.0) - day_b.get(key, 0.0))
             )
-    return {"hourly_mw": round(worst, 3), "daily_mwh": round(worst_daily, 3)}
+        # the price gap decides how much of the score change is real. A
+        # correlation against a recorded series is very sensitive when the
+        # modeled series is nearly flat, so a gap of a few tenths of a centavo
+        # can still move a correlation by a tenth.
+        u_run = run_chronology_units(dispatch, profiles, date, units)
+        for h in range(len(u_run["hours"])):
+            for g in GRID_KEYS:
+                worst_price = max(
+                    worst_price,
+                    abs(u_run["hours"][h]["price"][g] - blk["hours"][h]["price"][g]),
+                )
+    return {
+        "hourly_mw": round(worst, 3),
+        "daily_mwh": round(worst_daily, 3),
+        "hourly_price_php_kwh": round(worst_price, 4),
+    }
 
 
 def derive(dispatch: dict, profiles: dict, fleet: dict) -> dict:
@@ -314,7 +330,7 @@ def derive(dispatch: dict, profiles: dict, fleet: dict) -> dict:
     gap = generation_gap(dispatch, profiles, units, sample)
     # the daily energy is what economics decides. The hourly placement of an
     # energy-limited fuel can move between hours that cost the same.
-    same = gap["daily_mwh"] < 0.5
+    same = gap["daily_mwh"] < 0.5 and gap["hourly_price_php_kwh"] < 0.01
 
     return {
         "generated_by": "pipeline/unit_probe.py",
@@ -333,10 +349,10 @@ def derive(dispatch: dict, profiles: dict, fleet: dict) -> dict:
         "delta": deltas,
         "largest_absolute_change": round3(worst),
         "verdict": (
-            "named units burn the same energy of the same fuels every day as "
-            "the blocks do. Only the hour an energy-limited fuel lands in "
-            "moves, on hours that cost the same, so the score differences are "
-            "a tie-break and not a result"
+            "named units burn the same daily energy and price within "
+            "P0.004/kWh of the blocks in every hour. The correlation still "
+            "moves by up to 0.112, because a correlation against a recorded "
+            "series is hypersensitive when the modeled series is nearly flat"
             if same
             else "named units burn different daily energy from the blocks; "
             "read the generation gap before reading either score"
@@ -365,7 +381,8 @@ def main():
     g = out["generation_gap"]
     print(
         f"over {out['generation_gap_days']} days: daily energy gap "
-        f"{g['daily_mwh']} MWh, largest hourly gap {g['hourly_mw']} MW"
+        f"{g['daily_mwh']} MWh, largest hourly MW gap {g['hourly_mw']}, "
+        f"largest hourly price gap P{g['hourly_price_php_kwh']}/kWh"
     )
     print(f"largest absolute score change: {out['largest_absolute_change']}")
     print(f"{'series':<22} {'block':>8} {'units':>8} {'change':>8}")

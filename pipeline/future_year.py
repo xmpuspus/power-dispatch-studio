@@ -193,9 +193,23 @@ def build(year: int, base_year: int, indicative: bool) -> dict:
 
     profiles["days"] = days
     profiles["default_day"] = f"{year}-06-17"
-    profiles.pop("backcast", None)
-    profiles.pop("offer_backcast", None)
-    profiles.pop("chrono_golden", None)
+    # blocks measured against the recorded window. Carrying them into a file
+    # labelled with a future year would publish a 2026 result as a 2028 one.
+    for stale in ("backcast", "offer_backcast", "chrono_golden"):
+        profiles.pop(stale, None)
+    for stale in (
+        "calibration",
+        "calibration_window",
+        "scenario_golden",
+        "reliability_mc",
+        "price_duration",
+        "marginal_frequency",
+        "representative_day",
+        "n1",
+        "adequacy",
+    ):
+        dispatch.pop(stale, None)
+    dispatch["derived_for_year"] = year
 
     meta = {
         "kind": "future-year scenario",

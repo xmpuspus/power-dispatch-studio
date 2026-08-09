@@ -51,7 +51,15 @@ check(
     "an energy-limited fuel does move between hours",
     gap["hourly_mw"] > 0,
 )
-check("the verdict follows the daily energy", "same energy" in u["verdict"])
+check("the verdict follows the daily energy", "same daily energy" in u["verdict"])
+check(
+    "no hour's price moves more than half a centavo",
+    gap["hourly_price_php_kwh"] < 0.01,
+)
+check(
+    "the verdict names the metric's sensitivity rather than claiming a gain",
+    "hypersensitive" in u["verdict"],
+)
 check("the block model stays the default", u["engine_default"] == "block")
 check(
     "the probe names what would change the answer",

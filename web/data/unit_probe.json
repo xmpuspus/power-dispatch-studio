@@ -8,7 +8,8 @@
  "min_dependable_mw": 20.0,
  "generation_gap": {
   "hourly_mw": 1408.0,
-  "daily_mwh": 0.0
+  "daily_mwh": 0.0,
+  "hourly_price_php_kwh": 0.004
  },
  "generation_gap_days": 10,
  "method": "every plant in the DOE fleet list becomes its own variable, with each grid's per-fuel capacity scaled to match the block model's fuel_avail_mw exactly, so the two runs hold the same MW at the same costs",
@@ -164,7 +165,7 @@
   }
  },
  "largest_absolute_change": 0.112,
- "verdict": "named units burn the same energy of the same fuels every day as the blocks do. Only the hour an energy-limited fuel lands in moves, on hours that cost the same, so the score differences are a tie-break and not a result",
+ "verdict": "named units burn the same daily energy and price within P0.004/kWh of the blocks in every hour. The correlation still moves by up to 0.112, because a correlation against a recorded series is hypersensitive when the modeled series is nearly flat",
  "what_would_change_it": "a per-unit heat rate or a per-unit offer. Every unit of a fuel carries that fuel's cost here, so splitting a block into units cannot reorder the stack. No public Philippine source publishes either, so a unit-level run buys attribution and not accuracy.",
  "engine_default": "block"
 }

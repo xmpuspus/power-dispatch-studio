@@ -194,6 +194,23 @@ with tempfile.TemporaryDirectory() as tmp:
     )
     check_dir("a minimal system", tmp)
 
+    # the command the document publishes, run end to end. The library path is
+    # checked above; this adds argument parsing, the hourly rows, and the CSV.
+    import subprocess  # noqa: E402
+
+    out_csv = os.path.join(tmp, "out.csv")
+    env = dict(os.environ, PYTHONPATH=os.path.join(ROOT, "src"))
+    r = subprocess.run(
+        [sys.executable, "-m", "power_dispatch.cli", "run",
+         "--data-dir", tmp, "--date", "2030-01-01", "-o", out_csv],
+        capture_output=True, text=True, env=env,
+    )
+    check("the documented CLI command runs a hand-written system", r.returncode == 0)
+    if os.path.isfile(out_csv):
+        rows = open(out_csv).read().strip().split("\n")
+        check("the CLI writes a header plus 24 hours", len(rows) == 25)
+        check("the CSV carries a Luzon price column", "luzon_price_php_kwh" in rows[0])
+
 print()
 print(f"data contract: {len(fails)} failures" if fails else "data contract: all green")
 sys.exit(1 if fails else 0)

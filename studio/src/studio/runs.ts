@@ -164,8 +164,13 @@ export function runCsv(hours: ChronoHour[], dates: string[]): string {
   return [head.join(','), ...rows.map((r) => r.join(','))].join('\n')
 }
 
-export function downloadCsv(filename: string, csv: string): void {
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+/** Save text as a file. The type follows the name, because a scenario saved as
+ *  JSON with a CSV type opens in a spreadsheet on some machines. */
+export function downloadCsv(filename: string, text: string): void {
+  const type = filename.endsWith('.json')
+    ? 'application/json;charset=utf-8'
+    : 'text/csv;charset=utf-8'
+  const blob = new Blob([text], { type })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
