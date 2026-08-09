@@ -7,9 +7,27 @@ refuses it, because the linear program holds fuel blocks per island grid and no
 named units.
 
 This file lists every edit each of the nine changes needs. It names the files,
-the tests, the gates, and an effort estimate. It does not write code.
+the tests, the gates, and an effort estimate.
 
 Effort is an estimate in days of focused work. It is not measured.
+
+## All nine shipped on 2026-08-08, and four of them found a defect on the way
+
+| Item | Shipped as | What it turned up |
+| --- | --- | --- |
+| I1 | `web/for-analysts.html`, oracle-guarded accuracy block | A screenshot caught two swapped table classes on a phone |
+| I2 | Method page, README, `#v=commitment-test` | The Luzon-only sentence was too narrow; all five series fall |
+| I3 | `examples/`, three scripts in CI | |
+| I4 | `docs/data-contract.md`, `tests/test_data_contract.py` | A hand-written two-fuel system now proves the contract |
+| I5 | README exits table, run-dock action, e2e check | |
+| I6 | `paper/paper.md`, `docs/workshop/` | |
+| I7 | `pipeline/future_year.py`, `#v=future-year` | The horizon is 365 daily solves, and storage resets at midnight |
+| I8 | `pds-scenario/1`, validator, two round-trip tests | `gas_budget` was honored and unlisted; one battery stayed on |
+| I9 | `pipeline/unit_probe.py` measured it | Daily energy is the same; the hourly move is a tie-break |
+
+The view count moved from 39 to 41, in 39 places across 11 files, twice. The
+gates run in `make qa` and in `.github/workflows/ci.yml`, and both lists carry
+every new test.
 
 ## The reader needs six items and the modeler needs three
 
