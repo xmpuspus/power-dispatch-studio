@@ -4,10 +4,16 @@
     power-dispatch run --date 2026-06-15         replay a day, hourly CSV to stdout
     power-dispatch run --scenario s.json -o out.csv
     power-dispatch run --date 2026-06-15 --offer-mode --demand luzon=1500
+    power-dispatch run --data-dir ./mysystem --date 2030-01-01   your own build
 
 Scenario JSON: {"date": "YYYY-MM-DD", "opts": {...}} with the override map from
 `power_dispatch.OPT_KEYS`. Output is one row per hour with per-grid price,
 marginal fuel, demand, shortfall, corridor flows, and storage state.
+
+--data-dir (or the POWER_DISPATCH_DATA environment variable) points the engine at
+any directory holding dispatch.json and profiles.json, so it can model a system
+that is not the bundled one. docs/data-contract.md lists the keys those two files
+must carry.
 """
 
 from __future__ import annotations

@@ -35,6 +35,8 @@ the browser.
 | **[Open the studio](https://power-dispatch-studio.vercel.app/studio/)** | 40 analyst views, a command palette, and scenarios that travel as a link |
 | **[Methods, sources, and assumptions](web/methodology.html)** | The calculation, unit conversions, sources, assumptions, and limits |
 | **`pip install power-dispatch-studio`** | The same LP engine, offline, with a bundled archive snapshot |
+| **[If you already use a licensed production-cost model](web/for-analysts.html)** | What this solves, what it refuses to solve, and how close it gets |
+| **[Three worked examples](examples/)** | Replay a day, add a data center, sweep the window, in Python |
 
 The pip package runs the engine the browser runs. Install it from
 [power-dispatch-studio on PyPI](https://pypi.org/project/power-dispatch-studio/),
@@ -856,6 +858,21 @@ make qa          # data and language checks
 make serve       # http://localhost:8789
 make e2e         # behavioral checks against the running map
 ```
+
+### Point the engine at your own system, not at ours
+
+The engine reads a directory holding `dispatch.json` and `profiles.json`. Write
+your own pair and every command above runs against your system instead.
+
+```bash
+power-dispatch run --data-dir /path/to/your/build --date 2030-01-01
+export POWER_DISPATCH_DATA=/path/to/your/build   # same effect, for a session
+```
+
+[`docs/data-contract.md`](docs/data-contract.md) lists every key those two files
+must carry, with a 30-line system that runs.
+`tests/test_data_contract.py` builds that system, solves it, and fails if the
+document stops matching the engine.
 
 The committed `data/raw/` means `make data` works offline from a clean clone.
 `make backfill` tops up any days the archive is missing (fetches are sequential and

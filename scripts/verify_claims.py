@@ -157,6 +157,26 @@ def _bc_offer_target(ob):
     return "\n".join(rows)
 
 
+def _bc_offer_html(ob):
+    """The same offer-replay scores as HTML rows, for web/for-analysts.html.
+
+    That page answers "how close does it get" for a reader arriving from a
+    licensed tool, so its numbers have to roll with the window like the
+    README's do rather than freeze on the day someone typed them."""
+    rows = []
+    for tgt, key in (("LWAP", "per_grid"), ("MCP", "per_grid_mcp")):
+        for g in ("luzon", "visayas", "mindanao"):
+            s = ob[key][g]
+            rows.append(
+                f"      <tr><td>{g.capitalize()}</td><td>{tgt}</td>"
+                f"<td>{_n(s['correlation'], 2)}</td>"
+                f"<td>{_p(s['mae_php_kwh'])}</td>"
+                f"<td>{_pb(s['bias_php_kwh'])}</td>"
+                f"<td>{_hit(s)}</td></tr>"
+            )
+    return "\n".join(rows)
+
+
 def _bc_rtdhs(bc, ob):
     rows = [
         "| Link (vs operator record) | Recorded mean | Modeled mean | MAE "
@@ -540,6 +560,7 @@ def canonical():
         "bc_mcp": _bc_grid_table(bc["per_grid_mcp"], bc["per_grid"], coverage=True),
         "bc_flows": _bc_flows_table(bc["flows"], "Link"),
         "bc_offer_target": _bc_offer_target(ob),
+        "bc_offer_html": _bc_offer_html(ob),
         "bc_offer_flows": _bc_flows_table(ob["flows"], "Link (offer mode)"),
         "bc_rtdhs": _bc_rtdhs(bc, ob),
         "vis_lwap_corr": _n(bc["per_grid"]["visayas"]["correlation"], 2),
@@ -1134,12 +1155,19 @@ BLOCKS = [
         "bc_offer_flows",
     ),
     ("studio/README.md", "<!-- bc-rtdhs.", "<!-- /bc-rtdhs -->", "bc_rtdhs"),
+    # the arriving analyst's "how close does it get" table
+    (
+        "web/for-analysts.html",
+        "<!-- bc-offer-html.",
+        "<!-- /bc-offer-html -->",
+        "bc_offer_html",
+    ),
 ]
 
 # Every public prose file now uses generated data and is updated by the nightly
 # cron: the scalar registry above plus the reserve-table block below cover all of
 # the rolling numbers in each, so none can silently freeze behind the map.
-WRITABLE = {"README.md", "studio/README.md"}
+WRITABLE = {"README.md", "studio/README.md", "web/for-analysts.html"}
 
 
 def _check_file(path, text, canon, write):

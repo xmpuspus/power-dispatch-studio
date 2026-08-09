@@ -10,7 +10,7 @@ bad(){ echo "FAIL $1"; fail=$((fail+1)); }
 code(){ curl -s -o /dev/null -w '%{http_code}' "$BASE$1"; }
 
 # 1) pages and every generated file return HTTP 200
-for p in / /methodology.html; do
+for p in / /methodology.html /for-analysts.html; do
   [ "$(code $p)" = "200" ] && ok "GET $p" || bad "GET $p"
 done
 for f in meta.json answers.json congestion.json prices.json reliability.json \

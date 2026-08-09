@@ -77,6 +77,13 @@ power-dispatch run --date 2026-07-01 --data-dir /path/to/web/data
 # or: export POWER_DISPATCH_DATA=/path/to/web/data
 ```
 
+That same flag runs your own system. The directory needs `dispatch.json` and
+`profiles.json`, and nothing in it has to be Philippine. The
+[data contract](https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/data-contract.md)
+lists every key, with a 30-line system that runs. A test in the repository
+builds that system, solves it, and fails when the document stops matching the
+engine.
+
 ## What this is and is not
 
 This replays recorded days with scenario what-ifs on a documented calculation. It is

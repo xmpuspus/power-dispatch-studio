@@ -425,6 +425,17 @@
   color: var(--text-faint);
   line-height: var(--lh-body);
 }
+.rail__doc {
+  display: block;
+  margin-top: var(--sp-2);
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.rail__doc:hover,
+.rail__doc:focus-visible {
+  text-decoration: underline;
+}
 
 /* ---------- command palette ---------- */
 

@@ -40,6 +40,11 @@ inter-island transfer limits, outages, and selected per-node price files. See
 
 - `web/index.html` has the public map and market summary.
 - `web/methodology.html` lists sources, calculations, assumptions, and limits.
+- `web/for-analysts.html` states what the model solves and what it leaves out,
+  for a reader who arrives from a licensed production-cost tool.
+- `docs/data-contract.md` documents the two files the engine reads, so anyone can
+  point it at their own system.
+- `examples/` holds three Python scripts that run on the bundled snapshot.
 - `studio/src/` has the interactive dispatch model.
 - `pipeline/` has archive readers and calculations.
 - `src/power_dispatch/` has the installable Python package.

@@ -262,6 +262,11 @@ export function NavRail({
           {editCount === 0
             ? 'No edits yet. Open Quick what-if to change a scenario setting.'
             : `${editCount} edit${editCount === 1 ? '' : 's'} in this scenario. Press Run.`}
+          {/* an analyst arriving from a licensed tool wants the capability list
+              and the stated limits before the first click, not after an hour */}
+          <a className="rail__doc" href="../for-analysts.html">
+            Capability list, stated limits, and replay accuracy
+          </a>
         </div>
       </nav>
     </>

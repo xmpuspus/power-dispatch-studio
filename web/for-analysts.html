@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Power Dispatch Studio for production-cost modelers</title>
+<meta name="description" content="What this free three-zone economic dispatch model solves, what it refuses to solve, how close it gets to recorded Philippine prices, and the four ways to run it." />
+<script>
+// Same pre-paint script and same pds.theme key as the map and the studio, so a
+// reader who pins a theme on either of those keeps it when they follow a link
+// here. Inline on purpose: a deferred file would flash the wrong theme first.
+(function(){
+  try {
+    var s = localStorage.getItem('pds.theme');
+    var dark = s === 'dark' || (s !== 'light' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  } catch (e) { document.documentElement.dataset.theme = 'light'; }
+})();
+</script>
+<style>
+  :root { --ink:#10212b; --muted:#5b6b75; --line:#dce4e8; --bg:#f6f8f9; --card:#fff;
+    --link:#0d5c8c; --code-bg:#edf1f3; --yes:#0f6b3d; --no:#9a3412; }
+  :root[data-theme='dark'] { --ink:#e6edf7; --muted:#9fb0c9; --line:#24314c; --bg:#0b1220;
+    --card:#111a2b; --link:#7fb8d4; --code-bg:#16223a; --yes:#4ec98a; --no:#f0a375; }
+  html { color-scheme:light; }
+  html[data-theme='dark'] { color-scheme:dark; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.55; }
+  main { max-width:900px; margin:0 auto; padding:32px 20px 80px; }
+  h1 { max-width:780px; margin:0 0 8px; font-size:clamp(28px,5vw,42px); line-height:1.08; letter-spacing:-.025em; }
+  h2 { margin:38px 0 10px; font-size:21px; line-height:1.25; }
+  h3 { margin:0 0 5px; font-size:15px; }
+  p, li { font-size:15px; }
+  .lede { max-width:730px; margin:0 0 24px; color:var(--muted); font-size:17px; }
+  .back { display:inline-block; margin-bottom:20px; color:var(--link); font-size:14px; }
+  .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:18px 0; }
+  .card, .note { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .card p, .note p { margin:0; color:var(--muted); }
+  .table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--card); }
+  table { width:100%; border-collapse:collapse; min-width:640px; font-size:13.5px; }
+  th { padding:10px 12px; text-align:left; color:var(--muted); border-bottom:1px solid var(--line); }
+  td { padding:11px 12px; vertical-align:top; border-bottom:1px solid var(--line); }
+  tr:last-child td { border-bottom:0; }
+  code { padding:1px 5px; border-radius:4px; background:var(--code-bg); font-size:12.5px; }
+  pre { margin:12px 0; padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--card); overflow-x:auto; }
+  pre code { padding:0; background:none; font-size:12.5px; line-height:1.7; }
+  a { color:var(--link); }
+  ul { padding-left:22px; }
+  .y { color:var(--yes); font-weight:700; }
+  .n { color:var(--no); font-weight:700; }
+  .p { color:var(--muted); font-weight:700; }
+  .fine { color:var(--muted); font-size:13px; }
+  @media (max-width:720px) {
+    .grid { grid-template-columns:1fr; }
+    main { padding:24px 15px 64px; }
+    .table-wrap { overflow:hidden; }
+    /* A capability list read through a horizontal scrollbar is a capability
+       list nobody reads. Both wide tables become one block per row on a phone,
+       with the column name in front of each cell. */
+    .t-cap, .t-acc, .t-cap tbody, .t-acc tbody, .t-cap tr, .t-acc tr,
+    .t-cap td, .t-acc td { display:block; width:100%; min-width:0; }
+    .t-cap thead, .t-acc thead { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+    .t-cap tbody tr, .t-acc tbody tr { padding:11px 12px; }
+    .t-cap tbody tr + tr, .t-acc tbody tr + tr { border-top:1px solid var(--line); }
+    .t-cap td, .t-acc td { padding:2px 0; border:0; }
+    .t-cap td:first-child, .t-acc td:first-child { font-weight:700; }
+    .t-cap td:not(:first-child)::before, .t-acc td:not(:first-child)::before {
+      display:inline-block; min-width:112px; color:var(--muted); font-size:11px;
+      font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+    .t-cap td:nth-child(2)::before { content:"Here"; }
+    .t-cap td:nth-child(3)::before { content:"Meaning"; }
+    .t-acc td:nth-child(2)::before { content:"Target"; }
+    .t-acc td:nth-child(3)::before { content:"Correlation"; }
+    .t-acc td:nth-child(4)::before { content:"Avg error"; }
+    .t-acc td:nth-child(5)::before { content:"Bias"; }
+    .t-acc td:nth-child(6)::before { content:"High-hour hit"; }
+    .t-voc { min-width:0; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">Back to the map</a>
+  <h1>A three-zone economic dispatch you can run in a browser, and five things it refuses to do</h1>
+  <p class="lede">Written for an analyst who reads production-cost model output
+  and has no license. This page states what the engine solves, what it leaves
+  out, how close it lands on recorded Philippine prices, and the four ways to
+  run it. It costs nothing and needs no account.</p>
+
+  <div class="grid">
+    <section class="card">
+      <h3>Free, and open all the way down</h3>
+      <p>MIT code, CC-BY-4.0 calculated data, public inputs. The data and the
+      results rebuild from a clean clone.</p>
+    </section>
+    <section class="card">
+      <h3>The browser runs the same solver</h3>
+      <p>HiGHS, compiled to WebAssembly. Python and browser build the same
+      linear program text, byte for byte, and a test pins the hash.</p>
+    </section>
+    <section class="card">
+      <h3>Checked against the market, not against itself</h3>
+      <p>Every recorded day replays against published prices. The error is on
+      the page, not in a footnote.</p>
+    </section>
+  </div>
+
+  <h2>The engine solves seven things fully, two partly, and skips five</h2>
+  <div class="table-wrap">
+    <table class="t-cap">
+      <thead><tr><th>Capability</th><th>Here</th><th>What that means in this engine</th></tr></thead>
+      <tbody>
+        <tr><td>Economic dispatch, hourly</td><td class="y">Yes</td><td>A linear program over three zones and 24 hours, priced from the balance duals</td></tr>
+        <tr><td>Transfer limits between zones</td><td class="y">Yes</td><td>Two high-voltage direct-current links, with an hourly limit and a wheeling cost</td></tr>
+        <tr><td>Storage</td><td class="y">Yes</td><td>State of charge with a round-trip efficiency, and a free terminal state each day</td></tr>
+        <tr><td>Reserve, co-optimized</td><td class="y">Yes</td><td>Reserve-capable capacity cannot sell the same MW twice</td></tr>
+        <tr><td>Hydro energy budget</td><td class="y">Yes</td><td>A daily MWh limit per zone, taken from the recorded day</td></tr>
+        <tr><td>Value of lost load</td><td class="y">Yes</td><td>Unserved load prices at the published market offer cap of P32/kWh</td></tr>
+        <tr><td>Loss of load probability</td><td class="y">Yes</td><td>Random forced outages, sampled, reported per zone</td></tr>
+        <tr><td>Capacity expansion</td><td class="p">Partly</td><td>A least-cost new-build mix over representative periods, on generic cost anchors</td></tr>
+        <tr><td>Multi-period chronology</td><td class="p">Partly</td><td>168 hours as one program in one view. Everything else solves one day at a time</td></tr>
+        <tr><td>Unit commitment</td><td class="n">No</td><td>Built and measured. It lowered the price correlation in all five scored series, so it stays off</td></tr>
+        <tr><td>Named units</td><td class="n">No</td><td>The program holds fuel blocks per zone. You can raise a fuel's MW and cannot add "Unit 3"</td></tr>
+        <tr><td>Security-constrained nodal dispatch</td><td class="n">No</td><td>A reduced loss surface over mapped routes, checked per zone. It is not a network model</td></tr>
+        <tr><td>Contracts and settlement</td><td class="n">No</td><td>No bilateral position, no strike price, no hedge accounting</td></tr>
+        <tr><td>Stochastic multi-stage</td><td class="n">No</td><td>Repeated draws over one stage, never a scenario tree</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fine">The two <span class="n">No</span> rows at the top are one
+  limit, not two. The linear program dispatches fuel blocks, so a named unit has
+  nowhere to live and commitment has nothing to commit. The
+  <a href="methodology.html">method page</a> carries the measurement that kept it
+  that way.</p>
+
+  <h2>How close it gets: the offer replay lands between 0.69 and 0.86</h2>
+  <p>Every recorded day replays two ways. The cost model prices a competitive
+  fuel-cost floor. The offer replay clears the market operator's own published
+  bid book. Neither reproduces every price, and the table states the gap that
+  remains. Recorded prices never set the model inputs.</p>
+  <div class="table-wrap">
+    <table class="t-acc">
+      <thead><tr><th>Grid</th><th>Target</th><th>Correlation</th><th>Average error</th><th>Bias</th><th>High-hour hit</th></tr></thead>
+      <tbody>
+<!-- bc-offer-html. Generated by scripts/verify_claims.py from the current data build. Do not hand-edit. -->
+      <tr><td>Luzon</td><td>LWAP</td><td>0.73</td><td>P3.03</td><td>+P1.78</td><td>55%</td></tr>
+      <tr><td>Visayas</td><td>LWAP</td><td>0.69</td><td>P4.76</td><td>-P0.80</td><td>38%</td></tr>
+      <tr><td>Mindanao</td><td>LWAP</td><td>0.74</td><td>P3.97</td><td>-P1.06</td><td>49%</td></tr>
+      <tr><td>Luzon</td><td>MCP</td><td>0.76</td><td>P3.08</td><td>+P2.24</td><td>64%</td></tr>
+      <tr><td>Visayas</td><td>MCP</td><td>0.75</td><td>P5.66</td><td>-P4.25</td><td>51%</td></tr>
+      <tr><td>Mindanao</td><td>MCP</td><td>0.86</td><td>P3.16</td><td>-P2.18</td><td>71%</td></tr>
+<!-- /bc-offer-html -->
+      </tbody>
+    </table>
+  </div>
+  <p class="fine">LWAP is the load-weighted average price and MCP is the market
+  clearing price, both published by the market operator. High-hour hit is the
+  share of the dearest recorded hours the model also calls dear. The nightly
+  build rewrites this table from the current archive, so it cannot freeze behind
+  the data.</p>
+
+  <h2>Your vocabulary maps onto these views</h2>
+  <div class="table-wrap">
+    <table class="t-voc">
+      <thead><tr><th>What you would call it</th><th>Where it is</th></tr></thead>
+      <tbody>
+        <tr><td>Short-term schedule, one day</td><td><a href="studio/#v=chronology">Hourly market replay</a></td></tr>
+        <tr><td>Supply curve and price setter</td><td><a href="studio/#v=merit-order">Merit order</a>, <a href="studio/#v=marginal-units">Marginal units</a></td></tr>
+        <tr><td>N-1 contingency</td><td><a href="studio/#v=n-1">Loss of one major unit</a></td></tr>
+        <tr><td>Loss of load probability</td><td><a href="studio/#v=reliability">Power-shortfall risk</a></td></tr>
+        <tr><td>PASA, adequacy outlook</td><td><a href="studio/#v=adequacy">Supply after scheduled outages</a></td></tr>
+        <tr><td>Price duration curve</td><td><a href="studio/#v=price-duration">Hours above each price</a></td></tr>
+        <tr><td>Capture price by technology</td><td><a href="studio/#v=capture-prices">Average price earned by each technology</a></td></tr>
+        <tr><td>Interface and transfer limits</td><td><a href="studio/#v=coupled-flows">Power between island grids</a></td></tr>
+        <tr><td>Locational marginal price</td><td><a href="studio/#v=nodal-prices">Prices at grid connection points</a></td></tr>
+        <tr><td>Reserve co-optimization</td><td><a href="studio/#v=reserve-market">Backup capacity market</a></td></tr>
+        <tr><td>Capacity expansion, least cost</td><td><a href="studio/#v=expansion-mix">Lowest-cost expansion mix</a></td></tr>
+        <tr><td>Market power, HHI, residual supply</td><td><a href="studio/#v=market-power">Supplier concentration</a></td></tr>
+        <tr><td>Backcast, model validation</td><td><a href="studio/#v=backcast">Historical replay</a></td></tr>
+        <tr><td>Unit commitment</td><td><a href="studio/#v=commitment-test">The test, and why it stays off</a></td></tr>
+        <tr><td>Input database</td><td><a href="studio/#v=generators">Generators</a>, <a href="studio/#v=fuels">Fuels</a>, <a href="studio/#v=interfaces">Inter-grid links</a></td></tr>
+        <tr><td>Solution file, report</td><td><a href="studio/#v=saved-runs">Saved runs</a>, which writes an HTML report and an hourly CSV</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Four ways to run it, and the fastest one takes no install</h2>
+  <ul>
+    <li><b>The map.</b> <a href="index.html">Five modes over the archive</a>, plus a simulate that re-solves in the browser.</li>
+    <li><b>The studio.</b> <a href="studio/">Forty views</a>, a command palette, and a scenario that travels as a link.</li>
+    <li><b>Python.</b> <code>pip install power-dispatch-studio</code>, then one line in a notebook. A dated archive snapshot ships inside the wheel, so it runs offline.</li>
+    <li><b>A clone.</b> <code>make data</code> rebuilds every number from the committed raw files, with no network.</li>
+  </ul>
+
+  <h2>Your own system runs on the same engine</h2>
+  <p>The engine reads a directory holding two files. Write your own pair and it
+  models your system instead of the Philippine one. Nothing in those files has to
+  be Philippine.</p>
+<pre><code>pip install power-dispatch-studio
+power-dispatch run --data-dir ./mysystem --date 2030-01-01</code></pre>
+  <p>The
+  <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/data-contract.md">data
+  contract</a> lists every key those two files must carry, and carries a 30-line
+  system that runs. A test builds that system, solves it, and fails when the
+  document stops matching the engine.</p>
+
+  <h2>Five things a licensed tool gives you that this does not</h2>
+  <p>Say it plainly, because you will find it in the first hour anyway.</p>
+  <ul>
+    <li>No named unit, so no per-unit commitment, start cost, or minimum run time.</li>
+    <li>No full network model. Transmission geometry comes from OpenStreetMap, and the ratings are class defaults.</li>
+    <li>No multi-year chronology. A year of days is 365 separate 24-hour programs, with storage reset at each midnight.</li>
+    <li>No contract, hedge, or settlement position.</li>
+    <li>Three zones, so nothing below the island grid except the reduced loss surface.</li>
+  </ul>
+  <p>Everything in that list is a stated limit with a reason, and two of them
+  carry a measurement. The
+  <a href="methodology.html">method page</a> holds the rest.</p>
+
+  <p class="fine">Code uses the MIT license. Calculated data products use CC BY
+  4.0. Source records stay the property of their publishers.</p>
+</main>
+</body>
+</html>
