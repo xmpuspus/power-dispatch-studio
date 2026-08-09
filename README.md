@@ -904,7 +904,7 @@ carries the key table and says which three settings a round trip through the
 browser drops. One fixture, `tests/fixtures/scenario_example.json`, is read by
 the Python test and the browser test, so the two sides cannot drift apart.
 
-**This page downloads 19.8 MB of media across 16 files.** The earlier version
+**This page downloads 20.1 MB of media across 16 files.** The earlier version
 downloaded 87.2 MB across 22 files. Browser tests show that GitHub downloads
 media inside closed detail blocks. Longer recordings are links, and the 42 views
 use one contact sheet plus 42 direct links.

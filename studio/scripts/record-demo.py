@@ -57,7 +57,11 @@ async def main():
 
         # Run: the model re-solves, the status flips to Solved
         await tap(
-            page, page.get_by_role("button", name="Run the simulation"), pause_after=1.6
+            # the class, not the aria label: Run now names its edit count and is
+            # absent while nothing waits
+            page,
+            page.locator(".bar__run"),
+            pause_after=1.6,
         )
 
         # Hourly market replay: run an observed day on the edited model

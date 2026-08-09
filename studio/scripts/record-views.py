@@ -67,10 +67,10 @@ async def clear_cap(page):
 
 
 async def enter(page: Page):
+    # /studio/ opens the studio itself. It used to stop at a second copy of the
+    # map, and this recorder clicked through that splash. The splash is gone.
     await page.goto(BASE, wait_until="networkidle")
-    await asyncio.sleep(0.6)
-    await page.get_by_role("button", name="Open Power Dispatch Studio").click()
-    await page.wait_for_selector('[data-testid="studio"]', timeout=8000)
+    await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
     await asyncio.sleep(0.6)
 
 

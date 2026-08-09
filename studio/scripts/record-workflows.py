@@ -96,10 +96,10 @@ class Rec:
 
 
 async def enter(page: Page):
+    # /studio/ opens the studio itself. It used to stop at a second copy of the
+    # map, and this recorder clicked through that splash. The splash is gone.
     await page.goto(BASE, wait_until="networkidle")
-    await asyncio.sleep(0.6)
-    await page.get_by_role("button", name="Open Power Dispatch Studio").click()
-    await page.wait_for_selector('[data-testid="studio"]', timeout=8000)
+    await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
     await asyncio.sleep(0.7)
 
 
@@ -126,7 +126,10 @@ async def view(page: Page, name: str, settle: float = 0.9):
 
 
 async def run(page: Page):
-    await page.get_by_role("button", name="Run the simulation").click()
+    # target the class, not the aria label: the Run button now names the edit
+    # count ("Re-solve with 1 edit") and is absent entirely while nothing waits
+    await page.wait_for_selector(".bar__run", timeout=10000)
+    await page.click(".bar__run")
     await asyncio.sleep(0.8)
 
 
