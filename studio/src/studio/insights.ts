@@ -120,6 +120,39 @@ export function windowStats(runs: ChronoResult[], grid: GridKey): WindowStats {
   }
 }
 
+/** A price band narrower than this is drawn flat, not zoomed into. Half a peso
+ * on a P6 clearing price: below it, the wiggle is the LP picking between blocks
+ * a centavo apart, and fitting the axis to it turns 4 millipesos into a cliff. */
+const BAND_MIN_SPAN = 0.5
+
+/** The y-axis window for a price band: where it starts and how tall it is.
+ * Pads a narrow band out to the floor and centres it, so a flat plateau reads
+ * as flat instead of as a dramatic step through three identical tick labels. */
+export function bandDomain(values: number[]): { lo: number; span: number } {
+  if (!values.length) return { lo: -BAND_MIN_SPAN / 2, span: BAND_MIN_SPAN }
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const raw = max - min
+  if (raw >= BAND_MIN_SPAN) return { lo: min, span: raw }
+  return { lo: (min + max) / 2 - BAND_MIN_SPAN / 2, span: BAND_MIN_SPAN }
+}
+
+/** How much of the replayed window sits on one price. A cost stack whose
+ * price-setting block is wide holds the same clearing price hour after hour, so
+ * the band charts look flat and the percentiles collapse onto one number. This
+ * reports the size of that plateau instead of leaving the reader to read a
+ * band with no width as a broken card. */
+export function plateauShare(
+  runs: ChronoResult[],
+  grid: GridKey
+): { price: number; share: number; hours: number } {
+  const all = runs.flatMap((r) => r.hours.map((h) => h.price[grid]))
+  if (!all.length) return { price: 0, share: 0, hours: 0 }
+  const price = percentile(all, 50)
+  const at = all.filter((v) => Math.abs(v - price) < 0.005).length
+  return { price, share: at / all.length, hours: all.length }
+}
+
 /** Every hourly price of every replayed day, sorted dear to cheap, as duration
  * points (pct of window). The scenario's own price-duration curve. */
 export function pooledDuration(

@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import type { Dispatch, ProjectRow, Profiles } from '../lib/types'
 import { runChronology, type ChronoHour } from './chrono'
 import {
+  bandDomain,
   addsAtHorizon,
   bindingCounts,
   capturePrices,
@@ -11,6 +12,7 @@ import {
   emissionsByFuel,
   hourlyBand,
   percentile,
+  plateauShare,
   pooledDuration,
   runEmissionsT,
   windowStats,
@@ -109,11 +111,49 @@ describe('window distribution over real replayed days', () => {
     expect(s.p50).toBeLessThanOrEqual(s.p90)
     expect(dates).toContain(s.maxDate)
   })
+  it('the plateau share counts the hours sitting on the median price', () => {
+    const runs = getRuns()
+    const plateau = plateauShare(runs, 'luzon')
+    expect(plateau.hours).toBe(24 * dates.length)
+    expect(plateau.share).toBeGreaterThan(0)
+    expect(plateau.share).toBeLessThanOrEqual(1)
+    // the counted hours must actually sit at the reported price
+    const at = runs
+      .flatMap((r) => r.hours)
+      .filter((h) => Math.abs(h.price.luzon - plateau.price) < 0.005)
+    expect(at.length / plateau.hours).toBeCloseTo(plateau.share, 6)
+  })
+
   it('pooled duration is monotone dear to cheap over all hours', () => {
     const dur = pooledDuration(getRuns(), 'luzon')
     expect(dur).toHaveLength(24 * dates.length)
     for (let i = 1; i < dur.length; i++)
       expect(dur[i].price).toBeLessThanOrEqual(dur[i - 1].price + 1e-9)
+  })
+})
+
+describe('bandDomain keeps a flat band looking flat', () => {
+  it('pads a hair-width band out to the floor, centred on the data', () => {
+    // 94 replayed days put 95% of Luzon hours on the same P6.00 block, so the
+    // raw range is 4 millipesos. Fitted to the axis, that draws as a cliff.
+    const d = bandDomain([6.0, 6.002, 6.004])
+    expect(d.span).toBe(0.5)
+    expect(d.lo).toBeCloseTo(6.002 - 0.25, 6)
+    expect(d.lo).toBeLessThan(6.0)
+    expect(d.lo + d.span).toBeGreaterThan(6.004)
+  })
+
+  it('leaves a real spread alone', () => {
+    const d = bandDomain([6, 12, 32])
+    expect(d.lo).toBe(6)
+    expect(d.span).toBe(26)
+  })
+
+  it('survives an empty series and a single point', () => {
+    expect(bandDomain([]).span).toBe(0.5)
+    const one = bandDomain([6])
+    expect(one.span).toBe(0.5)
+    expect(one.lo).toBeCloseTo(5.75, 6)
   })
 })
 

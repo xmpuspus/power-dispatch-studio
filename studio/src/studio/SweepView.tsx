@@ -8,6 +8,7 @@ import type { Dispatch, GridKey } from '../lib/types'
 import { num, php, fuelLabel } from '../lib/data'
 import { Panel, StatTile, Segmented } from '../ui/kit'
 import { DataGrid, type Column } from '../ui/DataGrid'
+import { blockHeadroom } from './engine'
 import { HourLines } from './charts'
 import {
   effNum,
@@ -86,6 +87,9 @@ export function SweepView({
   const first = steps[0]
   const last = steps[steps.length - 1]
   const baseFuel = first.s.marginalFuel[grid]
+  // how far the price holds: the room left in the block already setting it.
+  // A flat sweep is this number being larger than the range, not a dead card.
+  const headroom = blockHeadroom(first.s.stacks[grid], first.s.demand[grid])
   const flip = steps.find((st) => st.s.marginalFuel[grid] !== baseFuel)
   const bind = steps.find((st) => st.corridorBound && !first.corridorBound)
   const short = steps.find((st) => st.s.coupled.shortfall[grid] > 0)
@@ -191,6 +195,13 @@ export function SweepView({
           tone={last.s.avail[grid] - last.s.demand[grid] < 1000 ? 'danger' : 'accent'}
         />
         <StatTile
+          label="Price holds for another"
+          value={num(headroom)}
+          unit="MW"
+          hint={`room left in the ${fuelLabel(baseFuel ?? 'none')} block that sets the price`}
+          tone={headroom < Number(maxMw) ? 'accent' : 'default'}
+        />
+        <StatTile
           label="Import corridor binds at"
           value={
             bind
@@ -211,14 +222,14 @@ export function SweepView({
       </div>
 
       <Panel
-        title={`Price response to added load on ${cap(grid)}`}
+        title={`The ${cap(grid)} price holds while the block setting it has room, then steps to the next block`}
         subtitle={`Flat 24/7 demand is added to the selected scenario in ${STEPS} steps of ${num(Number(maxMw) / STEPS)} MW. All three grids clear together again at each step.`}
       >
         <HourLines series={series} marks={marks} />
       </Panel>
 
       <Panel
-        title="Price climbs in steps, one for each next plant the grid has to start"
+        title="Every added MW eats spare capacity, whether or not the price moves"
         subtitle="Each step solves the evening reference hour. A single hour has no daily water limit, so hydro can offer its full available capacity here. Hourly market replay solves whole days and applies the daily water limit."
       >
         <DataGrid columns={cols} rows={steps} getKey={(r) => String(r.addMw)} />

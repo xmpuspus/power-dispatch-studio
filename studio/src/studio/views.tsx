@@ -82,7 +82,7 @@ export function ReliabilityView({ d }: { d: Dispatch }) {
           <StatTile
             label="Current shortfall chance (LOLP)"
             value={pct(base.lolp_pct / 100, 2)}
-            hint="Luzon evening peak"
+            hint={`Luzon evening hours, load drawn around ${num(mc.load_dist.luzon.mean)} MW`}
             tone="positive"
           />
           <StatTile

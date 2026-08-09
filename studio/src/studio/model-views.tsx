@@ -203,6 +203,8 @@ export function SolvedFlowsView({ s }: { s: SolvedModel }) {
 
 export function SolvedN1View({ s, grid }: { s: SolvedModel; grid: GridKey }) {
   const rows = s.n1.filter((n) => n.grid === grid)
+  // name a multi-unit station from THIS grid, so the example is in the table
+  const station = rows.find((r) => / U\d+$/.test(r.unit))?.unit.replace(/ U\d+$/, '')
   const cols: Column<(typeof rows)[number]>[] = [
     { key: 'unit', header: 'Unit', render: (r) => r.unit },
     {
@@ -217,7 +219,7 @@ export function SolvedN1View({ s, grid }: { s: SolvedModel; grid: GridKey }) {
       header: 'Price move',
       align: 'right',
       mono: true,
-      render: (r) => `${php(r.base_price, 0)} → ${php(r.tripped_price, 0)}`,
+      render: (r) => `${php(r.base_price)} → ${php(r.tripped_price)}`,
     },
     {
       key: 'shed',
@@ -230,8 +232,8 @@ export function SolvedN1View({ s, grid }: { s: SolvedModel; grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title={`Effect of losing one named plant in ${cap(grid)} (N-1 test)`}
-        subtitle="Each named plant is removed in turn. The table reports the price change and unmet demand. Multi-unit stations such as Sual, Ilijan, and Masinloc lose all their units, so their result is larger than a single-unit N-1 test."
+        title={`A trip moves the ${cap(grid)} price only when it empties the block that sets it`}
+        subtitle={`Each row removes one unit and re-clears the ${cap(grid)} stack at ${num(rows[0]?.demand_mw)} MW. That is the evening peak, or your edited load when the edit is higher. The N-1 test asks whether one grid alone rides through the loss of any single unit, so no help arrives over the links. Price move is the clearing price before the trip and after it. Shed is the demand this grid's own units cannot serve, so it is an upper bound where a link can import. Rows are per unit, so a station${station ? ` such as ${station}` : ''} appears once for each of its units.`}
       >
         <DataGrid
           columns={cols}
@@ -294,8 +296,17 @@ export function SolvedRegionsView({ s }: { s: SolvedModel }) {
   )
 }
 
-export function SolvedReliabilityView({ s }: { s: SolvedModel }) {
+export function SolvedReliabilityView({
+  s,
+  d,
+  units,
+}: {
+  s: SolvedModel
+  d: Dispatch
+  units: number
+}) {
   const grids: GridKey[] = ['luzon', 'visayas', 'mindanao']
+  const mc = d.reliability_mc
   return (
     <div className="view">
       <Panel
@@ -326,11 +337,19 @@ export function SolvedReliabilityView({ s }: { s: SolvedModel }) {
         </div>
         <p className="note">
           Loss-of-load probability (LOLP) is the share of simulated tight evenings when
-          available supply cannot meet demand. Only named units have random outage rates.
-          All other capacity stays at its stated availability, so the simulations add
-          outage variation without lowering average supply. Edit a unit's outage rate or
-          capacity, or an island grid's demand, then press Run. The 20,000-simulation base
-          case and the effect of storage appear below for comparison.
+          available supply cannot meet demand. This run draws random outages on all{' '}
+          {num(units)} units in the object grid. All other capacity stays at its stated
+          availability, so the simulations add outage variation without lowering average
+          supply. Edit a unit's outage rate or capacity, or an island grid's demand, then
+          press Run.
+        </p>
+        <p className="note">
+          The {num(mc.draws)}-simulation base case below reads lower, for three reasons.
+          It samples only the largest named units, not the whole fleet. It runs{' '}
+          {num(mc.draws)} draws against the {num(s.reliability.luzon.draws)} here. It
+          centres Luzon demand on {num(mc.load_dist.luzon.mean)} MW, where this run uses{' '}
+          {num(s.demand.luzon)} MW. The first reason does most of the work. More units
+          sampled means more outage combinations, so this number runs higher.
         </p>
       </Panel>
     </div>

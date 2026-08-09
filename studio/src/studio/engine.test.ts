@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 import type { Dispatch, GridKey } from '../lib/types'
 import { GRID_KEYS } from './engine'
 import {
+  blockHeadroom,
   buildStack,
   clearCoupled,
   clearGrid,
@@ -213,5 +214,39 @@ describe('lever behavior', () => {
     // and a genuinely binding corridor still reports a positive rent
     const open = clearCoupled(demand, stacks, { leyte: 250, mvip: 250 }, 0)
     expect(open.leyte.rent).toBeGreaterThanOrEqual(0)
+  })
+})
+
+// The studio's flat-looking cards (N-1, the load sweep, the window band) all
+// come back to one number: how much more load the block already setting the
+// price can absorb. Luzon's marginal coal tranche is wide, so most questions
+// the studio asks land inside it and the price does not move.
+describe('blockHeadroom names how far the price holds', () => {
+  const stacks = () => {
+    const out = {} as Record<GridKey, ReturnType<typeof buildStack>>
+    for (const gk of GRID_KEYS)
+      out[gk] = buildStack(d.merit_order[gk].fuel_avail_mw, {}, [], stackParams())
+    return out
+  }
+
+  it('returns the MW between demand and the top of the price-setting block', () => {
+    const lz = stacks().luzon
+    const demand = d.merit_order.luzon.typical_evening_demand_mw
+    const head = blockHeadroom(lz, demand)
+    // adding that much load leaves the same price; one MW more does not
+    expect(clearGrid(lz, demand + head).price).toBe(clearGrid(lz, demand).price)
+    expect(clearGrid(lz, demand + head + 1).price).toBeGreaterThan(
+      clearGrid(lz, demand).price
+    )
+  })
+
+  it('is zero when demand already sits past the whole stack', () => {
+    const lz = stacks().luzon
+    const total = lz.reduce((s, b) => s + b.mw, 0)
+    expect(blockHeadroom(lz, total + 500)).toBe(0)
+  })
+
+  it('handles an empty stack without returning a negative', () => {
+    expect(blockHeadroom([], 100)).toBe(0)
   })
 })

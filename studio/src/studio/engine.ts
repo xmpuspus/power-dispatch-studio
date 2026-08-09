@@ -134,6 +134,20 @@ export function clearGrid(
   }
 }
 
+/** How much more load the block already setting the price can serve, before the
+ * grid has to start the next, dearer one. This is the number behind every flat
+ * answer the studio gives: Luzon's marginal coal tranche runs 4,513 MW wide, so
+ * a trip, a data center, or a whole day of demand usually lands inside it and
+ * the price does not move. Zero once demand is past the top of the stack. */
+export function blockHeadroom(blocks: Block[], demand: number): number {
+  let cum = 0
+  for (const b of blocks) {
+    cum += b.mw
+    if (cum >= demand) return round1(cum - demand)
+  }
+  return 0
+}
+
 // ---- coupled radial solve: a single-hour HiGHS LP ---------------------------
 
 const OIL_FALLBACK = 12.0

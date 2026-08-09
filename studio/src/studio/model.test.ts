@@ -119,6 +119,37 @@ describe('property edits move the solution the right way', () => {
       expect(row.tripped_price).toBeGreaterThanOrEqual(row.base_price - 1e-9)
   })
 
+  it('N-1 trips at the evening peak, where losing a big Luzon unit costs something', () => {
+    const s = solveModel(d, OBJ, {})
+    const peak = OBJ.region.find((r) => r.id === 'luzon')!.props.peak_mw as number
+    const luzon = s.n1.filter((r) => r.grid === 'luzon')
+    for (const row of luzon) expect(row.demand_mw).toBe(peak)
+    // at the typical evening load the P6 coal tranche carries ~1,520 MW above
+    // demand, so no single unit is big enough to move the price and the whole
+    // table reads flat. The peak is the hour the card exists to answer.
+    expect(luzon.some((r) => r.tripped_price > r.base_price)).toBe(true)
+  })
+
+  it('an edited load above the recorded peak becomes the N-1 test point', () => {
+    const peak = OBJ.region.find((r) => r.id === 'luzon')!.props.peak_mw as number
+    const s = solveModel(d, OBJ, {
+      [overrideKey('region', 'luzon', 'demand_mw')]: peak + 500,
+    })
+    for (const row of s.n1.filter((r) => r.grid === 'luzon'))
+      expect(row.demand_mw).toBe(peak + 500)
+  })
+
+  it('a load edit below the peak leaves N-1 at the peak', () => {
+    const peak = OBJ.region.find((r) => r.id === 'luzon')!.props.peak_mw as number
+    // an evening-load edit does not claim the recorded peak fell, and the
+    // contingency test must not read safer than the worst hour on the record
+    const s = solveModel(d, OBJ, {
+      [overrideKey('region', 'luzon', 'demand_mw')]: peak - 3000,
+    })
+    for (const row of s.n1.filter((r) => r.grid === 'luzon'))
+      expect(row.demand_mw).toBe(peak)
+  })
+
   it('solveSnapshot reproduces the full solve at a fraction of the work', () => {
     const ov: Overrides = {
       [overrideKey('region', 'luzon', 'demand_mw')]:

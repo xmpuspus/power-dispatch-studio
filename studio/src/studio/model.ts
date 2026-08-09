@@ -405,6 +405,7 @@ export interface N1Solved {
   unit: string
   grid: GridKey
   capacity_mw: number
+  demand_mw: number
   base_price: number
   tripped_price: number
   shortfall_mw: number
@@ -646,21 +647,25 @@ export function solveModel(
     objects,
     ov
   )
+  const peakMw: Record<GridKey, number> = {
+    luzon: objForId(objects.region, 'luzon').props.peak_mw as number,
+    visayas: objForId(objects.region, 'visayas').props.peak_mw as number,
+    mindanao: objForId(objects.region, 'mindanao').props.peak_mw as number,
+  }
   const reserveMarginPct: Record<GridKey, number> = {
-    luzon: margin(avail.luzon, objForId(objects.region, 'luzon').props.peak_mw as number),
-    visayas: margin(
-      avail.visayas,
-      objForId(objects.region, 'visayas').props.peak_mw as number
-    ),
-    mindanao: margin(
-      avail.mindanao,
-      objForId(objects.region, 'mindanao').props.peak_mw as number
-    ),
+    luzon: margin(avail.luzon, peakMw.luzon),
+    visayas: margin(avail.visayas, peakMw.visayas),
+    mindanao: margin(avail.mindanao, peakMw.mindanao),
   }
 
-  // N-1: trip each named unit at its grid's demand, read the price move + shortfall
+  // N-1: trip each named unit at the evening peak, the hour a lost unit can
+  // actually bite. At the typical evening load the P6 coal tranche carries
+  // ~1,520 MW above demand, so every trip smaller than that reads P6 -> P6 and
+  // the table says nothing. An edited load above the peak is the scenario the
+  // analyst asked for, so the trip goes wherever that load sits.
   const n1: N1Solved[] = objects.generator.map((g) => {
     const grid = g.grid as GridKey
+    const dem = Math.max(peakMw[grid], demand[grid])
     const eff = effNum(
       ov,
       'generator',
@@ -669,17 +674,18 @@ export function solveModel(
       g.props.capacity_mw as number
     )
     const fuel = g.props.fuel as string
-    const base = clearGrid(stacks[grid], demand[grid])
+    const base = clearGrid(stacks[grid], dem)
     const trippedAvail = {
       ...fuelAvail[grid],
       [fuel]: Math.max(0, (fuelAvail[grid][fuel] ?? 0) - eff),
     }
     const trippedStack = buildStack(trippedAvail, {}, [], sp)
-    const tripped = clearGrid(trippedStack, demand[grid])
+    const tripped = clearGrid(trippedStack, dem)
     return {
       unit: g.label,
       grid,
       capacity_mw: eff,
+      demand_mw: dem,
       base_price: base.price,
       tripped_price: tripped.price,
       shortfall_mw: tripped.shortfall,

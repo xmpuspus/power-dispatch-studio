@@ -1,5 +1,6 @@
 import type { Block, DurationPoint } from '../lib/types'
 import { fuelColor, fuelLabel } from '../lib/data'
+import { bandDomain } from './insights'
 
 /**
  * Merit-order supply curve: cumulative megawatts across, marginal cost up.
@@ -683,9 +684,8 @@ export function BandChart({
   const n = band.length
   if (!n) return null
   const vals = band.flatMap((b) => [b.p10, b.p90]).concat(compare ?? [])
-  const ymin = Math.min(...vals)
-  const ymax = Math.max(...vals)
-  const span = ymax - ymin || 1
+  const { lo: ymin, span } = bandDomain(vals)
+  const ymax = ymin + span
   const X = (i: number) => padL + ((W - padL - padR) * i) / (n - 1)
   const Y = (v: number) => padT + (H - padT - padB) * (1 - (v - ymin) / span)
   const line = (pts: number[]) =>
@@ -716,7 +716,9 @@ export function BandChart({
             strokeWidth={0.75}
           />
           <text x={padL - 6} y={Y(v) + 3} textAnchor="end" className="chart__ax">
-            {v.toFixed(1)}
+            {/* a padded flat band spans 50 centavos: 1 dp would print three
+                identical ticks and hide that the axis is not zoomed */}
+            {v.toFixed(span < 2 ? 2 : 1)}
           </text>
         </g>
       ))}

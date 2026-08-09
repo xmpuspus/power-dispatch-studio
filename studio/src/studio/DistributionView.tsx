@@ -5,13 +5,19 @@
 
 import { useMemo } from 'react'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
-import { num, php } from '../lib/data'
+import { num, pct, php } from '../lib/data'
 import { Panel, StatTile } from '../ui/kit'
 import { DataGrid, type Column } from '../ui/DataGrid'
 import { BandChart, DurationCurve } from './charts'
 import { runChronology, type ChronoResult } from './chrono'
 import { chronoOptsFrom, type ClassId, type ObjRow, type Overrides } from './model'
-import { hourlyBand, pooledDuration, windowStats, type WindowStats } from './insights'
+import {
+  hourlyBand,
+  plateauShare,
+  pooledDuration,
+  windowStats,
+  type WindowStats,
+} from './insights'
 
 const GRIDS: GridKey[] = ['luzon', 'visayas', 'mindanao']
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
@@ -59,6 +65,10 @@ export function DistributionView({
   const baseMedian = hourlyBand(baseRuns, grid).map((b) => b.p50)
   const stats = windowStats(runs, grid)
   const baseStats = windowStats(baseRuns, grid)
+  // one wide block sets the price for most hours, which is why the percentiles
+  // below can land on the same number. Say the size of that plateau outright.
+  const plateau = plateauShare(runs, grid)
+  const spread = stats.p90 - stats.p10
   const rents = runs.map((r) => r.summary.leyteRentMPhp + r.summary.mvipRentMPhp)
   const rentTotal = rents.reduce((s, v) => s + v, 0)
   const unserved = runs.reduce(
@@ -99,7 +109,16 @@ export function DistributionView({
         <StatTile
           label="10th to 90th percentile (P10 to P90)"
           value={`${php(stats.p10)} to ${php(stats.p90)}`}
-          hint={`80% of ${num(stats.days)} replayed market days fall in this range`}
+          hint={
+            spread < 0.005
+              ? `80% of ${num(stats.days)} replayed days sit within a centavo of each other`
+              : `80% of ${num(stats.days)} replayed market days fall in this range`
+          }
+        />
+        <StatTile
+          label={`Hours priced at ${php(plateau.price)}`}
+          value={pct(plateau.share, 1)}
+          hint={`of ${num(plateau.hours)} replayed hours, on the block that sets the price`}
         />
         <StatTile
           label="Demand not served in the window"
@@ -115,7 +134,7 @@ export function DistributionView({
       </div>
 
       <Panel
-        title={`Hourly price band, ${cap(grid)}`}
+        title={`The cost stack holds ${cap(grid)} on a flat plateau, so the band stays narrow until supply runs short`}
         subtitle={`The selected scenario is replayed over all ${num(stats.days)} market days with complete demand data. The shaded range covers the 10th to 90th percentile for each hour. The dashed line is the base model's median.`}
       >
         <BandChart band={band} compare={edited ? baseMedian : undefined} />
