@@ -1,17 +1,9 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
-import { useDispatch, pct, php } from './lib/data'
+import { useDispatch } from './lib/data'
 import { initSolver, solverReady } from './studio/solver'
-import { StatTile, ThemeToggle } from './ui/kit'
+import { ThemeToggle } from './ui/kit'
 
-const MapView = lazy(() => import('./map/MapView').then((m) => ({ default: m.MapView })))
 const Studio = lazy(() => import('./studio/Studio').then((m) => ({ default: m.Studio })))
-
-// Two kinds of link open the studio directly. A shared scenario (ChronoView's
-// copyLink, decoded for real by studio/runs.decodeShare once the studio mounts)
-// carries `m=`; a view deep link carries `v=<slug>`. A plain pattern test is
-// enough to decide whether to jump straight in, without pulling the studio's
-// solver bundle into the main chunk just to check.
-const HAS_SHARE_HASH = /[#&](m=[A-Za-z0-9_-]+|v=[a-z0-9-]+)/
 
 type Theme = 'light' | 'dark'
 
@@ -50,9 +42,10 @@ function useTheme(): [Theme, () => void] {
 
 export default function App() {
   const { data: d, loading, error } = useDispatch()
-  // open straight to the studio for a shared-scenario link, instead of
-  // leaving the recipient at the hero with no sign a scenario is waiting
-  const [studio, setStudio] = useState(() => HAS_SHARE_HASH.test(window.location.hash))
+  // /studio/ opens the studio. A share link and a view deep link always did;
+  // the bare URL used to stop at a second copy of the map, which carried the
+  // copy the real map replaced on 2026-08-03.
+  const [studio] = useState(true)
   const [solverOk, setSolverOk] = useState(() => solverReady())
   const [solverErr, setSolverErr] = useState<string | null>(null)
   const [theme, toggleTheme] = useTheme()
@@ -81,82 +74,22 @@ export default function App() {
         </div>
         <div className="app__baractions">
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          <button
-            className="btn btn--primary"
-            onMouseEnter={warmSolver}
-            onFocus={warmSolver}
-            onClick={() => setStudio(true)}
-          >
-            Open Power Dispatch Studio
-          </button>
+          <a className="btn btn--ghost" href="../">
+            Back to the map
+          </a>
         </div>
       </header>
 
-      <main className="app__main">
-        <section className="hero">
-          <div className="hero__copy">
-            <div className="hero__lead">
-              <h1 className="hero__title">
-                Test how much data-center demand the grid can carry
-              </h1>
-              <p className="hero__lede">
-                This lowest-cost-first dispatch model (merit order) uses IEMOP's public
-                5-minute files and checks its results against recorded prices. It clears
-                the three grids together over the high-voltage direct-current (HVDC)
-                links, accounts for baseload commitments and random plant outages, and
-                tests where storage can cover a shortfall.
-              </p>
-            </div>
-            <div className="hero__stats">
-              {d ? (
-                <>
-                  <StatTile
-                    label="Spare dependable capacity, Luzon (reserve margin)"
-                    value={pct((d.adequacy.luzon.reserve_margin_pct ?? 0) / 100, 1)}
-                    hint="at the evening peak"
-                  />
-                  <StatTile
-                    label="Shortfall chance with DICT 1.5 GW (LOLP)"
-                    value={pct(
-                      d.reliability_mc.dict_2028_luzon.distribution.lolp_pct / 100,
-                      2
-                    )}
-                    hint="with the announced added demand"
-                    tone="accent"
-                  />
-                  <StatTile
-                    label="Visayas minus Luzon spread"
-                    value={php(
-                      d.coupling.spread_decomposition.visayas_vs_luzon.observed_php_kwh
-                    )}
-                    hint="the gap when the links bind"
-                  />
-                </>
-              ) : (
-                <div className="hero__loading">
-                  {error ? `Data error: ${error}` : 'Loading the solution.'}
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-
-        <section className="app__mapsection" aria-label="Network map">
-          <Suspense fallback={<div className="mapview__fallback">Loading map.</div>}>
-            <MapView theme={theme} />
-          </Suspense>
-        </section>
-
-        <footer className="app__foot">
-          <span>
-            Statistical indicators derived from public data (IEMOP, NGCP, Meralco, DOE,
-            PCIJ). Patterns may have legitimate explanations.
-          </span>
-          <span className="app__footnote">
-            Power Dispatch Studio is a free, open, independent production-cost tool for
-            the Philippine Wholesale Electricity Spot Market (WESM), built on public data.
-          </span>
-        </footer>
+      {/* The map lives at / and was redrawn on 2026-08-03. This bundle kept a
+          second copy of it with the older copy, and every /studio/ visitor met
+          that copy first. One map, one studio: the close button goes to the
+          real one. */}
+      <main className="app__main app__main--studioonly">
+        <p className="app__await">
+          {error || solverErr
+            ? `Data error: ${error ?? solverErr}`
+            : 'Opening the studio.'}
+        </p>
       </main>
 
       {studio && d && solverOk && (
@@ -165,7 +98,9 @@ export default function App() {
         >
           <Studio
             d={d}
-            onExit={() => setStudio(false)}
+            onExit={() => {
+              window.location.href = '../'
+            }}
             theme={theme}
             onToggleTheme={toggleTheme}
           />
@@ -180,9 +115,9 @@ export default function App() {
                 ? 'Loading the model.'
                 : 'Loading the calculation engine.'}
           </p>
-          <button className="btn btn--ghost" onClick={() => setStudio(false)}>
-            Close
-          </button>
+          <a className="btn btn--ghost" href="../">
+            Back to the map
+          </a>
         </div>
       )}
     </div>

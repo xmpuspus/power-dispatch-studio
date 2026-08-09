@@ -29,15 +29,11 @@ async def main():
             device_scale_factor=1,
         )
         page = await ctx.new_page()
+        # /studio/ opens the studio itself. It used to stop at a second copy of
+        # the map, which this bundle no longer carries.
         await page.goto(BASE, wait_until="networkidle")
-        await asyncio.sleep(3.0)  # landing hero + stat tiles settle
-
-        # into the studio: the Generators grid is the DOE per-plant fleet
-        await tap(
-            page,
-            page.get_by_role("button", name="Open Power Dispatch Studio"),
-            pause_after=2.8,
-        )
+        await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
+        await asyncio.sleep(3.0)  # the base case solves on load
 
         # The studio opens on the what-if controls, so reach the fleet table first.
         await page.evaluate(
@@ -119,14 +115,9 @@ async def main():
         await page.mouse.wheel(0, -300)
         await asyncio.sleep(0.6)
 
-        # flip to the dark theme (the loss-validation panels remap), then close
+        # flip to the dark theme, where the loss-validation panels remap
         await page.locator('.bar button[aria-label^="Switch to"]').click()
-        await asyncio.sleep(2.6)
-        await tap(
-            page,
-            page.locator('.bar button[aria-label="Close the studio"]'),
-            pause_after=1.2,
-        )
+        await asyncio.sleep(3.2)
 
         await ctx.close()
         vid = await page.video.path()

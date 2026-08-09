@@ -173,11 +173,10 @@ async def record_studio(page: Page):
     await asyncio.sleep(1.8)
     await click_js(page, "#studiolink")
     await page.wait_for_load_state("networkidle")
-    await asyncio.sleep(1.2)
-    # studio landing splash -> open
-    await page.get_by_role("button", name="Open Power Dispatch Studio").click()
-    await page.wait_for_selector('[data-testid="studio"]', timeout=8000)
-    await asyncio.sleep(1.0)
+    # /studio/ opens the studio itself. It used to stop at a second copy of the
+    # map, which carried the copy the real map replaced on 2026-08-03.
+    await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
+    await asyncio.sleep(2.2)
 
     # The studio opens on the what-if controls, with results pinned on the right.
     await cap(
