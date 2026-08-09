@@ -3,7 +3,7 @@
 // It replaces a three-tab ribbon plus a two-tab object tree plus a breadcrumb,
 // which together spent 190 of a 900-pixel laptop before any data appeared and
 // clipped at 390. The rule here is that the scenario controls never move and
-// the answer never leaves the screen, whichever of the 40 views is open.
+// the answer never leaves the screen, whichever of the 41 views is open.
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { GridKey } from '../lib/types'
@@ -322,7 +322,7 @@ export function CommandPalette({
             ref={input}
             className="pal__input"
             value={q}
-            placeholder="Search 40 views, such as bill, site, historical replay, or reserve"
+            placeholder="Search 41 views, such as bill, site, historical replay, or reserve"
             aria-label="Search views"
             onChange={(e) => {
               setQ(e.target.value)

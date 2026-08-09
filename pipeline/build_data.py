@@ -1207,6 +1207,13 @@ def main() -> int:
     loss_surface = (
         json.load(open(ls_path)) if os.path.isfile(ls_path) else {"available": False}
     )
+    # a solved future year (pipeline/future_year.py, `make future`); it follows
+    # published plans rather than the nightly archive, so it derives on demand
+    # and rides through here the same way the other probes do
+    fy_path = os.path.join(HERE, "..", "data", "derived", "future_year.json")
+    future_year = (
+        json.load(open(fy_path)) if os.path.isfile(fy_path) else {"available": False}
+    )
 
     for name, obj in [
         ("congestion.json", congestion),
@@ -1215,6 +1222,7 @@ def main() -> int:
         ("nodal.json", nodal),
         ("nodal_obs.json", nodal_obs),
         ("loss_surface.json", loss_surface),
+        ("future_year.json", future_year),
         ("reliability.json", reliability),
         ("prices.json", prices),
         ("price_load.json", price_load),

@@ -1,4 +1,4 @@
-// The studio groups its 40 views by the questions users ask about the market.
+// The studio groups its 41 views by the questions users ask about the market.
 // Each destination keeps its existing Nav value so the view routing stays stable.
 
 import type { ClassId } from '../studio/model'
@@ -35,6 +35,7 @@ export type AnalysisId =
   | 'sites'
   | 'lossval'
   | 'commitment'
+  | 'futureyear'
 export type PhaseId = 'lt' | 'pasa'
 
 export type Nav =
@@ -289,6 +290,14 @@ export const GROUPS: Group[] = [
         alias: 'build new entry technology screening',
       },
       {
+        slug: 'future-year',
+        label: 'A whole year, solved',
+        hint: 'Every date in a target year, on the published demand path and build list',
+        nav: { kind: 'analysis', id: 'futureyear' },
+        scoped: true,
+        alias: '8760 annual 2028 chronology year run planning horizon',
+      },
+      {
         slug: 'multi-year-path',
         label: 'Prices and spare capacity by year',
         hint: 'The price and margin path across years',
@@ -454,7 +463,7 @@ export function phaseOf(nav: Nav): string {
 
 // --- deep links -------------------------------------------------------------
 // A scenario share already owns `#m=<payload>`; the view slug rides beside it
-// as `v=<slug>` so both survive the same link. Any of the 40 destinations is
+// as `v=<slug>` so both survive the same link. Any of the 41 destinations is
 // now addressable, which is what makes "look at the Visayas backcast" sendable.
 
 export function readHashView(hash: string): { slug?: string; grid?: string } {

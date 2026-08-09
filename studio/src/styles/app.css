@@ -2058,3 +2058,30 @@
     position: static;
   }
 }
+
+/* future year: 366 daily points, so the grid lines stay quiet and the two
+   series carry the reading. The assumption list is prose, not a table, because
+   each item names an owner and a source rather than a number. */
+.chart__gridline {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+.yearlines {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: var(--sp-2);
+}
+.assum {
+  margin: 0;
+  padding-left: 20px;
+  font-size: var(--fs-13);
+  line-height: var(--lh-body);
+  color: var(--text-muted);
+}
+.assum li + li {
+  margin-top: var(--sp-2);
+}
+.assum b {
+  color: var(--text);
+}

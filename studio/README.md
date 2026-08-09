@@ -527,7 +527,7 @@ src/
   lib/       types.ts (generated-model types), data.ts (loader hooks + formatters)
   ui/        kit.tsx (Panel, StatTile, Chip, Segmented, ThemeToggle), DataGrid.tsx
   map/       MapView.tsx (MapLibre network view)
-  shell/     nav.ts (40 destinations, grouped by question), Shell.tsx (bar, rail, palette, run dock)
+  shell/     nav.ts (41 destinations, grouped by question), Shell.tsx (bar, rail, palette, run dock)
   studio/    Studio.tsx (model state, panes, Run button, share links and direct links)
              model.ts (object model + scenario overrides + solveModel)
              lpText.ts (canonical LP text, byte-mirror of pipeline/lp_model.py)

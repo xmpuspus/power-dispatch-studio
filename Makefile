@@ -1,4 +1,4 @@
-.PHONY: backfill archive data viz serve e2e qa clean sync-engine package
+.PHONY: backfill archive data viz serve e2e qa clean sync-engine package future
 
 PY := python3
 
@@ -41,6 +41,14 @@ viz:
 	$(PY) scripts/stat_card.py
 	$(PY) scripts/loss_surface_fig.py
 
+# Build a future year as its own data directory, solve it, and write the studio
+# summary. Not part of `make data`: the year depends on published plans that
+# change a few times a year, not on the nightly archive.
+YEAR ?= 2028
+future:
+	$(PY) pipeline/future_year.py --year $(YEAR) --summary
+	$(PY) pipeline/build_data.py
+
 # Range-capable dev server (web/), port 8789.
 serve:
 	cd web && $(PY) serve.py 8789
@@ -72,6 +80,7 @@ qa:
 	$(PY) tests/test_perspective.py
 	$(PY) tests/test_engine_sync.py
 	$(PY) tests/test_data_contract.py
+	$(PY) tests/test_future_year.py
 	$(PY) tests/test_readme_views.py
 	$(PY) tests/test_contrast.py
 	$(PY) tests/test_palette.py

@@ -75,7 +75,7 @@ def main() -> None:
             # a readable strip of the studio section, where the new material sits
             page.evaluate(
                 """() => { const h = [...document.querySelectorAll('h2')]
-                     .find(x => x.textContent.includes('40 views'));
+                     .find(x => x.textContent.includes('41 views'));
                    if (h) h.scrollIntoView(); }"""
             )
             page.wait_for_timeout(900)

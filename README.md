@@ -1,7 +1,7 @@
 # Power Dispatch Studio
 
 **Test whether the Philippine grid can carry announced data-center demand.** The
-project combines a map, a 40-view browser dispatch studio, and a daily archive
+project combines a map, a 41-view browser dispatch studio, and a daily archive
 built from the market operator's public files. It names transmission equipment
 that reached a limit in 5-minute records, places announced demand on the grid,
 and estimates how modeled spot prices and a sample Meralco household bill change.
@@ -32,7 +32,7 @@ the browser.
 | Start here | What it gives you |
 |---|---|
 | **[Open the map](https://power-dispatch-studio.vercel.app)** | Five modes over the archive, plus an in-browser simulate |
-| **[Open the studio](https://power-dispatch-studio.vercel.app/studio/)** | 40 analyst views, a command palette, and scenarios that travel as a link |
+| **[Open the studio](https://power-dispatch-studio.vercel.app/studio/)** | 41 analyst views, a command palette, and scenarios that travel as a link |
 | **[Methods, sources, and assumptions](web/methodology.html)** | The calculation, unit conversions, sources, assumptions, and limits |
 | **`pip install power-dispatch-studio`** | The same LP engine, offline, with a bundled archive snapshot |
 | **[If you already use a licensed production-cost model](web/for-analysts.html)** | What this solves, what it refuses to solve, and how close it gets |
@@ -53,8 +53,9 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 - [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
 - [The cost stack stays near P6 while recorded evening prices include scarcity and offer premiums](#the-cost-stack-stays-near-p6-while-recorded-evening-prices-include-scarcity-and-offer-premiums)
 - [Offer-book replay correlations range from 0.69 to 0.86](#offer-book-replay-correlations-range-from-069-to-086)
+- [The committed build list covers all 366 days of 2028, and it retires nothing](#the-committed-build-list-covers-all-366-days-of-2028-and-it-retires-nothing)
 - [Unit commitment lowered the price correlation in all five scored series, so the linear model stays](#unit-commitment-lowered-the-price-correlation-in-all-five-scored-series-so-the-linear-model-stays)
-- [The studio is 40 views, and every one of them is a URL you can send](#the-studio-is-40-views-and-every-one-of-them-is-a-url-you-can-send)
+- [The studio is 41 views, and every one of them is a URL you can send](#the-studio-is-41-views-and-every-one-of-them-is-a-url-you-can-send)
 - [IEMOP's public window rolls at 90 days, so the git history is the archive](#iemops-public-window-rolls-at-90-days-so-the-git-history-is-the-archive)
 - [The model states six limits](#the-model-states-six-limits) · [Where the data comes from](#where-the-data-comes-from) · [Reproduce locally](#reproduce-locally) · [Data products](#data-products) · [Method](#method)
 
@@ -578,6 +579,45 @@ the inter-island flow scores, are in [studio/README.md](studio/README.md). It is
 congestion-and-siting model checked against recorded prices. It does not forecast
 prices or brownouts.
 
+## The committed build list covers all 366 days of 2028, and it retires nothing
+
+The archive holds this year. A planner asks about 2028. `make future YEAR=2028`
+builds that year as its own data directory, then the same engine solves every
+date in it. Nothing in the engine changes, because `--data-dir` already points at
+any directory holding `dispatch.json` and `profiles.json`.
+
+Four published inputs, joined: the DOE's own peak-demand path per grid, the DOE's
+committed project list, NGCP's corridor upgrades, and the recorded hourly shapes
+from the archive. Every date borrows a recorded day of its own kind, weekday or
+weekend, so the two shapes stay apart.
+
+| Luzon in 2028 | Value | Where it comes from |
+|---|---|---|
+| Peak demand | **16,180 MW** | recorded shape, grown **11.6 percent** by the DOE path |
+| Dispatchable capacity added | **2,543 MW** | committed projects with a target year at or before 2028 |
+| Solar added | **5,942 MW** | the same list, carried apart and derated hour by hour |
+| Mean price across the year | **P5.46/kWh** | this model, cost mode |
+| Mean price 6pm to 9pm | **P6.00/kWh** | solar is near zero here, so firm capacity sets it |
+| Days that leave load unserved | **0 of 366** | on the assumptions below |
+
+Read that last row against its four assumptions before quoting it. The build
+applies **no retirements**, because no public Philippine retirement schedule is
+archived here. It counts committed projects only. It takes the DOE's demand path
+as given. And each day solves on its own, so storage resets at midnight and the
+hydro budget caps one day at a time. A fleet that never retires reads optimistic
+about supply, so treat that zero as a ceiling rather than a finding.
+
+The year is a scenario built from published plans. It is not a forecast. The
+studio shows it at
+[#v=future-year](https://power-dispatch-studio.vercel.app/studio/#v=future-year),
+and `tests/test_future_year.py` checks the calendar, the growth ratios, the
+project cut-off, and that a 2028 day actually solves.
+
+```bash
+make future YEAR=2028
+power-dispatch run --data-dir data/derived/future/2028 --date 2028-06-17
+```
+
 ## Unit commitment lowered the price correlation in all five scored series, so the linear model stays
 
 A licensed production-cost tool commits each thermal unit as a binary decision,
@@ -608,7 +648,7 @@ The linear model stays the default because the measurement chose it.
 studio shows them at
 [#v=commitment-test](https://power-dispatch-studio.vercel.app/studio/#v=commitment-test).
 
-## The studio is 40 views, and every one of them is a URL you can send
+## The studio is 41 views, and every one of them is a URL you can send
 
 The full browser interface lives at
 [/studio/](https://power-dispatch-studio.vercel.app/studio/). It takes the
@@ -641,7 +681,7 @@ scheduled build writes them to [`web/data/exports/`](web/data/exports/), linked 
 Drivers panel and documented in
 [`web/data/exports/index.json`](web/data/exports/index.json).
 
-### Search and question groups organize all 40 views
+### Search and question groups organize all 41 views
 
 The navigation groups views by the question they answer. The clip below shows
 three ways to move through the studio.
@@ -649,7 +689,7 @@ three ways to move through the studio.
 - **A command palette.** Cmd K, then type what you want to know. The ranker
   matches the label, the hint and a per-view alias list, so "price setter"
   finds Marginal units.
-- **Question navigation.** The 40 views sit in 8 groups, and each group is a
+- **Question navigation.** The 41 views sit in 8 groups, and each group is a
   question. The eight are How today's market clears, Can supply cover demand,
   Where new demand can connect, Prices and bills, What new capacity is needed,
   Build and compare scenarios, Check the model against market records, and
@@ -658,25 +698,25 @@ three ways to move through the studio.
   all three grids while you move around. Move a slider and it re-prices live,
   labelled a preview until you press Run.
 
-![The studio shell in four parts. The command palette opens over the studio, and the query 'price setter' ranks Marginal units first. Pressing Enter opens that view and writes its link into the address bar. The question rail expands to show all 40 views in eight groups, and Loss of one major unit opens from it. A data-center slider then moves in the Quick scenario, and the run summary recalculates the Luzon clearing price from P6.00 to P12.00.](docs/studio-shell.gif)
+![The studio shell in four parts. The command palette opens over the studio, and the query 'price setter' ranks Marginal units first. Pressing Enter opens that view and writes its link into the address bar. The question rail expands to show all 41 views in eight groups, and Loss of one major unit opens from it. A data-center slider then moves in the Quick scenario, and the run summary recalculates the Luzon clearing price from P6.00 to P12.00.](docs/studio-shell.gif)
 
 **Every view has a URL.** The interface writes `#v=<slug>` as you move, beside the
 `#m=` scenario share, so
 [`/studio/#v=backcast&g=visayas`](https://power-dispatch-studio.vercel.app/studio/#v=backcast&g=visayas)
 opens the Visayas historical replay for whoever you send it to. This lets the
-README link to all 40 views without embedding 40 clips. GitHub does not defer
-GIF downloads, and 40 clips would total about 200 MB.
+README link to all 41 views without embedding 41 clips. GitHub does not defer
+GIF downloads, and 41 clips would total about 200 MB.
 
-Here are all 40 in one frame, each tile a real screenshot of the running app.
+Here are all 41 in one frame, each tile a real screenshot of the running app.
 Click it to open the sheet full size, because inline the tile names read and
 the numbers inside them do not. `build/shoot_view_sheet.py` opens each view by
 its deep link. It checks that the shell landed on the view it asked for, and
-fails on any mismatch. The sheet checks all 40 links in one run.
+fails on any mismatch. The sheet checks all 41 links in one run.
 
-[![A contact sheet of all 40 studio views, five across. Each tile is a real screenshot of the running app, labeled with its view name and question group. The rows cover today's market, supply adequacy, new-demand siting, prices and bills, new capacity, scenarios, checks against market records, and model inputs.](docs/views-contact-sheet.png)](docs/views-contact-sheet.png)
+[![A contact sheet of all 41 studio views, five across. Each tile is a real screenshot of the running app, labeled with its view name and question group. The rows cover today's market, supply adequacy, new-demand siting, prices and bills, new capacity, scenarios, checks against market records, and model inputs.](docs/views-contact-sheet.png)](docs/views-contact-sheet.png)
 
 <details>
-<summary><b>Open any of the 40 views directly</b></summary>
+<summary><b>Open any of the 41 views directly</b></summary>
 
 <!-- views table start -->
 
@@ -706,6 +746,7 @@ fails on any mismatch. The sheet checks all 40 links in one run.
 |  | [Emissions](https://power-dispatch-studio.vercel.app/studio/#v=emissions) | Solved tonnes per hour plus the carbon-price effect |
 | What new capacity is needed | [Long-term supply plan](https://power-dispatch-studio.vercel.app/studio/#v=long-term) | Capacity needed over time compared with announced projects |
 |  | [Lowest-cost expansion mix](https://power-dispatch-studio.vercel.app/studio/#v=expansion-mix) | Technology chosen by the least-cost build and its cost basis |
+|  | [A whole year, solved](https://power-dispatch-studio.vercel.app/studio/#v=future-year) | Every date in a target year, on the published demand path and build list |
 |  | [Prices and spare capacity by year](https://power-dispatch-studio.vercel.app/studio/#v=multi-year-path) | The price and margin path across years |
 |  | [Generator portfolio value](https://power-dispatch-studio.vercel.app/studio/#v=portfolio) | Assets and earnings for one owner |
 | Build and compare scenarios | [Quick what-if](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario) | Move a slider and all three grids recalculate immediately |
@@ -754,8 +795,8 @@ column.
 
 **This page downloads 15.8 MB of media across 15 files.** The earlier version
 downloaded 87.2 MB across 22 files. Browser tests show that GitHub downloads
-media inside closed detail blocks. Longer recordings are links, and the 40 views
-use one contact sheet plus 40 direct links.
+media inside closed detail blocks. Longer recordings are links, and the 41 views
+use one contact sheet plus 41 direct links.
 
 `python3 tests/test_readme_views.py` re-measures that total against the files on
 disk and fails when the stated number drifts.

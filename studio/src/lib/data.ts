@@ -78,6 +78,9 @@ export const useNodalObs = () => useJson<import('./types').NodalObs>('nodal_obs.
 export const useLossSurface = () =>
   useJson<import('./types').LossSurface>('loss_surface.json')
 export const useExpansion = () => useJson<import('./types').Expansion>('expansion.json')
+// a solved future year, written by `make future`; absent until someone runs it
+export const useFutureYear = () =>
+  useJson<import('./types').FutureYear>('future_year.json')
 export const useProjects = () => useJson<Projects>('projects.json')
 export const useDemandPath = () => useJson<DemandPath>('demand_path.json')
 export const useEmissions = () => useJson<Emissions>('emissions.json')

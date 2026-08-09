@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Pin the README's studio-view table to nav.ts.
 
-The README lists all 40 studio views as `#v=<slug>` deep links instead of
-embedding 40 clips, because GitHub applies no lazy loading and 40 clips would
-cost about 200 MB on open. A hand-maintained list of 40 rows is the most
+The README lists all 41 studio views as `#v=<slug>` deep links instead of
+embedding 41 clips, because GitHub applies no lazy loading and 41 clips would
+cost about 200 MB on open. A hand-maintained list of 41 rows is the most
 drift-prone thing in the file, so it is checked here: every slug that nav.ts
 declares appears exactly once in the README, with the label nav.ts gives it,
 and the README invents no slug that nav.ts does not have.
@@ -31,7 +31,7 @@ def check(name, cond):
 
 
 dests = destinations()
-check("nav.ts declares 40 destinations", len(dests) == 40)
+check("nav.ts declares 41 destinations", len(dests) == 41)
 
 with open(os.path.join(ROOT, "README.md")) as f:
     readme = f.read()
@@ -55,7 +55,7 @@ table = readme.split("<!-- views table start -->")[1].split("<!-- views table en
 in_table = re.findall(r"/studio/#v=([a-z0-9-]+)\)", table)
 dupes = sorted({s for s in in_table if in_table.count(s) > 1})
 check(f"the table lists each slug once (dupes: {dupes})", not dupes)
-check(f"the table lists all 40 ({len(in_table)})", len(in_table) == len(declared))
+check(f"the table lists all 41 ({len(in_table)})", len(in_table) == len(declared))
 
 # the label and the one-line hint are nav.ts's own words; a rewrite in the
 # README would silently disagree with what the app shows in its palette

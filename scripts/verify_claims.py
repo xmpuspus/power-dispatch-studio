@@ -211,6 +211,10 @@ def canonical():
     cg = _load("congestion.json")
     mo = _load("market_ops.json")
     fnd = {f["id"]: f for f in _load("findings.json")["findings"]}
+    # the solved future year (`make future`). It rebuilds on demand rather than
+    # nightly, so its numbers still have to stay in lockstep with the prose.
+    fy = _load("future_year.json")
+    fy_on = bool(fy.get("available"))
 
     league = cg["league"]
 
@@ -561,6 +565,26 @@ def canonical():
         "bc_flows": _bc_flows_table(bc["flows"], "Link"),
         "bc_offer_target": _bc_offer_target(ob),
         "bc_offer_html": _bc_offer_html(ob),
+        # --- the solved future year
+        "fy_year": str(fy["year"]) if fy_on else "",
+        "fy_days": str(fy["days_solved"]) if fy_on else "",
+        "fy_luz_peak": f"{fy['peak_demand_mw']['luzon']:,.0f}" if fy_on else "",
+        "fy_luz_growth": (
+            f"{(fy['meta']['demand']['ratio_per_grid']['luzon'] - 1) * 100:.1f}"
+            if fy_on
+            else ""
+        ),
+        "fy_luz_mean": f"{fy['mean_price_php_kwh']['luzon']:.2f}" if fy_on else "",
+        "fy_luz_eve": f"{fy['evening_price_php_kwh']['luzon']:.2f}" if fy_on else "",
+        "fy_luz_short": str(fy["days_with_unserved_load"]["luzon"]) if fy_on else "",
+        "fy_luz_solar": (
+            f"{fy['meta']['supply']['added_solar_mw']['luzon']:,.0f}" if fy_on else ""
+        ),
+        "fy_luz_firm": (
+            f"{sum(fy['meta']['supply']['added_stack_mw']['luzon'].values()):,.0f}"
+            if fy_on
+            else ""
+        ),
         "bc_offer_flows": _bc_flows_table(ob["flows"], "Link (offer mode)"),
         "bc_rtdhs": _bc_rtdhs(bc, ob),
         "vis_lwap_corr": _n(bc["per_grid"]["visayas"]["correlation"], 2),
@@ -1124,6 +1148,42 @@ REGISTRY = [
         "README.md",
         re.compile(r"stable negative rank\s+correlation \(\*\*(-[\d.]+)\*\*"),
         ["loss_vis_spearman"],
+    ),
+    # --- the solved future year (`make future`)
+    (
+        "README.md",
+        re.compile(r"\| Peak demand \| \*\*([\d,]+) MW\*\*"),
+        ["fy_luz_peak"],
+    ),
+    (
+        "README.md",
+        re.compile(r"grown \*\*([\d.]+) percent\*\* by the DOE path"),
+        ["fy_luz_growth"],
+    ),
+    (
+        "README.md",
+        re.compile(r"\| Dispatchable capacity added \| \*\*([\d,]+) MW\*\*"),
+        ["fy_luz_firm"],
+    ),
+    (
+        "README.md",
+        re.compile(r"\| Solar added \| \*\*([\d,]+) MW\*\*"),
+        ["fy_luz_solar"],
+    ),
+    (
+        "README.md",
+        re.compile(r"\| Mean price across the year \| \*\*P([\d.]+)/kWh\*\*"),
+        ["fy_luz_mean"],
+    ),
+    (
+        "README.md",
+        re.compile(r"\| Mean price 6pm to 9pm \| \*\*P([\d.]+)/kWh\*\*"),
+        ["fy_luz_eve"],
+    ),
+    (
+        "README.md",
+        re.compile(r"\| Days that leave load unserved \| \*\*(\d+) of (\d+)\*\*"),
+        ["fy_luz_short", "fy_days"],
     ),
 ]
 

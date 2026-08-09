@@ -93,8 +93,8 @@ async def main() -> None:
         )
         await asyncio.sleep(2.4)
 
-        # Expand the 40 views grouped by the question each view answers.
-        await cap(page, "The rail groups all 40 views by the question they answer")
+        # Expand the 41 views grouped by the question each view answers.
+        await cap(page, "The rail groups all 41 views by the question they answer")
         await asyncio.sleep(0.8)
         await page.evaluate(
             "() => { document.querySelectorAll('.rail__grouphead').forEach(b => {"

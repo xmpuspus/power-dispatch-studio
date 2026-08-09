@@ -431,6 +431,53 @@ export interface MarketOps {
   uc_probe?: UcProbe
 }
 
+/** One solved day of a future-year build (pipeline/future_year.py). */
+export interface FutureDay {
+  date: string
+  mean_price: Record<GridKey, number>
+  peak_price: Record<GridKey, number>
+  evening_price: Record<GridKey, number>
+  unserved_mwh: Record<GridKey, number>
+  peak_demand_mw: Record<GridKey, number>
+}
+
+export interface FutureYear {
+  year: number
+  days_solved: number
+  days_in_year: number
+  mean_price_php_kwh: Record<GridKey, number>
+  evening_price_php_kwh: Record<GridKey, number>
+  peak_price_php_kwh: Record<GridKey, number>
+  peak_demand_mw: Record<GridKey, number>
+  unserved_mwh: Record<GridKey, number>
+  days_with_unserved_load: Record<GridKey, number>
+  series: FutureDay[]
+  meta: {
+    year: number
+    base_year: number
+    demand: {
+      method: string
+      ratio_per_grid: Record<GridKey, number>
+      owner?: string
+      plan?: string
+      src?: string
+    }
+    supply: {
+      method: string
+      status_included: string[]
+      as_of?: string
+      added_stack_mw: Record<GridKey, Record<string, number>>
+      added_solar_mw: Record<GridKey, number>
+      storage_projects_mw: Record<GridKey, number>
+      storage_note: string
+      retirements: string
+    }
+    links: { added_mw: Record<string, number>; src?: string }
+    calendar: { days: number; method: string }
+    label: string
+  }
+}
+
 export interface UcScore {
   n_hours: number
   observed_mean_php_kwh: number

@@ -190,6 +190,27 @@
   node values recorded price deviations. Read the
   <a href="../docs/source-notes.md">source notes</a> for the longer explanation.</p>
 
+  <h2>A future year is a generated data directory, and it solves 365 separate days rather than one 8760-hour program</h2>
+  <p><code>pipeline/future_year.py</code> joins four published inputs into the
+  same two files the engine already reads. The DOE Power Development Plan supplies
+  peak demand per grid per year. The DOE project lists supply capacity, counted
+  when the target year falls at or before the target year. NGCP's plan supplies
+  the link upgrades. The archive supplies the hourly shapes.</p>
+  <p>Demand uses the plan's growth ratio rather than its absolute level. Every
+  recorded hour is multiplied by the ratio between the base year and the target
+  year, so the archive keeps its own level and shape and the plan supplies only
+  the growth. Each date in the target year borrows a recorded day of its own kind,
+  weekday or weekend, cycling in date order.</p>
+  <p>Four limits ride with every figure the year produces. The build applies no
+  retirements, because no public Philippine retirement schedule is archived here.
+  It counts committed projects unless someone asks for indicative ones. Storage
+  projects are reported and never dispatched, exactly as the DOE's summaries treat
+  them. And each day solves on its own with a free terminal storage state, so
+  storage resets at midnight and the hydro budget caps one day at a time. Seasonal
+  hydro carry and multi-day storage cycling stay outside this build.</p>
+  <p>A year built this way is a scenario from published plans. It is not a
+  forecast, and no figure from it may be quoted as one.</p>
+
   <h2>Unit commitment was built, measured, and left off, because it lowered the price correlation in all five scored series</h2>
   <p>A licensed production-cost tool commits each thermal unit as a binary
   decision, with a minimum-stable level, a start cost, and minimum run times.
