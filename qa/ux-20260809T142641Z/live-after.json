@@ -1,0 +1,26 @@
+{
+ "desktop": {
+  "slider_top": 314,
+  "viewport": 900,
+  "slider_in_view": true,
+  "controls_in_view": 10,
+  "words_before_control": 10,
+  "solved_chip": true,
+  "run_button": false,
+  "allgrids": "All three grids",
+  "close_aria": "Close the studio",
+  "page_errors": []
+ },
+ "phone": {
+  "slider_top": 632,
+  "viewport": 812,
+  "slider_in_view": true,
+  "controls_in_view": 3,
+  "words_before_control": 10,
+  "solved_chip": true,
+  "run_button": false,
+  "allgrids": "All three grids",
+  "close_aria": "Close the studio",
+  "page_errors": []
+ }
+}
