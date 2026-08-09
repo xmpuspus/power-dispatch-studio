@@ -26,6 +26,10 @@ data:
 # bill_wedge and wesm_roles must run BEFORE story_montage, which embeds
 # bill-wedge.png as a panel. Both were missing from this target, so the bill
 # figure in the README went stale against the data build with nothing to catch it.
+# matplotlib is NOT pinned and is not a package dependency, so a different
+# version moves text by a few pixels and the card's own overflow guard refuses
+# to write. Regenerate these on the toolchain that last wrote them, or expect to
+# re-tune the captions. `make qa` never runs this target.
 viz:
 	$(PY) scripts/og_card.py
 	$(PY) scripts/bill_wedge.py

@@ -304,7 +304,18 @@ def check_fit(fig, margin=0.004):
             or bb.y0 < -margin * h
             or bb.y1 > h * (1 + margin)
         ):
-            bad.append(f"{s[:46]!r} at x {bb.x0:.0f}..{bb.x1:.0f} of {w}")
+            # name the edge that overflowed. Printing only x hid a vertical
+            # overflow behind a horizontal-looking message.
+            edges = []
+            if bb.x0 < -margin * w:
+                edges.append(f"left {bb.x0:.0f}")
+            if bb.x1 > w * (1 + margin):
+                edges.append(f"right {bb.x1:.0f} of {w}")
+            if bb.y0 < -margin * h:
+                edges.append(f"below {bb.y0:.0f}")
+            if bb.y1 > h * (1 + margin):
+                edges.append(f"above {bb.y1:.0f} of {h}")
+            bad.append(f"{s[:46]!r} runs off {', '.join(edges)}")
     if bad:
         raise SystemExit("text runs off the card:\n  " + "\n  ".join(bad))
 
