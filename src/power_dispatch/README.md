@@ -27,6 +27,7 @@ wheel, so it runs with no network access.
 ```bash
 power-dispatch days                              # recorded days available
 power-dispatch run --date 2026-06-15             # hourly CSV to stdout
+power-dispatch days --offer                      # days that carry an offer book
 power-dispatch run --date 2026-06-15 --offer-mode # replay the market's own bids
 power-dispatch run --date 2026-06-15 --demand luzon=1500 -o out.csv
 power-dispatch run --scenario scenario.json -o out.csv
@@ -102,6 +103,10 @@ wheeling charge, no tax, and no credit terms.
 
 The full key table is in the
 [scenario schema](https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/scenario-schema.md).
+
+The operator publishes an offer book several days after the day itself, so the
+newest replayable day usually has none. `days --offer` lists the ones that do,
+and `--offer-mode` on a day without one says so and stops.
 
 ## The data snapshot
 

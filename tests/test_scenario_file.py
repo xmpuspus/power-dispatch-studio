@@ -137,6 +137,31 @@ ran = subprocess.run(
 check("an unstamped scenario from before this schema still runs", ran.returncode == 0)
 os.unlink(old_path)
 
+# --- a missing offer book is a message, not a traceback ---------------------
+# The operator publishes an offer book several days after the day, so the newest
+# replayable day usually has none. That is a normal state and it used to exit
+# through a stack trace.
+newest = days[-1]
+offer_have = pdx.offer_days()
+check("some days carry an offer book", len(offer_have) > 0)
+check("the offer books lag the archive", offer_have[-1] < newest)
+late = subprocess.run(
+    [sys.executable, "-m", "power_dispatch.cli", "run", "--date", newest,
+     "--offer-mode"],
+    capture_output=True, text=True, env=env,
+)
+check("asking for a missing book exits 1", late.returncode == 1)
+check("it says no traceback", "Traceback" not in late.stderr)
+check("it names the newest book there is", offer_have[-1] in late.stderr)
+check("it names the way forward", "without --offer-mode" in late.stderr)
+ok_offer = subprocess.run(
+    [sys.executable, "-m", "power_dispatch.cli", "run", "--date", offer_have[-1],
+     "--offer-mode"],
+    capture_output=True, text=True, env=env,
+)
+check("a day that has a book still replays", ok_offer.returncode == 0)
+check("and prices from the book", "offer" in ok_offer.stdout)
+
 print()
 print(f"scenario file: {len(fails)} failures" if fails else "scenario file: all green")
 sys.exit(1 if fails else 0)

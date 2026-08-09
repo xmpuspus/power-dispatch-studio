@@ -27,6 +27,7 @@ from . import (
     __version__,
     compare_position,
     list_days,
+    offer_days,
     run_scenario,
     validate_scenario,
 )
@@ -110,7 +111,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     sub = ap.add_subparsers(dest="cmd")
 
-    sub.add_parser("days", help="list observed days available for replay")
+    d = sub.add_parser("days", help="list observed days available for replay")
+    d.add_argument(
+        "--offer",
+        action="store_true",
+        help="list only the days that carry a published offer book",
+    )
 
     r = sub.add_parser("run", help="run a scenario, emit hourly CSV")
     r.add_argument("--scenario", help="scenario JSON file")
@@ -183,13 +189,18 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.cmd == "days":
-        for d in list_days():
-            print(d)
+        for day in offer_days() if args.offer else list_days():
+            print(day)
         return 0
 
     if args.cmd == "run":
         scenario = _build_scenario(args)
-        result = run_scenario(scenario, data_dir=args.data_dir)
+        try:
+            result = run_scenario(scenario, data_dir=args.data_dir)
+        except FileNotFoundError as exc:
+            # a missing offer book is a normal state, not a crash: the operator
+            # publishes it days after the day. Say so in one line.
+            raise SystemExit(str(exc)) from None
         if args.position:
             port = scenario.get("portfolio") or {}
             book = port.get("contracts") or []

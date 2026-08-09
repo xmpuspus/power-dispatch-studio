@@ -30,7 +30,7 @@ from .contracts import compare as compare_position
 from .contracts import settle
 from .contracts import validate_book
 
-__version__ = "0.1.0"
+__version__ = "0.2.1"
 
 __all__ = [
     "__version__",
@@ -40,6 +40,7 @@ __all__ = [
     "run_scenario",
     "run_chronology_lp",
     "validate_scenario",
+    "offer_days",
     "load_scenario",
     "SCENARIO_SCHEMA",
     "settle",
@@ -95,12 +96,33 @@ def list_days(data_dir: str | None = None) -> list[str]:
     return [d["date"] for d in profiles["days"]]
 
 
+def offer_days(data_dir: str | None = None) -> list[str]:
+    """The days that carry a published offer book.
+
+    The operator publishes an offer book several days after the price and
+    summary files, so the newest replayable day and the newest OFFER day are
+    not the same day. A caller who wants offer mode has to be able to ask.
+    """
+    root = os.path.join(_data_dir(data_dir), "offers")
+    if not os.path.isdir(root):
+        return []
+    out = []
+    for n in sorted(os.listdir(root)):
+        if n.startswith("OFFERD_") and n.endswith(".json"):
+            d = n[7:-5]
+            out.append(f"{d[:4]}-{d[4:6]}-{d[6:]}")
+    return out
+
+
 def _load_offer_book(date: str, root: str) -> dict:
     path = os.path.join(root, "offers", f"OFFERD_{date.replace('-', '')}.json")
     if not os.path.isfile(path):
+        have = offer_days(root)
+        latest = f" The newest one is {have[-1]}." if have else ""
         raise FileNotFoundError(
-            f"offer_mode requested but no observed offer book for {date} "
-            f"(looked in {os.path.join(root, 'offers')})"
+            f"no published offer book for {date}, because the operator "
+            f"publishes a book several days after the day itself."
+            f"{latest} Run without --offer-mode to use the cost model."
         )
     with open(path, encoding="utf-8") as fh:
         return json.load(fh)
