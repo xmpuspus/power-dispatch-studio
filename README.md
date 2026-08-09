@@ -54,6 +54,7 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 - [The cost stack stays near P6 while recorded evening prices include scarcity and offer premiums](#the-cost-stack-stays-near-p6-while-recorded-evening-prices-include-scarcity-and-offer-premiums)
 - [Offer-book replay correlations range from 0.69 to 0.86](#offer-book-replay-correlations-range-from-069-to-086)
 - [The committed build list covers all 366 days of 2028, and it retires nothing](#the-committed-build-list-covers-all-366-days-of-2028-and-it-retires-nothing)
+- [Naming all 141 units changes no daily energy, so the model keeps its fuel blocks](#naming-all-141-units-changes-no-daily-energy-so-the-model-keeps-its-fuel-blocks)
 - [Unit commitment lowered the price correlation in all five scored series, so the linear model stays](#unit-commitment-lowered-the-price-correlation-in-all-five-scored-series-so-the-linear-model-stays)
 - [The studio is 41 views, and every one of them is a URL you can send](#the-studio-is-41-views-and-every-one-of-them-is-a-url-you-can-send)
 - [IEMOP's public window rolls at 90 days, so the git history is the archive](#iemops-public-window-rolls-at-90-days-so-the-git-history-is-the-archive)
@@ -617,6 +618,30 @@ project cut-off, and that a 2028 day actually solves.
 make future YEAR=2028
 power-dispatch run --data-dir data/derived/future/2028 --date 2028-06-17
 ```
+
+## Naming all 141 units changes no daily energy, so the model keeps its fuel blocks
+
+The engine holds one block per fuel per grid, so it cannot say which plant ran.
+The obvious next step is one variable per unit.
+[`pipeline/unit_probe.py`](pipeline/unit_probe.py) measured what that buys
+instead of arguing about it.
+
+Every plant in the DOE fleet list gets its own variable, **141 units** across the
+three grids, with each grid's per-fuel capacity scaled to match the block model
+exactly. The two runs then hold the same MW at the same costs, cut into different
+pieces.
+
+Across ten sampled market days the two runs burn the same daily energy of every
+fuel on every grid, to **0.0 MWh**. The hour an energy-limited fuel lands in does
+move, by up to **1,408 MW**, across hours that cost the same. The tiny epsilon
+that makes the optimum unique rides the variable index, and the two models number
+their variables differently, so that reallocation is a tie-break and not a
+result.
+
+A per-unit model buys attribution and not accuracy. Every unit of a fuel carries
+that fuel's cost here, so splitting a block into units cannot reorder the stack.
+A per-unit heat rate or a per-unit offer would change that, and no public
+Philippine source publishes either.
 
 ## Unit commitment lowered the price correlation in all five scored series, so the linear model stays
 

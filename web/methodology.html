@@ -237,6 +237,24 @@
   that coarseness is the most likely reason the committed run scores worse. The
   linear model stays the default because the measurement chose it.</p>
 
+  <h2>Named units dispatch the same daily energy as fuel blocks, so the engine keeps its blocks</h2>
+  <p>The model holds one block per fuel per grid, so it cannot say which plant
+  ran. <code>pipeline/unit_probe.py</code> tests what a per-unit model would
+  change. It gives every plant in the DOE fleet list its own variable, 141 of
+  them across the three grids, and scales each grid's per-fuel capacity to match
+  the block model exactly. The two runs then hold the same MW at the same costs,
+  cut into different pieces.</p>
+  <p>Across ten sampled market days the two runs burn the same daily energy of
+  every fuel on every grid, to <b>0.0 MWh</b>. The hour an energy-limited fuel
+  lands in does move, by up to 1,408 MW, across hours that cost the same. The
+  tiny epsilon that makes the optimum unique rides the variable index, and the
+  two models number their variables differently, so that reallocation is a
+  tie-break rather than a result.</p>
+  <p>So a per-unit model buys attribution and not accuracy. Every unit of a fuel
+  carries that fuel's cost here, so splitting a block into units cannot reorder
+  the stack. A per-unit heat rate or a per-unit offer would change that, and no
+  public Philippine source publishes either.</p>
+
   <h2>Six stated limits keep scenario results in scope</h2>
   <ul>
     <li>The model does not claim that data centers caused recorded electricity prices.</li>

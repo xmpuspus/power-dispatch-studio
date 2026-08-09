@@ -215,6 +215,9 @@ def canonical():
     # nightly, so its numbers still have to stay in lockstep with the prose.
     fy = _load("future_year.json")
     fy_on = bool(fy.get("available"))
+    # the named-unit dispatch probe (`python3 pipeline/unit_probe.py --derive`)
+    up = _load("unit_probe.json")
+    up_on = bool(up.get("generated_by"))
 
     league = cg["league"]
 
@@ -565,6 +568,15 @@ def canonical():
         "bc_flows": _bc_flows_table(bc["flows"], "Link"),
         "bc_offer_target": _bc_offer_target(ob),
         "bc_offer_html": _bc_offer_html(ob),
+        # --- the named-unit dispatch probe
+        "up_units": (
+            str(sum(up["n_units_dispatched"].values())) if up_on else ""
+        ),
+        "up_daily_gap": f"{up['generation_gap']['daily_mwh']:.1f}" if up_on else "",
+        "up_hourly_gap": (
+            f"{up['generation_gap']['hourly_mw']:,.0f}" if up_on else ""
+        ),
+        "up_days": str(up["generation_gap_days"]) if up_on else "",
         # --- the solved future year
         "fy_year": str(fy["year"]) if fy_on else "",
         "fy_days": str(fy["days_solved"]) if fy_on else "",
@@ -1148,6 +1160,27 @@ REGISTRY = [
         "README.md",
         re.compile(r"stable negative rank\s+correlation \(\*\*(-[\d.]+)\*\*"),
         ["loss_vis_spearman"],
+    ),
+    # --- the named-unit dispatch probe
+    (
+        "README.md",
+        re.compile(r"## Naming all (\d+) units changes no daily energy"),
+        ["up_units"],
+    ),
+    (
+        "README.md",
+        re.compile(r"own variable, \*\*(\d+) units\*\* across the"),
+        ["up_units"],
+    ),
+    (
+        "README.md",
+        re.compile(r"fuel on every grid, to \*\*([\d.]+) MWh\*\*"),
+        ["up_daily_gap"],
+    ),
+    (
+        "README.md",
+        re.compile(r"move, by up to \*\*([\d,]+) MW\*\*, across hours"),
+        ["up_hourly_gap"],
     ),
     # --- the solved future year (`make future`)
     (

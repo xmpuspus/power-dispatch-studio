@@ -1210,6 +1210,11 @@ def main() -> int:
     # a solved future year (pipeline/future_year.py, `make future`); it follows
     # published plans rather than the nightly archive, so it derives on demand
     # and rides through here the same way the other probes do
+    # the named-unit dispatch probe (pipeline/unit_probe.py), derived on demand
+    up_path = os.path.join(HERE, "..", "data", "derived", "unit_probe.json")
+    unit_probe = (
+        json.load(open(up_path)) if os.path.isfile(up_path) else {"available": False}
+    )
     fy_path = os.path.join(HERE, "..", "data", "derived", "future_year.json")
     future_year = (
         json.load(open(fy_path)) if os.path.isfile(fy_path) else {"available": False}
@@ -1223,6 +1228,7 @@ def main() -> int:
         ("nodal_obs.json", nodal_obs),
         ("loss_surface.json", loss_surface),
         ("future_year.json", future_year),
+        ("unit_probe.json", unit_probe),
         ("reliability.json", reliability),
         ("prices.json", prices),
         ("price_load.json", price_load),

@@ -1,0 +1,170 @@
+{
+ "generated_by": "pipeline/unit_probe.py",
+ "n_units_dispatched": {
+  "luzon": 70,
+  "visayas": 32,
+  "mindanao": 39
+ },
+ "min_dependable_mw": 20.0,
+ "generation_gap": {
+  "hourly_mw": 1408.0,
+  "daily_mwh": 0.0
+ },
+ "generation_gap_days": 10,
+ "method": "every plant in the DOE fleet list becomes its own variable, with each grid's per-fuel capacity scaled to match the block model's fuel_avail_mw exactly, so the two runs hold the same MW at the same costs",
+ "block": {
+  "lwap": {
+   "luzon": {
+    "n_hours": 2064,
+    "observed_mean_php_kwh": 7.528,
+    "modeled_mean_php_kwh": 5.989,
+    "mae_php_kwh": 4.243,
+    "bias_php_kwh": -1.539,
+    "correlation": 0.101,
+    "high_hour_hit_rate_pct": 18.8
+   },
+   "visayas": {
+    "n_hours": 2064,
+    "observed_mean_php_kwh": 12.381,
+    "modeled_mean_php_kwh": 5.989,
+    "mae_php_kwh": 8.188,
+    "bias_php_kwh": -6.391,
+    "correlation": 0.123,
+    "high_hour_hit_rate_pct": 37.5
+   },
+   "mindanao": {
+    "n_hours": 2064,
+    "observed_mean_php_kwh": 11.127,
+    "modeled_mean_php_kwh": 5.988,
+    "mae_php_kwh": 7.229,
+    "bias_php_kwh": -5.139,
+    "correlation": 0.093,
+    "high_hour_hit_rate_pct": 6.2
+   }
+  },
+  "mcp": {
+   "luzon": {
+    "n_hours": 1920,
+    "observed_mean_php_kwh": 6.701,
+    "modeled_mean_php_kwh": 5.988,
+    "mae_php_kwh": 3.872,
+    "bias_php_kwh": -0.713,
+    "correlation": 0.151,
+    "high_hour_hit_rate_pct": 23.8
+   },
+   "visayas": null,
+   "mindanao": {
+    "n_hours": 864,
+    "observed_mean_php_kwh": 9.129,
+    "modeled_mean_php_kwh": 5.999,
+    "mae_php_kwh": 6.146,
+    "bias_php_kwh": -3.13,
+    "correlation": 0.129,
+    "high_hour_hit_rate_pct": 2.3
+   }
+  }
+ },
+ "unit": {
+  "lwap": {
+   "luzon": {
+    "n_hours": 2064,
+    "observed_mean_php_kwh": 7.528,
+    "modeled_mean_php_kwh": 5.991,
+    "mae_php_kwh": 4.242,
+    "bias_php_kwh": -1.536,
+    "correlation": 0.107,
+    "high_hour_hit_rate_pct": 18.8
+   },
+   "visayas": {
+    "n_hours": 2064,
+    "observed_mean_php_kwh": 12.381,
+    "modeled_mean_php_kwh": 5.992,
+    "mae_php_kwh": 8.187,
+    "bias_php_kwh": -6.389,
+    "correlation": 0.13,
+    "high_hour_hit_rate_pct": 37.5
+   },
+   "mindanao": {
+    "n_hours": 2064,
+    "observed_mean_php_kwh": 11.127,
+    "modeled_mean_php_kwh": 5.99,
+    "mae_php_kwh": 7.228,
+    "bias_php_kwh": -5.137,
+    "correlation": 0.099,
+    "high_hour_hit_rate_pct": 6.2
+   }
+  },
+  "mcp": {
+   "luzon": {
+    "n_hours": 1920,
+    "observed_mean_php_kwh": 6.701,
+    "modeled_mean_php_kwh": 5.99,
+    "mae_php_kwh": 3.872,
+    "bias_php_kwh": -0.711,
+    "correlation": 0.156,
+    "high_hour_hit_rate_pct": 23.8
+   },
+   "visayas": null,
+   "mindanao": {
+    "n_hours": 864,
+    "observed_mean_php_kwh": 9.129,
+    "modeled_mean_php_kwh": 6.002,
+    "mae_php_kwh": 6.146,
+    "bias_php_kwh": -3.127,
+    "correlation": 0.241,
+    "high_hour_hit_rate_pct": 2.3
+   }
+  }
+ },
+ "delta": {
+  "lwap": {
+   "luzon": {
+    "block_corr": 0.101,
+    "unit_corr": 0.107,
+    "block_mae": 4.243,
+    "unit_mae": 4.242,
+    "corr_delta": 0.006,
+    "mae_delta": -0.001
+   },
+   "visayas": {
+    "block_corr": 0.123,
+    "unit_corr": 0.13,
+    "block_mae": 8.188,
+    "unit_mae": 8.187,
+    "corr_delta": 0.007,
+    "mae_delta": -0.001
+   },
+   "mindanao": {
+    "block_corr": 0.093,
+    "unit_corr": 0.099,
+    "block_mae": 7.229,
+    "unit_mae": 7.228,
+    "corr_delta": 0.006,
+    "mae_delta": -0.001
+   }
+  },
+  "mcp": {
+   "luzon": {
+    "block_corr": 0.151,
+    "unit_corr": 0.156,
+    "block_mae": 3.872,
+    "unit_mae": 3.872,
+    "corr_delta": 0.005,
+    "mae_delta": 0.0
+   },
+   "visayas": null,
+   "mindanao": {
+    "block_corr": 0.129,
+    "unit_corr": 0.241,
+    "block_mae": 6.146,
+    "unit_mae": 6.146,
+    "corr_delta": 0.112,
+    "mae_delta": 0.0
+   }
+  }
+ },
+ "largest_absolute_change": 0.112,
+ "verdict": "named units burn the same energy of the same fuels every day as the blocks do. Only the hour an energy-limited fuel lands in moves, on hours that cost the same, so the score differences are a tie-break and not a result",
+ "what_would_change_it": "a per-unit heat rate or a per-unit offer. Every unit of a fuel carries that fuel's cost here, so splitting a block into units cannot reorder the stack. No public Philippine source publishes either, so a unit-level run buys attribution and not accuracy.",
+ "engine_default": "block"
+}
