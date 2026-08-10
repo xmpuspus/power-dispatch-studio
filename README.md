@@ -48,7 +48,7 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 
 - [Seven steps take an analyst from the ability list to pesos, then to a file](#seven-steps-take-an-analyst-from-the-ability-list-to-pesos-then-to-a-file)
 - [The Leyte-Cebu link reached a binding limit on 114 of 117 days](#the-leyte-cebu-link-reached-a-binding-limit-on-114-of-117-days)
-- [Luzon reserves fell short on 74 of the window's 125 days](#luzon-reserves-fell-short-on-74-of-the-windows-125-days)
+- [Luzon reserves fell short on 74 of the window's 126 days](#luzon-reserves-fell-short-on-74-of-the-windows-126-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
 - [Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.83) but reverse in Visayas (-0.57)](#modeled-loss-ranks-agree-in-luzon-072-and-mindanao-083-but-reverse-in-visayas--057)
 - [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
@@ -94,9 +94,9 @@ the download produces no file. Sharper as [MP4](docs/analyst-walkthrough.mp4).
 IEMOP publishes a "congestions manifesting" file that names transmission
 equipment at its binding limit for each 5-minute interval. This project archives
 and ranks those records. A row **literally named
-`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **100 of the window's 125 days**.
+`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **101 of the window's 126 days**.
 The 230 kV lines that carry that link, Tabango (Leyte) to Daanbantayan (Cebu),
-top the league. They are at a binding limit in the hourly day-ahead runs on **122 of 125
+top the league. They are at a binding limit in the hourly day-ahead runs on **123 of 126
 days**, and binding in the 5-minute real-time dispatch, the run settlement
 actually sees, on **23 days** of the window.
 
@@ -110,7 +110,7 @@ behind that statement.
 
 The same league as plain ranked bars, with no map, is [docs/constraint-league.gif](docs/constraint-league.gif).
 
-Across the 125-day window, **83 distinct pieces of equipment** hit a limit at least
+Across the 126-day window, **83 distinct pieces of equipment** hit a limit at least
 once, in **98 monitored constraints** (a transformer is listed under each winding
 voltage and a line at each terminal, so one physical asset can have more than one limit ID).
 The map ranks the constraints by days at a limit (a day counts once, so a day-ahead
@@ -137,7 +137,7 @@ The archived files pin them to one MW value in
 They record which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
-The System Operator's instruction log states why it changed dispatch. Across 122
+The System Operator's instruction log states why it changed dispatch. Across 123
 daily logs, its instructions carry a remark
 citing a line limitation **1,881 times, and 1,854 of those name the
 Leyte-Cebu link** ("Advise to discharge under MOT Raise due to
@@ -155,11 +155,11 @@ The must-run subset has a **6½ MW** median.
 
 The `so_instructions` section in the same file has both records.
 
-## Luzon reserves fell short on 74 of the window's 125 days
+## Luzon reserves fell short on 74 of the window's 126 days
 
 In the operator's real-time schedules, **Luzon reserves fell below the stated need
-on 74 of the window's 125 days**. Across the three grids, the schedules curtailed
-load on **117 grid-days (6,573.2 MWh)**. These figures describe published
+on 74 of the window's 126 days**. Across the three grids, the schedules curtailed
+load on **118 grid-days (7,117.0 MWh)**. These figures describe published
 schedules and do not forecast brownouts.
 
 The Visayas grid ran **52 consecutive days on grid alert from May 11 to July 1,
@@ -223,7 +223,7 @@ Prices at grid connection points view.
 
 WESM decomposes every published locational marginal price (LMP) into an energy, a loss, and a congestion
 part, and the congestion part is small and sparse (zero through the market
-suspension, nonzero on 1.10 percent of clean-day node-hours afterward), so the
+suspension, nonzero on 1.21 percent of clean-day node-hours afterward), so the
 within-region nodal price structure the market reports is loss-dominated.
 About a thousand resources report per clean day, and the ones that resolve to a
 mapped bus become the comparison set.
@@ -235,8 +235,8 @@ So the model is
 checked against it. Marginal loss factors from the OpenStreetMap-geometry
 backbone are compared, grid by grid, against each node's recorded deviation
 from its regional price. Luzon ranks at Spearman **+0.73** over 314 nodes (72
-distinct buses, 95% confidence interval +0.60 to +0.82) and Mindanao at **+0.84** over 118
-(37 buses, +0.70 to +0.91). Visayas fails with a stable negative rank
+distinct buses, 95% confidence interval +0.59 to +0.82) and Mindanao at **+0.85** over 118
+(37 buses, +0.72 to +0.92). Visayas fails with a stable negative rank
 correlation (**-0.58**, negative on all 15 clean days). The report keeps Visayas
 as a failed check, with the sign reversal not yet diagnosed. The comparison
 recomputes nightly as clean market days accumulate
@@ -479,7 +479,7 @@ streak.
 
 The scenario changes below come from the cost model. The published-offer
 calculation produces larger changes for the widest-swing day. On that day, the same DICT
-1.5 GW demand increase raises the Luzon daily mean by **+P0.50/kWh** on the cost
+1.5 GW demand increase raises the Luzon daily mean by **+P3.75/kWh** on the cost
 stack but **+P13.27/kWh** replayed on the market's own bids, and the
 published-offer change reaches the Visayas (**+P9.44**) and Mindanao (**+P7.45**),
 where the cost stack shows no change. Reference cases check both calculations.
@@ -648,13 +648,13 @@ A worked case, on the archive's most recent day. The book holds a 250 MW power
 supply agreement struck at P6.40/kWh and a 100 MW evening block at P9.00/kWh,
 against a declared Luzon load of 400 MW, which leaves the book **67 percent**
 covered. Trip both 647 MW Sual units and the mean Luzon spot rises from
-P5.01/kWh to P5.11/kWh.
+P5.55/kWh to P5.65/kWh.
 
 | Line | Change for the day |
 |---|---|
-| The contracts gain | **+P602,000** |
-| The uncontracted load costs more | **+P358,000** |
-| Net | **+P244,000** |
+| The contracts gain | **+P560,000** |
+| The uncontracted load costs more | **+P336,000** |
+| Net | **+P224,000** |
 
 Read the sign carefully. The supply agreement is a buy at a strike above spot, so
 a higher spot makes it worth more against buying at spot. The one third of the

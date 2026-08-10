@@ -118,7 +118,7 @@ net market imports and exports in the same files).
 | Link | Recorded mean | Modeled mean | MAE | Direction agreement |
 | --- | --- | --- | --- | --- |
 | Luzon to Visayas | 41 MW | 0 MW | 88 MW | 6% |
-| Visayas to Mindanao | -366 MW | -1 MW | 365 MW | 3% |
+| Visayas to Mindanao | -366 MW | -1 MW | 365 MW | 2% |
 <!-- /bc-flows -->
 
 The fourth comparison replays each day with the operator's offer books. These
@@ -165,7 +165,7 @@ rarely reaches them.
 | Link (vs operator record) | Recorded mean | Modeled mean | MAE | Direction | Recorded limit share | Modeled at-cap share |
 | --- | --- | --- | --- | --- | --- | --- |
 | Luzon to Visayas, cost mode | 41 MW | 0 MW | 88 MW | 6% | 56% | 1% |
-| Visayas to Mindanao, cost mode | -366 MW | -1 MW | 365 MW | 3% | 39% | 0% |
+| Visayas to Mindanao, cost mode | -366 MW | -1 MW | 365 MW | 2% | 39% | 0% |
 | Luzon to Visayas, offer mode | 40 MW | 81 MW | 98 MW | 84% | 56% | 29% |
 | Visayas to Mindanao, offer mode | -368 MW | -341 MW | 56 MW | 100% | 40% | 32% |
 <!-- /bc-rtdhs -->
@@ -194,7 +194,7 @@ cost calculations gives a direct offer-price effect. Luzon still overprices
 settlement by P1.78, and the sparse Visayas MCP subset keeps a -P4.25 bias.
 
 The two calculations disagree on the 1.5 GW DICT demand case. On the day with
-the largest price change, the cost calculation adds P0.50/kWh. The recorded
+the largest price change, the cost calculation adds P3.75/kWh. The recorded
 offers add P13.27/kWh. The increase reaches P9.44 in the Visayas and P7.45 in
 Mindanao, where the cost calculation shows no change.
 
@@ -222,11 +222,11 @@ method page.
 
 The reserve replay uses the first five-minute reserve offer book in each hour
 and the scheduled capacity in that interval. The last needed offer sets the
-calculated price. The comparison uses 115 days and twelve grid-product groups.
+calculated price. The comparison uses 116 days and twelve grid-product groups.
 Recorded reserve prices did not set the model inputs.
 
 The calculated average is lower in all twelve groups. It is higher in 9.5
-percent of about 33,068 scored hours, by at most P0.033/kWh. Official reserve
+percent of about 33,353 scored hours, by at most P0.033/kWh. Official reserve
 prices can include lost energy revenue. Public summary files do not pair each
 plant's energy and reserve offers, so the data cannot assign the full difference
 to one cause.
@@ -238,18 +238,18 @@ The last column excludes those hours.
 <!-- reserve-table. updated from market_ops.json by scripts/verify_claims.py --write. do not hand-edit -->
 | Pool | Hours | Recorded mean | Modeled mean | Bias | Exact hours | Scarcity hours | MAE outside scarcity |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Luzon contingency (Fr) | 2,760 | P6.26 | P2.49 | -P3.77 | 47.9% | 531 | P3.34 |
-| Luzon dispatchable (Dr) | 2,757 | P2.72 | P2.01 | -P0.71 | 82.1% | 430 | P0.48 |
-| Luzon regulation up (Ru) | 2,760 | P10.04 | P6.82 | -P3.22 | 66.3% | 981 | P2.69 |
-| Luzon regulation down (Rd) | 2,760 | P9.40 | P6.93 | -P2.47 | 57.5% | 973 | P2.71 |
-| Visayas contingency (Fr) | 2,754 | P11.32 | P5.08 | -P6.24 | 48.4% | 298 | P5.75 |
-| Visayas dispatchable (Dr) | 2,717 | P5.16 | P1.96 | -P3.20 | 66.7% | 331 | P1.06 |
-| Visayas regulation up (Ru) | 2,760 | P16.23 | P11.21 | -P5.03 | 50.5% | 306 | P4.67 |
-| Visayas regulation down (Rd) | 2,760 | P14.41 | P12.28 | -P2.14 | 66.0% | 305 | P2.03 |
-| Mindanao contingency (Fr) | 2,760 | P5.26 | P1.39 | -P3.88 | 53.9% | 313 | P3.30 |
-| Mindanao dispatchable (Dr) | 2,760 | P0.97 | P0.07 | -P0.90 | 88.5% | 389 | P0.24 |
-| Mindanao regulation up (Ru) | 2,760 | P17.38 | P13.93 | -P3.45 | 73.4% | 271 | P3.41 |
-| Mindanao regulation down (Rd) | 2,760 | P16.05 | P15.15 | -P0.90 | 87.9% | 266 | P0.85 |
+| Luzon contingency (Fr) | 2,784 | P6.24 | P2.49 | -P3.74 | 48.0% | 531 | P3.31 |
+| Luzon dispatchable (Dr) | 2,781 | P2.71 | P2.01 | -P0.70 | 82.2% | 430 | P0.48 |
+| Luzon regulation up (Ru) | 2,784 | P10.05 | P6.84 | -P3.21 | 66.2% | 981 | P2.67 |
+| Luzon regulation down (Rd) | 2,784 | P9.44 | P6.93 | -P2.51 | 57.1% | 973 | P2.76 |
+| Visayas contingency (Fr) | 2,778 | P11.37 | P5.13 | -P6.24 | 48.2% | 301 | P5.77 |
+| Visayas dispatchable (Dr) | 2,738 | P5.18 | P1.96 | -P3.21 | 66.6% | 335 | P1.06 |
+| Visayas regulation up (Ru) | 2,784 | P16.26 | P11.24 | -P5.03 | 50.5% | 306 | P4.67 |
+| Visayas regulation down (Rd) | 2,784 | P14.44 | P12.32 | -P2.12 | 66.2% | 305 | P2.01 |
+| Mindanao contingency (Fr) | 2,784 | P5.30 | P1.40 | -P3.90 | 53.8% | 316 | P3.33 |
+| Mindanao dispatchable (Dr) | 2,784 | P1.00 | P0.07 | -P0.92 | 88.4% | 396 | P0.25 |
+| Mindanao regulation up (Ru) | 2,784 | P17.44 | P13.99 | -P3.44 | 73.4% | 271 | P3.41 |
+| Mindanao regulation down (Rd) | 2,784 | P16.12 | P15.23 | -P0.90 | 88.0% | 266 | P0.85 |
 <!-- /reserve-table -->
 
 Exact hours match the official price within half a centavo. On Luzon
@@ -483,7 +483,7 @@ calculation date, and archive coverage for each dataset.
 
 | Input | Source | Refresh |
 | --- | --- | --- |
-| Hourly demand and recorded prices (125 days) | IEMOP regional summaries and final load-weighted average price files. Git history keeps files after the public window rolls forward. | Daily scheduled job |
+| Hourly demand and recorded prices (126 days) | IEMOP regional summaries and final load-weighted average price files. Git history keeps files after the public window rolls forward. | Daily scheduled job |
 | Per-unit fleet (355 units) | DOE List of Existing Power Plants, grid-connected. Luzon and Mindanao as of 2025-04-30, Visayas 2025-03-31 (Internet Archive captures of the DOE's own PDFs. doe.gov.ph refuses non-PH requests). The parser refuses any grid whose rows do not reconcile to the PDF's own per-fuel subtotals | Per DOE edition |
 | Link limits | IEMOP monthly reports (Leyte-Luzon 250 MW operating limit) and the MVIP nameplate | Sourced constants |
 | Fuel costs | ERC administered coal price, Malampaya FOI, imported-LNG estimate | Sourced constants |
