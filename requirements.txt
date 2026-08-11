@@ -1,0 +1,10 @@
+# What the documented path needs: make data, make qa, make serve, make e2e.
+# The pin matches pyproject.toml and the CI job, so a local run and a CI run
+# solve the same LP.
+highspy==1.15.1
+
+# Not needed to reproduce the data build or the map.
+#   make viz (figures)      matplotlib, numpy, pillow
+#   build/record_*.py       playwright
+# Both are toolchain-bound. matplotlib is unpinned on purpose, because a
+# different version moves text inside the figure cards.

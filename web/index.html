@@ -5,12 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <title>Power Dispatch Studio tests announced demand against the Philippine grid</title>
 <meta name="description" content="A Philippine grid map built from public market records. See transmission limits, regional prices, and data-center demand." />
-<meta property="og:title" content="Power Dispatch Studio" />
-<meta property="og:description" content="Public market records show Philippine transmission limits, regional prices, and data-center demand." />
+<link rel="canonical" href="https://power-dispatch-studio.vercel.app/" />
+<!-- The old gridbill-ph deployment still answers and serves this same page, so
+     the canonical above names which one search engines should keep. The title
+     carries the number, because a text-only unfurl shows no image. -->
+<meta property="og:title" content="One 2028 data-center forecast is 41% of the Philippine grid's spare capacity" />
+<meta property="og:description" content="Replay and stress-test the Philippine wholesale power market from public records. A daily IEMOP archive, transparent browser dispatch, price backcasts, and shareable scenarios. No account required." />
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="Power Dispatch Studio" />
 <meta property="og:url" content="https://power-dispatch-studio.vercel.app/" />
 <meta property="og:image" content="https://power-dispatch-studio.vercel.app/og.png" />
+<meta property="og:image:alt" content="The Philippine grid with announced data-center demand drawn against the system's spare capacity." />
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="One 2028 data-center forecast is 41% of the Philippine grid's spare capacity" />
+<meta name="twitter:description" content="Replay and stress-test the Philippine wholesale power market from public records. No account required." />
 <meta name="twitter:image" content="https://power-dispatch-studio.vercel.app/og.png" />
 <script>
 // Runs before the first paint, so the page never shows one theme and swaps.
@@ -365,11 +373,26 @@
     transition:background .16s, color .16s, border-color .16s; }
   .gsel:active{ transform:translateY(1px); }
   .gsel.on{ background:var(--navy); border-color:var(--navy); color:var(--bg); font-weight:500; }
+  /* Only drawn once the scenario moves off the base case, so the default
+     panel stays quiet and the button always has a result to carry. */
+  #sim-share{ margin:8px 0 2px; }
+  #sim-sharebtn{ width:100%; background:var(--ink); color:var(--bg);
+    border:1px solid var(--ink); border-radius:var(--r-ctrl); padding:8px 12px;
+    font:inherit; font-size:var(--fs-small); font-weight:600; cursor:pointer;
+    min-height:38px; transition:background .16s, border-color .16s; }
+  #sim-sharebtn:hover{ background:var(--ac); border-color:var(--ac); }
+  #sim-sharebtn:active{ transform:translateY(1px); }
+  #sim-sharenote{ font-size:var(--fs-label); color:var(--muted); margin-top:5px; }
   .simctl{ margin:10px 0 2px; display:flex; flex-direction:column; gap:9px; }
   .simctl label{ font-size:var(--fs-label); color:var(--muted); display:flex;
     flex-direction:column; gap:3px; }
   .simctl label b{ color:var(--ink); font-weight:500; font-size:var(--fs-small); }
-  .simctl input[type=range]{ width:100%; accent-color:var(--navy); }
+  /* The track stays thin, but the box a thumb has to hit is 44px. These four
+     sliders measured 344x16, and the demand one is the control the panel tells
+     the reader to move. Padding grows the hit area without thickening the mark. */
+  .simctl input[type=range]{ width:100%; accent-color:var(--navy);
+    min-height:44px; padding:14px 0; margin:0; box-sizing:border-box;
+    background:transparent; }
   .simctl .tick{ font-size:var(--fs-label); color:var(--muted); opacity:.85; }
   .simctl select{ padding:6px; border:1px solid var(--line); border-radius:var(--r-ctrl);
     font-size:var(--fs-small); background:var(--paper); color:var(--ink); }
@@ -433,7 +456,10 @@
   .fsrc{ font-size:var(--fs-label); color:var(--muted); font-style:italic; margin-top:6px; }
 
   /* controls that only exist on a phone */
-  #headtoggle, #mside{ display:none; }
+  /* Desktop keeps the readout docked, so it needs no close. On a phone the
+     sheet covers the map, the button that opened it hides itself, and there was
+     no way back: Escape did nothing and no control said "close". */
+  #headtoggle, #mside, #sideclose{ display:none; }
 
   /* A laptop is short before it is narrow. The display moment gives up height
      first, because the rail's job below it is to be reachable. */
@@ -504,15 +530,15 @@
     /* search results flow inline so they never clip inside the rail */
     #findres{ position:static; margin-top:7px; max-height:190px; overflow-y:auto; box-shadow:none; }
 
-    /* modes: docked to the bottom, full width, horizontal scroll. The last tab
-       sits past the right edge, so fade that edge: without it the bar reads as
-       three tabs and the user never finds Simulate. */
+    /* modes: docked to the bottom, full width, wrapped onto two rows. The five
+       tabs measure 449px against a 372px track, so a single row pushes Simulate
+       off the right edge: measured at x=376 in a 390px viewport. A fade used to
+       hint at the overflow and was invisible against the white bar, so the tab
+       that runs the model was the one nobody found. Wrapping shows all five. */
     #modebar{ top:auto; bottom:10px; left:8px; right:8px; max-width:none; transform:none;
-      overflow-x:auto; justify-content:flex-start; padding:4px 6px;
-      scrollbar-width:none; -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 34px),transparent); }
-    #modebar::-webkit-scrollbar{ display:none; }
+      display:flex; flex-wrap:wrap; justify-content:center; gap:2px; padding:4px 6px; }
     #modeind{ display:none; }
-    .mode{ flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:0 14px; }
+    .mode{ flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:0 12px; }
     .mode.on{ background:var(--ink); }
 
     /* the readout becomes a sheet the reader opens on purpose */
@@ -520,11 +546,19 @@
     body.show-side #readout{ display:flex; position:absolute; z-index:9; left:8px; right:8px;
       top:126px; bottom:66px; width:auto; border-left:0; border:1px solid var(--line);
       border-radius:10px; box-shadow:0 8px 28px var(--shadow); overflow:hidden; }
+    /* clears the mode bar, which sits at bottom:10px and wraps onto two 44px
+       rows at every phone width from 320 up. Sitting lower put this button
+       under the Supply tab, which then swallowed its taps. */
     #mside{ display:inline-flex; align-items:center; position:absolute; z-index:5; left:12px;
-      bottom:66px; min-height:44px; border:1px solid var(--line); background:var(--paper);
+      bottom:122px; min-height:44px; border:1px solid var(--line); background:var(--paper);
       border-radius:22px; padding:0 16px; font-size:var(--fs-small); font-weight:600;
       color:var(--ink); cursor:pointer; box-shadow:0 1px 8px var(--shadow); }
     body.show-side #mside, body.head-open #mside{ display:none; }
+    body.show-side #sideclose{ display:block; flex:0 0 auto; width:100%;
+      min-height:44px; border:0; border-bottom:1px solid var(--line);
+      background:var(--paper); color:var(--ink); font:inherit;
+      font-size:var(--fs-small); font-weight:600; text-align:left;
+      padding:0 14px; cursor:pointer; }
     #findings{ width:auto; left:0; right:0; }
     #banner{ left:8px; right:8px; top:126px; }
 
@@ -557,8 +591,11 @@
     <div id="tools">
       <p class="tools__h">Go deeper</p>
       <button id="fopen" aria-expanded="false"><span>Key findings, computed from the archive</span><span aria-hidden="true">&rarr;</span></button>
-      <a id="paxlink" class="golink" href="pax-silica.html">Read the Pax Silica page &rarr;
-        <span>One announced campus would draw more power than the Visayas grid, and up to 1.9 times Makati's daily water use.</span></a>
+      <!-- Case study, so it leads on power. Leading on the water comparison put
+           a claim about Makati's water on the front door of a grid model, which
+           reads as a different project. The water numbers are on the page. -->
+      <a id="paxlink" class="golink" href="pax-silica.html">Case study: one announced campus, 3,000 MW &rarr;
+        <span>That is more power than the whole Visayas grid draws. Nine sourced charts set it against Philippine power, transmission, land and water records.</span></a>
       <div id="findbox">
         <input id="findq" type="search" autocomplete="off"
           placeholder="Find your plant or data center" aria-label="Find a power plant or data center on the map">
@@ -601,6 +638,7 @@
 </div>
 
 <div id="readout" class="rail">
+  <button id="sideclose" type="button" aria-label="Close map details">Back to the map</button>
   <div class="rail__scroll"><div id="side"></div></div>
   <div id="legend">
     <b id="lg-title">Visible map items</b>
@@ -858,7 +896,7 @@ function addLayers(){
         if (nn){
           const sign = nn.dev > 0 ? "+" : "";
           html += `<br>Nearest resolved node: ${esc(nn.res)}, ` +
-            `${sign}P${fmt(nn.dev,2)}/kWh vs the ${esc(nn.grid)} regional price.`;
+            `${sign}₱${fmt(nn.dev,2)}/kWh vs the ${esc(nn.grid)} regional price.`;
         }
       }
       pop.setLngLat(e.lngLat).setHTML(html).addTo(map);
@@ -872,7 +910,7 @@ function addLayers(){
     `<br>The largest single unit is GNPower Dinginin at 668 MW.`);
   hover("gen-pt", p => `<b>${esc(p.name)}</b><br>${esc(p.city)} &middot; ${esc(p.grid)}` +
     `<br>${fmt(p.capacity_mw)} MW ${esc(String(p.fuel||"").replace("_"," "))}` +
-    `, ~P${fmt(p.marginal_cost_php_kwh,2)}/kWh marginal` +
+    `, ~₱${fmt(p.marginal_cost_php_kwh,2)}/kWh marginal` +
     (p.owner ? `<br>${esc(p.owner)}` : "") +
     (p.note ? `<br>${esc(p.note)}` : "") +
       `<br><i>Pin is city-precision. Pick it in Simulate to remove it as the single largest outage (N-1).</i>`);
@@ -908,7 +946,7 @@ function addLayers(){
     const sign = p.dev > 0 ? "+" : "";
     return `<b>${esc(p.res)}</b>` +
       (p.station ? `<br>at ${esc(p.station)}` : "") +
-      `<br>${sign}P${fmt(p.dev, 2)}/kWh vs the ${esc(p.grid)} regional price` +
+      `<br>${sign}₱${fmt(p.dev, 2)}/kWh vs the ${esc(p.grid)} regional price` +
       `<br>Mean over ${fmt(p.days)} clean market days` +
       (p.mw ? `; ~${fmt(p.mw)} MW scheduled` : "") +
       (p.src ? `<br>Placement: ${esc(p.src)}` : "") +
@@ -1151,16 +1189,16 @@ function sideprice(){
     window.__diag.priceDays = P.dates.length;
   }
   const mer = `
-    <div class="kv"><span>WESM price Meralco paid in June</span><span>P${fmt(A.meralco_june2026_wesm_price_php_kwh,2)}/kWh</span></div>
+    <div class="kv"><span>WESM price Meralco paid in June</span><span>₱${fmt(A.meralco_june2026_wesm_price_php_kwh,2)}/kWh</span></div>
     <div class="kv"><span>on this share of its energy</span><span>${fmt(A.meralco_june2026_wesm_share_pct,0)}%</span></div>
-    <div class="kv"><span>Meralco June generation charge</span><span>P${fmt(A.meralco_june2026_generation_charge,2)}/kWh</span></div>
-    <div class="kv"><span>Meralco June overall rate</span><span>P${fmt(A.meralco_june2026_rate_php_kwh,2)}/kWh</span></div>
-    <div class="kv"><span>June change</span><span>+P${fmt(A.meralco_june2026_delta_php_kwh,4)}/kWh</span></div>`;
+    <div class="kv"><span>Meralco June generation charge</span><span>₱${fmt(A.meralco_june2026_generation_charge,2)}/kWh</span></div>
+    <div class="kv"><span>Meralco June overall rate</span><span>₱${fmt(A.meralco_june2026_rate_php_kwh,2)}/kWh</span></div>
+    <div class="kv"><span>June change</span><span>+₱${fmt(A.meralco_june2026_delta_php_kwh,4)}/kWh</span></div>`;
   const rg = (P.regimes || {}), mk = rg.market || {}, ad = rg.administered || {};
   const regimeNote = (mk.mean_spread != null && ad.max_spread != null) ? `<div class="note">
     While WESM ran administered prices (through ${esc(P.resumed)}), the three grids
-    stayed within P${fmt(ad.max_spread,2)}/kWh of each other. After trading resumed,
-    the mean daily spread was P${fmt(mk.mean_spread,2)}/kWh across ${fmt(mk.days)} days.
+    stayed within ₱${fmt(ad.max_spread,2)}/kWh of each other. After trading resumed,
+    the mean daily spread was ₱${fmt(mk.mean_spread,2)}/kWh across ${fmt(mk.days)} days.
     The chart shows both regimes; the flat stretch is the suspension.</div>` : "";
   const NO = D["nodal_obs.json"];
   let nodalBlock = "";
@@ -1204,28 +1242,28 @@ function sideprice(){
     diagnosed, so read Visayas deviations with low confidence; Luzon and
     Mindanao agree with the recorded rankings.</div>`;
   }
-  return `<h2>May 2026 prices averaged P${fmt(A.wesm_may2026_system_avg_php_kwh,2)}/kWh; Visayas was highest at P${fmt(A.wesm_may2026_visayas,2)}</h2>
+  return `<h2>May 2026 prices averaged ₱${fmt(A.wesm_may2026_system_avg_php_kwh,2)}/kWh; Visayas was highest at ₱${fmt(A.wesm_may2026_visayas,2)}</h2>
   <p class="sub">Each day's average of the load-weighted 5-minute prices per
   grid, from the archive. May 2026, meaning the WESM billing period of 26 April
   to 25 May (whose first five days were still administered),
-  averaged P${fmt(A.wesm_may2026_system_avg_php_kwh,2)}/kWh system-wide
+  averaged ₱${fmt(A.wesm_may2026_system_avg_php_kwh,2)}/kWh system-wide
   (+${fmt(A.wesm_may2026_vs_april_pct,1)}% vs April): Luzon
-  P${fmt(A.wesm_may2026_luzon,2)}, Visayas P${fmt(A.wesm_may2026_visayas,2)},
-  Mindanao P${fmt(A.wesm_may2026_mindanao,2)}. The links between the islands
+  ₱${fmt(A.wesm_may2026_luzon,2)}, Visayas ₱${fmt(A.wesm_may2026_visayas,2)},
+  Mindanao ₱${fmt(A.wesm_may2026_mindanao,2)}. The links between the islands
   contribute to those differences alongside offers, outages, losses, and market rules.</p>
   <div id="spark">${spark || '<div class="note">Recorded price data are not available.</div>'}</div>
   ${regimeNote}
   ${nodalBlock}
   ${P.max_spread && P.max_spread.date ? `<div class="note">Widest daily
-  regional spread in the window: P${fmt(P.max_spread.php,2)}/kWh on
+  regional spread in the window: ₱${fmt(P.max_spread.php,2)}/kWh on
   ${esc(P.max_spread.date)}.</div>` : ""}
   <h2 style="margin-top:12px">Only the spot share of the bill moves, and only next month</h2>
   ${mer}
   <div class="note">The generation charge is the biggest slice of a Meralco bill
   and moves with WESM through monthly pass-through, but only on the share bought
-  on the spot market: June paid P${fmt(A.meralco_june2026_wesm_price_php_kwh,2)}/kWh
+  on the spot market: June paid ₱${fmt(A.meralco_june2026_wesm_price_php_kwh,2)}/kWh
   for ${fmt(A.meralco_june2026_wesm_share_pct,0)}% of its energy, about
-  P${fmt(A.meralco_june2026_wesm_share_pct/100*A.meralco_june2026_wesm_price_php_kwh,2)}/kWh
+  ₱${fmt(A.meralco_june2026_wesm_share_pct/100*A.meralco_june2026_wesm_price_php_kwh,2)}/kWh
   of the bill. Wholesale movements are not one-for-one bill movements.</div>`;
 }
 function sideDrivers(){
@@ -1254,18 +1292,18 @@ function sideDrivers(){
     if (cur > 0) badges.push(`<span class="bdg" style="background:#9c3d12">${fmt(cur)} MWh curtailed</span>`);
     if (d.n_hvdc_advisories) badges.push(`<span class="bdg" style="background:#3a6b8a">${d.n_hvdc_advisories} link advisories</span>`);
     if (d.n_alert_advisories) badges.push(`<span class="bdg" style="background:#8a6bb0">${d.n_alert_advisories} alert advisories</span>`);
-    if (d.spread != null && d.spread >= 5) badges.push(`<span class="bdg" style="background:#b3261e">spread P${fmt(d.spread,1)}</span>`);
+    if (d.spread != null && d.spread >= 5) badges.push(`<span class="bdg" style="background:#b3261e">spread ₱${fmt(d.spread,1)}</span>`);
     const outm = d.out_matched_mw
       ? Object.values(d.out_matched_mw).reduce((s, v) => s + v, 0) : 0;
     const top = ((d.binding || {}).top_equipment || [])
       .map(e => `${esc(e.name)} (${fmt(e.rows)} rows)`).join(", ");
     return `<details class="drv"><summary><b>${esc(d.date)}</b>
       ${d.market ? "" : '<span class="bdg" style="background:#777">administered</span>'}
-      L P${fmt(lw.luzon,2)} / V P${fmt(lw.visayas,2)} / M P${fmt(lw.mindanao,2)}
+      L ₱${fmt(lw.luzon,2)} / V ₱${fmt(lw.visayas,2)} / M ₱${fmt(lw.mindanao,2)}
       ${badges.join(" ")}</summary>
       <div class="kv"><span>Matched scheduled-out MW</span><span>${fmt(outm)}</span></div>
       ${d.hydro_budget_mwh ? `<div class="kv"><span>Observed hydro water (MWh)</span><span>${fmt(Object.values(d.hydro_budget_mwh).reduce((s,v)=>s+v,0))}</span></div>` : ""}
-      ${d.reserve_price_max != null ? `<div class="kv"><span>Dearest regional reserve price</span><span>P${fmt(d.reserve_price_max,2)}/kWh</span></div>` : ""}
+      ${d.reserve_price_max != null ? `<div class="kv"><span>Dearest regional reserve price</span><span>₱${fmt(d.reserve_price_max,2)}/kWh</span></div>` : ""}
       ${top ? `<div class="kv"><span>Top limits reached in real-time dispatch</span><span>${top}</span></div>` : ""}
       ${d.n_advisories != null ? `<div class="kv"><span>Advisories</span><span>${fmt(d.n_advisories)}</span></div>` : ""}
     </details>`;
@@ -1304,7 +1342,7 @@ function sparkSVG(P){
     aria-label="Daily load weighted average price per grid">
     ${paths}
     <text x="${pad}" y="${H + 11}" font-size="9" fill="#5b6b75">${legend}
-      <tspan fill="#5b6b75">  P${fmt(mn,1)} to P${fmt(mx,1)}/kWh</tspan></text></svg>`;
+      <tspan fill="#5b6b75">  ₱${fmt(mn,1)} to ₱${fmt(mx,1)}/kWh</tspan></text></svg>`;
 }
 
 const LEGENDS = {
@@ -1337,7 +1375,7 @@ const LEGENDS = {
     ["sw",PAL.hvdc,"Curtailment recorded"],
     ["sw",PAL.ac,"Inter-island link advisory (block or de-block)"],
     ["sw","#8a6bb0","Alert advisory"],
-    ["sw",PAL.sual,"Regional price spread (P5/kWh or more)"]],
+    ["sw",PAL.sual,"Regional price spread (₱5/kWh or more)"]],
     note:"Every column in the panel comes from the archive: prices, outages, curtailment, advisories, and binding constraints. Scenario settings do not alter these records." }
 };
 function legendRender(){
@@ -1495,7 +1533,7 @@ let SIM = { grid:"luzon", addDC:0, addFirm:0, imp:0, stor:0, trip:"" };
 function fuelLabel(f){ return String(f||"").replace(/_/g," "); }
 
 // mirror of fleet_ph.clear: stack the blocks by cost, read the marginal price.
-// A short hour prices at the sourced WESM offer cap (P32/kWh, the market's
+// A short hour prices at the sourced WESM offer cap (₱32/kWh, the market's
 // own ceiling), mirroring fleet_ph.WESM_OFFER_CAP_PHP_KWH.
 const WESM_OFFER_CAP = 32;
 function clearJS(blocks, demand){
@@ -1597,7 +1635,7 @@ function stackSVG(blocks, demand){
   for (const b of sorted){
     const w = (W - 2*pad) * b.mw / scaleMax;
     segs += `<rect x="${x.toFixed(1)}" y="8" width="${Math.max(0,w).toFixed(1)}" height="20"
-      fill="${FUELCOL[b.fuel]||'#999'}"><title>${fuelLabel(b.fuel)} ${fmt(b.mw)} MW @ P${b.cost}/kWh</title></rect>`;
+      fill="${FUELCOL[b.fuel]||'#999'}"><title>${fuelLabel(b.fuel)} ${fmt(b.mw)} MW @ ₱${b.cost}/kWh</title></rect>`;
     x += w;
   }
   const dx = pad + (W - 2*pad) * demand / scaleMax;
@@ -1625,12 +1663,12 @@ function couplingNote(disp){
   const pct = v => v == null ? "?" : fmt(Math.abs(v * 100) < 0.5 ? 0 : v * 100, 0);
   return `<div class="note" id="sim-coupling-note">Couple the three grids and cheap
     Luzon power flows south over the high-voltage direct-current links up to their limits. Over the market
-    window that reproduces almost none of the observed P${fmt(sd.observed_php_kwh,2)}/kWh
+    window that reproduces almost none of the observed ₱${fmt(sd.observed_php_kwh,2)}/kWh
     Visayas-Luzon spread (about ${pct(sd.explained_fraction)}%): most hours all three
     islands sit on the coal margin and the 250 MW link does not bind. That spread is
     the scarcity of the 52-day streak, not transmission. Recalculate the streak with the
     documented ${fmt(o.outage_mw)} MW Visayas outage and the link saturates
-    ${fmt(o.leyte_luzon_saturated_pct,0)}% of the time at a P${fmt(o.leyte_luzon_mean_rent_php_kwh,2)}/kWh
+    ${fmt(o.leyte_luzon_saturated_pct,0)}% of the time at a ₱${fmt(o.leyte_luzon_mean_rent_php_kwh,2)}/kWh
     rent, reproducing ${pct(o.explained_fraction)}% of the spread. At a typical evening
     just ${fmt(bt.added_visayas_load_to_bind_leyte_mw)} MW of added Visayas load binds
     the link.</div>`;
@@ -1650,8 +1688,8 @@ function durationSVG(pd){
     ? `<line x1="${padL}" y1="${y(0).toFixed(1)}" x2="${W-padR}" y2="${y(0).toFixed(1)}" stroke="#ccc" stroke-width="0.5" stroke-dasharray="2 2"/>` : "";
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Price-duration curve, modeled versus observed">
     ${zero}${line(pd.observed, PAL.sual)}${line(pd.modeled, PAL.ink)}
-    <text x="2" y="${(y(ymax)+3).toFixed(1)}" font-size="7" fill="#888">P${fmt(ymax,0)}</text>
-    <text x="2" y="${(y(ymin)+2).toFixed(1)}" font-size="7" fill="#888">P${fmt(ymin,0)}</text>
+    <text x="2" y="${(y(ymax)+3).toFixed(1)}" font-size="7" fill="#888">₱${fmt(ymax,0)}</text>
+    <text x="2" y="${(y(ymin)+2).toFixed(1)}" font-size="7" fill="#888">₱${fmt(ymin,0)}</text>
     <text x="${padL}" y="${H-2}" font-size="7" fill="#888">0%</text>
     <text x="${W-padR}" y="${H-2}" font-size="7" fill="#888" text-anchor="end">100% of time</text></svg>`;
 }
@@ -1666,7 +1704,7 @@ function obsSettersHTML(g){
   if (!ps.available || !pg) return "";
   const rows = (pg.top || []).slice(0, 8).map(r =>
     `<div class="kv"><span>${esc(r.resource)}${r.fuel ? " (" + esc(fuelLabel(r.fuel)) + ")" : ""}</span>
-     <span>${fmt(r.share_pct,1)}% at P${fmt(r.mean_price_php_kwh,2)}</span></div>`).join("");
+     <span>${fmt(r.share_pct,1)}% at ₱${fmt(r.mean_price_php_kwh,2)}</span></div>`).join("");
   return `<h2 style="margin-top:12px">The operator's marginal resource set the recorded 5-minute price</h2>
   <div id="sim-obssetters">${rows}</div>
   <div class="note">The marginal resource IEMOP names per 5-minute interval
@@ -1692,7 +1730,7 @@ function sideSimulate(){
   const n1 = (disp.n1||[]).filter(n=>n.grid===g).slice(0,6);
   const n1rows = n1.map(n =>
     `<tr><td>${esc(n.unit)}</td><td class="num">${fmt(n.capacity_mw)}</td>
-     <td class="num">P${fmt(n.base_price_php_kwh,0)}&rarr;P${fmt(n.tripped_price_php_kwh,0)}</td>
+     <td class="num">₱${fmt(n.base_price_php_kwh,0)}&rarr;₱${fmt(n.tripped_price_php_kwh,0)}</td>
      <td class="num">${fmt(n.shortfall_at_peak_mw)}</td></tr>`).join("");
   const adq = (disp.adequacy||{})[g] || {};
   const dict = (disp.adequacy||{}).dict_2028 || {};
@@ -1707,6 +1745,7 @@ function sideSimulate(){
   supply stack. The model is checked against recorded prices but does not predict them.</p>
   <div class="gselrow">${gridBtn}</div>
   <div id="sim-read"></div>
+  <div id="sim-share"></div>
   <div id="sim-stack" style="margin:6px 0 2px"></div>
   <div id="sim-coupled"></div>
   <div class="simctl">
@@ -1731,10 +1770,10 @@ function sideSimulate(){
   ${storageNote(disp, g)}
   <div class="note" id="sim-cal">Over ${fmt(cal.n_intervals)} 5-minute intervals
   in the market-priced window (after WESM resumed ${esc((disp.calibration_window||{}).from)}),
-  the cost stack averaged P${fmt(cal.modeled_mean_php_kwh,2)}/kWh against an observed
-  P${fmt(cal.observed_mean_php_kwh,2)}/kWh (mean absolute error P${fmt(cal.mae_php_kwh,2)}). It
+  the cost stack averaged ₱${fmt(cal.modeled_mean_php_kwh,2)}/kWh against an observed
+  ₱${fmt(cal.observed_mean_php_kwh,2)}/kWh (mean absolute error ₱${fmt(cal.mae_php_kwh,2)}). It
   over-prices the overnight trough and under-prices the evening peak; the evening
-  remaining gap of P${fmt(cal.evening_peak_residual_php_kwh,2)}/kWh is scarcity and offer
+  remaining gap of ₱${fmt(cal.evening_peak_residual_php_kwh,2)}/kWh is scarcity and offer
   behaviour, not data-center load.${cal.note ? " " + esc(cal.note) + "." : ""}</div>
   ${pdur ? `<h2 style="margin-top:12px">Hours at or above each modeled and recorded price</h2>
   <div id="sim-duration">${durationSVG(pdur)}</div>
@@ -1781,8 +1820,8 @@ function storageNote(disp, g){
   return `<div class="note" id="sim-stor-note">Batteries (${fmt(a.bess_mw)} MW) and
     Kalayaan pumped hydro (${fmt(a.pumped_hydro_mw)} MW) charge off-peak and discharge
     at the evening peak. At a tight evening with the DICT 1.5 GW demand forecast the cost stack
-    clears on oil at P${fmt(pp.without_storage_php_kwh,2)}/kWh; the ${fmt(a.total_mw)} MW
-    of storage on the grid shaves it back to P${fmt(pp.with_storage_php_kwh,2)}/kWh
+    clears on oil at ₱${fmt(pp.without_storage_php_kwh,2)}/kWh; the ${fmt(a.total_mw)} MW
+    of storage on the grid shaves it back to ₱${fmt(pp.with_storage_php_kwh,2)}/kWh
     (coal). It also reduces the shortfall risk with the added demand: the loss-of-load
     probability falls from <b>${fmt(w.lolp_pct,2)}%</b> to <b>${fmt(wi.lolp_pct,2)}%</b>.
     Energy is limited, so this firms the peak interval, not a multi-day event. DOE and
@@ -1831,13 +1870,14 @@ function updateSim(){
   const read = $("sim-read");
   if (read) read.innerHTML =
     `<div class="kv"><span>Single-grid clearing price (marginal fuel)</span>
-       <span><b>P${fmt(res.price,2)}/kWh</b> &middot; ${esc(fuelLabel(res.marginal))}</span></div>
+       <span><b>₱${fmt(res.price,2)}/kWh</b> &middot; ${esc(fuelLabel(res.marginal))}</span></div>
      <div class="kv"><span>vs base case (no scenario changes)</span>
-       <span>P${fmt(base.price,2)} &rarr; P${fmt(res.price,2)} (${res.price>=base.price?"+":""}P${fmt(res.price-base.price,2)})</span></div>
+       <span>₱${fmt(base.price,2)} &rarr; ₱${fmt(res.price,2)} (${res.price>=base.price?"+":""}₱${fmt(res.price-base.price,2)})</span></div>
      <div class="kv"><span>Available vs demand</span>
        <span>${fmt(res.avail)} MW vs ${fmt(s.demand)} MW</span></div>` +
     (res.shortfall > 0 ? `<div class="kv shortfall"><span>Supply shortfall (load shed)</span>
        <span><b>${fmt(res.shortfall)} MW</b></span></div>` : "");
+  renderSimShare(res, base);
   const st = $("sim-stack"); if (st) st.innerHTML = stackSVG(s.blocks, s.demand) + fuelKey(s.blocks);
 
   // coupled readout: the selected grid cleared together with the other two islands
@@ -1849,12 +1889,12 @@ function updateSim(){
     cp = p; csat = corr.sat; crent = corr.rent;
     const feedName = cs.feed === "mvip" ? "MVIP (from Visayas)" : "Leyte-Luzon (from Luzon)";
     const rows = `<div class="kv"><span>Clearing price with all three island grids</span>
-       <span><b>P${fmt(p,2)}/kWh</b></span></div>` +
+       <span><b>₱${fmt(p,2)}/kWh</b></span></div>` +
       (g === "luzon"
         ? `<div class="note" style="margin:2px 0">Luzon is the exporting grid: it sets the floor the others import from. Raising a link limit helps the grid downstream, not Luzon.</div>`
         : `<div class="kv"><span>${feedName} link</span><span>${fmt(Math.abs(corr.flow))} MW ${corr.flow>0?"in":"reverse"}${corr.sat?", <b>saturated</b>":", open"}</span></div>` +
           (corr.sat
-            ? `<div class="kv"><span>Congestion rent across the binding link</span><span><b>P${fmt(corr.rent,2)}/kWh</b></span></div>`
+            ? `<div class="kv"><span>Congestion rent across the binding link</span><span><b>₱${fmt(corr.rent,2)}/kWh</b></span></div>`
             : `<div class="note" style="margin:2px 0">The ${feedName} link is open at this load, so relieving it changes nothing until it binds. Add data-center load to bind it.</div>`));
     cread.innerHTML = rows;
   }
@@ -1863,18 +1903,47 @@ function updateSim(){
     marginal:res.marginal, coupledPrice:cp, coupledSaturated:csat, coupledRent:crent };
 }
 
+// The scenario a reader builds is the thing worth sending, and until 2026-08-11
+// it did not survive the trip: syncURL wrote the mode and nothing else. The URL
+// carries it now, so this offers the link rather than making people find it.
+function renderSimShare(res, base){
+  const box = $("sim-share");
+  if (!box) return;
+  const moved = SIM.addDC || SIM.addFirm || SIM.imp || SIM.stor || SIM.trip;
+  if (!moved){ box.innerHTML = ""; return; }
+  const delta = res.price - base.price;
+  box.innerHTML = `<button id="sim-sharebtn" type="button">Copy a link to this scenario</button>
+    <div id="sim-sharenote">Anyone who opens it lands on this same result,
+    ₱${fmt(base.price,2)} &rarr; ₱${fmt(res.price,2)}/kWh.</div>`;
+  $("sim-sharebtn").onclick = async (e) => {
+    const note = $("sim-sharenote");
+    const link = location.href;
+    try {
+      await navigator.clipboard.writeText(link);
+      e.target.textContent = "Link copied";
+      note.textContent = `${fmt(SIM.addDC)} MW added, price ₱${fmt(base.price,2)}`
+        + ` to ₱${fmt(res.price,2)}/kWh (${delta>=0?"+":""}₱${fmt(delta,2)}).`;
+    } catch {
+      // A denied clipboard leaves the reader with no link at all, so show it.
+      note.textContent = link;
+    }
+  };
+}
+
 function wireSim(){
   document.querySelectorAll(".gsel").forEach(b => b.onclick = () => {
     SIM = { grid:b.dataset.grid, addDC:0, addFirm:0, imp:0, stor:0, trip:"" };
-    $("side").innerHTML = sideSimulate(); wireSim(); updateSim();
+    $("side").innerHTML = sideSimulate(); wireSim(); updateSim(); syncURL();
   });
   const bind = (id, key, valId) => { const el = $(id); if (!el) return;
-    el.oninput = () => { SIM[key] = +el.value; if (valId) $(valId).textContent = fmt(SIM[key]); updateSim(); }; };
+    el.oninput = () => { SIM[key] = +el.value; if (valId) $(valId).textContent = fmt(SIM[key]);
+      updateSim(); syncURL(); }; };
   bind("sim-dc", "addDC", "sim-dcv");
   bind("sim-firm", "addFirm", "sim-firmv");
   bind("sim-imp", "imp", "sim-impv");
   bind("sim-stor", "stor", "sim-storv");
-  const trip = $("sim-trip"); if (trip) trip.onchange = () => { SIM.trip = trip.value; updateSim(); };
+  const trip = $("sim-trip");
+  if (trip) trip.onchange = () => { SIM.trip = trip.value; updateSim(); syncURL(); };
 }
 
 /* ---------- findings drawer ---------- */
@@ -1923,28 +1992,70 @@ $("fscrim").onclick = () => { openDrawer(false); };
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && $("findings").classList.contains("open")) openDrawer(false);
 });
-$("mside").onclick = () => {
-  const open = document.body.classList.toggle("show-side");
-  $("mside").setAttribute("aria-expanded", open ? "true" : "false");
-};
-$("headtoggle").onclick = () => {
-  const open = document.body.classList.toggle("head-open");
-  $("headtoggle").setAttribute("aria-expanded", open ? "true" : "false");
-};
+// On a phone both of these are full-width sheets over the map, so only one can
+// be open. They used to stack: the readout sheet takes z-index 9 and the Menu
+// rail takes 4, so opening the details panel and then the Menu drew the Menu
+// underneath it. The button reported itself expanded and the reader saw nothing.
+function openSheet(cls, btn){
+  const other = cls === "show-side" ? "head-open" : "show-side";
+  const otherBtn = cls === "show-side" ? "headtoggle" : "mside";
+  if (document.body.classList.contains(other)){
+    document.body.classList.remove(other);
+    $(otherBtn).setAttribute("aria-expanded", "false");
+  }
+  const open = document.body.classList.toggle(cls);
+  $(btn).setAttribute("aria-expanded", open ? "true" : "false");
+}
+$("mside").onclick = () => openSheet("show-side", "mside");
+$("headtoggle").onclick = () => openSheet("head-open", "headtoggle");
+$("sideclose").onclick = () => openSheet("show-side", "mside");
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (document.body.classList.contains("show-side")) openSheet("show-side", "mside");
+  else if (document.body.classList.contains("head-open")) openSheet("head-open", "headtoggle");
+});
 
 /* ---------- URL state (deep-linkable mode + finding) ---------- */
 let URL_READY = false;
+const SIM_URL_KEYS = { dc:"addDC", firm:"addFirm", imp:"imp", stor:"stor" };
+// The matching slider maxima. imp's own max is per-grid and computed at render,
+// so cap it at the widest published inter-island limit and let the control
+// re-clamp when the panel draws.
+const SIM_URL_MAX = { dc:3000, firm:1000, imp:5000, stor:2000 };
+
 function syncURL(){
   if (!URL_READY) return;
   const p = new URLSearchParams();
   if (MODE && MODE !== "supply") p.set("q", MODE);
   if (ACTIVE) p.set("finding", ACTIVE);
+  // The scenario is the thing people send each other, so it rides in the link.
+  // Without this a shared simulate URL opens on an empty panel.
+  if (MODE === "simulate"){
+    if (SIM.grid !== "luzon") p.set("g", SIM.grid);
+    for (const k in SIM_URL_KEYS){ const v = SIM[SIM_URL_KEYS[k]]; if (v) p.set(k, v); }
+    if (SIM.trip) p.set("trip", SIM.trip);
+  }
   const qs = p.toString();
   history.replaceState(null, "", qs ? "?" + qs : location.pathname);
 }
 function applyURL(){
   const p = new URLSearchParams(location.search);
   const q = p.get("q"), fid = p.get("finding");
+  // sideSimulate() draws the controls from SIM, and setMode() then calls
+  // updateSim(), so the shared scenario has to land before the mode switch.
+  if (q === "simulate"){
+    const g = p.get("g");
+    if (["luzon","visayas","mindanao"].includes(g)) SIM.grid = g;
+    for (const k in SIM_URL_KEYS){
+      const v = +p.get(k);
+      // Clamp to the slider's own range. A hand-edited link must not be able to
+      // show a scenario the controls cannot reach, because the reader would
+      // take the number for a result this model stands behind.
+      if (Number.isFinite(v) && v > 0)
+        SIM[SIM_URL_KEYS[k]] = Math.min(v, SIM_URL_MAX[k]);
+    }
+    const t = p.get("trip"); if (t) SIM.trip = t;
+  }
   if (q && ["supply","choke","price","drivers","simulate"].includes(q)) setMode(q, true);
   if (fid){
     const f = FINDINGS.find(x => x.id === fid);

@@ -12,3 +12,19 @@ tmp/
 dist/
 *.egg-info/
 uv.lock
+qa/
+paper/
+
+# Credentials must never land in a public repo, even by accident.
+.env
+.env.*
+*.pem
+*.key
+*-key.json
+credentials.json
+service-account*.json
+.aws/
+.gcloud/
+
+# Session scratch, not product.
+.claude/

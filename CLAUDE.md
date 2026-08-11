@@ -6,9 +6,12 @@ market data. This file holds the rules that a session here breaks most often.
 
 ## Never name the licensed competitor on a public surface
 
-No public file names PLEXOS or Energy Exemplar. The project stands on its own
-backcast validation, so lead with that number instead. The DOE planning document
-under `docs/` is the one exception, because it is a quoted source.
+No public file names the licensed suite or its vendor. `VENDOR` in
+`tests/qa_gate.py` holds the two banned strings and the gate fails on either one.
+This file is public too, and an earlier version of this rule named them both in
+the sentence that banned them. The project stands on its own backcast validation,
+so lead with that number instead. The DOE planning document under
+`data/external/doe/` is the one exception, because it quotes a source.
 
 ## Two gate lists exist, and a new test must join both
 
@@ -125,7 +128,11 @@ key. `tests/test_contrast.py` gates every color token against WCAG AA.
 
 ## What is still open
 
-The Visayas loss surface fails validation at -0.57. No one submitted the paper in
-`paper/` yet. No real room ran the workshop in `docs/workshop/` yet. Known latent
-bugs live in `docs/latent-bugs.md`, and a pre-existing one never rides along in
-an unrelated change.
+The Visayas loss surface fails validation at -0.58. `scripts/verify_claims.py`
+owns that number in four places now, so read it from the oracle and never from
+memory.
+
+The paper draft, the workshop, the adoption plan and the latent-bug list moved to
+`.planning/archived-from-public-tree/` on 2026-08-11. They are unfinished work,
+and the public tree is not the place to keep it. A pre-existing latent bug never
+rides along in an unrelated change.

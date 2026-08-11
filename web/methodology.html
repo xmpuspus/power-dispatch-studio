@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Power Dispatch Studio methods and sources</title>
 <meta name="description" content="Public records, calculations, assumptions, units, checks, and limits used by Power Dispatch Studio." />
+<link rel="canonical" href="https://power-dispatch-studio.vercel.app/methodology.html" />
+<meta property="og:title" content="Every source, calculation, assumption and limit behind Power Dispatch Studio" />
+<meta property="og:description" content="Which public record each number comes from, how the dispatch model turns it into a price, and the six limits the model states about itself." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://power-dispatch-studio.vercel.app/methodology.html" />
+<meta property="og:image" content="https://power-dispatch-studio.vercel.app/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://power-dispatch-studio.vercel.app/og.png" />
 <script>
 // Same pre-paint script and same pds.theme key as the map and the studio, so a
 // reader who pins a theme on either of those keeps it when they follow a link
@@ -188,7 +196,8 @@
   Price-substitution rules can leave the nodal congestion field at zero even
   when dispatch records name equipment at a limit. The map calls the
   node values recorded price deviations. Read the
-  <a href="../docs/source-notes.md">source notes</a> for the longer explanation.</p>
+  <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/source-notes.md"
+  >source notes</a> for the longer explanation.</p>
 
   <h2>A future year is a generated data directory, and it solves 365 separate days rather than one 8760-hour program</h2>
   <p><code>pipeline/future_year.py</code> joins four published inputs into the

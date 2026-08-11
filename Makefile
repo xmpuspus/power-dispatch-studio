@@ -1,6 +1,25 @@
-.PHONY: backfill archive data viz serve e2e qa clean sync-engine package future
+.PHONY: help backfill archive data viz serve e2e qa clean sync-engine package future
 
 PY := python3
+
+# First, so a bare `make` prints this instead of starting a 15-minute fetch
+# against iemop.ph.
+help:
+	@echo "Power Dispatch Studio"
+	@echo ""
+	@echo "  pip install -r requirements.txt   the HiGHS solver the model runs on"
+	@echo ""
+	@echo "  make data        rebuild web/data/ from the committed archive (no network)"
+	@echo "  make serve       serve the map on http://localhost:8789"
+	@echo "  make qa          the local gate: 18 checks plus the claims oracle"
+	@echo "  make e2e         behavioral checks against a running map"
+	@echo ""
+	@echo "  make backfill    pull the full public window from iemop.ph (~15 min, ~50 MB)"
+	@echo "  make archive     daily incremental fetch"
+	@echo "  make viz         rebuild the figures (needs matplotlib, version-sensitive)"
+	@echo "  make package     build the wheel and the sdist"
+	@echo "  make future YEAR=2028   build a future year as its own data directory"
+	@echo "  make sync-engine copy the engine into the pip package"
 
 # One-time: pull the full public window (~90 days) of every dataset into data/raw/.
 backfill:

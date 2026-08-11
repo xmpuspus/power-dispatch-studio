@@ -16,7 +16,7 @@ on published bids. The data and calculated results rebuild from a clean clone.
 The project is a small, open counterpart to the licensed production-cost tools
 used by grid planners. It cannot replace a utility planning model. It can test
 how added demand, plant outages, storage, and inter-island limits change this
-simplified dispatch calculation. The project formerly used the name gridbill-ph.
+simplified dispatch calculation.
 
 [![CI](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml)
 [![License: MIT code, CC BY 4.0 data](https://img.shields.io/badge/license-MIT%20code%20%2B%20CC--BY--4.0%20data-blue)](LICENSE)
@@ -50,7 +50,7 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 - [The Leyte-Cebu link reached a binding limit on 114 of 117 days](#the-leyte-cebu-link-reached-a-binding-limit-on-114-of-117-days)
 - [Luzon reserves fell short on 74 of the window's 126 days](#luzon-reserves-fell-short-on-74-of-the-windows-126-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
-- [Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.83) but reverse in Visayas (-0.57)](#modeled-loss-ranks-agree-in-luzon-072-and-mindanao-083-but-reverse-in-visayas--057)
+- [Modeled loss ranks agree in Luzon (+0.73) and Mindanao (+0.83) but reverse in Visayas (-0.58)](#modeled-loss-ranks-agree-in-luzon-073-and-mindanao-083-but-reverse-in-visayas--058)
 - [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
 - [The cost stack stays near P6 while recorded evening prices include scarcity and offer premiums](#the-cost-stack-stays-near-p6-while-recorded-evening-prices-include-scarcity-and-offer-premiums)
 - [Offer-book replay correlations range from 0.69 to 0.86](#offer-book-replay-correlations-range-from-069-to-086)
@@ -219,7 +219,7 @@ resumed on 2026-05-01, so the deviation stays loss-dominated.
 The repository has the recording recipe, an MP4, a GIF, and the interactive
 Prices at grid connection points view.
 
-## Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.83) but reverse in Visayas (-0.57)
+## Modeled loss ranks agree in Luzon (+0.73) and Mindanao (+0.83) but reverse in Visayas (-0.58)
 
 WESM decomposes every published locational marginal price (LMP) into an energy, a loss, and a congestion
 part, and the congestion part is small and sparse (zero through the market
@@ -243,7 +243,7 @@ recomputes nightly as clean market days accumulate
 (`data/derived/loss_surface.json`), and the studio carries the same three
 panels under Check the model against market records, Transmission-loss check.
 
-![Three scatter panels on a dark card, one per grid. Each plots the model's marginal loss-factor deviation against the market's recorded per-node deviation, with a fitted line and a Spearman rank correlation. Luzon at plus 0.72 and Mindanao at plus 0.83 move in the same direction as the records. Visayas at minus 0.57 moves in the opposite direction.](docs/loss-surface.gif)
+![Three scatter panels on a dark card, one per grid. Each plots the model's marginal loss-factor deviation against the market's recorded per-node deviation, with a fitted line and a Spearman rank correlation. Luzon at plus 0.73 and Mindanao at plus 0.83 move in the same direction as the records. Visayas at minus 0.58 moves in the opposite direction.](docs/loss-surface.gif)
 
 The wholesale price affects the Meralco bill through the share of energy bought
 on the spot market. The June 2026 advisory paid
@@ -1004,12 +1004,16 @@ Needs Python 3.11+ and curl. No accounts, no keys.
 ```bash
 git clone https://github.com/xmpuspus/power-dispatch-studio
 cd power-dispatch-studio
+pip install -r requirements.txt   # the HiGHS solver the dispatch model runs on
 make backfill    # pull the full public window from iemop.ph (~15 min, ~50 MB)
 make data        # prepare web/data/ from the archive + sourced constants
 make qa          # data and language checks
 make serve       # http://localhost:8789
 make e2e         # behavioral checks against the running map
 ```
+
+The clone carries the archive, so `make data` works with no network. `make help`
+lists every target.
 
 ### Point the engine at your own system, not at ours
 
@@ -1054,7 +1058,8 @@ market-event notes are in [`docs/source-notes.md`](docs/source-notes.md).
 
 ## License and attribution
 
-The code is MIT. The calculated data products are CC-BY-4.0. See [`LICENSE`](LICENSE) and
+The code is MIT. The calculated data products are CC-BY-4.0. See [`LICENSE`](LICENSE),
+[`DATA-LICENSE.md`](DATA-LICENSE.md) for which terms cover which files, and
 [`CITATION.cff`](CITATION.cff). Upstream market data belongs to its publishers
 (IEMOP, NGCP, Meralco). This repository mirrors public files as-is for research with
 attribution, and will honor any takedown request from the publisher.
@@ -1062,10 +1067,7 @@ attribution, and will honor any takedown request from the publisher.
 Use this attribution when you redistribute the calculated data. *Power Dispatch Studio (2026), IEMOP
 public market data archive, https://github.com/xmpuspus/power-dispatch-studio*.
 
-`CITATION.cff` carries the machine-readable citation. A software-paper draft sits
-in [`paper/paper.md`](paper/paper.md), and a 90-minute teaching lab that runs
-three tasks in the browser and again in Python sits in
-[`docs/workshop/`](docs/workshop/README.md).
+`CITATION.cff` carries the machine-readable citation.
 
 ## Public-record disclaimer
 

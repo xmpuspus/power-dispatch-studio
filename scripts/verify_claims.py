@@ -633,6 +633,8 @@ def canonical():
         "loss_luz_bus": ls["luzon"]["n_bus"],
         "loss_vis_bus": ls["visayas"]["n_bus"],
         "loss_min_bus": ls["mindanao"]["n_bus"],
+        # the image alt says "minus 0.58", not "-0.58", so it needs the sign off
+        "loss_vis_spearman_abs": _n(abs(ls["visayas"]["spearman"]), 2),
         "loss_luz_ci_lo": _n(_ci(ls["luzon"], 0), 2),
         "loss_luz_ci_hi": _n(_ci(ls["luzon"], 1), 2),
         "loss_min_ci_lo": _n(_ci(ls["mindanao"], 0), 2),
@@ -658,6 +660,7 @@ def canonical():
         "coupling_outage_pct",
         "loss_luz_spearman",
         "loss_min_spearman",
+        "loss_vis_spearman",
     ):
         out[f"{k}_slug"] = str(out[k]).replace(".", "").replace("-", "")
     return out
@@ -1180,6 +1183,44 @@ REGISTRY = [
         "README.md",
         re.compile(r"stable negative rank\s+correlation \(\*\*(-[\d.]+)\*\*"),
         ["loss_vis_spearman"],
+    ),
+    # The section heading carried +0.72/-0.57 while the body two paragraphs down
+    # said +0.73/-0.58, because the heading sat outside this registry and froze
+    # while the window rolled. The heading, the contents link that points at it,
+    # its anchor slug, and the figure's alt text all state the same three
+    # numbers, so all four move together now.
+    (
+        "README.md",
+        re.compile(
+            r"## Modeled loss ranks agree in Luzon \(\+([\d.]+)\) and Mindanao "
+            r"\(\+([\d.]+)\) but reverse in Visayas \((-[\d.]+)\)"
+        ),
+        ["loss_luz_spearman", "loss_min_spearman", "loss_vis_spearman"],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"- \[Modeled loss ranks agree in Luzon \(\+([\d.]+)\) and Mindanao "
+            r"\(\+([\d.]+)\) but reverse in Visayas \((-[\d.]+)\)\]"
+            r"\(#modeled-loss-ranks-agree-in-luzon-(\d+)-and-mindanao-(\d+)"
+            r"-but-reverse-in-visayas--(\d+)\)"
+        ),
+        [
+            "loss_luz_spearman",
+            "loss_min_spearman",
+            "loss_vis_spearman",
+            "loss_luz_spearman_slug",
+            "loss_min_spearman_slug",
+            "loss_vis_spearman_slug",
+        ],
+    ),
+    (
+        "README.md",
+        re.compile(
+            r"Luzon at plus ([\d.]+) and Mindanao at plus ([\d.]+) move in the "
+            r"same direction as the records\. Visayas at minus ([\d.]+) moves"
+        ),
+        ["loss_luz_spearman", "loss_min_spearman", "loss_vis_spearman_abs"],
     ),
     # --- the worked contract position
     (

@@ -18,20 +18,11 @@ jobs:
       - name: Generate from the committed archive
         run: python3 pipeline/build_data.py
       - name: Data pins + banned-framing gate
-        run: |
-          python3 tests/test_data.py
-          python3 tests/test_lp_parity.py
-          python3 tests/test_engine_sync.py
-          python3 tests/test_data_contract.py
-          python3 tests/test_future_year.py
-          python3 tests/test_scenario_file.py
-          python3 tests/test_unit_probe.py
-          python3 tests/test_writable_staged.py
-          python3 tests/test_claims_write.py
-          python3 tests/test_contracts.py
-          python3 tests/test_readme_views.py
-          python3 tests/qa_gate.py
-          python3 scripts/verify_claims.py
+        # The Makefile qa target is the one list. Copying it here is what let
+        # five checks, the WCAG contrast gate among them, run locally and never
+        # in CI until 2026-08-11. tests/qa_gate.py fails if a workflow stops
+        # calling this target and starts listing checks by hand again.
+        run: make qa
       - name: The three examples still run against the bundled snapshot
         run: |
           export PYTHONPATH=src

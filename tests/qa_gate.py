@@ -29,7 +29,13 @@ TARGETS = (
         + glob.glob(os.path.join(ROOT, "studio", "src", "**", "*.ts"), recursive=True)
         if ".test." not in os.path.basename(p)
     ]
-    + [os.path.join(ROOT, "README.md"), os.path.join(ROOT, "studio", "README.md")]
+    + [
+        os.path.join(ROOT, "README.md"),
+        os.path.join(ROOT, "studio", "README.md"),
+        # CLAUDE.md ships in the public clone, and it is the file that named the
+        # vendor in the sentence banning the vendor. Scan it like any other.
+        os.path.join(ROOT, "CLAUDE.md"),
+    ]
 )
 
 fails = []
@@ -62,6 +68,18 @@ BANNED = [
 # US-market framing must not creep back into user-facing files. This map stands
 # on Philippine terms only; a US-ISO name in the copy reads as borrowed US-market text.
 # Word-boundary matched so SPP/MISO/PJM don't fire inside ordinary words.
+# The licensed suite and its vendor. The project stands on its own backcast
+# number, so no public file names either. Nothing enforced this until
+# 2026-08-11, and the rule's own sentence in CLAUDE.md was the first breach.
+# data/external/doe/ is out of scope here: it is a quoted source document.
+VENDOR = [
+    r"\bPLEXOS\b",
+    r"\bEnergy\s+Exemplar\b",
+]
+
+# One check step in either gate list: a test file, or the claims oracle.
+GATE_STEP_RX = re.compile(r"(tests/[a-z0-9_]+\.py|scripts/verify_claims\.py)")
+
 US_FRAMING = [
     r"\bERCOT\b",
     r"\bPJM\b",
@@ -166,6 +184,13 @@ def scan(path, text):
                 f"{base}: US-market framing '{m.group(0)}' "
                 "(map stands on PH terms only)"
             )
+    for rx in VENDOR:
+        m = re.search(rx, text, re.I)
+        if m:
+            fails.append(
+                f"{base}: names the licensed vendor '{m.group(0)}' "
+                "(lead with the backcast number instead)"
+            )
     scrubbed = low
     for t in DOMAIN_TERMS:
         scrubbed = scrubbed.replace(t, "")
@@ -177,6 +202,37 @@ def scan(path, text):
             fails.append(f"{base}: overwrought voice {label}")
 
 
+def check_both_gate_lists():
+    """Every workflow that writes to main runs the whole gate, not a copy of it.
+
+    The Makefile qa target is the one list. A workflow satisfies this by calling
+    `make qa`. A workflow that instead spells the checks out by hand has to spell
+    out all of them, because a hand-kept second copy is what broke twice:
+
+    - ci.yml missed nodal_scenario, sites, perspective, contrast and palette, so
+      the WCAG contrast gate never ran on a push.
+    - archive.yml ran 4 of 18 and then pushed to main. A push made with the
+      workflow token starts no other workflow, so nothing else checked it.
+
+    Both were found on 2026-08-11 and both now call `make qa`.
+    """
+    mk_path = os.path.join(ROOT, "Makefile")
+    qa_body = re.search(r"^qa:\n((?:\t.*\n)+)", open(mk_path, encoding="utf-8").read(), re.M)
+    if not qa_body:
+        fails.append("Makefile: no qa target found")
+        return
+    in_make = set(GATE_STEP_RX.findall(qa_body.group(1)))
+    for wf in ("ci.yml", "archive.yml"):
+        path = os.path.join(ROOT, ".github/workflows", wf)
+        if not os.path.exists(path):
+            continue
+        text = open(path, encoding="utf-8").read()
+        if re.search(r"^\s*run:\s*make qa\s*$", text, re.M):
+            continue
+        for missing in sorted(in_make - set(GATE_STEP_RX.findall(text))):
+            fails.append(f"{wf}: {missing} runs in make qa but not here (or call `make qa`)")
+
+
 def main():
     scanned = 0
     for path in TARGETS:
@@ -185,6 +241,7 @@ def main():
         with open(path, encoding="utf-8", errors="replace") as f:
             scan(path, f.read())
         scanned += 1
+    check_both_gate_lists()
     print(f"scanned {scanned} files")
     for f_ in fails:
         print("FAIL " + f_)
