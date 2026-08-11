@@ -50,7 +50,7 @@ then `power-dispatch run --date 2026-06-17` writes an hourly CSV, or
 - [The Leyte-Cebu link reached a binding limit on 114 of 117 days](#the-leyte-cebu-link-reached-a-binding-limit-on-114-of-117-days)
 - [Luzon reserves fell short on 74 of the window's 126 days](#luzon-reserves-fell-short-on-74-of-the-windows-126-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
-- [Modeled loss ranks agree in Luzon (+0.73) and Mindanao (+0.83) but reverse in Visayas (-0.58)](#modeled-loss-ranks-agree-in-luzon-073-and-mindanao-083-but-reverse-in-visayas--058)
+- [Modeled loss ranks agree in Luzon (+0.73) and Mindanao (+0.85) but reverse in Visayas (-0.58)](#modeled-loss-ranks-agree-in-luzon-073-and-mindanao-085-but-reverse-in-visayas--058)
 - [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
 - [The cost stack stays near P6 while recorded evening prices include scarcity and offer premiums](#the-cost-stack-stays-near-p6-while-recorded-evening-prices-include-scarcity-and-offer-premiums)
 - [Offer-book replay correlations range from 0.69 to 0.86](#offer-book-replay-correlations-range-from-069-to-086)
@@ -219,7 +219,7 @@ resumed on 2026-05-01, so the deviation stays loss-dominated.
 The repository has the recording recipe, an MP4, a GIF, and the interactive
 Prices at grid connection points view.
 
-## Modeled loss ranks agree in Luzon (+0.73) and Mindanao (+0.83) but reverse in Visayas (-0.58)
+## Modeled loss ranks agree in Luzon (+0.73) and Mindanao (+0.85) but reverse in Visayas (-0.58)
 
 WESM decomposes every published locational marginal price (LMP) into an energy, a loss, and a congestion
 part, and the congestion part is small and sparse (zero through the market
@@ -243,7 +243,7 @@ recomputes nightly as clean market days accumulate
 (`data/derived/loss_surface.json`), and the studio carries the same three
 panels under Check the model against market records, Transmission-loss check.
 
-![Three scatter panels on a dark card, one per grid. Each plots the model's marginal loss-factor deviation against the market's recorded per-node deviation, with a fitted line and a Spearman rank correlation. Luzon at plus 0.73 and Mindanao at plus 0.83 move in the same direction as the records. Visayas at minus 0.58 moves in the opposite direction.](docs/loss-surface.gif)
+![Three scatter panels on a dark card, one per grid. Each plots the model's marginal loss-factor deviation against the market's recorded per-node deviation, with a fitted line and a Spearman rank correlation. Luzon at plus 0.73 and Mindanao at plus 0.85 move in the same direction as the records. Visayas at minus 0.58 moves in the opposite direction.](docs/loss-surface.gif)
 
 The wholesale price affects the Meralco bill through the share of energy bought
 on the spot market. The June 2026 advisory paid

@@ -178,13 +178,46 @@ gold_hours = {
     ],
 }
 gold = pdx.settle(gold_hours, real_book, {"luzon": 400})
+
+# These two used to be hand-written pesos, 600,500 and 19,800,300. The golden
+# case takes its hydro budget from the rolling archive window, so a fixed
+# historical day re-solves every night: on 2026-08-10 the window grew from 77
+# days to 83, hydro set the Luzon price in 6 hours where coal had, and the mean
+# went from P6.50 to P8.753. The pinned pesos moved 25x and main went red.
+#
+# So derive the expectation from the same prices instead, by hand, the long way.
+# Recording settle()'s own output and comparing would prove nothing, because
+# settle() has one implementation and both sides would be it. This arithmetic
+# is independent of it: one MW held for one hour is one MWh, and a price in
+# PhP/kWh is a thousand pesos per MWh.
+MWH_PESOS = 1000.0
+OWN_LOAD_MW = 400.0
+luz = golden["expect"]["price"]["luzon"]
+want_position = 0.0
+covered_mw = [0.0] * 24
+for c in real_book:
+    cover = c.get("hours") or list(range(24))
+    want_position += sum(luz[h] - c["strike_php_kwh"] for h in cover) * c["mw"] * MWH_PESOS
+    for h in cover:
+        covered_mw[h] += float(c["mw"])
+# The open position is the load the book does not cover, hour by hour, never
+# the whole 400 MW: 250 MW runs all day and 100 MW more covers hours 18 to 21.
+want_open = sum(
+    max(0.0, OWN_LOAD_MW - covered_mw[h]) * MWH_PESOS * luz[h] for h in range(24)
+)
+
 check(
-    "the golden Sual day settles to the pinned position",
-    gold["position_php"] == 600_500.0,
+    "the golden Sual day settles to the position its own prices imply",
+    abs(gold["position_php"] - round(want_position, 2)) < 0.01,
 )
 check(
-    "and its open position to the pinned cost",
-    gold["open_cost_php"] == 19_800_300.0,
+    "and its open position to the cost those prices imply",
+    abs(gold["open_cost_php"] - round(want_open, 2)) < 0.01,
+)
+# A price move has to reach the position, or the check above passes on zeros.
+check(
+    "the golden day is not a flat no-op",
+    abs(gold["position_php"]) > 1.0 and gold["open_cost_php"] > 1.0,
 )
 
 print()

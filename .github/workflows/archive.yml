@@ -94,11 +94,18 @@ jobs:
         # of letting the written figures go stale.
         run: python3 scripts/verify_claims.py --write
       - name: Data pins + banned-framing gate
+        id: gate
         # This job pushes straight to main, and a push made with the workflow
         # token starts no other workflow, so the normal ci run never sees the
         # nightly commit. Until 2026-08-11 this ran 4 of the 18 checks, which
-        # made the nightly the least-gated writer to main. It runs the whole
-        # list now, the same one make qa and ci.yml run.
+        # made the nightly the least-gated writer to main.
+        #
+        # It runs the whole list now, and it continues on failure for the same
+        # reason the fetch step does. Blocking here would leave main carrying
+        # the raw archive committed above with no matching data build, which is
+        # the one state that takes a hand repair. The explicit red step at the
+        # end keeps a failure visible instead.
+        continue-on-error: true
         run: make qa
       - name: Commit rebuilt web data
         run: |
@@ -117,6 +124,14 @@ jobs:
       - name: Fail red if the fetch failed
         if: steps.fetch.outcome == 'failure'
         run: exit 1
+      - name: Fail red if the gate failed
+        # The archive and the data build are both committed by now, so main
+        # stays consistent. This turns the run red so the failure gets read.
+        if: steps.gate.outcome == 'failure'
+        run: |
+          echo "make qa failed on the fresh window. The archive and the data"
+          echo "build are committed; the checks that failed are in the gate step."
+          exit 1
       - name: Fail red if the nodal derivers failed (the map and studio read them)
         # these run continue-on-error so a partial IEMOP outage still commits
         # what arrived, but a silent nodal-deriver failure must not pass green
