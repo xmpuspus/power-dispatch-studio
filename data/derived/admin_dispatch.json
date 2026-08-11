@@ -1,45 +1,45 @@
 {
  "available": true,
- "n_instructions": 117933,
+ "n_instructions": 134786,
  "mw_weighted_fraction_of_dispatch": {
   "luzon": {
-   "mw_weighted_pct": 6.73,
-   "n_raise_hours": 281
+   "mw_weighted_pct": 6.89,
+   "n_raise_hours": 295
   },
   "visayas": {
-   "mw_weighted_pct": 8.25,
-   "n_raise_hours": 1012
+   "mw_weighted_pct": 8.02,
+   "n_raise_hours": 1071
   },
   "mindanao": {
-   "mw_weighted_pct": 10.95,
-   "n_raise_hours": 1766
+   "mw_weighted_pct": 10.68,
+   "n_raise_hours": 1897
   }
  },
  "sample_days": [
   "2026-05-01",
-  "2026-05-16",
-  "2026-05-31",
-  "2026-06-15",
-  "2026-06-30",
-  "2026-07-15"
+  "2026-05-17",
+  "2026-06-02",
+  "2026-06-18",
+  "2026-07-04",
+  "2026-07-20"
  ],
- "n_raise_grid_hours_sampled": 197,
+ "n_raise_grid_hours_sampled": 173,
  "modeled_marginal_fuel_on_raise_hours_pct": {
-  "coal": 93.4,
-  "export": 5.6,
-  "hydro": 1.0
+  "coal": 89.0,
+  "hydro": 10.4,
+  "export": 0.6
  },
- "coal_marginal_share_pct": 93.4,
+ "coal_marginal_share_pct": 89.0,
  "raised_mw_fuel_mix_pct": {
-  "coal": 67.4,
+  "coal": 65.5,
   "natural_gas": 17.8,
-  "unclassified": 8.9,
-  "oil": 3.9,
-  "hydro": 1.9,
+  "unclassified": 9.9,
+  "oil": 4.6,
+  "hydro": 2.2,
   "geothermal": 0.0
  },
- "max_modeled_price_on_raise_hours_php_kwh": 6.02,
+ "max_modeled_price_on_raise_hours_php_kwh": 6.041,
  "verdict": "does_not_raise_prices_in_fuel_level_model",
- "note": "The administered MOT-raise dispatch equals 6 to 11 percent of generation in the affected hours, with the largest share on Mindanao. It does not raise prices in the fuel-level calculation. Most of the raised output is coal (67.4 percent) with about a fifth on gas (17.8 percent). Coal sets the modeled price in 93.4 percent of those hours. Every affected hour already prices at or just above the coal floor, with a maximum of P6.02/kWh. Applying the same floor to the public offer books changes none of the offers. This calculation groups generation by fuel, so it cannot show which named unit the operator runs for security. A model with individual units and reserve awards is needed to test that effect.",
+ "note": "The administered MOT-raise dispatch equals 6 to 11 percent of generation in the affected hours, with the largest share on Mindanao. It does not raise prices in the fuel-level calculation. Most of the raised output is coal (65.5 percent) with about a fifth on gas (17.8 percent). Coal sets the modeled price in 89.0 percent of those hours. Every affected hour already prices at or just above the coal floor, with a maximum of P6.04/kWh. Applying the same floor to the public offer books changes none of the offers. This calculation groups generation by fuel, so it cannot show which named unit the operator runs for security. A model with individual units and reserve awards is needed to test that effect.",
  "src": "https://www.iemop.ph/market-data/list-of-mot-raise-re-dispatch-based-on-so-dispatch-instruction-report/"
 }
