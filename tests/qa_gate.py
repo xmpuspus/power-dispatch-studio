@@ -142,6 +142,20 @@ OVERWROUGHT = [
     ),
 ]
 
+AI_TELLS = [
+    ("persona-door heading", r"\bpick the door that fits you\b"),
+    ("staged receipts contrast", r"\breceipts,\s*not estimates\b"),
+    (
+        "choose-us instruction",
+        r"\bpoint the engine at your own system, not at ours\b",
+    ),
+    (
+        "competitor recommendation",
+        r"\bfor everything else on the list, pick them\b",
+    ),
+    ("reader payment metaphor", r"\bvisitor pays for them\b"),
+]
+
 
 def scan(path, text):
     base = os.path.basename(path)
@@ -200,6 +214,9 @@ def scan(path, text):
     for label, rx in OVERWROUGHT:
         if re.search(rx, text, re.I):
             fails.append(f"{base}: overwrought voice {label}")
+    for label, rx in AI_TELLS:
+        if re.search(rx, text, re.I):
+            fails.append(f"{base}: AI-tell '{label}'")
 
 
 def check_both_gate_lists():
@@ -217,7 +234,9 @@ def check_both_gate_lists():
     Both were found on 2026-08-11 and both now call `make qa`.
     """
     mk_path = os.path.join(ROOT, "Makefile")
-    qa_body = re.search(r"^qa:\n((?:\t.*\n)+)", open(mk_path, encoding="utf-8").read(), re.M)
+    qa_body = re.search(
+        r"^qa:\n((?:\t.*\n)+)", open(mk_path, encoding="utf-8").read(), re.M
+    )
     if not qa_body:
         fails.append("Makefile: no qa target found")
         return
@@ -230,7 +249,9 @@ def check_both_gate_lists():
         if re.search(r"^\s*run:\s*make qa\s*$", text, re.M):
             continue
         for missing in sorted(in_make - set(GATE_STEP_RX.findall(text))):
-            fails.append(f"{wf}: {missing} runs in make qa but not here (or call `make qa`)")
+            fails.append(
+                f"{wf}: {missing} runs in make qa but not here (or call `make qa`)"
+            )
 
 
 def main():
