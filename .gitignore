@@ -6,6 +6,7 @@ tmp/
 .DS_Store
 *.pyc
 .planning/
+.worktrees/
 .vercel_out/
 .vercel/
 .vercel
