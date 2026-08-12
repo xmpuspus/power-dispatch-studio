@@ -46,7 +46,7 @@ export function BillView() {
 
       <div className="scn">
         <Panel
-          title="Only Meralco's WESM share moves with the spot price"
+          title="Meralco supply mix and WESM exposure"
           subtitle={`${d.period}. Share of energy by source. Only the WESM share is exposed to the spot market.`}
         >
           <div className="mixbars">
@@ -87,7 +87,7 @@ export function BillView() {
 
         {(d.mix_history?.length ?? 0) > 0 && (
           <Panel
-            title="Meralco's WESM share rose from 6% in April to 10% in June 2026"
+            title="Meralco WESM supply share, April to June 2026"
             subtitle="Meralco's own published mix and generation charge, last three advisories."
           >
             <ScrollBox className="propgrid-wrap">
@@ -135,7 +135,7 @@ export function BillView() {
 
         <div className="scn__results">
           <Panel
-            title="Bilateral contracts limit the bill impact of a WESM price change"
+            title="Bill effect of a WESM price change"
             subtitle={`Using Meralco's June 2026 supply mix for a ${num(kwh)} kWh reference household.`}
           >
             <div className="stat-row">
@@ -173,7 +173,7 @@ export function BillView() {
           </Panel>
 
           <Panel
-            title="Plant revenue and customer bills use different average prices"
+            title="Generation-weighted and load-weighted prices"
             subtitle="Generation-weighted price (GWAP) is not the same as load-weighted price (LWAP)."
           >
             <p className="note">{d.gwap_lwap_note}</p>

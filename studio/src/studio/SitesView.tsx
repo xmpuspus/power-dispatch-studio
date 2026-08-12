@@ -327,8 +327,8 @@ export function SitesView() {
           <Panel
             title={
               short
-                ? `${fmt(now.missing)} MW has no way to reach ${site.name}`
-                : `${site.name} gets every megawatt at ${HOUR_LABEL(hour)}`
+                ? `Unserved demand at ${site.name}: ${fmt(now.missing)} MW`
+                : `Supplied demand at ${site.name}, ${HOUR_LABEL(hour)}`
             }
             subtitle={`Its lines can take ${
               limit == null ? 'nothing' : `${fmt(limit)} MW`
@@ -396,8 +396,8 @@ export function SitesView() {
           </Panel>
 
           <Panel
-            title="The limit moves through the day, because the circuits already carry other load"
-            subtitle="Click any hour to move to it. The gold shape is when its own solar produces, which is why the evening is the hard part."
+            title="Hourly site connection limits"
+            subtitle="Select an hour to view its connection limit. Gold shows on-site solar output."
           >
             <DayStrip
               limits={site.limit_mw_by_hour}
@@ -428,7 +428,7 @@ export function SitesView() {
           ) : null}
 
           <Panel
-            title="Every megawatt this site draws passes through these circuits"
+            title="Connection circuits"
             subtitle="Ratings are estimates unless the market record named a limit."
           >
             <table className="grid-table">

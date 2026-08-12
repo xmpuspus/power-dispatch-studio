@@ -132,7 +132,7 @@ export function PasaView({
       </div>
 
       <Panel
-        title="Scheduled outages reduce available supply and raise shortfall risk"
+        title="Scheduled outages and shortfall risk"
         subtitle="The repeated outage simulation first removes the scheduled unavailable MW. That unavailable capacity is not assigned another random outage, while the same plant's remaining units keep their normal outage rates."
       >
         <CompareBars

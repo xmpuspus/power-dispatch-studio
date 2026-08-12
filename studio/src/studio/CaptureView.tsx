@@ -23,7 +23,7 @@ export function CaptureView({ runsList, grid }: { runsList: SavedRun[]; grid: Gr
     return (
       <div className="view">
         <Panel
-          title="What a technology earns is not the market average, because it does not run every hour"
+          title="Technology capture prices"
           subtitle="Generation-weighted price by technology for a saved run."
         >
           <EmptyNote>

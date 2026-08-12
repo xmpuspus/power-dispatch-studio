@@ -247,7 +247,7 @@ export function ChronologyView({
         {engine === 'cost' && hb && (
           <span
             className="chrono__reserve"
-            title="Recorded daily hydro energy comes from the operator's final per-resource dispatch schedules. The daily calculation cannot use more hydro energy than the recorded water budget, adjusted by your hydro settings."
+            title="Daily hydro limit from final per-resource dispatch schedules, adjusted by the current hydro settings."
           >
             recorded hydro energy limit, {num(hbTotal)} MWh
           </span>
@@ -255,7 +255,7 @@ export function ChronologyView({
         {engine === 'offers' && (
           <span
             className="chrono__reserve"
-            title="The day's published generator offers include every resource's priced curve and self-scheduled capacity. These offers already reflect unit behavior, so storage, water, and fleet edits are off. Energy-and-reserve clearing and added demand still apply."
+            title="Published generator offers include priced curves and self-scheduled capacity. Storage, water, and fleet edits are disabled; energy-and-reserve clearing and added demand remain available."
           >
             {offer.loading
               ? 'loading generator offers'
@@ -319,7 +319,7 @@ export function ChronologyView({
       </Panel>
 
       <Panel
-        title={`What set the price, ${cap(grid)}`}
+        title={`Hourly price setters, ${cap(grid)}`}
         subtitle="Each hour is labeled with the price-setting fuel, an inter-grid link at its limit on the importing side, or demand that could not be served."
       >
         <BindingStrip cells={hours.map((h) => classifyHour(h, grid))} />
@@ -344,7 +344,7 @@ export function ChronologyView({
 
       {hasStorage && (
         <Panel
-          title="Stored energy changes only when the price spread covers battery losses"
+          title="Storage charging and discharging"
           subtitle="The daily optimization charges and discharges storage only when the price difference covers round-trip losses. Stored energy resets each day."
         >
           <SocChart

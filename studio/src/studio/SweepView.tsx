@@ -222,14 +222,14 @@ export function SweepView({
       </div>
 
       <Panel
-        title={`The ${cap(grid)} price holds while the block setting it has room, then steps to the next block`}
+        title={`Clearing price as added demand increases, ${cap(grid)}`}
         subtitle={`Flat 24/7 demand is added to the selected scenario in ${STEPS} steps of ${num(Number(maxMw) / STEPS)} MW. All three grids clear together again at each step.`}
       >
         <HourLines series={series} marks={marks} />
       </Panel>
 
       <Panel
-        title="Every added MW eats spare capacity, whether or not the price moves"
+        title="Spare capacity as demand increases"
         subtitle="Each step solves the evening reference hour. A single hour has no daily water limit, so hydro can offer its full available capacity here. Hourly market replay solves whole days and applies the daily water limit."
       >
         <DataGrid columns={cols} rows={steps} getKey={(r) => String(r.addMw)} />

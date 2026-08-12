@@ -161,6 +161,23 @@ AI_TELLS = [
     ("story framing", r"\bthe same story with unit names\b"),
     ("normal-state slogan", r"\bthin is the normal state\b"),
     ("margin metaphor", r"\btakes? \d+% of the margin with it\b"),
+    (
+        "hidden-result headline",
+        r"\bthe average price hides a spread\b|\ban hourly average hides that\b",
+    ),
+    ("capacity-eating metaphor", r"\bevery added mw eats spare capacity\b"),
+    (
+        "technology-earnings contrast",
+        r"\bwhat a technology earns is not the market average\b",
+    ),
+    (
+        "scenario-causality slogan",
+        r"\bevery scenario solves the same model, so\b",
+    ),
+    (
+        "saved-run causality slogan",
+        r"\beach saved run keeps its own settings, so\b",
+    ),
 ]
 
 

@@ -131,7 +131,7 @@ export function SolvedMeritView({ s, grid }: { s: SolvedModel; grid: GridKey }) 
         />
       </div>
       <Panel
-        title="The last plant the grid has to start sets the price for all of them"
+        title={`Merit-order clearing, ${cap(grid)}`}
         subtitle={`${cap(grid)}, solved from the current settings. Each step is the capacity available at one marginal cost, cheapest first. Read the clearing price where the demand line crosses the staircase.`}
       >
         <MeritCurve blocks={s.stacks[grid]} demand={s.demand[grid]} />
@@ -177,7 +177,7 @@ export function SolvedFlowsView({ s }: { s: SolvedModel }) {
   return (
     <div className="view">
       <Panel
-        title="The three grids clear as one problem, because power moves between them"
+        title="Inter-grid dispatch"
         subtitle="The current model clears all three grids together over the high-voltage direct-current (HVDC) links."
       >
         <FlowDiagram prices={prices} corridors={corridors} />
@@ -232,7 +232,7 @@ export function SolvedN1View({ s, grid }: { s: SolvedModel; grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title={`A trip moves the ${cap(grid)} price only when it empties the block that sets it`}
+        title={`N-1 unit-outage results, ${cap(grid)}`}
         subtitle={`Each row removes one unit and re-clears the ${cap(grid)} stack at ${num(rows[0]?.demand_mw)} MW. That is the evening peak, or your edited load when the edit is higher. The N-1 test asks whether one grid alone rides through the loss of any single unit, so no help arrives over the links. Price move is the clearing price before the trip and after it. Shed is the demand this grid's own units cannot serve, so it is an upper bound where a link can import. Rows are per unit, so a station${station ? ` such as ${station}` : ''} appears once for each of its units.`}
       >
         <DataGrid
@@ -282,7 +282,7 @@ export function SolvedRegionsView({ s }: { s: SolvedModel }) {
   return (
     <div className="view">
       <Panel
-        title="Each grid keeps its own price, because the links between them have limits"
+        title="Clearing price and spare capacity by grid"
         subtitle="A negative spare-capacity percentage means demand exceeds available supply."
       >
         <DataGrid columns={cols} rows={grids} getKey={(g) => g} />
@@ -310,7 +310,7 @@ export function SolvedReliabilityView({
   return (
     <div className="view">
       <Panel
-        title="Shortfall chance in each grid, re-solved from your current settings"
+        title="Shortfall simulation using current settings"
         subtitle={`${num(s.reliability.luzon.draws)} repeated simulations use the current settings. Each simulation applies random outages to named units at their forced-outage rates and samples evening demand.`}
       >
         <div className="stat-row">
@@ -514,7 +514,7 @@ export function CompareView({
   return (
     <div className="view">
       <Panel
-        title="Every scenario solves the same model, so only the settings you changed move it"
+        title="Scenario results comparison"
         subtitle="Every scenario is solved side by side. The Base Case is the reference. Changed values are highlighted."
       >
         {scenarios.length < 2 && (

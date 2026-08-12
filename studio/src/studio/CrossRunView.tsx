@@ -115,7 +115,7 @@ export function CrossRunView({
   return (
     <div className="view">
       <Panel
-        title="Each saved run keeps its own settings, so the gaps here are the settings you changed"
+        title="Saved-run metrics"
         subtitle="Prices, unmet demand, and constrained-link value for every saved run."
       >
         {rows.length ? (

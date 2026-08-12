@@ -31,7 +31,7 @@ export function ExpansionView() {
     return (
       <div className="view">
         <Panel
-          title="The least-cost build and the DOE plan need not pick the same technology"
+          title="Least-cost build compared with the DOE plan"
           subtitle="A new-build capacity mix is compared with the DOE project list."
         >
           <EmptyNote>

@@ -35,7 +35,7 @@ export function Rtdoe5View({ grid }: { grid: GridKey }) {
     return (
       <div className="view">
         <Panel
-          title="The operator dispatches every 5 minutes, and an hourly average hides that"
+          title="5-minute and hourly price ranges"
           subtitle="Intraday price volatility on the sample days."
         >
           <EmptyNote>

@@ -96,7 +96,7 @@ export function RunsView({
     return (
       <div className="view">
         <Panel
-          title="A saved run freezes one replay so you can compare it with another"
+          title="Save a run for comparison"
           subtitle="Nothing is saved in this browser yet. Runs stay on this machine; nothing is uploaded."
         >
           <ol className="empty-steps">
@@ -152,7 +152,7 @@ export function RunsView({
   return (
     <div className="view">
       <Panel
-        title="Saved runs stay in this browser and nothing is uploaded"
+        title="Saved runs"
         subtitle="Each saved run keeps its scenario settings, date range, calculation version, and hourly results."
       >
         <div className="runs__archive-bar">
@@ -272,7 +272,7 @@ export function RunsView({
 
       {runs.length >= 2 && a && b && (
         <Panel
-          title="Run A against run B, with only the changed values marked"
+          title="Run comparison"
           subtitle="Run A is compared with Run B. Changed values are highlighted."
         >
           <div className="chrono__controls">

@@ -50,7 +50,7 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
     return (
       <div className="view">
         <Panel
-          title="A portfolio meets the spot price only on the megawatts its contract misses"
+          title="Contracted and spot-exposed generation"
           subtitle="Value a generation position against a saved run's hourly prices."
         >
           <EmptyNote>
@@ -86,7 +86,7 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
 
       <div className="scn">
         <Panel
-          title="The contract decides which megawatts sell forward and which meet the spot price"
+          title="Contract allocation and spot exposure"
           subtitle={
             withHours.length > 1
               ? 'Pick the run, the position, and the PSA terms.'
@@ -216,7 +216,7 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
           </div>
 
           <Panel
-            title="Uncontracted generation is what the spot price actually reaches"
+            title="Uncontracted generation by spot price"
             subtitle="Generation above the contracted volume, paired with that hour's spot price, dearest spot first."
           >
             {hasExposure ? (

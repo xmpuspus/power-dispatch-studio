@@ -134,7 +134,7 @@ export function DistributionView({
       </div>
 
       <Panel
-        title={`The cost stack holds ${cap(grid)} on a flat plateau, so the band stays narrow until supply runs short`}
+        title={`Cost-model price range across replayed days, ${cap(grid)}`}
         subtitle={`The selected scenario is replayed over all ${num(stats.days)} market days with complete demand data. The shaded range covers the 10th to 90th percentile for each hour. The dashed line is the base model's median.`}
       >
         <BandChart band={band} compare={edited ? baseMedian : undefined} />
@@ -142,7 +142,7 @@ export function DistributionView({
 
       <Panel
         title={`Scenario price duration, ${cap(grid)}`}
-        subtitle="Every hour of every replayed day sorted dear to cheap, against the observed duration curve from the same window."
+        subtitle="Each hour of every replayed day, sorted from highest to lowest price, against the observed duration curve from the same window."
       >
         <DurationCurve
           modeled={pooledDuration(runs, grid)}

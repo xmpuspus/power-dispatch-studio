@@ -81,7 +81,7 @@ export function BackcastView({
       <div className="view">
         <div className="chrono__controls">{engineToggle}</div>
         <Panel
-          title="The model is scored on every recorded day, not on a chosen sample"
+          title="Historical replay coverage"
           subtitle="The model is checked against market records."
         >
           <p className="note">
@@ -213,7 +213,7 @@ export function BackcastView({
       </div>
 
       <Panel
-        title="A load-weighted price is what buyers paid, so the model is scored against that"
+        title="Load-weighted average price comparison"
         subtitle={`Every full-coverage market day since ${bc.window?.from} replayed with ${engineLabel}.`}
         right={
           <button
@@ -252,7 +252,7 @@ export function BackcastView({
 
       {bc.flows ? (
         <Panel
-          title="Serving native load forces the replay to move power between grids"
+          title="Modeled and recorded inter-grid flows"
           subtitle="Native-load demand requires the replay to move power between grids. This table measures how closely the flows match."
         >
           <DataGrid
@@ -303,7 +303,7 @@ export function BackcastView({
 
       {bc.flows_rtdhs ? (
         <Panel
-          title="The operator schedules each 5-minute interval on its own, so this is an independent check"
+          title="Real-time inter-grid schedule comparison"
           subtitle="The operator's real-time inter-grid schedule records each 5-minute interval independently of the demand calculation. Its congestion flag shows how often a link reached its limit."
         >
           <DataGrid
@@ -364,7 +364,7 @@ export function BackcastView({
 
       {bc.per_grid_mcp ? (
         <Panel
-          title="MCP is calculated before dispatch, so it is the record a model can be measured against"
+          title="Market clearing price comparison"
           subtitle="MCP is the regional price calculated before dispatch. It is the recorded measure that can be compared with the model's marginal price."
         >
           <DataGrid
@@ -394,7 +394,7 @@ export function BackcastView({
       ) : null}
 
       <Panel
-        title={`One day compared with the market record, ${cap(grid)}`}
+        title={`Daily model and market comparison, ${cap(grid)}`}
         subtitle={`Replayed with ${engineLabel} (no edits, no storage cycling) against the recorded hourly load-weighted average price (LWAP).`}
       >
         <div className="chrono__controls">

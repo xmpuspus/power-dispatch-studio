@@ -98,7 +98,7 @@ export function DayExplainerView({
     return (
       <div className="view">
         <Panel
-          title="Every hour of a recorded day has its own price setter"
+          title="Hourly price setters"
           subtitle="Decompose any market day's evening peak."
         >
           <p className="note">No full-coverage market day in the archive window yet.</p>
@@ -252,7 +252,7 @@ export function DayExplainerView({
       </div>
 
       <Panel
-        title={`How the evening peak was set, ${cap(grid)} on ${date}`}
+        title={`Evening-peak price formation, ${cap(grid)} on ${date}`}
         subtitle="Observed against the cost model (fundamentals) and the offer-book replay (fundamentals plus offer behaviour), hour by hour."
         right={
           <button
@@ -304,7 +304,7 @@ export function DayExplainerView({
       </Panel>
 
       <Panel
-        title={`What bound the grid on ${date}`}
+        title={`Binding grid equipment on ${date}`}
         subtitle="The named equipment the operator's real-time dispatch held at a limit that day, from the archive."
       >
         <div className="chip-row">

@@ -101,15 +101,11 @@ export function FutureYearView({ grid }: { grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title={
-          shortDays > 0
-            ? `${cap(grid)} leaves load unserved on ${shortDays} of ${d.days_solved} days in ${d.year}`
-            : `${cap(grid)} covers every one of its ${d.days_solved} days in ${d.year}, on this build list`
-        }
+        title={`${cap(grid)} unserved-load days in ${d.year}: ${shortDays} of ${d.days_solved}`}
         subtitle={
-          `Every date in ${d.year} solved on its own, with demand grown by the ` +
-          `Department of Energy's own peak path and supply raised by its published ` +
-          `project list. A scenario built from plans, never a forecast.`
+          `Each date in ${d.year} is solved separately. Demand follows the ` +
+          `Department of Energy peak path, and supply includes its published ` +
+          `project list. This is a plan-based scenario, not a forecast.`
         }
         right={<Source href={m.demand.src} label="demand path" />}
       >
@@ -153,11 +149,11 @@ export function FutureYearView({ grid }: { grid: GridKey }) {
       </Panel>
 
       <Panel
-        title={`The build list adds ${Math.round(
+        title={`${cap(grid)} project additions through ${d.year}: ${Math.round(
           Object.values(m.supply.added_stack_mw[grid] ?? {}).reduce((s, v) => s + v, 0) +
             m.supply.added_solar_mw[grid]
-        ).toLocaleString('en-US')} MW to ${cap(grid)} by ${d.year}, and retires nothing`}
-        subtitle={`Projects from the published list whose target year falls at or before ${d.year}. Status included: ${m.supply.status_included.join(', ')}. List as of ${m.supply.as_of}.`}
+        ).toLocaleString('en-US')} MW`}
+        subtitle={`Projects from the published list whose target year falls at or before ${d.year}. No retirements are modeled. Status included: ${m.supply.status_included.join(', ')}. List as of ${m.supply.as_of}.`}
       >
         <DataGrid
           columns={addCols}
@@ -186,8 +182,8 @@ export function FutureYearView({ grid }: { grid: GridKey }) {
       </Panel>
 
       <Panel
-        title="Four assumptions carry this year, and each one names its owner"
-        subtitle="Change any of them and the year changes. They are inputs, not results."
+        title={`Inputs and sources for ${d.year}`}
+        subtitle="These are scenario inputs, not results."
       >
         <ul className="assum">
           <li>

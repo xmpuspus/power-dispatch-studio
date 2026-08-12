@@ -77,7 +77,7 @@ export function UcProbeView() {
   return (
     <div className="view">
       <Panel
-        title={`Committing each thermal block lowered the price correlation in all ${r.length} recorded series`}
+        title={`Price correlation with unit commitment, ${r.length} recorded series`}
         subtitle={
           'Correlation between the modeled hourly price and the recorded price, ' +
           'with and without mixed-integer commitment, over the same days. ' +
@@ -111,7 +111,7 @@ export function UcProbeView() {
       </Panel>
 
       <Panel
-        title="The test used generic minimum-stable levels, because no Philippine unit registry publishes them"
+        title="Minimum-stable-level test assumptions"
         subtitle="Share of a committed block that must keep running, applied at the fuel-block level."
       >
         <DataGrid
@@ -124,7 +124,7 @@ export function UcProbeView() {
         <p className="note">
           A fuel-block floor is coarser than a per-unit floor. That coarseness is the most
           likely reason the commitment run scores worse, and a per-unit registry is what a
-          sharper test needs. Written by {p.generated_by}.
+          sharper test needs.
         </p>
       </Panel>
     </div>

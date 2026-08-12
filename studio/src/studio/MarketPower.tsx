@@ -73,7 +73,7 @@ export function MarketPowerView({ d }: { d: Dispatch }) {
       </Panel>
 
       <Panel
-        title="The grid may depend on its largest supplier at the evening peak"
+        title="Largest-supplier dependence at the evening peak"
         subtitle="This comparison places national capacity share beside Luzon's spare capacity at peak. It is not an interval-level residual supply index (RSI), and the two percentages are separate scales."
       >
         <div className="stat-row">

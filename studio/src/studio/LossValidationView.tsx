@@ -126,7 +126,7 @@ export function LossValidationView() {
     return (
       <div className="view">
         <Panel
-          title="A correct loss estimate reproduces the recorded price gaps between connection points"
+          title="Loss-estimate validation"
           subtitle="The network calculation is checked against the market's prices at individual grid connection points."
         >
           <EmptyNote>
@@ -139,8 +139,8 @@ export function LossValidationView() {
   return (
     <div className="view">
       <Panel
-        title="Modeled loss ranks agree in Luzon and Mindanao but reverse in Visayas"
-        subtitle={`Marginal loss factors from the OpenStreetMap grid are compared with WESM's published prices at each connection point over ${d.clean_days} market days without administered pricing. Recomputed nightly.`}
+        title="Loss-rank agreement by grid"
+        subtitle={`Modeled ranks agree in Luzon and Mindanao but reverse in Visayas. Marginal loss factors from the OpenStreetMap grid are compared with WESM's published prices at each connection point over ${d.clean_days} market days without administered pricing. Recomputed nightly.`}
       >
         <div className="stat-row">
           {GRIDS.map((g) => {

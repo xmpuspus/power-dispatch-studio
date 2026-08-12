@@ -481,7 +481,7 @@ export function ScenarioView({
           </Panel>
 
           <Panel
-            title="The selected grid clears together with the other two island grids"
+            title="Connected-grid clearing"
             subtitle="Power can move between them over the high-voltage direct-current (HVDC) links."
           >
             <FlowDiagram prices={prices} corridors={corridors} />

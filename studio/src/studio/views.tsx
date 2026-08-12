@@ -12,7 +12,7 @@ export function DurationView({ d, grid }: { d: Dispatch; grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title="The average price hides a spread from the recorded floor to the recorded peak"
+        title="Modeled and recorded price-duration curves"
         subtitle={`${cap(grid)} modeled and recorded prices, sorted from highest to lowest over the market window.`}
         right={<Source href={pd.src} label="cap source" />}
       >
@@ -52,7 +52,7 @@ export function MarginalView({ d, grid }: { d: Dispatch; grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title="One fuel block sets the price that every running plant is paid"
+        title="Price-setting fuel blocks"
         subtitle={`${cap(grid)} share of ${num(mf.n_intervals)} market intervals in which each fuel block sets the price.`}
       >
         <ShareBars rows={mf.by_block} />
@@ -74,7 +74,7 @@ export function ReliabilityView({ d }: { d: Dispatch }) {
   return (
     <div className="view">
       <Panel
-        title="Adding the announced DICT demand raises the modeled Luzon shortfall chance"
+        title="Shortfall risk with added DICT demand"
         subtitle={`${num(mc.draws)} repeated simulations apply random plant outages at sourced rates. The result is loss-of-load probability (LOLP), not one predicted outcome.`}
         right={<Source href={mc.src_for} label="plant-outage source" />}
       >
@@ -101,7 +101,7 @@ export function ReliabilityView({ d }: { d: Dispatch }) {
         <p className="note">{mc.note}</p>
       </Panel>
       <Panel
-        title="Storage reduces the modeled shortfall risk"
+        title="Modeled shortfall risk with storage"
         subtitle={`${num(st.assets.luzon.total_mw)} MW on Luzon (${num(st.assets.luzon.bess_mw)} MW batteries, ${num(st.assets.luzon.pumped_hydro_mw)} MW Kalayaan pumped hydro).`}
         right={<Source href={st.src_pumped_hydro} label="pumped-hydro source" />}
       >
@@ -170,7 +170,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
   return (
     <div className="view">
       <Panel
-        title="Holding megawatts in reserve takes them out of the energy stack"
+        title="Reserve capacity removed from the energy stack"
         subtitle={`Operating since ${res.commercial_since}. Real-time dispatch buys energy and reserve capacity together. The studio's Hourly market replay holds the scheduled reserve requirement out of the energy supply stack but does not calculate reserve prices. The sample covers ${num(res.n_intervals)} intervals on ${res.sample_days?.join(', ')}.`}
         right={<Source href={res.src_market} label="market source" />}
       >
@@ -197,7 +197,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
 
       {dearest && (
         <Panel
-          title="Reserve capacity carries its own price, cleared in the same dispatch"
+          title="Energy and reserve clearing prices"
           subtitle={`${dearest.label} is the scarcest product. Compared with the observed energy clearing price on ${cap(grid)}.`}
         >
           <CompareBars

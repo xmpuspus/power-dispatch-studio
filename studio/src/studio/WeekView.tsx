@@ -79,7 +79,7 @@ export function WeekView({
     return (
       <div className="view">
         <Panel
-          title="Seven recorded days solved as one continuous week"
+          title="Continuous seven-day storage replay"
           subtitle="A 168-hour optimization carries stored energy across midnight."
         >
           <EmptyNote>
