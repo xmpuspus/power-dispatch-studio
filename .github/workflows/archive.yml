@@ -116,7 +116,8 @@ jobs:
           # archive commit above, so its source file would otherwise stay a day
           # behind the web/data copy that this step does commit.
           git add web/data data/derived src/power_dispatch/data README.md \
-            studio/README.md web/methodology.html web/for-analysts.html
+            docs/findings.md studio/README.md web/methodology.html \
+            web/for-analysts.html
           git diff --cached --quiet && echo "generated data unchanged" || {
             git commit -m "data: $(date -u +%Y-%m-%d)"
             git push

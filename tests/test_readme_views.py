@@ -33,7 +33,10 @@ def check(name, cond):
 dests = destinations()
 check("nav.ts declares 42 destinations", len(dests) == 42)
 
-with open(os.path.join(ROOT, "README.md")) as f:
+# The 42-view catalog moved out of README.md on 2026-08-12, when the front door
+# came down from 1,079 lines to 227. It lives in its own page now.
+CATALOG = os.path.join(ROOT, "docs", "studio-views.md")
+with open(CATALOG) as f:
     readme = f.read()
 
 linked = re.findall(r"/studio/#v=([a-z0-9-]+)\)", readme)
@@ -43,9 +46,9 @@ missing = [s for s in declared if s not in linked]
 extra = [s for s in linked if s not in declared]
 
 check(
-    f"every declared slug is linked from the README (missing: {missing})", not missing
+    f"every declared slug is linked from the view catalog (missing: {missing})", not missing
 )
-check(f"the README links no slug nav.ts does not declare (extra: {extra})", not extra)
+check(f"the catalog links no slug nav.ts does not declare (extra: {extra})", not extra)
 
 # uniqueness is a property of the table, not of the whole file: prose elsewhere
 # may link a view a second time in context, and should be free to
@@ -105,35 +108,40 @@ check(f"every in-page contents link reaches a heading (dead: {dead})", not dead)
 
 # --- the stated media weight has to match the files on disk -------------------
 # GitHub applies no lazy loading, so the embedded set is what a reader downloads
-# on open. The README states that number, so it is measured here rather than
-# trusted.
-embedded = set(re.findall(r"!\[[^\]]*\]\(([^)]+)\)", readme))
-embedded |= set(re.findall(r'src="([^"]+)"', readme))
-embedded = {p for p in embedded if not p.startswith("http")}
-gone = sorted(p for p in embedded if not os.path.isfile(os.path.join(ROOT, p)))
-check(f"every embedded file exists (missing: {gone})", not gone)
+# on open. Each page states its own weight and it is measured here, never
+# trusted. The catalog and the findings split off the README on 2026-08-12, so
+# the front door has to stay light on its own.
+def weigh(rel):
+    text = open(os.path.join(ROOT, rel), encoding="utf-8").read()
+    emb = set(re.findall(r"!\[[^\]]*\]\(([^)]+)\)", text))
+    emb |= set(re.findall(r'src="([^"]+)"', text))
+    emb = {q for q in emb if not q.startswith("http")}
+    here = os.path.dirname(os.path.join(ROOT, rel))
+    # Resolve the way GitHub does, relative to the page. Resolving from the repo
+    # root instead hides the break a moved page causes: docs/findings.md linking
+    # "docs/x.gif" would point at docs/docs/x.gif on the site and still pass here.
+    resolved = {q: os.path.normpath(os.path.join(here, q)) for q in emb}
+    missing = sorted(q for q, c in resolved.items() if not os.path.isfile(c))
+    check(f"{rel}: every embedded file exists (missing: {missing})", not missing)
+    mb = sum(os.path.getsize(c) for c in resolved.values() if os.path.isfile(c)) / 1048576
+    stated = re.search(r"downloads (\d+\.\d) MB of media across\s*\n?\s*(\d+) files", text)
+    check(f"{rel}: states its own media weight", stated is not None)
+    if stated:
+        check(
+            f"{rel}: stated MB matches disk ({stated.group(1)} vs {mb:.1f})",
+            abs(float(stated.group(1)) - mb) < 0.05,
+        )
+        check(
+            f"{rel}: stated file count matches ({stated.group(2)} vs {len(emb)})",
+            int(stated.group(2)) == len(emb),
+        )
+    return mb
 
-total_mb = (
-    sum(
-        os.path.getsize(os.path.join(ROOT, p))
-        for p in embedded
-        if os.path.isfile(os.path.join(ROOT, p))
-    )
-    / 1048576
-)
-stated = re.search(
-    r"downloads (\d+\.\d) MB of media across\s*\n?\s*(\d+) files", readme
-)
-check("the README states its own media weight", stated is not None)
-if stated:
-    check(
-        f"stated MB matches the files on disk ({stated.group(1)} vs {total_mb:.1f})",
-        abs(float(stated.group(1)) - total_mb) < 0.05,
-    )
-    check(
-        f"stated file count matches ({stated.group(2)} vs {len(embedded)})",
-        int(stated.group(2)) == len(embedded),
-    )
+
+front_mb = weigh("README.md")
+weigh("docs/studio-views.md")
+# The front door is what a stranger loads before deciding anything, so cap it.
+check(f"the README stays under 8 MB of media ({front_mb:.1f})", front_mb < 8.0)
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
 sys.exit(1 if fails else 0)

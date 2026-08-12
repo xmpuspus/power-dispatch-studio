@@ -677,22 +677,22 @@ def canonical():
 REGISTRY = [
     # --- README.md (the LinkedIn-facing surface; --write auto-syncs it nightly)
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"day-ahead runs on \*\*(\d+) of the window's (\d+) days\*\*"),
         ["leyte_cebu_dap_days", "days_covered"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"binding limit in the hourly day-ahead runs on \*\*(\d+) of (\d+)"),
         ["top_corridor_dap_days", "days_covered"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"the run settlement\s*\n?\s*actually sees, on \*\*(\d+) days\*\*"),
         ["top_corridor_rtd_days"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"Across the (\d+)-day window, \*\*(\d+) distinct pieces of equipment\*\*"
             r" hit a limit at least\s+once, in \*\*(\d+) monitored constraints\*\*"
@@ -700,36 +700,36 @@ REGISTRY = [
         ["days_covered", "distinct_equipment", "constraint_records"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"below the stated need\s+on (\d+) of the window's (\d+) days\*\*"),
         ["luzon_reserve_short_days", "days_covered"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"curtailed\s+load on \*\*(\d+) grid-days \(([\d,]+\.\d) MWh\)\*\*"),
         ["curtail_grid_days", "curtail_mwh"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"Across (\d+)\s+daily logs, its instructions"),
         ["sodir_days"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"citing a line limitation \*\*([\d,]+) times, and ([\d,]+) of those name the"
         ),
         ["limitation_remarks", "leyte_cebu_remarks"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"This link appears in (\d+) percent of\s*\n?\s*every line-limitation"
         ),
         ["limitation_pct"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"\*\*([\d,]+) MOT-raise instructions\*\* across the window at a \*\*(\d+)\s*\n?\s*MW\*\* median"
         ),
@@ -740,7 +740,7 @@ REGISTRY = [
     # and a stale fragment scrolls nowhere. The cron runs --write, so guarding
     # them here is what keeps the contents working without a human in the loop.
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"- \[Luzon reserves fell short on (\d+) of the window's (\d+) days\]"
             r"\(#luzon-reserves-fell-short-on-(\d+)-of-the-windows-(\d+)-days\)"
@@ -753,7 +753,7 @@ REGISTRY = [
         ],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"- \[The three grids priced within P(0\.\d+) while suspended, then "
             r"split to P(\d+\.\d+)\]\(#the-three-grids-priced-within-p(\d+)-while-"
@@ -767,7 +767,7 @@ REGISTRY = [
         ],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"- \[Offer-book replay correlations range from "
             r"(0\.\d+) to (0\.\d+)\]\(#offer-book-replay-correlations-range-"
@@ -779,12 +779,12 @@ REGISTRY = [
     # file and drifts like any other, so each one is anchored on its own. The
     # anchors start at "## " so they can never match the body sentence below.
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"## Luzon reserves fell short on (\d+) of the window's (\d+) days"),
         ["luzon_reserve_short_days", "days_covered"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"## Offer-book replay correlations range from "
             r"(0\.\d+) to (0\.\d+)"
@@ -792,7 +792,7 @@ REGISTRY = [
         ["offer_corr_lo", "offer_corr_hi"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"## The three grids priced within P(0\.\d+) while suspended, "
             r"then split to P(\d+\.\d+)"
@@ -801,12 +801,12 @@ REGISTRY = [
     ),
     # --- the regime-split body, which quoted six numbers and guarded none
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"priced within \*\*P(0\.\d+)/kWh\*\* of each other"),
         ["admin_max_spread"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"the average was \*\*Luzon P(\d+\.\d+), Visayas P(\d+\.\d+), Mindanao\s*\n?\s*"
             r"P(\d+\.\d+) per kWh\*\*, with \*\*(\d+) days spreading beyond P5/kWh\*\* "
@@ -815,7 +815,7 @@ REGISTRY = [
         ["mkt_luz", "mkt_vis", "mkt_min", "mkt_days_gt5", "mkt_max_spread"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"### The base model explains (\d+\.\d)% of the Visayas-Luzon price "
             r"difference\. The recorded outage explains (\d+\.\d)%"
@@ -825,7 +825,7 @@ REGISTRY = [
     # --- the coupling decomposition in the body, quoted in four places and
     # guarded in none until now; both had drifted from nightly data preparation
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"explains only \*\*(\d+\.\d)%\*\* of the recorded "
             r"\*\*P(\d+\.\d+)/kWh\*\*\s+Visayas-Luzon difference"
@@ -833,17 +833,17 @@ REGISTRY = [
         ["coupling_cost_pct", "vis_luz_spread"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"the coupled model now reproduces \*\*(\d+\.\d)%\*\* of"),
         ["coupling_outage_pct"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"outage historical replay explains (\d+\.\d)% of the price"),
         ["coupling_outage_pct"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"reproduces \*\*(\d+\.\d) percent\*\* of the recorded\s+"
             r"island price gap"
@@ -890,50 +890,50 @@ REGISTRY = [
     ),
     # README outage calculations for the base and DICT demand cases.
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"loses load in only \*\*(0\.\d+)%\*\* of tight evenings"),
         ["rel_base_lolp"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"worst draw sheds\s+\*\*([\d,]+) MW\*\*"),
         ["rel_base_worst"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"climbs more than tenfold to \*\*(\d\.\d+)%\*\*"),
         ["rel_dict_lolp"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"1-in-100 draw sheds\s*\n?\s*\*\*([\d,]+) MW\*\*"),
         ["rel_dict_p99"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"evening-peak window is\s*\n?\s*\*\*([\d,]+) MWh\*\*"),
         ["rel_dict_eue"],
     ),
     # --- README layered-calibration correlations + MAE + means
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"correlation of \*\*(0\.\d+)\*\* with an MAE\s*\n?\s*of \*\*P(\d+\.\d+)\*\*"
         ),
         ["cal_vis_corr", "cal_vis_mae"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"Luzon is \*\*(0\.\d+)\*\* with an MAE of \*\*P(\d+\.\d+)\*\*"),
         ["cal_luz_corr", "cal_luz_mae"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"undefined correlation to \*\*(0\.\d+)\*\*\.\s+After the layer"),
         ["cal_min_corr"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"Luzon averages a modeled \*\*P(\d+\.\d+)/kWh\*\* against a "
             r"recorded \*\*P(\d+\.\d+)/kWh\*\*"
@@ -942,17 +942,17 @@ REGISTRY = [
     ),
     # --- README offer-book backcast Mindanao MCP correlation (two mentions)
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"Mindanao clearing-price correlation \*\*(0\.\d+)\*\*"),
         ["offer_min_mcp_corr"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"correlation ranges from \*\*(0\.\d+) to (0\.\d+)\*\*"),
         ["offer_corr_lo", "offer_corr_hi"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"collapsing from\s*\n?\s*\*\*-P(\d+\.\d+)\*\* to \*\*-P(\d+\.\d+)/kWh\*\*"
         ),
@@ -971,7 +971,7 @@ REGISTRY = [
     ),
     # storage buyback (README) + the corridor knee (README + studio)
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"loss-of-load probability with the added demand falls from "
             r"\*\*(\d+\.\d+)%\*\* to \*\*(\d+\.\d+)%\*\*"
@@ -979,12 +979,12 @@ REGISTRY = [
         ["buyback_lolp_wo", "buyback_lolp_w"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"unserved energy from \*\*([\d,]+) MWh\*\* to \*\*(\d+) MWh\*\*"),
         ["buyback_eue_wo", "buyback_eue_w"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"just \*\*(\d+) MW\*\* of added Visayas load fills the"),
         ["dc_knee"],
     ),
@@ -1013,52 +1013,52 @@ REGISTRY = [
     ),
     # README coupling/marginal narrative scalars
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"evening gap runs \*\*P(\d+\.\d+)/kWh\*\* above the cost stack"),
         ["evening_residual_vis"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"coal is on the margin \*\*(\d+)%\*\* of"),
         ["coal_margin_luz"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"\*\*(\d+\.\d+)%\*\* of Mindanao"),
         ["mindanao_overnight"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"blocked the Leyte-Luzon link for \*\*(\d+\.\d+)%\*\* of market-window"
         ),
         ["corridor_blocked"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"link saturates in \*\*(\d+\.\d+)%\*\* of intervals"),
         ["corridor_saturated"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"runs from a \*\*P(\d+)\*\* scarcity spike"),
         ["duration_max"],
     ),
     # Largest DICT demand-case changes and offer biases.
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"raises the Luzon daily mean by \*\*\+P(\d+\.\d+)/kWh\*\* on the cost"
         ),
         ["cost_luz_delta"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"\*\*\+P(\d+\.\d+)/kWh\*\* replayed on the market's own bids"),
         ["offer_luz_delta"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"reaches the Visayas \(\*\*\+P(\d+\.\d+)\*\*\) and Mindanao \(\*\*\+P(\d+\.\d+)\*\*\)"
         ),
@@ -1099,60 +1099,60 @@ REGISTRY = [
     # the same flag is quoted in the top-level README, so guard it there too:
     # an unguarded copy of a nightly number is how the two drift apart
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"rolling series to P(\d+\.\d+)\s+against the P12\.413 trigger"),
         ["reference_rolling"],
     ),
     # drifted 99.2 -> 99.3 unnoticed because nothing guarded it; both copies now do
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"one MW value in\s+(\d+\.\d+) percent of windows"),
         ["pinned_share"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"nonzero on ([\d.]+) percent of clean-day node-hours"),
         ["cong_clean_share"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"recorded direction \*\*(\d+) to (\d+) percent\*\* of the time"),
         ["flowdir_lo", "flowdir_hi"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"gross\s+peak\s+of\s+\*\*([\d,]+)\s+MW\*\*\s+is\s+a\s+mid-afternoon"
         ),
         ["adq_gross_peak"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"firm\s+evening\s+peak,\s+when\s+solar\s+is\s+gone,\s+is\s+\*\*([\d,]+)\s+MW\*\*"
         ),
         ["adq_eve_peak"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"stack\s+of\s+\*\*([\d,]+)\s+MW\*\*\s+that\s+is\s+an\s+\*\*([\d.]+)%\*\*\s+reserve"
         ),
         ["adq_firm_avail", "adq_margin"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"the\s+firm\s+margin\s+falls\s+to\s+\*\*([\d.]+)%\*\*"),
         ["adq_dc_margin"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"still\s+holds\s+\*\*([\d.]+)%\*\*\s+with\s+the\s+DICT\s+forecast"),
         ["adq_tight_dc_margin"],
     ),
     # --- loss-surface validation numbers (recompute nightly; F4) ---
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"Spearman \*\*\+([\d.]+)\*\* over (\d+) nodes \((\d+)\s+"
             r"distinct buses, 95% confidence interval \+([\d.]+) to \+([\d.]+)\)"
@@ -1166,7 +1166,7 @@ REGISTRY = [
         ],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"Mindanao at \*\*\+([\d.]+)\*\* over (\d+)\s+\((\d+) buses, "
             r"\+([\d.]+) to \+([\d.]+)\)"
@@ -1180,7 +1180,7 @@ REGISTRY = [
         ],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"stable negative rank\s+correlation \(\*\*(-[\d.]+)\*\*"),
         ["loss_vis_spearman"],
     ),
@@ -1190,7 +1190,7 @@ REGISTRY = [
     # its anchor slug, and the figure's alt text all state the same three
     # numbers, so all four move together now.
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"## Modeled loss ranks agree in Luzon \(\+([\d.]+)\) and Mindanao "
             r"\(\+([\d.]+)\) but reverse in Visayas \((-[\d.]+)\)"
@@ -1198,7 +1198,7 @@ REGISTRY = [
         ["loss_luz_spearman", "loss_min_spearman", "loss_vis_spearman"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"- \[Modeled loss ranks agree in Luzon \(\+([\d.]+)\) and Mindanao "
             r"\(\+([\d.]+)\) but reverse in Visayas \((-[\d.]+)\)\]"
@@ -1215,7 +1215,7 @@ REGISTRY = [
         ],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"Luzon at plus ([\d.]+) and Mindanao at plus ([\d.]+) move in the "
             r"same direction as the records\. Visayas at minus ([\d.]+) moves"
@@ -1224,63 +1224,63 @@ REGISTRY = [
     ),
     # --- the worked contract position
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"gains a (\d+) MW contract book more than it costs"),
         ["pp_book_mw"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"which leaves the book \*\*(\d+) percent\*\*"),
         ["pp_cover"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"spot rises from\s*\n?\s*P([\d.]+)/kWh to P([\d.]+)/kWh"),
         ["pp_base_spot", "pp_scen_spot"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"\| The contracts gain \| \*\*\+P([\d,]+)\*\* \|"),
         ["pp_pos"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"\| The uncontracted load costs more \| \*\*\+P([\d,]+)\*\* \|"),
         ["pp_open"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"\| Net \| \*\*\+P([\d,]+)\*\* \|"),
         ["pp_net"],
     ),
     # --- the named-unit dispatch probe
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"## Naming all (\d+) units changes no daily energy"),
         ["up_units"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"own variable, \*\*(\d+) units\*\* across the"),
         ["up_units"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"fuel on every grid, to \*\*([\d.]+) MWh\*\*"),
         ["up_daily_gap"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"price differs by more than\s*\n?\s*\*\*P([\d.]+)/kWh\*\*"),
         ["up_price_gap"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"move, by up to\s*\n?\s*\*\*([\d,]+) MW\*\*"),
         ["up_hourly_gap"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(
             r"Mindanao market clearing price correlation goes from\s*\n?\s*"
             r"([\d.]+) to ([\d.]+)\."
@@ -1297,37 +1297,37 @@ REGISTRY = [
     ),
     # --- the solved future year (`make future`)
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"\| Peak demand \| \*\*([\d,]+) MW\*\*"),
         ["fy_luz_peak"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"grown \*\*([\d.]+) percent\*\* by the DOE path"),
         ["fy_luz_growth"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"\| Dispatchable capacity added \| \*\*([\d,]+) MW\*\*"),
         ["fy_luz_firm"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"\| Solar added \| \*\*([\d,]+) MW\*\*"),
         ["fy_luz_solar"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"\| Mean price across the year \| \*\*P([\d.]+)/kWh\*\*"),
         ["fy_luz_mean"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"\| Mean price 6pm to 9pm \| \*\*P([\d.]+)/kWh\*\*"),
         ["fy_luz_eve"],
     ),
     (
-        "README.md",
+        "docs/findings.md",
         re.compile(r"\| Days that leave load unserved \| \*\*(\d+) of (\d+)\*\*"),
         ["fy_luz_short", "fy_days"],
     ),
@@ -1373,8 +1373,12 @@ BLOCKS = [
 # Every public prose file now uses generated data and is updated by the nightly
 # cron: the scalar registry above plus the reserve-table block below cover all of
 # the rolling numbers in each, so none can silently freeze behind the map.
+# Every file --write may rewrite. archive.yml has to `git add` all of them, or a
+# rewrite nobody stages gets thrown away and --check turns CI red days later.
+# tests/test_writable_staged.py compares this set against that step.
 WRITABLE = {
     "README.md",
+    "docs/findings.md",
     "studio/README.md",
     "web/for-analysts.html",
     "web/methodology.html",
