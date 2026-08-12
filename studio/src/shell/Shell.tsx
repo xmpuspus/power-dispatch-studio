@@ -505,9 +505,9 @@ export function RunDock({
         </p>
         {onTakeAway && (
           <button className="dock__take" onClick={onTakeAway}>
-            Take this run away
+            Export this run
             <span className="dock__takehint">
-              Saved runs writes a standalone HTML report and an hourly CSV
+              Download a standalone HTML report and hourly CSV from Saved runs
             </span>
           </button>
         )}

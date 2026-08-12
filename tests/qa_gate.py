@@ -178,6 +178,8 @@ AI_TELLS = [
         "saved-run causality slogan",
         r"\beach saved run keeps its own settings, so\b",
     ),
+    ("headroom metaphor", r"\bheadroom eaten\b"),
+    ("take-away label", r"\btake this run away\b"),
 ]
 
 

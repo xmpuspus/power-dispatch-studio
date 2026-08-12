@@ -49,7 +49,7 @@ when opened.
 **[Read the eleven findings](docs/findings.md)** for the supporting evidence.
 **[The 42 studio views](docs/studio-views.md)** lists every deep link.
 
-The README downloads 6.1 MB of media across 2 files. The findings and Studio
+The README downloads 7.0 MB of media across 2 files. The findings and Studio
 catalog link to the remaining media instead of embedding it here.
 
 ## Comparison with related power-system tools

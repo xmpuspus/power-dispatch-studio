@@ -186,7 +186,7 @@ export function SweepView({
           }
         />
         <StatTile
-          label="Headroom eaten"
+          label="Spare capacity"
           value={`${num(first.s.avail[grid] - first.s.demand[grid])} to ${num(
             last.s.avail[grid] - last.s.demand[grid]
           )}`}
