@@ -14,7 +14,7 @@ import os
 
 from playwright.async_api import async_playwright
 
-BASE = os.environ.get("BASE", "http://localhost:8789")
+BASE = os.environ.get("BASE", "http://127.0.0.1:8789")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "docs", "pax-silica-figs")
 

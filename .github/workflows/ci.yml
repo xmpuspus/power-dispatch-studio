@@ -42,7 +42,7 @@ jobs:
           sudo apt-get update -q && sudo apt-get install -y -q zsh
           (cd web && python3 serve.py 8789 &)
           sleep 2
-          zsh tests/e2e.sh http://localhost:8789
+          zsh tests/e2e.sh http://127.0.0.1:8789
 
   studio:
     runs-on: ubuntu-latest

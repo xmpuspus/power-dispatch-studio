@@ -841,6 +841,14 @@ function forcedOutagePct(fuel: string): number {
   }
   return rate[fuel] ?? 0
 }
+/** Title-case a grid name for a label.
+ *
+ * This one lowercases the tail, on purpose: it normalises whatever case the
+ * data arrives in. The 25 other `cap` helpers in this directory keep the tail
+ * as given. Every caller here passes a grid key that is already lower case, so
+ * the two agree today and the difference is invisible. Naming it here so a
+ * future caller passing "LUZON" is not surprised by two different labels.
+ */
 function cap(s: string): string {
   return s[0].toUpperCase() + s.slice(1).toLowerCase()
 }

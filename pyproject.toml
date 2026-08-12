@@ -12,11 +12,17 @@ license = { file = "LICENSE" }
 authors = [{ name = "Xavier Puspus" }]
 keywords = ["WESM", "philippines", "electricity", "dispatch", "energy-market", "IEMOP", "linear-programming"]
 classifiers = [
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
     "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
 ]
 # pinned exact: the linear-program agreement tests depend on the solver's
 # deterministic tie-breaking, which a point release can

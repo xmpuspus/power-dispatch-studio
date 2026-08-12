@@ -10,7 +10,7 @@ help:
 	@echo "  pip install -r requirements.txt   the HiGHS solver the model runs on"
 	@echo ""
 	@echo "  make data        rebuild web/data/ from the committed archive (no network)"
-	@echo "  make serve       serve the map on http://localhost:8789"
+	@echo "  make serve       serve the map on http://127.0.0.1:8789"
 	@echo "  make qa          the local gate: 18 checks plus the claims oracle"
 	@echo "  make e2e         behavioral checks against a running map"
 	@echo ""
@@ -78,7 +78,7 @@ serve:
 
 # Behavioral e2e against the running map. make serve & first.
 # Live: make e2e BASE=https://<deploy>
-BASE ?= http://localhost:8789
+BASE ?= http://127.0.0.1:8789
 e2e:
 	zsh tests/e2e.sh $(BASE)
 

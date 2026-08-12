@@ -1028,6 +1028,40 @@ function heroRender(){
   $("d-sub").innerHTML =
     `<b>${fmt(dict.mw)} MW</b> forecast by DICT for 2028, against the ` +
     `<b>${fmt(margin)} MW</b> system supply margin IEMOP reported for May 2026.`;
+  // keep the default wording so a scenario can hand the card back
+  HERO_DEFAULT = {
+    fig: $("d-fig").textContent,
+    claim: $("d-claim").textContent,
+    sub: $("d-sub").innerHTML,
+  };
+}
+
+let HERO_DEFAULT = null;
+
+// The card carried the same 41% after a reader built their own scenario, so the
+// biggest line on the page ignored the work they had just done. It reports the
+// scenario while one is running, and hands back the default when it is cleared.
+function heroScenario(res, base){
+  if (!HERO_DEFAULT) return;
+  const moved = SIM.addDC || SIM.addFirm || SIM.imp || SIM.stor || SIM.trip;
+  if (!moved){
+    $("d-fig").textContent = HERO_DEFAULT.fig;
+    $("d-claim").textContent = HERO_DEFAULT.claim;
+    $("d-sub").innerHTML = HERO_DEFAULT.sub;
+    return;
+  }
+  const d = res.price - base.price;
+  const grid = SIM.grid[0].toUpperCase() + SIM.grid.slice(1);
+  $("d-fig").textContent = "\u20B1" + fmt(res.price, 2);
+  $("d-claim").textContent = d === 0
+    ? `Your scenario leaves the ${grid} clearing price where it was.`
+    : `Your scenario moves the ${grid} clearing price to \u20B1${fmt(res.price,2)}/kWh.`;
+  $("d-sub").innerHTML = SIM.addDC
+    ? `<b>${fmt(SIM.addDC)} MW</b> added, against a base case of ` +
+      `<b>\u20B1${fmt(base.price,2)}/kWh</b>. The marginal fuel is ` +
+      `<b>${esc(fuelLabel(res.marginal))}</b>.`
+    : `Against a base case of <b>\u20B1${fmt(base.price,2)}/kWh</b>. ` +
+      `The marginal fuel is <b>${esc(fuelLabel(res.marginal))}</b>.`;
 }
 
 function railRender(){
@@ -1879,6 +1913,7 @@ function updateSim(){
     (res.shortfall > 0 ? `<div class="kv shortfall"><span>Supply shortfall (load shed)</span>
        <span><b>${fmt(res.shortfall)} MW</b></span></div>` : "");
   renderSimShare(res, base);
+  heroScenario(res, base);
   const st = $("sim-stack"); if (st) st.innerHTML = stackSVG(s.blocks, s.demand) + fuelKey(s.blocks);
 
   // coupled readout: the selected grid cleared together with the other two islands
@@ -1935,6 +1970,13 @@ function wireSim(){
   document.querySelectorAll(".gsel").forEach(b => b.onclick = () => {
     SIM = { grid:b.dataset.grid, addDC:0, addFirm:0, imp:0, stor:0, trip:"" };
     $("side").innerHTML = sideSimulate(); wireSim(); updateSim(); syncURL();
+    // The map is the largest thing on screen and it used to sit still through
+    // every scenario, so the whole interaction read as a side panel with a map
+    // parked next to it. Move to the grid being solved. It says something true:
+    // this answer is about this island. The model dispatches fuel blocks per
+    // grid, never named units, so nothing here colours a plant by merit.
+    const isl = ISLANDS[SIM.grid];
+    if (isl) map.easeTo({ center:isl.c, zoom:isl.z, duration:700 });
   });
   const bind = (id, key, valId) => { const el = $(id); if (!el) return;
     el.oninput = () => { SIM[key] = +el.value; if (valId) $(valId).textContent = fmt(SIM[key]);

@@ -18,7 +18,7 @@ from pathlib import Path
 
 from playwright.async_api import Page, async_playwright
 
-BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8789/"
+BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8789/"
 ROOT = Path(__file__).resolve().parent.parent
 REC = Path("/tmp/map-rec")
 REC.mkdir(exist_ok=True)

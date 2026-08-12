@@ -53,6 +53,19 @@ This front door downloads 6.1 MB of media across
 2 files. The eleven findings and the 42-view catalog carry the rest, so a
 visitor pays for them only after choosing to read them.
 
+## PyPSA-PH models a finer network. This one archives the market and checks its own prices.
+
+| | What it is | What it has that this does not | What this has |
+|---|---|---|---|
+| [PyPSA-PH](https://github.com/arizeosalac/PyPSA-PH) | An open Philippine power-system model on PyPSA | A far finer network: 192 nodes, 425 units, 236 lines | A daily archive, backcasts against recorded prices, and a browser you can send a link to |
+| [PyPSA](https://github.com/PyPSA/PyPSA) | The mature open toolbox the above builds on | Capacity expansion, unit commitment, a large community | Philippine market data, already fetched and derived, and no install |
+| [PowerSimulations.jl](https://github.com/NREL-Sienna/PowerSimulations.jl) | NREL's simulation library | Security-constrained unit commitment, and a research pedigree | Runs in a browser, and brings its own system |
+
+None of them archives the Philippine market operator's files every night, and
+none publishes how far its own replay lands from what the market charged. That
+pair is the reason to pick this one. For everything else on the list, pick them.
+
+
 ## It is a three-zone dispatch calculation, not a utility planning model
 
 It is a simplified three-zone dispatch calculation, not a utility planning model.
@@ -143,7 +156,7 @@ pip install -r requirements.txt   # the HiGHS solver the dispatch model runs on
 make backfill    # pull the full public window from iemop.ph (~15 min, ~50 MB)
 make data        # prepare web/data/ from the archive + sourced constants
 make qa          # data and language checks
-make serve       # http://localhost:8789
+make serve       # http://127.0.0.1:8789
 make e2e         # behavioral checks against the running map
 ```
 

@@ -2,7 +2,11 @@
 # Behavioral checks against the running map. Usage: zsh tests/e2e.sh [BASE]
 # Start the server first: make serve &
 set -u
-BASE="${1:-http://localhost:8789}"
+# 127.0.0.1, never localhost. localhost resolves to ::1 first on macOS and on
+# GitHub runners, web/serve.py binds 127.0.0.1 only, and every request pays a
+# failed IPv6 attempt before falling back. On a cold server that fallback is
+# slow enough to fail the first check, which is the "GET /" flake.
+BASE="${1:-http://127.0.0.1:8789}"
 pass=0; fail=0
 ok(){ echo "PASS $1"; pass=$((pass+1)); }
 bad(){ echo "FAIL $1"; fail=$((fail+1)); }
