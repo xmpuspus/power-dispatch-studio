@@ -75,7 +75,7 @@ def main():
         "reserve they hold. No forward capacity auction exists to price "
         "or to chart.\nFrom IEMOP, NGCP, PEMC, ERC and DOE.",
     )
-    cs.check_fit(fig)
+    cs.check_fit(fig, dpi=140)
     cs.save_png(fig, OUT, dpi=140)
 
 

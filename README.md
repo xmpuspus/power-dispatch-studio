@@ -49,7 +49,7 @@ whoever you send it to.
 each with its own evidence. **[The 42 studio views](docs/studio-views.md)** lists
 every deep link.
 
-This front door downloads 5.8 MB of media across
+This front door downloads 6.1 MB of media across
 2 files. The eleven findings and the 42-view catalog carry the rest, so a
 visitor pays for them only after choosing to read them.
 

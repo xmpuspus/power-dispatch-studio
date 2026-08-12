@@ -10,7 +10,7 @@ https://power-dispatch-studio.vercel.app.
 ## Contents
 
 - [Seven steps take an analyst from the ability list to pesos, then to a file](#seven-steps-take-an-analyst-from-the-ability-list-to-pesos-then-to-a-file)
-- [The Leyte-Cebu link reached a binding limit on 114 of 117 days](#the-leyte-cebu-link-reached-a-binding-limit-on-114-of-117-days)
+- [The Leyte-Cebu link reached a binding limit on 124 of 127 days](#the-leyte-cebu-link-reached-a-binding-limit-on-124-of-127-days)
 - [Luzon reserves fell short on 75 of the window's 127 days](#luzon-reserves-fell-short-on-75-of-the-windows-127-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
 - [Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.85) but reverse in Visayas (-0.58)](#modeled-loss-ranks-agree-in-luzon-072-and-mindanao-085-but-reverse-in-visayas--058)
@@ -39,7 +39,7 @@ fails if the ability table stops carrying four refusals, if the commitment view
 stops showing its measured delta, if the scenario leaves the position flat, or if
 the download produces no file. Sharper as [MP4](analyst-walkthrough.mp4).
 
-## The Leyte-Cebu link reached a binding limit on 114 of 117 days
+## The Leyte-Cebu link reached a binding limit on 124 of 127 days
 
 IEMOP publishes a "congestions manifesting" file that names transmission
 equipment at its binding limit for each 5-minute interval. This project archives

@@ -735,6 +735,41 @@ REGISTRY = [
         ),
         ["motrd_rows", "motrd_median"],
     ),
+    # The same correlation pair appears as a heading on the analyst page. It was
+    # guarded in docs/findings.md and not here, so this copy would have frozen
+    # while the other moved. tests/test_heading_numbers_guarded.py found it.
+    (
+        "web/for-analysts.html",
+        re.compile(
+            r"How close it gets: the offer replay lands between "
+            r"(\d\.\d+) and (\d\.\d+)"
+        ),
+        ["offer_corr_lo", "offer_corr_hi"],
+    ),
+    # The Leyte-Cebu heading sat outside this registry and froze at 114 of 117
+    # while the body two paragraphs down read 124 of 127 from the same build.
+    # The window had rolled ten days past it. Heading, contents row and fragment
+    # all carry the pair, so all three move together now.
+    (
+        "docs/findings.md",
+        re.compile(
+            r"## The Leyte-Cebu link reached a binding limit on (\d+) of (\d+) days"
+        ),
+        ["top_corridor_dap_days", "days_covered"],
+    ),
+    (
+        "docs/findings.md",
+        re.compile(
+            r"- \[The Leyte-Cebu link reached a binding limit on (\d+) of (\d+) days\]"
+            r"\(#the-leyte-cebu-link-reached-a-binding-limit-on-(\d+)-of-(\d+)-days\)"
+        ),
+        [
+            "top_corridor_dap_days",
+            "days_covered",
+            "top_corridor_dap_days",
+            "days_covered",
+        ],
+    ),
     # --- the contents list. Its link text AND the #fragment it points at both
     # carry the heading's numbers, so both go stale the night the window grows,
     # and a stale fragment scrolls nowhere. The cron runs --write, so guarding

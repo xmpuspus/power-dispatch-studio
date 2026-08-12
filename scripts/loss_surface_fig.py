@@ -155,7 +155,7 @@ def main():
         # the payoff only exists on the late frames, so the overflow
         # check has to run on the last one, never on frame 0
         if fi == len(FRAMES) - 1:
-            cs.check_fit(fig)
+            cs.check_fit(fig, dpi=100)
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=100, facecolor=cs.BG)
         plt.close(fig)
 

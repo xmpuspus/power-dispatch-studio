@@ -92,9 +92,11 @@ def main():
         cs.title(
             fig,
             f"One Sual unit is {share:.0f}% of the whole system's spare margin",
-            f"Each block is {BLOCK_MW} MW, so {n_blocks} blocks stand for the "
-            f"{margin:,} MW May 2026 margin to the nearest {BLOCK_MW} MW. "
-            f"Sual runs two units of {unit} MW.",
+            # Kept short on purpose. The longer wording ran to the card's last
+            # pixel and shipped with its full stop cut off.
+            f"Each block is {BLOCK_MW} MW. The {n_blocks} blocks are the "
+            f"{margin:,} MW May 2026 margin, to the nearest {BLOCK_MW} MW. "
+            f"Sual runs two {unit} MW units.",
         )
         cs.result_label(
             fig,
@@ -132,7 +134,7 @@ def main():
         # the payoff only exists on the late frames, so the overflow
         # check has to run on the last one, never on frame 0
         if fi == len(seq) - 1:
-            cs.check_fit(fig)
+            cs.check_fit(fig, dpi=104)
         fig.savefig(os.path.join(fdir, f"f{fi:03d}.png"), dpi=104, facecolor=cs.BG)
         plt.close(fig)
 

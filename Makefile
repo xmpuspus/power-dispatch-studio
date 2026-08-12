@@ -110,6 +110,7 @@ qa:
 	$(PY) tests/test_claims_write.py
 	$(PY) tests/test_contracts.py
 	$(PY) tests/test_readme_views.py
+	$(PY) tests/test_heading_numbers_guarded.py
 	$(PY) tests/test_contrast.py
 	$(PY) tests/test_palette.py
 	$(PY) tests/qa_gate.py

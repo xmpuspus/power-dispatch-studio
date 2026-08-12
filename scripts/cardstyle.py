@@ -280,13 +280,24 @@ def evidence(ax, xs, ys, color=None, n_max=9000, seed=0):
     )
 
 
-def check_fit(fig, margin=0.004):
+def check_fit(fig, margin=0.0, dpi=None):
     """Fail loudly when any text runs past the canvas.
 
     price_shape shipped "larger price increase for the same adde" and
     price_spread shipped a source line cut mid-sentence. Both rendered without
     an error and both read as unfinished work, so the check is mechanical now.
+
+    The margin used to be 0.004, which is about 3 pixels on a 880-pixel card.
+    That was enough to clip a full stop and half a letter off the Sual subtitle
+    and still pass, which is how "two units of 647 MW." shipped as "647 MW".
+    Text either fits or it does not.
     """
+    # Measure at the dpi the card is SAVED at. The figure carries the default
+    # dpi until savefig re-renders, so checking first measured a canvas the
+    # reader never sees. The Sual subtitle passed here and shipped with its last
+    # pixel on the card edge, full stop cut off.
+    if dpi:
+        fig.set_dpi(dpi)
     fig.canvas.draw()
     w, h = fig.canvas.get_width_height()
     bad = []
@@ -321,8 +332,26 @@ def check_fit(fig, margin=0.004):
 
 
 def source(fig, text, y=0.045):
-    """Typeset the sources into the card: it travels without the README."""
-    fig.text(0.075, y, text, fontsize=7.6, color=MUTE, va="top", zorder=5)
+    """Typeset the sources into the card: it travels without the README.
+
+    The block hangs downward from y, so a caption that renders one line taller
+    drops under the card edge. A flat 0.045 did that on three cards at once and
+    stopped `make viz` on 2026-08-12, after a matplotlib version changed how the
+    lines lay out. The height depends on the font metrics of whatever matplotlib
+    is installed, so measure the drawn box and lift the block until it sits
+    inside the card, rather than hand-fitting a number per card.
+    """
+    t = fig.text(0.075, y, text, fontsize=7.6, color=MUTE, va="top", zorder=5)
+    try:
+        fig.canvas.draw()
+        h = fig.canvas.get_width_height()[1]
+        bb = t.get_window_extent(renderer=fig.canvas.get_renderer())
+        if bb.y0 < 0:
+            t.set_y(y + (-bb.y0 + 0.006 * h) / h)
+    except Exception:
+        # No renderer yet on some backends. check_fit still guards the result.
+        pass
+    return t
 
 
 def chip(ax, x, y, s, color=TEXT, size=9.0, ha="center", va="center", pad=0.28):
