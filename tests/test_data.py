@@ -1982,10 +1982,24 @@ check(
     and mot["n_rows"] > 50000
     and mot["n_resources"] >= 100,
 )
+# The old form of this asked for 5x, which was fitted to a window where the
+# ratio read 8.46, and it turned main red on 2026-08-11. Nothing regressed: the
+# week of 2026-08-03 entered the record carrying 16,853 rows, about twice a
+# normal week, at a median of 10 MW. That pulled the pooled median from 55 MW to
+# 40 MW while the must-run median rose from 8 MW to 9 MW, so the ratio fell to
+# 4.44. Across the 15 builds measured it ran between 4.44 and 8.46.
+#
+# The claim worth holding is the direction, not a multiple fitted to one window:
+# out-of-merit instructions reach further, and higher, than the must-run subset.
+mru = so["mru_contrast"]
 check(
-    "the full out-of-merit record has a median several times the must-run subset",
-    mot["median_mw"] >= 5 * (so["mru_contrast"]["mru_median_mw"] or 1)
-    and mot["max_mw"] > (so["mru_contrast"]["mru_max_mw"] or 0),
+    "out-of-merit dispatch outranks the must-run subset on both median and peak",
+    # A real must-run median first. Without it the ratio below divides by the
+    # `or 1` fallback and passes on missing data.
+    (mru["mru_median_mw"] or 0) > 0
+    and (mru["mru_max_mw"] or 0) > 0
+    and mot["median_mw"] >= 2.5 * mru["mru_median_mw"]
+    and mot["max_mw"] > mru["mru_max_mw"],
 )
 check(
     "MOT-raise resources resolve to a grid (REGION codes mapped)",

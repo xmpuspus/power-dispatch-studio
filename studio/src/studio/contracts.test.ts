@@ -100,7 +100,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 describe('the browser reaches the same pesos as Python', () => {
-  it('settles the golden Sual day to the pinned position', () => {
+  it('settles the golden Sual day to the position its own prices imply', () => {
     const profiles = JSON.parse(
       readFileSync(
         fileURLToPath(new URL('../../public/data/profiles.json', import.meta.url)),
@@ -129,7 +129,40 @@ describe('the browser reaches the same pesos as Python', () => {
       },
     ]
     const s = settle(hours, book, { luzon: 400 })
-    expect(s.position).toBe(600_500)
-    expect(s.openCost).toBe(19_800_300)
+
+    // These were hand-written pesos, 600,500 and 19,800,300. The golden case
+    // takes its hydro budget from the rolling archive window, so a fixed
+    // historical day re-solves every night. On 2026-08-10 the window grew from
+    // 77 days to 83, hydro set the Luzon price in 6 hours where coal had, and
+    // the two figures moved 25x. The Python twin of this test carries the same
+    // fix, because both engines change together.
+    //
+    // Derive them from the case's own prices instead, the long way round.
+    // Comparing settle() against a recording of settle() would prove nothing.
+    const MWH_PESOS = 1000
+    const OWN_LOAD_MW = 400
+    const luz: number[] = g.expect.price.luzon
+    const coveredMw = Array.from({ length: 24 }, () => 0)
+    let wantPosition = 0
+    for (const c of book) {
+      const cover = c.hours ?? Array.from({ length: 24 }, (_, h) => h)
+      for (const h of cover) {
+        wantPosition += (luz[h] - c.strike_php_kwh) * c.mw * MWH_PESOS
+        coveredMw[h] += c.mw
+      }
+    }
+    // The open position is the load the book leaves uncovered, hour by hour,
+    // never the whole 400 MW: 250 MW runs all day, 100 MW more covers 18 to 21.
+    const wantOpen = luz.reduce(
+      (sum, price, h) =>
+        sum + Math.max(0, OWN_LOAD_MW - coveredMw[h]) * MWH_PESOS * price,
+      0
+    )
+
+    expect(s.position).toBeCloseTo(wantPosition, 2)
+    expect(s.openCost).toBeCloseTo(wantOpen, 2)
+    // A price move has to reach the position, or the checks above pass on zeros.
+    expect(Math.abs(s.position)).toBeGreaterThan(1)
+    expect(s.openCost).toBeGreaterThan(1)
   })
 })
