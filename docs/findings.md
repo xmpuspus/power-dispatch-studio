@@ -10,8 +10,8 @@ https://power-dispatch-studio.vercel.app.
 ## Contents
 
 - [Seven steps take an analyst from the ability list to pesos, then to a file](#seven-steps-take-an-analyst-from-the-ability-list-to-pesos-then-to-a-file)
-- [The Leyte-Cebu link reached a binding limit on 124 of 127 days](#the-leyte-cebu-link-reached-a-binding-limit-on-124-of-127-days)
-- [Luzon reserves fell short on 75 of the window's 127 days](#luzon-reserves-fell-short-on-75-of-the-windows-127-days)
+- [The Leyte-Cebu link reached a binding limit on 125 of 128 days](#the-leyte-cebu-link-reached-a-binding-limit-on-125-of-128-days)
+- [Luzon reserves fell short on 76 of the window's 128 days](#luzon-reserves-fell-short-on-76-of-the-windows-128-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
 - [Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.85) but reverse in Visayas (-0.58)](#modeled-loss-ranks-agree-in-luzon-072-and-mindanao-085-but-reverse-in-visayas--058)
 - [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
@@ -39,14 +39,14 @@ fails if the ability table stops carrying four refusals, if the commitment view
 stops showing its measured delta, if the scenario leaves the position flat, or if
 the download produces no file. Sharper as [MP4](analyst-walkthrough.mp4).
 
-## The Leyte-Cebu link reached a binding limit on 124 of 127 days
+## The Leyte-Cebu link reached a binding limit on 125 of 128 days
 
 IEMOP publishes a "congestions manifesting" file that names transmission
 equipment at its binding limit for each 5-minute interval. This project archives
 and ranks those records. A row **literally named
-`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **102 of the window's 127 days**.
+`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **103 of the window's 128 days**.
 The 230 kV lines that carry that link, Tabango (Leyte) to Daanbantayan (Cebu),
-top the league. They are at a binding limit in the hourly day-ahead runs on **124 of 127
+top the league. They are at a binding limit in the hourly day-ahead runs on **125 of 128
 days**, and binding in the 5-minute real-time dispatch, the run settlement
 actually sees, on **23 days** of the window.
 
@@ -60,7 +60,7 @@ behind that statement.
 
 The same league as plain ranked bars, with no map, is [docs/constraint-league.gif](constraint-league.gif).
 
-Across the 127-day window, **84 distinct pieces of equipment** hit a limit at least
+Across the 128-day window, **84 distinct pieces of equipment** hit a limit at least
 once, in **99 monitored constraints** (a transformer is listed under each winding
 voltage and a line at each terminal, so one physical asset can have more than one limit ID).
 The map ranks the constraints by days at a limit (a day counts once, so a day-ahead
@@ -87,9 +87,9 @@ The archived files pin them to one MW value in
 They record which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
-The System Operator's instruction log states why it changed dispatch. Across 124
+The System Operator's instruction log states why it changed dispatch. Across 125
 daily logs, its instructions carry a remark
-citing a line limitation **1,939 times, and 1,912 of those name the
+citing a line limitation **1,959 times, and 1,932 of those name the
 Leyte-Cebu link** ("Advise to discharge under MOT Raise due to
 Leyte-Cebu Line Limitation"), the same link the constraint league
 ranks first by shadow-price days. This link appears in 99 percent of
@@ -105,11 +105,11 @@ The must-run subset has a **6½ MW** median.
 
 The `so_instructions` section in the same file has both records.
 
-## Luzon reserves fell short on 75 of the window's 127 days
+## Luzon reserves fell short on 76 of the window's 128 days
 
 In the operator's real-time schedules, **Luzon reserves fell below the stated need
-on 75 of the window's 127 days**. Across the three grids, the schedules curtailed
-load on **119 grid-days (7,442.8 MWh)**. These figures describe published
+on 76 of the window's 128 days**. Across the three grids, the schedules curtailed
+load on **120 grid-days (7,699.6 MWh)**. These figures describe published
 schedules and do not forecast brownouts.
 
 The Visayas grid ran **52 consecutive days on grid alert from May 11 to July 1,
@@ -598,13 +598,13 @@ A worked case, on the archive's most recent day. The book holds a 250 MW power
 supply agreement struck at P6.40/kWh and a 100 MW evening block at P9.00/kWh,
 against a declared Luzon load of 400 MW, which leaves the book **67 percent**
 covered. Trip both 647 MW Sual units and the mean Luzon spot rises from
-P5.55/kWh to P5.65/kWh.
+P5.83/kWh to P6.00/kWh.
 
 | Line | Change for the day |
 |---|---|
-| The contracts gain | **+P560,000** |
-| The uncontracted load costs more | **+P336,000** |
-| Net | **+P224,000** |
+| The contracts gain | **+P1,005,000** |
+| The uncontracted load costs more | **+P603,000** |
+| Net | **+P402,000** |
 
 Read the sign carefully. The supply agreement is a buy at a strike above spot, so
 a higher spot makes it worth more against buying at spot. The one third of the
