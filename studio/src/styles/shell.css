@@ -839,13 +839,23 @@
     overflow-y: hidden;
     padding: var(--sp-2) var(--sp-3);
     gap: var(--sp-2);
+    scroll-snap-type: x mandatory;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
   }
   .dock__scn,
   .dock__note {
     display: none;
   }
+  /* The three island grids ride in a horizontal strip on a phone. At auto
+     width the second card was cut mid-word and the third sat entirely
+     off-screen with nothing saying so, which reads as broken markup rather
+     than as "there is more". Fix the card at 78% of the track so the next one
+     always starts on screen, and fade the right edge as the second cue.
+     Measured 2026-08-12: scrollWidth 852 in a 390 track. */
   .dock__grid {
-    flex: 0 0 auto;
+    flex: 0 0 78%;
+    scroll-snap-align: start;
     width: auto;
     min-width: 172px;
     padding: var(--sp-2) var(--sp-3);
@@ -1025,6 +1035,37 @@
 @media (max-width: 900px) {
   .bar__exitlabel,
   .bar__allgrids {
+    display: none;
+  }
+}
+
+/* Same 44px floor on the shell's own controls. Measured at 390x844: the nav
+   items came in at 292x34, the group headings at 300x40, and the three top-bar
+   icon buttons at 32x32, on the first bar a phone visitor touches. */
+@media (pointer: coarse), (max-width: 720px) {
+  .rail__item,
+  .rail__grouphead {
+    min-height: 44px;
+  }
+  .bar__icon,
+  .bar__exit {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .bar__search {
+    min-height: 44px;
+  }
+  .rail__doc {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  /* A keyboard shortcut on a device with no keyboard. The search still opens
+     on a tap; the hint just told a phone reader to press a key it does not
+     have, and it read as a desktop layout squeezed onto a phone. */
+  .bar__kbd,
+  .pal__kbd,
+  .pal__foot kbd {
     display: none;
   }
 }

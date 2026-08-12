@@ -38,13 +38,18 @@ export interface Async<T> {
   loading: boolean
 }
 
-function useJson<T>(file: string): Async<T> {
+/** `file` of null means there is nothing to ask for, so do not ask. */
+function useJson<T>(file: string | null): Async<T> {
   const [state, setState] = useState<Async<T>>({
     data: null,
     error: null,
-    loading: true,
+    loading: file !== null,
   })
   useEffect(() => {
+    if (file === null) {
+      setState({ data: null, error: null, loading: false })
+      return
+    }
     let live = true
     load<T>(file)
       .then((data) => live && setState({ data, error: null, loading: false }))
@@ -61,11 +66,13 @@ function useJson<T>(file: string): Async<T> {
 export const useDispatch = () => useJson<Dispatch>('dispatch.json')
 export const useReserve = () => useJson<Reserve>('reserve.json')
 export const useMarketOps = () => useJson<MarketOps>('market_ops.json')
-// per-day observed offer book (chronology's offer mode); 404 = no book
-// derived for that date, surfaced as the hook's error state
+// per-day observed offer book (chronology's offer mode); a 404 on a real date
+// means no book was derived for it, and the hook surfaces that as its error.
+// With no date it used to ask for offers/none.json, a file that never exists,
+// so the default load of the replay view always took a 404 in the console.
 export const useOfferDay = (date: string | null) =>
   useJson<import('../studio/chrono').OfferDay>(
-    date ? `offers/OFFERD_${date.replace(/-/g, '')}.json` : 'offers/none.json'
+    date ? `offers/OFFERD_${date.replace(/-/g, '')}.json` : null
   )
 export const useBill = () => useJson<Bill>('bill.json')
 export const useMarketPower = () => useJson<MarketPower>('market_power.json')

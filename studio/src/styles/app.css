@@ -2132,3 +2132,40 @@
   line-height: var(--lh-body);
   color: var(--text-muted);
 }
+
+/* Touch targets. Measured at 390x844 on 2026-08-12: the six scenario sliders
+   rendered 332x16, and the panel tells the reader to move them. A finger needs
+   44px. The padding grows the box a thumb has to hit; the track stays thin. */
+@media (pointer: coarse), (max-width: 720px) {
+  .lever__range {
+    min-height: 44px;
+    padding: 14px 0;
+    margin: 0;
+    box-sizing: border-box;
+    background: transparent;
+  }
+  .lever__select,
+  select {
+    min-height: 44px;
+  }
+  .btn {
+    min-height: 44px;
+  }
+  summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  /* the hydrology segmented control, and a checkbox a finger has to find */
+  .gsel {
+    min-height: 44px;
+  }
+  input[type='checkbox'],
+  input[type='radio'] {
+    min-width: 24px;
+    min-height: 24px;
+  }
+  .btn {
+    min-width: 44px;
+  }
+}
