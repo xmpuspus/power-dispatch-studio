@@ -73,7 +73,7 @@
 <body>
 <main>
   <a class="back" href="index.html">Back to the map</a>
-  <h1>Public records and labeled assumptions support every displayed result</h1>
+  <h1>Methods, sources, and model limits</h1>
   <p class="lede">Power Dispatch Studio archives Philippine market files,
   calculates a three-grid dispatch, and shows where the calculation agrees with
   recorded prices. This page separates records, calculations, assumptions, and
@@ -97,7 +97,7 @@
     </section>
   </div>
 
-  <h2>The model clears Luzon, Visayas, and Mindanao together</h2>
+  <h2>Dispatch model</h2>
   <p>The calculation is a three-zone linear dispatch. It meets demand at the
   lowest stated generation and transfer cost. A full inter-island link can leave
   the importing grid with a higher marginal price.</p>
@@ -109,7 +109,7 @@
   interface divides by 1,000 and reports pesos per kilowatt-hour. Power uses MW
   and energy uses MWh.</p>
 
-  <h2>IEMOP files supply prices, offers, outages, reserves, and transfer records</h2>
+  <h2>IEMOP market records</h2>
   <p>IEMOP publishes the files below without a login. Its public window rolls
   forward, so the repository copies each available day into <code>data/raw/</code>.
   Git history keeps older public files after they leave the IEMOP pages.</p>
@@ -161,7 +161,7 @@
     </table>
   </div>
 
-  <h2>DOE, NGCP, ERC, Meralco, and OpenStreetMap supply the fixed inputs</h2>
+  <h2>Fixed model inputs</h2>
   <div class="table-wrap">
     <table>
       <thead><tr><th>Input</th><th>Public source</th><th>How the model uses it</th></tr></thead>
@@ -176,8 +176,8 @@
     </table>
   </div>
 
-  <h2>Historical replay reports error instead of hiding it</h2>
-  <p>Historical replay recalculates every complete market day in the archive. It
+  <h2>Replay accuracy</h2>
+  <p>Replay accuracy recalculates every complete market day in the archive. It
   reports mean absolute error, bias, correlation, and high-price-hour agreement
   for each island grid. Recorded prices do not set the model inputs.</p>
   <p>The cost calculation shows the competitive fuel-cost floor. The
@@ -187,7 +187,7 @@
   <p>Python and browser tests create the same linear-program text. Saved cases
   need both solvers to agree within P0.02/kWh and 1 MW.</p>
 
-  <h2>The nodal view measures losses without claiming a full NGCP network model</h2>
+  <h2>Transmission-loss calculation</h2>
   <p>The nodal calculation uses OpenStreetMap routes, class reactances, and
   sourced inter-island limits. It compares calculated marginal-loss ranks with
   recorded node-price differences. The interface reports a separate result for
@@ -199,7 +199,7 @@
   <a href="https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/source-notes.md"
   >source notes</a> for the longer explanation.</p>
 
-  <h2>A future year is a generated data directory, and it solves 365 separate days rather than one 8760-hour program</h2>
+  <h2>Future-year calculation</h2>
   <p><code>pipeline/future_year.py</code> joins four published inputs into the
   same two files the engine already reads. The DOE Power Development Plan supplies
   peak demand per grid per year. The DOE project lists supply capacity, counted
@@ -220,7 +220,7 @@
   <p>A year built this way is a scenario from published plans. It is not a
   forecast, and no figure from it may be quoted as one.</p>
 
-  <h2>Unit commitment was built, measured, and left off, because it lowered the price correlation in all five scored series</h2>
+  <h2>Unit-commitment test</h2>
   <p>A licensed production-cost tool commits each thermal unit as a binary
   decision, with a minimum-stable level, a start cost, and minimum run times.
   This project built that variant, priced the committed schedule the way a
@@ -246,7 +246,7 @@
   that coarseness is the most likely reason the committed run scores worse. The
   linear model stays the default because the measurement chose it.</p>
 
-  <h2>A contract book marks against modeled spot, and stops at energy</h2>
+  <h2>Contract-position calculation</h2>
   <p>The dispatch model answers half of "what does this scenario do to my
   position". It produces an hourly spot price for each grid. The other half is a
   contract book, and the book belongs to the reader, so the studio holds an
@@ -264,7 +264,7 @@
   tax, no take-or-pay, and no credit terms. A settlement statement carries more
   lines than this. It marks energy against modeled spot and nothing else.</p>
 
-  <h2>Named units dispatch the same daily energy as fuel blocks, so the engine keeps its blocks</h2>
+  <h2>Named-unit probe</h2>
   <p>The model holds one block per fuel per grid, so it cannot say which plant
   ran. <code>pipeline/unit_probe.py</code> tests what a per-unit model would
   change. It gives every plant in the DOE fleet list its own variable, 141 of
@@ -287,7 +287,7 @@
   the stack. A per-unit heat rate or a per-unit offer would change that, and no
   public Philippine source publishes either.</p>
 
-  <h2>Six stated limits keep scenario results in scope</h2>
+  <h2>Model limits</h2>
   <ul>
     <li>The model does not claim that data centers caused recorded electricity prices.</li>
     <li>Recorded curtailment and reserve shortfalls do not forecast brownouts.</li>

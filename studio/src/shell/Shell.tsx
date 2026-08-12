@@ -12,14 +12,20 @@ import { php, pct } from '../lib/data'
 import type { SolvedModel } from '../studio/model'
 import {
   ALL_DESTS,
-  GROUPS,
   type Dest,
   type Nav,
+  destBySlug,
   destOf,
-  groupOf,
   sameNav,
   searchDests,
 } from './nav'
+import {
+  EVIDENCE_LABELS,
+  WORKSPACES,
+  type Evidence,
+  glossarySearch,
+  workspaceForSlug,
+} from './workflows'
 
 const GRID_LABEL: Record<GridKey, string> = {
   luzon: 'Luzon',
@@ -34,6 +40,9 @@ export function TopBar({
   grid,
   onGrid,
   gridScoped,
+  dates,
+  date,
+  onDate,
   scenarios,
   ai,
   onPickScenario,
@@ -43,6 +52,7 @@ export function TopBar({
   onRun,
   onOpenPalette,
   onOpenNav,
+  onOpenGlossary,
   onExit,
   theme,
   onToggleTheme,
@@ -51,6 +61,9 @@ export function TopBar({
   grid: GridKey
   onGrid: (g: GridKey) => void
   gridScoped: boolean
+  dates: string[]
+  date: string
+  onDate: (date: string) => void
   scenarios: { name: string; overrides: Record<string, number> }[]
   ai: number
   onPickScenario: (i: number) => void
@@ -60,6 +73,7 @@ export function TopBar({
   onRun: () => void
   onOpenPalette: () => void
   onOpenNav: () => void
+  onOpenGlossary: () => void
   onExit: () => void
   theme: 'light' | 'dark'
   onToggleTheme: () => void
@@ -90,26 +104,46 @@ export function TopBar({
         <kbd className="bar__kbd">⌘K</kbd>
       </button>
 
-      {/* The chips kept the selected-grid highlight on views that read all
-          three, so an inert control looked live and its reason lived in a
-          title, which a touch screen never shows. */}
-      {gridScoped ? (
-        <div className="bar__group" role="group" aria-label="Region">
-          {GRIDS.map((g) => (
-            <button
-              key={g}
-              className={`bar__seg ${g === grid ? 'is-on' : ''}`}
-              aria-pressed={g === grid}
-              title={`Read ${GRID_LABEL[g]}`}
-              onClick={() => onGrid(g)}
-            >
-              {GRID_LABEL[g]}
-            </button>
+      <label className="bar__date">
+        <span>Market date</span>
+        <select
+          value={date}
+          onChange={(event) => onDate(event.target.value)}
+          aria-label="Market date"
+        >
+          {dates.map((value) => (
+            <option value={value} key={value}>
+              {value}
+            </option>
           ))}
-        </div>
-      ) : (
-        <span className="bar__allgrids">All three grids</span>
-      )}
+        </select>
+      </label>
+
+      <div
+        className="bar__group"
+        role="group"
+        aria-label={gridScoped ? 'Analysis grid' : 'Result summary grid'}
+      >
+        {GRIDS.map((g) => (
+          <button
+            key={g}
+            className={`bar__seg ${g === grid ? 'is-on' : ''}`}
+            aria-pressed={g === grid}
+            title={
+              gridScoped
+                ? `Analyze ${GRID_LABEL[g]}`
+                : `Show ${GRID_LABEL[g]} in the result summary`
+            }
+            onClick={() => onGrid(g)}
+          >
+            {GRID_LABEL[g]}
+          </button>
+        ))}
+      </div>
+
+      <button className="bar__terms" onClick={onOpenGlossary}>
+        Terms
+      </button>
 
       <label className="bar__scn">
         <span className="bar__scnlabel">Active scenario</span>
@@ -127,7 +161,7 @@ export function TopBar({
         </select>
       </label>
       <button
-        className="bar__icon"
+        className="bar__icon bar__icon--new"
         onClick={onAddScenario}
         title="Create a copy of this scenario"
         aria-label="New scenario"
@@ -137,11 +171,6 @@ export function TopBar({
 
       <div className="bar__spacer" />
 
-      {/* The filled primary slot used to hold a disabled button reading
-          "Solved", so the loudest control on the page was the one that did
-          nothing, and its aria-label said "Run the simulation" while the screen
-          said "Solved". Prominence now follows actionability: a status chip
-          while nothing waits, a real button the moment something does. */}
       {dirty ? (
         <button
           className="bar__run is-dirty"
@@ -153,20 +182,25 @@ export function TopBar({
           {`Run ${editCount} edit${editCount === 1 ? '' : 's'}`}
         </button>
       ) : (
-        <span className="bar__solved" title="Solved and current. Edit a value to re-run.">
+        <span
+          className="bar__solved"
+          title="The displayed scenario results include all saved edits."
+        >
           <IconCheck />
-          Solved
+          Results current
         </span>
       )}
 
       {/* the Run button already carries the solve state in its own label and
           colour, so a second chip beside it would report the same thing twice */}
       <span className="sr-only" aria-live="polite">
-        {dirty ? `${editCount} edits are not solved yet` : 'Solved and current'}
+        {dirty
+          ? `${editCount} edits are not included in the results yet`
+          : 'Results current'}
       </span>
 
       <button
-        className="bar__icon"
+        className="bar__icon bar__icon--theme"
         onClick={onToggleTheme}
         aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
         title="Change color theme"
@@ -203,20 +237,18 @@ export function NavRail({
   onClose: () => void
   editCount: number
 }) {
-  const current = groupOf(nav)
-  const [expanded, setExpanded] = useState<Set<string>>(
-    () => new Set([current?.id ?? 'tonight'])
-  )
-  useEffect(() => {
-    if (current) setExpanded((s) => (s.has(current.id) ? s : new Set([...s, current.id])))
-  }, [current])
+  const activeDest = destOf(nav)
+  const current = activeDest ? workspaceForSlug(activeDest.slug) : WORKSPACES[0]
+  const currentDests = (current?.slugs ?? [])
+    .map((slug) => destBySlug(slug))
+    .filter((dest): dest is Dest => !!dest)
 
   return (
     <>
       {open && <div className="rail__scrim" onClick={onClose} aria-hidden="true" />}
-      <nav className={`rail ${open ? 'is-open' : ''}`} aria-label="Views by question">
+      <nav className={`rail ${open ? 'is-open' : ''}`} aria-label="Analyst workflows">
         <div className="rail__head">
-          <span>What do you want to know?</span>
+          <span>Analyst workflows</span>
           <button
             className="rail__close"
             onClick={onClose}
@@ -226,62 +258,178 @@ export function NavRail({
           </button>
         </div>
         <div className="rail__scroll">
-          {GROUPS.map((g) => {
-            const isOpen = expanded.has(g.id)
-            const holdsActive = g.dests.some((d) => sameNav(d.nav, nav))
-            return (
-              <section key={g.id} className="rail__group">
+          <div className="rail__workspaces">
+            {WORKSPACES.map((workspace) => {
+              const primary = destBySlug(workspace.primary)
+              const selected = workspace.id === current?.id
+              return (
                 <button
-                  className={`rail__grouphead ${holdsActive ? 'is-current' : ''}`}
-                  aria-expanded={isOpen}
-                  onClick={() =>
-                    setExpanded((s) => {
-                      const n = new Set(s)
-                      if (n.has(g.id)) n.delete(g.id)
-                      else n.add(g.id)
-                      return n
-                    })
-                  }
+                  key={workspace.id}
+                  className={`rail__workspace ${selected ? 'is-current' : ''} ${workspace.utility ? 'is-utility' : ''}`}
+                  aria-current={selected ? 'page' : undefined}
+                  onClick={() => {
+                    if (primary) onNav(primary.nav)
+                    onClose()
+                  }}
                 >
-                  <IconChevron open={isOpen} />
-                  <span>{g.label}</span>
-                  <span className="rail__count">{g.dests.length}</span>
+                  <span>{workspace.label}</span>
+                  <small>{workspace.summary}</small>
                 </button>
-                {isOpen && (
-                  <ul className="rail__list">
-                    {g.dests.map((d) => (
-                      <li key={d.slug}>
-                        <button
-                          className={`rail__item ${sameNav(d.nav, nav) ? 'is-active' : ''}`}
-                          onClick={() => {
-                            onNav(d.nav)
-                            onClose()
-                          }}
-                          title={d.hint}
-                        >
-                          <span className="rail__label">{d.label}</span>
-                          {d.live && <span className="rail__live">live</span>}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
-            )
-          })}
+              )
+            })}
+          </div>
+          <section
+            className="rail__steps"
+            aria-label={`${current?.label ?? 'Current'} steps`}
+          >
+            <div className="rail__stephead">
+              <span>{current?.label}</span>
+              <span>{currentDests.length} views</span>
+            </div>
+            <ol className="rail__list">
+              {currentDests.map((dest, index) => (
+                <li key={dest.slug}>
+                  <button
+                    className={`rail__item ${sameNav(dest.nav, nav) ? 'is-active' : ''}`}
+                    onClick={() => {
+                      onNav(dest.nav)
+                      onClose()
+                    }}
+                    title={dest.hint}
+                  >
+                    <span className="rail__stepno mono">{index + 1}</span>
+                    <span className="rail__label">{dest.label}</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </section>
         </div>
         <div className="rail__foot">
           {editCount === 0
-            ? 'No edits yet. Open Quick what-if to change a scenario setting.'
-            : `${editCount} edit${editCount === 1 ? '' : 's'} in this scenario. Press Run.`}
-          {/* an analyst arriving from a licensed tool wants the capability list
-              and the stated limits before the first click, not after an hour */}
+            ? 'No scenario edits. Start in Scenario analysis to change the base case.'
+            : `${editCount} edit${editCount === 1 ? '' : 's'} in this scenario. Run the changes before reading scenario results.`}
           <a className="rail__doc" href="../for-analysts.html">
-            Capability list, stated limits, and replay accuracy
+            Model coverage, replay accuracy, and limits
           </a>
         </div>
       </nav>
     </>
+  )
+}
+
+export function EvidenceSummary({
+  evidence,
+  date,
+  coverage,
+}: {
+  evidence: Evidence
+  date: string
+  coverage: string
+}) {
+  return (
+    <section className="evidence" aria-label="Result evidence">
+      <div className={`evidence__kind is-${evidence.kind}`}>
+        {EVIDENCE_LABELS[evidence.kind]}
+      </div>
+      <dl>
+        <div>
+          <dt>Source</dt>
+          <dd>{evidence.source}</dd>
+        </div>
+        <div>
+          <dt>Market date</dt>
+          <dd className="mono">{date}</dd>
+        </div>
+        <div>
+          <dt>Resolution</dt>
+          <dd>{evidence.resolution}</dd>
+        </div>
+        <div>
+          <dt>Archive coverage</dt>
+          <dd className="mono">{coverage}</dd>
+        </div>
+      </dl>
+      <p>{evidence.note}</p>
+      <div className="evidence__links">
+        <a href="../methodology.html">Method and sources</a>
+        <a href="../for-analysts.html">Model limits</a>
+      </div>
+    </section>
+  )
+}
+
+export function GlossaryDrawer({
+  open,
+  onClose,
+}: {
+  open: boolean
+  onClose: () => void
+}) {
+  const [query, setQuery] = useState('')
+  const input = useRef<HTMLInputElement>(null)
+  const entries = useMemo(() => glossarySearch(query), [query])
+
+  useEffect(() => {
+    if (!open) return
+    setQuery('')
+    window.setTimeout(() => input.current?.focus(), 0)
+  }, [open])
+
+  if (!open) return null
+  return (
+    <div className="glossary__scrim" onClick={onClose}>
+      <aside
+        className="glossary"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="glossary-title"
+        onClick={(event) => event.stopPropagation()}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') onClose()
+        }}
+      >
+        <header className="glossary__head">
+          <div>
+            <span className="glossary__eyebrow">Reference</span>
+            <h2 id="glossary-title">Market terms</h2>
+          </div>
+          <button onClick={onClose} aria-label="Close market terms">
+            <IconClose />
+          </button>
+        </header>
+        <label className="glossary__search">
+          <span className="sr-only">Search market terms</span>
+          <IconSearch />
+          <input
+            ref={input}
+            type="search"
+            value={query}
+            placeholder="Search market terms"
+            onChange={(event) => setQuery(event.target.value)}
+          />
+        </label>
+        <div className="glossary__list">
+          {entries.length === 0 ? (
+            <p className="glossary__empty">No term matches that search.</p>
+          ) : (
+            entries.map((entry) => (
+              <article key={entry.acronym} className="glossary__entry">
+                <div>
+                  <strong className="mono">{entry.acronym}</strong>
+                  <h3>{entry.term}</h3>
+                </div>
+                <p>{entry.definition}</p>
+              </article>
+            ))
+          )}
+        </div>
+        <p className="glossary__foot">
+          Definitions describe how the term is used in this project. IEMOP publications
+          remain the source for official market definitions.
+        </p>
+      </aside>
+    </div>
   )
 }
 
@@ -334,7 +482,7 @@ export function CommandPalette({
             ref={input}
             className="pal__input"
             value={q}
-            placeholder="Search 42 views, such as bill, site, historical replay, or reserve"
+            placeholder="Search by task or term, such as bill, site, replay, LWAP, or reserve"
             aria-label="Search views"
             onChange={(e) => {
               setQ(e.target.value)
@@ -411,6 +559,9 @@ export function RunDock({
   open,
   onToggle,
   onTakeAway,
+  evidence,
+  date,
+  coverage,
 }: {
   solved: SolvedModel
   base: SolvedModel
@@ -424,6 +575,9 @@ export function RunDock({
   onToggle: () => void
   /** opens Saved runs, where a run leaves as an HTML report or a CSV */
   onTakeAway?: () => void
+  evidence: Evidence
+  date: string
+  coverage: string
 }) {
   const isBase = scenarioName === 'Base Case'
   // The what-if controls preview against the calibrated base; they do not write the
@@ -443,6 +597,9 @@ export function RunDock({
       {/* always rendered: below 980 the dock is the strip under the bar and CSS
           keeps it open, so the answer never leaves a phone screen either */}
       <div className="dock__body">
+        <div className="dock__evidence">
+          <EvidenceSummary evidence={evidence} date={date} coverage={coverage} />
+        </div>
         {previewing && live && (
           <div className="dock__preview">
             <div className="dock__previewhead">What-if preview, not yet in the model</div>
@@ -630,25 +787,6 @@ function IconPlay() {
   return (
     <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M7 4l13 8-13 8z" fill="currentColor" />
-    </svg>
-  )
-}
-function IconChevron({ open }: { open: boolean }) {
-  return (
-    <svg
-      className={`chev ${open ? 'is-open' : ''}`}
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <path
-        d="M9 5l7 7-7 7"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-      />
     </svg>
   )
 }

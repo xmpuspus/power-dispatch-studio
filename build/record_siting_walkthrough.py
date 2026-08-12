@@ -90,6 +90,14 @@ async def clear_cap(page: Page):
     await page.evaluate(CLEAR_JS)
 
 
+async def open_view(page: Page, name: str) -> None:
+    await page.get_by_role("button", name="Find a view").click()
+    search = page.get_by_label("Search views")
+    await search.fill(name)
+    await search.press("Enter")
+    await asyncio.sleep(1.0)
+
+
 async def ramp(
     page: Page, idx: int, target: float, steps: int = 22, settle: float = 0.05
 ):
@@ -126,17 +134,7 @@ async def main():
         await asyncio.sleep(3.4)
         await clear_cap(page)
 
-        # Open the studio from its landing screen.
-        await page.get_by_role("button", name="Open Power Dispatch Studio").click()
-        await asyncio.sleep(1.6)
-
-        # Open the siting view.
-        await page.locator(
-            ".rail__grouphead", has_text="Where new demand can connect"
-        ).click()
-        await asyncio.sleep(0.6)
-        await page.locator(".rail__item", has_text="Siting a new load").click()
-        await asyncio.sleep(1.6)
+        await open_view(page, "Siting a new load")
 
         await cap(
             page,

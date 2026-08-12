@@ -75,19 +75,14 @@ async def enter(page: Page):
 
 
 async def sim(page: Page):
-    # the question rail replaced the System/Simulation tabs; open every group
-    await page.evaluate(
-        """() => {
-          document.querySelectorAll('.rail__grouphead').forEach(b => {
-            if (b.getAttribute('aria-expanded') === 'false') b.click()
-          })
-        }"""
-    )
-    await asyncio.sleep(0.35)
+    await asyncio.sleep(0.2)
 
 
 async def view(page: Page, name: str, settle: float = 1.2):
-    await page.get_by_role("button", name=name, exact=False).first.click()
+    await page.get_by_role("button", name="Find a view").click()
+    search = page.get_by_label("Search views")
+    await search.fill(name)
+    await search.press("Enter")
     await asyncio.sleep(settle)
 
 
@@ -108,7 +103,7 @@ async def save_runs(page: Page, n: int):
 VIEWS = [
     {
         "key": "backcast",
-        "label": "Historical replay",
+        "label": "Replay accuracy",
         "title": "Market records show the model's error",
         "sub": "The operator's published offers are compared with recorded "
         "prices. The cost-only calculation is one click away.",
@@ -148,7 +143,7 @@ VIEWS = [
     },
     {
         "key": "ensembles",
-        "label": "Range across repeated simulations",
+        "label": "Simulation range",
         "title": "Price range across repeated simulations",
         "sub": "Repeated simulations report the 10th percentile, median, and "
         "90th percentile for each grid.",
@@ -184,13 +179,13 @@ VIEWS = [
         "label": "Compare one measure across runs",
         "title": "Saved runs compared side by side",
         "sub": "One table compares saved runs. A second view ranks each "
-        "what-if by price effect.",
+        "scenario by price effect.",
         "settle": 1.8,
         "prep": 2,
     },
     {
         "key": "rtdoe5",
-        "label": "5-minute replay",
+        "label": "5-minute dispatch replay",
         "title": "Five-minute replay",
         "sub": "All 288 five-minute intervals show brief high-price periods "
         "hidden by hourly averages.",

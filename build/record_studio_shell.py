@@ -1,9 +1,7 @@
-"""Record the studio shell: command palette, question rail, run summary, deep link.
+"""Record the studio shell: workflows, market context, evidence, and deep links.
 
-The shell was rebuilt on 2026-07-31 around the analyst's question rather than
-the model's object classes, and no demo showed it. Every existing clip opens on
-a view and stays there, so a reader could not see how a person gets between 39
-views, or that each one is a URL they can send to a colleague.
+The recording shows how an analyst moves between tasks, keeps the market date
+visible, checks the source state, and shares a direct link to a result.
 
 The recording stays short because the static studio interface uses about 0.09
 MB per second at 820 px, compared with 0.22 MB for the moving map.
@@ -93,26 +91,20 @@ async def main() -> None:
         )
         await asyncio.sleep(2.4)
 
-        # Expand the 42 views grouped by the question each view answers.
-        await cap(page, "The rail groups all 42 views by the question they answer")
-        await asyncio.sleep(0.8)
-        await page.evaluate(
-            "() => { document.querySelectorAll('.rail__grouphead').forEach(b => {"
-            " if (b.getAttribute('aria-expanded') === 'false') b.click() }) }"
-        )
-        await asyncio.sleep(2.0)
-        await page.get_by_role(
-            "button", name="Loss of one major unit (N-1)", exact=False
-        ).first.click()
+        await cap(page, "Work areas keep related analyst tasks together")
+        await page.get_by_role("button", name="Supply risk", exact=False).click()
+        await asyncio.sleep(1.4)
+        await page.get_by_role("button", name="Loss of one major unit (N-1)").click()
         await asyncio.sleep(1.8)
         landed = (await page.inner_text(".bar__searchtxt")).strip()
         if landed != "Loss of one major unit (N-1)":
             raise SystemExit(f"navigation rail opened {landed!r}")
 
+        await cap(page, "Every result identifies its source, date, and resolution")
+        await asyncio.sleep(2.2)
+
         # Move a slider and show the recalculated price without pressing Run.
-        await cap(
-            page, "Move a slider and the run summary recalculates, with no Run needed"
-        )
+        await cap(page, "Scenario controls recalculate the result summary as they move")
         await page.evaluate(
             "(s) => { window.location.hash = 'v=' + s }", "quick-scenario"
         )
@@ -134,6 +126,11 @@ async def main() -> None:
         if not moved:
             print("WARNING: no range slider found, the run-summary segment is missing")
         await asyncio.sleep(2.6)
+
+        await cap(page, "Market terms stay available without leaving the analysis")
+        await page.get_by_role("button", name="Terms").click()
+        await page.get_by_placeholder("Search market terms").fill("LWAP")
+        await asyncio.sleep(2.2)
 
         await ctx.close()
         vid = await page.video.path()

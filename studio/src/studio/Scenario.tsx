@@ -192,7 +192,7 @@ export function ScenarioView({
 
       <div className="scn">
         <Panel
-          title="Quick what-if settings"
+          title="Scenario settings"
           subtitle={`${cap(grid)}, evening reference hour ${mo.reference_hour}:00.`}
         >
           <div className="levers">

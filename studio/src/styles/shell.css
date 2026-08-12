@@ -1,9 +1,8 @@
 /* ============================================================
    Studio shell. Loaded after app.css, so it wins on shared names.
 
-   Three regions, one grid: a chrome bar that holds every scenario
-   control, a question-first rail on the left, and a run dock on the
-   right that keeps the answer on screen in all 42 views.
+   Three regions, one grid: a persistent market context, six analyst
+   workflows, and a result panel that keeps sources beside the answer.
    ============================================================ */
 
 .studio {
@@ -135,6 +134,39 @@
   border-radius: var(--r-sm);
   border: 1px solid var(--chrome-line);
   overflow: hidden;
+}
+.bar__date {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: none;
+  color: var(--chrome-muted);
+  font-size: var(--fs-11);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.bar__date select {
+  height: 32px;
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--chrome-line);
+  background: var(--chrome-2);
+  color: var(--chrome-text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+}
+.bar__terms {
+  height: 32px;
+  padding: 0 var(--sp-2) !important;
+  border: 1px solid var(--chrome-line) !important;
+  border-radius: var(--r-sm);
+  color: var(--chrome-muted) !important;
+  font-size: var(--fs-12);
+  white-space: nowrap;
+}
+.bar__terms:hover {
+  color: var(--chrome-text) !important;
+  border-color: var(--chrome-accent) !important;
 }
 .bar__seg {
   height: 32px;
@@ -299,8 +331,182 @@
   flex: 0 0 auto;
   white-space: nowrap;
 }
+.viewhead__state {
+  flex: 0 0 auto;
+  padding: 3px 7px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: var(--fs-11);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.viewhead__state.is-recorded,
+.evidence__kind.is-recorded {
+  color: var(--positive);
+}
+.viewhead__state.is-replayed,
+.evidence__kind.is-replayed {
+  color: var(--primary);
+}
+.viewhead__state.is-scenario,
+.evidence__kind.is-scenario {
+  color: var(--accent);
+}
+.viewhead__state.is-assumed,
+.evidence__kind.is-assumed {
+  color: var(--text-muted);
+}
 
-/* ---------- question rail ---------- */
+/* The market strip is the product's one expressive visual device. It uses the
+   market day's own time axis instead of decorative cards, and every mark has a
+   text equivalent in the selected-hour readout. */
+.marketstrip {
+  flex: 0 0 auto;
+  padding: var(--sp-2) var(--sp-5) var(--sp-1);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.marketstrip__head,
+.marketstrip__readout {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+.marketstrip__head {
+  justify-content: space-between;
+}
+.marketstrip__title {
+  margin-right: var(--sp-2);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  color: var(--text);
+}
+.marketstrip__scope {
+  font-size: var(--fs-11);
+  color: var(--text-faint);
+}
+.marketstrip__legend {
+  display: flex;
+  gap: var(--sp-3);
+  font-size: 10px;
+  color: var(--text-faint);
+}
+.marketstrip__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.marketstrip__key {
+  display: inline-block;
+  width: 10px;
+  height: 3px;
+  background: var(--border-strong);
+}
+.marketstrip__key--recorded {
+  height: 2px;
+  background: var(--series-observed);
+}
+.marketstrip__key--replayed {
+  background: var(--series-modeled);
+}
+.marketstrip__key--demand {
+  background: var(--series-flow);
+}
+.marketstrip__key--flag {
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+}
+.marketstrip__hours {
+  display: grid;
+  grid-template-columns: repeat(24, minmax(14px, 1fr));
+  gap: 2px;
+  height: 58px;
+  margin-top: 3px;
+}
+.marketstrip__hour {
+  position: relative;
+  min-width: 0;
+  border: 1px solid transparent !important;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.marketstrip__hour:hover,
+.marketstrip__hour.is-selected {
+  border-color: var(--primary) !important;
+  background: var(--accent-soft) !important;
+}
+.marketstrip__hour.is-limited {
+  box-shadow: inset 0 2px 0 var(--accent);
+}
+.marketstrip__hour.is-shortfall {
+  box-shadow: inset 0 2px 0 var(--destructive);
+}
+.marketstrip__plot {
+  position: absolute;
+  inset: 2px 1px 11px;
+  border-bottom: 1px solid var(--border);
+}
+.marketstrip__demand,
+.marketstrip__replayed {
+  position: absolute;
+  bottom: 0;
+  width: 42%;
+}
+.marketstrip__demand {
+  left: 5%;
+  background: color-mix(in srgb, var(--series-flow) 55%, transparent);
+}
+.marketstrip__replayed {
+  right: 5%;
+  background: var(--series-modeled);
+}
+.marketstrip__recorded {
+  position: absolute;
+  left: 48%;
+  width: 50%;
+  height: 2px;
+  background: var(--series-observed);
+}
+.marketstrip__flag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 11px;
+  height: 11px;
+  color: var(--surface);
+  background: var(--accent);
+  font: 600 8px/11px var(--font-mono);
+  text-align: center;
+}
+.marketstrip__hour.is-shortfall .marketstrip__flag {
+  background: var(--destructive);
+}
+.marketstrip__hourlabel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  color: var(--text-faint);
+  font-size: 9px;
+  text-align: center;
+}
+.marketstrip__readout {
+  min-height: 24px;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--fs-11);
+  white-space: nowrap;
+}
+.marketstrip__readout b {
+  color: var(--text);
+}
+.marketstrip__readout strong {
+  color: var(--destructive);
+}
+
+/* ---------- analyst workflow rail ---------- */
 
 .rail {
   display: flex;
@@ -338,44 +544,65 @@
   overflow-y: auto;
   padding: var(--sp-2) 0 var(--sp-4);
 }
-.rail__group + .rail__group {
-  border-top: 1px solid var(--border);
+.rail__workspaces {
+  padding: var(--sp-2);
 }
-.rail__grouphead {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
+.rail__workspace {
+  display: block;
   width: 100%;
-  min-height: 40px;
+  min-height: 38px;
   padding: var(--sp-2) var(--sp-3);
   text-align: left;
   font-size: var(--fs-13);
   font-weight: 600;
+  color: var(--text-muted);
+  border-left: 2px solid transparent !important;
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+}
+.rail__workspace:hover {
+  background: var(--surface-3);
   color: var(--text);
 }
-.rail__grouphead:hover {
-  background: var(--surface-3);
-}
-.rail__grouphead.is-current {
+.rail__workspace.is-current {
+  border-left-color: var(--primary) !important;
+  background: var(--accent-soft) !important;
   color: var(--primary);
 }
-.rail__count {
-  margin-left: auto;
-  font-family: var(--font-mono);
+.rail__workspace small {
+  display: none;
+  margin-top: 2px;
   font-size: var(--fs-11);
+  font-weight: 400;
+  line-height: 1.35;
   color: var(--text-faint);
 }
-.chev {
-  flex: none;
-  transition: transform 0.15s ease;
+.rail__workspace.is-current small {
+  display: block;
 }
-.chev.is-open {
-  transform: rotate(90deg);
+.rail__workspace.is-utility {
+  margin-top: var(--sp-2);
+  border-top: 1px solid var(--border) !important;
+  padding-top: var(--sp-3);
+}
+.rail__steps {
+  border-top: 1px solid var(--border);
+  padding-top: var(--sp-2);
+}
+.rail__stephead {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--text-faint);
+  font-size: var(--fs-11);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 .rail__list {
   list-style: none;
   margin: 0;
-  padding: 0 var(--sp-2) var(--sp-2) 0;
+  padding: 0 var(--sp-2) var(--sp-3) 0;
+  counter-reset: none;
 }
 .rail__item {
   display: flex;
@@ -383,7 +610,7 @@
   gap: var(--sp-2);
   width: 100%;
   min-height: 34px;
-  padding: 6px var(--sp-3) 6px 30px;
+  padding: 6px var(--sp-3) 6px var(--sp-3);
   text-align: left;
   font-size: var(--fs-13);
   color: var(--text-muted);
@@ -403,20 +630,15 @@
 .rail__label {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25;
+  white-space: normal;
 }
-.rail__live {
+.rail__stepno {
   flex: none;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 1px 4px;
-  border-radius: 3px;
-  color: var(--positive);
-  background: color-mix(in srgb, var(--positive) 14%, transparent);
+  width: 18px;
+  color: var(--text-faint);
+  font-size: 10px;
+  text-align: right;
 }
 .rail__foot {
   padding: var(--sp-3) var(--sp-4);
@@ -579,6 +801,58 @@
   flex-direction: column;
   gap: var(--sp-2);
 }
+.dock__evidence {
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+.evidence__kind {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: var(--fs-11);
+  font-weight: 600;
+}
+.evidence dl {
+  margin: var(--sp-2) 0 0;
+}
+.evidence dl > div {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: var(--sp-2);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+.evidence dt {
+  color: var(--text-faint);
+  font-size: var(--fs-11);
+}
+.evidence dd {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--fs-11);
+  line-height: 1.35;
+}
+.evidence p {
+  margin: var(--sp-2) 0 0;
+  color: var(--text-muted);
+  font-size: var(--fs-11);
+  line-height: var(--lh-body);
+}
+.evidence__links {
+  display: flex;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+  font-size: var(--fs-11);
+}
+.evidence__links a {
+  color: var(--primary);
+}
+.viewevidence {
+  display: none;
+}
 .dock__scn {
   display: flex;
   flex-direction: column;
@@ -704,6 +978,114 @@
   font-weight: 400;
 }
 
+/* ---------- market glossary ---------- */
+
+.glossary__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-tooltip);
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(6, 11, 22, 0.56);
+  backdrop-filter: blur(2px);
+}
+.glossary {
+  width: min(430px, 100%);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-left: 1px solid var(--border-strong);
+  box-shadow: var(--e-3);
+}
+.glossary__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-4);
+  border-bottom: 1px solid var(--border);
+}
+.glossary__eyebrow {
+  color: var(--text-faint);
+  font-size: var(--fs-11);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.glossary__head h2 {
+  margin: 2px 0 0;
+  font-size: var(--fs-22);
+}
+.glossary__head button {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-muted);
+}
+.glossary__search {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: var(--sp-3) var(--sp-4);
+  padding: 0 var(--sp-3);
+  min-height: 40px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  color: var(--text-faint);
+}
+.glossary__search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+.glossary__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--sp-4) var(--sp-4);
+}
+.glossary__entry {
+  padding: var(--sp-3) 0;
+  border-top: 1px solid var(--border);
+}
+.glossary__entry > div {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+.glossary__entry strong {
+  color: var(--primary);
+  font-size: var(--fs-12);
+}
+.glossary__entry h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--fs-14);
+}
+.glossary__entry p,
+.glossary__empty,
+.glossary__foot {
+  margin: 5px 0 0 66px;
+  color: var(--text-muted);
+  font-size: var(--fs-13);
+  line-height: var(--lh-body);
+}
+.glossary__foot {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-11);
+}
+
 /* ---------- status strip ---------- */
 
 .studio__status {
@@ -740,6 +1122,14 @@
   .studio__scroll {
     padding: var(--sp-4);
   }
+  .bar__tag,
+  .bar__date > span,
+  .bar__scnlabel {
+    display: none;
+  }
+  .bar__search {
+    min-width: 150px;
+  }
 }
 
 /* small laptop: the dock collapses by default, the rail stays */
@@ -752,9 +1142,9 @@
     grid-template-columns: 208px minmax(0, 1fr) 250px;
   }
   .bar__search {
-    min-width: 150px;
+    min-width: 120px;
   }
-  .bar__scnlabel {
+  .bar__name {
     display: none;
   }
   /* the solver credit is the first thing to go when the strip runs short */
@@ -843,22 +1233,38 @@
     -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
     mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
   }
+  .dock__evidence {
+    display: none;
+  }
+  .viewevidence {
+    display: block;
+    padding: var(--sp-2) var(--sp-4);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .viewevidence summary {
+    min-height: 32px;
+    color: var(--primary);
+    font-size: var(--fs-12);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .viewevidence .evidence {
+    padding: var(--sp-2) 0 var(--sp-3);
+  }
   .dock__scn,
   .dock__note {
     display: none;
   }
-  /* The three island grids ride in a horizontal strip on a phone. At auto
-     width the second card was cut mid-word and the third sat entirely
-     off-screen with nothing saying so, which reads as broken markup rather
-     than as "there is more". Fix the card at 78% of the track so the next one
-     always starts on screen, and fade the right edge as the second cue.
-     Measured 2026-08-12: scrollWidth 852 in a 390 track. */
   .dock__grid {
-    flex: 0 0 78%;
-    scroll-snap-align: start;
-    width: auto;
+    display: none;
+    flex: 1 1 100%;
+    width: 100%;
     min-width: 172px;
     padding: var(--sp-2) var(--sp-3);
+  }
+  .dock__grid.is-on {
+    display: block;
   }
   .dock__price {
     font-size: var(--fs-18);
@@ -890,7 +1296,7 @@
     min-width: 0;
   }
   .bar__group {
-    order: 6;
+    order: 7;
     flex: 1 1 auto;
   }
   .bar__seg {
@@ -898,17 +1304,41 @@
     padding: 0 var(--sp-2);
   }
   .bar__scn {
-    order: 7;
+    order: 8;
+  }
+  .bar__date {
+    order: 6;
+    flex: 1 1 auto;
+  }
+  .bar__date select {
+    width: 100%;
+  }
+  .bar__terms {
+    order: 10;
+  }
+  .bar__navbtn {
+    order: 1;
+  }
+  .bar__brand {
+    order: 2;
+  }
+  .bar__solved,
+  .bar__run {
+    order: 3;
+    margin-left: auto;
+  }
+  .bar__icon--theme,
+  .bar__exit {
+    order: 4;
+  }
+  .bar__icon--new {
+    order: 9;
   }
   .bar__scn select {
     max-width: 150px;
   }
   .bar__spacer {
     display: none;
-  }
-  .bar__run {
-    order: 4;
-    margin-left: auto;
   }
   .studio__scroll {
     padding: var(--sp-3);
@@ -921,6 +1351,25 @@
   .viewhead__hint {
     flex: 1 1 100%;
     white-space: normal;
+  }
+  .viewhead__state {
+    order: 2;
+  }
+  .marketstrip {
+    padding: var(--sp-2) var(--sp-3) var(--sp-1);
+  }
+  .marketstrip__legend {
+    display: none;
+  }
+  .marketstrip__hours {
+    grid-template-columns: repeat(24, 24px);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+  .marketstrip__readout {
+    overflow-x: auto;
+    gap: var(--sp-2);
   }
   .studio__status {
     height: auto;
@@ -935,8 +1384,8 @@
     display: none;
   }
   .dock__grid {
-    width: auto;
-    min-width: 150px;
+    width: 100%;
+    min-width: 0;
   }
 }
 
@@ -1002,18 +1451,6 @@
   font-weight: 600;
   white-space: nowrap;
 }
-/* A view that reads all three grids says so in words, where a touch screen can
-   read it, instead of dimming a segmented control and hiding the reason in a
-   title attribute. */
-.bar__allgrids {
-  display: inline-flex;
-  align-items: center;
-  height: 34px;
-  padding: 0 10px;
-  color: var(--chrome-muted);
-  font-size: var(--fs-12);
-  white-space: nowrap;
-}
 .bar__exit {
   display: inline-flex;
   align-items: center;
@@ -1033,8 +1470,7 @@
   border-color: var(--chrome-2);
 }
 @media (max-width: 900px) {
-  .bar__exitlabel,
-  .bar__allgrids {
+  .bar__exitlabel {
     display: none;
   }
 }
@@ -1043,8 +1479,7 @@
    items came in at 292x34, the group headings at 300x40, and the three top-bar
    icon buttons at 32x32, on the first bar a phone visitor touches. */
 @media (pointer: coarse), (max-width: 720px) {
-  .rail__item,
-  .rail__grouphead {
+  .rail__item {
     min-height: 44px;
   }
   .bar__icon,

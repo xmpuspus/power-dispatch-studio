@@ -1,16 +1,16 @@
 # Power Dispatch Studio
 
-Power Dispatch Studio is a free browser tool for the Philippine Wholesale
+Power Dispatch Studio is a browser tool for the Philippine Wholesale
 Electricity Spot Market (WESM). You can edit plant and grid inputs, save cases,
 replay recorded market days, and compare calculated prices with market records.
 The browser runs the calculations from public data. The URL stores the case and
 date range, so the tool needs no account, project file, or license server.
 
-The Historical replay view tests the model against past market results. It
+Replay accuracy tests the model against past market results. It
 recalculates each recorded day and reports the error for Luzon, Visayas, and
 Mindanao. Recorded prices did not set the model inputs.
 
-![Historical replay. Modeled versus recorded WESM price over 56 market days, with mean absolute error, bias, and correlation stated for Luzon, Visayas, and Mindanao.](docs/view-backcast.gif)
+![Replay accuracy. Modeled versus recorded WESM price over 56 market days, with mean absolute error, bias, and correlation stated for Luzon, Visayas, and Mindanao.](docs/view-backcast.gif)
 
 This recording opens the studio, edits a generator, runs the model, and replays
 a recorded day.
@@ -36,7 +36,7 @@ The browser includes these views and controls.
 | Saved runs | Saves the case, dates, calculation version, and hourly results. You can compare, restore, or export a run. |
 | Emissions | Reports operational carbon dioxide using sourced factors. Biomass stays uncounted because its factor is contested. |
 | Calculated JSON files | Python scripts calculate the browser data from archived IEMOP files. |
-| Historical replay | Reports error against recorded prices for every full day. It opens on the published-offer replay. |
+| Replay accuracy | Reports error against recorded prices for every full day. It opens on the published-offer replay. |
 | What set the price on one day | Separates the cost result, offer effect, and equipment limit at the evening peak. |
 | Exports | Writes nightly CSVs to `web/data/exports/`. Each view can download its own CSV. |
 
@@ -73,16 +73,16 @@ from energy supply.
 | Added-load steps, recorded-day price range, per-hour limit classification, and operational carbon dioxide | Lifecycle or embodied emissions. Only operational emissions from dispatched energy are counted |
 | Energy-limited hydro. The daily calculation caps hydro at the day's recorded generation schedule and scales it with edits and the hydrology setting | Inter-day water management. Each day's budget stands alone |
 
-Historical replay compares the model with two recorded targets, the
+Replay accuracy compares the model with two recorded targets, the
 load-weighted average price (LWAP, the settlement-side series) and the
 regional market clearing price (MCP, the ex-ante series commensurate with a
 dispatch dual). A competitive cost stack under-prices tight hours. That
 remaining error is the scarcity and offer premium a cost model cannot see, and
 the replay shows it as model error.
 
-## Historical replay reports error against settlement and clearing prices
+## Replay accuracy reports error against settlement and clearing prices
 
-The Historical replay view recalculates every market day with complete data
+Replay accuracy recalculates every market day with complete data
 against the recorded hourly LWAP. In the July 2026 calculated data (window 2026-05-01 to
 2026-06-25, 56 market days, 24 hourly points each per grid).
 
@@ -319,7 +319,7 @@ Two checks cover different questions.
 
 2. **Recorded prices show where the cost model misses.** The comparison scores
    dispatch against 56 market days. Luzon reaches 0.29 correlation with a
-   stated negative bias. Other views share the model's limits. Historical replay
+   stated negative bias. Other views share the model's limits. Replay accuracy
    does not test each future case.
 
 The engine is a zonal merit-order linear program. It omits unit commitment,
@@ -372,7 +372,7 @@ the peak hours.
 
 **Switch gas to imported LNG.** Open Review and edit model inputs > Fuels, reprice natural gas from the
 Malampaya cost (P4.80/kWh) to the imported-LNG cost (P10.30/kWh), Run, and
-read the Hourly market replay price shape. Then in Quick what-if, combine the announced
+read the Hourly market replay price shape. Then in Scenario builder, combine the announced
 build and a dry year on the LNG switch for the compounding view. Share the exact
 scenario with Copy link.
 
@@ -536,7 +536,7 @@ src/
              model.test.ts
              chrono.ts (day replay as one 24-hour LP), chrono.test.ts (comparison
              with pipeline/lp_dispatch.py reference results and LP text hashes)
-             ChronoView.tsx (Hourly market replay), BackcastView.tsx (Historical replay)
+             ChronoView.tsx (Hourly market replay), BackcastView.tsx (Replay accuracy)
              insights.ts (binding classification, percentile bands, horizon
              math, CO2), insights.test.ts
              SweepView.tsx (load sweep), DistributionView.tsx (window band)

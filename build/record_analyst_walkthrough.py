@@ -1,13 +1,11 @@
-"""Record the arriving analyst's whole path, from the capability list to a file.
+"""Record the arriving analyst's whole path, from model coverage to a file.
 
-An analyst who reads production-cost model output and has no license asks four
-things in order: what does this solve, where does it refuse, how close does it
-get, and can I take a run away. Nothing showed that path end to end, so a reader
-had to assemble it from five separate clips.
+The recording follows the checks an analyst makes before using a result: model
+coverage, stated limits, replay accuracy, and a portable scenario file.
 
 The recording follows one person through it:
 
-    for-analysts.html   the ability table, and the four No rows
+    for-analysts.html   model coverage and the four unsupported items
     #v=commitment-test  a limit that carries a measurement, not an opinion
     #v=future-year      2028 solved day by day, on published plans
     #v=fuels            take both Sual units out of the model, then Run
@@ -81,12 +79,12 @@ async def main() -> None:
         )
         page = await ctx.new_page()
 
-        # 1. the capability list, which is the first ninety seconds
+        # 1. model coverage
         await page.goto(f"{BASE}/for-analysts.html", wait_until="load")
         await asyncio.sleep(2.0)
         await cap(
             page,
-            "It solves seven things fully, three partly, and refuses four",
+            "Seven areas are covered, three are partial, and four are not modeled",
             "power-dispatch-studio.vercel.app/for-analysts.html",
         )
         await asyncio.sleep(2.0)
@@ -96,10 +94,12 @@ async def main() -> None:
             "() => document.querySelectorAll('.t-cap .n').length"
         )
         if rows != 4:
-            raise SystemExit(f"expected 4 refusals on the ability table, saw {rows}")
+            raise SystemExit(
+                f"expected 4 unsupported rows in the coverage table, saw {rows}"
+            )
 
         # 2. how close it gets, from the nightly build
-        await cap(page, "Every refusal states a reason, and two carry a measurement")
+        await cap(page, "Each unsupported area includes the reason and current limit")
         await asyncio.sleep(2.2)
         await scroll_to(page, ".t-acc")
         await asyncio.sleep(3.0)
@@ -189,7 +189,7 @@ async def main() -> None:
             }"""
         )
         if not moved:
-            raise SystemExit("no demand slider found in Quick what-if")
+            raise SystemExit("no demand slider found in Scenario builder")
         await asyncio.sleep(2.8)
 
         # 6. the run leaves as a file the command line reads

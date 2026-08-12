@@ -580,13 +580,9 @@ def canonical():
         "pp_open": f"{pp['open_cost_change_php']:,.0f}" if pp_on else "",
         "pp_net": f"{pp['net_change_php']:,.0f}" if pp_on else "",
         # --- the named-unit dispatch probe
-        "up_units": (
-            str(sum(up["n_units_dispatched"].values())) if up_on else ""
-        ),
+        "up_units": (str(sum(up["n_units_dispatched"].values())) if up_on else ""),
         "up_daily_gap": f"{up['generation_gap']['daily_mwh']:.1f}" if up_on else "",
-        "up_hourly_gap": (
-            f"{up['generation_gap']['hourly_mw']:,.0f}" if up_on else ""
-        ),
+        "up_hourly_gap": (f"{up['generation_gap']['hourly_mw']:,.0f}" if up_on else ""),
         "up_days": str(up["generation_gap_days"]) if up_on else "",
         "up_min_mcp_block": (
             f"{up['delta']['mcp']['mindanao']['block_corr']:.3f}" if up_on else ""
@@ -734,17 +730,6 @@ REGISTRY = [
             r"\*\*([\d,]+) MOT-raise instructions\*\* across the window at a \*\*(\d+)\s*\n?\s*MW\*\* median"
         ),
         ["motrd_rows", "motrd_median"],
-    ),
-    # The same correlation pair appears as a heading on the analyst page. It was
-    # guarded in docs/findings.md and not here, so this copy would have frozen
-    # while the other moved. tests/test_heading_numbers_guarded.py found it.
-    (
-        "web/for-analysts.html",
-        re.compile(
-            r"How close it gets: the offer replay lands between "
-            r"(\d\.\d+) and (\d\.\d+)"
-        ),
-        ["offer_corr_lo", "offer_corr_hi"],
     ),
     # The Leyte-Cebu heading sat outside this registry and froze at 114 of 117
     # while the body two paragraphs down read 124 of 127 from the same build.
@@ -1317,8 +1302,8 @@ REGISTRY = [
     (
         "docs/findings.md",
         re.compile(
-            r"Mindanao market clearing price correlation goes from\s*\n?\s*"
-            r"([\d.]+) to ([\d.]+)\."
+            r"Mindanao market clearing price correlation is the one score that "
+            r"moves\. It\s*\n?\s*rises from ([\d.]+) to ([\d.]+)\."
         ),
         ["up_min_mcp_block", "up_min_mcp_unit"],
     ),

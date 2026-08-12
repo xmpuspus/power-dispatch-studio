@@ -104,24 +104,18 @@ async def enter(page: Page):
 
 
 async def sim(page: Page):
-    # the question rail replaced the System/Simulation tabs; open every group
-    await page.evaluate(
-        """() => {
-          document.querySelectorAll('.rail__grouphead').forEach(b => {
-            if (b.getAttribute('aria-expanded') === 'false') b.click()
-          })
-        }"""
-    )
-    await asyncio.sleep(0.35)
+    await asyncio.sleep(0.2)
 
 
 async def sysm(page: Page):
-    # the input tables live in the rail's Model inputs group; sim() opens all
     await sim(page)
 
 
 async def view(page: Page, name: str, settle: float = 0.9):
-    await page.get_by_role("button", name=name, exact=False).first.click()
+    await page.get_by_role("button", name="Find a view").click()
+    search = page.get_by_label("Search views")
+    await search.fill(name)
+    await search.press("Enter")
     await asyncio.sleep(settle)
 
 
@@ -274,7 +268,7 @@ async def wf1(page: Page):
     await page.get_by_role("button", name="Save run").click()
     await asyncio.sleep(1.2)
 
-    await view(page, "Saved simulation runs")
+    await view(page, "Saved runs")
     await scroll_to(page, "table", block="center")
     d_mean = await compare_delta(page, "Mean price, Luzon")
     d_rent = await compare_delta(page, "Congestion rent")
@@ -431,7 +425,7 @@ async def wf3(page: Page):
     await asyncio.sleep(2.2)
 
     await sysm(page)
-    await view(page, "Quick what-if")
+    await view(page, "Scenario builder")
     await page.wait_for_selector('[data-testid="scenario"]')
 
     await page.get_by_text("Switch gas to imported LNG").click()

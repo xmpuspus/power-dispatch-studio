@@ -81,7 +81,7 @@ export function BackcastView({
       <div className="view">
         <div className="chrono__controls">{engineToggle}</div>
         <Panel
-          title="Historical replay coverage"
+          title="Replay coverage"
           subtitle="The model is checked against market records."
         >
           <p className="note">
@@ -404,7 +404,7 @@ export function BackcastView({
               className="ribbon__select"
               value={day.date}
               onChange={(e) => setDate(e.target.value)}
-              aria-label="Historical replay day"
+              aria-label="Replay day"
             >
               {marketDays.map((x) => (
                 <option key={x.date} value={x.date}>

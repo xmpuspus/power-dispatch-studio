@@ -3,22 +3,22 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>Power Dispatch Studio tests announced demand against the Philippine grid</title>
-<meta name="description" content="A Philippine grid map built from public market records. See transmission limits, regional prices, and data-center demand." />
+<title>Power Dispatch Studio | Philippine WESM replay and scenarios</title>
+<meta name="description" content="Review Philippine WESM prices, dispatch, reserves, outages, and constraints. Replay a market day or test changes to demand and supply." />
 <link rel="canonical" href="https://power-dispatch-studio.vercel.app/" />
 <!-- More than one host serves this page, so the canonical above names the one
      search engines should keep. The title carries the number, because a
      text-only unfurl shows no image. -->
-<meta property="og:title" content="One 2028 data-center forecast is 41% of the Philippine grid's spare capacity" />
-<meta property="og:description" content="Replay and stress-test the Philippine wholesale power market from public records. Daily IEMOP files, browser dispatch scenarios, price backcasts, and scenario URLs." />
+<meta property="og:title" content="Philippine WESM market replay and scenario analysis" />
+<meta property="og:description" content="Review recorded market conditions, replay a day, and test changes to Philippine demand and supply." />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Power Dispatch Studio" />
 <meta property="og:url" content="https://power-dispatch-studio.vercel.app/" />
 <meta property="og:image" content="https://power-dispatch-studio.vercel.app/og.png" />
 <meta property="og:image:alt" content="The Philippine grid with announced data-center demand drawn against the system's spare capacity." />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="One 2028 data-center forecast is 41% of the Philippine grid's spare capacity" />
-<meta name="twitter:description" content="Replay and stress-test the Philippine wholesale power market with archived IEMOP files." />
+<meta name="twitter:title" content="Philippine WESM market replay and scenario analysis" />
+<meta name="twitter:description" content="Review recorded market conditions, replay a day, and test changes to Philippine demand and supply." />
 <meta name="twitter:image" content="https://power-dispatch-studio.vercel.app/og.png" />
 <script>
 // Runs before the first paint, so the page never shows one theme and swaps.
@@ -185,11 +185,11 @@
   #themebtn:hover{ background:var(--paper-2); border-color:var(--ac); color:var(--ac); }
   #themebtn:active{ transform:translateY(1px); }
 
-  /* the one display moment. A figure, because a figure is short enough to be
-     set large in a 400px rail and because every number here is already mono. */
+  /* The front door names the market job. Individual findings keep their large
+     numbers inside the archive drawer, where the date and evidence stay beside them. */
   #hero{ flex:0 0 auto; padding:22px 20px 18px; border-bottom:1px solid var(--line); }
-  .d-fig{ font-size:var(--fs-display); font-weight:500; line-height:.92;
-    letter-spacing:-.045em; color:var(--ac); margin:0; }
+  .d-fig{ font-size:var(--fs-label); font-weight:600; line-height:1.2;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ac); margin:0; }
   .d-claim{ margin:9px 0 0; font-size:var(--fs-h1); font-weight:600;
     line-height:1.16; letter-spacing:-.015em; }
   .d-sub{ margin:9px 0 0; font-size:var(--fs-small); color:var(--muted);
@@ -198,13 +198,16 @@
   /* The one primary action, inside the hero rather than 454px down the rail.
      At 1280x800 the rail's foot is below the fold, so a reader on a laptop
      never saw the link to the thing the page is a front door for. */
-  #studiolink{ display:inline-flex; align-items:center; gap:7px; margin-top:15px;
+  .heroactions{ display:flex; flex-wrap:wrap; gap:8px; margin-top:15px; }
+  #studiolink, .hero-secondary{ display:inline-flex; align-items:center; gap:7px;
     background:var(--ink); color:var(--bg); border:1px solid var(--ink);
     border-radius:var(--r-ctrl); padding:9px 15px; font-size:var(--fs-small);
     font-weight:600; text-decoration:none; min-height:38px;
     transition:background .16s, border-color .16s; }
   #studiolink:hover{ background:var(--ac); border-color:var(--ac); }
   #studiolink:active{ transform:translateY(1px); }
+  .hero-secondary{ background:var(--paper); color:var(--ink); border-color:var(--line); }
+  .hero-secondary:hover{ border-color:var(--ac); color:var(--ac); }
 
   /* the three questions, docked. The carousel showed one and hid two; all
      three are visible now and the open one drives the map mode, which is what
@@ -504,12 +507,12 @@
     #hero{ display:flex; align-items:baseline; gap:11px; padding:9px 14px 11px; }
     .d-fig{ flex:0 0 auto; font-size:32px; line-height:1; }
     .d-claim{ margin:0; font-size:13px; line-height:1.3; font-weight:600; }
-    .d-sub, #studiolink{ display:none; }
+    .d-sub, .heroactions{ display:none; }
     body.head-open #hero{ display:block; padding:14px; }
-    body.head-open .d-fig{ font-size:var(--fs-display); line-height:.92; }
+    body.head-open .d-fig{ font-size:var(--fs-label); line-height:1.2; }
     body.head-open .d-claim{ font-size:var(--fs-h1); line-height:1.16; margin-top:9px; }
     body.head-open .d-sub{ display:block; }
-    body.head-open #studiolink{ display:inline-flex; }
+    body.head-open .heroactions{ display:flex; }
     #railfoot{ display:none; }
     body.head-open #railfoot{ display:block; }
     #mast{ padding:0 14px; }
@@ -582,10 +585,13 @@
   </div>
   <div class="rail__scroll">
     <div id="hero">
-      <p class="d-fig" id="d-fig">&hellip;</p>
-      <h1 class="d-claim" id="d-claim">Announced data-center demand and system supply margin</h1>
+      <p class="d-fig" id="d-fig">Market record</p>
+      <h1 class="d-claim" id="d-claim">Philippine WESM market replay and scenario analysis</h1>
       <p class="d-sub" id="d-sub">Loading the archive.</p>
-      <a id="studiolink" href="studio/">Open the dispatch studio <span aria-hidden="true">&rarr;</span></a>
+      <div class="heroactions">
+        <a id="studiolink" href="studio/#v=chronology">Review a market day <span aria-hidden="true">&rarr;</span></a>
+        <a class="hero-secondary" href="studio/#v=quick-scenario">Build a scenario</a>
+      </div>
     </div>
     <div id="qs" role="group" aria-label="The three questions"></div>
     <div id="qextra" hidden></div>
@@ -999,69 +1005,22 @@ function railBuild(){
     b.onclick = () => { if (i === RAIL_I) return; clearActive(); RAIL_I = i; railRender(); };
   });
 }
-/* ---------- the one display moment ----------
-   The largest thing on the old page was an 18px heading inside a box. This is
-   a figure, because a figure is short enough to set at 76px in a 400px rail
-   and because every number on this page is already mono and tabular.
-   Both operands are read from the archive at render time, so the figure moves
-   when the data moves and no prose has to be re-synced by hand. */
+/* ---------- product heading ---------- */
 function heroRender(){
-  const A = D["market_anchors.json"] || {};
-  const an = D["demand_anchors.json"] || [];
-  const margin = A.wesm_may2026_margin_mw;
-  const dict = an.find(a => a.owner === "DICT" && a.kind === "forecast");
-  if (!margin || !dict || !dict.mw){
-    // never leave the placeholder standing: an ellipsis that never resolves
-    // reads as a broken page, and this is the largest thing on it
-    $("d-fig").textContent = "n/a";
-    $("d-claim").textContent =
-      "The supply-margin comparison is not available in this data build.";
+  const c = D["congestion.json"] || {};
+  const p = D["prices.json"] || {};
+  $("d-fig").textContent = "Market record";
+  $("d-claim").textContent = "Philippine WESM market replay and scenario analysis";
+  if (c.window){
+    const through = p.as_of ? ` Prices are available through ${p.as_of}.` : "";
+    $("d-sub").innerHTML =
+      `Review recorded prices, dispatch, reserves, outages, and constraints. ` +
+      `Replay a market day or test changes to demand and supply.<br>` +
+      `<b>Archive ${esc(c.window.from)} to ${esc(c.window.to)}.</b>${esc(through)}`;
+  } else {
     $("d-sub").textContent =
-      "The map, the modes, and the three questions below still work.";
-    return;
+      "Review recorded market conditions, replay a day, or test a change to demand and supply.";
   }
-  const pct = Math.round(100 * dict.mw / margin);
-  $("d-fig").textContent = pct + "%";
-  $("d-claim").textContent =
-    "One 2028 data-center forecast is " + pct +
-    "% of the whole system's spare capacity.";
-  $("d-sub").innerHTML =
-    `<b>${fmt(dict.mw)} MW</b> forecast by DICT for 2028, against the ` +
-    `<b>${fmt(margin)} MW</b> system supply margin IEMOP reported for May 2026.`;
-  // keep the default wording so a scenario can hand the card back
-  HERO_DEFAULT = {
-    fig: $("d-fig").textContent,
-    claim: $("d-claim").textContent,
-    sub: $("d-sub").innerHTML,
-  };
-}
-
-let HERO_DEFAULT = null;
-
-// The card carried the same 41% after a reader built their own scenario, so the
-// biggest line on the page ignored the work they had just done. It reports the
-// scenario while one is running, and hands back the default when it is cleared.
-function heroScenario(res, base){
-  if (!HERO_DEFAULT) return;
-  const moved = SIM.addDC || SIM.addFirm || SIM.imp || SIM.stor || SIM.trip;
-  if (!moved){
-    $("d-fig").textContent = HERO_DEFAULT.fig;
-    $("d-claim").textContent = HERO_DEFAULT.claim;
-    $("d-sub").innerHTML = HERO_DEFAULT.sub;
-    return;
-  }
-  const d = res.price - base.price;
-  const grid = SIM.grid[0].toUpperCase() + SIM.grid.slice(1);
-  $("d-fig").textContent = "\u20B1" + fmt(res.price, 2);
-  $("d-claim").textContent = d === 0
-    ? `The ${grid} clearing price is unchanged from the base case.`
-    : `The ${grid} clearing price changes to \u20B1${fmt(res.price,2)}/kWh.`;
-  $("d-sub").innerHTML = SIM.addDC
-    ? `<b>${fmt(SIM.addDC)} MW</b> added, against a base case of ` +
-      `<b>\u20B1${fmt(base.price,2)}/kWh</b>. The marginal fuel is ` +
-      `<b>${esc(fuelLabel(res.marginal))}</b>.`
-    : `Against a base case of <b>\u20B1${fmt(base.price,2)}/kWh</b>. ` +
-      `The marginal fuel is <b>${esc(fuelLabel(res.marginal))}</b>.`;
 }
 
 function railRender(){
@@ -1912,7 +1871,6 @@ function updateSim(){
     (res.shortfall > 0 ? `<div class="kv shortfall"><span>Supply shortfall (load shed)</span>
        <span><b>${fmt(res.shortfall)} MW</b></span></div>` : "");
   renderSimShare(res, base);
-  heroScenario(res, base);
   const st = $("sim-stack"); if (st) st.innerHTML = stackSVG(s.blocks, s.demand) + fuelKey(s.blocks);
 
   // coupled readout: the selected grid cleared together with the other two islands
@@ -2228,13 +2186,13 @@ loadAll().then(() => {
       `are city-precision.`;
   }
   RAIL = A ? [
-    { tag:"Q1 Supply", ...A.q1 },
-    { tag:"Q2 Infrastructure", ...A.q2 },
-    { tag:"Q3 Prices", ...A.q3 },
+    { ...A.q1, tag:"Q1 Supply", title:"Is supply available for new demand?" },
+    { ...A.q2, tag:"Q2 Infrastructure", title:"Which grid limits matter?" },
+    { ...A.q3, tag:"Q3 Prices", title:"How do prices differ by grid?" },
   ] : [
-    { tag:"Q1", title:"Can supply cover additional data-center demand?", stat:"Data unavailable", blurb:"No result is available." },
-    { tag:"Q2", title:"Where can new demand connect?", stat:"Data unavailable" },
-    { tag:"Q3", title:"How does added demand affect prices?", stat:"Data unavailable" },
+    { tag:"Q1", title:"Is supply available for new demand?", stat:"Data unavailable", blurb:"No result is available." },
+    { tag:"Q2", title:"Which grid limits matter?", stat:"Data unavailable" },
+    { tag:"Q3", title:"How do prices differ by grid?", stat:"Data unavailable" },
   ];
   railBuild();
   heroRender();

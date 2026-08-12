@@ -9,22 +9,37 @@ import {
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { GRIDS } from '../lib/types'
 import { php, pct, useFleet, useGenerators, useProfiles } from '../lib/data'
-import { CommandPalette, NavRail, RunDock, TopBar } from '../shell/Shell'
+import {
+  CommandPalette,
+  EvidenceSummary,
+  GlossaryDrawer,
+  NavRail,
+  RunDock,
+  TopBar,
+} from '../shell/Shell'
+import { MarketStrip } from '../shell/MarketStrip'
+import { buildMarketStrip } from '../shell/marketStripData'
 import { usePaletteKey } from '../shell/usePaletteKey'
 import {
   type Nav,
   destBySlug,
   destOf,
   groupOf,
-  phaseOf,
   readHashView,
   writeHashView,
 } from '../shell/nav'
+import {
+  DEFAULT_DESTINATION,
+  EVIDENCE_LABELS,
+  evidenceForSlug,
+  workspaceForSlug,
+} from '../shell/workflows'
 import { DurationView, MarginalView, ReliabilityView, ReserveView } from './views'
 import { ScenarioView } from './Scenario'
 import { BillView } from './Bill'
 import { MarketPowerView } from './MarketPower'
 import { ChronologyView } from './ChronoView'
+import { runChronology } from './chrono'
 import { BackcastView } from './BackcastView'
 import { DayExplainerView } from './DayExplainerView'
 import { RunsView } from './RunsView'
@@ -53,6 +68,7 @@ import { decodeShare, downloadCsv, loadRuns, type SavedRun } from './runs'
 import { fromScenarioFile, scenarioFileText, toScenarioFile } from './scenarioFile'
 import {
   baseObjects,
+  chronoOptsFrom,
   overrideKey,
   solveModel,
   type ClassId,
@@ -125,11 +141,15 @@ export function Studio({
   const [nav, setNav] = useState<Nav>(() => {
     const d0 = linked.slug ? destBySlug(linked.slug) : undefined
     if (d0) return d0.nav
-    return shared ? { kind: 'sol', id: 'chrono' } : { kind: 'quick' }
+    return shared
+      ? { kind: 'sol', id: 'chrono' }
+      : (destBySlug(DEFAULT_DESTINATION)?.nav ?? { kind: 'sol', id: 'chrono' })
   })
   const [grid, setGrid] = useState<GridKey>((linked.grid as GridKey) ?? 'luzon')
   const [navOpen, setNavOpen] = useState(false)
   const [palette, setPalette] = useState(false)
+  const [glossaryOpen, setGlossaryOpen] = useState(false)
+  const [selectedHour, setSelectedHour] = useState(19)
   const [dockOpen, setDockOpen] = useState(
     () => !window.matchMedia?.('(max-width: 1180px)').matches
   )
@@ -308,12 +328,37 @@ export function Studio({
   const editCount = Object.keys(active.overrides).length
   const dest = destOf(nav)
   const group = groupOf(nav)
+  const workspace = dest ? workspaceForSlug(dest.slug) : undefined
   const gridScoped = !!dest?.scoped
 
   // the calibrated base case, solved once. Every figure in the run dock reads
   // its move against this, so an analyst sees the size of what they changed
   // rather than a level they must remember the old value of
   const base = useMemo(() => solveModel(d, objects, {}), [d, objects])
+
+  const stripRun = useMemo(() => {
+    if (!profiles.data || !chronoDate) return null
+    try {
+      return runChronology(d, profiles.data, chronoDate, chronoOptsFrom(objects, ranOv))
+    } catch {
+      return null
+    }
+  }, [d, profiles.data, chronoDate, objects, ranOv])
+  const stripDay = profiles.data?.days.find((day) => day.date === chronoDate)
+  const stripItems = useMemo(
+    () =>
+      stripRun
+        ? buildMarketStrip(stripRun.hours, stripDay?.lwap?.[grid] ?? [], grid)
+        : [],
+    [stripRun, stripDay, grid]
+  )
+  const dates = profiles.data?.days.map((day) => day.date) ?? []
+  const coverage =
+    dates.length > 0 ? `${dates[0]} to ${dates[dates.length - 1]}` : 'Unavailable'
+  const evidence = evidenceForSlug(
+    dest?.slug ?? DEFAULT_DESTINATION,
+    Object.keys(ranOv).length > 0
+  )
 
   // the open view rides in the URL beside any shared scenario, so a colleague
   // can be sent one view rather than told which one to click to
@@ -370,8 +415,6 @@ export function Studio({
       return false
     }
   }
-  const phaseLabel = phaseOf(nav)
-
   return (
     <div className="studio" data-testid="studio">
       <TopBar
@@ -379,6 +422,9 @@ export function Studio({
         grid={grid}
         onGrid={setGrid}
         gridScoped={gridScoped}
+        dates={dates}
+        date={chronoDate ?? ''}
+        onDate={setChronoDate}
         scenarios={scenarios}
         ai={ai}
         onPickScenario={pickScenario}
@@ -388,6 +434,7 @@ export function Studio({
         onRun={run}
         onOpenPalette={() => setPalette(true)}
         onOpenNav={() => setNavOpen(true)}
+        onOpenGlossary={() => setGlossaryOpen(true)}
         onExit={onExit}
         theme={theme}
         onToggleTheme={onToggleTheme}
@@ -403,14 +450,28 @@ export function Studio({
         />
 
         <main className="studio__main">
+          {chronoDate && (
+            <MarketStrip
+              date={chronoDate}
+              grid={grid}
+              items={stripItems}
+              selectedHour={selectedHour}
+              onSelectHour={setSelectedHour}
+            />
+          )}
           <div className="viewhead">
-            <span className="viewhead__group">{group?.label ?? 'Studio'}</span>
+            <span className="viewhead__group">
+              {workspace?.label ?? group?.label ?? 'Studio'}
+            </span>
             <h1 className="viewhead__title">{dest?.label ?? 'View'}</h1>
             <p className="viewhead__hint">
               {dirty && dest?.live
                 ? `${editCount} edit${editCount === 1 ? '' : 's'} are not in this yet. Press Run.`
                 : (dest?.hint ?? '')}
             </p>
+            <span className={`viewhead__state is-${evidence.kind}`}>
+              {EVIDENCE_LABELS[evidence.kind]}
+            </span>
             {editCount > 0 && (
               <button className="btn btn--ghost btn--sm" onClick={revertAll}>
                 Revert {editCount} edit{editCount === 1 ? '' : 's'}
@@ -432,6 +493,14 @@ export function Studio({
                   : 'Copy summary'}
             </button>
           </div>
+          <details className="viewevidence">
+            <summary>Evidence and sources</summary>
+            <EvidenceSummary
+              evidence={evidence}
+              date={chronoDate ?? 'Not selected'}
+              coverage={coverage}
+            />
+          </details>
           <div className="studio__scroll">
             <div className="studio__measure">
               <SolveBoundary key={`${JSON.stringify(nav)}:${editCount}:${dirty}:${grid}`}>
@@ -480,6 +549,9 @@ export function Studio({
           open={dockOpen}
           onToggle={() => setDockOpen((v) => !v)}
           onTakeAway={() => setNav({ kind: 'runs' })}
+          evidence={evidence}
+          date={chronoDate ?? 'Not selected'}
+          coverage={coverage}
         />
       </div>
 
@@ -489,9 +561,11 @@ export function Studio({
         onNav={(n) => setNav(n)}
       />
 
+      <GlossaryDrawer open={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
+
       <footer className="studio__status mono">
         <span>
-          View type <b>{phaseLabel}</b>
+          Result <b>{EVIDENCE_LABELS[evidence.kind]}</b>
         </span>
         <span>
           Scenario <b>{active.name}</b>, {editCount} edit{editCount === 1 ? '' : 's'}
@@ -504,6 +578,9 @@ export function Studio({
               user-supplied data ({active.importedKeys.length})
             </span>
           )}
+        </span>
+        <span>
+          Market date <b>{chronoDate ?? 'not selected'}</b>
         </span>
         <span>
           Luzon spare capacity (reserve margin){' '}

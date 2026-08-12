@@ -41,10 +41,7 @@ async def engine(page: Page, label: str, hold: float = 2.4):
 
 
 async def chrono(page: Page):
-    await page.get_by_role(
-        "button", name="Hourly market replay", exact=False
-    ).first.click()
-    await asyncio.sleep(1.0)
+    await view(page, "Hourly market replay", settle=1.0)
 
 
 # Historical price comparison.
@@ -87,7 +84,7 @@ async def backcast(page: Page):
     await scroll_to(page, "svg", "center")
     await asyncio.sleep(4.2)
 
-    await view(page, "Historical replay")
+    await view(page, "Replay accuracy")
     await scroll_top(page)
     mae = await tile(page, "Mean absolute error (MAE), Luzon")
     await r.cap(
@@ -113,8 +110,8 @@ async def hero(page: Page):
     await enter(page)
     await r.intro(
         "Power Dispatch Studio",
-        "A free browser dispatch model for the Philippine grid. Build a what-if, "
-        "calculate it in the browser, and compare it with the operator's "
+        "A browser dispatch model for the Philippine grid. Build a scenario, "
+        "calculate it locally, and compare it with the operator's "
         "recorded prices.",
         hold=3.0,
     )

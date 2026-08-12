@@ -96,15 +96,16 @@ async def click_text(page: Page, text: str) -> bool:
     )
 
 
+async def open_view(page: Page, name: str) -> None:
+    await page.get_by_role("button", name="Find a view").click()
+    search = page.get_by_label("Search views")
+    await search.fill(name)
+    await search.press("Enter")
+    await asyncio.sleep(0.8)
+
+
 async def sim_tab(page: Page):
-    await page.evaluate(
-        """() => {
-          document.querySelectorAll('.rail__grouphead').forEach(b => {
-            if (b.getAttribute('aria-expanded') === 'false') b.click()
-          })
-        }"""
-    )
-    await asyncio.sleep(0.5)
+    await asyncio.sleep(0.2)
 
 
 async def scroll_top(page: Page):
@@ -265,12 +266,9 @@ async def main():
         await click_js(page, "#studiolink")
         await page.wait_for_load_state("networkidle")
         await asyncio.sleep(1.2)
-        await page.get_by_role("button", name="Open Power Dispatch Studio").click()
         await page.wait_for_selector('[data-testid="studio"]', timeout=8000)
         await asyncio.sleep(1.0)
-        await sim_tab(page)
-        await click_text(page, "Prices at grid connection points")
-        await asyncio.sleep(1.6)
+        await open_view(page, "Prices at grid connection points")
         await scroll_top(page)
         await cap(
             page,
@@ -306,7 +304,7 @@ async def main():
         # Apply the recorded Luzon node difference to a regional future range.
         await click_text(page, "Luzon")
         await asyncio.sleep(0.8)
-        await click_text(page, "Possible future price range")
+        await open_view(page, "Possible future price range")
         await page.wait_for_selector("text=Possible price range", timeout=15000)
         await asyncio.sleep(0.8)
         await scroll_top(page)
@@ -321,9 +319,7 @@ async def main():
         await clear_cap(page)
 
         # Compare estimated loss rankings with market records.
-        await sim_tab(page)
-        await click_text(page, "Transmission-loss check")
-        await asyncio.sleep(1.6)
+        await open_view(page, "Transmission-loss check")
         await scroll_top(page)
         await cap(
             page,

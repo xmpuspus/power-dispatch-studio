@@ -113,6 +113,14 @@ async def click_text(page: Page, text: str) -> bool:
     )
 
 
+async def open_view(page: Page, name: str) -> None:
+    await page.get_by_role("button", name="Find a view").click()
+    search = page.get_by_label("Search views")
+    await search.fill(name)
+    await search.press("Enter")
+    await asyncio.sleep(0.8)
+
+
 async def record_map(page: Page):
     await page.goto(BASE + "/", wait_until="networkidle")
     await asyncio.sleep(4.5)  # basemap tiles + generated data
@@ -168,7 +176,7 @@ async def record_studio(page: Page):
     await cap(
         page,
         "Open the dispatch studio",
-        "Edit the fleet, replay recorded days, and check the historical replay.",
+        "Review a market day, build a scenario, and check replay accuracy.",
     )
     await asyncio.sleep(1.8)
     await click_js(page, "#studiolink")
@@ -178,15 +186,15 @@ async def record_studio(page: Page):
     await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
     await asyncio.sleep(2.2)
 
-    # The studio opens on the what-if controls, with results pinned on the right.
+    await open_view(page, "Scenario builder")
     await cap(
         page,
-        "What-if controls sit beside the calculated grid prices",
-        "What-if settings on the left, and every grid's cleared price on the right.",
+        "Scenario controls sit beside the calculated grid prices",
+        "Change the case on the left and compare the three grid results on the right.",
     )
     await asyncio.sleep(2.8)
 
-    # Quick scenario updates live without the Run button.
+    # The scenario builder updates live without the Run button.
     await cap(
         page,
         "Add data-center demand",
@@ -204,13 +212,11 @@ async def record_studio(page: Page):
     await clear_cap(page)
 
     # Historical comparison.
-    await sim_tab(page)
-    await click_text(page, "Historical replay")
-    await asyncio.sleep(1.0)
+    await open_view(page, "Replay accuracy")
     await scroll_top(page)
     await cap(
         page,
-        "The historical replay reports the model's price error",
+        "Replay accuracy reports the model's price error",
         "The cost calculation is compared with recorded prices for every "
         "complete market day.",
     )
@@ -225,8 +231,7 @@ async def record_studio(page: Page):
     await clear_cap(page)
 
     # Reliability
-    await click_text(page, "Power-shortfall risk")
-    await asyncio.sleep(1.0)
+    await open_view(page, "Power-shortfall risk")
     await scroll_top(page)
     await cap(
         page,
@@ -244,16 +249,14 @@ async def record_studio(page: Page):
         "Open each view from the same scenario.",
     )
     for name in [
-        "Backup capacity market",
+        "Reserve market",
         "Bill impact",
         "Possible future price range",
         "Emissions",
     ]:
-        ok = await click_text(page, name)
-        if ok:
-            await asyncio.sleep(0.4)
-            await scroll_top(page)
-            await asyncio.sleep(1.3)
+        await open_view(page, name)
+        await scroll_top(page)
+        await asyncio.sleep(1.3)
 
     await clear_cap(page)
     await cap(
@@ -299,12 +302,7 @@ async def trip_unit(page: Page, needle: str):
 
 
 async def sim_tab(page: Page):
-    """Open every group in the question rail, so a view is one click away."""
-    await page.evaluate(
-        """() => { document.querySelectorAll('.rail__grouphead').forEach(b => {
-             if (b.getAttribute('aria-expanded') === 'false') b.click() }) }"""
-    )
-    await asyncio.sleep(0.5)
+    await asyncio.sleep(0.2)
 
 
 async def scroll_top(page: Page):

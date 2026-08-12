@@ -9,7 +9,7 @@ https://power-dispatch-studio.vercel.app.
 
 ## Contents
 
-- [Seven steps take an analyst from the ability list to pesos, then to a file](#seven-steps-take-an-analyst-from-the-ability-list-to-pesos-then-to-a-file)
+- [Analyst workflow covers replay accuracy, scenarios, and exports](#analyst-workflow-covers-replay-accuracy-scenarios-and-exports)
 - [The Leyte-Cebu link reached a binding limit on 125 of 128 days](#the-leyte-cebu-link-reached-a-binding-limit-on-125-of-128-days)
 - [Luzon reserves fell short on 76 of the window's 128 days](#luzon-reserves-fell-short-on-76-of-the-windows-128-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
@@ -22,22 +22,20 @@ https://power-dispatch-studio.vercel.app.
 - [Naming all 141 units changes no daily energy, so the model keeps its fuel blocks](#naming-all-141-units-changes-no-daily-energy-so-the-model-keeps-its-fuel-blocks)
 - [Unit commitment lowered the price correlation in all five scored series, so the linear model stays](#unit-commitment-lowered-the-price-correlation-in-all-five-scored-series-so-the-linear-model-stays)
 
-## Seven steps take an analyst from the ability list to pesos, then to a file
+## Analyst workflow covers replay accuracy, scenarios, and exports
 
-One recording, no cuts, of the path an analyst who lost a licensed tool actually
-walks. It reads the ability table and the four refusals, then the replay error,
-then a limit that carries a measurement. It opens a whole year solved on
-published plans, takes both Sual units out of the model, and reads what that
-costs a contract book in pesos. It ends by downloading the run as a file that
-`power-dispatch run --scenario` reads back.
+The recording starts with model coverage and limits, then checks replay accuracy
+and the unit-commitment test. It opens the annual simulation, removes both Sual
+units, reviews the contract position, builds a demand scenario, and downloads a
+file that `power-dispatch run --scenario` reads.
 
-[![The recording opens on the analyst page, where a table marks seven abilities Yes, three Partly, and four as refusals. It scrolls to the replay accuracy table, then opens the studio on the unit-commitment test. There Visayas drops from 0.442 to -0.003, and the correlation falls in all five scored series. A whole solved year follows, where 2028 Luzon peaks at 16,180 MW and no day runs short. It takes both 647 MW Sual units out of the fuels table, presses Run, and the contract view reports plus P1.05M on the book, plus P150k on the uncontracted load, and plus P900k net. It ends on Download scenario, which writes three options for the recorded day.](analyst-walkthrough.gif)](analyst-walkthrough.mp4)
+[![The recording opens on model coverage and replay accuracy, then checks the unit-commitment result. The annual simulation shows a 2028 Luzon peak of 16,180 MW and no shortfall days. Both 647 MW Sual units are set to zero. The contract view reports plus P1.05M on the contract book, plus P150k on uncontracted load, and plus P900k net. The final step downloads the scenario file.](analyst-walkthrough.gif)](analyst-walkthrough.mp4)
 
 Recorded from the running app by
-[`build/record_analyst_walkthrough.py`](../build/record_analyst_walkthrough.py). It
-fails if the ability table stops carrying four refusals, if the commitment view
-stops showing its measured delta, if the scenario leaves the position flat, or if
-the download produces no file. Sharper as [MP4](analyst-walkthrough.mp4).
+[`build/record_analyst_walkthrough.py`](../build/record_analyst_walkthrough.py).
+The script checks the four unsupported rows and the measured commitment result.
+It checks that the contract position changes and the download produces a
+file. Sharper as [MP4](analyst-walkthrough.mp4).
 
 ## The Leyte-Cebu link reached a binding limit on 125 of 128 days
 
@@ -556,10 +554,9 @@ builds that year as its own data directory, then the same engine solves every
 date in it. Nothing in the engine changes, because `--data-dir` already points at
 any directory holding `dispatch.json` and `profiles.json`.
 
-Four published inputs, joined: the DOE's own peak-demand path per grid, the DOE's
-committed project list, NGCP's corridor upgrades, and the recorded hourly shapes
-from the archive. Every date borrows a recorded day of its own kind, weekday or
-weekend, so the two shapes stay apart.
+The year builder combines four published inputs. It uses DOE peak demand and
+committed projects, NGCP transmission upgrades, and recorded hourly shapes.
+Every date uses a recorded weekday or weekend shape of the same type.
 
 | Luzon in 2028 | Value | Where it comes from |
 |---|---|---|
@@ -590,9 +587,8 @@ power-dispatch run --data-dir data/derived/future/2028 --date 2028-06-17
 
 ## Both Sual units out gains a 350 MW contract book more than it costs the open position
 
-The model produces an hourly spot price. A supplier, a plant owner, or a factory
-buyer wants the next step: what does that price do to my position? That is
-arithmetic on a contract book, and the book is yours.
+The model produces an hourly spot price. The contract-position view applies
+those prices to a buyer's, supplier's, or plant owner's contract book.
 
 A worked case, on the archive's most recent day. The book holds a 250 MW power
 supply agreement struck at P6.40/kWh and a 100 MW evening block at P9.00/kWh,
@@ -644,8 +640,9 @@ fuel on every grid, to **0.0 MWh**, and no hour's price differs by more than
 optimum unique rides the variable index and the two models number their variables
 differently.
 
-One score still moves: the Mindanao market clearing price correlation goes from
-0.133 to 0.243. Read that as a warning about the metric rather than a gain. The
+The Mindanao market clearing price correlation is the one score that moves. It
+rises from 0.133 to 0.243. This change warns about the metric rather than showing
+a gain. The
 cost model clears near flat, and a correlation against a moving recorded series
 is hypersensitive when the modeled series barely varies. Four tenths of a centavo
 reorders it.
@@ -684,4 +681,3 @@ The linear model stays the default because the measurement chose it.
 `pipeline/uc_probe.py` writes the rows, `tests/test_data.py` pins them, and the
 studio shows them at
 [#v=commitment-test](https://power-dispatch-studio.vercel.app/studio/#v=commitment-test).
-

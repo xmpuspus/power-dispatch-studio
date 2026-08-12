@@ -220,7 +220,7 @@ export function fromScenarioFile(raw: unknown, objects: Objects): LoadResult {
   // options the engine honors and the object tables do not hold
   if (opts.hydrology != null && opts.hydrology !== 1)
     warnings.push(
-      `Hydrology ${opts.hydrology} is a run setting, not a table value. Set it in Quick what-if.`
+      `Hydrology ${opts.hydrology} is a run setting, not a table value. Set it in Scenario builder.`
     )
   if (opts.reserve_deduction)
     warnings.push('Reserve withholding is a run setting. Turn it on in the reserve view.')

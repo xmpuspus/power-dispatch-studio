@@ -4,10 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Power Dispatch Studio for production-cost modelers</title>
-<meta name="description" content="What this free three-zone economic dispatch model solves, what it refuses to solve, how close it gets to recorded Philippine prices, and the four ways to run it." />
+<meta name="description" content="Model coverage, replay accuracy, analyst workflows, operating methods, and stated limits for Power Dispatch Studio." />
 <link rel="canonical" href="https://power-dispatch-studio.vercel.app/for-analysts.html" />
-<meta property="og:title" content="What this free dispatch model solves, and the four things it refuses to solve" />
-<meta property="og:description" content="An ability table, the replay error against recorded Philippine prices, and the four ways to run the same engine: browser, pip, CLI, or your own data directory." />
+<meta property="og:title" content="Power Dispatch Studio model coverage and replay accuracy" />
+<meta property="og:description" content="Coverage, replay results, analyst workflows, operating methods, and model limits for the Philippine WESM dispatch model." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://power-dispatch-studio.vercel.app/for-analysts.html" />
 <meta property="og:image" content="https://power-dispatch-studio.vercel.app/og.png" />
@@ -27,6 +27,12 @@
 })();
 </script>
 <style>
+  @font-face{ font-family:'Fira Sans'; font-style:normal; font-weight:400;
+    font-display:swap; src:url('fonts/fira-sans-latin-400-normal.woff2') format('woff2'); }
+  @font-face{ font-family:'Fira Sans'; font-style:normal; font-weight:600;
+    font-display:swap; src:url('fonts/fira-sans-latin-600-normal.woff2') format('woff2'); }
+  @font-face{ font-family:'Fira Code'; font-style:normal; font-weight:400;
+    font-display:swap; src:url('fonts/fira-code-latin-400-normal.woff2') format('woff2'); }
   :root { --ink:#10212b; --muted:#5b6b75; --line:#dce4e8; --bg:#f6f8f9; --card:#fff;
     --link:#0d5c8c; --code-bg:#edf1f3; --yes:#0f6b3d; --no:#9a3412; }
   :root[data-theme='dark'] { --ink:#e6edf7; --muted:#9fb0c9; --line:#24314c; --bg:#0b1220;
@@ -34,7 +40,7 @@
   html { color-scheme:light; }
   html[data-theme='dark'] { color-scheme:dark; }
   * { box-sizing:border-box; }
-  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.55; }
+  body { margin:0; font-family:'Fira Sans',system-ui,sans-serif; color:var(--ink); background:var(--bg); line-height:1.55; }
   main { max-width:900px; margin:0 auto; padding:32px 20px 80px; }
   h1 { max-width:780px; margin:0 0 8px; font-size:clamp(28px,5vw,42px); line-height:1.08; letter-spacing:-.025em; }
   h2 { margin:38px 0 10px; font-size:21px; line-height:1.25; }
@@ -50,7 +56,7 @@
   th { padding:10px 12px; text-align:left; color:var(--muted); border-bottom:1px solid var(--line); }
   td { padding:11px 12px; vertical-align:top; border-bottom:1px solid var(--line); }
   tr:last-child td { border-bottom:0; }
-  code { padding:1px 5px; border-radius:4px; background:var(--code-bg); font-size:12.5px; }
+  code { padding:1px 5px; border-radius:4px; background:var(--code-bg); font-family:'Fira Code',monospace; font-size:12.5px; }
   pre { margin:12px 0; padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--card); overflow-x:auto; }
   pre code { padding:0; background:none; font-size:12.5px; line-height:1.7; }
   a { color:var(--link); }
@@ -63,9 +69,8 @@
     .grid { grid-template-columns:1fr; }
     main { padding:24px 15px 64px; }
     .table-wrap { overflow:hidden; }
-    /* A capability list read through a horizontal scrollbar is a capability
-       list nobody reads. Both wide tables become one block per row on a phone,
-       with the column name in front of each cell. */
+    /* Stack wide tables by row on phones and repeat the column name before
+       each value. */
     .t-cap, .t-acc, .t-cap tbody, .t-acc tbody, .t-cap tr, .t-acc tr,
     .t-cap td, .t-acc td { display:block; width:100%; min-width:0; }
     .t-cap thead, .t-acc thead { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
@@ -90,34 +95,34 @@
 <body>
 <main>
   <a class="back" href="index.html">Back to the map</a>
-  <h1>A three-zone economic dispatch you can run in a browser, and four things it refuses to do</h1>
-  <p class="lede">Written for an analyst who reads production-cost model output
-  and has no license. This page states what the engine solves, what it leaves
-  out, how close it lands on recorded Philippine prices, and the four ways to
-  run it. It costs nothing and needs no account.</p>
+  <h1>Model coverage and replay accuracy</h1>
+  <p class="lede">Power Dispatch Studio is a three-zone economic dispatch model
+  for the Philippine Wholesale Electricity Spot Market (WESM). This page lists
+  the calculations it performs, its replay results against published prices,
+  the available analyst workflows, and its limits.</p>
 
   <div class="grid">
     <section class="card">
-      <h3>Free, and open all the way down</h3>
-      <p>MIT code, CC-BY-4.0 calculated data, public inputs. The data and the
-      results rebuild from a clean clone.</p>
+      <h3>License and inputs</h3>
+      <p>The code uses the MIT license. Calculated data uses CC BY 4.0. Model
+      inputs come from public records or are labeled assumptions.</p>
     </section>
     <section class="card">
-      <h3>The browser runs the same solver</h3>
-      <p>HiGHS, compiled to WebAssembly. Python and browser build the same
-      linear program text, byte for byte, and a test pins the hash.</p>
+      <h3>Browser and Python calculation</h3>
+      <p>Both interfaces use HiGHS and build the same linear program. A parity
+      test checks the model text and reference results.</p>
     </section>
     <section class="card">
-      <h3>Checked against the market, not against itself</h3>
-      <p>Every recorded day replays against published prices. The error is on
-      the page, not in a footnote.</p>
+      <h3>Replay results</h3>
+      <p>Recorded days are compared with published prices. Correlation, average
+      error, bias, and high-price-hour agreement are reported below.</p>
     </section>
   </div>
 
-  <h2>The engine solves seven things fully, three partly, and skips four</h2>
+  <h2>Model coverage</h2>
   <div class="table-wrap">
     <table class="t-cap">
-      <thead><tr><th>Capability</th><th>Here</th><th>What that means in this engine</th></tr></thead>
+      <thead><tr><th>Capability</th><th>Coverage</th><th>Implementation</th></tr></thead>
       <tbody>
         <tr><td>Economic dispatch, hourly</td><td class="y">Yes</td><td>A linear program over three zones and 24 hours, priced from the balance duals</td></tr>
         <tr><td>Transfer limits between zones</td><td class="y">Yes</td><td>Two high-voltage direct-current links, with an hourly limit and a wheeling cost</td></tr>
@@ -136,13 +141,12 @@
       </tbody>
     </table>
   </div>
-  <p class="fine">The two <span class="n">No</span> rows at the top are one
-  limit rather than two. The linear program dispatches fuel blocks, so a named unit has
-  nowhere to live and commitment has nothing to commit. The
-  <a href="methodology.html">method page</a> carries the measurement that kept it
-  that way.</p>
+  <p class="fine">The model dispatches fuel blocks rather than named units.
+  Unit commitment therefore cannot be applied per plant. The
+  <a href="methodology.html">method page</a> documents the unit-commitment test
+  and the resulting model choice.</p>
 
-  <h2>How close it gets: the offer replay lands between 0.69 and 0.86</h2>
+  <h2>Replay accuracy</h2>
   <p>Every recorded day replays two ways. The cost model prices a competitive
   fuel-cost floor. The offer replay clears the market operator's own published
   bid book. Neither reproduces every price, and the table states the gap that
@@ -168,10 +172,10 @@
   build rewrites this table from the current archive, so it cannot freeze behind
   the data.</p>
 
-  <h2>Your vocabulary maps onto these views</h2>
+  <h2>Analysis views by task</h2>
   <div class="table-wrap">
     <table class="t-voc">
-      <thead><tr><th>What you would call it</th><th>Where it is</th></tr></thead>
+      <thead><tr><th>Analyst task</th><th>Studio view</th></tr></thead>
       <tbody>
         <tr><td>Short-term schedule, one day</td><td><a href="studio/#v=chronology">Hourly market replay</a></td></tr>
         <tr><td>Supply curve and price setter</td><td><a href="studio/#v=merit-order">Merit order</a>, <a href="studio/#v=marginal-units">Marginal units</a></td></tr>
@@ -182,30 +186,29 @@
         <tr><td>Capture price by technology</td><td><a href="studio/#v=capture-prices">Average price earned by each technology</a></td></tr>
         <tr><td>Interface and transfer limits</td><td><a href="studio/#v=coupled-flows">Power between island grids</a></td></tr>
         <tr><td>Locational marginal price</td><td><a href="studio/#v=nodal-prices">Prices at grid connection points</a></td></tr>
-        <tr><td>Reserve co-optimization</td><td><a href="studio/#v=reserve-market">Backup capacity market</a></td></tr>
+        <tr><td>Reserve co-optimization</td><td><a href="studio/#v=reserve-market">Reserve market</a></td></tr>
         <tr><td>Capacity expansion, least cost</td><td><a href="studio/#v=expansion-mix">Lowest-cost expansion mix</a></td></tr>
         <tr><td>Market power, HHI, residual supply</td><td><a href="studio/#v=market-power">Supplier concentration</a></td></tr>
-        <tr><td>Contract position, hedge cover</td><td><a href="studio/#v=contract-position">Your contract position</a></td></tr>
-        <tr><td>Backcast, model validation</td><td><a href="studio/#v=backcast">Historical replay</a></td></tr>
-        <tr><td>Unit commitment</td><td><a href="studio/#v=commitment-test">The test, and why it stays off</a></td></tr>
+        <tr><td>Contract position, hedge cover</td><td><a href="studio/#v=contract-position">Contract position</a></td></tr>
+        <tr><td>Backcast, model validation</td><td><a href="studio/#v=backcast">Replay accuracy</a></td></tr>
+        <tr><td>Unit commitment</td><td><a href="studio/#v=commitment-test">Unit-commitment test</a></td></tr>
         <tr><td>Input database</td><td><a href="studio/#v=generators">Generators</a>, <a href="studio/#v=fuels">Fuels</a>, <a href="studio/#v=interfaces">Inter-grid links</a></td></tr>
         <tr><td>Solution file, report</td><td><a href="studio/#v=saved-runs">Saved runs</a>, which writes an HTML report and an hourly CSV</td></tr>
       </tbody>
     </table>
   </div>
 
-  <h2>Four ways to run it, and the fastest one takes no install</h2>
+  <h2>Ways to run the project</h2>
   <ul>
-    <li><b>The map.</b> <a href="index.html">Five modes over the archive</a>, plus a simulate that re-solves in the browser.</li>
-    <li><b>The studio.</b> <a href="studio/">Forty-two views</a>, a command palette, and a scenario that travels as a link.</li>
-    <li><b>Python.</b> <code>pip install power-dispatch-studio</code>, then one line in a notebook. A dated archive snapshot ships inside the wheel, so it runs offline.</li>
-    <li><b>A clone.</b> <code>make data</code> rebuilds every number from the committed raw files, with no network.</li>
+    <li><b>Map.</b> <a href="index.html">Review the archive by location</a> and run a basic demand scenario.</li>
+    <li><b>Studio.</b> <a href="studio/">Follow an analyst workflow</a>, search the full view library, and share a scenario link.</li>
+    <li><b>Python.</b> Install <code>power-dispatch-studio</code> for notebooks and scripts. The package includes a dated archive snapshot for offline use.</li>
+    <li><b>Repository.</b> Run <code>make data</code> to rebuild calculated data from the committed source files.</li>
   </ul>
 
-  <h2>Your own system runs on the same engine</h2>
-  <p>The engine reads a directory holding two files. Write your own pair and it
-  models your system instead of the Philippine one. Nothing in those files has to
-  be Philippine.</p>
+  <h2>Use other system data</h2>
+  <p>The engine reads <code>dispatch.json</code> and <code>profiles.json</code>
+  from a supplied directory. Those files can describe a different power system.</p>
 <pre><code>pip install power-dispatch-studio
 power-dispatch run --data-dir ./mysystem --date 2030-01-01</code></pre>
   <p>The
@@ -214,17 +217,16 @@ power-dispatch run --data-dir ./mysystem --date 2030-01-01</code></pre>
   system that runs. A test builds that system, solves it, and fails when the
   document stops matching the engine.</p>
 
-  <h2>Four things a licensed tool gives you that this does not</h2>
-  <p>Say it plainly, because you will find it in the first hour anyway.</p>
+  <h2>Model limits</h2>
+  <p>The following calculations are outside this model's scope.</p>
   <ul>
     <li>No named unit, so no per-unit commitment, start cost, or minimum run time.</li>
     <li>No full network model. Transmission geometry comes from OpenStreetMap, and the ratings are class defaults.</li>
     <li>No multi-year chronology. A year of days is 365 separate 24-hour programs, with storage reset at each midnight.</li>
     <li>Three zones, so nothing below the island grid except the reduced loss surface.</li>
   </ul>
-  <p>Everything in that list is a stated limit with a reason, and two of them
-  carry a measurement. The
-  <a href="methodology.html">method page</a> holds the rest.</p>
+  <p>The <a href="methodology.html">method page</a> explains these limits and
+  identifies the source records, calculations, and assumptions used elsewhere.</p>
 
   <p class="fine">Code uses the MIT license. Calculated data products use CC BY
   4.0. Source records stay the property of their publishers.</p>

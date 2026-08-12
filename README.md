@@ -7,21 +7,24 @@ and compare backcasts with recorded prices. Browser use needs no account or
 local installation.
 
 [![CI](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/xmpuspus/power-dispatch-studio/actions/workflows/ci.yml)
-[![License: MIT code, CC BY 4.0 data](https://img.shields.io/badge/license-MIT%20code%20%2B%20CC--BY--4.0%20data-blue)](LICENSE)
+[![License, MIT code and CC BY 4.0 data](https://img.shields.io/badge/license-MIT%20code%20%2B%20CC--BY--4.0%20data-blue)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![PyPI](https://img.shields.io/pypi/v/power-dispatch-studio?color=blue)](https://pypi.org/project/power-dispatch-studio/)
 
-[<img width="820" alt="The map through its five modes. A question rail on the left opens on the figure 41 percent, with the three questions under it. That is the share of the May 2026 supply margin one 2028 data-center forecast would take. The readout on the right changes with the mode. Supply compares that margin with announced megawatts, and Choke points names the 230 kV equipment at a limit. Prices separates the three grids, Daily market record shows the archive by date, and Simulate recalculates the price." src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
+[<img width="820" alt="Power Dispatch Studio opens on the Philippine grid and links directly to the market-day and scenario workflows. The map shows supply, grid limits, regional prices, daily market records, and a browser scenario." src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
 
-## Choose an interface
+## Start with an analyst task
 
-| Use case | Start here |
+| Task | Start here |
 |---|---|
-| **Public map.** Review grid constraints, supply margins, and market prices. | **[Open the map](https://power-dispatch-studio.vercel.app)**. Five modes cover the archive and a demand scenario. |
-| **Browser analysis.** Replay a market day, change demand or capacity, and compare results. | **[Open the studio](https://power-dispatch-studio.vercel.app/studio/)**. It has 42 views, a command palette, and scenario URLs. |
-| **Python workflow.** Run the model from local code or scripts. | `pip install power-dispatch-studio`, then `power-dispatch run --date 2026-06-17`. [Three worked examples](examples/). |
+| Review a recorded market day | [Open Market day](https://power-dispatch-studio.vercel.app/studio/#v=chronology) for prices, dispatch, demand, constraints, and replay results. |
+| Test a change to demand or supply | [Open Scenario analysis](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario), run the change, and compare it with the base case. |
+| Check outages and supply risk | [Open Supply risk](https://power-dispatch-studio.vercel.app/studio/#v=adequacy) for scheduled outages, reserve margin, N-1, and shortfall probability. |
+| Review a connection site | [Open Connection study](https://power-dispatch-studio.vercel.app/studio/#v=siting) for site load, transfer limits, and connection-point prices. |
+| Inspect the geographic record | [Open the public map](https://power-dispatch-studio.vercel.app) for supply, constraints, prices, and named infrastructure. |
+| Run from Python or a script | Install `power-dispatch-studio`, then run `power-dispatch run --date 2026-06-17`. See the [worked examples](examples/). |
 
-## Sample result for 3,000 MW of added Luzon demand
+## Example scenario with 3,000 MW of added Luzon demand
 
 One 2028 data-center forecast equals 41% of the whole system's May 2026 supply
 margin. Adding that demand in [Simulate](https://power-dispatch-studio.vercel.app/?q=simulate&dc=3000)
@@ -31,7 +34,7 @@ when opened.
 
 ![Four dark cards tiled into one summary. The constrained substations drawn on the Philippine grid, with the Leyte-Cebu link on top. The Luzon price-against-load curve, where the same 300 MW adds about P0.32/kWh on a quiet grid and about five times that on a full one. The May 2026 margin as 36 blocks of 100 MW, with Sual's two units taking 13 of them. The Meralco June 2026 bill split three ways, where the spot slice is about a twentieth of the whole rate](docs/story-montage.gif)
 
-## What the project includes
+## Data and calculations included
 
 - **Nightly IEMOP archive.** The market operator publishes a rolling 90-day
   window. This repository fetches it every night, and Git history keeps files
@@ -47,21 +50,18 @@ when opened.
   with the data build and fails when a value drifts.
 
 **[Read the eleven findings](docs/findings.md)** for the supporting evidence.
-**[The 42 studio views](docs/studio-views.md)** lists every deep link.
+The **[Studio view catalog](docs/studio-views.md)** lists every deep link.
 
-The README downloads 7.0 MB of media across 2 files. The findings and Studio
+The README downloads 6.5 MB of media across 2 files. The findings and Studio
 catalog link to the remaining media instead of embedding it here.
 
-## Comparison with related power-system tools
+## Related power-system tools
 
-| Project | Scope | Capabilities outside this project | Power Dispatch Studio differences |
+| Project | Scope | Capabilities outside this project | Included in Power Dispatch Studio |
 |---|---|---|---|
-| [PyPSA-PH](https://github.com/arizeosalac/PyPSA-PH) | An open Philippine power-system model on PyPSA | A 192-node network with 425 units and 236 lines | A nightly IEMOP archive, replay error against recorded prices, and shareable browser scenarios |
-| [PyPSA](https://github.com/PyPSA/PyPSA) | An open power-system analysis toolbox | Capacity expansion, unit commitment, and a large user community | Archived and derived Philippine market data with a browser interface |
+| [PyPSA-PH](https://github.com/arizeosalac/PyPSA-PH) | Philippine PyPSA model | 192 nodes, 425 units, and 236 lines | Nightly IEMOP archive, replay errors, and browser scenarios |
+| [PyPSA](https://github.com/PyPSA/PyPSA) | Power-system analysis toolbox | Capacity expansion and unit commitment | Philippine market data and a browser interface |
 | [PowerSimulations.jl](https://github.com/NREL-Sienna/PowerSimulations.jl) | NREL's power-system simulation library | Security-constrained unit commitment and production-simulation workflows | A browser interface and bundled Philippine system data |
-
-Power Dispatch Studio preserves IEMOP's rolling public files and reports replay
-error against recorded prices.
 
 ## Model scope
 
@@ -72,7 +72,7 @@ See the [six documented model limits](docs/findings.md) and the
 [scope guidance for production-cost analysts](web/for-analysts.html).
 
 
-## The repository preserves IEMOP's rolling public files
+## Archive operation
 
 - **The daily archive preserves IEMOP files after the public window closes.**
   IEMOP's public window rolls by about 90 days per dataset.
@@ -99,7 +99,7 @@ See the [six documented model limits](docs/findings.md) and the
 - The model does not forecast prices. It uses a simplified merit-order stack
   compared with recorded prices. It shows what a competitive cost stack does and
   does not explain, and is not a predictor. Each plant entry cites its source.
-  The fuel-availability and per-grid-split assumptions are labeled as such.
+  The project labels fuel-availability and per-grid-split assumptions.
 - The data-center list is not complete. Cushman counts 24 operational facilities,
   and DataCenterMap lists 44. The map shows only publicly sourced sites, at city precision.
 - The grid lines do not reproduce NGCP's network model. They follow real routes as mapped
@@ -158,10 +158,10 @@ make e2e         # behavioral checks against the running map
 The clone carries the archive, so `make data` works with no network. `make help`
 lists every target.
 
-### Use your own system data
+### Use another system data directory
 
 The package reads a directory holding `dispatch.json` and `profiles.json`.
-Create both files and pass their directory to the command line.
+Create both files and pass that directory to the command line.
 
 ```bash
 power-dispatch run --data-dir /path/to/your/build --date 2030-01-01
@@ -215,7 +215,7 @@ public market data archive, https://github.com/xmpuspus/power-dispatch-studio*.
 ## Public-record disclaimer
 
 Recorded inputs cite public records from IEMOP, NGCP, Meralco, PCIJ, and company
-announcements. Calculated results and model assumptions are labeled separately.
+announcements. The pages label calculated results and model assumptions separately.
 This tool computes statistical indicators only. Patterns may have legitimate
 explanations. Specific allegations need independent investigation and
 supporting evidence.

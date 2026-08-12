@@ -87,7 +87,7 @@ pd.validate_scenario(scenario)      # a list of messages, and never raises
 pd.load_scenario("myscenario.json") # raises ValueError carrying all of them
 ```
 
-### Your contract position
+### Contract position
 
 A scenario file can carry a contract book, and the engine never reads it.
 `settle` marks the book against the modeled spot price, and `compare_position`
@@ -104,8 +104,8 @@ wheeling charge, no tax, and no credit terms.
 The full key table is in the
 [scenario schema](https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/scenario-schema.md).
 
-The operator publishes an offer book several days after the day itself, so the
-newest replayable day usually has none. `days --offer` lists the ones that do,
+The operator publishes each offer book after its trading day, so the newest
+replayable day usually has none. `days --offer` lists the ones that do,
 and `--offer-mode` on a day without one says so and stops.
 
 ## The data snapshot
@@ -119,7 +119,7 @@ power-dispatch run --date 2026-07-01 --data-dir /path/to/web/data
 # or: export POWER_DISPATCH_DATA=/path/to/web/data
 ```
 
-That same flag runs your own system. The directory needs `dispatch.json` and
+Pass `--data-dir` to run a different dataset. The directory needs `dispatch.json` and
 `profiles.json`, and nothing in it has to be Philippine. The
 [data contract](https://github.com/xmpuspus/power-dispatch-studio/blob/main/docs/data-contract.md)
 lists every key, with a 30-line system that runs. A test in the repository
@@ -133,7 +133,7 @@ not a price forecast, and offer mode replays the market's published bids rather
 than simulating bidding strategy. Recorded market inputs trace to the Independent
 Electricity Market Operator of the Philippines (IEMOP). Fleet and cost inputs cite
 their own sources. Caller inputs and model assumptions have separate labels. The
-Historical replay view and method page report the calculation error. Read the
+Replay accuracy and the method page report the calculation error. Read the
 [full method](https://power-dispatch-studio.vercel.app/methodology.html).
 
 The engine dispatches fuel blocks per island grid, so it holds no named units and

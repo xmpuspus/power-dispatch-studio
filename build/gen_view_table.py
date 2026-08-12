@@ -1,4 +1,4 @@
-"""Render the README's 42-view deep-link table straight out of nav.ts.
+"""Render the Studio view catalog's deep-link table from nav.ts.
 
 Every studio view is addressable as `#v=<slug>`, so the README can carry all 42
 for the price of some text rather than 39 embedded clips. GitHub applies no
@@ -9,7 +9,7 @@ down, so the table is generated from it and pinned by tests/test_readme_views.py
 Hand-editing a row is what this exists to prevent.
 
     python3 build/gen_view_table.py            # print the block
-    python3 build/gen_view_table.py --write    # replace it in README.md
+    python3 build/gen_view_table.py --write    # replace it in docs/studio-views.md
 """
 
 import re
@@ -18,7 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 NAV = ROOT / "studio" / "src" / "shell" / "nav.ts"
-README = ROOT / "README.md"
+CATALOG = ROOT / "docs" / "studio-views.md"
 LIVE = "https://power-dispatch-studio.vercel.app/studio/"
 START = "<!-- views table start -->"
 END = "<!-- views table end -->"
@@ -51,7 +51,7 @@ def destinations() -> list[dict]:
 
 
 def render(dests: list[dict]) -> str:
-    lines = [START, "", "| Question | View | What it answers |", "|---|---|---|"]
+    lines = [START, "", "| Source group | View | What it answers |", "|---|---|---|"]
     seen = set()
     for d in dests:
         col = d["group"] if d["group"] not in seen else ""
@@ -66,13 +66,13 @@ def main() -> None:
     if "--write" not in sys.argv:
         print(block)
         return
-    text = README.read_text()
+    text = CATALOG.read_text()
     if START not in text or END not in text:
-        sys.exit(f"markers {START} / {END} not found in README.md")
+        sys.exit(f"markers {START} / {END} not found in docs/studio-views.md")
     head, rest = text.split(START, 1)
     _, tail = rest.split(END, 1)
-    README.write_text(head + block + tail)
-    print(f"wrote {len(destinations())} rows into README.md")
+    CATALOG.write_text(head + block + tail)
+    print(f"wrote {len(destinations())} rows into docs/studio-views.md")
 
 
 if __name__ == "__main__":

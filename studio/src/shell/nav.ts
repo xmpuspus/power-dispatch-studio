@@ -94,8 +94,8 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'five-minute-replay',
-        label: '5-minute replay',
-        hint: "The operator's own 5-minute dispatch intervals, replayed",
+        label: '5-minute dispatch replay',
+        hint: 'Published five-minute dispatch intervals compared with the replay',
         nav: { kind: 'analysis', id: 'rtdoe5' },
         scoped: true,
         alias: 'rtd rtdoe interval real time',
@@ -234,7 +234,7 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'contract-position',
-        label: 'Your contract position',
+        label: 'Contract position',
         hint: 'What a scenario does to a book of contracts, in pesos',
         nav: { kind: 'analysis', id: 'contracts' },
         alias: 'ppa psa hedge settlement position exposure retail supplier book strike',
@@ -264,8 +264,8 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'reserve-market',
-        label: 'Backup capacity market (reserves)',
-        hint: 'How buying backup capacity with energy affects the energy price',
+        label: 'Reserve market',
+        hint: 'How co-optimized reserve capacity affects the energy price',
         nav: { kind: 'analysis', id: 'reserve' },
         scoped: true,
         alias: 'ancillary services co-clear regulating',
@@ -299,7 +299,7 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'future-year',
-        label: 'A whole year, solved',
+        label: 'Annual simulation',
         hint: 'Every date in a target year, on the published demand path and build list',
         nav: { kind: 'analysis', id: 'futureyear' },
         scoped: true,
@@ -327,8 +327,8 @@ export const GROUPS: Group[] = [
     dests: [
       {
         slug: 'quick-scenario',
-        label: 'Quick what-if',
-        hint: 'Move a slider and all three grids recalculate immediately',
+        label: 'Scenario builder',
+        hint: 'Change demand, supply, storage, or transfer limits and recalculate all three grids',
         nav: { kind: 'quick' },
         live: true,
         alias: 'lever slider what if simulate add data center storage',
@@ -343,7 +343,7 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'saved-runs',
-        label: 'Saved simulation runs',
+        label: 'Saved runs',
         hint: 'Runs kept in this browser, ready to restore',
         nav: { kind: 'runs' },
         alias: 'history restore bookmark',
@@ -357,7 +357,7 @@ export const GROUPS: Group[] = [
       },
       {
         slug: 'ensembles',
-        label: 'Range across repeated simulations',
+        label: 'Simulation range',
         hint: 'Repeated simulations of one scenario and the range of results',
         nav: { kind: 'analysis', id: 'ensemble' },
         alias: 'sampling uncertainty draws band',
@@ -370,7 +370,7 @@ export const GROUPS: Group[] = [
     dests: [
       {
         slug: 'backcast',
-        label: 'Historical replay',
+        label: 'Replay accuracy',
         hint: 'Every market day replayed against the observed price',
         nav: { kind: 'analysis', id: 'backcast' },
         scoped: true,

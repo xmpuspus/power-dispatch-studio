@@ -19,6 +19,14 @@ async def tap(page, locator, pause_before=0.35, pause_after=1.4):
     await asyncio.sleep(pause_after)
 
 
+async def open_view(page, name, pause_after=1.4):
+    await page.get_by_role("button", name="Find a view").click()
+    search = page.get_by_label("Search views")
+    await search.fill(name)
+    await search.press("Enter")
+    await asyncio.sleep(pause_after)
+
+
 async def main():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
@@ -35,17 +43,7 @@ async def main():
         await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
         await asyncio.sleep(3.0)  # the base case solves on load
 
-        # The studio opens on the what-if controls, so reach the fleet table first.
-        await page.evaluate(
-            """() => { document.querySelectorAll('.rail__grouphead').forEach(b => {
-                 if (b.getAttribute('aria-expanded') === 'false') b.click() }) }"""
-        )
-        await asyncio.sleep(0.4)
-        await tap(
-            page,
-            page.get_by_role("button", name="Generators", exact=True),
-            pause_after=1.4,
-        )
+        await open_view(page, "Generators")
 
         # trip a Sual unit in the Properties grid: SPI U1 from 647 to 0 MW
         spi = page.locator('input[aria-label="SPI U1 Dependable"]')
@@ -64,20 +62,8 @@ async def main():
             pause_after=1.6,
         )
 
-        # Hourly market replay: run an observed day on the edited model
-        # the question rail replaced the System/Simulation tabs; open every group
-        await page.evaluate(
-            """() => {
-              document.querySelectorAll('.rail__grouphead').forEach(b => {
-                if (b.getAttribute('aria-expanded') === 'false') b.click()
-              })
-            }"""
-        )
-        await tap(
-            page,
-            page.get_by_role("button", name="Hourly market replay"),
-            pause_after=3.2,
-        )
+        # Hourly market replay: run an observed day on the edited model.
+        await open_view(page, "Hourly market replay", pause_after=3.2)
         # scroll through dispatch-by-fuel and the storage state of charge
         await page.mouse.move(W // 2, H // 2)
         for _ in range(3):
@@ -90,18 +76,10 @@ async def main():
 
         # Save the calculation, then open the saved-runs list.
         await tap(page, page.get_by_role("button", name="Save run"), pause_after=1.4)
-        await tap(
-            page,
-            page.get_by_role("button", name="Saved simulation runs"),
-            pause_after=2.6,
-        )
+        await open_view(page, "Saved runs", pause_after=2.6)
 
         # Compare the base model with recorded prices.
-        await tap(
-            page,
-            page.get_by_role("button", name="Historical replay"),
-            pause_after=3.4,
-        )
+        await open_view(page, "Replay accuracy", pause_after=3.4)
         await page.mouse.wheel(0, 420)
         await asyncio.sleep(2.0)
         await page.mouse.wheel(0, -420)
@@ -109,11 +87,7 @@ async def main():
 
         # Compare the transmission-loss calculation with recorded node prices.
         # per-node prices, the newest analysis surface
-        await tap(
-            page,
-            page.get_by_role("button", name="Transmission-loss check"),
-            pause_after=3.4,
-        )
+        await open_view(page, "Transmission-loss check", pause_after=3.4)
         await page.mouse.wheel(0, 300)
         await asyncio.sleep(2.2)
         await page.mouse.wheel(0, -300)

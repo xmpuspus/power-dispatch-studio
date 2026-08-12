@@ -160,7 +160,7 @@ export function DistributionView({
           the selected scenario. No synthetic days are added. Judge the scenario from the
           full price range before checking the highest-price day. The recorded duration
           line includes scarce, high-price hours that this cost model does not price. The
-          Historical replay view reports that difference for each grid.
+          Replay accuracy reports that difference for each grid.
         </p>
       </Panel>
     </div>
