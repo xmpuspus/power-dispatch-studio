@@ -94,7 +94,8 @@ checks.append(("price-duration + marginal-frequency generated",
                and bool(disp.get("marginal_frequency", {}).get("luzon", {}).get("by_block"))))
 html = urllib.request.urlopen(base + "/").read().decode()
 checks.append(("page mentions the three questions",
-               "Can the grid handle" in json.dumps(ans) and "Power Dispatch Studio" in html))
+               "Can supply cover additional data-center demand?" in json.dumps(ans)
+               and "Power Dispatch Studio" in html))
 checks.append(("disclaimer on page", "legitimate explanations" in html))
 checks.append(("og:image tag present", 'property="og:image"' in html))
 checks.append(("findings drawer markup present", 'id="findings"' in html))
