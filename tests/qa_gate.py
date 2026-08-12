@@ -154,6 +154,13 @@ AI_TELLS = [
         r"\bfor everything else on the list, pick them\b",
     ),
     ("reader payment metaphor", r"\bvisitor pays for them\b"),
+    (
+        "paper-practice contrast",
+        r"\bone market on paper, three prices in practice\b",
+    ),
+    ("story framing", r"\bthe same story with unit names\b"),
+    ("normal-state slogan", r"\bthin is the normal state\b"),
+    ("margin metaphor", r"\btakes? \d+% of the margin with it\b"),
 ]
 
 

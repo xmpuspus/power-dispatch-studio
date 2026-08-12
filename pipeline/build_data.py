@@ -684,16 +684,16 @@ def build_findings(cong, rel, prices, outs, named_dc_mw, n_dc) -> dict:
         )
     add(
         "wave-vs-margin",
-        "The arithmetic",
-        "Announced data-center demand is a large share of the supply margin",
+        "Supply margin",
+        "Announced data-center demand equals a large share of the supply margin",
         f"{dict_fc['mw']:,} MW forecast (DICT, by 2028) against a "
         f"{margin:,} MW May 2026 system supply margin",
         f"The DICT forecast alone equals {round(100 * dict_fc['mw'] / margin)}% "
         f"of the whole system's May margin; Meralco has committed "
         f"{mer['mw']:,} MW for 10 data centers. The {n_dc} pinned sites with a "
-        f"public figure name {named_dc_mw:,} MW between them, and a data "
-        f"center is near-flat 24/7 load: it consumes margin in every interval, "
-        f"not just at the evening peak.",
+        f"public figure name {named_dc_mw:,} MW between them. Data centers "
+        f"use near-flat load across the day, including hours outside the "
+        f"evening peak.",
         "IEMOP May 2026 report; DICT via BusinessWorld; PCIJ",
         [121.05, 14.45],
         8.2,
@@ -705,16 +705,16 @@ def build_findings(cong, rel, prices, outs, named_dc_mw, n_dc) -> dict:
         curt_mwh = round(sum(t[g]["curtailed_mwh_total"] for g in t), 1)
         add(
             "thin-normal",
-            "Thin is the normal state",
-            "Reserves ran below requirement on most days",
+            "Reserve record",
+            "Scheduled reserves fell below requirement on most days",
             f"Luzon scheduled reserves fell below the stated requirement on "
             f"{t['luzon']['reserve_shortfall_days']} of "
             f"{t['luzon']['days']} archive days",
-            f"In the operator's own dispatch schedules, load was curtailed on "
+            f"IEMOP dispatch schedules show that load was curtailed on "
             f"{curt_days} grid-days in this window ({curt_mwh:,} MWh), and the "
             f"Visayas ran short of scheduled reserves on "
-            f"{t['visayas']['reserve_shortfall_days']} days. Thin margins are "
-            f"the observed normal state, not a forecast.",
+            f"{t['visayas']['reserve_shortfall_days']} days. These are "
+            f"recorded operating conditions in the archive window.",
             "IEMOP RTD regional summaries, archive window",
             [121.5, 15.0],
             6.4,
@@ -726,7 +726,7 @@ def build_findings(cong, rel, prices, outs, named_dc_mw, n_dc) -> dict:
     if mk and ad and P.get("max_spread"):
         add(
             "market-prices-geography",
-            "One market, three regional prices",
+            "Regional prices",
             "Regional prices separated after market trading resumed",
             f"Administered window: the three grids priced within "
             f"P{ad['max_spread']}/kWh of each other. Market window: a mean "
@@ -734,7 +734,7 @@ def build_findings(cong, rel, prices, outs, named_dc_mw, n_dc) -> dict:
             f"three grids",
             f"While WESM was suspended (through {P['resumed']}), daily "
             f"regional prices were near-identical. After trading resumed, the "
-            f"islands split: Luzon P{mk['means']['luzon']}, Visayas "
+            f"average prices were Luzon P{mk['means']['luzon']}, Visayas "
             f"P{mk['means']['visayas']}, Mindanao P{mk['means']['mindanao']} "
             f"per kWh on average, with {mk['days_spread_gt5']} days spreading "
             f"beyond P5/kWh and a widest daily spread of "
@@ -751,17 +751,17 @@ def build_findings(cong, rel, prices, outs, named_dc_mw, n_dc) -> dict:
         sual_pct = round(100 * 647 / margin)
         add(
             "sual-arithmetic",
-            "One large outage",
-            f"One plant trip takes {sual_pct}% of the margin with it",
+            "Outage arithmetic",
+            f"One 647 MW Sual unit equals {sual_pct}% of the system margin",
             f"One 647 MW Sual unit equals {sual_pct}% of the May 2026 system margin",
-            f"Sual's two 647 MW units are among the largest on the Luzon grid, "
-            f"though not the largest: GNPower Dinginin runs 2x668 MW, and the "
-            f"market's own Luzon contingency reserve requirement sits at that "
-            f"same 668 MW. The archive's outage schedules list a Sual unit "
+            f"Sual's two 647 MW units are among the largest on the Luzon grid. "
+            f"GNPower Dinginin runs 2x668 MW, and the Luzon contingency "
+            f"reserve requirement is also 668 MW. The archive's outage "
+            f"schedules list a Sual unit "
             f"out on {sual_days} day{'s' if sual_days != 1 else ''} in this "
             f"window; the map's toggle "
-            f"subtracts one unit from the published margin as arithmetic, not "
-            f"a dispatch simulation.",
+            f"subtracts one unit from the published margin. This is arithmetic "
+            f"based on the published margin, not a dispatch simulation.",
             "IEMOP outage schedules used in RTD; IEMOP May 2026 report",
             [120.1, 16.12],
             7.8,
@@ -772,8 +772,9 @@ def build_findings(cong, rel, prices, outs, named_dc_mw, n_dc) -> dict:
         worst = (v or {}).get("worst_curtailment") or {}
         add(
             "streak-ended",
-            "Alert season",
-            f"A {A['visayas_yellow_streak_days']}-day Visayas alert streak just ended",
+            "Visayas alerts",
+            f"Visayas daily yellow alerts ran for "
+            f"{A['visayas_yellow_streak_days']} days",
             f"Daily yellow alerts ran {A['visayas_yellow_streak_from']} to "
             f"{A['visayas_yellow_streak_to']}",
             f"The streak ended when one 150 MW unit returned; "
@@ -820,7 +821,7 @@ def build_answers(cong, rel, prices, outs) -> dict:
     )
     if curt_days is not None:
         q1_blurb += (
-            f" The operator's own dispatch schedules recorded load "
+            f" IEMOP dispatch schedules recorded load "
             f"curtailed on {curt_days} grid day{'s' if curt_days != 1 else ''} "
             f"in this archive "
             f"window ({curt_mwh:,} MWh). Headroom for added demand of this size "
@@ -840,7 +841,7 @@ def build_answers(cong, rel, prices, outs) -> dict:
         "announced data-center megawatt sits on Luzon, which already supplies "
         "power south over those links. One Sual "
         f"unit (647 MW) equals {round(100 * 647 / margin)}% of the May "
-        "system margin, which is why a single trip moves the whole grid."
+        "system margin."
     )
     if short_days is not None and short_days > 0:
         q2_blurb += (
@@ -860,10 +861,7 @@ def build_answers(cong, rel, prices, outs) -> dict:
         f"P{A['wesm_may2026_luzon']}, Visayas P{A['wesm_may2026_visayas']}, "
         f"Mindanao P{A['wesm_may2026_mindanao']}"
     )
-    q3_blurb = (
-        "One market on paper, three prices in practice: when a link "
-        "binds, the islands price apart."
-    )
+    q3_blurb = "Regional prices can separate when an inter-grid link reaches its limit."
     reg = (prices.get("regimes") or {}) if prices else {}
     mk, ad = reg.get("market"), reg.get("administered")
     if mk and ad and ad.get("max_spread") is not None:
@@ -898,16 +896,16 @@ def build_answers(cong, rel, prices, outs) -> dict:
     return {
         "window": win,
         "q1": {
-            "title": "Can the grid handle more data centers? Is there supply?",
-            "verdict": "Only with new firm supply: announced data-center demand is the "
-            "size of the margin.",
+            "title": "Can supply cover additional data-center demand?",
+            "verdict": "The announced demand is a large share of the margin and "
+            "would require additional firm supply.",
             "stat": q1_stat,
             "blurb": q1_blurb,
             "src": "IEMOP May 2026 report; PCIJ (Meralco commitment); DICT "
             "forecast via BusinessWorld; IEMOP RTD regional summaries",
         },
         "q2": {
-            "title": "Is the infrastructure ready? Where would they have to sit?",
+            "title": "Where can new demand connect?",
             "verdict": "Public records name the grid limits. New sites behind "
             "those limits face the same constraint.",
             "stat": q2_stat,
@@ -916,9 +914,9 @@ def build_answers(cong, rel, prices, outs) -> dict:
             "report; IEMOP outage schedules",
         },
         "q3": {
-            "title": "What would it do to market and retail prices?",
-            "verdict": "The market already prices the geography daily; the "
-            "bill follows monthly.",
+            "title": "How does added demand affect prices?",
+            "verdict": "Regional prices respond each day. Retail bills reflect "
+            "the monthly purchase mix.",
             "stat": q3_stat,
             "blurb": q3_blurb,
             "src": "IEMOP monthly reports; archived LWAP files; Meralco June "

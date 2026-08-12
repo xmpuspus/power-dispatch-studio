@@ -10,7 +10,7 @@
      search engines should keep. The title carries the number, because a
      text-only unfurl shows no image. -->
 <meta property="og:title" content="One 2028 data-center forecast is 41% of the Philippine grid's spare capacity" />
-<meta property="og:description" content="Replay and stress-test the Philippine wholesale power market from public records. A daily IEMOP archive, transparent browser dispatch, price backcasts, and shareable scenarios. No account required." />
+<meta property="og:description" content="Replay and stress-test the Philippine wholesale power market from public records. Daily IEMOP files, browser dispatch scenarios, price backcasts, and scenario URLs." />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Power Dispatch Studio" />
 <meta property="og:url" content="https://power-dispatch-studio.vercel.app/" />
@@ -18,7 +18,7 @@
 <meta property="og:image:alt" content="The Philippine grid with announced data-center demand drawn against the system's spare capacity." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="One 2028 data-center forecast is 41% of the Philippine grid's spare capacity" />
-<meta name="twitter:description" content="Replay and stress-test the Philippine wholesale power market from public records. No account required." />
+<meta name="twitter:description" content="Replay and stress-test the Philippine wholesale power market with archived IEMOP files." />
 <meta name="twitter:image" content="https://power-dispatch-studio.vercel.app/og.png" />
 <script>
 // Runs before the first paint, so the page never shows one theme and swaps.
@@ -583,20 +583,20 @@
   <div class="rail__scroll">
     <div id="hero">
       <p class="d-fig" id="d-fig">&hellip;</p>
-      <h1 class="d-claim" id="d-claim">Announced data centers are measured against the whole system's spare capacity.</h1>
+      <h1 class="d-claim" id="d-claim">Announced data-center demand and system supply margin</h1>
       <p class="d-sub" id="d-sub">Loading the archive.</p>
       <a id="studiolink" href="studio/">Open the dispatch studio <span aria-hidden="true">&rarr;</span></a>
     </div>
     <div id="qs" role="group" aria-label="The three questions"></div>
     <div id="qextra" hidden></div>
     <div id="tools">
-      <p class="tools__h">Go deeper</p>
-      <button id="fopen" aria-expanded="false"><span>Key findings, computed from the archive</span><span aria-hidden="true">&rarr;</span></button>
+      <p class="tools__h">Details</p>
+      <button id="fopen" aria-expanded="false"><span>Archive findings</span><span aria-hidden="true">&rarr;</span></button>
       <!-- Case study, so it leads on power. Leading on the water comparison put
            a claim about Makati's water on the front door of a grid model, which
            reads as a different project. The water numbers are on the page. -->
-      <a id="paxlink" class="golink" href="pax-silica.html">Case study: one announced campus, 3,000 MW &rarr;
-        <span>That is more power than the whole Visayas grid draws. Nine sourced charts set it against Philippine power, transmission, land and water records.</span></a>
+      <a id="paxlink" class="golink" href="pax-silica.html">Case study, one announced 3,000 MW campus &rarr;
+        <span>The announced load exceeds Visayas grid demand. Nine sourced charts compare it with power, transmission, land, and water records.</span></a>
       <div id="findbox">
         <input id="findq" type="search" autocomplete="off"
           placeholder="Find your plant or data center" aria-label="Find a power plant or data center on the map">
@@ -615,14 +615,14 @@
   <div id="railfoot">Statistical indicators from public records (IEMOP, NGCP, Meralco,
   PCIJ, company filings). Patterns may have legitimate explanations. Forecasts are
   labeled with their owner. <a href="methodology.html">Methods, sources, and assumptions</a>.
-  <a href="for-analysts.html">If you already use a licensed production-cost model</a>.</div>
+  <a href="for-analysts.html">Scope for production-cost analysts</a>.</div>
 </div>
 
 <div id="banner" role="alert"></div>
 
 <div id="fscrim"></div>
 <div id="findings" aria-label="Key findings">
-  <div id="fhead"><h2>The archive links new demand, grid limits, and market prices</h2>
+  <div id="fhead"><h2>Archive findings</h2>
     <button id="fclose" title="close" aria-label="close">&times;</button></div>
   <div id="flist"></div>
 </div>
@@ -853,12 +853,12 @@ function addLayers(){
     const r = typeof p.receipts === "string" ? parseJSON(p.receipts) : p.receipts;
     let receiptLine = "";
     if (r){
-      receiptLine = `<br><b>Archive receipts:</b> at a limit on ${fmt(r.days)} of ` +
+      receiptLine = `<br><b>Recorded limits:</b> ${fmt(r.days)} of ` +
         `the window's days` +
         (r.rtd_intervals ? `, including ${fmt(r.rtd_intervals)} 5-minute ` +
           `real-time intervals on ${fmt(r.rtd_days)} days` : "") + ".";
       if (r.matched_equipment && r.matched_equipment.length)
-        receiptLine += `<br>Named lines: ` +
+        receiptLine += `<br>Matched equipment: ` +
           r.matched_equipment.slice(0, 3).map(m => esc(m.name)).join(", ") + ".";
     } else if (p.window_note){
       receiptLine = `<br><i>${esc(p.window_note)}</i>`;
@@ -1054,8 +1054,8 @@ function heroScenario(res, base){
   const grid = SIM.grid[0].toUpperCase() + SIM.grid.slice(1);
   $("d-fig").textContent = "\u20B1" + fmt(res.price, 2);
   $("d-claim").textContent = d === 0
-    ? `Your scenario leaves the ${grid} clearing price where it was.`
-    : `Your scenario moves the ${grid} clearing price to \u20B1${fmt(res.price,2)}/kWh.`;
+    ? `The ${grid} clearing price is unchanged from the base case.`
+    : `The ${grid} clearing price changes to \u20B1${fmt(res.price,2)}/kWh.`;
   $("d-sub").innerHTML = SIM.addDC
     ? `<b>${fmt(SIM.addDC)} MW</b> added, against a base case of ` +
       `<b>\u20B1${fmt(base.price,2)}/kWh</b>. The marginal fuel is ` +
@@ -1105,7 +1105,7 @@ function sideSupply(){
     // on the bar scale above. Without the break a reader takes the missing bar
     // for a zero.
     rec = `<div class="kvgroup">
-    <div class="kvgroup__h">The operator's own schedules already curtailed load in this window</div>
+    <div class="kvgroup__h">Load curtailment in the operator's dispatch schedules</div>
     <div class="kv"><span>Grid-days with load curtailed in 5-minute real-time dispatch schedules</span><span>${fmt(cd)}</span></div>
     <div class="kv"><span>Energy curtailed in those schedules</span><span>${fmt(cm)} MWh</span></div></div>`;
   }
@@ -1113,16 +1113,15 @@ function sideSupply(){
     ? ["luzon","visayas","mindanao"].reduce((s,g)=>s+(R.totals[g]?R.totals[g].curtailment_days:0),0)
     : null;
   const head = cdays
-    ? `The margin is ${fmt(margin)} MW, and the operator already cut load on ` +
-      `${fmt(cdays)} grid days`
-    : `One ${fmt(margin)} MW margin carries every announced data center`;
+    ? `${fmt(margin)} MW system margin and ${fmt(cdays)} grid-days with load curtailment`
+    : `${fmt(margin)} MW system supply margin`;
   return `<h2>${head}</h2>
   <p class="sub">Announced and forecast data-center megawatts against the whole
-  system's May 2026 supply margin. A data center is close to flat 24/7 load, so it
-  consumes margin around the clock, not just at the evening peak.</p>
+  system's May 2026 supply margin. Data centers use near-flat load across the
+  day, including hours outside the evening peak.</p>
   ${bars}${rec}
-  <div class="note">Every figure is a labeled forecast, commitment, or announced-project
-  count with its owner; none is our estimate. Operational capacity today is
+  <div class="note">Each figure is labeled as a forecast, commitment, or
+  announced-project count and names its owner. Operational capacity today is
   contested: ${contested ? esc(contested.owner) + " put it between " +
   fmt(contested.mw_low) + " and " + fmt(contested.mw_high) + " MW" : "n/a"}.
   The margin is system-wide; the Visayas grid ran a ${fmt((D["market_anchors.json"]||{}).visayas_yellow_streak_days)}-day
@@ -1152,8 +1151,8 @@ function sideChoke(){
   its own dispatch instructions: ${fmt(lcN)} instruction remarks in this
   window cite the Leyte-Cebu line limitation (SO dispatch instruction
   report; parsed as a labeled substring screen).</div>` : "";
-  const coBlock = coRows ? `<p class="sub">The same story with unit names:
-  the generators the operator's own constrained-on list says network or
+  const coBlock = coRows ? `<p class="sub">Constrained-on units recorded by the operator.
+  The constrained-on list identifies generators that network or
   security constraints forced to run out of merit (administered-price files,
   prices, published about two weeks behind). Top by 5-minute intervals
   across the window:</p>
@@ -1169,7 +1168,7 @@ function sideChoke(){
   let gridBlock = "";
   if (G && G.summary){
     const s = G.summary;
-    gridBlock = `<p class="sub">The map now draws the grid itself: ${fmt(s.lines)}
+    gridBlock = `<p class="sub">The network layer has ${fmt(s.lines)}
     line segments (500/230/138 kV, both high-voltage direct-current links, the inter-island cables) and
     ${fmt(s.nodes)} substations, real routed geometry as mapped in OpenStreetMap
     (community data, ODbL; not an NGCP document, and geometry only, no ratings).
@@ -1269,11 +1268,11 @@ function sideprice(){
     clean-day node-hours), so the deviation is loss-dominated.
     The full per-node table ships in nodal_obs.json and in the studio's Nodal
     prices view.</div>
-    <div class="note">This is the only node-level number the tool ships:
-    capture prices, price-duration, and forward bands elsewhere are all
-    system or grid level. Treat it as a directional screen, not a capture
-    price, and never size a PPA or a bid off it alone. Visayas nodes also
-    fail the tool's own loss-surface validation, a stable mismatch not yet
+    <div class="note">Node-level output is limited to recorded per-node
+    deviations. Capture prices, price-duration, and forward bands elsewhere
+    are system or grid level. This is a directional screen, not a capture
+    price, and is insufficient for sizing a PPA or bid. Visayas nodes also
+    fail the loss-surface validation, a stable mismatch not yet
     diagnosed, so read Visayas deviations with low confidence; Luzon and
     Mindanao agree with the recorded rankings.</div>`;
   }
@@ -1292,7 +1291,7 @@ function sideprice(){
   ${P.max_spread && P.max_spread.date ? `<div class="note">Widest daily
   regional spread in the window: ₱${fmt(P.max_spread.php,2)}/kWh on
   ${esc(P.max_spread.date)}.</div>` : ""}
-  <h2 style="margin-top:12px">Only the spot share of the bill moves, and only next month</h2>
+  <h2 style="margin-top:12px">Meralco WESM exposure and monthly bill effect</h2>
   ${mer}
   <div class="note">The generation charge is the biggest slice of a Meralco bill
   and moves with WESM through monthly pass-through, but only on the share bought
@@ -1349,11 +1348,11 @@ function sideDrivers(){
   alert advisories, and the day's binding constraints. Open a day for detail.</p>
   ${outlook}
   ${rows || '<div class="note">Daily market data are not available.</div>'}
-  <div class="note export-links">Take the archive away:
+  <div class="note export-links">Download archive data:
     <a href="data/exports/market_by_day.csv" download>market_by_day.csv</a>,
     <a href="data/exports/congestion_league.csv" download>congestion_league.csv</a>,
     <a href="data/exports/backcast_by_grid.csv" download>historical replay by grid (CSV)</a>.
-    <a href="data/exports/index.json">What is in them.</a>
+    <a href="data/exports/index.json">File descriptions.</a>
     Free to reuse under CC-BY-4.0.</div>
   <div class="note">${esc(DR.note || "")}</div>`;
 }
@@ -1402,7 +1401,7 @@ const LEGENDS = {
     ["sw","#2b6a9d","Node below its regional price"],
     ["sw",PAL.op,"Data-center sites for reference"]],
     note:"Each dot is one WESM node, drawn on the transmission grid it sits on and coloured by its recorded difference from the region's final per-node dispatch price. Dot size shows the size of the difference across clean market days. Stations and plants use exact mapped sites; locality centroids use city-level placement. The panel lists unresolved sites. This is not a congestion premium because WESM prices intra-regional congestion administratively." },
-  simulate: { title:"Named generators (price movers)", keys: [
+  simulate: { title:"Named generators", keys: [
     ["sw","#6b6b6b","Coal unit (size by capacity)"],
     ["sw","#4e79a7","Natural-gas unit"]],
     note:"These units are large enough for one outage to affect the grid. Pins are placed to city precision. Remove one unit in the panel to run the loss-of-one-unit test (N-1)." },
@@ -1539,8 +1538,8 @@ function sualToggle(btn){
   if (!read) return;
   if (SUAL_ON){
     const m = A.wesm_may2026_margin_mw, left = m - 647;
-    read.innerHTML = `Take one 647 MW Sual unit out of the May 2026 system margin of
-    ${fmt(m)} MW and ${fmt(left)} MW stays for everything else: the evening peak,
+    read.innerHTML = `Subtracting one 647 MW Sual unit from the May 2026 system margin of
+    ${fmt(m)} MW leaves ${fmt(left)} MW for the evening peak,
     forced outages (${fmt(A.visayas_forced_outage_mw)} MW were already out in the
     Visayas in late June), reserves, and any new 24/7 load. Both units:
     ${fmt(m - 1294)} MW. Arithmetic on the operator's published margin, not a
@@ -1696,13 +1695,12 @@ function couplingNote(disp){
   const o = c.outage_scenario || {};
   const bt = c.dc_binding_threshold || {};
   const pct = v => v == null ? "?" : fmt(Math.abs(v * 100) < 0.5 ? 0 : v * 100, 0);
-  return `<div class="note" id="sim-coupling-note">Couple the three grids and cheap
-    Luzon power flows south over the high-voltage direct-current links up to their limits. Over the market
-    window that reproduces almost none of the observed ₱${fmt(sd.observed_php_kwh,2)}/kWh
-    Visayas-Luzon spread (about ${pct(sd.explained_fraction)}%): most hours all three
-    islands sit on the coal margin and the 250 MW link does not bind. That spread is
-    the scarcity of the 52-day streak, not transmission. Recalculate the streak with the
-    documented ${fmt(o.outage_mw)} MW Visayas outage and the link saturates
+  return `<div class="note" id="sim-coupling-note">The coupled model sends lower-cost
+    Luzon power south over the high-voltage direct-current links up to their limits. During the market
+    window, transmission accounts for about ${pct(sd.explained_fraction)}% of the observed
+    ₱${fmt(sd.observed_php_kwh,2)}/kWh Visayas-Luzon spread. Most hours, all three
+    grids sit on the coal margin and the 250 MW link does not bind. With the documented
+    ${fmt(o.outage_mw)} MW Visayas outage, the link saturates
     ${fmt(o.leyte_luzon_saturated_pct,0)}% of the time at a ₱${fmt(o.leyte_luzon_mean_rent_php_kwh,2)}/kWh
     rent, reproducing ${pct(o.explained_fraction)}% of the spread. At a typical evening
     just ${fmt(bt.added_visayas_load_to_bind_leyte_mw)} MW of added Visayas load binds
@@ -1740,11 +1738,11 @@ function obsSettersHTML(g){
   const rows = (pg.top || []).slice(0, 8).map(r =>
     `<div class="kv"><span>${esc(r.resource)}${r.fuel ? " (" + esc(fuelLabel(r.fuel)) + ")" : ""}</span>
      <span>${fmt(r.share_pct,1)}% at ₱${fmt(r.mean_price_php_kwh,2)}</span></div>`).join("");
-  return `<h2 style="margin-top:12px">The operator's marginal resource set the recorded 5-minute price</h2>
+  return `<h2 style="margin-top:12px">Recorded 5-minute marginal resources</h2>
   <div id="sim-obssetters">${rows}</div>
   <div class="note">The marginal resource IEMOP names per 5-minute interval
-  (market clearing price files, ${fmt(ps.days)} days): the market's own answer,
-  next to the model's. Codes without a confident fleet alias show no fuel.</div>`;
+  (market clearing price files, ${fmt(ps.days)} days), shown beside the model
+  result. Codes without a confident fleet alias show no fuel.</div>`;
 }
 
 function sideSimulate(){
@@ -1821,7 +1819,7 @@ function sideSimulate(){
   level; coal is split into its committed (overnight) and marginal (peak)
   tranches.</div>` : ""}
   ${obsSettersHTML(g)}
-  <h2 style="margin-top:12px">Each plant outage changes evening price and unmet demand</h2>
+  <h2 style="margin-top:12px">Evening price and unmet demand by plant outage</h2>
   <table><thead><tr><th>Plant</th><th>MW</th><th>Evening price</th><th>Unmet MW at peak</th></tr></thead>
   <tbody>${n1rows || "<tr><td colspan=4>Generator-outage results are not available.</td></tr>"}</tbody></table>
   <div class="note">Each row removes the whole named plant during an evening at the
@@ -1856,10 +1854,11 @@ function storageNote(disp, g){
     Kalayaan pumped hydro (${fmt(a.pumped_hydro_mw)} MW) charge off-peak and discharge
     at the evening peak. At a tight evening with the DICT 1.5 GW demand forecast the cost stack
     clears on oil at ₱${fmt(pp.without_storage_php_kwh,2)}/kWh; the ${fmt(a.total_mw)} MW
-    of storage on the grid shaves it back to ₱${fmt(pp.with_storage_php_kwh,2)}/kWh
+    of storage on the grid reduces it to ₱${fmt(pp.with_storage_php_kwh,2)}/kWh
     (coal). It also reduces the shortfall risk with the added demand: the loss-of-load
     probability falls from <b>${fmt(w.lolp_pct,2)}%</b> to <b>${fmt(wi.lolp_pct,2)}%</b>.
-    Energy is limited, so this firms the peak interval, not a multi-day event. DOE and
+    This storage supports the peak interval. The model does not carry stored
+    energy through a multi-day event. DOE and
     CBK Power figures.</div>`;
 }
 
@@ -1948,8 +1947,8 @@ function renderSimShare(res, base){
   const moved = SIM.addDC || SIM.addFirm || SIM.imp || SIM.stor || SIM.trip;
   if (!moved){ box.innerHTML = ""; return; }
   const delta = res.price - base.price;
-  box.innerHTML = `<button id="sim-sharebtn" type="button">Copy a link to this scenario</button>
-    <div id="sim-sharenote">Anyone who opens it lands on this same result,
+  box.innerHTML = `<button id="sim-sharebtn" type="button">Copy scenario link</button>
+    <div id="sim-sharenote">The URL includes these settings and the result,
     ₱${fmt(base.price,2)} &rarr; ₱${fmt(res.price,2)}/kWh.</div>`;
   $("sim-sharebtn").onclick = async (e) => {
     const note = $("sim-sharenote");
@@ -1997,8 +1996,8 @@ function renderFindings(){
     list.innerHTML = `<p class="note">Calculated findings are not available in this data release.</p>`;
     return;
   }
-  list.innerHTML = `<p class="note" style="margin:2px 4px 9px">Tap a finding to
-    fly the map to the evidence it is about.</p>`;
+  list.innerHTML = `<p class="note" style="margin:2px 4px 9px">Select a finding to
+    center the map on its location.</p>`;
   for (const f of FINDINGS){
     const card = document.createElement("div");
     card.className = "fcard" + (ACTIVE === f.id ? " on" : "");
@@ -2216,7 +2215,7 @@ loadAll().then(() => {
   window.__diag.findings = FINDINGS.length;
   if (C.window){
     const asOf = P.as_of ? `, prices through ${P.as_of}` : "";
-    const built = M.built_utc ? ` Generated ${String(M.built_utc).slice(0,10)}.` : "";
+    const built = M.built_utc ? ` Built ${String(M.built_utc).slice(0,10)}.` : "";
     const G = D["grid.json"];
     const routeLine = G
       ? "Transmission and grid lines follow real routes as mapped in " +
@@ -2233,9 +2232,9 @@ loadAll().then(() => {
     { tag:"Q2 Infrastructure", ...A.q2 },
     { tag:"Q3 Prices", ...A.q3 },
   ] : [
-    { tag:"Q1", title:"Can the grid handle more data centers?", stat:"Data unavailable", blurb:"No result is available." },
-    { tag:"Q2", title:"Where would they have to sit?", stat:"Data unavailable" },
-    { tag:"Q3", title:"What happens to prices?", stat:"Data unavailable" },
+    { tag:"Q1", title:"Can supply cover additional data-center demand?", stat:"Data unavailable", blurb:"No result is available." },
+    { tag:"Q2", title:"Where can new demand connect?", stat:"Data unavailable" },
+    { tag:"Q3", title:"How does added demand affect prices?", stat:"Data unavailable" },
   ];
   railBuild();
   heroRender();
