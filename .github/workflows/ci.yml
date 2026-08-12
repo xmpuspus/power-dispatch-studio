@@ -1,6 +1,13 @@
 name: ci
 on:
-  push: {}
+  # Branches only. A tag push used to start a run against the tagged commit,
+  # which had already passed on its way into main, so the second run proved
+  # nothing and its result landed on the badge. It turned red on 2026-08-12
+  # for a reason that says nothing about the code: the history rewrite that day
+  # dropped every superseded recording, so an older commit checks out with the
+  # recordings it referenced missing, and the media check fails.
+  push:
+    branches: ["**"]
   pull_request: {}
 
 permissions:
