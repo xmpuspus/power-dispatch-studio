@@ -26,8 +26,8 @@
  "n_raise_grid_hours_sampled": 173,
  "modeled_marginal_fuel_on_raise_hours_pct": {
   "coal": 88.4,
-  "hydro": 10.4,
-  "export": 1.2
+  "hydro": 11.0,
+  "export": 0.6
  },
  "coal_marginal_share_pct": 88.4,
  "raised_mw_fuel_mix_pct": {
