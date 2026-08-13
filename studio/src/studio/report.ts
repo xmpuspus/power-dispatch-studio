@@ -62,6 +62,17 @@ export interface ReportExtras {
 export function buildRunReport(run: SavedRun, extras: ReportExtras = {}): string {
   const dates = run.summaries.map((s) => s.date)
   const edits = Object.entries(run.overrides)
+  const assumptions = run.assumptions ?? []
+  const assumptionRows = assumptions
+    .map((assumption) => `<li>${esc(assumption.text)}</li>`)
+    .join('')
+  const sourceRows = (run.sourceNotes ?? [])
+    .map((source) => `<li>${esc(source)}</li>`)
+    .join('')
+  const method =
+    run.calculation?.pricingMethod === 'offers'
+      ? 'Offer-book replay using published IEMOP generator offers'
+      : 'Cost-model replay using modeled generation costs'
   const editRows = edits
     .map(([k, v]) => {
       // key is `${cls}:${id}:${prop}` where id itself may contain ':' (fleet
@@ -187,6 +198,25 @@ ${
   edits.length
     ? `<table><thead><tr><th>Type</th><th>Plant, grid, or link</th><th>Setting</th><th class="n">Value</th></tr></thead><tbody>${editRows}</tbody></table>`
     : '<p class="note">Base case: no setting changes.</p>'
+}
+
+<h2>Active assumptions</h2>
+${
+  assumptions.length
+    ? `<ul>${assumptionRows}</ul>`
+    : '<p class="note">No scenario changes were active.</p>'
+}
+<p class="note"><b>Calculation method:</b> ${method}. Reserve requirements were ${
+    run.calculation?.reserveHoldback || run.settings?.reserveHoldback
+      ? 'held back from energy clearing'
+      : 'not held back from energy clearing'
+  }.</p>
+
+<h2>Source notes</h2>
+${
+  sourceRows
+    ? `<ul>${sourceRows}</ul>`
+    : '<p class="note">See the model and data section below.</p>'
 }
 
 <h2>Daily summary</h2>

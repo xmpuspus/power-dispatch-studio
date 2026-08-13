@@ -2,15 +2,24 @@
 // hour on the current edited model. Prices, dispatch by fuel, storage state of
 // charge, and the run's own duration curve all come out of the run, live.
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { num, php, fuelColor, fuelLabel, useOfferDay } from '../lib/data'
+import { createUsageRecorder, editCountBand } from '../lib/usage'
 import { Panel, Segmented, StatTile } from '../ui/kit'
 import { BindingStrip, DurationCurve, DispatchArea, HourLines, SocChart } from './charts'
 import { ENGINE_VERSION, runChronology, runDuration, type ChronoHour } from './chrono'
 import { bindingCounts, classifyHour } from './insights'
-import { chronoOptsFrom, type ClassId, type ObjRow, type Overrides } from './model'
+import {
+  chronoOptsFrom,
+  type ClassId,
+  type ObjRow,
+  type Overrides,
+  type ScenarioPurpose,
+  type ScenarioSettings,
+} from './model'
 import { downloadCsv, encodeShare, runCsv, saveRun, type SavedRun } from './runs'
+import { describeScenario } from './resultContext'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 const GRID_COLOR: Record<GridKey, string> = {
@@ -24,6 +33,9 @@ export function ChronologyView({
   profiles,
   objects,
   overrides,
+  settings,
+  purpose,
+  sourceNotes,
   importedKeys,
   grid,
   scenarioName,
@@ -38,6 +50,9 @@ export function ChronologyView({
   profiles: Profiles
   objects: Record<ClassId, ObjRow[]>
   overrides: Overrides
+  settings: ScenarioSettings
+  purpose?: ScenarioPurpose
+  sourceNotes?: string[]
   importedKeys?: string[]
   grid: GridKey
   scenarioName: string
@@ -50,22 +65,38 @@ export function ChronologyView({
 }) {
   const days = profiles.days
   const [flash, setFlash] = useState<string | null>(null)
-  const [reserveDeduction, setReserveDeduction] = useState(false)
+  const usage = useMemo(() => createUsageRecorder(window.localStorage), [])
   // Price from either the cost calculation or the day's published offer book.
   // (every layer the book already embodies is off; demand lever stays)
   const [engine, setEngine] = useState<'cost' | 'offers'>('cost')
   const offer = useOfferDay(engine === 'offers' ? date : null)
+  const assumptions = useMemo(
+    () =>
+      describeScenario(objects, {
+        name: scenarioName,
+        overrides,
+        settings,
+        purpose,
+        sourceNotes,
+      }),
+    [objects, overrides, purpose, scenarioName, settings, sourceNotes]
+  )
+  const suggestedName =
+    scenarioName === 'Base Case' && assumptions[0]
+      ? `${assumptions[0].text}, ${date}`
+      : `${scenarioName}, ${date}${span === 'week' ? ' week' : ''}`
+  const [runName, setRunName] = useState(suggestedName)
+  useEffect(() => setRunName(suggestedName), [suggestedName])
   const opts = useMemo(() => {
-    const o = chronoOptsFrom(objects, overrides)
+    const o = chronoOptsFrom(objects, overrides, settings)
     if (engine === 'offers') {
       const only: typeof o = { demand_delta: o.demand_delta }
-      if (reserveDeduction) only.reserve_deduction = true
+      if (settings.reserveHoldback) only.reserve_deduction = true
       if (offer.data) only.offer_day = offer.data
       return only
     }
-    if (reserveDeduction) o.reserve_deduction = true
     return o
-  }, [objects, overrides, reserveDeduction, engine, offer.data])
+  }, [objects, overrides, settings, engine, offer.data])
   const reserveMw = Math.round(
     Object.values(profiles.reserve_req_mean_mw).reduce(
       (s, per) => s + Object.values(per).reduce((a, v) => a + v, 0),
@@ -128,7 +159,7 @@ export function ChronologyView({
   )
   if (observed.some((v) => v != null))
     priceSeries.push({
-      label: 'observed',
+      label: 'Recorded LWAP',
       color: 'var(--series-observed)',
       pts: observed,
       dash: '4 3',
@@ -158,15 +189,31 @@ export function ChronologyView({
     window.setTimeout(() => setFlash(null), 1800)
   }
   const save = () => {
+    const cleanName = runName.trim()
+    if (!cleanName) {
+      note('Name this run before saving')
+      return
+    }
     onSaved(
       saveRun({
         id: crypto.randomUUID(),
-        name: `${scenarioName} (${Object.keys(overrides).length} edits), ${date}${
-          span === 'week' ? ' week' : ''
-        }`,
+        name: cleanName,
         savedAt: new Date().toISOString(),
         scenarioName,
         overrides,
+        settings,
+        purpose,
+        assumptions,
+        sourceNotes: [
+          ...(sourceNotes ?? []),
+          engine === 'offers'
+            ? 'Published IEMOP generator offers for the selected day.'
+            : 'Recorded IEMOP demand and hydro limits with modeled generation costs.',
+        ],
+        calculation: {
+          pricingMethod: engine,
+          reserveHoldback: !!settings.reserveHoldback,
+        },
         importedKeys,
         date,
         span,
@@ -175,21 +222,45 @@ export function ChronologyView({
         summaries: runs.map((r) => r.summary),
       })
     )
+    usage.track('scenario_saved', {
+      span,
+      editCountBand: editCountBand(
+        Object.keys(overrides).length + (settings.reserveHoldback ? 1 : 0)
+      ),
+    })
     note('Run saved')
   }
   const exportCsv = () => {
-    downloadCsv(
-      `power-dispatch-${date}${span === 'week' ? '-week' : ''}.csv`,
-      runCsv(hours, windowDates)
-    )
+    try {
+      downloadCsv(
+        `power-dispatch-${date}${span === 'week' ? '-week' : ''}.csv`,
+        runCsv(hours, windowDates)
+      )
+    } catch {
+      usage.track('export_failed', { format: 'csv' })
+      note('CSV export failed')
+    }
   }
-  const copyLink = () => {
-    const hash = encodeShare({ overrides, scenarioName, date, span })
+  const copyLink = async () => {
+    const hash = encodeShare({
+      overrides,
+      scenarioName,
+      settings,
+      purpose,
+      sourceNotes,
+      date,
+      span,
+    })
     window.history.replaceState(null, '', hash)
-    void navigator.clipboard?.writeText(
-      `${window.location.origin}${window.location.pathname}${hash}`
-    )
-    note('Link copied')
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable')
+      await navigator.clipboard.writeText(
+        `${window.location.origin}${window.location.pathname}${hash}`
+      )
+      note('Link copied')
+    } catch {
+      note('Share link ready in the address bar')
+    }
   }
 
   return (
@@ -231,22 +302,19 @@ export function ChronologyView({
           ]}
         />
         <Segmented
-          ariaLabel="Dispatch engine"
+          ariaLabel="Replay method"
           value={engine}
           onChange={(v) => setEngine(v as 'cost' | 'offers')}
           options={[
-            { value: 'cost', label: 'Cost model' },
-            { value: 'offers', label: 'Observed offers' },
+            { value: 'cost', label: 'Cost-model replay' },
+            { value: 'offers', label: 'Offer-book replay' },
           ]}
         />
-        <label className="chrono__reserve">
-          <input
-            type="checkbox"
-            checked={reserveDeduction}
-            onChange={(e) => setReserveDeduction(e.target.checked)}
-          />
-          Clear energy and reserves together ({num(reserveMw)} MW held back)
-        </label>
+        {settings.reserveHoldback && (
+          <span className="chrono__reserve">
+            {num(reserveMw)} MW of recorded reserve requirements held back
+          </span>
+        )}
         {engine === 'cost' && hb && (
           <span
             className="chrono__reserve"
@@ -258,7 +326,7 @@ export function ChronologyView({
         {engine === 'offers' && (
           <span
             className="chrono__reserve"
-            title="Published generator offers include priced curves and self-scheduled capacity. Storage, water, and fleet edits are disabled; energy-and-reserve clearing and added demand remain available."
+            title="Published generator offers include priced curves and self-scheduled capacity. Storage, water, and fleet changes are off; reserve clearing and added demand stay available."
           >
             {offer.loading
               ? 'loading generator offers'
@@ -267,28 +335,54 @@ export function ChronologyView({
                 : 'no published offers for this day'}
           </span>
         )}
+        <label className="chrono__ctl chrono__run-name">
+          Run name
+          <input
+            className="ribbon__select"
+            value={runName}
+            maxLength={100}
+            onChange={(event) => setRunName(event.target.value)}
+          />
+        </label>
         <div className="chrono__actions">
-          <button className="btn btn--ghost btn--sm" onClick={save}>
+          <button
+            className="btn btn--primary btn--sm"
+            onClick={save}
+            disabled={!runName.trim()}
+          >
             Save run
           </button>
           <button className="btn btn--ghost btn--sm" onClick={exportCsv}>
             Export CSV
           </button>
-          <button className="btn btn--ghost btn--sm" onClick={copyLink}>
+          <button className="btn btn--ghost btn--sm" onClick={() => void copyLink()}>
             Copy link
           </button>
-          {flash && <span className="chrono__flash">{flash}</span>}
+          {flash && (
+            <span className="chrono__flash" role="status">
+              {flash}
+            </span>
+          )}
         </div>
+      </div>
+
+      <div className="chrono__method" aria-label="Calculation method">
+        <strong>{engine === 'offers' ? 'Offer-book replay' : 'Cost-model replay'}</strong>
+        <span>
+          {engine === 'offers'
+            ? 'Uses the selected day’s published generator offers. The displayed prices are recalculated, not recorded market prices.'
+            : 'Uses modeled generation costs over recorded demand and hydro limits. This is a replay, not a forecast.'}
+        </span>
       </div>
 
       <div className="stat-row">
         <StatTile
-          label={`Mean price, ${cap(grid)}`}
+          label={`Modeled mean price, ${cap(grid)}`}
           value={php(meanPrice)}
           unit="/kWh"
           hint={marginalNow ? `hour ${selected}: ${fuelLabel(marginalNow)}` : undefined}
         />
-        <StatTile label="Window peak" value={php(peakPrice)} unit="/kWh" />
+        <StatTile label="Modeled window peak" value={php(peakPrice)} unit="/kWh" />
         <StatTile
           label="Demand not served (unserved energy)"
           value={num(unserved)}
@@ -303,7 +397,7 @@ export function ChronologyView({
       </div>
 
       <Panel
-        title="Hourly clearing price"
+        title="Modeled hourly clearing price"
         subtitle={`The three grids cleared together, every hour of the ${
           effectiveSpan === 'day' ? 'observed day' : 'week'
         }. The recorded load-weighted average price is dashed where the archive has it.`}

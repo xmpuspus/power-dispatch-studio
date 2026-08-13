@@ -99,7 +99,7 @@ export function UcProbeView() {
             hint="The error barely moves, and only the correlation falls"
           />
           <StatTile
-            label="Engine the studio runs"
+            label="Model used by Studio"
             value={p.engine_default === 'lp' ? 'Linear' : String(p.engine_default)}
             hint="The measurement chose it, and no preference did"
           />

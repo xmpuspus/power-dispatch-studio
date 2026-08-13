@@ -70,7 +70,7 @@ export function BackcastView({
 
   const engineToggle = (
     <Segmented
-      ariaLabel="Validation engine"
+      ariaLabel="Replay method"
       value={engine}
       onChange={(v) => setEngine(v as 'cost' | 'offers')}
       options={[
@@ -402,7 +402,7 @@ export function BackcastView({
 
       <Panel
         title={`Daily model and market comparison, ${cap(grid)}`}
-        subtitle={`Replayed with ${engineLabel} (no edits, no storage cycling) against the recorded hourly load-weighted average price (LWAP).`}
+        subtitle={`Replayed with ${engineLabel} (unchanged base case, no storage cycling) against the recorded hourly load-weighted average price (LWAP).`}
       >
         <div className="chrono__controls">
           <label className="chrono__ctl">

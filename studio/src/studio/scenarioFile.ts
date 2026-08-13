@@ -18,6 +18,7 @@ import {
   type ClassId,
   type ObjRow,
   type Overrides,
+  type ScenarioSettings,
 } from './model'
 import type { ChronoOpts } from './chrono'
 
@@ -35,7 +36,8 @@ export interface LoadResult {
   name: string
   date: string
   overrides: Overrides
-  /** what the file asked for and the studio's object model cannot hold */
+  settings: ScenarioSettings
+  /** what the file asked for and the Studio input tables cannot hold */
   warnings: string[]
 }
 
@@ -49,9 +51,10 @@ export function toScenarioFile(
   date: string,
   objects: Objects,
   overrides: Overrides,
+  settings: ScenarioSettings = {},
   meta?: Record<string, unknown>
 ): ScenarioFile {
-  const opts = chronoOptsFrom(objects, overrides)
+  const opts = chronoOptsFrom(objects, overrides, settings)
   // the offer book is a whole day of data, never a scenario setting
   delete (opts as { offer_day?: unknown }).offer_day
   // name each battery. Two rows can sit on one grid, so a file that carries
@@ -104,12 +107,13 @@ function baseOf(rows: ObjRow[], id: string, prop: string): number | null {
  *
  * Every option that maps onto an editable property becomes an absolute value on
  * that property, because that is what the studio's tables hold. An option the
- * object model cannot express comes back as a warning rather than a silent drop:
+ * input tables cannot express comes back as a warning rather than a silent drop:
  * a reader who loads a file has to know which half of it took effect.
  */
 export function fromScenarioFile(raw: unknown, objects: Objects): LoadResult {
   const warnings: string[] = []
   const overrides: Overrides = {}
+  const settings: ScenarioSettings = {}
   const f = raw as Partial<ScenarioFile>
   if (!f || typeof f !== 'object') throw new Error('That file is not a scenario.')
   if (f.schema && f.schema !== SCENARIO_SCHEMA)
@@ -222,8 +226,7 @@ export function fromScenarioFile(raw: unknown, objects: Objects): LoadResult {
     warnings.push(
       `Hydrology ${opts.hydrology} is a run setting, not a table value. Set it in Scenario builder.`
     )
-  if (opts.reserve_deduction)
-    warnings.push('Reserve withholding is a run setting. Turn it on in the reserve view.')
+  if (opts.reserve_deduction) settings.reserveHoldback = true
   if (opts.gas_budget)
     warnings.push('The gas budget comes from the Malampaya lever, so it was not loaded.')
 
@@ -231,6 +234,7 @@ export function fromScenarioFile(raw: unknown, objects: Objects): LoadResult {
     name: typeof f.name === 'string' && f.name ? f.name : 'Loaded scenario',
     date: f.date,
     overrides,
+    settings,
     warnings,
   }
 }

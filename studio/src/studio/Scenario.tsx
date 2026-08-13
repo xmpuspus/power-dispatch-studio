@@ -21,7 +21,9 @@ import {
   type ClassId,
   type ObjRow,
   type Overrides,
+  type ScenarioSettings,
 } from './model'
+import { SCENARIO_PRESETS, type ScenarioPresetId } from './presets'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 
@@ -30,9 +32,15 @@ export function ScenarioView({
   grid,
   objects,
   overrides,
+  scenarioName,
+  settings,
   onEdit,
   onRevert,
+  onSettings,
+  onRenameScenario,
+  onApplyPreset,
   onImportCsv,
+  importStatus,
   importedKeys,
   onScenarioFile,
   scenarioMsg,
@@ -42,9 +50,15 @@ export function ScenarioView({
   grid: GridKey
   objects: Record<ClassId, ObjRow[]>
   overrides: Overrides
+  scenarioName: string
+  settings: ScenarioSettings
   onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
   onRevert: (cls: ClassId, id: string, prop: string) => void
+  onSettings: (settings: ScenarioSettings) => void
+  onRenameScenario: (name: string) => void
+  onApplyPreset: (id: ScenarioPresetId) => void
   onImportCsv?: (text: string) => ImportResult
+  importStatus?: string
   importedKeys?: string[]
   /** Write the scenario to a file, or read one back. Studio owns both sides. */
   onScenarioFile?: (mode: 'save' | 'load', file?: File) => void
@@ -54,6 +68,8 @@ export function ScenarioView({
       solved scenario. These controls preview; they do not write the model. */
   onLive?: (p: Record<GridKey, number> | null) => void
 }) {
+  const [draftName, setDraftName] = useState(scenarioName)
+  useEffect(() => setDraftName(scenarioName), [scenarioName])
   const em = useEmissions()
   const region = objects.region.find((row) => row.id === grid)!
   const fuel = (id: string) => objects.fuel.find((row) => row.id === id)!
@@ -190,18 +206,10 @@ export function ScenarioView({
       else onRevert('fuel', f.id, 'cost')
     }
   }
-  const [importMsg, setImportMsg] = useState<string>('')
   const onImportFile = (file: File | undefined) => {
     if (!file || !onImportCsv) return
     const reader = new FileReader()
-    reader.onload = () => {
-      const res: ImportResult = onImportCsv(String(reader.result ?? ''))
-      const parts = [`Imported ${res.matched} value${res.matched === 1 ? '' : 's'}.`]
-      if (res.skipped.length) parts.push(`No object matched: ${res.skipped.join(', ')}.`)
-      if (res.warnings.length) parts.push(res.warnings.join(' '))
-      setImportMsg(parts.join(' '))
-    }
-    reader.onerror = () => setImportMsg('Could not read that file.')
+    reader.onload = () => onImportCsv(String(reader.result ?? ''))
     reader.readAsText(file)
   }
 
@@ -214,15 +222,70 @@ export function ScenarioView({
     if (feedInterface) onRevert('interface', feedInterface.id, 'limit_mw')
     setGasSupply(100)
     setCarbonPrice(0)
+    onSettings({ ...settings, reserveHoldback: false })
   }
 
   return (
     <div className="view" data-testid="scenario">
-      {/* Seventy-seven words used to sit between the reader and the first
-          slider, which put the control below the fold on a phone. One line
-          stays, and the model description moves under the controls where a
-          reader goes looking for it rather than past it. */}
-      <p className="scn__how">Move a slider and all three grids recalculate at once.</p>
+      <section className="preset-picker" aria-labelledby="preset-picker-title">
+        <div className="preset-picker__head">
+          <div>
+            <h2 id="preset-picker-title">Start from an analyst task</h2>
+            <p>Each case states its base data and its analyst assumption.</p>
+          </div>
+          <label className="scenario-name">
+            Scenario name
+            <input
+              type="text"
+              value={draftName}
+              maxLength={80}
+              onChange={(event) => setDraftName(event.target.value)}
+              onBlur={() => {
+                if (draftName.trim()) onRenameScenario(draftName)
+                else setDraftName(scenarioName)
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') event.currentTarget.blur()
+              }}
+            />
+          </label>
+        </div>
+        <div className="preset-grid">
+          {SCENARIO_PRESETS.map((preset) => (
+            <button
+              key={preset.id}
+              type="button"
+              className="preset-card"
+              onClick={() => onApplyPreset(preset.id)}
+              data-testid={`preset-${preset.id}`}
+            >
+              <span className="preset-card__type">
+                {preset.purpose === 'stress-test' ? 'Stress test' : 'Reference case'}
+              </span>
+              <strong>{preset.name}</strong>
+              <span>{preset.summary}</span>
+              <small>{preset.basis}</small>
+            </button>
+          ))}
+        </div>
+        <label className="scenario-setting">
+          <input
+            type="checkbox"
+            checked={!!settings.reserveHoldback}
+            onChange={(event) =>
+              onSettings({ ...settings, reserveHoldback: event.target.checked })
+            }
+          />
+          <span>
+            <b>Hold reserves out of energy clearing</b>
+            <small>
+              Uses the recorded average reserve requirements. Press Run after a change.
+            </small>
+          </span>
+        </label>
+      </section>
+
+      <p className="scn__how">Or adjust individual inputs for the selected grid.</p>
 
       <div className="scn">
         <Panel
@@ -236,7 +299,7 @@ export function ScenarioView({
               min={0}
               max={4000}
               step={50}
-              tick="DICT 2028 forecast: 1,500 MW"
+              tick="DICT reference scale: 1,500 MW; not a project forecast"
               onChange={(v) => setDelta('region', grid, 'demand_mw', demandBase, v)}
             />
             <Slider
@@ -377,7 +440,7 @@ export function ScenarioView({
                     </span>
                   )}
                 </div>
-                {importMsg && <p className="byo__msg note">{importMsg}</p>}
+                {importStatus && <p className="byo__msg note">{importStatus}</p>}
                 <p className="note">
                   Full hourly load shapes and hydro inflow series are consumed by the
                   hourly market replay, not these individual input overrides. They cannot

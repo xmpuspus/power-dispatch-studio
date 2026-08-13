@@ -39,7 +39,7 @@ The clip below follows the first workflow in the project README.
 - Switch between the cost model and the published offer book.
 - Open the source panel and copy a link to the exact view.
 
-![Recording: choose a date, grid, and hour; switch to observed offers; open evidence; copy the exact view.](studio-shell.gif)
+![Recording: choose a date, grid, and hour; switch to the offer-book replay; open evidence; copy the exact view.](studio-shell.gif)
 
 **Every view has a URL.** The interface writes `#v=<slug>` as you move, beside the
 `#m=` scenario share, so
@@ -123,11 +123,11 @@ power-dispatch run --scenario myscenario.json -o out.csv
 
 The validator reports each problem in a broken file. It suggests a valid setting
 for an unknown name, finds a misspelled grid, and finds text where a number is
-needed. [`docs/scenario-schema.md`](scenario-schema.md) lists the
-keys and the three settings that a browser round trip drops. The Python and
-browser tests both read `tests/fixtures/scenario_example.json`.
+needed. [`docs/scenario-schema.md`](scenario-schema.md) lists the supported keys
+and browser round-trip rules. The Python and browser tests both read
+`tests/fixtures/scenario_example.json`.
 
-**This page downloads 1.1 MB of media across 1 file.** Longer recordings are
+**This page downloads 1.5 MB of media across 1 file.** Longer recordings are
 links. The catalog uses 26 direct links.
 
 `python3 tests/test_readme_views.py` re-measures that total against the files on

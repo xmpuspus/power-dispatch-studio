@@ -1,12 +1,15 @@
-// Saved runs: frozen chronological solves compared side by side. Commercial tools make
-// you dig through solution files for this; here a run is a named row, a diff, a CSV.
+// Saved runs are frozen chronological calculations that can be restored,
+// compared, exported, or shared without changing their original inputs.
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { GridKey } from '../lib/types'
 import { num, php, useEmissions } from '../lib/data'
+import { createUsageRecorder, type UsageEventName } from '../lib/usage'
 import { Chip, Panel } from '../ui/kit'
 import { HourLines } from './charts'
 import { buildRunReport, downloadReport } from './report'
+import { casePackageText, readCasePackage } from './casePackage'
+import { compareRuns } from './runComparison'
 import {
   deleteRun,
   downloadCsv,
@@ -63,26 +66,52 @@ export function RunsView({
   const [bId, setBId] = useState<string>('')
   const [selectedChartGrid, setSelectedChartGrid] = useState<GridKey | null>(null)
   const [importMsg, setImportMsg] = useState<string>('')
-  const a = runs.find((r) => r.id === aId) ?? runs[0]
-  const b = runs.find((r) => r.id === bId) ?? runs[1]
+  const usage = useMemo(
+    () =>
+      typeof window === 'undefined' ? null : createUsageRecorder(window.localStorage),
+    []
+  )
+  const [usageEvents, setUsageEvents] = useState(() => usage?.read() ?? [])
+  const defaultA =
+    runs.find(
+      (run) =>
+        Object.keys(run.overrides).length === 0 &&
+        !run.settings?.reserveHoldback &&
+        run.date === runs[0]?.date &&
+        run.span === runs[0]?.span
+    ) ?? runs[1]
+  const defaultB = runs.find((run) => run.id !== defaultA?.id) ?? runs[0]
+  const a = runs.find((r) => r.id === aId) ?? defaultA
+  const b = runs.find((r) => r.id === bId) ?? defaultB
   const chartGrid =
     selectedChartGrid ?? (a && b ? mostChangedPriceGrid(a, b) : ('luzon' as GridKey))
+  const comparison = a && b ? compareRuns(a, b) : null
   const emissions = useEmissions()
 
   const onExportAll = () => {
-    downloadCsv(
-      `power-dispatch-runs-${new Date().toISOString().slice(0, 10)}.json`,
-      exportRuns()
-    )
+    try {
+      downloadCsv(
+        `power-dispatch-runs-${new Date().toISOString().slice(0, 10)}.json`,
+        exportRuns()
+      )
+    } catch {
+      usage?.track('export_failed', { format: 'runs' })
+      setImportMsg('Run backup failed.')
+    }
   }
   const onImportFile = (file: File | undefined) => {
     if (!file) return
     const reader = new FileReader()
     reader.onload = () => {
       try {
-        const merged = importRuns(String(reader.result ?? ''))
+        const text = String(reader.result ?? '')
+        const parsed = JSON.parse(text) as { schema?: unknown }
+        const merged =
+          parsed?.schema === 'power-dispatch-case/v1'
+            ? importRuns(JSON.stringify({ runs: [readCasePackage(text)] }))
+            : importRuns(text)
         onRunsChange(merged)
-        setImportMsg(`Imported. Archive now holds ${merged.length} runs.`)
+        setImportMsg(`Imported. Saved runs now holds ${merged.length} cases.`)
       } catch (e) {
         setImportMsg(e instanceof Error ? e.message : 'Could not read that file.')
       }
@@ -92,15 +121,35 @@ export function RunsView({
   }
 
   const exportReport = (r: SavedRun) => {
-    downloadReport(
-      `power-dispatch-report-${r.name.replace(/\W+/g, '-')}.html`,
-      buildRunReport(r, {
-        emissionsFactors: emissions.data?.factor_map ?? null,
-        emissionsSrc: 'emission factors and sources in the methodology page',
-        appUrl: `${window.location.origin}${window.location.pathname}`,
-      })
-    )
+    try {
+      downloadReport(
+        `power-dispatch-report-${r.name.replace(/\W+/g, '-')}.html`,
+        buildRunReport(r, {
+          emissionsFactors: emissions.data?.factor_map ?? null,
+          emissionsSrc: 'emission factors and sources in the methodology page',
+          appUrl: `${window.location.origin}${window.location.pathname}`,
+        })
+      )
+    } catch {
+      usage?.track('export_failed', { format: 'report' })
+      setImportMsg('Report export failed.')
+    }
   }
+  const exportCase = (run: SavedRun) => {
+    try {
+      downloadCsv(
+        `power-dispatch-case-${run.name.replace(/\W+/g, '-').toLowerCase()}.json`,
+        casePackageText(run)
+      )
+    } catch {
+      usage?.track('export_failed', { format: 'case' })
+      setImportMsg('Case export failed.')
+    }
+  }
+  const usageCounts = usageEvents.reduce<Partial<Record<UsageEventName, number>>>(
+    (counts, event) => ({ ...counts, [event.name]: (counts[event.name] ?? 0) + 1 }),
+    {}
+  )
 
   // The empty state used to name the view that creates a run and then leave the
   // reader to find it. It now names the three steps and opens step one.
@@ -169,7 +218,7 @@ export function RunsView({
       >
         <div className="runs__archive-bar">
           <button className="btn btn--ghost btn--sm" onClick={onExportAll}>
-            Export runs
+            Back up all runs
           </button>
           <label className="btn btn--ghost btn--sm">
             Import runs
@@ -190,7 +239,7 @@ export function RunsView({
             <thead>
               <tr>
                 <th className="propgrid__obj">Saved run</th>
-                <th>Scenario settings</th>
+                <th>Active assumptions</th>
                 <th>Window</th>
                 <th className="propgrid__num">Mean Luzon price (₱/kWh)</th>
                 <th className="propgrid__num">Unserved MWh</th>
@@ -211,12 +260,11 @@ export function RunsView({
                     )}
                   </td>
                   <td>
-                    {r.scenarioName}
-                    <span className="propgrid__unit">
-                      {' '}
-                      ({Object.keys(r.overrides).length} edit
-                      {Object.keys(r.overrides).length === 1 ? '' : 's'})
-                    </span>
+                    {r.assumptions?.length
+                      ? `${r.assumptions[0].text}${r.assumptions.length > 1 ? `; +${r.assumptions.length - 1} more` : ''}`
+                      : Object.keys(r.overrides).length || r.settings?.reserveHoldback
+                        ? `${r.scenarioName}; ${Object.keys(r.overrides).length + (r.settings?.reserveHoldback ? 1 : 0)} active changes`
+                        : 'None'}
                   </td>
                   <td className="mono">
                     {r.date}
@@ -226,6 +274,13 @@ export function RunsView({
                   <td className="propgrid__num mono">{num(unservedOf(r))}</td>
                   <td className="mono">{r.savedAt.slice(0, 16).replace('T', ' ')}</td>
                   <td className="runs__actions">
+                    <button
+                      className="btn btn--primary btn--sm"
+                      title="One file with assumptions, sources, results, and chart data"
+                      onClick={() => exportCase(r)}
+                    >
+                      Export case
+                    </button>
                     <button
                       className="btn btn--ghost btn--sm"
                       onClick={() => onRestore(r)}
@@ -277,15 +332,74 @@ export function RunsView({
           </table>
         </ScrollBox>
         <p className="note">
-          Runs live in this browser's storage, newest first, {MAX_RUNS} at most. A run
-          saved under an older engine is flagged instead of silently re-read.
+          The browser keeps up to {MAX_RUNS} runs, newest first. Export a case for a
+          durable copy with its assumptions, sources, results, and chart data. A run saved
+          under an older calculation version is flagged instead of silently re-read.
         </p>
       </Panel>
+
+      <details className="usage-diagnostics">
+        <summary>Local usage diagnostics</summary>
+        <div className="usage-diagnostics__body">
+          <p>
+            This browser stores workflow opens, journey stops, failed exports,
+            stale-result tries, and scenario saves. It sends nothing over the network and
+            never records case names, dates, inputs, or results.
+          </p>
+          <dl>
+            <div>
+              <dt>Workflow opens</dt>
+              <dd>{usageCounts.workflow_opened ?? 0}</dd>
+            </div>
+            <div>
+              <dt>Journey stops</dt>
+              <dd>{usageCounts.journey_stopped ?? 0}</dd>
+            </div>
+            <div>
+              <dt>Failed exports</dt>
+              <dd>{usageCounts.export_failed ?? 0}</dd>
+            </div>
+            <div>
+              <dt>Stale-result tries</dt>
+              <dd>{usageCounts.stale_result_attempt ?? 0}</dd>
+            </div>
+            <div>
+              <dt>Scenario saves</dt>
+              <dd>{usageCounts.scenario_saved ?? 0}</dd>
+            </div>
+          </dl>
+          <div className="runs__archive-bar">
+            <button
+              className="btn btn--ghost btn--sm"
+              onClick={() => {
+                if (!usage) return
+                try {
+                  downloadCsv('power-dispatch-local-usage.json', usage.exportText())
+                } catch {
+                  usage.track('export_failed', { format: 'diagnostics' })
+                  setUsageEvents(usage.read())
+                }
+              }}
+            >
+              Download local log
+            </button>
+            <button
+              className="btn btn--ghost btn--sm"
+              onClick={() => {
+                usage?.clear()
+                setUsageEvents([])
+              }}
+            >
+              Clear local log
+            </button>
+          </div>
+        </div>
+      </details>
 
       {runs.length >= 2 && a && b && (
         <Panel
           title="Run comparison"
-          subtitle="Run A is compared with Run B. Changed values are highlighted."
+          subtitle="Run A is the reference. The signed B - A column states each difference."
         >
           <div className="chrono__controls">
             <label className="chrono__ctl">
@@ -332,6 +446,17 @@ export function RunsView({
               </select>
             </label>
           </div>
+          <section className="run-comparison-summary" aria-label="Comparison summary">
+            <div>
+              <span>What changed</span>
+              <strong>
+                {comparison?.assumptionChanges.length
+                  ? comparison.assumptionChanges.join('; ')
+                  : 'No active assumption changed'}
+              </strong>
+            </div>
+            <p>{comparison?.text}</p>
+          </section>
           <ScrollBox className="propgrid-wrap">
             <table className="propgrid compare">
               <thead>
@@ -357,6 +482,9 @@ export function RunsView({
                         className={`propgrid__num mono${
                           Math.abs(diff) > 1e-6 ? ' compare__diff' : ''
                         }`}
+                        aria-label={`${m.label}, Run B minus Run A: ${
+                          diff > 0 ? 'plus ' : diff < 0 ? 'minus ' : ''
+                        }${fmt(Math.abs(diff))}`}
                       >
                         {diff > 0 ? '+' : ''}
                         {fmt(diff)}

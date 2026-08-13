@@ -1,9 +1,8 @@
 """Record the README's scenario, save, compare, and export walkthrough.
 
-The clip saves a base replay, adds a 4,000 MW flat-load stress test to Visayas,
-runs it, saves the changed replay, and opens the automatic run comparison. The
-stress test is deliberately larger than the DICT scale marker so its effect is
-easy to see in the saved daily result. It is not a forecast.
+The clip saves a base replay, applies the 1,500 MW DICT reference case, runs it,
+saves the changed replay, opens the automatic comparison, and exports the case
+package. The reference case is an analyst assumption, not a project forecast.
 
     bash scripts/vercel_build.sh
     cp web/serve.py .vercel_out/ && (cd .vercel_out && python3 serve.py 5200 &)
@@ -211,59 +210,59 @@ async def main() -> None:
             await page.wait_for_timeout(1900)
 
             await open_view(page, "quick-scenario", "Scenario builder")
-            await page.locator(
-                'button[title="Show Visayas in views that analyze one grid"]'
-            ).click()
-            await page.wait_for_timeout(900)
-            demand = page.locator('input[type="range"]').first
+            preset = page.get_by_test_id("preset-dict-1500")
             await caption(
                 page,
-                "2. Set one assumption",
-                "Use a 4,000 MW Visayas stress test so the saved-run difference is "
-                "easy to see. This is not a forecast.",
+                "2. Start from a task preset",
+                "The DICT case adds the 1,500 MW reference scale to Luzon. It is "
+                "not a project forecast.",
             )
-            await target(page, demand)
-            await move_range(page, demand, 4000)
+            await target(page, preset)
+            await preset.click()
             await page.wait_for_timeout(1800)
-            if await demand.input_value() != "4000":
-                raise SystemExit("the scenario slider did not reach 4,000 MW")
-            if (await page.locator(".bar__run").inner_text()).strip() != "Run 1 edit":
-                raise SystemExit("the scenario edit did not reach the Run button")
+            if (
+                await page.get_by_label("Scenario name").input_value()
+                != "DICT 1,500 MW reference"
+            ):
+                raise SystemExit("the preset did not name the scenario")
+            if (await page.locator(".bar__run").inner_text()).strip() != "Run 1 change":
+                raise SystemExit("the scenario change did not reach the Run button")
 
             run = page.locator(".bar__run")
             await caption(
                 page,
                 "3. Press Run before reading the scenario result",
-                "The result dock says when all saved edits are included.",
+                "The result status says when the preset is included.",
             )
             await target(page, run)
             await run.click()
             await page.get_by_text("Results current", exact=True).first.wait_for(
                 timeout=15000
             )
-            visayas_price = await page.locator(
-                'button[title="Show Visayas in views that analyze one grid"] '
-                ".dock__price"
+            luzon_price = await page.locator(
+                'button[title="Show Luzon in views that analyze one grid"] .dock__price'
             ).inner_text()
-            if "32.00" not in visayas_price:
+            if "6.00" not in luzon_price:
                 raise SystemExit(
-                    "the Visayas stress case did not produce the expected price: "
-                    + repr(visayas_price)
+                    "the DICT reference case did not produce the expected Luzon price: "
+                    + repr(luzon_price)
                 )
             await page.wait_for_timeout(2400)
 
             await open_view(page, "chronology", "Hourly market replay")
             await page.wait_for_function(
                 "() => document.querySelector('.view')?.innerText"
-                "?.includes('₱32.00 /kWh')",
+                "?.includes('₱9.65 /kWh')",
                 timeout=15000,
+            )
+            await page.get_by_label("Run name").fill(
+                "DICT 1,500 MW reference, 22 July 2026"
             )
             save = page.get_by_role("button", name="Save run")
             await caption(
                 page,
                 "4. Wait for the day totals, then save the changed run",
-                "Use Day or Week ending before saving if the comparison needs a "
-                "longer window.",
+                "Name the run so the comparison can stand on its own.",
             )
             await target(page, save)
             await save.click()
@@ -286,39 +285,46 @@ async def main() -> None:
                 raise SystemExit("Saved runs did not show the base and changed cases")
             await caption(
                 page,
-                "5. Saved runs keeps both cases and their exits",
-                "Restore a case, download hourly CSV, or create a standalone HTML "
-                "report.",
+                "5. Saved runs keeps the reference and the changed case",
+                "Each row states its active assumption and has one portable case file.",
             )
             await target(page, rows.first)
             await page.wait_for_timeout(2800)
 
-            comparison_selects = page.locator(".chrono__controls select")
-            await comparison_selects.nth(0).select_option(index=1)
-            await comparison_selects.nth(1).select_option(index=0)
             comparison = page.locator(".propgrid.compare")
             comparison_text = await comparison.inner_text()
-            if "₱32.00" not in comparison_text or "+₱26.00" not in comparison_text:
+            if "₱9.65" not in comparison_text or "+₱3.65" not in comparison_text:
                 raise SystemExit(
-                    "the saved-run comparison did not show the Visayas stress result: "
+                    "the saved-run comparison did not show the DICT result: "
                     + repr(comparison_text)
                 )
             chart_text = await page.locator("svg.chart").last.text_content() or ""
-            if "A: Visayas" not in chart_text or "B: Visayas" not in chart_text:
+            if "A: Luzon" not in chart_text or "B: Luzon" not in chart_text:
                 raise SystemExit(
                     "the comparison chart did not select the grid with the largest "
                     "price change"
                 )
-            await comparison.evaluate(
+            summary = page.locator(".run-comparison-summary")
+            await summary.evaluate(
                 "el => el.scrollIntoView({block: 'center', behavior: 'instant'})"
             )
             await caption(
                 page,
-                "6. Compare the two runs",
-                "Changed prices, unserved energy and congestion value are highlighted.",
+                "6. Read the comparison summary first",
+                "It states the assumption, largest price move, unserved energy and "
+                "corridor status.",
             )
-            await target(page, comparison)
-            await page.wait_for_timeout(3200)
+            await target(page, summary)
+            await page.wait_for_timeout(2800)
+
+            export_case = rows.first.get_by_role("button", name="Export case")
+            await caption(
+                page,
+                "7. Take the full case out of the browser",
+                "One file keeps assumptions, sources, results and chart data.",
+            )
+            await target(page, export_case)
+            await page.wait_for_timeout(2800)
 
             await ctx.close()
             video = await page.video.path()

@@ -68,7 +68,11 @@ export function TopBar({
   dates: string[]
   date: string
   onDate: (date: string) => void
-  scenarios: { name: string; overrides: Record<string, number> }[]
+  scenarios: {
+    name: string
+    overrides: Record<string, number>
+    settings?: { reserveHoldback?: boolean }
+  }[]
   ai: number
   onPickScenario: (i: number) => void
   onAddScenario: () => void
@@ -83,6 +87,9 @@ export function TopBar({
   onToggleTheme: () => void
 }) {
   const dest = destOf(nav)
+  const scenarioChangeCount = (index: number) =>
+    Object.keys(scenarios[index].overrides).length +
+    (scenarios[index].settings?.reserveHoldback ? 1 : 0)
   return (
     <header className="bar">
       <button
@@ -157,7 +164,9 @@ export function TopBar({
               {scenarios.map((s, i) => (
                 <option key={i} value={i}>
                   {s.name}
-                  {i > 0 ? ` (${Object.keys(s.overrides).length} edits)` : ''}
+                  {i > 0
+                    ? ` (${scenarioChangeCount(i)} change${scenarioChangeCount(i) === 1 ? '' : 's'})`
+                    : ''}
                 </option>
               ))}
             </select>
@@ -180,16 +189,16 @@ export function TopBar({
           <button
             className="bar__run is-dirty"
             onClick={onRun}
-            aria-label={`Re-solve with ${editCount} edit${editCount === 1 ? '' : 's'}`}
-            title={`Re-solve with ${editCount} edit${editCount === 1 ? '' : 's'}`}
+            aria-label={`Recalculate with ${editCount} change${editCount === 1 ? '' : 's'}`}
+            title={`Recalculate with ${editCount} change${editCount === 1 ? '' : 's'}`}
           >
             <IconPlay />
-            {`Run ${editCount} edit${editCount === 1 ? '' : 's'}`}
+            {`Run ${editCount} change${editCount === 1 ? '' : 's'}`}
           </button>
         ) : (
           <span
             className="bar__solved"
-            title="The displayed scenario results include all saved edits."
+            title="The displayed scenario results include all saved changes."
           >
             <IconCheck />
             Results current
@@ -201,7 +210,7 @@ export function TopBar({
       {scenarioEnabled && (
         <span className="sr-only" aria-live="polite">
           {dirty
-            ? `${editCount} edit${editCount === 1 ? ' is' : 's are'} not included in the results yet`
+            ? `${editCount} change${editCount === 1 ? ' is' : 's are'} not included in the results yet`
             : 'Results current'}
         </span>
       )}
@@ -237,12 +246,14 @@ export function NavRail({
   open,
   onClose,
   editCount,
+  dirty,
 }: {
   nav: Nav
   onNav: (n: Nav) => void
   open: boolean
   onClose: () => void
   editCount: number
+  dirty: boolean
 }) {
   const activeDest = destOf(nav)
   const current = activeDest ? workspaceForSlug(activeDest.slug) : WORKSPACES[0]
@@ -313,8 +324,10 @@ export function NavRail({
         </div>
         <div className="rail__foot">
           {editCount === 0
-            ? 'No scenario edits. Start in Scenario analysis to change the base case.'
-            : `${editCount} edit${editCount === 1 ? '' : 's'} in this scenario. Run the changes before reading scenario results.`}
+            ? 'No scenario changes. Open Scenario builder to change the base case.'
+            : dirty
+              ? `${editCount} change${editCount === 1 ? ' is' : 's are'} not included in the results yet. Press Run.`
+              : `${editCount} change${editCount === 1 ? ' is' : 's are'} included in the current results.`}
           <a className="rail__doc" href="../for-analysts.html">
             Model coverage, replay accuracy, and limits
           </a>

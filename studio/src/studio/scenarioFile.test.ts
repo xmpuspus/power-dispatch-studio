@@ -37,16 +37,17 @@ describe('the scenario file', () => {
     expect(r.overrides[overrideKey('fuel', 'natural_gas', 'cost')]).toBe(9.5)
   })
 
-  it('warns about the settings the object tables cannot hold', () => {
+  it('loads reserve holdback and warns about settings the studio cannot hold', () => {
     const r = fromScenarioFile(fixture, objects)
     const joined = r.warnings.join(' ')
     expect(joined).toContain('Hydrology')
-    expect(joined).toContain('Reserve withholding')
+    expect(joined).not.toContain('Reserve withholding')
+    expect(r.settings.reserveHoldback).toBe(true)
   })
 
   it('round-trips the options the studio owns', () => {
     const r = fromScenarioFile(fixture, objects)
-    const back = toScenarioFile('round trip', r.date, objects, r.overrides)
+    const back = toScenarioFile('round trip', r.date, objects, r.overrides, r.settings)
     const want = (fixture as { opts: Record<string, unknown> }).opts
     expect(back.opts.demand_delta).toEqual(want.demand_delta)
     expect(back.opts.fuel_cost).toEqual(want.fuel_cost)
@@ -54,6 +55,7 @@ describe('the scenario file', () => {
     expect(back.opts.solar_delta_mw).toEqual(want.solar_delta_mw)
     expect(back.opts.caps).toEqual(want.caps)
     expect(back.opts.storage).toEqual(want.storage)
+    expect(back.opts.reserve_deduction).toBe(true)
   })
 
   it('stamps the schema and writes text a person can read', () => {

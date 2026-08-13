@@ -10,7 +10,14 @@ describe('workflow navigation', () => {
   it('shows analyst workspaces and only the active workspace steps', () => {
     const nav = destBySlug('chronology')!.nav
     const html = renderToStaticMarkup(
-      <NavRail nav={nav} onNav={noop} open={false} onClose={noop} editCount={0} />
+      <NavRail
+        nav={nav}
+        onNav={noop}
+        open={false}
+        onClose={noop}
+        editCount={0}
+        dirty={false}
+      />
     )
 
     expect(html).toContain('Analyst workflows')
@@ -20,6 +27,23 @@ describe('workflow navigation', () => {
     expect(html).toContain('Model and data')
     expect(html).not.toContain('>live<')
     expect(html).not.toContain('>Generators<')
+  })
+
+  it('does not mark calculated scenario changes as pending', () => {
+    const nav = destBySlug('saved-runs')!.nav
+    const html = renderToStaticMarkup(
+      <NavRail
+        nav={nav}
+        onNav={noop}
+        open={false}
+        onClose={noop}
+        editCount={1}
+        dirty={false}
+      />
+    )
+
+    expect(html).toContain('included in the current results')
+    expect(html).not.toContain('Run the changes')
   })
 })
 

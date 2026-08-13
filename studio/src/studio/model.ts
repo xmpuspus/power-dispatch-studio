@@ -47,9 +47,20 @@ export interface SystemClass {
 // override map: `${cls}:${id}:${propKey}` -> number
 export type Overrides = Record<string, number>
 
+export interface ScenarioSettings {
+  /** Hold the recorded average reserve requirements out of energy clearing. */
+  reserveHoldback?: boolean
+}
+
+export type ScenarioPurpose = 'reference-case' | 'stress-test' | 'scenario'
+
 export interface Scenario {
   name: string
   overrides: Overrides
+  settings?: ScenarioSettings
+  purpose?: ScenarioPurpose
+  presetId?: string
+  sourceNotes?: string[]
   // override keys whose value came from a user-supplied CSV import (item 2),
   // tracked so every view and the report can label them user-supplied and never
   // uploaded, distinct from the generated public data
@@ -286,9 +297,11 @@ export function baseObjects(
  */
 export function chronoOptsFrom(
   objects: Record<ClassId, ObjRow[]>,
-  ov: Overrides
+  ov: Overrides,
+  settings: ScenarioSettings = {}
 ): ChronoOpts {
   const opts: ChronoOpts = {}
+  if (settings.reserveHoldback) opts.reserve_deduction = true
   const demandDelta: Partial<Record<GridKey, number>> = {}
   for (const r of objects.region) {
     const base = r.props.demand_mw as number
@@ -374,7 +387,7 @@ export function effNum(
   return k in ov ? ov[k] : base
 }
 
-// ---- carbon price lever: a policy what-if, not a market fact -------------------
+// Carbon price lever: a policy what-if, not a market fact.
 //
 // Raises each fuel's marginal cost via the SAME Fuel "cost" override
 // chronoOptsFrom already folds into opts.fuel_cost (see above): no new LP
@@ -412,7 +425,7 @@ export function carbonCostDelta(
   return Math.round(((carbonPricePhpPerTco2 * tco2PerMwh) / 1000) * 1000) / 1000
 }
 
-// ---- Malampaya gas supply lever: gas as a daily fuel-energy budget ------------
+// Malampaya gas supply lever: gas as a daily fuel-energy budget.
 //
 // The Leyte-Luzon gas fleet burns Malampaya gas (429 MMscfd at full field, DOE;
 // commercial depletion expected around 2027). This lever caps the gas fleet's

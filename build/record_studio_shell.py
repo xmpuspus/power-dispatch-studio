@@ -188,10 +188,10 @@ async def main() -> None:
             await hour.click()
             await page.wait_for_timeout(2200)
 
-            offers = page.get_by_role("tab", name="Observed offers")
+            offers = page.get_by_role("tab", name="Offer-book replay")
             await caption(
                 page,
-                "3. Switch between the cost model and published offers",
+                "3. Switch between the two replay methods",
                 "Both replays use the same recorded day and report their gap from "
                 "the market price.",
             )

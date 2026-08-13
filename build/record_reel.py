@@ -24,7 +24,8 @@ The two commands below give 3.3 MB of mp4 and 11.8 MB of gif from a 70-second
       -vf "fps=5,scale=900:-1:flags=lanczos,palettegen=max_colors=192:stats_mode=diff" \
       /tmp/reel/pal.png
     ffmpeg -y -i /tmp/reel/reel.webm -i /tmp/reel/pal.png \
-      -lavfi "fps=5,scale=900:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" \
+      -lavfi "fps=5,scale=900:-1:flags=lanczos[x]; \
+        [x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" \
       docs/reel.gif
 
 Delete any older webm in /tmp/reel first and check the mtime before converting.
@@ -221,7 +222,7 @@ async def record_studio(page: Page):
         "complete market day.",
     )
     await asyncio.sleep(3.0)
-    await click_text(page, "Observed offers")
+    await click_text(page, "Offer-book replay")
     await cap(
         page,
         "Published offers follow the recorded evening ramp",

@@ -557,7 +557,7 @@ export function CompareView({
     <div className="view">
       <Panel
         title="Scenario results comparison"
-        subtitle="Every scenario is solved side by side. The Base Case is the reference. Changed values are highlighted."
+        subtitle="Every scenario is solved side by side. The Base Case is the reference, and each column names the scenario it contains."
       >
         {scenarios.length < 2 && (
           <EmptyNote>

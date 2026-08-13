@@ -15,7 +15,8 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "typecheck": "tsc -b --noEmit && tsc -p tsconfig.vitest.json --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:journeys": "playwright test"
   },
   "dependencies": {
     "@fontsource/fira-code": "^5.2.7",
@@ -26,6 +27,7 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@playwright/test": "1.62.1",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

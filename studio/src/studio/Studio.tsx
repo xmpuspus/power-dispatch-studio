@@ -9,6 +9,7 @@ import {
 import type { Dispatch, GridKey, Profiles } from '../lib/types'
 import { GRIDS } from '../lib/types'
 import { php, pct, useFleet, useGenerators, useProfiles } from '../lib/data'
+import { createUsageRecorder } from '../lib/usage'
 import {
   CommandPalette,
   EvidenceSummary,
@@ -68,9 +69,12 @@ import {
   type ClassId,
   type Overrides,
   type Scenario,
+  type ScenarioSettings,
   type SolvedModel,
 } from './model'
 import { parseImportCsv, type ImportResult } from './importData'
+import { buildPreset, type ScenarioPresetId } from './presets'
+import { buildResultContext } from './resultContext'
 import {
   CompareView,
   MembershipsView,
@@ -121,7 +125,13 @@ export function Studio({
     shared
       ? [
           { name: 'Base Case', overrides: {} },
-          { name: `${shared.scenarioName} (shared)`, overrides: shared.overrides },
+          {
+            name: `${shared.scenarioName} (shared)`,
+            overrides: shared.overrides,
+            settings: shared.settings,
+            purpose: shared.purpose,
+            sourceNotes: shared.sourceNotes,
+          },
         ]
       : [{ name: 'Base Case', overrides: {} }]
   )
@@ -146,7 +156,8 @@ export function Studio({
   const [dockOpen, setDockOpen] = useState(
     () => !window.matchMedia?.('(max-width: 1180px)').matches
   )
-  const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle')
+  const [copied, setCopied] = useState<'idle' | 'ok' | 'fail' | 'stale'>('idle')
+  const usage = useMemo(() => createUsageRecorder(window.localStorage), [])
   // the Quick scenario levers preview live; they report the clear here so the
   // dock can show it beside the solved model instead of silently disagreeing
   const [live, setLive] = useState<Record<GridKey, number> | null>(null)
@@ -161,6 +172,7 @@ export function Studio({
   // overrides snapshot at the last Run: the chronological view re-runs from this,
   // so it moves with Run exactly like the other live solution views
   const [ranOv, setRanOv] = useState<Overrides>(shared?.overrides ?? {})
+  const [ranSettings, setRanSettings] = useState<ScenarioSettings>(shared?.settings ?? {})
   const [dirty, setDirty] = useState(false)
 
   // The chronology window defaults to the generated widest-swing day after profiles load.
@@ -177,7 +189,13 @@ export function Studio({
   const restoreRun = (run: SavedRun) => {
     setScenarios((prev) => [
       ...prev,
-      { name: `${run.scenarioName} (restored)`, overrides: { ...run.overrides } },
+      {
+        name: run.scenarioName,
+        overrides: { ...run.overrides },
+        settings: { ...(run.settings ?? {}) },
+        purpose: run.purpose,
+        sourceNotes: [...(run.sourceNotes ?? [])],
+      },
     ])
     setAi(scenarios.length)
     // the IEMOP window rolls; a saved run's day can age out of the archive
@@ -190,6 +208,7 @@ export function Studio({
     setChronoSpan(run.span)
     setSolved(solveModel(d, objects, run.overrides))
     setRanOv(run.overrides)
+    setRanSettings(run.settings ?? {})
     setDirty(false)
     setNav({ kind: 'sol', id: 'chrono' })
   }
@@ -199,6 +218,7 @@ export function Studio({
     if (!dirty) {
       setSolved(solveModel(d, objects, active.overrides))
       setRanOv(active.overrides)
+      setRanSettings(active.settings ?? {})
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [objects])
@@ -206,6 +226,7 @@ export function Studio({
   const run = () => {
     setSolved(solveModel(d, objects, active.overrides))
     setRanOv(active.overrides)
+    setRanSettings(active.settings ?? {})
     setDirty(false)
   }
   const edit = (cls: ClassId, id: string, prop: string, value: number) => {
@@ -241,8 +262,20 @@ export function Studio({
     )
     setDirty(true)
   }
+  const setScenarioSettings = (settings: ScenarioSettings) => {
+    setScenarios((prev) =>
+      prev.map((scenario, index) =>
+        index === ai ? { ...scenario, settings: { ...settings } } : scenario
+      )
+    )
+    setDirty(true)
+  }
   const importCsv = (text: string): ImportResult => {
     const res = parseImportCsv(text, objects)
+    const parts = [`Imported ${res.matched} value${res.matched === 1 ? '' : 's'}.`]
+    if (res.skipped.length) parts.push(`No object matched: ${res.skipped.join(', ')}.`)
+    if (res.warnings.length) parts.push(res.warnings.join(' '))
+    setImportStatus(parts.join(' '))
     if (res.matched > 0) {
       setScenarios((prev) =>
         prev.map((s, i) =>
@@ -265,16 +298,23 @@ export function Studio({
   // current edits, loading replaces them and reports what the object tables
   // could not hold, because a silent half-load is worse than no load.
   const [scenarioMsg, setScenarioMsg] = useState('')
+  const [importStatus, setImportStatus] = useState('')
   const scenarioFile = (mode: 'save' | 'load', file?: File) => {
     const date = chronoDate ?? profiles.data?.default_day ?? ''
     if (mode === 'save') {
-      const f = toScenarioFile(active.name, date, objects, active.overrides)
+      const f = toScenarioFile(
+        active.name,
+        date,
+        objects,
+        active.overrides,
+        active.settings
+      )
       downloadCsv(
         `${active.name.replace(/\W+/g, '-').toLowerCase()}.json`,
         scenarioFileText(f)
       )
       const n = Object.keys(f.opts).length
-      setScenarioMsg(`Wrote ${n} option${n === 1 ? '' : 's'} for ${date}.`)
+      setScenarioMsg(`Wrote ${n} setting${n === 1 ? '' : 's'} for ${date}.`)
       return
     }
     if (!file) return
@@ -284,13 +324,18 @@ export function Studio({
         const r = fromScenarioFile(JSON.parse(String(reader.result ?? '')), objects)
         setScenarios((prev) => [
           ...prev,
-          { name: `${r.name} (file)`, overrides: r.overrides },
+          {
+            name: r.name,
+            overrides: r.overrides,
+            settings: r.settings,
+            sourceNotes: ['Loaded from a Power Dispatch Studio scenario file.'],
+          },
         ])
         setAi(scenarios.length)
         if (profiles.data?.days.some((x) => x.date === r.date)) setChronoDate(r.date)
         setDirty(true)
         setScenarioMsg(
-          `Loaded ${Object.keys(r.overrides).length} edits.` +
+          `Loaded ${Object.keys(r.overrides).length} changes.` +
             (r.warnings.length ? ` ${r.warnings.join(' ')}` : '')
         )
       } catch (e) {
@@ -311,6 +356,9 @@ export function Studio({
       {
         name: `Scenario ${prev.length}`,
         overrides: { ...prev[ai].overrides },
+        settings: { ...(prev[ai].settings ?? {}) },
+        purpose: prev[ai].purpose,
+        sourceNotes: [...(prev[ai].sourceNotes ?? [])],
         importedKeys: [...(prev[ai].importedKeys ?? [])],
       },
     ])
@@ -318,7 +366,26 @@ export function Studio({
     setDirty(true)
   }
 
-  const editCount = Object.keys(active.overrides).length
+  const renameScenario = (name: string) => {
+    const clean = name.trim()
+    if (!clean) return
+    setScenarios((prev) =>
+      prev.map((scenario, index) =>
+        index === ai ? { ...scenario, name: clean } : scenario
+      )
+    )
+  }
+
+  const applyPreset = (id: ScenarioPresetId) => {
+    const preset = buildPreset(id, objects)
+    setScenarios((prev) => [...prev, preset])
+    setAi(scenarios.length)
+    setDirty(true)
+    setNav({ kind: 'quick' })
+  }
+
+  const editCount =
+    Object.keys(active.overrides).length + (active.settings?.reserveHoldback ? 1 : 0)
   const dest = destOf(nav)
   const group = groupOf(nav)
   const workspace = dest ? workspaceForSlug(dest.slug) : undefined
@@ -334,11 +401,16 @@ export function Studio({
   const stripRun = useMemo(() => {
     if (!profiles.data || !chronoDate) return null
     try {
-      return runChronology(d, profiles.data, chronoDate, chronoOptsFrom(objects, ranOv))
+      return runChronology(
+        d,
+        profiles.data,
+        chronoDate,
+        chronoOptsFrom(objects, ranOv, ranSettings)
+      )
     } catch {
       return null
     }
-  }, [d, profiles.data, chronoDate, objects, ranOv])
+  }, [d, profiles.data, chronoDate, objects, ranOv, ranSettings])
   const stripDay = profiles.data?.days.find((day) => day.date === chronoDate)
   const stripItems = useMemo(
     () =>
@@ -352,8 +424,51 @@ export function Studio({
     dates.length > 0 ? `${dates[0]} to ${dates[dates.length - 1]}` : 'Unavailable'
   const evidence = evidenceForSlug(
     dest?.slug ?? DEFAULT_DESTINATION,
-    Object.keys(ranOv).length > 0
+    Object.keys(ranOv).length > 0 || !!ranSettings.reserveHoldback
   )
+  const resultContext = useMemo(() => {
+    if (dest?.slug === 'saved-runs') {
+      return {
+        label: 'Saved model results',
+        summary:
+          'Each saved run keeps its own dates, assumptions, calculation method, sources, and results.',
+        assumptions: [],
+      }
+    }
+    return buildResultContext({
+      evidenceKind: evidence.kind,
+      scenario: dirty ? active : { ...active, overrides: ranOv, settings: ranSettings },
+      objects,
+      dirty: dirty && !!dest?.live,
+      date: dateContext ? chronoDate : null,
+    })
+  }, [
+    active,
+    chronoDate,
+    dateContext,
+    dest?.live,
+    dest?.slug,
+    dirty,
+    evidence.kind,
+    objects,
+    ranOv,
+    ranSettings,
+  ])
+
+  useEffect(() => {
+    if (!dest) return
+    usage.track('workflow_opened', { workflow: dest.slug })
+  }, [dest, usage])
+
+  useEffect(() => {
+    if (!dest) return
+    const recordStop = () => {
+      if (document.visibilityState === 'hidden')
+        usage.track('journey_stopped', { workflow: dest.slug })
+    }
+    document.addEventListener('visibilitychange', recordStop)
+    return () => document.removeEventListener('visibilitychange', recordStop)
+  }, [dest, usage])
 
   // the open view rides in the URL beside any shared scenario, so a colleague
   // can be sent one view rather than told which one to click to
@@ -380,7 +495,9 @@ export function Studio({
 
   const revertAll = () => {
     setScenarios((prev) =>
-      prev.map((s, i) => (i === ai ? { ...s, overrides: {}, importedKeys: [] } : s))
+      prev.map((s, i) =>
+        i === ai ? { ...s, overrides: {}, settings: {}, importedKeys: [] } : s
+      )
     )
     setDirty(true)
   }
@@ -446,6 +563,7 @@ export function Studio({
           open={navOpen}
           onClose={() => setNavOpen(false)}
           editCount={editCount}
+          dirty={dirty}
         />
 
         <main className="studio__main">
@@ -465,21 +583,29 @@ export function Studio({
             <h1 className="viewhead__title">{dest?.label ?? 'View'}</h1>
             <p className="viewhead__hint">
               {dirty && dest?.live
-                ? `${editCount} edit${editCount === 1 ? ' is' : 's are'} not in this result yet. Press Run.`
+                ? `${editCount} change${editCount === 1 ? ' is' : 's are'} not in this result yet. Press Run.`
                 : (dest?.hint ?? '')}
             </p>
             <span className={`viewhead__state is-${evidence.kind}`}>
-              {EVIDENCE_LABELS[evidence.kind]}
+              {dest?.slug === 'saved-runs'
+                ? 'Saved model results'
+                : EVIDENCE_LABELS[evidence.kind]}
             </span>
             {scenarioContext && editCount > 0 && (
               <button className="btn btn--ghost btn--sm" onClick={revertAll}>
-                Revert {editCount} edit{editCount === 1 ? '' : 's'}
+                Revert {editCount} change{editCount === 1 ? '' : 's'}
               </button>
             )}
             {scenarioContext && (
               <button
                 className="btn btn--ghost btn--sm"
                 onClick={async () => {
+                  if (dirty) {
+                    usage.track('stale_result_attempt', { workflow: dest.slug })
+                    setCopied('stale')
+                    window.setTimeout(() => setCopied('idle'), 1600)
+                    return
+                  }
                   const ok = await copySummary()
                   setCopied(ok ? 'ok' : 'fail')
                   window.setTimeout(() => setCopied('idle'), 1600)
@@ -490,10 +616,31 @@ export function Studio({
                   ? 'Copied'
                   : copied === 'fail'
                     ? 'Copy failed'
-                    : 'Copy summary'}
+                    : copied === 'stale'
+                      ? 'Run changes first'
+                      : 'Copy summary'}
               </button>
             )}
           </div>
+          <section
+            className={`result-context${dirty && dest?.live ? ' is-pending' : ''}`}
+            aria-label="Result status and active assumptions"
+          >
+            <strong className="result-context__label">{resultContext.label}</strong>
+            <span className="result-context__summary">{resultContext.summary}</span>
+            <div className="result-context__assumptions">
+              <span>Active assumptions</span>
+              {resultContext.assumptions.length ? (
+                <ul>
+                  {resultContext.assumptions.map((assumption) => (
+                    <li key={assumption.key}>{assumption.text}</li>
+                  ))}
+                </ul>
+              ) : (
+                <b>None</b>
+              )}
+            </div>
+          </section>
           <details className="viewevidence">
             <summary>Evidence and sources</summary>
             <EvidenceSummary
@@ -515,6 +662,8 @@ export function Studio({
                   scenarios={scenarios}
                   overrides={active.overrides}
                   ranOv={ranOv}
+                  scenario={active}
+                  ranSettings={ranSettings}
                   scenarioName={active.name}
                   chronoDate={chronoDate}
                   chronoSpan={chronoSpan}
@@ -528,7 +677,11 @@ export function Studio({
                   dirty={dirty}
                   onEdit={edit}
                   onRevert={revert}
+                  onScenarioSettings={setScenarioSettings}
+                  onRenameScenario={renameScenario}
+                  onApplyPreset={applyPreset}
                   onImportCsv={importCsv}
+                  importStatus={importStatus}
                   importedKeys={active.importedKeys}
                   onScenarioFile={scenarioFile}
                   scenarioMsg={scenarioMsg}
@@ -597,6 +750,8 @@ function DataPane({
   scenarios,
   overrides,
   ranOv,
+  scenario,
+  ranSettings,
   scenarioName,
   chronoDate,
   chronoSpan,
@@ -610,7 +765,11 @@ function DataPane({
   dirty,
   onEdit,
   onRevert,
+  onScenarioSettings,
+  onRenameScenario,
+  onApplyPreset,
   onImportCsv,
+  importStatus,
   importedKeys,
   onScenarioFile,
   scenarioMsg,
@@ -626,6 +785,8 @@ function DataPane({
   scenarios: Scenario[]
   overrides: Scenario['overrides']
   ranOv: Overrides
+  scenario: Scenario
+  ranSettings: ScenarioSettings
   scenarioName: string
   chronoDate: string | null
   chronoSpan: 'day' | 'week'
@@ -639,7 +800,11 @@ function DataPane({
   dirty: boolean
   onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
   onRevert: (cls: ClassId, id: string, prop: string) => void
+  onScenarioSettings: (settings: ScenarioSettings) => void
+  onRenameScenario: (name: string) => void
+  onApplyPreset: (id: ScenarioPresetId) => void
   onImportCsv: (text: string) => ImportResult
+  importStatus: string
   onScenarioFile: (mode: 'save' | 'load', file?: File) => void
   scenarioMsg: string
   importedKeys: string[] | undefined
@@ -664,9 +829,15 @@ function DataPane({
         grid={grid}
         objects={objects}
         overrides={overrides}
+        scenarioName={scenario.name}
+        settings={scenario.settings ?? {}}
         onEdit={onEdit}
         onRevert={onRevert}
+        onSettings={onScenarioSettings}
+        onRenameScenario={onRenameScenario}
+        onApplyPreset={onApplyPreset}
         onImportCsv={onImportCsv}
+        importStatus={importStatus}
         onScenarioFile={onScenarioFile}
         scenarioMsg={scenarioMsg}
         importedKeys={importedKeys}
@@ -794,6 +965,9 @@ function DataPane({
         profiles={profiles}
         objects={objects}
         overrides={ranOv}
+        settings={ranSettings}
+        purpose={scenario.purpose}
+        sourceNotes={scenario.sourceNotes}
         importedKeys={importedKeys}
         grid={grid}
         scenarioName={scenarioName}
@@ -829,7 +1003,12 @@ function DataPane({
         day={profiles?.days.find((day) => day.date === chronoDate)}
         run={
           profiles && chronoDate
-            ? runChronology(d, profiles, chronoDate, chronoOptsFrom(objects, ranOv))
+            ? runChronology(
+                d,
+                profiles,
+                chronoDate,
+                chronoOptsFrom(objects, ranOv, ranSettings)
+              )
             : null
         }
         hour={selectedHour}

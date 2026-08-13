@@ -21,41 +21,46 @@ save the base run before changing assumptions.
 ### Replay a recorded market day
 
 1. Open [Hourly market replay](https://power-dispatch-studio.vercel.app/studio/#v=chronology).
-2. Choose an **Observed day** and island grid. Click an hour in the 24-hour
-   strip to read its recorded price, replay price, demand, and price-setting block.
-3. Under **Dispatch engine**, switch between **Cost model** and **Observed
-   offers**. The offer option is available only on days with a published offer book.
+2. Under **Observed day**, choose a recorded day and island grid. Click an hour in
+   the 24-hour strip to read its recorded price, replay price, demand, and
+   price-setting block.
+3. Under **Replay method**, switch between **Cost-model replay** and
+   **Offer-book replay**. The offer option is available only on days with a
+   published offer book.
 4. Open **Evidence and sources** before using a result. It names the source,
    date, resolution, and whether the value was recorded or calculated.
 5. Use **Copy link** to share the same date, grid, window, and scenario. Use
    **Export CSV** for the hourly rows.
 
-[![Recording: choose a date, grid, and hour; switch to observed offers; open evidence; copy the exact view.](docs/studio-shell.gif)](docs/studio-shell.mp4)
+[![Recording: choose a date, grid, and hour; switch to the offer-book replay; open evidence; copy the exact view.](docs/studio-shell.gif)](docs/studio-shell.mp4)
 
 [Download the market-day recording as MP4](docs/studio-shell.mp4).
 
 ### Run, save, and compare a scenario
 
 1. In **Hourly market replay**, press **Save run** to keep the base case.
-2. Open [Scenario builder](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario)
-   and change only the inputs needed for the case.
-3. Press **Run _N_ edits**. Do not use the scenario result until the top bar says
-   **Results current**.
+2. Open [Scenario builder](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario).
+   Start from a task preset or change only the needed inputs. Name the scenario
+   before you run it.
+3. Press **Run _N_ changes**. Do not use the scenario result until the top bar
+   says **Results current**.
 4. Return to **Hourly market replay**, choose **Day** or **Week ending**, wait for
-   the day totals to update, and press **Save run** again.
+   the day totals to update, enter a useful run name, and press **Save run** again.
 5. Open [Saved runs](https://power-dispatch-studio.vercel.app/studio/#v=saved-runs).
-   The comparison table highlights changed prices, unserved energy, and the
-   value of price differences across constrained links. The hourly chart starts
-   on the grid with the largest mean-price change; use its selector to choose
-   another grid.
-6. Use **CSV** for hourly data, **Report** for a standalone HTML report,
-   **Restore** to reopen a case, or **Export runs** to back up the browser archive.
+   Read the summary above the table first. It names the changed assumption, the
+   most affected grid, the price movement, unserved energy, and any link at its
+   limit.
+6. Use **Export case** for one portable file with assumptions, dates, the
+   calculation version, sources, results, and chart data. Use **CSV** for hourly
+   data or **Report** for a standalone HTML report.
 
-[![Recording: save the base run, add a 4,000 MW flat-load stress test to Visayas, run it, save again, and compare both runs.](docs/analyst-walkthrough.gif)](docs/analyst-walkthrough.mp4)
+[![Recording: save the base run, load the DICT 1,500 MW reference case, compare it, and find the portable case export.](docs/analyst-walkthrough.gif)](docs/analyst-walkthrough.mp4)
 
 [Download the scenario recording as MP4](docs/analyst-walkthrough.mp4).
 
-Saved scenarios and runs stay in that browser. Nothing is uploaded.
+Saved scenarios and runs stay in that browser. Exported case files give a
+durable copy. **Local usage diagnostics** record only workflow counts in that
+browser and send nothing over the network.
 
 ### Read the status before reading the number
 
@@ -99,7 +104,7 @@ and energy over time in megawatt-hours (MWh).
 **[Read the eleven findings](docs/findings.md)** for the supporting evidence.
 The **[Studio view catalog](docs/studio-views.md)** lists every deep link.
 
-The README downloads 3.2 MB of media across 3 files. The findings and Studio
+The README downloads 3.9 MB of media across 3 files. The findings and Studio
 catalog link to the remaining media instead of embedding it here.
 
 ## Related power-system tools
@@ -218,7 +223,7 @@ export POWER_DISPATCH_DATA=/path/to/your/build   # same effect, for a session
 [`docs/data-contract.md`](docs/data-contract.md) lists every key those two files
 must carry, with a 30-line system that runs.
 `tests/test_data_contract.py` builds that system, solves it, and fails if the
-document stops matching the engine.
+document stops matching the calculation.
 
 The committed `data/raw/` means `make data` works offline from a clean clone.
 `make backfill` tops up any days the archive is missing (fetches are sequential and

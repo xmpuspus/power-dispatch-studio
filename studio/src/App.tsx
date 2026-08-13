@@ -69,7 +69,7 @@ export default function App() {
             Power Dispatch<span className="app__logo-ph"> Studio</span>
           </span>
           <span className="app__brandsub">
-            Philippine grid, priced from the operator's own files
+            Philippine grid analysis from public market records
           </span>
         </div>
         <div className="app__baractions">
@@ -113,7 +113,7 @@ export default function App() {
               ? `Data error: ${error ?? solverErr}`
               : !d && loading
                 ? 'Loading the model.'
-                : 'Loading the calculation engine.'}
+                : 'Loading the dispatch model.'}
           </p>
           <a className="btn btn--ghost" href="../">
             Back to the map

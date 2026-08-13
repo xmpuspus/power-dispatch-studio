@@ -116,14 +116,16 @@ how_to_labels = [
     "Replay a recorded market day",
     "Run, save, and compare a scenario",
     "Observed day",
-    "Dispatch engine",
+    "Replay method",
+    "Cost-model replay",
+    "Offer-book replay",
     "Evidence and sources",
     "Copy link",
     "Export CSV",
     "Results current",
     "Save run",
     "Saved runs",
-    "Export runs",
+    "Export case",
 ]
 for label in how_to_labels:
     check(f"README how-to names {label!r}", label in front)

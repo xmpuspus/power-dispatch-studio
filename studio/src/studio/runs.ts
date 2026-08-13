@@ -5,7 +5,8 @@
 
 import type { GridKey } from '../lib/types'
 import { ENGINE_VERSION, type ChronoHour, type ChronoSummary } from './chrono'
-import type { Overrides } from './model'
+import type { Overrides, ScenarioPurpose, ScenarioSettings } from './model'
+import type { ActiveAssumption } from './resultContext'
 
 export interface SavedRun {
   id: string
@@ -13,6 +14,14 @@ export interface SavedRun {
   savedAt: string // ISO timestamp
   scenarioName: string
   overrides: Overrides
+  assumptions?: ActiveAssumption[]
+  sourceNotes?: string[]
+  purpose?: ScenarioPurpose
+  calculation?: {
+    pricingMethod: 'cost' | 'offers'
+    reserveHoldback: boolean
+  }
+  settings?: ScenarioSettings
   date: string
   span: 'day' | 'week'
   engineVersion: number
@@ -68,14 +77,14 @@ export function isStale(run: SavedRun): boolean {
   return run.engineVersion !== ENGINE_VERSION
 }
 
-// ---- portability: export the archive to a file, import one back ----------------
+// Portability: export the archive to a file and import one back.
 
 /** The whole run archive as a JSON string, for download or backup. */
 export function exportRuns(): string {
   return JSON.stringify({ runs: loadRuns() }, null, 2)
 }
 
-function isSavedRun(x: unknown): x is SavedRun {
+export function isSavedRun(x: unknown): x is SavedRun {
   if (!x || typeof x !== 'object') return false
   const r = x as Record<string, unknown>
   return (
@@ -128,7 +137,7 @@ export function importRuns(json: string): SavedRun[] {
   return merged
 }
 
-// ---- CSV export -----------------------------------------------------------------
+// CSV export.
 
 const GRIDS: GridKey[] = ['luzon', 'visayas', 'mindanao']
 
@@ -179,11 +188,14 @@ export function downloadCsv(filename: string, text: string): void {
   URL.revokeObjectURL(url)
 }
 
-// ---- share links: the URL is the project file ------------------------------------
+// Share links: the URL is the project file.
 
 export interface SharedState {
   overrides: Overrides
   scenarioName: string
+  settings?: ScenarioSettings
+  purpose?: ScenarioPurpose
+  sourceNotes?: string[]
   date?: string
   span?: 'day' | 'week'
 }
@@ -219,6 +231,19 @@ export function decodeShare(hash: string): SharedState | null {
       overrides,
       scenarioName:
         typeof parsed.scenarioName === 'string' ? parsed.scenarioName : 'Shared',
+      settings:
+        parsed.settings && typeof parsed.settings === 'object'
+          ? { reserveHoldback: parsed.settings.reserveHoldback === true }
+          : undefined,
+      purpose:
+        parsed.purpose === 'reference-case' ||
+        parsed.purpose === 'stress-test' ||
+        parsed.purpose === 'scenario'
+          ? parsed.purpose
+          : undefined,
+      sourceNotes: Array.isArray(parsed.sourceNotes)
+        ? parsed.sourceNotes.filter((note): note is string => typeof note === 'string')
+        : undefined,
       date: typeof parsed.date === 'string' ? parsed.date : undefined,
       span: parsed.span === 'week' ? 'week' : 'day',
     }
