@@ -1,6 +1,27 @@
 import type { Block, DurationPoint } from '../lib/types'
 import { fuelColor, fuelLabel } from '../lib/data'
+import { percentWidth } from './chartMath'
 import { bandDomain } from './insights'
+
+function axisDecimals(step: number): number {
+  if (!Number.isFinite(step) || step <= 0) return 0
+  return Math.min(4, Math.max(0, Math.ceil(-Math.log10(step))))
+}
+
+function axisNumber(value: number, step: number): string {
+  const dp = axisDecimals(step)
+  return value.toLocaleString('en-US', {
+    minimumFractionDigits: dp,
+    maximumFractionDigits: dp,
+  })
+}
+
+function mwAxis(value: number): string {
+  if (Math.abs(value) < 1000) return Math.round(value).toLocaleString('en-US')
+  return `${(value / 1000).toLocaleString('en-US', {
+    maximumFractionDigits: 1,
+  })}k`
+}
 
 /**
  * Merit-order supply curve: cumulative megawatts across, marginal cost up.
@@ -222,9 +243,30 @@ export function DurationCurve({
   const padT = 14
   const padB = 26
   const all = [...modeled, ...observed].map((d) => d.price)
-  const ymin = Math.min(...all)
-  const ymax = Math.max(...all)
-  const span = ymax - ymin || 1
+  if (!all.length)
+    return (
+      <div className="chart-summary">
+        <strong className="chart-summary__value">No price values</strong>
+        <span className="chart-summary__detail">Run a case to calculate the curve.</span>
+      </div>
+    )
+  const rawMin = Math.min(...all)
+  const rawMax = Math.max(...all)
+  const rawSpan = rawMax - rawMin
+  if (!observed.length && rawSpan < 0.01)
+    return (
+      <div className="chart-summary">
+        <strong className="chart-summary__value">
+          Price changed by less than ₱0.01/kWh
+        </strong>
+        <span className="chart-summary__detail">
+          ₱{rawMin.toFixed(3)} to ₱{rawMax.toFixed(3)}/kWh across {modeled.length} modeled{' '}
+          {modeled.length === 1 ? 'hour' : 'hours'}.
+        </span>
+      </div>
+    )
+  const { lo: ymin, span } = bandDomain(all)
+  const ymax = ymin + span
   const X = (p: number) => padL + ((W - padL - padR) * p) / 100
   const Y = (v: number) => padT + (H - padT - padB) * (1 - (v - ymin) / span)
   const path = (pts: DurationPoint[]) =>
@@ -250,7 +292,7 @@ export function DurationCurve({
             strokeWidth={0.75}
           />
           <text x={padL - 6} y={Y(v) + 3} textAnchor="end" className="chart__ax">
-            ₱{v.toFixed(0)}
+            ₱{v.toFixed(span < 2 ? 2 : span < 20 ? 1 : 0)}
           </text>
         </g>
       ))}
@@ -280,7 +322,6 @@ export function DurationCurve({
 
 /** Horizontal share bars: which block sets the price how often. */
 export function ShareBars({ rows }: { rows: { block: string; share_pct: number }[] }) {
-  const max = Math.max(...rows.map((r) => r.share_pct), 1)
   return (
     <div className="sharebars">
       {rows.map((r) => (
@@ -290,7 +331,7 @@ export function ShareBars({ rows }: { rows: { block: string; share_pct: number }
             <span
               className="sharebars__fill"
               style={{
-                width: `${(r.share_pct / max) * 100}%`,
+                width: percentWidth(r.share_pct),
                 background: fuelColor(r.block.split(' ')[0]),
               }}
             />
@@ -412,8 +453,6 @@ export function FlowDiagram({
   )
 }
 
-// ---- chronological run charts -------------------------------------------------
-
 export interface LineSeries {
   label: string
   color: string
@@ -450,7 +489,8 @@ export function HourLines({
       .map((v, i) => (v == null ? null : `${X(i).toFixed(1)},${Y(v).toFixed(1)}`))
       .filter(Boolean)
       .join(' ')
-  const ticks = [ymax, (ymax + ymin) / 2, ymin]
+  const ticks = [ymax, (ymax + ymin) / 2, ymin].filter((v, i, a) => a.indexOf(v) === i)
+  const tickStep = ticks.length > 1 ? span / 2 : 0
   const lastIdx = (pts: (number | null)[]) => {
     for (let i = pts.length - 1; i >= 0; i--) if (pts[i] != null) return i
     return 0
@@ -484,7 +524,7 @@ export function HourLines({
             strokeWidth={0.75}
           />
           <text x={padL - 6} y={Y(v) + 3} textAnchor="end" className="chart__ax">
-            {v >= 100 ? Math.round(v).toLocaleString() : v.toFixed(1)}
+            {axisNumber(v, tickStep)}
           </text>
         </g>
       ))}
@@ -593,7 +633,7 @@ export function DispatchArea({
       />
       {yticks.map((v, i) => (
         <text key={i} x={padL - 6} y={Y(v) + 3} textAnchor="end" className="chart__ax">
-          {Math.round(v / 1000).toLocaleString()}k
+          {mwAxis(v)}
         </text>
       ))}
       {marks.map((m, i) => (
@@ -626,6 +666,16 @@ export function SocChart({
   discharge: number[]
   energyMwh: number
 }) {
+  const dispatched = [...soc, ...charge, ...discharge].some((value) => value > 0.001)
+  if (!dispatched)
+    return (
+      <div className="chart-summary">
+        <strong className="chart-summary__value">No storage dispatch</strong>
+        <span className="chart-summary__detail">
+          State of charge stayed at 0 MWh throughout this run.
+        </span>
+      </div>
+    )
   const W = 640
   const H = 180
   const padL = 46

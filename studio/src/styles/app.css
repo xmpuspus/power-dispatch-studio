@@ -695,6 +695,24 @@
   height: auto;
   display: block;
 }
+.chart-summary {
+  min-height: 88px;
+  padding: var(--sp-3) 0;
+  border-block: 1px solid var(--border);
+  display: grid;
+  align-content: center;
+  gap: 4px;
+}
+.chart-summary__value {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-16);
+  font-weight: 600;
+}
+.chart-summary__detail {
+  color: var(--text-muted);
+  font-size: var(--fs-13);
+}
 .chart__lbl {
   font-size: 9px;
   fill: var(--text);
@@ -1325,6 +1343,7 @@
   color: var(--text-muted);
 }
 .mixbars__track {
+  position: relative;
   height: 12px;
   background: var(--surface-3);
   border-radius: var(--r-sm);
@@ -1359,10 +1378,6 @@
   margin-top: 3px;
   accent-color: var(--primary);
   flex: none;
-}
-
-.mixbars__fill--over {
-  background: var(--destructive);
 }
 
 /* Compact button group for hydrology and grid selection. */

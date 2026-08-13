@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { num, php, pct, useBill } from '../lib/data'
 import { Panel, StatTile, Source, EmptyNote } from '../ui/kit'
 import { ScrollBox } from '../ui/ScrollBox'
+import { percentWidth } from './chartMath'
 
 const MIX_LABEL: Record<string, string> = {
   psa: 'Bilateral PSAs',
@@ -32,7 +33,6 @@ export function BillView() {
   const saved = billNaive - billBuffered
 
   const mix = d.supply_mix_pct ?? {}
-  const mixMax = Math.max(...Object.values(mix), 1)
 
   return (
     <div className="view">
@@ -56,7 +56,7 @@ export function BillView() {
                 <span className="mixbars__track">
                   <span
                     className={`mixbars__fill${k === 'wesm' ? ' mixbars__fill--spot' : ''}`}
-                    style={{ width: `${(v / mixMax) * 100}%` }}
+                    style={{ width: percentWidth(v) }}
                   />
                 </span>
                 <span className="mixbars__val mono">{v}%</span>

@@ -60,6 +60,7 @@ function DayStrip({
   const good = limits.filter((v): v is number => v != null)
   const lo = good.length ? Math.min(...good) : 0
   const hi = good.length ? Math.max(...good) : 1
+  const flat = good.length > 0 && hi === lo
   // the limit moves by about a tenth across the day, so anchoring at zero
   // flattens the only thing this panel exists to show. A line chart may sit off
   // zero as long as the floor is printed, which it is, at both ends.
@@ -98,12 +99,25 @@ function DayStrip({
       {path ? (
         <>
           <path d={path} className="daystrip__limit" />
-          <text x={W - 42} y={y(hi) + 4} className="daystrip__scale">
-            {Math.round(hi).toLocaleString()}
-          </text>
-          <text x={W - 42} y={y(lo) + 4} className="daystrip__scale">
-            {Math.round(lo).toLocaleString()}
-          </text>
+          {flat ? (
+            <text
+              x={(x(0) + x(23)) / 2}
+              y={Math.max(14, y(hi) - 8)}
+              className="daystrip__scale"
+              textAnchor="middle"
+            >
+              {Math.round(hi).toLocaleString()} MW throughout the day
+            </text>
+          ) : (
+            <>
+              <text x={W - 42} y={y(hi) + 4} className="daystrip__scale">
+                {Math.round(hi).toLocaleString()}
+              </text>
+              <text x={W - 42} y={y(lo) + 4} className="daystrip__scale">
+                {Math.round(lo).toLocaleString()}
+              </text>
+            </>
+          )}
         </>
       ) : (
         <text x={x(0)} y={40} className="daystrip__scale">
@@ -401,9 +415,10 @@ export function SitesView() {
                     ? 'n/a'
                     : site.limit_max_mw == null
                       ? 'n/a'
-                      : `${fmt(site.limit_min_mw)} to ${fmt(site.limit_max_mw)}`
+                      : site.limit_min_mw === site.limit_max_mw
+                        ? `${fmt(site.limit_min_mw)} MW all day`
+                        : `${fmt(site.limit_min_mw)} to ${fmt(site.limit_max_mw)} MW`
                 }
-                unit="MW"
                 hint="estimated model headroom, hour by hour"
               />
               <StatTile

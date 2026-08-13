@@ -1,5 +1,6 @@
 import { num, pct, useMarketPower } from '../lib/data'
 import { Panel, StatTile, Source, EmptyNote } from '../ui/kit'
+import { percentWidth } from './chartMath'
 
 // Market-power / concentration lens. The merit-order price cannot show who owns the
 // stack; a concentrated fleet can move price even with physical headroom. Built from
@@ -20,7 +21,6 @@ export function MarketPowerView() {
     ...firms.map((c) => ({ name: c.name, share: c.share_pct, other: false })),
     { name: 'All other firms', share: others, other: true },
   ]
-  const maxShare = Math.max(...bars.map((b) => b.share), cap)
 
   return (
     <div className="view">
@@ -54,8 +54,8 @@ export function MarketPowerView() {
               <span className="mixbars__label">{b.name}</span>
               <span className="mixbars__track">
                 <span
-                  className={`mixbars__fill${!b.other && b.share > cap ? ' mixbars__fill--over' : b.other ? '' : ' mixbars__fill--spot'}`}
-                  style={{ width: `${(b.share / maxShare) * 100}%` }}
+                  className={`mixbars__fill${b.other ? '' : ' mixbars__fill--spot'}`}
+                  style={{ width: percentWidth(b.share) }}
                 />
               </span>
               <span className="mixbars__val mono">{b.share.toFixed(1)}%</span>
@@ -64,9 +64,9 @@ export function MarketPowerView() {
         </div>
         <p className="note">
           EPIRA caps a single firm at {mp.cap_installed_pct}% of a grid's installed
-          capacity and {cap}% of national demand. The largest firm sits at{' '}
-          {pct((mp.largest?.share_pct ?? 0) / 100, 1)}, under the cap but approaching it.{' '}
-          {mp.note} <Source href={mp.src_cap} label="EPIRA" />
+          capacity and {cap}% of national demand. Those denominators differ from the
+          national generation-capacity shares above, so the bars are not a compliance
+          test. {mp.note} <Source href={mp.src_cap} label="EPIRA" />
         </p>
       </Panel>
     </div>
