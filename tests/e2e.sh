@@ -94,8 +94,12 @@ checks.append(("price-duration + marginal-frequency generated",
                and bool(disp.get("marginal_frequency", {}).get("luzon", {}).get("by_block"))))
 html = urllib.request.urlopen(base + "/").read().decode()
 checks.append(("page mentions the three questions",
-               "Can supply cover additional data-center demand?" in json.dumps(ans)
+               "How large is announced demand" in json.dumps(ans)
                and "Power Dispatch Studio" in html))
+checks.append(("public map does not expose a second scenario calculator",
+               'data-mode="simulate"' not in html and 'id="sualbtn"' not in html))
+checks.append(("public map links to the analyst studio",
+               'href="studio/#v=' in html))
 checks.append(("disclaimer on page", "legitimate explanations" in html))
 checks.append(("og:image tag present", 'property="og:image"' in html))
 checks.append(("findings drawer markup present", 'id="findings"' in html))
@@ -132,67 +136,12 @@ if command -v agent-browser >/dev/null 2>&1; then
   FD=$(agent-browser eval 'const d=window.__diag||{};[d.findings>=5,d.drawerOpen,!!d.activeFinding,location.search.includes("finding")].join("|")' 2>/dev/null | strip)
   echo "drawer: $FD"
   [[ "$FD" == true\|true\|true\|true ]] && ok "findings drawer + deep-link" || bad "findings drawer ($FD)"
-  # Sual toggle does not desync across a mode switch (was: state stuck on)
-  agent-browser eval 'document.querySelector("[data-mode=choke]").click(); document.getElementById("sualbtn").click()' >/dev/null 2>&1
-  sleep 1
-  agent-browser eval 'document.querySelector("[data-mode=supply]").click(); document.querySelector("[data-mode=choke]").click()' >/dev/null 2>&1
-  sleep 1
-  SU=$(agent-browser eval 'const on=(window.__diag||{}).sual; const b=document.getElementById("sualbtn"); (on===b.classList.contains("on"))?"sync":"DESYNC"' 2>/dev/null | strip)
-  [[ "$SU" == "sync" ]] && ok "sual toggle stays in sync across mode switch" || bad "sual desync ($SU)"
-  # Simulate mode: generator layer, dispatch model, and live recalculation.
-  agent-browser eval 'document.querySelector("[data-mode=simulate]").click()' >/dev/null 2>&1
-  sleep 1
-  SM=$(agent-browser eval 'const d=window.__diag||{};[d.mode,d.dispatch,d.generators===11,!!d.simulate].join("|")' 2>/dev/null | strip)
-  echo "simulate: $SM"
-  [[ "$SM" == simulate\|true\|true\|true ]] && ok "simulate mode + dispatch + generators" || bad "simulate mode ($SM)"
-  # Move the add-a-data-center slider and confirm that the browser recalculates.
-  BP=$(agent-browser eval '(window.__diag.simulate||{}).price' 2>/dev/null | strip)
-  agent-browser eval 'const s=document.getElementById("sim-dc"); s.value=1500; s.dispatchEvent(new Event("input"))' >/dev/null 2>&1
-  sleep 1
-  AP=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.addDC===1500, d.price!=null].join("|")' 2>/dev/null | strip)
-  echo "sim add-DC: base=$BP after=$AP"
-  [[ "$AP" == true\|true ]] && ok "scenario setting recalculates the stack" || bad "scenario setting ($AP)"
-  # trip a unit (N-1) and confirm the diag records the tripped unit
-  agent-browser eval 'const t=document.getElementById("sim-trip"); t.value=t.options[1].value; t.dispatchEvent(new Event("change"))' >/dev/null 2>&1
-  sleep 1
-  TR=$(agent-browser eval '!!(window.__diag.simulate||{}).trip' 2>/dev/null | strip)
-  [[ "$TR" == "true" ]] && ok "simulate N-1 trip registers" || bad "simulate trip ($TR)"
-  # coupled clear: switch to Visayas, add load toward the 250 MW link, then relieve
-  # it and confirm the coupled price responds through real coupling (not a fixed block)
-  agent-browser eval 'document.querySelector(".gsel[data-grid=visayas]").click();
-    const d=document.getElementById("sim-dc"); d.value=1500; d.dispatchEvent(new Event("input"))' >/dev/null 2>&1
-  sleep 1
-  CB=$(agent-browser eval '(window.__diag.simulate||{}).coupledPrice!=null' 2>/dev/null | strip)
-  BR=$(agent-browser eval '(window.__diag.simulate||{}).coupledPrice' 2>/dev/null | strip)
-  agent-browser eval 'const i=document.getElementById("sim-imp"); i.value=250; i.dispatchEvent(new Event("input"))' >/dev/null 2>&1
-  sleep 1
-  AR=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.imp===250, d.coupledPrice!=null].join("|")' 2>/dev/null | strip)
-  echo "coupled: generated=$CB price=$BR afterRelieve=$AR"
-  [[ "$CB" == "true" && "$AR" == true\|true ]] && ok "coupled calculation updates after a link-limit change" || bad "coupled calculation ($CB/$AR)"
-  # the observed price-setter table (MCP files) renders beside the modeled one
-  OS=$(agent-browser eval '[!!document.getElementById("sim-obssetters"), (document.getElementById("sim-obssetters")||{}).children ? document.getElementById("sim-obssetters").children.length>0 : false].join("|")' 2>/dev/null | strip)
-  [[ "$OS" == true\|true ]] && ok "observed price setters render in simulate" || bad "observed setters ($OS)"
   # drivers mode: the day-by-day timeline renders rows and the week-ahead block
   agent-browser eval 'document.querySelector(".mode[data-mode=drivers]").click()' >/dev/null 2>&1
   sleep 1
   DV=$(agent-browser eval '[window.__diag.mode, (window.__diag.driversDays||0)>20, document.querySelectorAll("details.drv").length>10].join("|")' 2>/dev/null | strip)
   echo "drivers: $DV"
   [[ "$DV" == drivers\|true\|true ]] && ok "drivers timeline renders day rows" || bad "drivers mode ($DV)"
-  agent-browser eval 'document.querySelector(".mode[data-mode=simulate]").click()' >/dev/null 2>&1
-  sleep 1
-  # storage lever shaves the peak, and the item-5 charts rendered in the panel
-  agent-browser eval 'document.querySelector(".gsel[data-grid=luzon]").click();
-    const d=document.getElementById("sim-dc"); d.value=3000; d.dispatchEvent(new Event("input"))' >/dev/null 2>&1
-  sleep 1
-  SB=$(agent-browser eval '(window.__diag.simulate||{}).price' 2>/dev/null | strip)
-  # 2000 MW (slider max): the +3000 DC oil gap is ~1,525 MW on native-load
-  # demand (was ~1,613 gen-based); anything under the gap shaves nothing.
-  agent-browser eval 'const s=document.getElementById("sim-stor"); s.value=2000; s.dispatchEvent(new Event("input"))' >/dev/null 2>&1
-  sleep 1
-  SA=$(agent-browser eval 'const d=window.__diag.simulate||{};[d.stor===2000, d.price<'"$SB"'].join("|")' 2>/dev/null | strip)
-  CH=$(agent-browser eval '[!!window.__diag.priceDuration, !!document.querySelector("#sim-duration svg"), !!document.getElementById("sim-margfreq")].join("|")' 2>/dev/null | strip)
-  echo "storage: before=$SB after=$SA charts=$CH"
-  [[ "$SA" == true\|true && "$CH" == true\|true\|true ]] && ok "storage lever shaves peak + item-5 charts render" || bad "storage/charts ($SA / $CH)"
   agent-browser close >/dev/null 2>&1
 else
   echo "SKIP browser block (agent-browser not installed)"

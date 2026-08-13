@@ -120,7 +120,7 @@ export function SweepView({
     },
     {
       key: 'price',
-      header: `Price, ${cap(grid)}`,
+      header: `Price, ${cap(grid)} (₱/kWh)`,
       align: 'right',
       mono: true,
       render: (r) => php(r.s.coupled.price[grid]),
@@ -135,7 +135,7 @@ export function SweepView({
       header: 'Import corridor',
       render: (r) =>
         r.corridorBound
-          ? `at limit, price-gap value ${php(r.corridorRent)}`
+          ? `at limit, price difference ${php(r.corridorRent)}/kWh`
           : 'below limit',
     },
     {
@@ -173,11 +173,13 @@ export function SweepView({
         <StatTile
           label="Price at +0"
           value={php(first.s.coupled.price[grid])}
+          unit="/kWh"
           hint={fuelLabel(baseFuel ?? 'none')}
         />
         <StatTile
           label={`Price at +${num(last.addMw)} MW`}
           value={php(last.s.coupled.price[grid])}
+          unit="/kWh"
           hint={fuelLabel(last.s.marginalFuel[grid] ?? 'none')}
           tone={
             last.s.coupled.price[grid] > first.s.coupled.price[grid] + 0.005

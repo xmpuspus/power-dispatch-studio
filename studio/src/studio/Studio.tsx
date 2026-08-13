@@ -34,9 +34,8 @@ import {
   evidenceForSlug,
   workspaceForSlug,
 } from '../shell/workflows'
-import { DurationView, MarginalView, ReliabilityView, ReserveView } from './views'
+import { MarginalView, ReserveView } from './views'
 import { ScenarioView } from './Scenario'
-import { BillView } from './Bill'
 import { MarketPowerView } from './MarketPower'
 import { ChronologyView } from './ChronoView'
 import { runChronology } from './chrono'
@@ -51,19 +50,14 @@ import { EmissionsView } from './EmissionsView'
 import { CaptureView } from './CaptureView'
 import { VintageView } from './VintageView'
 import { PortfolioView } from './PortfolioView'
-import { CrossRunView } from './CrossRunView'
-import { EnsembleView } from './EnsembleView'
 import { Rtdoe5View } from './Rtdoe5View'
 import { NodalView } from './NodalView'
 import { SitesView } from './SitesView'
 import { LossValidationView } from './LossValidationView'
-import { UcProbeView } from './UcProbeView'
 import { FutureYearView } from './FutureYearView'
 import { ContractView } from './ContractView'
 import { WeekView } from './WeekView'
 import { ForwardView } from './ForwardView'
-import { MultiYearView } from './MultiYearView'
-import { ExpansionView } from './ExpansionView'
 import { decodeShare, downloadCsv, loadRuns, type SavedRun } from './runs'
 import { fromScenarioFile, scenarioFileText, toScenarioFile } from './scenarioFile'
 import {
@@ -85,11 +79,10 @@ import {
   SolvedFlowsView,
   SolvedMeritView,
   SolvedN1View,
-  SolvedRegionsView,
   SolvedReliabilityView,
 } from './model-views'
 
-// The nav shape, the 42 destinations, and which of them read one grid at a time
+// The nav shape, the 26 destinations, and which of them read one grid at a time
 // all live in shell/nav.ts. Studio keeps the model state and the panes; the
 // shell owns how an analyst reaches them.
 
@@ -330,6 +323,8 @@ export function Studio({
   const group = groupOf(nav)
   const workspace = dest ? workspaceForSlug(dest.slug) : undefined
   const gridScoped = !!dest?.scoped
+  const dateContext = !!dest?.dateContext
+  const scenarioContext = !!dest?.scenarioContext
 
   // the calibrated base case, solved once. Every figure in the run dock reads
   // its move against this, so an analyst sees the size of what they changed
@@ -422,6 +417,8 @@ export function Studio({
         grid={grid}
         onGrid={setGrid}
         gridScoped={gridScoped}
+        dateEnabled={dateContext}
+        scenarioEnabled={scenarioContext}
         dates={dates}
         date={chronoDate ?? ''}
         onDate={setChronoDate}
@@ -440,7 +437,9 @@ export function Studio({
         onToggleTheme={onToggleTheme}
       />
 
-      <div className={`studio__body ${dockOpen ? 'dock-open' : 'dock-closed'}`}>
+      <div
+        className={`studio__body ${scenarioContext ? (dockOpen ? 'dock-open' : 'dock-closed') : 'no-dock'}`}
+      >
         <NavRail
           nav={nav}
           onNav={setNav}
@@ -450,7 +449,7 @@ export function Studio({
         />
 
         <main className="studio__main">
-          {chronoDate && (
+          {dateContext && chronoDate && (
             <MarketStrip
               date={chronoDate}
               grid={grid}
@@ -472,33 +471,35 @@ export function Studio({
             <span className={`viewhead__state is-${evidence.kind}`}>
               {EVIDENCE_LABELS[evidence.kind]}
             </span>
-            {editCount > 0 && (
+            {scenarioContext && editCount > 0 && (
               <button className="btn btn--ghost btn--sm" onClick={revertAll}>
                 Revert {editCount} edit{editCount === 1 ? '' : 's'}
               </button>
             )}
-            <button
-              className="btn btn--ghost btn--sm"
-              onClick={async () => {
-                const ok = await copySummary()
-                setCopied(ok ? 'ok' : 'fail')
-                window.setTimeout(() => setCopied('idle'), 1600)
-              }}
-              title="Copy this scenario's clearing prices and adequacy"
-            >
-              {copied === 'ok'
-                ? 'Copied'
-                : copied === 'fail'
-                  ? 'Copy failed'
-                  : 'Copy summary'}
-            </button>
+            {scenarioContext && (
+              <button
+                className="btn btn--ghost btn--sm"
+                onClick={async () => {
+                  const ok = await copySummary()
+                  setCopied(ok ? 'ok' : 'fail')
+                  window.setTimeout(() => setCopied('idle'), 1600)
+                }}
+                title="Copy this scenario's clearing prices and adequacy"
+              >
+                {copied === 'ok'
+                  ? 'Copied'
+                  : copied === 'fail'
+                    ? 'Copy failed'
+                    : 'Copy summary'}
+              </button>
+            )}
           </div>
           <details className="viewevidence">
             <summary>Evidence and sources</summary>
             <EvidenceSummary
               evidence={evidence}
-              date={chronoDate ?? 'Not selected'}
-              coverage={coverage}
+              date={dateContext ? (chronoDate ?? undefined) : undefined}
+              coverage={dateContext ? coverage : undefined}
             />
           </details>
           <div className="studio__scroll">
@@ -517,6 +518,7 @@ export function Studio({
                   scenarioName={active.name}
                   chronoDate={chronoDate}
                   chronoSpan={chronoSpan}
+                  selectedHour={selectedHour}
                   onChronoDate={setChronoDate}
                   onChronoSpan={setChronoSpan}
                   runsList={runsList}
@@ -538,21 +540,20 @@ export function Studio({
           </div>
         </main>
 
-        <RunDock
-          solved={solved}
-          base={base}
-          live={live}
-          grid={grid}
-          onGrid={setGrid}
-          scenarioName={active.name}
-          dirty={dirty}
-          open={dockOpen}
-          onToggle={() => setDockOpen((v) => !v)}
-          onTakeAway={() => setNav({ kind: 'runs' })}
-          evidence={evidence}
-          date={chronoDate ?? 'Not selected'}
-          coverage={coverage}
-        />
+        {scenarioContext && (
+          <RunDock
+            solved={solved}
+            base={base}
+            live={live}
+            grid={grid}
+            onGrid={setGrid}
+            scenarioName={active.name}
+            dirty={dirty}
+            open={dockOpen}
+            onToggle={() => setDockOpen((v) => !v)}
+            onTakeAway={() => setNav({ kind: 'runs' })}
+          />
+        )}
       </div>
 
       <CommandPalette
@@ -562,35 +563,6 @@ export function Studio({
       />
 
       <GlossaryDrawer open={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
-
-      <footer className="studio__status mono">
-        <span>
-          Result <b>{EVIDENCE_LABELS[evidence.kind]}</b>
-        </span>
-        <span>
-          Scenario <b>{active.name}</b>, {editCount} edit{editCount === 1 ? '' : 's'}
-          {active.importedKeys && active.importedKeys.length > 0 && (
-            <span
-              className="statuschip statuschip--user"
-              title="Your CSV inputs stay in this browser and are never uploaded"
-            >
-              {' '}
-              user-supplied data ({active.importedKeys.length})
-            </span>
-          )}
-        </span>
-        <span>
-          Market date <b>{chronoDate ?? 'not selected'}</b>
-        </span>
-        <span>
-          Luzon spare capacity (reserve margin){' '}
-          <b>{pct(solved.reserveMarginPct.luzon / 100, 1)}</b>
-        </span>
-        <span className="studio__statspace" />
-        <span>
-          lowest-cost-first dispatch (merit order), checked against recorded prices
-        </span>
-      </footer>
     </div>
   )
 }
@@ -628,6 +600,7 @@ function DataPane({
   scenarioName,
   chronoDate,
   chronoSpan,
+  selectedHour,
   onChronoDate,
   onChronoSpan,
   runsList,
@@ -656,6 +629,7 @@ function DataPane({
   scenarioName: string
   chronoDate: string | null
   chronoSpan: 'day' | 'week'
+  selectedHour: number
   onChronoDate: (v: string) => void
   onChronoSpan: (v: 'day' | 'week') => void
   runsList: SavedRun[]
@@ -683,20 +657,6 @@ function DataPane({
         onOpenReplay={() => onNav({ kind: 'sol', id: 'chrono' })}
       />
     )
-  if (nav.kind === 'class') {
-    return (
-      <ClassPane
-        cls={nav.id}
-        objects={objects}
-        overrides={overrides}
-        importedKeys={importedKeys}
-        dirty={dirty}
-        onEdit={onEdit}
-        onRevert={onRevert}
-        onRun={onRun}
-      />
-    )
-  }
   if (nav.kind === 'quick')
     return (
       <ScenarioView
@@ -714,41 +674,72 @@ function DataPane({
       />
     )
   if (nav.kind === 'phase') {
-    if (nav.id === 'lt') return <LTPlanView objects={objects} onEdit={onEdit} />
-    return <PasaView d={d} objects={objects} overrides={ranOv} />
+    if (nav.id === 'lt')
+      return (
+        <div className="view">
+          <LTPlanView objects={objects} onEdit={onEdit} />
+          <FutureYearView grid={grid} />
+        </div>
+      )
+    return (
+      <PasaView
+        d={d}
+        objects={objects}
+        overrides={ranOv}
+        date={chronoDate}
+        onDate={onChronoDate}
+      />
+    )
   }
   if (nav.kind === 'analysis') {
     if (nav.id === 'backcast') {
       if (!profiles)
         return <div className="basecase-banner">Loading recorded market days.</div>
-      return <BackcastView d={d} profiles={profiles} grid={grid} />
+      return (
+        <BackcastView
+          d={d}
+          profiles={profiles}
+          grid={grid}
+          date={chronoDate}
+          onDate={onChronoDate}
+        />
+      )
     }
     if (nav.id === 'explain') {
       if (!profiles)
         return <div className="basecase-banner">Loading recorded market days.</div>
-      return <DayExplainerView d={d} profiles={profiles} grid={grid} />
+      return (
+        <DayExplainerView
+          d={d}
+          profiles={profiles}
+          grid={grid}
+          date={chronoDate}
+          onDate={onChronoDate}
+        />
+      )
     }
     if (nav.id === 'emissions') {
       if (!profiles)
         return <div className="basecase-banner">Loading recorded market days.</div>
       return (
-        <EmissionsView d={d} profiles={profiles} objects={objects} overrides={ranOv} />
+        <EmissionsView
+          d={d}
+          profiles={profiles}
+          objects={objects}
+          overrides={ranOv}
+          date={chronoDate}
+          onDate={onChronoDate}
+        />
       )
     }
     if (nav.id === 'reserve') return <ReserveView d={d} grid={grid} />
-    if (nav.id === 'bill') return <BillView />
     if (nav.id === 'capture') return <CaptureView runsList={runsList} grid={grid} />
-    if (nav.id === 'portfolio') return <PortfolioView runsList={runsList} d={d} />
-    if (nav.id === 'crossrun')
-      return <CrossRunView runsList={runsList} d={d} grid={grid} />
-    if (nav.id === 'ensemble' && profiles)
-      return <EnsembleView d={d} profiles={profiles} grid={grid} />
-    if (nav.id === 'rtdoe5') return <Rtdoe5View grid={grid} />
+    if (nav.id === 'portfolio') return <PortfolioView runsList={runsList} />
+    if (nav.id === 'rtdoe5')
+      return <Rtdoe5View grid={grid} date={chronoDate} onDate={onChronoDate} />
     if (nav.id === 'nodal') return <NodalView grid={grid} />
     if (nav.id === 'sites') return <SitesView />
     if (nav.id === 'lossval') return <LossValidationView />
-    if (nav.id === 'commitment') return <UcProbeView />
-    if (nav.id === 'futureyear') return <FutureYearView grid={grid} />
     if (nav.id === 'contracts') {
       if (!profiles)
         return <div className="basecase-banner">Loading recorded market days.</div>
@@ -765,20 +756,35 @@ function DataPane({
     }
     if (nav.id === 'forward' && profiles)
       return <ForwardView d={d} profiles={profiles} grid={grid} />
-    if (nav.id === 'multiyear' && profiles)
-      return <MultiYearView d={d} profiles={profiles} grid={grid} />
     if (nav.id === 'week') {
       if (!profiles)
         return <div className="basecase-banner">Loading recorded market days.</div>
       return <WeekView d={d} profiles={profiles} grid={grid} />
     }
-    if (nav.id === 'expansion') return <ExpansionView />
-    if (nav.id === 'vintage') return <VintageView d={d} />
-    return <MarketPowerView d={d} />
+    if (nav.id === 'inputs')
+      return (
+        <ModelInputsView
+          d={d}
+          objects={objects}
+          overrides={overrides}
+          importedKeys={importedKeys}
+          dirty={dirty}
+          onEdit={onEdit}
+          onRevert={onRevert}
+          onRun={onRun}
+        />
+      )
+    return <MarketPowerView />
   }
   // solution views
   const sol = nav.id
-  if (sol === 'merit') return <SolvedMeritView s={solved} grid={grid} />
+  if (sol === 'merit')
+    return (
+      <div className="view">
+        <SolvedMeritView s={solved} grid={grid} />
+        <MarginalView d={d} grid={grid} />
+      </div>
+    )
   if (sol === 'chrono') {
     if (!profiles || !chronoDate)
       return <div className="basecase-banner">Loading recorded market days.</div>
@@ -795,6 +801,7 @@ function DataPane({
         span={chronoSpan}
         onDate={onChronoDate}
         onSpan={onChronoSpan}
+        selectedHour={selectedHour}
         onSaved={onRunsChange}
       />
     )
@@ -814,35 +821,95 @@ function DataPane({
       />
     )
   }
-  if (sol === 'flows') return <SolvedFlowsView s={solved} />
-  if (sol === 'n1') return <SolvedN1View s={solved} grid={grid} />
-  if (sol === 'regions') return <SolvedRegionsView s={solved} />
+  if (sol === 'flows')
+    return (
+      <SolvedFlowsView
+        s={solved}
+        d={d}
+        day={profiles?.days.find((day) => day.date === chronoDate)}
+        run={
+          profiles && chronoDate
+            ? runChronology(d, profiles, chronoDate, chronoOptsFrom(objects, ranOv))
+            : null
+        }
+        hour={selectedHour}
+      />
+    )
   if (sol === 'reliability')
     return (
-      <div>
-        <SolvedReliabilityView s={solved} d={d} units={objects.generator.length} />
-        <div className="basecase-banner">
-          Base case reference. These results come from 20,000 outage simulations and the
-          storage comparison. They were checked against recorded prices and do not update
-          with your edits.
-        </div>
-        <ReliabilityView d={d} />
+      <div className="view">
+        <SolvedReliabilityView s={solved} units={objects.generator.length} />
+        <SolvedN1View s={solved} grid={grid} />
       </div>
     )
-  // Generated, calibrated base-case reference views.
-  return (
-    <div>
-      <div className="basecase-banner">
-        Base case reference. This view was checked against the recorded market window and
-        is not recomputed from your edits.
-      </div>
-      {sol === 'duration' && <DurationView d={d} grid={grid} />}
-      {sol === 'marginal' && <MarginalView d={d} grid={grid} />}
-    </div>
-  )
+  return null
 }
 
 type DataTab = 'objects' | 'memberships' | 'properties'
+
+function ModelInputsView({
+  d,
+  objects,
+  overrides,
+  importedKeys,
+  dirty,
+  onEdit,
+  onRevert,
+  onRun,
+}: {
+  d: Dispatch
+  objects: ReturnType<typeof baseObjects>
+  overrides: Scenario['overrides']
+  importedKeys: string[] | undefined
+  dirty: boolean
+  onEdit: (cls: ClassId, id: string, prop: string, value: number) => void
+  onRevert: (cls: ClassId, id: string, prop: string) => void
+  onRun: () => void
+}) {
+  const [cls, setCls] = useState<ClassId>('fuel')
+  const labels: Record<ClassId, string> = {
+    fuel: 'Fuel groups',
+    generator: 'Power plants',
+    interface: 'Inter-grid links',
+    region: 'Island-grid demand',
+    storage: 'Storage',
+  }
+  return (
+    <div className="view">
+      <VintageView d={d} />
+      <section aria-labelledby="editable-inputs">
+        <h2 id="editable-inputs">Editable model inputs</h2>
+        <p className="note">
+          These tables are model inputs, not recorded market values. Select a table, edit
+          the active scenario, then run it before reading scenario results.
+        </p>
+        <div className="datatabs" role="tablist" aria-label="Model input tables">
+          {(Object.keys(labels) as ClassId[]).map((id) => (
+            <button
+              key={id}
+              role="tab"
+              aria-selected={id === cls}
+              className={`datatabs__tab ${id === cls ? 'is-active' : ''}`}
+              onClick={() => setCls(id)}
+            >
+              {labels[id]}
+            </button>
+          ))}
+        </div>
+        <ClassPane
+          cls={cls}
+          objects={objects}
+          overrides={overrides}
+          importedKeys={importedKeys}
+          dirty={dirty}
+          onEdit={onEdit}
+          onRevert={onRevert}
+          onRun={onRun}
+        />
+      </section>
+    </div>
+  )
+}
 
 function ClassPane({
   cls,

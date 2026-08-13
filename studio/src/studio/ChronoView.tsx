@@ -31,6 +31,7 @@ export function ChronologyView({
   span,
   onDate,
   onSpan,
+  selectedHour,
   onSaved,
 }: {
   d: Dispatch
@@ -44,6 +45,7 @@ export function ChronologyView({
   span: 'day' | 'week'
   onDate: (d: string) => void
   onSpan: (s: 'day' | 'week') => void
+  selectedHour: number
   onSaved: (runs: SavedRun[]) => void
 }) {
   const days = profiles.days
@@ -148,7 +150,8 @@ export function ChronologyView({
   )
   const hasStorage = (opts.storage ?? []).length > 0
   const storageEnergy = (opts.storage ?? []).reduce((s, x) => s + x.energy_mwh, 0)
-  const marginalNow = hours[19]?.marginal[grid]
+  const selected = Math.min(Math.max(selectedHour, 0), hours.length - 1)
+  const marginalNow = hours[selected]?.marginal[grid]
 
   const note = (msg: string) => {
     setFlash(msg)
@@ -282,9 +285,10 @@ export function ChronologyView({
         <StatTile
           label={`Mean price, ${cap(grid)}`}
           value={php(meanPrice)}
-          hint={marginalNow ? `evening margin: ${fuelLabel(marginalNow)}` : undefined}
+          unit="/kWh"
+          hint={marginalNow ? `hour ${selected}: ${fuelLabel(marginalNow)}` : undefined}
         />
-        <StatTile label="Window peak" value={php(peakPrice)} />
+        <StatTile label="Window peak" value={php(peakPrice)} unit="/kWh" />
         <StatTile
           label="Demand not served (unserved energy)"
           value={num(unserved)}

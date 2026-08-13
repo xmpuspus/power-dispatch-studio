@@ -11,7 +11,7 @@ import { Panel, StatTile, EmptyNote, Source } from '../ui/kit'
 import { DataGrid, type Column } from '../ui/DataGrid'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
-const php = (v: number) => `P${v.toFixed(2)}`
+const php = (v: number) => `₱${v.toFixed(2)}`
 
 /** Daily mean and evening price across the year, one line each. */
 function YearLines({ d, grid }: { d: FutureYear; grid: GridKey }) {
@@ -50,7 +50,7 @@ function YearLines({ d, grid }: { d: FutureYear; grid: GridKey }) {
         <g key={i}>
           <line x1={padL} y1={Y(t)} x2={W - padR} y2={Y(t)} className="chart__gridline" />
           <text x={padL - 6} y={Y(t) + 4} className="chart__ax" textAnchor="end">
-            {php(t)}
+            {php(t)}/kWh
           </text>
         </g>
       ))}

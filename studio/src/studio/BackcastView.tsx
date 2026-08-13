@@ -19,10 +19,14 @@ export function BackcastView({
   d,
   profiles,
   grid,
+  date,
+  onDate,
 }: {
   d: Dispatch
   profiles: Profiles
   grid: GridKey
+  date: string | null
+  onDate: (date: string) => void
 }) {
   // Lead with the offer replay: it tracks the observed hourly price far better
   // than the pure cost stack, so it is the calibrated view. The cost model is the
@@ -43,10 +47,10 @@ export function BackcastView({
       ),
     [profiles.days]
   )
-  const [date, setDate] = useState(
-    () => profiles.default_day ?? marketDays[marketDays.length - 1]?.date
-  )
-  const day = marketDays.find((x) => x.date === date) ?? marketDays[0]
+  const day =
+    marketDays.find((x) => x.date === date) ??
+    marketDays.find((x) => x.date === profiles.default_day) ??
+    marketDays[0]
 
   // the one-day chart replays the selected engine: cost proxy, or the day's book
   const offerDay = useOfferDay(offers ? (day?.date ?? null) : null)
@@ -119,28 +123,28 @@ export function BackcastView({
     { key: 'g', header: 'Grid', render: (g) => cap(g) },
     {
       key: 'obs',
-      header: 'Observed mean',
+      header: 'Observed mean (₱/kWh)',
       align: 'right',
       mono: true,
       render: (g) => php(bc.per_grid[g]?.observed_mean_php_kwh),
     },
     {
       key: 'mod',
-      header: 'Modeled mean',
+      header: 'Modeled mean (₱/kWh)',
       align: 'right',
       mono: true,
       render: (g) => php(bc.per_grid[g]?.modeled_mean_php_kwh),
     },
     {
       key: 'mae',
-      header: 'MAE',
+      header: 'MAE (₱/kWh)',
       align: 'right',
       mono: true,
       render: (g) => php(bc.per_grid[g]?.mae_php_kwh),
     },
     {
       key: 'bias',
-      header: 'Bias',
+      header: 'Bias (₱/kWh)',
       align: 'right',
       mono: true,
       render: (g) => php(bc.per_grid[g]?.bias_php_kwh),
@@ -183,6 +187,7 @@ export function BackcastView({
         <StatTile
           label={`Mean absolute error (MAE), ${cap(grid)}`}
           value={php(stats?.mae_php_kwh)}
+          unit="/kWh"
           hint={fromCost(
             `${bc.days} market days, hourly`,
             costStats ? php(costStats.mae_php_kwh) : null
@@ -191,6 +196,7 @@ export function BackcastView({
         <StatTile
           label="Bias"
           value={php(stats?.bias_php_kwh)}
+          unit="/kWh"
           hint={fromCost(
             'model minus observed; negative = under-priced',
             costStats ? php(costStats.bias_php_kwh) : null
@@ -207,6 +213,7 @@ export function BackcastView({
         <StatTile
           label={`Evening residual, ${date}`}
           value={peakResidMean == null ? '-' : php(peakResidMean)}
+          unit={peakResidMean == null ? undefined : '/kWh'}
           hint="observed minus modeled, hours 17-21"
           tone={peakResidMean != null && peakResidMean > 2 ? 'danger' : 'default'}
         />
@@ -403,7 +410,7 @@ export function BackcastView({
             <select
               className="ribbon__select"
               value={day.date}
-              onChange={(e) => setDate(e.target.value)}
+              onChange={(e) => onDate(e.target.value)}
               aria-label="Replay day"
             >
               {marketDays.map((x) => (

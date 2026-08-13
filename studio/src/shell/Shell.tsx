@@ -3,7 +3,7 @@
 // It replaces a three-tab ribbon plus a two-tab object tree plus a breadcrumb,
 // which together spent 190 of a 900-pixel laptop before any data appeared and
 // clipped at 390. The rule here is that the scenario controls never move and
-// the answer never leaves the screen, whichever of the 42 views is open.
+// the answer never leaves the screen, whichever view is open.
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { GridKey } from '../lib/types'
@@ -40,6 +40,8 @@ export function TopBar({
   grid,
   onGrid,
   gridScoped,
+  dateEnabled,
+  scenarioEnabled,
   dates,
   date,
   onDate,
@@ -61,6 +63,8 @@ export function TopBar({
   grid: GridKey
   onGrid: (g: GridKey) => void
   gridScoped: boolean
+  dateEnabled: boolean
+  scenarioEnabled: boolean
   dates: string[]
   date: string
   onDate: (date: string) => void
@@ -104,100 +108,103 @@ export function TopBar({
         <kbd className="bar__kbd">⌘K</kbd>
       </button>
 
-      <label className="bar__date">
-        <span>Market date</span>
-        <select
-          value={date}
-          onChange={(event) => onDate(event.target.value)}
-          aria-label="Market date"
-        >
-          {dates.map((value) => (
-            <option value={value} key={value}>
-              {value}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <div
-        className="bar__group"
-        role="group"
-        aria-label={gridScoped ? 'Analysis grid' : 'Result summary grid'}
-      >
-        {GRIDS.map((g) => (
-          <button
-            key={g}
-            className={`bar__seg ${g === grid ? 'is-on' : ''}`}
-            aria-pressed={g === grid}
-            title={
-              gridScoped
-                ? `Analyze ${GRID_LABEL[g]}`
-                : `Show ${GRID_LABEL[g]} in the result summary`
-            }
-            onClick={() => onGrid(g)}
+      {dateEnabled && (
+        <label className="bar__date">
+          <span>Market date</span>
+          <select
+            value={date}
+            onChange={(event) => onDate(event.target.value)}
+            aria-label="Market date"
           >
-            {GRID_LABEL[g]}
-          </button>
-        ))}
-      </div>
+            {dates.map((value) => (
+              <option value={value} key={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+
+      {gridScoped && (
+        <div className="bar__group" role="group" aria-label="Analysis grid">
+          {GRIDS.map((g) => (
+            <button
+              key={g}
+              className={`bar__seg ${g === grid ? 'is-on' : ''}`}
+              aria-pressed={g === grid}
+              title={`Analyze ${GRID_LABEL[g]}`}
+              onClick={() => onGrid(g)}
+            >
+              {GRID_LABEL[g]}
+            </button>
+          ))}
+        </div>
+      )}
 
       <button className="bar__terms" onClick={onOpenGlossary}>
         Terms
       </button>
 
-      <label className="bar__scn">
-        <span className="bar__scnlabel">Active scenario</span>
-        <select
-          value={ai}
-          onChange={(e) => onPickScenario(Number(e.target.value))}
-          aria-label="Active scenario"
-        >
-          {scenarios.map((s, i) => (
-            <option key={i} value={i}>
-              {s.name}
-              {i > 0 ? ` (${Object.keys(s.overrides).length} edits)` : ''}
-            </option>
-          ))}
-        </select>
-      </label>
-      <button
-        className="bar__icon bar__icon--new"
-        onClick={onAddScenario}
-        title="Create a copy of this scenario"
-        aria-label="New scenario"
-      >
-        <IconPlus />
-      </button>
+      {scenarioEnabled && (
+        <>
+          <label className="bar__scn">
+            <span className="bar__scnlabel">Active scenario</span>
+            <select
+              value={ai}
+              onChange={(e) => onPickScenario(Number(e.target.value))}
+              aria-label="Active scenario"
+            >
+              {scenarios.map((s, i) => (
+                <option key={i} value={i}>
+                  {s.name}
+                  {i > 0 ? ` (${Object.keys(s.overrides).length} edits)` : ''}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            className="bar__icon bar__icon--new"
+            onClick={onAddScenario}
+            title="Create a copy of this scenario"
+            aria-label="New scenario"
+          >
+            <IconPlus />
+          </button>
+        </>
+      )}
 
       <div className="bar__spacer" />
 
-      {dirty ? (
-        <button
-          className="bar__run is-dirty"
-          onClick={onRun}
-          aria-label={`Re-solve with ${editCount} edit${editCount === 1 ? '' : 's'}`}
-          title={`Re-solve with ${editCount} edit${editCount === 1 ? '' : 's'}`}
-        >
-          <IconPlay />
-          {`Run ${editCount} edit${editCount === 1 ? '' : 's'}`}
-        </button>
-      ) : (
-        <span
-          className="bar__solved"
-          title="The displayed scenario results include all saved edits."
-        >
-          <IconCheck />
-          Results current
-        </span>
-      )}
+      {scenarioEnabled &&
+        (dirty ? (
+          <button
+            className="bar__run is-dirty"
+            onClick={onRun}
+            aria-label={`Re-solve with ${editCount} edit${editCount === 1 ? '' : 's'}`}
+            title={`Re-solve with ${editCount} edit${editCount === 1 ? '' : 's'}`}
+          >
+            <IconPlay />
+            {`Run ${editCount} edit${editCount === 1 ? '' : 's'}`}
+          </button>
+        ) : (
+          <span
+            className="bar__solved"
+            title="The displayed scenario results include all saved edits."
+          >
+            <IconCheck />
+            Results current
+          </span>
+        ))}
 
       {/* the Run button already carries the solve state in its own label and
           colour, so a second chip beside it would report the same thing twice */}
-      <span className="sr-only" aria-live="polite">
-        {dirty
-          ? `${editCount} edits are not included in the results yet`
-          : 'Results current'}
-      </span>
+      {scenarioEnabled && (
+        <span className="sr-only" aria-live="polite">
+          {dirty
+            ? `${editCount} edits are not included in the results yet`
+            : 'Results current'}
+        </span>
+      )}
 
       <button
         className="bar__icon bar__icon--theme"
@@ -280,14 +287,14 @@ export function NavRail({
           </div>
           <section
             className="rail__steps"
-            aria-label={`${current?.label ?? 'Current'} steps`}
+            aria-label={`${current?.label ?? 'Current'} views`}
           >
             <div className="rail__stephead">
               <span>{current?.label}</span>
               <span>{currentDests.length} views</span>
             </div>
-            <ol className="rail__list">
-              {currentDests.map((dest, index) => (
+            <ul className="rail__list">
+              {currentDests.map((dest) => (
                 <li key={dest.slug}>
                   <button
                     className={`rail__item ${sameNav(dest.nav, nav) ? 'is-active' : ''}`}
@@ -297,12 +304,11 @@ export function NavRail({
                     }}
                     title={dest.hint}
                   >
-                    <span className="rail__stepno mono">{index + 1}</span>
                     <span className="rail__label">{dest.label}</span>
                   </button>
                 </li>
               ))}
-            </ol>
+            </ul>
           </section>
         </div>
         <div className="rail__foot">
@@ -324,8 +330,8 @@ export function EvidenceSummary({
   coverage,
 }: {
   evidence: Evidence
-  date: string
-  coverage: string
+  date?: string
+  coverage?: string
 }) {
   return (
     <section className="evidence" aria-label="Result evidence">
@@ -337,18 +343,22 @@ export function EvidenceSummary({
           <dt>Source</dt>
           <dd>{evidence.source}</dd>
         </div>
-        <div>
-          <dt>Market date</dt>
-          <dd className="mono">{date}</dd>
-        </div>
+        {date && (
+          <div>
+            <dt>Market date</dt>
+            <dd className="mono">{date}</dd>
+          </div>
+        )}
         <div>
           <dt>Resolution</dt>
           <dd>{evidence.resolution}</dd>
         </div>
-        <div>
-          <dt>Archive coverage</dt>
-          <dd className="mono">{coverage}</dd>
-        </div>
+        {coverage && (
+          <div>
+            <dt>Archive coverage</dt>
+            <dd className="mono">{coverage}</dd>
+          </div>
+        )}
       </dl>
       <p>{evidence.note}</p>
       <div className="evidence__links">
@@ -559,9 +569,6 @@ export function RunDock({
   open,
   onToggle,
   onTakeAway,
-  evidence,
-  date,
-  coverage,
 }: {
   solved: SolvedModel
   base: SolvedModel
@@ -575,9 +582,6 @@ export function RunDock({
   onToggle: () => void
   /** opens Saved runs, where a run leaves as an HTML report or a CSV */
   onTakeAway?: () => void
-  evidence: Evidence
-  date: string
-  coverage: string
 }) {
   const isBase = scenarioName === 'Base Case'
   // The what-if controls preview against the calibrated base; they do not write the
@@ -597,16 +601,13 @@ export function RunDock({
       {/* always rendered: below 980 the dock is the strip under the bar and CSS
           keeps it open, so the answer never leaves a phone screen either */}
       <div className="dock__body">
-        <div className="dock__evidence">
-          <EvidenceSummary evidence={evidence} date={date} coverage={coverage} />
-        </div>
         {previewing && live && (
           <div className="dock__preview">
             <div className="dock__previewhead">What-if preview, not yet in the model</div>
             {GRIDS.map((g) => (
               <div key={g} className="dock__previewrow">
                 <span className="dock__k">{GRID_LABEL[g]}</span>
-                <span className="dock__v mono">{php(live[g])}</span>
+                <span className="dock__v mono">{php(live[g])}/kWh</span>
                 <Delta v={live[g] - base.coupled.price[g]} fmt={(x) => php(x)} small />
               </div>
             ))}
@@ -634,7 +635,7 @@ export function RunDock({
                 <span className="dock__gridname">{GRID_LABEL[g]}</span>
                 {!isBase && <Delta v={dp} fmt={(x) => php(x)} />}
               </div>
-              <div className="dock__price mono">{php(p)}</div>
+              <div className="dock__price mono">{php(p)}/kWh</div>
               <div className="dock__rows">
                 <span className="dock__k">Spare capacity (reserve margin)</span>
                 <span className="dock__v mono">

@@ -3,39 +3,49 @@
 // grid's own dispatched generation at 5-minute resolution (pipeline/
 // rtdoe5_replay.py). This view covers the captured sample days.
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { GridKey } from '../lib/types'
-import { php, useRtdoe5 } from '../lib/data'
+import { php, useMarketAnchors, useRtdoe5 } from '../lib/data'
 import { Panel, StatTile, EmptyNote } from '../ui/kit'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
-const OFFER_CAP = 32
-
-export function Rtdoe5View({ grid }: { grid: GridKey }) {
+export function Rtdoe5View({
+  grid,
+  date,
+  onDate,
+}: {
+  grid: GridKey
+  date: string | null
+  onDate: (date: string) => void
+}) {
   const r5 = useRtdoe5()
+  const anchors = useMarketAnchors()
   const days = r5.data?.days ?? []
-  const [date, setDate] = useState('')
   const day = days.find((d) => d.date === date) ?? days[days.length - 1]
+  const offerCap = anchors.data?.wesm_offer_cap_php_kwh
+  useEffect(() => {
+    if (day && day.date !== date) onDate(day.date)
+  }, [day, date, onDate])
 
   const stats = useMemo(() => {
     if (!day) return null
     const s = day.series[grid].filter((v): v is number => v != null)
     if (!s.length) return null
-    const atCap = s.filter((v) => v >= OFFER_CAP - 0.01).length
+    const atCap = offerCap == null ? null : s.filter((v) => v >= offerCap - 0.01).length
     return {
       min: Math.min(...s),
       max: Math.max(...s),
       mean: s.reduce((a, b) => a + b, 0) / s.length,
-      atCapPct: Math.round((100 * atCap) / s.length),
+      atCapPct: atCap == null ? null : Math.round((100 * atCap) / s.length),
       n: s.length,
     }
-  }, [day, grid])
+  }, [day, grid, offerCap])
 
   if (!r5.data?.available || !day)
     return (
       <div className="view">
         <Panel
-          title="5-minute and hourly price ranges"
+          title="5-minute offer replay"
           subtitle="Intraday price volatility on the sample days."
         >
           <EmptyNote>
@@ -76,7 +86,7 @@ export function Rtdoe5View({ grid }: { grid: GridKey }) {
           <select
             className="ribbon__select"
             value={day.date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => onDate(e.target.value)}
             aria-label="Sample day"
           >
             {days.map((d) => (
@@ -89,22 +99,28 @@ export function Rtdoe5View({ grid }: { grid: GridKey }) {
       </div>
 
       <Panel
-        title={`5-minute prices, ${cap(grid)}, ${day.date}`}
+        title={`5-minute offer replay, ${cap(grid)}, ${day.date}`}
         subtitle="Each 5-minute set of generator offers is cleared against generation in that grid. The step line shows the hourly average used by the hourly replay."
       >
         {stats && (
           <div className="stat-row">
             <StatTile
               label="Intraday range"
-              value={php(stats.max - stats.min)}
+              value={`${php(stats.max - stats.min)}/kWh`}
               hint="min to max"
             />
-            <StatTile label="Peak 5-min" value={php(stats.max)} hint="dearest interval" />
             <StatTile
-              label="At the offer cap"
-              value={`${stats.atCapPct}%`}
-              hint="scarcity intervals"
+              label="Peak 5-min"
+              value={`${php(stats.max)}/kWh`}
+              hint="dearest interval"
             />
+            {stats.atCapPct != null && (
+              <StatTile
+                label="At the published offer cap"
+                value={`${stats.atCapPct}%`}
+                hint={`${php(offerCap ?? 0)}/kWh cap`}
+              />
+            )}
           </div>
         )}
         <svg

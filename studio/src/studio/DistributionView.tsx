@@ -80,14 +80,14 @@ export function DistributionView({
     { key: 'g', header: 'Grid', render: (g) => cap(g) },
     ...(['p10', 'p50', 'p90'] as (keyof WindowStats)[]).map((p) => ({
       key: p as string,
-      header: `${(p as string).toUpperCase()} daily mean`,
+      header: `${(p as string).toUpperCase()} daily mean (₱/kWh)`,
       align: 'right' as const,
       mono: true,
       render: (g: GridKey) => php(windowStats(runs, g)[p] as number),
     })),
     {
       key: 'max',
-      header: 'Dearest day',
+      header: 'Dearest day (₱/kWh)',
       align: 'right',
       mono: true,
       render: (g) => {
@@ -103,12 +103,14 @@ export function DistributionView({
         <StatTile
           label={`Median daily mean, ${cap(grid)}`}
           value={php(stats.p50)}
+          unit="/kWh"
           hint={edited ? `base ${php(baseStats.p50)}` : 'base model'}
           tone={edited && stats.p50 > baseStats.p50 + 0.005 ? 'accent' : 'default'}
         />
         <StatTile
           label="10th to 90th percentile (P10 to P90)"
           value={`${php(stats.p10)} to ${php(stats.p90)}`}
+          unit="/kWh"
           hint={
             spread < 0.005
               ? `80% of ${num(stats.days)} replayed days sit within a centavo of each other`
@@ -116,7 +118,7 @@ export function DistributionView({
           }
         />
         <StatTile
-          label={`Hours priced at ${php(plateau.price)}`}
+          label={`Hours priced at ${php(plateau.price)}/kWh`}
           value={pct(plateau.share, 1)}
           hint={`of ${num(plateau.hours)} replayed hours, on the block that sets the price`}
         />

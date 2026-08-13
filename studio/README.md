@@ -23,7 +23,7 @@ The browser includes these views and controls.
 
 | Part of the studio | What it shows or changes |
 | --- | --- |
-| Generators, Fuels, Inter-grid links, Regions, and Storage | The 2025 Department of Energy list supplies 355 units. Links cover Leyte-Luzon and Mindanao-Visayas. |
+| Assumptions and model inputs | Tabs contain plants, fuels, links, grids, storage, sources, and data dates. The 2025 Department of Energy list supplies 355 units. |
 | Properties grid with scenario tagging | Each edit belongs to the active case. The x on a changed cell restores its base value. |
 | Run | Calculates all three grids together with one linear program in the browser, usually in milliseconds |
 | Hourly market replay | Replays a recorded day or the week ending on it with your edits. |
@@ -31,7 +31,6 @@ The browser includes these views and controls.
 | Supply after scheduled outages | Applies scheduled outages, then repeats the shortfall calculation with random forced outages. |
 | Load sweep | Adds flat load and shows when links reach their limits, fuels set the price, or supply falls short. |
 | Window band | Replays every full day in the archive and reports hourly price percentiles and daily means. |
-| What set each hourly price | Classifies every replayed hour by its marginal fuel block, a full importing link, or unmet demand |
 | Calculated views | Shows dispatch, prices, flows, outages, emissions, and comparisons between cases. |
 | Saved runs | Saves the case, dates, calculation version, and hourly results. You can compare, restore, or export a run. |
 | Emissions | Reports operational carbon dioxide using sourced factors. Biomass stays uncounted because its factor is contested. |
@@ -42,9 +41,8 @@ The browser includes these views and controls.
 
 The model finds the lowest stated cost for meeting demand each hour. It does not
 decide which plants switch on, enforce transmission contingency limits, or model
-every grid node. The Long-term view applies the DOE project lists. The separate
-Expansion mix view checks the broad direction of a least-cost build and makes no
-build recommendation.
+every grid node. The Annual demand and supply outlook applies the DOE project
+lists. It does not choose a build plan.
 
 ## The model and its scope
 
@@ -62,10 +60,10 @@ from energy supply.
 
 | Included | Excluded (by design) |
 | --- | --- |
-| Coupled zonal dispatch with congestion rent | Nodal LMPs. The recorded congestion component was nonzero on 28 of 70 sampled days. |
-| Per-unit DOE fleet and loss-of-one-unit cases | Unit commitment, run and stop times, and per-resource ramp rates. |
+| Coupled three-zone dispatch with congestion rent | Within-grid nodal power flow and locational marginal prices. The recorded congestion component was nonzero on 28 of 70 sampled days. |
+| DOE unit list for input totals and outage cases; fuel-block dispatch for energy | Unit commitment, run and stop times, and per-resource ramp rates. |
 | Hourly replay of recorded days, with each day's real-time scheduled outages matched to the plant list | Load or price forecasting |
-| Shortage priced at the P32/kWh WESM offer cap (published rule), labeled 'shortage' | Offer-behavior pricing below the cap (per-participant strategy) |
+| Unserved-energy penalty set to ₱32/kWh, the published WESM offer cap; this is a model coefficient, not a value of lost load | A scarcity-price forecast or participant bidding strategy |
 | Storage optimized over the day's hours. The Inter-day storage view carries stored energy across one 168-hour week | Inter-day storage carryover in the default day mode |
 | Reserve capacity held out of the energy stack | Joint energy-and-reserve pricing. Administered scarcity prices can exceed every published offer. |
 | Repeated shortfall calculations using forced-outage rates, with the day's scheduled outages removable | Maintenance-schedule optimization |
@@ -353,15 +351,15 @@ them as scenarios on the current archive window. They are not forecasts.
 
 ## Three guided cases show demand, outages, and gas-price changes
 
-**Add a data center and see the price.** Open Review and edit model inputs >
-Regions, raise Luzon load by the project's MW, and press Run. Hourly market replay
+**Add a data center and see the price.** Open Assumptions and model inputs,
+choose Grids, raise Luzon load by the project's MW, and press Run. Hourly market replay
 on the demand-peak day shows which hours move from coal to oil. Save the run,
 restore the base, save it, and open Compare scenarios to see the price and
 congestion-rent difference.
 
 ![Data-center case. The Luzon mean price rises from P6.00 to P11.50/kWh, which is P5.50 more, and the run adds P32.55M of congestion rent. The Leyte-Luzon link fills.](docs/workflow-1-datacenter.gif)
 
-**Turn off the two biggest units.** Open Review and edit model inputs > Generators,
+**Turn off the two biggest units.** Open Assumptions and model inputs, choose Plants,
 set SPI U1 and SPI U2 (the two 647 MW Sual units) to zero, and press Run. Loss of
 one major unit (N-1) and Power-shortfall risk show the supply effect. Hourly
 market replay on the stress day shows whether the evening clears on
@@ -370,7 +368,7 @@ the peak hours.
 
 ![Sual outage case. Both 647 MW units are unavailable. The view compares reliability, hourly prices, and inter-island flows.](docs/workflow-2-contingency.gif)
 
-**Switch gas to imported LNG.** Open Review and edit model inputs > Fuels, reprice natural gas from the
+**Switch gas to imported LNG.** Open Assumptions and model inputs, choose Fuels, and reprice natural gas from the
 Malampaya cost (P4.80/kWh) to the imported-LNG cost (P10.30/kWh), Run, and
 read the Hourly market replay price shape. Then in Scenario builder, combine the announced
 build and a dry year on the LNG switch for the compounding view. Share the exact
@@ -378,7 +376,7 @@ scenario with Copy link.
 
 ![Imported LNG case. Gas rises from P4.80 to P10.30/kWh. Added demand and a dry year move the evening price to oil.](docs/workflow-3-malampaya.gif)
 
-## Ten more analyses extend the recorded-day model
+## Current analysis views extend the recorded-day model
 
 Each analysis below has a recording of the running studio. The numbers on screen
 come from one dated data release. The live view recalculates them as the archive
@@ -409,11 +407,8 @@ by a power-supply agreement beside it.
 
 ![Portfolio. A position panel and an uncontracted-exposure chart valuing a generation position against WESM.](docs/view-portfolio.gif)
 
-**Cross-run.** Every saved run's headline measures side by side, plus a
-sensitivity ranking that changes each Quick setting in turn and orders the
-settings by how far they move the clearing price.
-
-![Saved-run comparison with a metric matrix and a sensitivity ranking of each scenario setting by its price impact.](docs/view-crossrun.gif)
+**Saved runs.** Every saved run's headline measures can be compared side by side.
+The same view restores a run and exports its hourly results or an HTML report.
 
 **Five-minute replay.** The recorded five-minute offer books for a sample day
 cleared to the grid's own generation, 288 intervals, showing the high-price intervals
@@ -452,30 +447,8 @@ forecast.
 
 ![Forward prices. A price band to 2030 with the median line, built from the recorded library and the DOE PDP demand growth.](docs/view-forward.gif)
 
-**Multi-year path.** The median clearing price per year to 2040 under three policy
-scenarios (base, lower Malampaya gas supply, and a carbon price). A fixed fleet saturates
-at its capacity, which the view labels.
-
-![Multi-year path. Three policy price lines to 2040 with a per-year table.](docs/view-multiyear.gif)
-
-**Repeated operating scenarios.** The calculation varies load, water availability,
-fuel price, and one forced outage on one recorded day. It reports the 10th percentile,
-median, and 90th percentile for each grid. The band covers the middle 80% of the
-modeled operating states. It is not a
-prediction.
-
-![Repeated operating scenarios. 10th-percentile, median, and 90th-percentile clearing-price tiles and a per-grid table from repeatable calculations.](docs/view-ensembles.gif)
-
-**Expansion mix.** A separate, labeled greenfield least-cost linear program over
-representative periods with generic NREL ATB costs, beside the DOE's announced projects.
-It lands near 70% renewables and reproduces the direction of the DOE plan's
-86.5% renewable share. This is a broad direction check. It does not solve a
-full capacity plan or recommend a build.
-
-![Expansion mix showing a least-cost new-build technology-share table beside DOE announced projects, with renewable-share figures.](docs/view-expansion.gif)
-
 **Assumptions and data dates.** Every calculated value with its primary source,
-calculation date, and archive coverage for each dataset.
+calculation date, and archive coverage appears with the editable inputs.
 
 ![Assumptions showing the preparation date, calculation version, and archive coverage for each dataset.](docs/view-vintage.gif)
 
@@ -527,7 +500,7 @@ src/
   lib/       types.ts (generated-model types), data.ts (loader hooks + formatters)
   ui/        kit.tsx (Panel, StatTile, Chip, Segmented, ThemeToggle), DataGrid.tsx
   map/       MapView.tsx (MapLibre network view)
-  shell/     nav.ts (42 destinations, grouped by question), Shell.tsx (bar, rail, palette, run dock)
+  shell/     nav.ts (26 destinations in six workspaces), Shell.tsx (bar, rail, palette, run dock)
   studio/    Studio.tsx (model state, panes, Run button, share links and direct links)
              model.ts (object model + scenario overrides + solveModel)
              lpText.ts (canonical LP text, byte-mirror of pipeline/lp_model.py)

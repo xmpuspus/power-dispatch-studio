@@ -1,8 +1,7 @@
 # Studio view catalog
 
-Each row below links directly to one Studio view. The navigation presents six
-analyst workflows plus a Model and data area. Search remains available for the
-complete catalog. Back to [the project front door](../README.md).
+Each row below links directly to one of the 26 Studio views. The views are
+grouped into six analyst workspaces. Back to [the project front door](../README.md).
 
 
 The browser interface is at
@@ -10,11 +9,10 @@ The browser interface is at
 editable model inputs, saved scenario changes, chronological market replay,
 scenario comparison, and replay accuracy against published prices.
 
-The July 2026 update added planning functions. The long-term view places DOE
-committed and indicative projects on a year slider. The adequacy view applies the
-operator's scheduled outages. Other views step demand through the announced
-range, repeat a scenario across all archived market days, report hourly binding
-constraints and carbon dioxide, and export a self-contained HTML report.
+The long-term view puts DOE committed and indicative projects on a year slider.
+The adequacy view applies the operator's scheduled outages. Other views step
+demand across a range, report hourly link limits and emissions, and export a
+self-contained HTML run report.
 
 Every planning layer computes from the archive or a sourced list, and no
 optimizer chooses builds. The dispatch itself solves as a HiGHS linear program in
@@ -23,16 +21,12 @@ energy-limited to each day's recorded water where the archive carries the
 operator's per-resource schedules. Prices come from the duals. The model's scope
 and its accuracy statement live in [studio/README.md](../studio/README.md).
 
-Replay accuracy opens on the published-offer calculation by default because it
-follows recorded prices more closely. The cost model remains available for comparison. The
-**Explain a day** view takes any past market day and breaks its evening peak into
-the cost-model result, the offer premium implied by published bids
-on top of it (the offer replay minus the cost model), and the named equipment the
-operator's real-time dispatch held at a limit that day. It exports the breakdown
-as CSV. The project exports separate CSV files for the congestion league,
-both replay calculations per grid, and the day-by-day feed. The
-scheduled build writes them to [`web/data/exports/`](../web/data/exports/), linked from the map's
-Drivers panel and documented in
+Replay accuracy opens on the published-offer calculation because it follows
+recorded prices more closely. The cost calculation remains available for
+comparison. Explain a day separates the cost result, the difference produced by
+published offers, and equipment held at a limit. It exports the breakdown as
+CSV. The scheduled build also writes archive CSV files to
+[`web/data/exports/`](../web/data/exports/). Their columns are documented in
 [`web/data/exports/index.json`](../web/data/exports/index.json).
 
 ### Workflow navigation and search
@@ -40,17 +34,14 @@ Drivers panel and documented in
 The navigation groups views by the question they answer. The clip below shows
 three ways to move through the studio.
 
-- **Search.** Press Cmd K, then type a task or market term. The ranker
-  matches the label, the hint and a per-view alias list, so "price setter"
-  finds Marginal units.
-- **Workflows.** Market day, Scenario analysis, Supply risk, Connection study,
-  Prices and exposure, and Planning have the main analyst tasks. Model and
-  data has validation, assumptions, and editable inputs.
-- **Market context.** The date and grid stay in the top bar. The market-day
-  strip aligns recorded price, model replay, demand, transfer limits, and
-  shortfalls on one 24-hour axis.
-- **Results and evidence.** The side panel keeps regional results, source type,
-  archive coverage, and model status visible while the view changes.
+- **Search.** Press Cmd K, then type a task or market term. Search matches view
+  labels, descriptions, and related terms.
+- **Workspaces.** Market day, Supply and risk, Grid and connection, Prices and
+  exposure, Planning and scenarios, and Model and data group related work.
+- **Context.** Date, grid, scenario, and run controls appear only when the
+  current view uses them.
+- **Evidence.** Each route labels its values as recorded,
+  calculated, replayed, assumed, or mixed.
 
 ![The Studio shell with workflow navigation, market-date context, the 24-hour market strip, a searchable view catalog, and regional results with evidence status.](studio-shell.gif)
 
@@ -60,63 +51,39 @@ three ways to move through the studio.
 opens Visayas replay accuracy. The catalog uses direct links instead of one
 recording per view.
 
-Here are all 42 in one frame, each tile a real screenshot of the running app.
-Click it to open the sheet full size, because inline the tile names read and
-the numbers inside them do not. `build/shoot_view_sheet.py` opens each view by
-its deep link. It checks that the shell landed on the view it asked for, and
-fails on any mismatch. The sheet checks all 42 links in one run.
-
-[![A contact sheet of every Studio view. Each tile is a screenshot of the running app labeled with its view name and source group.](views-contact-sheet.png)](views-contact-sheet.png)
-
 <details>
-<summary><b>Open any of the 42 views directly</b></summary>
+<summary><b>Open any of the 26 views directly</b></summary>
 
 <!-- views table start -->
 
 | Source group | View | What it answers |
 |---|---|---|
-| How today's market clears | [Hourly market replay](https://power-dispatch-studio.vercel.app/studio/#v=chronology) | Every hour of one recorded day, three grids cleared together |
+| Market day | [Hourly market replay](https://power-dispatch-studio.vercel.app/studio/#v=chronology) | Every hour of one recorded day, three grids cleared together |
 |  | [Explain a day](https://power-dispatch-studio.vercel.app/studio/#v=explain-a-day) | What set the price on a chosen day, hour by hour |
 |  | [5-minute dispatch replay](https://power-dispatch-studio.vercel.app/studio/#v=five-minute-replay) | Published five-minute dispatch intervals compared with the replay |
-|  | [Lowest-cost-first dispatch (merit order)](https://power-dispatch-studio.vercel.app/studio/#v=merit-order) | Which plants run, from the cheapest through the price-setting unit |
-|  | [Marginal units](https://power-dispatch-studio.vercel.app/studio/#v=marginal-units) | The price-setting plant and its frequency |
-|  | [Inter-day storage (168 hours)](https://power-dispatch-studio.vercel.app/studio/#v=native-week) | 168 hours solved as one program, storage carried across midnight |
-| Can supply cover demand | [Power-shortfall risk](https://power-dispatch-studio.vercel.app/studio/#v=reliability) | Chance of a shortfall (LOLP) across simulated random plant outages |
+|  | [Supply stack and marginal block](https://power-dispatch-studio.vercel.app/studio/#v=merit-order) | Which fuel blocks run and which block sets the modeled price |
+|  | [Replay accuracy](https://power-dispatch-studio.vercel.app/studio/#v=backcast) | Recorded prices and flows compared with the cost and offer replays |
+| Supply and risk | [Power-shortfall risk](https://power-dispatch-studio.vercel.app/studio/#v=reliability) | Chance that demand exceeds supply across repeated random-outage cases |
 |  | [Supply after scheduled outages](https://power-dispatch-studio.vercel.app/studio/#v=adequacy) | Whether supply covers demand across the outage schedule |
-|  | [Loss of one major unit (N-1)](https://power-dispatch-studio.vercel.app/studio/#v=n-1) | What the price does when any one unit trips at the evening peak |
 |  | [Price as demand grows](https://power-dispatch-studio.vercel.app/studio/#v=load-sweep) | Price against demand, swept across the whole range |
 |  | [Price range across recorded days](https://power-dispatch-studio.vercel.app/studio/#v=window-band) | The price band the model produces when it replays every recorded day |
-|  | [Hours above each price](https://power-dispatch-studio.vercel.app/studio/#v=price-duration) | Hours at or above each price, sorted |
-| Where new demand can connect | [Siting a new load](https://power-dispatch-studio.vercel.app/studio/#v=siting) | Hourly load a named site can draw through its own lines |
+| Grid and connection | [Site headroom check](https://power-dispatch-studio.vercel.app/studio/#v=siting) | Recorded and estimated site headroom, with unavailable line limits marked |
 |  | [Power between island grids](https://power-dispatch-studio.vercel.app/studio/#v=coupled-flows) | What moves over the high-voltage direct-current links and when a link reaches its limit |
-|  | [Prices at grid connection points (nodal prices)](https://power-dispatch-studio.vercel.app/studio/#v=nodal-prices) | How each connection point differs from its regional price |
-|  | [Generation by island grid](https://power-dispatch-studio.vercel.app/studio/#v=regional-split) | How the solved dispatch divides across the three grids |
-| Prices and bills | [Bill impact](https://power-dispatch-studio.vercel.app/studio/#v=bill-impact) | How a spot-price change in WESM affects a Meralco household bill |
-|  | [Contract position](https://power-dispatch-studio.vercel.app/studio/#v=contract-position) | What a scenario does to a book of contracts, in pesos |
+|  | [Recorded connection-point price differences](https://power-dispatch-studio.vercel.app/studio/#v=nodal-prices) | Observed price differences from each island grid reference price |
+| Prices and exposure | [Contract position](https://power-dispatch-studio.vercel.app/studio/#v=contract-position) | What a scenario does to a book of contracts, in pesos |
 |  | [Average price earned by each technology (capture price)](https://power-dispatch-studio.vercel.app/studio/#v=capture-prices) | What each technology earns compared with the market average |
-|  | [Possible future price range](https://power-dispatch-studio.vercel.app/studio/#v=forward-prices) | The forward band the archive window supports |
-|  | [Supplier concentration and market power](https://power-dispatch-studio.vercel.app/studio/#v=market-power) | How much capacity the largest suppliers control and whether the grid can replace them |
-|  | [Reserve market](https://power-dispatch-studio.vercel.app/studio/#v=reserve-market) | How co-optimized reserve capacity affects the energy price |
+|  | [Supplier concentration](https://power-dispatch-studio.vercel.app/studio/#v=market-power) | Published national capacity shares and concentration measures |
+|  | [Reserve market](https://power-dispatch-studio.vercel.app/studio/#v=reserve-market) | Published reserve prices and the offer replay against final results |
 |  | [Emissions](https://power-dispatch-studio.vercel.app/studio/#v=emissions) | Solved tonnes per hour plus the carbon-price effect |
-| What new capacity is needed | [Long-term supply plan](https://power-dispatch-studio.vercel.app/studio/#v=long-term) | Capacity needed over time compared with announced projects |
-|  | [Lowest-cost expansion mix](https://power-dispatch-studio.vercel.app/studio/#v=expansion-mix) | Technology chosen by the least-cost build and its cost basis |
-|  | [Annual simulation](https://power-dispatch-studio.vercel.app/studio/#v=future-year) | Every date in a target year, on the published demand path and build list |
-|  | [Prices and spare capacity by year](https://power-dispatch-studio.vercel.app/studio/#v=multi-year-path) | The price and margin path across years |
-|  | [Generator portfolio value](https://power-dispatch-studio.vercel.app/studio/#v=portfolio) | Assets and earnings for one owner |
-| Build and compare scenarios | [Scenario builder](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario) | Change demand, supply, storage, or transfer limits and recalculate all three grids |
+|  | [Generator portfolio value](https://power-dispatch-studio.vercel.app/studio/#v=portfolio) | Value a declared fuel-share position against a saved run |
+| Planning and scenarios | [PDP demand-path price sensitivity](https://power-dispatch-studio.vercel.app/studio/#v=forward-prices) | Recorded days re-priced under the published demand path and stated ranges |
+|  | [Annual demand and supply outlook](https://power-dispatch-studio.vercel.app/studio/#v=long-term) | Published demand growth and project additions, with assumptions and limits |
+|  | [Inter-day storage test](https://power-dispatch-studio.vercel.app/studio/#v=native-week) | A 168-hour storage case with energy carried across midnight |
+|  | [Scenario builder](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario) | Change load, fuel cost, fuel availability, or transfer capacity |
 |  | [Compare scenarios](https://power-dispatch-studio.vercel.app/studio/#v=compare) | Two scenarios side by side, property by property |
 |  | [Saved runs](https://power-dispatch-studio.vercel.app/studio/#v=saved-runs) | Runs kept in this browser, ready to restore |
-|  | [Compare one measure across runs](https://power-dispatch-studio.vercel.app/studio/#v=cross-run) | One measure tracked across every saved run |
-|  | [Simulation range](https://power-dispatch-studio.vercel.app/studio/#v=ensembles) | Repeated simulations of one scenario and the range of results |
-| Check the model against market records | [Replay accuracy](https://power-dispatch-studio.vercel.app/studio/#v=backcast) | Every market day replayed against the observed price |
-|  | [Transmission-loss check](https://power-dispatch-studio.vercel.app/studio/#v=loss-validation) | Whether estimated transmission losses reproduce recorded price differences between connection points |
-|  | [Unit-commitment test](https://power-dispatch-studio.vercel.app/studio/#v=commitment-test) | What happened when each thermal block had to commit and hold a floor |
-|  | [Assumptions](https://power-dispatch-studio.vercel.app/studio/#v=assumptions) | Every constant, its source, and the date it was read |
-| Review and edit model inputs | [Generators](https://power-dispatch-studio.vercel.app/studio/#v=generators) | Each sourced unit and its capacity, fuel price, and random-outage rate |
-|  | [Fuels](https://power-dispatch-studio.vercel.app/studio/#v=fuels) | Fuel prices and how much of each is available per grid |
-|  | [Inter-grid links](https://power-dispatch-studio.vercel.app/studio/#v=interfaces) | The power-flow limits between island grids |
-|  | [Regions](https://power-dispatch-studio.vercel.app/studio/#v=regions) | Evening load and peak for each of the three grids |
-|  | [Storage](https://power-dispatch-studio.vercel.app/studio/#v=storage) | Battery power and energy on each grid |
+| Model and data | [Transmission-loss check](https://power-dispatch-studio.vercel.app/studio/#v=loss-validation) | Whether estimated transmission losses reproduce recorded price differences between connection points |
+|  | [Assumptions and model inputs](https://power-dispatch-studio.vercel.app/studio/#v=model-inputs) | Sources, dates, and editable plant, fuel, grid, link, and storage inputs |
 
 <!-- views table end -->
 
@@ -163,8 +130,8 @@ needed. [`docs/scenario-schema.md`](scenario-schema.md) lists the
 keys and the three settings that a browser round trip drops. The Python and
 browser tests both read `tests/fixtures/scenario_example.json`.
 
-**This page downloads 4.1 MB of media across 2 files.** Longer recordings are
-links. The view catalog uses one contact sheet and 42 direct links.
+**This page downloads 3.1 MB of media across 1 file.** Longer recordings are
+links. The catalog uses 26 direct links.
 
 `python3 tests/test_readme_views.py` re-measures that total against the files on
 disk and fails when the stated number drifts.
@@ -178,7 +145,6 @@ GIF-only. The list below links to each longer browser recording.
 - [The nodal walkthrough](nodal-walkthrough.mp4), and its [gif](nodal-walkthrough.gif)
 - [Siting a load at Pax Silica](siting-walkthrough.mp4), and its [gif](siting-walkthrough.gif)
 - [The Pax Silica montage](pax-silica-scale.mp4), and its [gif](pax-silica-scale.gif)
-- [The map's Simulate walkthrough](dispatch-demo.gif)
 
 Three files stay in `docs/` on purpose and appear nowhere above.
 `scripts/og_card.py` writes `docs/hero.png` from the calculated data, beside the social

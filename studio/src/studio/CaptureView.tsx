@@ -49,7 +49,7 @@ export function CaptureView({ runsList, grid }: { runsList: SavedRun[]; grid: Gr
     },
     {
       key: 'cap',
-      header: 'Price earned (capture price)',
+      header: 'Price earned (capture price), ₱/kWh',
       align: 'right',
       mono: true,
       render: (r) => php(r.capture_price_php_kwh, 3),

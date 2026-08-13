@@ -1,5 +1,5 @@
-// Siting what-if: pick an announced load, size it, decide how much power it
-// makes itself, and see what its own connection can actually deliver.
+// Site what-if: compare an announced load with the headroom estimate carried
+// by the public network model. Missing ratings stay unavailable.
 //
 // The network solve is precomputed (pipeline/sites.py) because it depends only on the
 // grid and the day, never on what is typed here. What is typed here is
@@ -17,8 +17,8 @@ const fmt = (v: number) => Math.round(v).toLocaleString()
 interface Split {
   ownFirm: number
   ownSolar: number
-  overLines: number
-  missing: number
+  overLines: number | null
+  missing: number | null
 }
 
 /** Where each megawatt of the hour's demand comes from. */
@@ -32,7 +32,8 @@ function split(
   const ownSolar = Math.min(solarMw * solarShape, need)
   const ownFirm = Math.min(firm, need - ownSolar)
   const residual = need - ownFirm - ownSolar
-  const overLines = limit == null ? 0 : Math.min(residual, limit)
+  if (limit == null) return { ownFirm, ownSolar, overLines: null, missing: null }
+  const overLines = Math.min(residual, limit)
   return { ownFirm, ownSolar, overLines, missing: residual - overLines }
 }
 
@@ -67,13 +68,19 @@ function DayStrip({
   const bot = Math.max(0, lo - pad)
   const x = (h: number) => (h / 23) * (W - 54) + 8
   const y = (v: number) => 16 + (1 - (v - bot) / (top - bot)) * (SUN_TOP - 26)
-  const path = good.length
-    ? limits
-        .map(
-          (v, h) => `${h === 0 ? 'M' : 'L'}${x(h).toFixed(1)},${y(v ?? bot).toFixed(1)}`
-        )
-        .join(' ')
-    : ''
+  let drawing = false
+  const path = limits
+    .map((v, h) => {
+      if (v == null) {
+        drawing = false
+        return ''
+      }
+      const command = drawing ? 'L' : 'M'
+      drawing = true
+      return `${command}${x(h).toFixed(1)},${y(v).toFixed(1)}`
+    })
+    .filter(Boolean)
+    .join(' ')
   const sun = solar
     .map(
       (sv, h) =>
@@ -86,14 +93,10 @@ function DayStrip({
       className="daystrip"
       viewBox={`0 0 ${W} ${H}`}
       role="img"
-      aria-label="What the site's lines can take in each hour of the day"
+      aria-label="Estimated model headroom by hour"
     >
       {path ? (
         <>
-          <path
-            d={`${path} L${x(23)},${SUN_TOP - 10} L${x(0)},${SUN_TOP - 10} Z`}
-            className="daystrip__fill"
-          />
           <path d={path} className="daystrip__limit" />
           <text x={W - 42} y={y(hi) + 4} className="daystrip__scale">
             {Math.round(hi).toLocaleString()}
@@ -104,7 +107,7 @@ function DayStrip({
         </>
       ) : (
         <text x={x(0)} y={40} className="daystrip__scale">
-          no headroom in any hour
+          line limit unavailable
         </text>
       )}
 
@@ -141,16 +144,20 @@ function DayStrip({
         </text>
       ))}
       {limits.map((_, h) => (
-        <rect
-          key={h}
-          x={x(h) - 11}
-          y={0}
-          width={22}
-          height={H - 20}
-          fill="transparent"
-          style={{ cursor: 'pointer' }}
-          onClick={() => onPick(h)}
-        />
+        <g key={h}>
+          {limits[h] == null && (
+            <circle cx={x(h)} cy={SUN_TOP - 10} r={2.5} className="daystrip__missing" />
+          )}
+          <rect
+            x={x(h) - 11}
+            y={0}
+            width={22}
+            height={H - 20}
+            fill="transparent"
+            style={{ cursor: 'pointer' }}
+            onClick={() => onPick(h)}
+          />
+        </g>
       ))}
     </svg>
   )
@@ -202,7 +209,7 @@ export function SitesView() {
   if (sites.loading || profiles.loading)
     return (
       <div className="view">
-        <Panel title="Where new demand can connect" subtitle="Loading connection limits.">
+        <Panel title="Site headroom estimates" subtitle="Loading the site analysis.">
           <EmptyNote>Loading.</EmptyNote>
         </Panel>
       </div>
@@ -212,7 +219,7 @@ export function SitesView() {
     return (
       <div className="view">
         <Panel
-          title="Site connection limits are not available"
+          title="Site headroom estimates are not available"
           subtitle="The network and node-price data are unavailable in this data release."
         >
           <EmptyNote>
@@ -222,13 +229,14 @@ export function SitesView() {
       </div>
     )
 
-  const short = now.missing > 0.5
+  const short = now.missing != null && now.missing > 0.5
+  const unavailable = limit == null
   const pct = (v: number) => (need > 0 ? (100 * v) / need : 0)
   const bands: [string, number, string][] = [
-    ['from the grid, over its lines', now.overLines, 'var(--steel)'],
+    ['from the grid, over its lines', now.overLines ?? 0, 'var(--steel)'],
     ['its own power station', now.ownFirm, 'var(--navy)'],
     ['its own solar farm', now.ownSolar, 'var(--gold)'],
-    ['no source for this', now.missing, 'var(--coral)'],
+    ['no source for this', now.missing ?? 0, 'var(--coral)'],
   ]
   const maxMw = Math.max(3000, Math.ceil(site.mw * 1.5))
 
@@ -239,7 +247,7 @@ export function SitesView() {
           <div className="sites__sidehead">Site</div>
           <ul className="sitelist">
             {d.sites.map((s) => {
-              const room = s.limit_max_mw ?? 0
+              const room = s.limit_max_mw
               return (
                 <li key={s.id}>
                   <button
@@ -255,8 +263,8 @@ export function SitesView() {
                     <span className="sitelist__name">{s.name}</span>
                     <span className="sitelist__nums">
                       <span>{fmt(s.mw)} MW</span>
-                      <span className={room < s.mw ? 'is-tight' : ''}>
-                        lines {fmt(room)}
+                      <span className={room != null && room < s.mw ? 'is-tight' : ''}>
+                        headroom {room == null ? 'unavailable' : `${fmt(room)} MW`}
                       </span>
                     </span>
                   </button>
@@ -268,7 +276,8 @@ export function SitesView() {
           <div className="sites__sidehead">Demand</div>
           <label className="lever lever--primary">
             <span className="lever__label">
-              <b>{fmt(need)} MW</b>, every hour
+              <span>Flat demand</span>
+              <b>{fmt(need)} MW</b>
             </span>
             <input
               type="range"
@@ -326,12 +335,14 @@ export function SitesView() {
         <div className="sites__main">
           <Panel
             title={
-              short
-                ? `Unserved demand at ${site.name}: ${fmt(now.missing)} MW`
-                : `Supplied demand at ${site.name}, ${HOUR_LABEL(hour)}`
+              unavailable
+                ? `Headroom estimate unavailable at ${site.name}, ${HOUR_LABEL(hour)}`
+                : short
+                  ? `Estimated gap in this network model at ${site.name}: ${fmt(now.missing ?? 0)} MW`
+                  : `Demand fits within this network model at ${site.name}, ${HOUR_LABEL(hour)}`
             }
-            subtitle={`Its lines can take ${
-              limit == null ? 'nothing' : `${fmt(limit)} MW`
+            subtitle={`Estimated model headroom is ${
+              limit == null ? 'not available' : `${fmt(limit)} MW`
             } at ${HOUR_LABEL(hour)}${
               outage ? ', with its worst circuit out' : ''
             }. Solved per hour on ${d.day}, everything else is arithmetic.`}
@@ -367,14 +378,20 @@ export function SitesView() {
 
             <div className="stat-row">
               <StatTile
-                label="short at this hour"
-                value={`${fmt(now.missing)} MW`}
+                label="modeled gap at this hour"
+                value={now.missing == null ? 'Unavailable' : `${fmt(now.missing)} MW`}
                 tone={short ? 'danger' : 'positive'}
-                hint={short ? 'nothing supplies this' : 'every megawatt has a source'}
+                hint={
+                  now.missing == null
+                    ? 'Cannot be calculated without a line limit'
+                    : short
+                      ? 'modeled demand without a source'
+                      : 'every modeled megawatt has a source'
+                }
               />
               <StatTile
-                label="its lines can take"
-                value={limit == null ? 'nothing' : `${fmt(limit)} MW`}
+                label="estimated line headroom"
+                value={limit == null ? 'Unavailable' : `${fmt(limit)} MW`}
                 hint={outage ? 'worst circuit out' : `at ${HOUR_LABEL(hour)}`}
               />
               <StatTile
@@ -382,10 +399,12 @@ export function SitesView() {
                 value={
                   site.limit_min_mw == null
                     ? 'n/a'
-                    : `${fmt(site.limit_min_mw)} to ${fmt(site.limit_max_mw ?? 0)}`
+                    : site.limit_max_mw == null
+                      ? 'n/a'
+                      : `${fmt(site.limit_min_mw)} to ${fmt(site.limit_max_mw)}`
                 }
                 unit="MW"
-                hint="what its lines can take, hour by hour"
+                hint="estimated model headroom, hour by hour"
               />
               <StatTile
                 label="distance to the modelled bus"
@@ -396,8 +415,8 @@ export function SitesView() {
           </Panel>
 
           <Panel
-            title="Hourly site connection limits"
-            subtitle="Select an hour to view its connection limit. Gold shows on-site solar output."
+            title="Estimated hourly line headroom"
+            subtitle="Select an hour to view the model result. Gaps mean the public data were insufficient; gold shows on-site solar output."
           >
             <DayStrip
               limits={site.limit_mw_by_hour}
@@ -412,9 +431,9 @@ export function SitesView() {
             <p className="note note--warn">
               A circuit here already carries{' '}
               {Math.round((site.worst_base_loading ?? 0) * 100)}% of its estimated rating
-              before new demand is added. The model therefore reports no spare connection
-              capacity. NGCP does not publish the actual rating, so this result may
-              reflect the rating estimate as much as the site itself.
+              before new demand is added. The model therefore reports no line headroom.
+              NGCP does not publish the actual rating, so this result may reflect the
+              rating estimate as much as the site itself.
             </p>
           ) : null}
 

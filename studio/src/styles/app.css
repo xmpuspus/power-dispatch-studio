@@ -2044,6 +2044,11 @@
   fill: var(--muted);
   font-size: 10px;
 }
+.daystrip__missing {
+  fill: var(--surface);
+  stroke: var(--muted);
+  stroke-width: 1.2;
+}
 
 .note--warn {
   border-left: 3px solid var(--coral);

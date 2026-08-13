@@ -2,7 +2,7 @@
 // dispatched energy the Chronology view shows, priced in tCO2 with sourced
 // per-technology factors. Operational (combustion) only, and it says so.
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import type { Dispatch, EmissionFactor, GridKey, Profiles } from '../lib/types'
 import { num, fuelLabel, useEmissions } from '../lib/data'
 import { Panel, StatTile, Source, EmptyNote } from '../ui/kit'
@@ -18,15 +18,18 @@ export function EmissionsView({
   profiles,
   objects,
   overrides,
+  date,
+  onDate,
 }: {
   d: Dispatch
   profiles: Profiles
   objects: Record<ClassId, ObjRow[]>
   overrides: Overrides
+  date: string | null
+  onDate: (date: string) => void
 }) {
   const em = useEmissions()
   const days = profiles.days
-  const [date, setDate] = useState<string | null>(null)
   const dayDate =
     (date && days.some((x) => x.date === date) ? date : null) ??
     profiles.default_day ??
@@ -102,7 +105,7 @@ export function EmissionsView({
           <select
             className="ribbon__select"
             value={dayDate}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => onDate(e.target.value)}
             aria-label="Observed day for the emissions read"
           >
             {days.map((x) => (

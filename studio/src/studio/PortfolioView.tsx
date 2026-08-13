@@ -12,7 +12,7 @@
 // plant produced.
 
 import { useState } from 'react'
-import type { Dispatch, GridKey } from '../lib/types'
+import type { GridKey } from '../lib/types'
 import { GRIDS } from '../lib/types'
 import { fuelLabel, num, php } from '../lib/data'
 import { Panel, StatTile, EmptyNote } from '../ui/kit'
@@ -33,18 +33,16 @@ function fuelsInRun(run: SavedRun, grid: GridKey): string[] {
   return [...set].sort()
 }
 
-export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispatch }) {
+export function PortfolioView({ runsList }: { runsList: SavedRun[] }) {
   const [runId, setRunId] = useState('')
   const withHours = runsList.filter((r) => r.hours.length > 0)
   const run = withHours.find((r) => r.id === runId) ?? withHours[0]
 
   const [grid, setGrid] = useState<GridKey>('luzon')
   const [fuel, setFuel] = useState('coal')
-  const [sharePct, setSharePct] = useState(10)
-  const [strikePhpKwh, setStrikePhpKwh] = useState(
-    () => d.assumptions.fuel_marginal_cost_php_kwh.coal ?? 6
-  )
-  const [contractMw, setContractMw] = useState(100)
+  const [sharePct, setSharePct] = useState(0)
+  const [strikePhpKwh, setStrikePhpKwh] = useState(0)
+  const [contractMw, setContractMw] = useState(0)
 
   if (!run)
     return (
@@ -184,63 +182,73 @@ export function PortfolioView({ runsList, d }: { runsList: SavedRun[]; d: Dispat
         </Panel>
 
         <div className="scn__results">
-          <div className="stat-row">
-            <StatTile
-              label="Generation, this position"
-              value={num(v.genMwh)}
-              unit="MWh"
-              hint={`${cap(grid)}, ${fuelLabel(activeFuel)}, ${sharePct}% share, ${run.hours.length} hours`}
-            />
-            <StatTile
-              label="Spot revenue"
-              value={num(v.spotRevenue)}
-              unit="PhP thousand"
-              hint="selling all generation on the WESM spot market"
-            />
-            <StatTile
-              label="Bilateral contract compared with WESM spot"
-              value={`${v.bilateralVsWesmDeltaPhp >= 0 ? '+' : ''}${num(v.bilateralVsWesmDeltaPhp)}`}
-              unit="PhP thousand"
-              tone={v.bilateralVsWesmDeltaPhp >= 0 ? 'positive' : 'danger'}
-              hint="what the PSA captured (+) or gave up (-) against spot, this window"
-            />
-            <StatTile
-              label="Realized price"
-              value={php(v.meanRealizedPhpKwh, 3)}
-              hint={
-                v.captureVsSpotPct == null
-                  ? `mean spot ${php(v.meanSpotPhpKwh, 3)}`
-                  : `mean spot ${php(v.meanSpotPhpKwh, 3)}, ${v.captureVsSpotPct.toFixed(1)}% of it`
-              }
-            />
-          </div>
+          {sharePct === 0 ? (
+            <EmptyNote>
+              Set your share of dispatched generation above to calculate a position. No
+              ownership or contract volume is assumed.
+            </EmptyNote>
+          ) : (
+            <>
+              <div className="stat-row">
+                <StatTile
+                  label="Generation, this position"
+                  value={num(v.genMwh)}
+                  unit="MWh"
+                  hint={`${cap(grid)}, ${fuelLabel(activeFuel)}, ${sharePct}% share, ${run.hours.length} hours`}
+                />
+                <StatTile
+                  label="Spot revenue"
+                  value={num(v.spotRevenue)}
+                  unit="₱ thousand"
+                  hint="selling all generation on the WESM spot market"
+                />
+                <StatTile
+                  label="Bilateral contract compared with WESM spot"
+                  value={`${v.bilateralVsWesmDeltaPhp >= 0 ? '+' : ''}${num(v.bilateralVsWesmDeltaPhp)}`}
+                  unit="₱ thousand"
+                  tone={v.bilateralVsWesmDeltaPhp >= 0 ? 'positive' : 'danger'}
+                  hint="what the PSA captured (+) or gave up (-) against spot, this window"
+                />
+                <StatTile
+                  label="Realized price"
+                  value={php(v.meanRealizedPhpKwh, 3)}
+                  hint={
+                    v.captureVsSpotPct == null
+                      ? `mean spot ${php(v.meanSpotPhpKwh, 3)}`
+                      : `mean spot ${php(v.meanSpotPhpKwh, 3)}, ${v.captureVsSpotPct.toFixed(1)}% of it`
+                  }
+                />
+              </div>
 
-          <Panel
-            title="Uncontracted generation by spot price"
-            subtitle="Generation above the contracted volume, paired with that hour's spot price, dearest spot first."
-          >
-            {hasExposure ? (
-              <ExposureChart points={exposure} />
-            ) : (
+              <Panel
+                title="Uncontracted generation by spot price"
+                subtitle="Generation above the contracted volume, paired with that hour's spot price, dearest spot first."
+              >
+                {hasExposure ? (
+                  <ExposureChart points={exposure} />
+                ) : (
+                  <p className="note">
+                    The contracted volume covers this position's generation in every hour
+                    of this window. No generation is exposed to the spot market without
+                    contract cover.
+                  </p>
+                )}
+              </Panel>
+
               <p className="note">
-                The contracted volume covers this position's generation in every hour of
-                this window. No generation is exposed to the spot market without contract
-                cover.
+                Generation is a flat {sharePct}% share of {fuelLabel(activeFuel)}'s hourly
+                dispatched MW in {cap(grid)}, this run's actual dispatch, not a named
+                unit's output. The PSA settles as a contract for differences. For each
+                hour, the settlement is the strike price minus the spot price, multiplied
+                by the lesser of contracted volume or generation. Contracted generation
+                receives the fixed strike price, and any remaining generation sells at
+                spot.
+                {run.importedKeys && run.importedKeys.length > 0
+                  ? ' This run used your own CSV inputs, not the published default assumptions.'
+                  : ''}
               </p>
-            )}
-          </Panel>
-
-          <p className="note">
-            Generation is a flat {sharePct}% share of {fuelLabel(activeFuel)}'s hourly
-            dispatched MW in {cap(grid)}, this run's actual dispatch, not a named unit's
-            output. The PSA settles as a contract for differences. For each hour, the
-            settlement is the strike price minus the spot price, multiplied by the lesser
-            of contracted volume or generation. Contracted generation receives the fixed
-            strike price, and any remaining generation sells at spot.
-            {run.importedKeys && run.importedKeys.length > 0
-              ? ' This run used your own CSV inputs, not the published default assumptions.'
-              : ''}
-          </p>
+            </>
+          )}
         </div>
       </div>
     </div>

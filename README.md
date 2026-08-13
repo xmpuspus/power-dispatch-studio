@@ -11,28 +11,18 @@ local installation.
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![PyPI](https://img.shields.io/pypi/v/power-dispatch-studio?color=blue)](https://pypi.org/project/power-dispatch-studio/)
 
-[<img width="820" alt="Power Dispatch Studio opens on the Philippine grid and links directly to the market-day and scenario workflows. The map shows supply, grid limits, regional prices, daily market records, and a browser scenario." src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
+[<img width="820" alt="Philippine grid map. It shows supply, limits, regional prices, market records, and links to the analyst workspace." src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
 
 ## Start with an analyst task
 
 | Task | Start here |
 |---|---|
 | Review a recorded market day | [Open Market day](https://power-dispatch-studio.vercel.app/studio/#v=chronology) for prices, dispatch, demand, constraints, and replay results. |
-| Test a change to demand or supply | [Open Scenario analysis](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario), run the change, and compare it with the base case. |
-| Check outages and supply risk | [Open Supply risk](https://power-dispatch-studio.vercel.app/studio/#v=adequacy) for scheduled outages, reserve margin, N-1, and shortfall probability. |
-| Review a connection site | [Open Connection study](https://power-dispatch-studio.vercel.app/studio/#v=siting) for site load, transfer limits, and connection-point prices. |
+| Test a change to demand or supply | [Open Scenario builder](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario), run the change, and compare it with the base case. |
+| Check outages and supply risk | [Open Supply and risk](https://power-dispatch-studio.vercel.app/studio/#v=adequacy) for scheduled outages, N-1 results, and shortfall probability. |
+| Review a connection site | [Open Grid and connection](https://power-dispatch-studio.vercel.app/studio/#v=siting) for estimated site headroom, transfer limits, and recorded connection-point price differences. |
 | Inspect the geographic record | [Open the public map](https://power-dispatch-studio.vercel.app) for supply, constraints, prices, and named infrastructure. |
 | Run from Python or a script | Install `power-dispatch-studio`, then run `power-dispatch run --date 2026-06-17`. See the [worked examples](examples/). |
-
-## Example scenario with 3,000 MW of added Luzon demand
-
-One 2028 data-center forecast equals 41% of the whole system's May 2026 supply
-margin. Adding that demand in [Simulate](https://power-dispatch-studio.vercel.app/?q=simulate&dc=3000)
-changes the lowest-cost-first dispatch from coal at P6.00/kWh to oil at
-P12.00/kWh. The URL stores the scenario settings and reproduces the same result
-when opened.
-
-![Four dark cards tiled into one summary. The constrained substations drawn on the Philippine grid, with the Leyte-Cebu link on top. The Luzon price-against-load curve, where the same 300 MW adds about P0.32/kWh on a quiet grid and about five times that on a full one. The May 2026 margin as 36 blocks of 100 MW, with Sual's two units taking 13 of them. The Meralco June 2026 bill split three ways, where the spot slice is about a twentieth of the whole rate](docs/story-montage.gif)
 
 ## Data and calculations included
 
@@ -52,14 +42,14 @@ when opened.
 **[Read the eleven findings](docs/findings.md)** for the supporting evidence.
 The **[Studio view catalog](docs/studio-views.md)** lists every deep link.
 
-The README downloads 6.5 MB of media across 2 files. The findings and Studio
+The README downloads 6.0 MB of media across 1 file. The findings and Studio
 catalog link to the remaining media instead of embedding it here.
 
 ## Related power-system tools
 
 | Project | Scope | Capabilities outside this project | Included in Power Dispatch Studio |
 |---|---|---|---|
-| [PyPSA-PH](https://github.com/arizeosalac/PyPSA-PH) | Philippine PyPSA model | 192 nodes, 425 units, and 236 lines | Nightly IEMOP archive, replay errors, and browser scenarios |
+| [PyPSA-PH](https://github.com/arizeosalac/PyPSA-PH) | Philippine PyPSA model | 192 nodes, 425 units, and 236 lines | Nightly IEMOP archive, replay-error reporting, and a browser workspace |
 | [PyPSA](https://github.com/PyPSA/PyPSA) | Power-system analysis toolbox | Capacity expansion and unit commitment | Philippine market data and a browser interface |
 | [PowerSimulations.jl](https://github.com/NREL-Sienna/PowerSimulations.jl) | NREL's power-system simulation library | Security-constrained unit commitment and production-simulation workflows | A browser interface and bundled Philippine system data |
 

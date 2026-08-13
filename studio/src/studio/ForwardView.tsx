@@ -81,21 +81,21 @@ export function ForwardView({
     },
     {
       key: 'p10',
-      header: '10th percentile (P10)',
+      header: '10th percentile (P10), ₱/kWh',
       align: 'right',
       mono: true,
       render: (r) => php(r.perGrid[grid].p10),
     },
     {
       key: 'p50',
-      header: 'Median',
+      header: 'Median, ₱/kWh',
       align: 'right',
       mono: true,
       render: (r) => php(r.perGrid[grid].p50),
     },
     {
       key: 'p90',
-      header: '90th percentile (P90)',
+      header: '90th percentile (P90), ₱/kWh',
       align: 'right',
       mono: true,
       render: (r) => php(r.perGrid[grid].p90),
@@ -131,11 +131,13 @@ export function ForwardView({
           <StatTile
             label={`${YEARS[YEARS.length - 1]} median`}
             value={php(last.p50)}
+            unit="/kWh"
             hint="middle of the band"
           />
           <StatTile
             label={`${YEARS[YEARS.length - 1]} 90th percentile (P90)`}
             value={php(last.p90)}
+            unit="/kWh"
             hint="higher-price scenario result"
           />
           <StatTile

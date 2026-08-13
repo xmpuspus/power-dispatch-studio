@@ -1,46 +1,27 @@
-// The studio groups its 42 views by the questions users ask about the market.
-// Each destination keeps its existing Nav value so the view routing stays stable.
-
-import type { ClassId } from '../studio/model'
+// The studio exposes one destination per analyst task. Technical probes and
+// duplicate charts stay in methodology or inside the task that uses them.
 
 export type SolId =
-  | 'merit'
-  | 'chrono'
-  | 'sweep'
-  | 'distribution'
-  | 'flows'
-  | 'n1'
-  | 'regions'
-  | 'duration'
-  | 'marginal'
-  | 'reliability'
+  'merit' | 'chrono' | 'sweep' | 'distribution' | 'flows' | 'reliability'
 export type AnalysisId =
   | 'reserve'
-  | 'bill'
   | 'market'
   | 'backcast'
   | 'explain'
   | 'emissions'
   | 'capture'
   | 'portfolio'
-  | 'crossrun'
-  | 'ensemble'
   | 'rtdoe5'
   | 'forward'
-  | 'multiyear'
   | 'week'
-  | 'expansion'
-  | 'vintage'
   | 'nodal'
   | 'sites'
   | 'lossval'
-  | 'commitment'
-  | 'futureyear'
   | 'contracts'
+  | 'inputs'
 export type PhaseId = 'lt' | 'pasa'
 
 export type Nav =
-  | { kind: 'class'; id: ClassId }
   | { kind: 'quick' }
   | { kind: 'compare' }
   | { kind: 'runs' }
@@ -59,6 +40,10 @@ export type Dest = {
   live?: boolean
   /** reads one grid at a time, so the region control applies */
   scoped?: boolean
+  /** consumes the shared recorded market date and selected hour */
+  dateContext?: boolean
+  /** consumes the active scenario and its solved result */
+  scenarioContext?: boolean
   /** extra words the palette matches on */
   alias?: string
 }
@@ -72,8 +57,8 @@ export type Group = {
 
 export const GROUPS: Group[] = [
   {
-    id: 'tonight',
-    label: "How today's market clears",
+    id: 'market-day',
+    label: 'Market day',
     dests: [
       {
         slug: 'chronology',
@@ -82,6 +67,8 @@ export const GROUPS: Group[] = [
         nav: { kind: 'sol', id: 'chrono' },
         live: true,
         scoped: true,
+        dateContext: true,
+        scenarioContext: true,
         alias: 'hourly clearing price day week short-term',
       },
       {
@@ -90,6 +77,7 @@ export const GROUPS: Group[] = [
         hint: 'What set the price on a chosen day, hour by hour',
         nav: { kind: 'analysis', id: 'explain' },
         scoped: true,
+        dateContext: true,
         alias: 'driver why price spike',
       },
       {
@@ -98,45 +86,42 @@ export const GROUPS: Group[] = [
         hint: 'Published five-minute dispatch intervals compared with the replay',
         nav: { kind: 'analysis', id: 'rtdoe5' },
         scoped: true,
+        dateContext: true,
         alias: 'rtd rtdoe interval real time',
       },
       {
         slug: 'merit-order',
-        label: 'Lowest-cost-first dispatch (merit order)',
-        hint: 'Which plants run, from the cheapest through the price-setting unit',
+        label: 'Supply stack and marginal block',
+        hint: 'Which fuel blocks run and which block sets the modeled price',
         nav: { kind: 'sol', id: 'merit' },
         live: true,
         scoped: true,
+        scenarioContext: true,
         alias: 'supply curve stack dispatch',
       },
       {
-        slug: 'marginal-units',
-        label: 'Marginal units',
-        hint: 'The price-setting plant and its frequency',
-        nav: { kind: 'sol', id: 'marginal' },
+        slug: 'backcast',
+        label: 'Replay accuracy',
+        hint: 'Recorded prices and flows compared with the cost and offer replays',
+        nav: { kind: 'analysis', id: 'backcast' },
         scoped: true,
-        alias: 'price setter frequency',
-      },
-      {
-        slug: 'native-week',
-        label: 'Inter-day storage (168 hours)',
-        hint: '168 hours solved as one program, storage carried across midnight',
-        nav: { kind: 'analysis', id: 'week' },
-        scoped: true,
-        alias: '168 hour weekly lp',
+        dateContext: true,
+        alias: 'validation mae bias correlation historical comparison',
       },
     ],
   },
   {
-    id: 'headroom',
-    label: 'Can supply cover demand',
+    id: 'supply-risk',
+    label: 'Supply and risk',
     dests: [
       {
         slug: 'reliability',
         label: 'Power-shortfall risk',
-        hint: 'Chance of a shortfall (LOLP) across simulated random plant outages',
+        hint: 'Chance that demand exceeds supply across repeated random-outage cases',
         nav: { kind: 'sol', id: 'reliability' },
         live: true,
+        scoped: true,
+        scenarioContext: true,
         alias: 'lolp monte carlo outage risk',
       },
       {
@@ -144,16 +129,9 @@ export const GROUPS: Group[] = [
         label: 'Supply after scheduled outages',
         hint: 'Whether supply covers demand across the outage schedule',
         nav: { kind: 'phase', id: 'pasa' },
+        dateContext: true,
+        scenarioContext: true,
         alias: 'pasa margin outlook',
-      },
-      {
-        slug: 'n-1',
-        label: 'Loss of one major unit (N-1)',
-        hint: 'What the price does when any one unit trips at the evening peak',
-        nav: { kind: 'sol', id: 'n1' },
-        live: true,
-        scoped: true,
-        alias: 'trip sual contingency largest unit',
       },
       {
         slug: 'load-sweep',
@@ -162,6 +140,7 @@ export const GROUPS: Group[] = [
         nav: { kind: 'sol', id: 'sweep' },
         live: true,
         scoped: true,
+        scenarioContext: true,
         alias: 'demand curve sensitivity',
       },
       {
@@ -171,26 +150,19 @@ export const GROUPS: Group[] = [
         nav: { kind: 'sol', id: 'distribution' },
         live: true,
         scoped: true,
+        scenarioContext: true,
         alias: 'distribution spread percentile',
-      },
-      {
-        slug: 'price-duration',
-        label: 'Hours above each price',
-        hint: 'Hours at or above each price, sorted',
-        nav: { kind: 'sol', id: 'duration' },
-        scoped: true,
-        alias: 'duration curve exceedance',
       },
     ],
   },
   {
-    id: 'siting',
-    label: 'Where new demand can connect',
+    id: 'grid-connection',
+    label: 'Grid and connection',
     dests: [
       {
         slug: 'siting',
-        label: 'Siting a new load',
-        hint: 'Hourly load a named site can draw through its own lines',
+        label: 'Site headroom check',
+        hint: 'Recorded and estimated site headroom, with unavailable line limits marked',
         nav: { kind: 'analysis', id: 'sites' },
         scoped: true,
         alias: 'data center site pax silica connect headroom',
@@ -201,42 +173,31 @@ export const GROUPS: Group[] = [
         hint: 'What moves over the high-voltage direct-current links and when a link reaches its limit',
         nav: { kind: 'sol', id: 'flows' },
         live: true,
+        dateContext: true,
+        scenarioContext: true,
         alias: 'hvdc corridor interconnector leyte',
       },
       {
         slug: 'nodal-prices',
-        label: 'Prices at grid connection points (nodal prices)',
-        hint: 'How each connection point differs from its regional price',
+        label: 'Recorded connection-point price differences',
+        hint: 'Observed price differences from each island grid reference price',
         nav: { kind: 'analysis', id: 'nodal' },
         scoped: true,
-        alias: 'lmp bus dipcef locational',
-      },
-      {
-        slug: 'regional-split',
-        label: 'Generation by island grid',
-        hint: 'How the solved dispatch divides across the three grids',
-        nav: { kind: 'sol', id: 'regions' },
-        live: true,
-        alias: 'luzon visayas mindanao regions',
+        alias: 'bus dipcef connection point locational',
       },
     ],
   },
   {
-    id: 'prices',
-    label: 'Prices and bills',
+    id: 'prices-exposure',
+    label: 'Prices and exposure',
     dests: [
-      {
-        slug: 'bill-impact',
-        label: 'Bill impact',
-        hint: 'How a spot-price change in WESM affects a Meralco household bill',
-        nav: { kind: 'analysis', id: 'bill' },
-        alias: 'meralco household generation charge pass through retail',
-      },
       {
         slug: 'contract-position',
         label: 'Contract position',
         hint: 'What a scenario does to a book of contracts, in pesos',
         nav: { kind: 'analysis', id: 'contracts' },
+        dateContext: true,
+        scenarioContext: true,
         alias: 'ppa psa hedge settlement position exposure retail supplier book strike',
       },
       {
@@ -248,24 +209,16 @@ export const GROUPS: Group[] = [
         alias: 'capture rate solar cannibalisation revenue',
       },
       {
-        slug: 'forward-prices',
-        label: 'Possible future price range',
-        hint: 'The forward band the archive window supports',
-        nav: { kind: 'analysis', id: 'forward' },
-        scoped: true,
-        alias: 'futures band forecast curve',
-      },
-      {
         slug: 'market-power',
-        label: 'Supplier concentration and market power',
-        hint: 'How much capacity the largest suppliers control and whether the grid can replace them',
+        label: 'Supplier concentration',
+        hint: 'Published national capacity shares and concentration measures',
         nav: { kind: 'analysis', id: 'market' },
-        alias: 'hhi concentration supplier residual supply index rsi',
+        alias: 'hhi concentration supplier ownership share',
       },
       {
         slug: 'reserve-market',
         label: 'Reserve market',
-        hint: 'How co-optimized reserve capacity affects the energy price',
+        hint: 'Published reserve prices and the offer replay against final results',
         nav: { kind: 'analysis', id: 'reserve' },
         scoped: true,
         alias: 'ancillary services co-clear regulating',
@@ -275,62 +228,55 @@ export const GROUPS: Group[] = [
         label: 'Emissions',
         hint: 'Solved tonnes per hour plus the carbon-price effect',
         nav: { kind: 'analysis', id: 'emissions' },
+        dateContext: true,
+        scenarioContext: true,
         alias: 'carbon co2 intensity',
-      },
-    ],
-  },
-  {
-    id: 'buildout',
-    label: 'What new capacity is needed',
-    dests: [
-      {
-        slug: 'long-term',
-        label: 'Long-term supply plan',
-        hint: 'Capacity needed over time compared with announced projects',
-        nav: { kind: 'phase', id: 'lt' },
-        alias: 'lt plan capacity expansion horizon',
-      },
-      {
-        slug: 'expansion-mix',
-        label: 'Lowest-cost expansion mix',
-        hint: 'Technology chosen by the least-cost build and its cost basis',
-        nav: { kind: 'analysis', id: 'expansion' },
-        alias: 'build new entry technology screening',
-      },
-      {
-        slug: 'future-year',
-        label: 'Annual simulation',
-        hint: 'Every date in a target year, on the published demand path and build list',
-        nav: { kind: 'analysis', id: 'futureyear' },
-        scoped: true,
-        alias: '8760 annual 2028 chronology year run planning horizon',
-      },
-      {
-        slug: 'multi-year-path',
-        label: 'Prices and spare capacity by year',
-        hint: 'The price and margin path across years',
-        nav: { kind: 'analysis', id: 'multiyear' },
-        alias: 'trajectory 2028 2030 path',
       },
       {
         slug: 'portfolio',
         label: 'Generator portfolio value',
-        hint: 'Assets and earnings for one owner',
+        hint: 'Value a declared fuel-share position against a saved run',
         nav: { kind: 'analysis', id: 'portfolio' },
         alias: 'owner company fleet revenue',
       },
     ],
   },
   {
-    id: 'scenarios',
-    label: 'Build and compare scenarios',
+    id: 'planning-scenarios',
+    label: 'Planning and scenarios',
     dests: [
+      {
+        slug: 'forward-prices',
+        label: 'PDP demand-path price sensitivity',
+        hint: 'Recorded days re-priced under the published demand path and stated ranges',
+        nav: { kind: 'analysis', id: 'forward' },
+        scoped: true,
+        alias: 'future scenario range demand path',
+      },
+      {
+        slug: 'long-term',
+        label: 'Annual demand and supply outlook',
+        hint: 'Published demand growth and project additions, with assumptions and limits',
+        nav: { kind: 'phase', id: 'lt' },
+        scoped: true,
+        scenarioContext: true,
+        alias: 'lt plan future year capacity horizon',
+      },
+      {
+        slug: 'native-week',
+        label: 'Inter-day storage test',
+        hint: 'A 168-hour storage case with energy carried across midnight',
+        nav: { kind: 'analysis', id: 'week' },
+        scoped: true,
+        alias: '168 hour weekly storage lp',
+      },
       {
         slug: 'quick-scenario',
         label: 'Scenario builder',
-        hint: 'Change demand, supply, storage, or transfer limits and recalculate all three grids',
+        hint: 'Change load, fuel cost, fuel availability, or transfer capacity',
         nav: { kind: 'quick' },
         live: true,
+        scenarioContext: true,
         alias: 'lever slider what if simulate add data center storage',
       },
       {
@@ -339,6 +285,7 @@ export const GROUPS: Group[] = [
         hint: 'Two scenarios side by side, property by property',
         nav: { kind: 'compare' },
         live: true,
+        scenarioContext: true,
         alias: 'diff side by side versus',
       },
       {
@@ -348,34 +295,12 @@ export const GROUPS: Group[] = [
         nav: { kind: 'runs' },
         alias: 'history restore bookmark',
       },
-      {
-        slug: 'cross-run',
-        label: 'Compare one measure across runs',
-        hint: 'One measure tracked across every saved run',
-        nav: { kind: 'analysis', id: 'crossrun' },
-        alias: 'across runs comparison trend',
-      },
-      {
-        slug: 'ensembles',
-        label: 'Simulation range',
-        hint: 'Repeated simulations of one scenario and the range of results',
-        nav: { kind: 'analysis', id: 'ensemble' },
-        alias: 'sampling uncertainty draws band',
-      },
     ],
   },
   {
-    id: 'trust',
-    label: 'Check the model against market records',
+    id: 'model-data',
+    label: 'Model and data',
     dests: [
-      {
-        slug: 'backcast',
-        label: 'Replay accuracy',
-        hint: 'Every market day replayed against the observed price',
-        nav: { kind: 'analysis', id: 'backcast' },
-        scoped: true,
-        alias: 'validation mae bias correlation historical comparison',
-      },
       {
         slug: 'loss-validation',
         label: 'Transmission-loss check',
@@ -384,59 +309,11 @@ export const GROUPS: Group[] = [
         alias: 'losses surface nodal check',
       },
       {
-        slug: 'commitment-test',
-        label: 'Unit-commitment test',
-        hint: 'What happened when each thermal block had to commit and hold a floor',
-        nav: { kind: 'analysis', id: 'commitment' },
-        alias: 'uc mixed integer milp minimum stable start cost why linear',
-      },
-      {
-        slug: 'assumptions',
-        label: 'Assumptions',
-        hint: 'Every constant, its source, and the date it was read',
-        nav: { kind: 'analysis', id: 'vintage' },
-        alias: 'vintage sources provenance constants methodology',
-      },
-    ],
-  },
-  {
-    id: 'inputs',
-    label: 'Review and edit model inputs',
-    dests: [
-      {
-        slug: 'generators',
-        label: 'Generators',
-        hint: 'Each sourced unit and its capacity, fuel price, and random-outage rate',
-        nav: { kind: 'class', id: 'generator' },
-        alias: 'plants units fleet capacity',
-      },
-      {
-        slug: 'fuels',
-        label: 'Fuels',
-        hint: 'Fuel prices and how much of each is available per grid',
-        nav: { kind: 'class', id: 'fuel' },
-        alias: 'coal gas hydro price availability',
-      },
-      {
-        slug: 'interfaces',
-        label: 'Inter-grid links',
-        hint: 'The power-flow limits between island grids',
-        nav: { kind: 'class', id: 'interface' },
-        alias: 'links limits hvdc transfer',
-      },
-      {
-        slug: 'regions',
-        label: 'Regions',
-        hint: 'Evening load and peak for each of the three grids',
-        nav: { kind: 'class', id: 'region' },
-        alias: 'demand load peak',
-      },
-      {
-        slug: 'storage',
-        label: 'Storage',
-        hint: 'Battery power and energy on each grid',
-        nav: { kind: 'class', id: 'storage' },
-        alias: 'battery bess discharge',
+        slug: 'model-inputs',
+        label: 'Assumptions and model inputs',
+        hint: 'Sources, dates, and editable plant, fuel, grid, link, and storage inputs',
+        nav: { kind: 'analysis', id: 'inputs' },
+        alias: 'vintage generators fuels interfaces regions storage provenance',
       },
     ],
   },
@@ -446,8 +323,28 @@ export const ALL_DESTS: Dest[] = GROUPS.flatMap((g) => g.dests)
 
 const BY_SLUG = new Map(ALL_DESTS.map((d) => [d.slug, d]))
 
+const LEGACY_SLUGS: Record<string, string> = {
+  'marginal-units': 'merit-order',
+  'n-1': 'reliability',
+  'price-duration': 'window-band',
+  'regional-split': 'chronology',
+  'bill-impact': 'contract-position',
+  'future-year': 'long-term',
+  'expansion-mix': 'long-term',
+  'multi-year-path': 'long-term',
+  'cross-run': 'saved-runs',
+  ensembles: 'saved-runs',
+  'commitment-test': 'loss-validation',
+  assumptions: 'model-inputs',
+  generators: 'model-inputs',
+  fuels: 'model-inputs',
+  interfaces: 'model-inputs',
+  regions: 'model-inputs',
+  storage: 'model-inputs',
+}
+
 export function destBySlug(slug: string): Dest | undefined {
-  return BY_SLUG.get(slug)
+  return BY_SLUG.get(LEGACY_SLUGS[slug] ?? slug)
 }
 
 export function destOf(nav: Nav): Dest | undefined {
@@ -471,8 +368,8 @@ export function phaseOf(nav: Nav): string {
 
 // --- deep links -------------------------------------------------------------
 // A scenario share already owns `#m=<payload>`; the view slug rides beside it
-// as `v=<slug>` so both survive the same link. Any of the 42 destinations is
-// now addressable, which is what makes "look at the Visayas backcast" sendable.
+// as `v=<slug>` so both survive the same link. Retired destinations resolve to
+// the task that now contains their useful content.
 
 export function readHashView(hash: string): { slug?: string; grid?: string } {
   const v = /[#&]v=([a-z0-9-]+)/i.exec(hash)

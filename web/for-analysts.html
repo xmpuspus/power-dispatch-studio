@@ -127,14 +127,14 @@
         <tr><td>Economic dispatch, hourly</td><td class="y">Yes</td><td>A linear program over three zones and 24 hours, priced from the balance duals</td></tr>
         <tr><td>Transfer limits between zones</td><td class="y">Yes</td><td>Two high-voltage direct-current links, with an hourly limit and a wheeling cost</td></tr>
         <tr><td>Storage</td><td class="y">Yes</td><td>State of charge with a round-trip efficiency, and a free terminal state each day</td></tr>
-        <tr><td>Reserve, co-optimized</td><td class="y">Yes</td><td>Reserve-capable capacity cannot sell the same MW twice</td></tr>
+        <tr><td>Reserve capacity</td><td class="p">Partly</td><td>The hourly replay holds the published reserve requirement out of the energy stack. Published reserve prices and a separate offer replay are shown; reserve prices are not co-optimized with energy.</td></tr>
         <tr><td>Hydro energy budget</td><td class="y">Yes</td><td>A daily MWh limit per zone, taken from the recorded day</td></tr>
-        <tr><td>Value of lost load</td><td class="y">Yes</td><td>Unserved load prices at the published market offer cap of P32/kWh</td></tr>
+        <tr><td>Shortfall penalty</td><td class="y">Yes</td><td>Unserved load uses the published ₱32/kWh offer cap. This is a numerical penalty, not an estimate of the value of lost load.</td></tr>
         <tr><td>Loss of load probability</td><td class="y">Yes</td><td>Random forced outages, sampled, reported per zone</td></tr>
-        <tr><td>Capacity expansion</td><td class="p">Partly</td><td>A least-cost new-build mix over representative periods, on generic cost anchors</td></tr>
+        <tr><td>Capacity expansion</td><td class="n">No</td><td>The long-term view reports DOE demand paths and project lists. It does not choose a least-cost build.</td></tr>
         <tr><td>Multi-period chronology</td><td class="p">Partly</td><td>168 hours as one program in one view. Everything else solves one day at a time</td></tr>
-        <tr><td>Unit commitment</td><td class="n">No</td><td>Built and measured. It lowered the price correlation in all five scored series, so it stays off</td></tr>
-        <tr><td>Named units</td><td class="n">No</td><td>The program holds fuel blocks per zone. You can raise a fuel's MW and cannot add "Unit 3"</td></tr>
+        <tr><td>Unit commitment</td><td class="n">No</td><td>An experimental fuel-block minimum-output test is documented on the method page. It is not per-unit commitment and is not a Studio capability.</td></tr>
+        <tr><td>Named units</td><td class="p">Partly</td><td>Named plants supply capacity and outage inputs. Energy dispatch remains aggregated by fuel and grid.</td></tr>
         <tr><td>Security-constrained nodal dispatch</td><td class="n">No</td><td>A reduced loss surface over mapped routes, checked per zone. It is not a network model</td></tr>
         <tr><td>Contracts and settlement</td><td class="p">Partly</td><td>A contract book marks against modeled spot, per contract and net. No capacity fee, no wheeling charge, no tax, no credit terms</td></tr>
         <tr><td>Stochastic multi-stage</td><td class="n">No</td><td>Repeated draws over one stage, never a scenario tree</td></tr>
@@ -143,8 +143,8 @@
   </div>
   <p class="fine">The model dispatches fuel blocks rather than named units.
   Unit commitment therefore cannot be applied per plant. The
-  <a href="methodology.html">method page</a> documents the unit-commitment test
-  and the resulting model choice.</p>
+  <a href="methodology.html">method page</a> documents the separate fuel-block
+  experiment and its limits.</p>
 
   <h2>Replay accuracy</h2>
   <p>Every recorded day replays two ways. The cost model prices a competitive
@@ -178,21 +178,20 @@
       <thead><tr><th>Analyst task</th><th>Studio view</th></tr></thead>
       <tbody>
         <tr><td>Short-term schedule, one day</td><td><a href="studio/#v=chronology">Hourly market replay</a></td></tr>
-        <tr><td>Supply curve and price setter</td><td><a href="studio/#v=merit-order">Merit order</a>, <a href="studio/#v=marginal-units">Marginal units</a></td></tr>
-        <tr><td>N-1 contingency</td><td><a href="studio/#v=n-1">Loss of one major unit</a></td></tr>
+        <tr><td>Supply curve and price-setting fuel</td><td><a href="studio/#v=merit-order">Lowest-cost-first dispatch</a></td></tr>
+        <tr><td>N-1 contingency</td><td><a href="studio/#v=reliability">Power-shortfall risk</a></td></tr>
         <tr><td>Loss of load probability</td><td><a href="studio/#v=reliability">Power-shortfall risk</a></td></tr>
         <tr><td>PASA, adequacy outlook</td><td><a href="studio/#v=adequacy">Supply after scheduled outages</a></td></tr>
-        <tr><td>Price duration curve</td><td><a href="studio/#v=price-duration">Hours above each price</a></td></tr>
+        <tr><td>Price distribution and duration</td><td><a href="studio/#v=window-band">Price range across recorded days</a></td></tr>
         <tr><td>Capture price by technology</td><td><a href="studio/#v=capture-prices">Average price earned by each technology</a></td></tr>
         <tr><td>Interface and transfer limits</td><td><a href="studio/#v=coupled-flows">Power between island grids</a></td></tr>
-        <tr><td>Locational marginal price</td><td><a href="studio/#v=nodal-prices">Prices at grid connection points</a></td></tr>
-        <tr><td>Reserve co-optimization</td><td><a href="studio/#v=reserve-market">Reserve market</a></td></tr>
-        <tr><td>Capacity expansion, least cost</td><td><a href="studio/#v=expansion-mix">Lowest-cost expansion mix</a></td></tr>
-        <tr><td>Market power, HHI, residual supply</td><td><a href="studio/#v=market-power">Supplier concentration</a></td></tr>
+        <tr><td>Recorded connection-point differences</td><td><a href="studio/#v=nodal-prices">Recorded connection-point price differences</a></td></tr>
+        <tr><td>Reserve prices and capacity holdback</td><td><a href="studio/#v=reserve-market">Reserve market</a></td></tr>
+        <tr><td>Demand path and project lists</td><td><a href="studio/#v=long-term">Annual demand and supply outlook</a></td></tr>
+        <tr><td>Market power and HHI</td><td><a href="studio/#v=market-power">Supplier concentration</a></td></tr>
         <tr><td>Contract position, hedge cover</td><td><a href="studio/#v=contract-position">Contract position</a></td></tr>
         <tr><td>Backcast, model validation</td><td><a href="studio/#v=backcast">Replay accuracy</a></td></tr>
-        <tr><td>Unit commitment</td><td><a href="studio/#v=commitment-test">Unit-commitment test</a></td></tr>
-        <tr><td>Input database</td><td><a href="studio/#v=generators">Generators</a>, <a href="studio/#v=fuels">Fuels</a>, <a href="studio/#v=interfaces">Inter-grid links</a></td></tr>
+        <tr><td>Input database</td><td><a href="studio/#v=model-inputs">Assumptions and model inputs</a></td></tr>
         <tr><td>Solution file, report</td><td><a href="studio/#v=saved-runs">Saved runs</a>, which writes an HTML report and an hourly CSV</td></tr>
       </tbody>
     </table>
@@ -200,7 +199,7 @@
 
   <h2>Ways to run the project</h2>
   <ul>
-    <li><b>Map.</b> <a href="index.html">Review the archive by location</a> and run a basic demand scenario.</li>
+    <li><b>Map.</b> <a href="index.html">Review the archive by location</a>.</li>
     <li><b>Studio.</b> <a href="studio/">Follow an analyst workflow</a>, search the full view library, and share a scenario link.</li>
     <li><b>Python.</b> Install <code>power-dispatch-studio</code> for notebooks and scripts. The package includes a dated archive snapshot for offline use.</li>
     <li><b>Repository.</b> Run <code>make data</code> to rebuild calculated data from the committed source files.</li>
@@ -220,7 +219,7 @@ power-dispatch run --data-dir ./mysystem --date 2030-01-01</code></pre>
   <h2>Model limits</h2>
   <p>The following calculations are outside this model's scope.</p>
   <ul>
-    <li>No named unit, so no per-unit commitment, start cost, or minimum run time.</li>
+    <li>No per-unit dispatch or commitment, start cost, or minimum run time.</li>
     <li>No full network model. Transmission geometry comes from OpenStreetMap, and the ratings are class defaults.</li>
     <li>No multi-year chronology. A year of days is 365 separate 24-hour programs, with storage reset at each midnight.</li>
     <li>Three zones, so nothing below the island grid except the reduced loss surface.</li>

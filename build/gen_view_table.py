@@ -1,8 +1,7 @@
 """Render the Studio view catalog's deep-link table from nav.ts.
 
-Every studio view is addressable as `#v=<slug>`, so the README can carry all 42
-for the price of some text rather than 39 embedded clips. GitHub applies no
-lazy loading, so those clips would be about 200 MB fetched on open.
+Every Studio view is addressable as `#v=<slug>`, so the catalog can link to the
+running application without embedding a recording for every route.
 
 nav.ts is the only place the slug, the label and the one-line hint are written
 down, so the table is generated from it and pinned by tests/test_readme_views.py.

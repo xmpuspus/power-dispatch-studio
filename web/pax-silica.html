@@ -291,13 +291,14 @@ peaked at 2,744 MW and Mindanao at 2,748 MW.</p>
 </section>
 
 <section class="section" id="b-sun">
-<h2>The signed 500 MW solar project supplies 4.1% of one Pax Silica day</h2>
-<p>ACWA Power leased 500 hectares for up to 500 MW of solar and batteries. The
-chart gives the project a cloudless model day.</p>
+<h2>A 500 MW solar component produces 4.1% of one Pax Silica day in the cloudless-day model</h2>
+<p>ACWA Power leased 500 hectares for a project announced as solar plus battery
+storage. The chart models only the stated 500 MW solar component because no
+battery power or energy rating was published.</p>
 
 <div class="fig" id="fig-acwa" style="--accent:#A65E46">
   <div class="figkick">A signed New Clark City solar project compared with flat demand</div>
-  <div class="figtitle">The solar and battery project signed for New Clark City covers 4.1% of the electricity Pax Silica needs for a day</div>
+  <div class="figtitle">The modeled 500 MW solar component produces 4.1% of Pax Silica's daily electricity on a cloudless day</div>
   <div class="figsub">The line holds Pax Silica at 3,000 megawatts (MW). The
   filled area shows output from 500 MW of solar on a cloudless day.</div>
   <div id="acwa-day"></div>
@@ -324,17 +325,19 @@ equals 122 square kilometers.</p>
 </section>
 
 <section class="section" id="b-wires">
-<h2>One route can deliver 770 of the 3,000 MW Pax Silica needs</h2>
-<p>The mapped route leaves 769 MW of room at 7pm on 25 June 2026. The remaining
-2,231 MW has no transmission route in this calculation.</p>
+<h2>Public route geometry does not establish how much Pax Silica can connect</h2>
+<p>The illustration below applies an assumed 400 MW class rating to each mapped
+230 kV circuit and subtracts modeled flow for one hour. NGCP does not publish
+the circuit ratings needed to turn this into an interconnection result.</p>
 
 <div class="fig" id="fig-wires" style="--accent:#07203F">
   <button class="replay" data-replay="fig-wires">Replay</button>
-  <div class="figkick">Mapped transmission near New Clark City</div>
-  <div class="figtitle">The one route feeding Pax Silica delivers only a quarter of what it needs</div>
+  <div class="figkick">Class-rating illustration near New Clark City</div>
+  <div class="figtitle">An assumed circuit rating produces 769 MW of modeled headroom, not a site connection limit</div>
   <div class="figsub">Each row shows one 230 kilovolt (kV) route with two
   circuits. The model assigns 400 megawatts (400 MW) to each circuit because
-  NGCP publishes no line rating.</div>
+  NGCP publishes no rating for these circuits. The diagram cannot establish
+  available service for Pax Silica.</div>
   <div id="wires-flow" style="margin-bottom:2px"></div>
   <p class="srcline">The National Grid Corporation of the Philippines (NGCP)
   supplies project records. OpenStreetMap supplies route geometry.</p>
@@ -346,11 +349,11 @@ equals 122 square kilometers.</p>
   <div class="figkick">Recent long-distance grid projects</div>
   <div class="figtitle">NGCP's two most recent long-distance builds took 13 and 9 months between first power and full service</div>
   <div class="figsub">The National Grid Corporation of the Philippines (NGCP)
-  reports P10.2 billion for Hermosa-San Jose and P52 billion for the
+  reports ₱10.2 billion for Hermosa-San Jose and ₱52 billion for the
   Mindanao-Visayas link.</div>
   <div class="strip"><div class="name">Hermosa-San Jose reached full service after 13 months.</div><div class="tl" id="tl-hsj"></div></div>
   <div class="strip"><div class="name">Mindanao-Visayas reached full service after 9 months.</div><div class="tl" id="tl-mvip"></div></div>
-  <div class="strip"><div class="name">The Bases Conversion and Development Authority (BCDA) targets the P6.95 billion Pax Silica substation for 2028.</div><div class="tl" id="tl-substation"></div></div>
+  <div class="strip"><div class="name">The Bases Conversion and Development Authority (BCDA) targets the ₱6.95 billion Pax Silica substation for 2028.</div><div class="tl" id="tl-substation"></div></div>
   <p class="srcline">The comparison describes completed projects. It does not
   predict the Pax Silica substation schedule.</p>
   <p class="rawline">Sources. <a href="https://ngcp.ph/article?cid=16897">Hermosa-San Jose</a> · <a href="https://www.ngcp.ph/article?cid=16636">Mindanao-Visayas</a></p>
@@ -358,39 +361,39 @@ equals 122 square kilometers.</p>
 </section>
 
 <section class="section" id="b-priceb">
-<h2>The cost model moves Luzon from P6.00 to P12.00 per kWh</h2>
+<h2>The cost-stack sensitivity moves its marginal-cost result from ₱6.00 to ₱12.00 per kWh</h2>
 <p>The calculation removes transmission delivery as a constraint and adds the
 full 3,000 MW to Luzon. It estimates one modeled day under stated assumptions.</p>
 
 <div class="fig" id="fig-priceb" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-priceb">Replay</button>
   <div class="figkick">A flat-block cost calculation for Luzon</div>
-  <div class="figtitle">Serving Pax Silica from the grid would double the modeled price of Luzon electricity</div>
-  <div class="figsub">The base case averages P6.00 per kWh. Here kWh means
-  kilowatt-hour. Added demand averages P12.00. Oil is the last block dispatched
+  <div class="figtitle">The stated cost-stack assumptions move the modeled result from coal to oil</div>
+  <div class="figsub">The base cost-stack case averages ₱6.00 per kWh. Here kWh means
+  kilowatt-hour. The added-demand sensitivity averages ₱12.00. Oil is the last block dispatched
   in 16 of those hours. The calculation leaves 664 MW of the supply stack
   unused. MW means megawatts.</div>
   <div class="steps" id="price-steps"></div>
-  <p class="fignote">The Visayas peak rises to P11.98. Link congestion rent is
-  about P38 million in this one modeled day. Full household pass-through would
-  add P1,200 a month to the 200 kWh example bill.</p>
-  <p class="srcline">Resolution No. 10, Series of 2026 supplies the P6.00 value.
-  The model labels the P12.00 oil value as an assumption. The nodal record shows
-  congestion on 28 of 70 sampled days. Its nonzero median is P0.56 per kWh and
-  its highest sampled value is P19.28 on 26 May 2026.</p>
+  <p class="fignote">The Visayas modeled peak rises to ₱11.98. Modeled link
+  congestion rent is about ₱38 million in this one day. This is a cost-stack
+  sensitivity, not a market-price or retail-bill forecast.</p>
+  <p class="srcline">Resolution No. 10, Series of 2026 supplies the ₱6.00 value.
+  The model labels the ₱12.00 oil value as an assumption. The nodal record shows
+  congestion on 28 of 70 sampled days. Its nonzero median is ₱0.56 per kWh and
+  its highest sampled value is ₱19.28 on 26 May 2026.</p>
   <p class="rawline">Sources. <a href="https://www.gmanetwork.com/news/money/economy/983104/erc-sets-fixed-p6-kwh-rate-for-coal-power-amid-crisis/story/">Coal price rule</a> · <a href="https://www.iemop.ph/market-data/dipc-energy-results-final/">Nodal prices</a></p>
 </div>
 </section>
 
 <section class="section" id="b-own">
-<h2>A 600 MW outage leaves 331 MW unmet in the local-power case</h2>
+<h2>An illustrative 600 MW outage leaves 331 MW unmet in the chosen local-power case</h2>
 <p>BCDA plans local power but has not published a station size. This example
 uses a 2,500 MW station and a 600 MW unit.</p>
 
 <div class="fig" id="fig-own" style="--accent:#A65E46">
   <button class="replay" data-replay="fig-own">Replay</button>
-  <div class="figkick">An example local station with grid backup</div>
-  <div class="figtitle">Even with its own 2,500 MW power station, one generator down leaves 331 MW of Pax Silica with no power</div>
+  <div class="figkick">Illustrative local station with grid backup</div>
+  <div class="figtitle">A chosen 2,500 MW station and 600 MW unit produce a 331 MW gap in this illustration</div>
   <div class="figsub">Both bars total 3,000 megawatts (MW). With the 600 MW unit
   unavailable, local supply and the 769 MW route leave 331 MW unmet.</div>
   <div id="own-rows"></div>
@@ -412,7 +415,7 @@ planning value and does not replace a local water study.</p>
 <div class="fig" id="fig-water" style="--accent:#07203F">
   <button class="replay" data-replay="fig-water">Replay</button>
   <div class="figkick">Announced daily water demand compared with public planning figures</div>
-  <div class="figtitle">The water Pax Silica asked for is 1.4 to 1.9 times the daily water planned for everyone in Makati</div>
+  <div class="figtitle">Pax Silica's stated water demand is 1.4 to 1.9 times Makati's household planning benchmark</div>
   <div class="figsub">The Makati calculation uses 309,770 residents and 150
   liters per resident. It equals planning demand for 433,000 to 600,000 people.
   It excludes offices and industry.</div>
@@ -791,9 +794,8 @@ Database Licence. They are not NGCP geometry. Calculated values come from
     var svg = document.createElementNS(ns, "svg");
     svg.setAttribute("width", W); svg.setAttribute("height", H);
     svg.setAttribute("aria-label",
-      have + " circuits carry " + fmt(lim) + " MW of the " + fmt(need)
-      + " MW Pax Silica needs; about " + more + " more would be needed for the "
-      + fmt(gap) + " MW that has no path");
+      "Illustration using assumed circuit ratings: " + fmt(lim)
+      + " MW of modeled headroom beside " + fmt(need) + " MW of stated demand");
     wrap.appendChild(svg);
     function node(kind, attrs, cls){
       var e = document.createElementNS(ns, kind);
@@ -876,7 +878,7 @@ Database Licence. They are not NGCP geometry. Calculated values come from
     var yHave = y + rowH * have;
     var yMore = yHave + groupGap + headH;
     if (narrow){
-      txt(0, yMore - 8, "about " + more + " more routes for the other " + fmt(gap) + " MW",
+      txt(0, yMore - 8, "arithmetic remainder under the same assumptions: " + fmt(gap) + " MW",
           "#A65E46", 12, null, "600");
     }
     for (var j = 0; j < more; j++)
@@ -890,11 +892,11 @@ Database Licence. They are not NGCP geometry. Calculated values come from
       txt(0, y + rowH * have / 2 + 45, "one of them feeds it", "var(--cardmute, var(--muted))", 12);
       txt(W - 8, y + rowH * have / 2 - 4, fmt(lim) + " MW", "#07203F", 15, "end", "700");
       txt(W - 8, y + rowH * have / 2 + 14, "of room at 7pm", "var(--cardmute, var(--muted))", 12, "end");
-      txt(0, yMore + rowH * more / 2 - 12, "about " + more + " more routes like them,", "#A65E46", 13, null, "600");
-      txt(0, yMore + rowH * more / 2 + 5, "or one 500 kilovolt line,", "#A65E46", 13);
-      txt(0, yMore + rowH * more / 2 + 22, "would have to be built", "#A65E46", 13);
+      txt(0, yMore + rowH * more / 2 - 12, "unserved in this class-rating", "#A65E46", 13, null, "600");
+      txt(0, yMore + rowH * more / 2 + 5, "illustration; an interconnection", "#A65E46", 13);
+      txt(0, yMore + rowH * more / 2 + 22, "study must determine the remedy", "#A65E46", 13);
       txt(W - 8, yMore + rowH * more / 2 - 4, fmt(gap) + " MW", "#A65E46", 15, "end", "700");
-      txt(W - 8, yMore + rowH * more / 2 + 14, "with no path today", "var(--cardmute, var(--muted))", 12, "end");
+      txt(W - 8, yMore + rowH * more / 2 + 14, "arithmetic remainder", "var(--cardmute, var(--muted))", 12, "end");
     }
     // close the arithmetic on the card: the two groups add to the whole need
     var fy = yMore + rowH * more + (narrow ? 26 : 22);
@@ -1068,7 +1070,7 @@ Database Licence. They are not NGCP geometry. Calculated values come from
       g.style.cssText = "position:absolute; left:0; right:0; bottom:"
         + (axisH + php * ys) + "px; border-top:1px solid #e3d9cc; height:0;";
       var lb = el("div", "saxis", wrap);
-      lb.textContent = php ? "P" + php.toFixed(2) : "P0";
+      lb.textContent = php ? "₱" + php.toFixed(2) : "₱0";
       lb.style.cssText = "position:absolute; left:0; bottom:"
         + (axisH + php * ys + 2) + "px; font-size:10.5px; color:var(--muted);"
         + "background:#fff; padding:0 3px;";
@@ -1158,12 +1160,10 @@ Database Licence. They are not NGCP geometry. Calculated values come from
     });
     var o = P.wires.outages, worst = o.units[0];
     document.getElementById("own-note").innerHTML =
-      "The <b style='color:#A65E46'>" + fmt(gap) + " MW</b> in rust still has no supply at "
-      + "all. That is the electricity of " + P.wires.own_gap_homes_million
-      + " million Philippine homes. Pax Silica's own station covers most of its "
-      + "own demand, but "
-      + "the backup for it comes down the same single route."
-      + "<br><b>A unit being out is routine, not a freak event.</b> In the same "
+      "The <b style='color:#A65E46'>" + fmt(gap) + " MW</b> gap follows from "
+      + "the chosen station, unit, and line-rating assumptions. "
+      + "It is not a proposed design or reliability forecast."
+      + "<br>The public outage record provides context: in the same "
       + o.days_in_window + " archived days, " + worst.label + " of "
       + fmt(worst.mw) + " MW was listed out on <b>" + worst.days_out
       + " of them</b>, and " + o.units[1].label + " on " + o.units[1].days_out + ".";

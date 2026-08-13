@@ -824,8 +824,8 @@ def build_answers(cong, rel, prices, outs) -> dict:
             f" IEMOP dispatch schedules recorded load "
             f"curtailed on {curt_days} grid day{'s' if curt_days != 1 else ''} "
             f"in this archive "
-            f"window ({curt_mwh:,} MWh). Headroom for added demand of this size "
-            f"requires new supply that is available when needed."
+            f"window ({curt_mwh:,} MWh). These figures establish scale; they do "
+            f"not establish connection headroom for a particular project."
         )
     q2_stat = (
         f"{cong.get('distinct_equipment', 0)} distinct pieces of "
@@ -839,9 +839,8 @@ def build_answers(cong, rel, prices, outs) -> dict:
         "The inter-island links and named 230 kV lines already reach their "
         "limits often; the table names the affected equipment. Nearly every "
         "announced data-center megawatt sits on Luzon, which already supplies "
-        "power south over those links. One Sual "
-        f"unit (647 MW) equals {round(100 * 647 / margin)}% of the May "
-        "system margin."
+        "power south over those links. Connection capacity still has to be "
+        "checked at the actual site and interval."
     )
     if short_days is not None and short_days > 0:
         q2_blurb += (
@@ -849,17 +848,11 @@ def build_answers(cong, rel, prices, outs) -> dict:
             f"requirement in at least one 5-minute interval on "
             f"{short_days} of the window's days."
         )
-    if outs and outs.get("sual_outage_day_count"):
-        q2_blurb += (
-            f" The outage files list a Sual unit out on "
-            f"{outs['sual_outage_day_count']} "
-            f"day{'s' if outs['sual_outage_day_count'] != 1 else ''}."
-        )
     q3_stat = (
-        f"May 2026: P{A['wesm_may2026_system_avg_php_kwh']}/kWh system "
+        f"May 2026: ₱{A['wesm_may2026_system_avg_php_kwh']}/kWh system "
         f"(+{A['wesm_may2026_vs_april_pct']}% vs April); Luzon "
-        f"P{A['wesm_may2026_luzon']}, Visayas P{A['wesm_may2026_visayas']}, "
-        f"Mindanao P{A['wesm_may2026_mindanao']}"
+        f"₱{A['wesm_may2026_luzon']}, Visayas ₱{A['wesm_may2026_visayas']}, "
+        f"Mindanao ₱{A['wesm_may2026_mindanao']}"
     )
     q3_blurb = "Regional prices can separate when an inter-grid link reaches its limit."
     reg = (prices.get("regimes") or {}) if prices else {}
@@ -868,14 +861,14 @@ def build_answers(cong, rel, prices, outs) -> dict:
         q3_blurb += (
             f" While WESM ran administered prices (through "
             f"{prices['resumed']}), the three grids stayed within "
-            f"P{ad['max_spread']}/kWh of each other; once trading "
+            f"₱{ad['max_spread']}/kWh of each other; once trading "
             f"resumed the mean daily high-to-low spread across the "
-            f"three grids was P{mk['mean_spread']}/kWh."
+            f"three grids was ₱{mk['mean_spread']}/kWh."
         )
     if spread.get("php") is not None:
         q3_blurb += (
             f" Widest daily regional spread in the archive: "
-            f"P{spread['php']}/kWh on {spread['date']}."
+            f"₱{spread['php']}/kWh on {spread['date']}."
         )
     spot_bill = (
         A["meralco_june2026_wesm_share_pct"]
@@ -885,10 +878,10 @@ def build_answers(cong, rel, prices, outs) -> dict:
     q3_blurb += (
         " WESM passes into the Meralco generation charge monthly, and "
         "only on the share of energy actually bought on the spot "
-        f"market: June paid P{A['meralco_june2026_wesm_price_php_kwh']}"
+        f"market: June paid ₱{A['meralco_june2026_wesm_price_php_kwh']}"
         f"/kWh for the {A['meralco_june2026_wesm_share_pct']}% it drew "
-        f"from WESM, about P{spot_bill:.2f}"
-        f"/kWh of the P{A['meralco_june2026_generation_charge']}/kWh "
+        f"from WESM, about ₱{spot_bill:.2f}"
+        f"/kWh of the ₱{A['meralco_june2026_generation_charge']}/kWh "
         "generation charge. The rest is contracted and does not move "
         "with the spot price. New flat 24/7 load raises the demand the "
         "market clears against in every interval."
@@ -896,27 +889,27 @@ def build_answers(cong, rel, prices, outs) -> dict:
     return {
         "window": win,
         "q1": {
-            "title": "Can supply cover additional data-center demand?",
-            "verdict": "The announced demand is a large share of the margin and "
-            "would require additional firm supply.",
+            "title": "How large is announced demand beside a recent system margin?",
+            "verdict": "The figures are comparable in scale, but the national margin "
+            "is not site connection headroom.",
             "stat": q1_stat,
             "blurb": q1_blurb,
             "src": "IEMOP May 2026 report; PCIJ (Meralco commitment); DICT "
             "forecast via BusinessWorld; IEMOP RTD regional summaries",
         },
         "q2": {
-            "title": "Where can new demand connect?",
-            "verdict": "Public records name the grid limits. New sites behind "
-            "those limits face the same constraint.",
+            "title": "What do public records say about connection capacity?",
+            "verdict": "They show where equipment reached a limit, but they do not "
+            "publish available capacity for a specific site.",
             "stat": q2_stat,
             "blurb": q2_blurb,
             "src": "IEMOP congestions-manifesting files; IEMOP Dec 2025 "
             "report; IEMOP outage schedules",
         },
         "q3": {
-            "title": "How does added demand affect prices?",
-            "verdict": "Regional prices respond each day. Retail bills reflect "
-            "the monthly purchase mix.",
+            "title": "How do recorded prices differ by grid?",
+            "verdict": "Regional prices separate by day and interval. Retail bills "
+            "reflect the monthly purchase mix, not one spot interval.",
             "stat": q3_stat,
             "blurb": q3_blurb,
             "src": "IEMOP monthly reports; archived LWAP files; Meralco June "

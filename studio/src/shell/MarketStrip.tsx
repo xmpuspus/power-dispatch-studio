@@ -127,9 +127,11 @@ export function MarketStrip({
         <b className="mono">{String(selected.hour).padStart(2, '0')}:00</b>
         <span>
           Recorded{' '}
-          {selected.recordedPrice == null ? 'not available' : php(selected.recordedPrice)}
+          {selected.recordedPrice == null
+            ? 'not available'
+            : `${php(selected.recordedPrice)}/kWh`}
         </span>
-        <span>Replay {php(selected.replayedPrice)}</span>
+        <span>Replay {php(selected.replayedPrice)}/kWh</span>
         <span>Demand {num(selected.demandMw)} MW</span>
         <span>Price-setting block {selected.marginal ?? 'not identified'}</span>
         {selected.constraint && <strong>Transfer limit reached</strong>}

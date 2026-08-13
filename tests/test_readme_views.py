@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Pin the README's studio-view table to nav.ts.
+"""Pin the Studio catalog's view table to nav.ts.
 
-The README lists all 42 studio views as `#v=<slug>` deep links instead of
-embedding 42 clips, because GitHub applies no lazy loading and 42 clips would
-cost about 200 MB on open. A hand-maintained list of 42 rows is the most
-drift-prone thing in the file, so it is checked here: every slug that nav.ts
+The catalog lists every supported Studio view as a `#v=<slug>` deep link. A
+hand-maintained table can drift from the app, so this test checks that every
+slug that nav.ts
 declares appears exactly once in the README, with the label nav.ts gives it,
 and the README invents no slug that nav.ts does not have.
 
@@ -31,10 +30,10 @@ def check(name, cond):
 
 
 dests = destinations()
-check("nav.ts declares 42 destinations", len(dests) == 42)
+check("nav.ts declares 26 destinations", len(dests) == 26)
 
-# The 42-view catalog moved out of README.md on 2026-08-12, when the front door
-# came down from 1,079 lines to 227. It lives in its own page now.
+# The view catalog lives outside the front-page README so it can document every
+# route without making the project introduction harder to scan.
 CATALOG = os.path.join(ROOT, "docs", "studio-views.md")
 with open(CATALOG) as f:
     readme = f.read()
@@ -46,7 +45,8 @@ missing = [s for s in declared if s not in linked]
 extra = [s for s in linked if s not in declared]
 
 check(
-    f"every declared slug is linked from the view catalog (missing: {missing})", not missing
+    f"every declared slug is linked from the view catalog (missing: {missing})",
+    not missing,
 )
 check(f"the catalog links no slug nav.ts does not declare (extra: {extra})", not extra)
 
@@ -58,7 +58,7 @@ table = readme.split("<!-- views table start -->")[1].split("<!-- views table en
 in_table = re.findall(r"/studio/#v=([a-z0-9-]+)\)", table)
 dupes = sorted({s for s in in_table if in_table.count(s) > 1})
 check(f"the table lists each slug once (dupes: {dupes})", not dupes)
-check(f"the table lists all 42 ({len(in_table)})", len(in_table) == len(declared))
+check(f"the table lists all 26 ({len(in_table)})", len(in_table) == len(declared))
 
 # the label and the one-line hint are nav.ts's own words; a rewrite in the
 # README would silently disagree with what the app shows in its palette
@@ -106,6 +106,7 @@ wanted = re.findall(r"\]\(#([a-z0-9-]+)\)", readme)
 dead = sorted({a for a in wanted if a not in anchors})
 check(f"every in-page contents link reaches a heading (dead: {dead})", not dead)
 
+
 # --- the stated media weight has to match the files on disk -------------------
 # GitHub applies no lazy loading, so the embedded set is what a reader downloads
 # on open. Each page states its own weight and it is measured here, never
@@ -123,8 +124,13 @@ def weigh(rel):
     resolved = {q: os.path.normpath(os.path.join(here, q)) for q in emb}
     missing = sorted(q for q, c in resolved.items() if not os.path.isfile(c))
     check(f"{rel}: every embedded file exists (missing: {missing})", not missing)
-    mb = sum(os.path.getsize(c) for c in resolved.values() if os.path.isfile(c)) / 1048576
-    stated = re.search(r"downloads (\d+\.\d) MB of media across\s*\n?\s*(\d+) files", text)
+    mb = (
+        sum(os.path.getsize(c) for c in resolved.values() if os.path.isfile(c))
+        / 1048576
+    )
+    stated = re.search(
+        r"downloads (\d+\.\d) MB of media across\s*\n?\s*(\d+) files?", text
+    )
     check(f"{rel}: states its own media weight", stated is not None)
     if stated:
         check(

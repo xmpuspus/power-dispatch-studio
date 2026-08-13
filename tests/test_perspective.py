@@ -85,13 +85,13 @@ def check_html_static_text(c, p, s, w, wa, pr, SITE):
         f"{wa['angat_share_pct'][0]} to {wa['angat_share_pct'][1]} percent",
     )
     has("Makati 2024 population", f"{wa['makati_pop_2024']:,}")
-    has("modeled base price", f"P{pr['luzon_mean'][0]:.2f} per kWh")
-    has("modeled with-campus price", f"P{pr['luzon_mean'][1]:.2f}")
-    has("modeled Visayas peak pulled up", f"P{pr['visayas_peak'][1]:.2f}")
+    has("modeled base price", f"₱{pr['luzon_mean'][0]:.2f} per kWh")
+    has("modeled with-campus price", f"₱{pr['luzon_mean'][1]:.2f}")
+    has("modeled Visayas peak pulled up", f"₱{pr['visayas_peak'][1]:.2f}")
     # the card says this in plain words now, so the pin follows the number
     has(
         "modeled congestion rent",
-        f"about P{round(pr['links_rent_m_php'][1])} million in this one modeled day",
+        f"about ₱{round(pr['links_rent_m_php'][1])} million in this one day",
     )
     has(
         "DIPCEF sample size",
@@ -100,17 +100,20 @@ def check_html_static_text(c, p, s, w, wa, pr, SITE):
             f"{pr['dipcef']['days_sampled']} sampled days"
         ),
     )
-    has("DIPCEF median", f"P{pr['dipcef']['median_php_kwh']} per kWh")
+    has("DIPCEF median", f"₱{pr['dipcef']['median_php_kwh']} per kWh")
     has(
         "DIPCEF maximum, to the precision the sweep measured",
-        f"P{pr['dipcef']['max_php_kwh']} on",
+        f"₱{pr['dipcef']['max_php_kwh']} on",
     )
-    has("passthrough peso line", f"P{pr['passthrough_php_month']:,} a month")
+    pin(
+        "price card rejects a retail-bill forecast",
+        "not a market-price or retail-bill forecast" in flat,
+    )
     has("olympic pool basis", "an Olympic pool holds 2.5 million liters")
     has("island population source", "Island populations, 2020 census")
-    has("substation cost", f"P{w['substation']['php_b']} billion")
-    has("Hermosa-San Jose cost", f"P{w['hsj']['php_b']} billion")
-    has("Mindanao-Visayas cost", f"P{w['mvip']['php_b']:.0f} billion")
+    has("substation cost", f"₱{w['substation']['php_b']} billion")
+    has("Hermosa-San Jose cost", f"₱{w['hsj']['php_b']} billion")
+    has("Mindanao-Visayas cost", f"₱{w['mvip']['php_b']:.0f} billion")
     # the own-station scenario's uncovered MW is arithmetic on the same line
     # limit the dashboard bar reads live; the static paragraph and the ledger
     # table both name it in prose, so both must track it by hand
@@ -132,15 +135,22 @@ def check_html_static_text(c, p, s, w, wa, pr, SITE):
     )
     has("tripped-unit size is named as a choice", f"{w['trip_unit_mw']:,.0f} MW unit")
 
-    # the delivery limit is the page's most-quoted model output and it moves with
-    # after every data rebuild, so both the exact figure and its rounded form
+    # The rating is an explicit model assumption. The page must carry the value
+    # while refusing to present the resulting arithmetic as a connection limit.
     has("line limit, exact", f"{w['limit_7pm_mw']:,.0f} MW")
-    has(
-        "line limit, rounded, in the section heading",
-        f"{round(w['limit_7pm_mw'], -1):,.0f} of the {c['mw']:,.0f} MW",
+    pin(
+        "wire card says modeled headroom is not a connection limit",
+        "not a site connection limit" in flat,
     )
-    has("shortfall against the announced draw", f"{w['gap_mw']:,.0f} MW")
-    has("class rating per circuit", f"{w['circuit_rating_mw']:,.0f} MW")
+    has("assumed class rating per circuit", f"{w['circuit_rating_mw']:,.0f} megawatts")
+    pin(
+        "wire prose does not present the arithmetic remainder as unmet demand",
+        f"{w['gap_mw']:,.0f} MW" not in flat,
+    )
+    pin(
+        "solar card does not invent a battery rating",
+        "no battery power or energy rating was published" in flat,
+    )
 
     # the archive numbers are recomputed on every nightly data build, so the prose that
     # names them has to be pinned or the cron silently falsifies it

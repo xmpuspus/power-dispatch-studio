@@ -14,13 +14,7 @@ import { chronoOptsFrom } from './model'
 import { runChronology } from './chrono'
 import { Panel, StatTile, EmptyNote } from '../ui/kit'
 import { DataGrid, type Column } from '../ui/DataGrid'
-import {
-  GRIDS,
-  SAMPLE_BOOK,
-  comparePosition,
-  validateBook,
-  type Contract,
-} from './contracts'
+import { GRIDS, comparePosition, validateBook, type Contract } from './contracts'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 
@@ -28,9 +22,9 @@ const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 function peso(v: number): string {
   const a = Math.abs(v)
   const sign = v < 0 ? '-' : ''
-  if (a >= 1e6) return `${sign}P${(a / 1e6).toFixed(2)}M`
-  if (a >= 1e3) return `${sign}P${(a / 1e3).toFixed(0)}k`
-  return `${sign}P${a.toFixed(0)}`
+  if (a >= 1e6) return `${sign}₱${(a / 1e6).toFixed(2)}M`
+  if (a >= 1e3) return `${sign}₱${(a / 1e3).toFixed(0)}k`
+  return `${sign}₱${a.toFixed(0)}`
 }
 
 const HOURS_ALL = 'all day'
@@ -51,8 +45,8 @@ export function ContractView({
   date: string
   scenarioName: string
 }) {
-  const [book, setBook] = useState<Contract[]>(SAMPLE_BOOK)
-  const [load, setLoad] = useState<Partial<Record<GridKey, number>>>({ luzon: 400 })
+  const [book, setBook] = useState<Contract[]>([])
+  const [load, setLoad] = useState<Partial<Record<GridKey, number>>>({})
 
   const runs = useMemo(() => {
     if (!profiles?.days?.length || !date) return null
@@ -67,8 +61,9 @@ export function ContractView({
 
   const who = scenarioName === 'Base Case' ? 'Your edits' : scenarioName
   const problems = validateBook(book)
+  const hasPosition = book.length > 0 || Object.values(load).some((mw) => (mw ?? 0) > 0)
   const cmp =
-    runs && !problems.length
+    runs && hasPosition && !problems.length
       ? comparePosition(runs.base.hours, runs.scen.hours, book, load)
       : null
 
@@ -200,7 +195,9 @@ export function ContractView({
           // the base scenario, which is where a first-time reader makes them
           cmp && cmp.netChange !== 0
             ? `${who} move this position by ${peso(cmp.netChange)} on ${date}`
-            : `This position does not move under ${who} on ${date}`
+            : hasPosition
+              ? `This position does not move under ${who} on ${date}`
+              : 'Enter your contract position'
         }
         subtitle={
           'Your contracts marked against the modeled spot price, base case against ' +
@@ -235,7 +232,12 @@ export function ContractView({
             />
           </div>
         )}
-        <DataGrid columns={cols} rows={book} getKey={(_c, i) => i} />
+        <DataGrid
+          columns={cols}
+          rows={book}
+          getKey={(_c, i) => i}
+          empty="No contracts entered. Add a contract or enter your own load to start."
+        />
         <div className="ctr__actions">
           <button
             className="btn btn--ghost btn--sm"
@@ -245,8 +247,8 @@ export function ContractView({
                 {
                   name: `Contract ${b.length + 1}`,
                   grid: 'luzon',
-                  mw: 100,
-                  strike_php_kwh: 6.0,
+                  mw: 0,
+                  strike_php_kwh: 0,
                   side: 'buy',
                 },
               ])
@@ -257,7 +259,7 @@ export function ContractView({
           <button
             className="btn btn--ghost btn--sm"
             onClick={() => setBook((b) => b.slice(0, -1))}
-            disabled={book.length <= 1}
+            disabled={book.length === 0}
           >
             Remove the last one
           </button>

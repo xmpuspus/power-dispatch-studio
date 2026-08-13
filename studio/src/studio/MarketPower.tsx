@@ -1,4 +1,3 @@
-import type { Dispatch } from '../lib/types'
 import { num, pct, useMarketPower } from '../lib/data'
 import { Panel, StatTile, Source, EmptyNote } from '../ui/kit'
 
@@ -6,7 +5,7 @@ import { Panel, StatTile, Source, EmptyNote } from '../ui/kit'
 // stack; a concentrated fleet can move price even with physical headroom. Built from
 // the ERC's published capacity shares, framed against the reserve margin the dispatch
 // already computes. Display-only (sourced), no solve.
-export function MarketPowerView({ d }: { d: Dispatch }) {
+export function MarketPowerView() {
   const m = useMarketPower()
   if (m.loading) return <EmptyNote>Loading the concentration layer.</EmptyNote>
   if (m.error || !m.data?.available)
@@ -17,7 +16,6 @@ export function MarketPowerView({ d }: { d: Dispatch }) {
   const firms = mp.companies ?? []
   const others = mp.others_share_pct ?? 0
   const cap = mp.cap_demand_pct ?? 25
-  const margin = d.adequacy.luzon.reserve_margin_pct ?? 0
   const bars = [
     ...firms.map((c) => ({ name: c.name, share: c.share_pct, other: false })),
     { name: 'All other firms', share: others, other: true },
@@ -70,27 +68,6 @@ export function MarketPowerView({ d }: { d: Dispatch }) {
           {pct((mp.largest?.share_pct ?? 0) / 100, 1)}, under the cap but approaching it.{' '}
           {mp.note} <Source href={mp.src_cap} label="EPIRA" />
         </p>
-      </Panel>
-
-      <Panel
-        title="Largest-supplier dependence at the evening peak"
-        subtitle="This comparison places national capacity share beside Luzon's spare capacity at peak. It is not an interval-level residual supply index (RSI), and the two percentages are separate scales."
-      >
-        <div className="stat-row">
-          <StatTile
-            label="Largest firm's capacity share"
-            value={pct((mp.largest?.share_pct ?? 0) / 100, 1)}
-            tone="danger"
-          />
-          <StatTile
-            label="Luzon spare capacity at the evening peak (reserve margin)"
-            value={pct(margin / 100, 1)}
-            hint="dependable capacity above evening demand"
-          />
-        </div>
-        <p className="note">{mp.pivotal_supplier_note}</p>
-        <p className="note">{mp.rsi_note}</p>
-        <p className="note">{mp.disclaimer}</p>
       </Panel>
     </div>
   )

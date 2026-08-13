@@ -61,7 +61,7 @@ does not phase demand over the announced 10-to-15-year development period.
 
 ![Studio recording of the Pax Silica demand, solar, local-station, and outage cases](siting-walkthrough.gif)
 
-Open **Siting a new load** in the studio to choose a named project and change
+Open **Site headroom check** in the studio to choose a named project and change
 its demand or local supply. The view recalculates the hourly network result.
 
 ## pax_silica_figure.py writes the current supply bars

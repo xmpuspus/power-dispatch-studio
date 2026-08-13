@@ -6,7 +6,7 @@
 // computed live from the same engines the rest of the studio runs, and the
 // whole decomposition exports to CSV.
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import type { GridKey, Profiles, Dispatch, DriverDay } from '../lib/types'
 import { num, php, fuelLabel, useDrivers, useOfferDay, downloadCsv } from '../lib/data'
 import { Panel, StatTile, Chip } from '../ui/kit'
@@ -48,10 +48,14 @@ export function DayExplainerView({
   d,
   profiles,
   grid,
+  date,
+  onDate,
 }: {
   d: Dispatch
   profiles: Profiles
   grid: GridKey
+  date: string | null
+  onDate: (date: string) => void
 }) {
   const drivers = useDrivers()
 
@@ -67,10 +71,10 @@ export function DayExplainerView({
       ),
     [profiles.days]
   )
-  const [date, setDate] = useState(
-    () => profiles.default_day ?? marketDays[marketDays.length - 1]?.date
-  )
-  const day = marketDays.find((x) => x.date === date) ?? marketDays[marketDays.length - 1]
+  const day =
+    marketDays.find((x) => x.date === date) ??
+    marketDays.find((x) => x.date === profiles.default_day) ??
+    marketDays[marketDays.length - 1]
 
   const offerDay = useOfferDay(day?.date ?? null)
   const costRun = useMemo(
@@ -135,21 +139,21 @@ export function DayExplainerView({
     { key: 'g', header: 'Grid', render: (g) => cap(g) },
     {
       key: 'obs',
-      header: 'Observed peak',
+      header: 'Observed peak (₱/kWh)',
       align: 'right',
       mono: true,
       render: (g) => php(decomp(g).observed),
     },
     {
       key: 'cost',
-      header: 'Cost model',
+      header: 'Cost model (₱/kWh)',
       align: 'right',
       mono: true,
       render: (g) => php(decomp(g).cost),
     },
     {
       key: 'prem',
-      header: 'Offer premium',
+      header: 'Offer premium (₱/kWh)',
       align: 'right',
       mono: true,
       render: (g) => {
@@ -159,14 +163,14 @@ export function DayExplainerView({
     },
     {
       key: 'offer',
-      header: 'Offer replay',
+      header: 'Offer replay (₱/kWh)',
       align: 'right',
       mono: true,
       render: (g) => php(decomp(g).offer),
     },
     {
       key: 'res',
-      header: 'Residual',
+      header: 'Residual (₱/kWh)',
       align: 'right',
       mono: true,
       render: (g) => {
@@ -195,7 +199,7 @@ export function DayExplainerView({
           <select
             className="ribbon__select"
             value={day.date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => onDate(e.target.value)}
             aria-label="Explain day"
           >
             {marketDays.map((x) => (
@@ -215,11 +219,13 @@ export function DayExplainerView({
         <StatTile
           label={`Observed peak, ${cap(grid)}`}
           value={php(here.observed)}
+          unit="/kWh"
           hint={`hours 17 to 21, ${date}`}
         />
         <StatTile
           label="Fundamentals (cost model)"
           value={php(here.cost)}
+          unit="/kWh"
           hint={
             costFuel
               ? `priced on ${fuelLabel(costFuel)}`
@@ -233,12 +239,14 @@ export function DayExplainerView({
               ? '-'
               : `${here.premium >= 0 ? '+' : ''}${php(here.premium)}`
           }
+          unit={here.premium == null ? undefined : '/kWh'}
           hint="offer replay minus cost model"
           tone={here.premium != null && here.premium > 1 ? 'danger' : 'default'}
         />
         <StatTile
           label="Replay using published offers"
           value={php(here.offer)}
+          unit="/kWh"
           hint={
             offerRun
               ? offerFuel

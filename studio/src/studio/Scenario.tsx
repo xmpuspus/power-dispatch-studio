@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Dispatch, GridKey } from '../lib/types'
-import { fuelLabel, num, php, useEmissions, useGenerators } from '../lib/data'
-import { Panel, StatTile, Chip, EmptyNote } from '../ui/kit'
+import { fuelLabel, num, php, useEmissions } from '../lib/data'
+import { Panel, StatTile, Chip } from '../ui/kit'
 import { MeritStack, FlowDiagram } from './charts'
 import { buildTemplateCsv, type ImportResult } from './importData'
-import { initLevers } from './levers'
 import { downloadCsv } from './runs'
-import { solveScenario, type Levers, type TrippableUnit } from './engine'
+import { clearGrid } from './engine'
 import {
   CARBON_DISCLAIMER,
   CARBON_FUEL_ID,
@@ -16,7 +15,9 @@ import {
   GAS_SOURCE_NOTE,
   carbonCostDelta,
   carbonPriceOf,
+  effNum,
   gasSupplyPctOf,
+  solveSnapshot,
   type ClassId,
   type ObjRow,
   type Overrides,
@@ -53,76 +54,103 @@ export function ScenarioView({
       solved scenario. These controls preview; they do not write the model. */
   onLive?: (p: Record<GridKey, number> | null) => void
 }) {
-  const gens = useGenerators()
   const em = useEmissions()
-  const [lv, setLv] = useState<Levers>(() => initLevers(d, grid))
-
-  // reset the levers when the grid changes (levers are grid-scoped)
-  const [lastGrid, setLastGrid] = useState<GridKey>(grid)
-  if (grid !== lastGrid) {
-    setLastGrid(grid)
-    setLv(initLevers(d, grid))
+  const region = objects.region.find((row) => row.id === grid)!
+  const fuel = (id: string) => objects.fuel.find((row) => row.id === id)!
+  const availability = (id: string) => {
+    const row = fuel(id)
+    const prop = `${grid}_mw`
+    const base = row.props[prop] as number
+    return { row, prop, base, value: effNum(overrides, 'fuel', id, prop, base) }
   }
-
-  const units: TrippableUnit[] = useMemo(
-    () =>
-      (gens.data?.features ?? []).map((f) => ({
-        name: f.properties.name,
-        grid: f.properties.grid,
-        fuel: f.properties.fuel,
-        capacity_mw: f.properties.capacity_mw,
-      })),
-    [gens.data]
+  const demandBase = region.props.demand_mw as number
+  const demandValue = effNum(overrides, 'region', grid, 'demand_mw', demandBase)
+  const solar = availability('solar')
+  const gas = availability('natural_gas')
+  const coal = availability('coal')
+  const coalBase = coal.row.props.cost as number
+  const coalCost = effNum(overrides, 'fuel', 'coal', 'cost', coalBase)
+  const feedInterface =
+    grid === 'visayas'
+      ? objects.interface.find((row) => row.id === 'leyte_luzon_hvdc')
+      : grid === 'mindanao'
+        ? objects.interface.find((row) => row.id !== 'leyte_luzon_hvdc')
+        : undefined
+  const feedLimitBase = (feedInterface?.props.limit_mw as number | undefined) ?? 0
+  const feedLimit = feedInterface
+    ? effNum(overrides, 'interface', feedInterface.id, 'limit_mw', feedLimitBase)
+    : 0
+  const setDelta = (
+    cls: ClassId,
+    id: string,
+    prop: string,
+    base: number,
+    delta: number
+  ) => {
+    if (Math.abs(delta) < 1e-9) onRevert(cls, id, prop)
+    else onEdit(cls, id, prop, base + delta)
+  }
+  const preview = useMemo(
+    () => solveSnapshot(d, objects, overrides),
+    [d, objects, overrides]
   )
-  const gridUnits = units
-    .filter((u) => u.grid.toLowerCase() === grid)
-    .sort((a, b) => b.capacity_mw - a.capacity_mw)
-
-  const out = useMemo(() => solveScenario(d, lv, units), [d, lv, units])
-  const cp = out.coupled.price
+  const basePreview = useMemo(() => solveSnapshot(d, objects, {}), [d, objects])
+  const own = clearGrid(preview.stacks[grid], preview.demand[grid])
+  const ownBase = clearGrid(basePreview.stacks[grid], basePreview.demand[grid])
+  const cp = preview.coupled.price
   useEffect(() => {
     onLive?.({ luzon: cp.luzon, visayas: cp.visayas, mindanao: cp.mindanao })
     return () => onLive?.(null)
   }, [cp.luzon, cp.visayas, cp.mindanao, onLive])
   const mo = d.merit_order[grid]
-  const set = (patch: Partial<Levers>) => setLv((p) => ({ ...p, ...patch }))
-
-  const hy = d.assumptions.hydrology
-  const hydroOpts = [
-    { key: 'dry', label: 'Dry (El Nino)', mult: hy.dry_multiplier },
-    { key: 'normal', label: 'Normal', mult: hy.normal_multiplier },
-    { key: 'wet', label: 'Wet', mult: hy.wet_multiplier },
-  ]
-
-  const delta = out.single.price - out.base.price
-  const feedName =
-    out.feed === 'mvip' ? 'MVIP (from Visayas)' : 'Leyte-Luzon (from Luzon)'
-  const feedCor = out.feed ? out.coupled[out.feed] : null
+  const delta = own.price - ownBase.price
+  const feedKey = grid === 'mindanao' ? 'mvip' : grid === 'visayas' ? 'leyte' : null
+  const feedName = feedKey === 'mvip' ? 'MVIP' : 'Leyte-Luzon'
+  const feedCor = feedKey ? preview.coupled[feedKey] : null
 
   const prices: Record<string, number | null> = {
-    luzon: out.coupled.price.luzon,
-    visayas: out.coupled.price.visayas,
-    mindanao: out.coupled.price.mindanao,
+    luzon: preview.coupled.price.luzon,
+    visayas: preview.coupled.price.visayas,
+    mindanao: preview.coupled.price.mindanao,
   }
   const corridors = [
     {
       from: 'luzon',
       to: 'visayas',
-      flow_mw: out.coupled.leyte.flow,
-      saturated: out.coupled.leyte.sat,
-      rent: out.coupled.leyte.rent,
+      flow_mw: preview.coupled.leyte.flow,
+      saturated: preview.coupled.leyte.sat,
+      rent: preview.coupled.leyte.rent,
+      limit_mw: objects.interface.find((row) => row.id === 'leyte_luzon_hvdc')
+        ? effNum(
+            overrides,
+            'interface',
+            'leyte_luzon_hvdc',
+            'limit_mw',
+            objects.interface.find((row) => row.id === 'leyte_luzon_hvdc')!.props
+              .limit_mw as number
+          )
+        : null,
     },
     {
       from: 'visayas',
       to: 'mindanao',
-      flow_mw: out.coupled.mvip.flow,
-      saturated: out.coupled.mvip.sat,
-      rent: out.coupled.mvip.rent,
+      flow_mw: preview.coupled.mvip.flow,
+      saturated: preview.coupled.mvip.sat,
+      rent: preview.coupled.mvip.rent,
+      limit_mw: objects.interface.find((row) => row.id !== 'leyte_luzon_hvdc')
+        ? effNum(
+            overrides,
+            'interface',
+            objects.interface.find((row) => row.id !== 'leyte_luzon_hvdc')!.id,
+            'limit_mw',
+            objects.interface.find((row) => row.id !== 'leyte_luzon_hvdc')!.props
+              .limit_mw as number
+          )
+        : null,
     },
   ]
 
   const coalFloor = d.assumptions.coal_commit_php_kwh
-  const storageOnGrid = grid === 'luzon' ? d.storage.assets.luzon.total_mw : 0
 
   // carbon price lever: a synthetic scenario override, not a real object, so
   // it survives a remount. Writes each carbon-emitting fuel's Price directly,
@@ -178,7 +206,13 @@ export function ScenarioView({
   }
 
   const resetLevers = () => {
-    setLv(initLevers(d, grid))
+    onRevert('region', grid, 'demand_mw')
+    onRevert('fuel', 'solar', solar.prop)
+    onRevert('fuel', 'natural_gas', gas.prop)
+    onRevert('fuel', 'coal', coal.prop)
+    onRevert('fuel', 'coal', 'cost')
+    if (feedInterface) onRevert('interface', feedInterface.id, 'limit_mw')
+    setGasSupply(100)
     setCarbonPrice(0)
   }
 
@@ -198,129 +232,71 @@ export function ScenarioView({
           <div className="levers">
             <Slider
               label="Add a data center (flat 24/7 load)"
-              value={lv.addDC}
+              value={demandValue - demandBase}
               min={0}
               max={4000}
               step={50}
               tick="DICT 2028 forecast: 1,500 MW"
-              onChange={(v) => set({ addDC: v })}
+              onChange={(v) => setDelta('region', grid, 'demand_mw', demandBase, v)}
             />
             <Slider
               label="Add solar"
-              value={lv.addSolar}
+              value={solar.value - solar.base}
               min={0}
               max={4000}
               step={100}
-              tick={`delivers ${num(out.solarDeliveredMW)} MW now, ${num(out.solarMiddayMW)} MW at midday`}
-              onChange={(v) => set({ addSolar: v })}
+              tick="installed-equivalent MW; the hourly replay applies the solar shape"
+              onChange={(v) => setDelta('fuel', 'solar', solar.prop, solar.base, v)}
             />
             <Slider
               label="Add gas"
-              value={lv.addGas}
+              value={gas.value - gas.base}
               min={0}
               max={3000}
               step={50}
               tick={`firm, at ₱${d.assumptions.fuel_marginal_cost_php_kwh.natural_gas.toFixed(2)}/kWh`}
-              onChange={(v) => set({ addGas: v })}
+              onChange={(v) => setDelta('fuel', 'natural_gas', gas.prop, gas.base, v)}
             />
             <Slider
               label="Add coal"
-              value={lv.addCoal}
+              value={coal.value - coal.base}
               min={0}
               max={3000}
               step={50}
               tick={`firm, at the coal price below`}
-              onChange={(v) => set({ addCoal: v })}
-            />
-            <Slider
-              label="Discharge storage at the peak"
-              value={lv.addStorage}
-              min={0}
-              max={2000}
-              step={50}
-              tick={
-                grid === 'luzon'
-                  ? `Luzon has ${num(storageOnGrid)} MW today`
-                  : 'no grid-scale storage sourced here yet'
-              }
-              onChange={(v) => set({ addStorage: v })}
+              onChange={(v) => setDelta('fuel', 'coal', coal.prop, coal.base, v)}
             />
             <Slider
               label="Administered coal price (marginal tranche)"
-              value={lv.coalPrice}
+              value={coalCost}
               min={coalFloor}
               max={12}
               step={0.25}
               fmt={(v) => `₱${v.toFixed(2)}`}
               tick={`committed tranche stays at ₱${coalFloor.toFixed(2)}`}
-              onChange={(v) => set({ coalPrice: v })}
+              onChange={(v) =>
+                Math.abs(v - coalBase) < 1e-9
+                  ? onRevert('fuel', 'coal', 'cost')
+                  : onEdit('fuel', 'coal', 'cost', v)
+              }
             />
-            {out.feed && (
+            {feedInterface && (
               <Slider
                 label={`Relieve the feeding corridor (${feedName})`}
-                value={lv.reliefMW}
+                value={feedLimit - feedLimitBase}
                 min={0}
                 max={500}
                 step={25}
-                disabled={!feedCor?.sat}
                 tick={
                   feedCor?.sat
                     ? 'additional transfer capacity on the high-voltage direct-current link'
-                    : `${feedName} is below its limit at this demand. More capacity has no effect until the link reaches its limit. Add demand to test that point.`
+                    : `${feedName} is below its limit in this case; added capacity may have no price effect.`
                 }
-                onChange={(v) => set({ reliefMW: v })}
+                onChange={(v) =>
+                  setDelta('interface', feedInterface.id, 'limit_mw', feedLimitBase, v)
+                }
               />
             )}
-            <label className="lever lever--check">
-              <input
-                type="checkbox"
-                checked={lv.lngSwitch}
-                onChange={(e) => set({ lngSwitch: e.target.checked })}
-              />
-              <span>
-                <span className="lever__label">Switch gas to imported LNG</span>
-                <span className="lever__tick">
-                  Malampaya depletes around 2027. Gas changes from ₱
-                  {d.assumptions.fuel_marginal_cost_php_kwh.natural_gas.toFixed(2)} to ₱
-                  {d.assumptions.fuel_marginal_cost_php_kwh.lng.toFixed(2)}/kWh
-                </span>
-              </span>
-            </label>
-            <div className="lever">
-              <span className="lever__label">Hydrology (wet / dry year)</span>
-              <span className="lever__tick">
-                dry reproduces the DOE 2024 El Nino hydro availability (
-                {num(hy.dry_avail_mw_national)} MW nationally)
-              </span>
-              <div className="gselrow">
-                {hydroOpts.map((o) => (
-                  <button
-                    key={o.key}
-                    className={`gsel${Math.abs(lv.hydrology - o.mult) < 1e-6 ? ' on' : ''}`}
-                    onClick={() => set({ hydrology: o.mult })}
-                  >
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <label className="lever">
-              <span className="lever__label">
-                Remove one unit from service (N-1 test)
-              </span>
-              <select
-                className="lever__select"
-                value={lv.trip}
-                onChange={(e) => set({ trip: e.target.value })}
-              >
-                <option value="">none (all units running)</option>
-                {gridUnits.map((u) => (
-                  <option key={u.name} value={u.name}>
-                    {u.name} (-{num(u.capacity_mw)} MW {fuelLabel(u.fuel)})
-                  </option>
-                ))}
-              </select>
-            </label>
             <Slider
               label="Carbon price, system-wide"
               value={carbonPrice}
@@ -328,7 +304,7 @@ export function ScenarioView({
               max={5000}
               step={250}
               fmt={(v) => `₱${num(v)} per metric tonne CO2`}
-              tick={`${CARBON_DISCLAIMER}. The carbon price is multiplied by each fuel's sourced emissions factor in metric tonnes CO2 per MWh and divided by 1000. This raises the cost of fuels with higher emissions in the lowest-cost-first order. It appears in Hourly market replay and Emissions, not in this evening-hour calculation.`}
+              tick={`${CARBON_DISCLAIMER}. The carbon price is multiplied by each fuel's sourced emissions factor in metric tonnes CO2 per MWh and divided by 1000. This raises the cost of fuels with higher emissions in this preview, Hourly market replay, and Emissions.`}
               onChange={setCarbonPrice}
               disabled={!factorsReady}
             />
@@ -341,7 +317,7 @@ export function ScenarioView({
             )}
             {factorsReady && carbonRows.length > 0 && (
               <p className="note">
-                Current fuel-price changes in Review and edit model inputs &gt; Fuels{' '}
+                Current fuel-price changes in Assumptions and model inputs &gt; Fuels{' '}
                 {carbonRows
                   .map((r) => `${fuelLabel(r.fuel)} +₱${r.delta.toFixed(2)}/kWh`)
                   .join(', ')}
@@ -451,33 +427,33 @@ export function ScenarioView({
             <div className="stat-row">
               <StatTile
                 label="Clearing price"
-                value={php(out.single.price)}
-                hint={out.single.marginal ? fuelLabel(out.single.marginal) : 'unserved'}
-                tone={out.single.shortfall > 0 ? 'danger' : 'default'}
+                value={`${php(own.price)}/kWh`}
+                hint={own.marginal ? fuelLabel(own.marginal) : 'unserved'}
+                tone={own.shortfall > 0 ? 'danger' : 'default'}
               />
               <StatTile
                 label="vs base case"
-                value={`${delta >= 0 ? '+' : ''}${php(delta)}`}
-                hint={`base ${php(out.base.price)}`}
+                value={`${delta >= 0 ? '+' : ''}${php(delta)}/kWh`}
+                hint={`base ${php(ownBase.price)}/kWh`}
                 tone={delta > 0.001 ? 'accent' : delta < -0.001 ? 'positive' : 'default'}
               />
               <StatTile
                 label="Available vs demand"
-                value={num(out.single.avail)}
+                value={num(own.avail)}
                 unit="MW"
-                hint={`demand ${num(out.demandSel)} MW`}
+                hint={`demand ${num(preview.demand[grid])} MW`}
               />
-              {out.single.shortfall > 0 && (
+              {own.shortfall > 0 && (
                 <StatTile
                   label="Supply shortfall"
-                  value={num(out.single.shortfall)}
+                  value={num(own.shortfall)}
                   unit="MW"
                   hint="load shed"
                   tone="danger"
                 />
               )}
             </div>
-            <MeritStack blocks={out.stack} demand={out.demandSel} />
+            <MeritStack blocks={preview.stacks[grid]} demand={preview.demand[grid]} />
           </Panel>
 
           <Panel
@@ -485,12 +461,12 @@ export function ScenarioView({
             subtitle="Power can move between them over the high-voltage direct-current (HVDC) links."
           >
             <FlowDiagram prices={prices} corridors={corridors} />
-            {out.feed ? (
+            {feedKey ? (
               <div className="kvs">
                 <div className="kv">
                   <span>Clearing price with all three island grids</span>
                   <span className="mono">
-                    <b>{php(out.coupled.price[grid])}</b>
+                    <b>{php(preview.coupled.price[grid])}/kWh</b>
                   </span>
                 </div>
                 <div className="kv">
@@ -510,7 +486,7 @@ export function ScenarioView({
                       Value of the price gap across the constrained link (congestion rent)
                     </span>
                     <span className="mono">
-                      <b>{php(feedCor.rent)}</b>
+                      <b>{php(feedCor.rent)}/kWh</b>
                     </span>
                   </div>
                 )}
@@ -539,21 +515,20 @@ export function ScenarioView({
           them.
         </p>
         <p>
-          The carbon-price and Malampaya gas settings apply to Hourly market replay and
-          Emissions, and not to this evening-hour calculation.
+          The same saved inputs drive this preview, the Run button, comparisons, and
+          hourly replay. Malampaya supply is a daily energy constraint, so its effect is
+          visible in hourly replay rather than this one-hour panel.
         </p>
       </details>
 
       <p className="note">
         The evening solar availability is near zero, so added solar barely changes this
-        evening-peak calculation. Storage can discharge at the peak and does change it. A
-        unit outage is removed from available capacity before committed and marginal coal
-        capacity are separated, matching the reference dispatch. Fuel costs come from
-        published sources except for the oil peaker price, which is labeled as an
-        assumption. The cost-only calculation does not include scarcity pricing; the
-        historical replay reports the remaining difference from recorded prices.
+        evening-peak calculation. Configure storage and plant outage rates in Model and
+        data. Fuel costs come from published sources except for the oil peaker price,
+        which is labeled as an assumption. The cost-only calculation does not include
+        scarcity pricing; the historical replay reports the remaining difference from
+        recorded prices.
       </p>
-      {gens.error && <EmptyNote>Generator list unavailable: {gens.error}.</EmptyNote>}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { Dispatch, GridKey } from '../lib/types'
+import type { DayProfile, Dispatch, GridKey } from '../lib/types'
 import { num, php, pct, fuelLabel, fuelColor } from '../lib/data'
 import { Panel, StatTile, Chip, EmptyNote } from '../ui/kit'
 import { MeritCurve, FlowDiagram } from './charts'
@@ -16,6 +16,7 @@ import {
   type SolvedModel,
 } from './model'
 import { ScrollBox } from '../ui/ScrollBox'
+import type { ChronoResult } from './chrono'
 
 const cap = (g: string) => g[0].toUpperCase() + g.slice(1)
 
@@ -119,6 +120,7 @@ export function SolvedMeritView({ s, grid }: { s: SolvedModel; grid: GridKey }) 
         <StatTile
           label="Clearing price"
           value={php(price)}
+          unit="/kWh"
           hint={marg ? fuelLabel(marg) : 'unserved'}
         />
         <StatTile label="Available" value={num(s.avail[grid])} unit="MW" />
@@ -152,50 +154,107 @@ export function SolvedMeritView({ s, grid }: { s: SolvedModel; grid: GridKey }) 
   )
 }
 
-export function SolvedFlowsView({ s }: { s: SolvedModel }) {
+export function SolvedFlowsView({
+  s,
+  d,
+  day,
+  run,
+  hour,
+}: {
+  s: SolvedModel
+  d: Dispatch
+  day?: DayProfile
+  run: ChronoResult | null
+  hour: number
+}) {
+  const h = Math.min(Math.max(hour, 0), 23)
+  const modeled = run?.hours[h]
   const prices: Record<string, number | null> = {
-    luzon: s.coupled.price.luzon,
-    visayas: s.coupled.price.visayas,
-    mindanao: s.coupled.price.mindanao,
+    luzon: modeled?.price.luzon ?? s.coupled.price.luzon,
+    visayas: modeled?.price.visayas ?? s.coupled.price.visayas,
+    mindanao: modeled?.price.mindanao ?? s.coupled.price.mindanao,
   }
+  const leyteBase = d.coupling.corridors.find((c) => c.id === 'leyte_luzon_hvdc')
+  const mvipBase = d.coupling.corridors.find((c) => c.id !== 'leyte_luzon_hvdc')
+  const capAt = (base: number | undefined, fractions: number[] | undefined) => {
+    if (base == null) return null
+    const fraction = fractions?.[h]
+    return fraction == null ? base : base * fraction
+  }
+  const leyteLimit = capAt(leyteBase?.limit_mw, day?.corridor_caps?.leyte)
+  const mvipLimit = capAt(mvipBase?.limit_mw, day?.corridor_caps?.mvip)
   const corridors = [
     {
       from: 'luzon',
       to: 'visayas',
-      flow_mw: s.coupled.leyte.flow,
-      saturated: s.coupled.leyte.sat,
-      rent: s.coupled.leyte.rent,
+      flow_mw: modeled?.flowLV ?? s.coupled.leyte.flow,
+      saturated: modeled?.leyte.sat ?? s.coupled.leyte.sat,
+      rent: modeled?.leyte.rent ?? s.coupled.leyte.rent,
+      limit_mw: leyteLimit,
+      name: 'Leyte-Luzon',
     },
     {
       from: 'visayas',
       to: 'mindanao',
-      flow_mw: s.coupled.mvip.flow,
-      saturated: s.coupled.mvip.sat,
-      rent: s.coupled.mvip.rent,
+      flow_mw: modeled?.flowVM ?? s.coupled.mvip.flow,
+      saturated: modeled?.mvip.sat ?? s.coupled.mvip.sat,
+      rent: modeled?.mvip.rent ?? s.coupled.mvip.rent,
+      limit_mw: mvipLimit,
+      name: 'MVIP',
     },
   ]
   return (
     <div className="view">
       <Panel
-        title="Inter-grid dispatch"
-        subtitle="The current model clears all three grids together over the high-voltage direct-current (HVDC) links."
+        title={`Inter-grid transfer at ${String(h).padStart(2, '0')}:00`}
+        subtitle="Signed modeled flow is shown against the recorded transfer and the applicable operating limit. Arrows show direction; prices are model results for the selected hour."
       >
         <FlowDiagram prices={prices} corridors={corridors} />
         <div className="stat-row">
-          {(['leyte', 'mvip'] as const).map((c) => (
-            <StatTile
-              key={c}
-              label={c === 'leyte' ? 'Leyte-Luzon' : 'MVIP'}
-              value={`${num(Math.abs(s.coupled[c].flow))} MW`}
-              hint={
-                s.coupled[c].sat
-                  ? `at its limit, price-gap value ${php(s.coupled[c].rent)}`
-                  : 'below its limit'
-              }
-              tone={s.coupled[c].sat ? 'danger' : 'default'}
-            />
-          ))}
+          {corridors.map((c, index) => {
+            const recorded = index === 0 ? day?.net_flow?.lv?.[h] : day?.net_flow?.vm?.[h]
+            const direction = (v: number) =>
+              index === 0
+                ? v >= 0
+                  ? 'Luzon to Visayas'
+                  : 'Visayas to Luzon'
+                : v >= 0
+                  ? 'Visayas to Mindanao'
+                  : 'Mindanao to Visayas'
+            const utilization =
+              c.limit_mw && c.limit_mw > 0
+                ? `${((100 * Math.abs(c.flow_mw)) / c.limit_mw).toFixed(0)}% of limit`
+                : 'limit unavailable'
+            return (
+              <div className="stat-pair" key={c.name}>
+                <StatTile
+                  label={`${c.name} modeled`}
+                  value={`${num(Math.abs(c.flow_mw))} MW`}
+                  hint={`${direction(c.flow_mw)}; ${utilization}`}
+                  tone={c.saturated ? 'danger' : 'default'}
+                />
+                <StatTile
+                  label={`${c.name} recorded`}
+                  value={
+                    recorded == null ? 'Unavailable' : `${num(Math.abs(recorded))} MW`
+                  }
+                  hint={
+                    recorded == null
+                      ? 'No recorded transfer for this interval'
+                      : `${direction(recorded)}; IEMOP RTD summary`
+                  }
+                />
+              </div>
+            )
+          })}
         </div>
+        <p className="note">
+          The operating limit is {leyteBase?.limit_kind ?? 'the model limit'} for
+          Leyte-Luzon and {mvipBase?.limit_kind ?? 'the model limit'} for MVIP. A recorded
+          block or derating reduces the displayed hourly limit when that record is
+          available. The model is a three-region transfer calculation, not a transmission
+          power-flow study.
+        </p>
       </Panel>
     </div>
   )
@@ -216,7 +275,7 @@ export function SolvedN1View({ s, grid }: { s: SolvedModel; grid: GridKey }) {
     },
     {
       key: 'price',
-      header: 'Price move',
+      header: 'Price move (₱/kWh)',
       align: 'right',
       mono: true,
       render: (r) => `${php(r.base_price)} → ${php(r.tripped_price)}`,
@@ -252,7 +311,7 @@ export function SolvedRegionsView({ s }: { s: SolvedModel }) {
     { key: 'g', header: 'Island grid', render: (g) => cap(g) },
     {
       key: 'price',
-      header: 'Clearing price',
+      header: 'Clearing price (₱/kWh)',
       align: 'right',
       mono: true,
       render: (g) => php(s.coupled.price[g]),
@@ -296,17 +355,8 @@ export function SolvedRegionsView({ s }: { s: SolvedModel }) {
   )
 }
 
-export function SolvedReliabilityView({
-  s,
-  d,
-  units,
-}: {
-  s: SolvedModel
-  d: Dispatch
-  units: number
-}) {
+export function SolvedReliabilityView({ s, units }: { s: SolvedModel; units: number }) {
   const grids: GridKey[] = ['luzon', 'visayas', 'mindanao']
-  const mc = d.reliability_mc
   return (
     <div className="view">
       <Panel
@@ -342,14 +392,6 @@ export function SolvedReliabilityView({
           availability, so the simulations add outage variation without lowering average
           supply. Edit a unit's outage rate or capacity, or an island grid's demand, then
           press Run.
-        </p>
-        <p className="note">
-          The {num(mc.draws)}-simulation base case below reads lower, for three reasons.
-          It samples only the largest named units, not the whole fleet. It runs{' '}
-          {num(mc.draws)} draws against the {num(s.reliability.luzon.draws)} here. It
-          centres Luzon demand on {num(mc.load_dist.luzon.mean)} MW, where this run uses{' '}
-          {num(s.demand.luzon)} MW. The first reason does most of the work. More units
-          sampled means more outage combinations, so this number runs higher.
         </p>
       </Panel>
     </div>

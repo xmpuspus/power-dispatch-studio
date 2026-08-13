@@ -180,7 +180,7 @@ export function RunsView({
                 <th className="propgrid__obj">Saved run</th>
                 <th>Scenario settings</th>
                 <th>Window</th>
-                <th className="propgrid__num">Mean ₱ Luzon</th>
+                <th className="propgrid__num">Mean Luzon price (₱/kWh)</th>
                 <th className="propgrid__num">Unserved MWh</th>
                 <th>Saved</th>
                 <th></th>

@@ -31,12 +31,14 @@ export function DurationView({ d, grid }: { d: Dispatch; grid: GridKey }) {
           <StatTile
             label="Observed peak"
             value={php(pd.observed_max_php_kwh)}
+            unit="/kWh"
             hint="scarcity + congestion"
             tone="danger"
           />
           <StatTile
             label="Observed floor"
             value={php(pd.observed_min_php_kwh)}
+            unit="/kWh"
             hint="recorded WESM floor during oversupply"
           />
         </div>
@@ -154,7 +156,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
     { key: 'label', header: 'Reserve product', render: (x) => x.label },
     {
       key: 'price',
-      header: 'Mean clearing price',
+      header: 'Mean clearing price (₱/kWh)',
       align: 'right',
       mono: true,
       render: (x) => php(x.mean_php_kwh),
@@ -180,6 +182,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
               key={c.code}
               label={c.code_mapping === 'inferred' ? c.label + ' *' : c.label}
               value={php(c.mean_php_kwh)}
+              unit="/kWh"
               hint={`${num(c.mean_system_mw)} MW · at cap ${pct(c.cap_hit_pct / 100, 0)} of the time`}
               tone={c.mean_php_kwh > energy ? 'danger' : 'default'}
             />
@@ -216,9 +219,9 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
           {res.scarcity && (
             <p className="note">
               In the tightest tenth of intervals the {res.scarcity.label.toLowerCase()}{' '}
-              reserve price averages {php(res.scarcity.top_decile_mean_php_kwh)}, near the{' '}
-              {php(res.reserve_cap_php_kwh)} reserve price cap. Scarcity raises reserve
-              and energy prices together. {res.disclaimer}
+              reserve price averages {php(res.scarcity.top_decile_mean_php_kwh)}/kWh, near
+              the {php(res.reserve_cap_php_kwh)}/kWh reserve price cap. Scarcity raises
+              reserve and energy prices together. {res.disclaimer}
             </p>
           )}
         </Panel>
@@ -238,49 +241,7 @@ export function ReserveView({ d, grid }: { d: Dispatch; grid: GridKey }) {
 
       <OfficialReservePrices grid={grid} />
       <ReserveValidation grid={grid} />
-      <ReserveAware grid={grid} />
     </div>
-  )
-}
-
-/** Show the observed energy price beside calculated and operator-set reserve prices. */
-function ReserveAware({ grid }: { grid: GridKey }) {
-  const mo = useMarketOps()
-  const ra = mo.data?.reserve_aware
-  const v = ra?.by_grid?.[grid]
-  if (!ra?.available || !v) return null
-  return (
-    <Panel
-      title={`Combined energy and reserve price on ${cap(grid)}`}
-      subtitle="Energy and reserve capacity are bought together. Capacity held in reserve cannot be sold as energy at the same time."
-    >
-      <div className="stat-row">
-        <StatTile label="Energy" value={php(v.energy_php_kwh)} hint="observed mean" />
-        <StatTile
-          label="Reserve from published offers"
-          value={php(v.reserve_offer_clear_php_kwh)}
-          hint="when reserve requirements are met"
-        />
-        <StatTile
-          label="Operator-set scarcity addition"
-          value={php(v.reserve_scarcity_wedge_php_kwh)}
-          hint="when scheduled reserve is short"
-        />
-        <StatTile
-          label="Energy plus reserve"
-          value={php(v.reserve_aware_php_kwh)}
-          hint="energy + reserve"
-          tone="accent"
-        />
-      </div>
-      <p className="note">
-        The reserve price has two parts. The first comes from the published reserve offers
-        and matches the official regional reserve price when requirements are met. The
-        second is an operator-set scarcity addition when scheduled reserve falls short.
-        That addition is not present in the public offers and is shown separately.
-        {ra.note ? '' : ''}
-      </p>
-    </Panel>
   )
 }
 
@@ -312,14 +273,14 @@ function OfficialReservePrices({ grid }: { grid: GridKey }) {
           },
           {
             key: 'mean',
-            header: 'Window mean',
+            header: 'Window mean (₱/kWh)',
             align: 'right',
             mono: true,
             render: (x) => php(x[1].mean),
           },
           {
             key: 'max',
-            header: 'Dearest daily mean',
+            header: 'Dearest daily mean (₱/kWh)',
             align: 'right',
             mono: true,
             render: (x) => php(x[1].max),
@@ -360,28 +321,28 @@ function ReserveValidation({ grid }: { grid: GridKey }) {
           },
           {
             key: 'obs',
-            header: 'Published mean',
+            header: 'Published mean (₱/kWh)',
             align: 'right',
             mono: true,
             render: (x) => php(x.v.observed_mean_php_kwh),
           },
           {
             key: 'mod',
-            header: 'Calculated from offers',
+            header: 'Calculated from offers (₱/kWh)',
             align: 'right',
             mono: true,
             render: (x) => php(x.v.modeled_mean_php_kwh),
           },
           {
             key: 'wedge',
-            header: 'Average difference',
+            header: 'Average difference (₱/kWh)',
             align: 'right',
             mono: true,
             render: (x) => php(x.v.bias_php_kwh),
           },
           {
             key: 'final',
-            header: 'Difference from final results',
+            header: 'Difference from final results (₱/kWh)',
             align: 'right',
             mono: true,
             render: (x) =>

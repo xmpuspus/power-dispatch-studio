@@ -168,8 +168,7 @@
       <tbody>
         <tr><td>Power plants and announced projects</td><td>Department of Energy plant and project lists</td><td>Sets unit capacity, fuel, grid, and the long-term project list.</td></tr>
         <tr><td>Inter-island and planned transmission</td><td>NGCP monthly reports and Transmission Development Plan</td><td>Sets sourced transfer limits and lists planned links. Unpublished line ratings stay labeled assumptions.</td></tr>
-        <tr><td>Fuel and market price rules</td><td>Energy Regulatory Commission and WESM rules</td><td>Sets cited fuel values and the P32/kWh offer cap used for unmet demand.</td></tr>
-        <tr><td>Household bill example</td><td>Meralco monthly rate advisory</td><td>Applies a spot-price change to the published 200 kWh example bill.</td></tr>
+        <tr><td>Fuel and market price rules</td><td>Energy Regulatory Commission and WESM rules</td><td>Sets cited fuel values and the ₱32/kWh offer cap used as the shortfall penalty. The penalty is not a value-of-lost-load estimate.</td></tr>
         <tr><td>Transmission geometry</td><td>OpenStreetMap under ODbL</td><td>Draws mapped routes and supports the reduced nodal loss calculation. The geometry is not an NGCP network model.</td></tr>
         <tr><td>Named data-center projects</td><td>Government, company, and cited news announcements</td><td>Places only sourced projects at city or campus precision.</td></tr>
       </tbody>
@@ -185,7 +184,7 @@
   reproduces every WESM price. The tables in the studio state the remaining
   difference.</p>
   <p>Python and browser tests create the same linear-program text. Saved cases
-  need both solvers to agree within P0.02/kWh and 1 MW.</p>
+  need both solvers to agree within ₱0.02/kWh and 1 MW.</p>
 
   <h2>Transmission-loss calculation</h2>
   <p>The nodal calculation uses OpenStreetMap routes, class reactances, and
@@ -220,13 +219,12 @@
   <p>A year built this way is a scenario from published plans. It is not a
   forecast, and no figure from it may be quoted as one.</p>
 
-  <h2>Unit-commitment test</h2>
-  <p>A licensed production-cost tool commits each thermal unit as a binary
-  decision, with a minimum-stable level, a start cost, and minimum run times.
-  This project built that variant, priced the committed schedule the way a
-  market operator does, and scored it against the same recorded prices.
-  <code>pipeline/uc_probe.py</code> writes the result and the studio shows it
-  under Unit-commitment test.</p>
+  <h2>Fuel-block minimum-output experiment</h2>
+  <p>Per-unit commitment needs unit-level minimum output, start cost, minimum
+  run time, and heat-rate inputs. Those inputs are not in this public-data
+  model. <code>pipeline/uc_probe.py</code> instead tests generic minimum-output
+  constraints on aggregate fuel blocks. This is a sensitivity check, not unit
+  commitment and not a Studio capability.</p>
   <table>
     <thead><tr><th>Recorded series</th><th>Linear model</th><th>With commitment</th><th>Change</th></tr></thead>
     <tbody>
@@ -237,14 +235,15 @@
       <tr><td>Mindanao market clearing price</td><td>0.113</td><td>-0.006</td><td>-0.119</td></tr>
     </tbody>
   </table>
-  <p>Mean absolute error moves by less than P0.03/kWh in every series, so only
+  <p>Mean absolute error moves by less than ₱0.03/kWh in every series, so only
   the correlation falls. The Visayas market clearing price has no paired hours in
   the window, so five series carry the test.</p>
   <p>The minimum-stable levels are generic thermal values, applied per fuel block
   and labeled generic. No public Philippine unit registry publishes a per-unit
   floor or heat rate. A fuel-block floor is coarser than a per-unit floor, and
-  that coarseness is the most likely reason the committed run scores worse. The
-  linear model stays the default because the measurement chose it.</p>
+  that coarseness is a likely reason the experimental run scores worse. The
+  production model remains a linear fuel-block dispatch because the available
+  public inputs do not support per-unit commitment.</p>
 
   <h2>Contract-position calculation</h2>
   <p>The dispatch model answers half of "what does this scenario do to my
@@ -273,7 +272,7 @@
   cut into different pieces.</p>
   <p>Across ten sampled market days the two runs burn the same daily energy of
   every fuel on every grid, to <b>0.0 MWh</b>, and no hour's price differs by more
-  than <b>P0.004/kWh</b>. The hour an energy-limited fuel lands in does move, by
+  than <b>₱0.004/kWh</b>. The hour an energy-limited fuel lands in does move, by
   up to 1,408 MW, across hours that cost the same, because the epsilon that makes
   the optimum unique rides the variable index and the two models number their
   variables differently.</p>
@@ -292,7 +291,7 @@
     <li>The model does not claim that data centers caused recorded electricity prices.</li>
     <li>Recorded curtailment and reserve shortfalls do not forecast brownouts.</li>
     <li>Future demand, fuel, hydrology, outage, and build cases are scenarios. They are not forecasts.</li>
-    <li>The model has three zones and two inter-island links. It omits within-zone security constraints. It runs unit commitment only as the measured test above.</li>
+    <li>The model has three zones and two inter-island links. It omits within-zone security constraints and per-unit commitment.</li>
     <li>OpenStreetMap routes and class line ratings do not replace an NGCP planning model or interconnection study.</li>
     <li>Company and project records come from cited public sources. Specific allegations need separate evidence.</li>
   </ul>

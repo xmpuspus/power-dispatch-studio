@@ -134,7 +134,7 @@ async def main():
         await asyncio.sleep(3.4)
         await clear_cap(page)
 
-        await open_view(page, "Siting a new load")
+        await open_view(page, "Site headroom check")
 
         await cap(
             page,

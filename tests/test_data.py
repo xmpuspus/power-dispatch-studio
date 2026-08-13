@@ -309,7 +309,11 @@ check(
     str(anchors["wesm_may2026_margin_mw"]).split(".")[0][:1] in ans["q1"]["stat"]
     and "3,629" in ans["q1"]["stat"],
 )
-check("q2 mentions Sual arithmetic", "647" in ans["q2"]["blurb"])
+check(
+    "q2 does not turn a named-unit outage into site connection headroom",
+    "647" not in ans["q2"]["blurb"]
+    and "actual site and interval" in ans["q2"]["blurb"],
+)
 check(
     "q3 carries the three regional prices",
     all(

@@ -314,6 +314,8 @@ export function FlowDiagram({
     flow_mw?: number | null
     saturated?: boolean
     rent?: number
+    limit_mw?: number | null
+    name?: string
   }[]
 }) {
   const nodes: Record<string, { x: number; label: string }> = {
@@ -330,27 +332,59 @@ export function FlowDiagram({
       role="img"
       aria-label="Inter-island coupled flow diagram"
     >
+      <defs>
+        <marker
+          id="flow-arrow"
+          markerWidth="8"
+          markerHeight="8"
+          refX="7"
+          refY="4"
+          orient="auto"
+        >
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--border-strong)" />
+        </marker>
+        <marker
+          id="flow-arrow-bound"
+          markerWidth="8"
+          markerHeight="8"
+          refX="7"
+          refY="4"
+          orient="auto"
+        >
+          <path d="M0,0 L8,4 L0,8 z" fill="var(--destructive)" />
+        </marker>
+      </defs>
       {corridors.map((c, i) => {
         const a = nodes[c.from]
         const b = nodes[c.to]
         if (!a || !b) return null
+        const positive = (c.flow_mw ?? 0) >= 0
+        const start = positive ? a.x + 46 : b.x - 46
+        const end = positive ? b.x - 50 : a.x + 50
         const mid = (a.x + b.x) / 2
+        const utilization =
+          c.limit_mw && c.limit_mw > 0
+            ? `${((100 * Math.abs(c.flow_mw ?? 0)) / c.limit_mw).toFixed(0)}%`
+            : null
         return (
           <g key={i}>
             <line
-              x1={a.x + 46}
+              x1={start}
               y1={y}
-              x2={b.x - 46}
+              x2={end}
               y2={y}
               stroke={c.saturated ? 'var(--destructive)' : 'var(--border-strong)'}
               strokeWidth={c.saturated ? 4 : 2}
+              markerEnd={`url(#${c.saturated ? 'flow-arrow-bound' : 'flow-arrow'})`}
             />
             <text x={mid} y={y - 12} textAnchor="middle" className="chart__ax">
-              {Math.abs(c.flow_mw ?? 0).toFixed(0)} MW{c.saturated ? ' · bound' : ''}
+              {Math.abs(c.flow_mw ?? 0).toFixed(0)} MW
+              {c.limit_mw != null ? ` / ${c.limit_mw.toFixed(0)} MW` : ''}
+              {utilization ? ` (${utilization})` : ''}
             </text>
             {c.saturated && c.rent ? (
               <text x={mid} y={y + 22} textAnchor="middle" className="chart__rent mono">
-                rent ₱{c.rent.toFixed(2)}
+                price difference ₱{c.rent.toFixed(2)}/kWh
               </text>
             ) : null}
           </g>
@@ -370,7 +404,7 @@ export function FlowDiagram({
             {n.label}
           </text>
           <text x={n.x} y={y + 14} textAnchor="middle" className="chart__nodeval mono">
-            ₱{(prices[k] ?? 0).toFixed(2)}
+            {prices[k] == null ? 'unavailable' : `₱${prices[k].toFixed(2)}/kWh`}
           </text>
         </g>
       ))}

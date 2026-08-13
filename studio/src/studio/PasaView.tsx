@@ -4,7 +4,7 @@
 // The full PASA (maintenance scheduling as an optimisation) stays out of
 // scope; this is the observed outage state, sized against the DOE fleet.
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import type { Dispatch, GridKey, PasaResource } from '../lib/types'
 import { num, pct, fuelLabel, usePasa } from '../lib/data'
 import { Panel, StatTile, Chip, Source, EmptyNote } from '../ui/kit'
@@ -26,14 +26,17 @@ export function PasaView({
   d,
   objects,
   overrides,
+  date,
+  onDate,
 }: {
   d: Dispatch
   objects: Record<ClassId, ObjRow[]>
   overrides: Overrides
+  date: string | null
+  onDate: (date: string) => void
 }) {
   const pasa = usePasa()
   const days = useMemo(() => pasa.data?.days ?? [], [pasa.data])
-  const [date, setDate] = useState<string | null>(null)
   const day = days.find((x) => x.date === date) ?? days[days.length - 1]
   const byResource = useMemo(() => {
     const m = new Map<string, PasaResource>()
@@ -101,7 +104,7 @@ export function PasaView({
           <select
             className="ribbon__select"
             value={day.date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => onDate(e.target.value)}
             aria-label="Outage schedule day"
           >
             {days.map((x) => (

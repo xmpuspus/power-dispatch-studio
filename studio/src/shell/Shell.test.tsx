@@ -15,7 +15,7 @@ describe('workflow navigation', () => {
 
     expect(html).toContain('Analyst workflows')
     expect(html).toContain('Market day')
-    expect(html).toContain('Scenario analysis')
+    expect(html).toContain('Planning and scenarios')
     expect(html).toContain('Hourly market replay')
     expect(html).toContain('Model and data')
     expect(html).not.toContain('>live<')
@@ -23,14 +23,16 @@ describe('workflow navigation', () => {
   })
 })
 
-describe('persistent market context', () => {
-  it('keeps the market date, terms, and result state in the top bar', () => {
+describe('relevant market context', () => {
+  it('shows the market date and scenario controls when the open view uses them', () => {
     const html = renderToStaticMarkup(
       <TopBar
         nav={destBySlug('chronology')!.nav}
         grid="luzon"
         onGrid={noop}
         gridScoped
+        dateEnabled
+        scenarioEnabled
         dates={['2026-06-16', '2026-06-17']}
         date="2026-06-17"
         onDate={noop}
@@ -56,6 +58,40 @@ describe('persistent market context', () => {
     expect(html).toContain('Results current')
     expect(html).not.toContain('>Solved<')
   })
+
+  it('hides market and scenario controls from input documentation', () => {
+    const html = renderToStaticMarkup(
+      <TopBar
+        nav={destBySlug('model-inputs')!.nav}
+        grid="luzon"
+        onGrid={noop}
+        gridScoped={false}
+        dateEnabled={false}
+        scenarioEnabled={false}
+        dates={['2026-06-17']}
+        date="2026-06-17"
+        onDate={noop}
+        scenarios={[{ name: 'Base Case', overrides: {} }]}
+        ai={0}
+        onPickScenario={noop}
+        onAddScenario={noop}
+        editCount={0}
+        dirty={false}
+        onRun={noop}
+        onOpenPalette={noop}
+        onOpenNav={noop}
+        onOpenGlossary={noop}
+        onExit={noop}
+        theme="light"
+        onToggleTheme={noop}
+      />
+    )
+    expect(html).not.toContain('Market date')
+    expect(html).not.toContain('Active scenario')
+    expect(html).not.toContain('Results current')
+    expect(html).not.toContain('Result summary grid')
+    expect(html).toContain('Terms')
+  })
 })
 
 describe('evidence and definitions', () => {
@@ -71,6 +107,14 @@ describe('evidence and definitions', () => {
     expect(html).toContain('Model replay')
     expect(html).toContain('IEMOP records replayed')
     expect(html).toContain('2026-04-07 to 2026-08-11')
+  })
+
+  it('does not invent a market date for assumptions and inputs', () => {
+    const html = renderToStaticMarkup(
+      <EvidenceSummary evidence={evidenceForSlug('model-inputs')} />
+    )
+    expect(html).not.toContain('Market date')
+    expect(html).not.toContain('Archive coverage')
   })
 
   it('renders expanded market terms in a keyboard-accessible glossary dialog', () => {

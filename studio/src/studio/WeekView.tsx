@@ -49,8 +49,8 @@ export function WeekView({
 }) {
   const windows = useMemo(() => weekWindows(profiles), [profiles])
   const [wIdx, setWIdx] = useState(0)
-  const [storeKey, setStoreKey] = useState<StorageKey>('large')
-  const [dcWave, setDcWave] = useState(true)
+  const [storeKey, setStoreKey] = useState<StorageKey>('none')
+  const [dcWave, setDcWave] = useState(false)
 
   const result = useMemo(() => {
     if (!windows.length) return null
@@ -110,7 +110,7 @@ export function WeekView({
     { key: 'date', header: 'Day', render: (r) => r.date },
     {
       key: 'mean',
-      header: `${cap(grid)} mean`,
+      header: `${cap(grid)} mean (₱/kWh)`,
       align: 'right',
       mono: true,
       render: (r) => php(r.meanPrice[grid]),

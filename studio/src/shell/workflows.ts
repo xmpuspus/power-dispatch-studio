@@ -1,10 +1,9 @@
 export type WorkspaceId =
   | 'market-day'
-  | 'scenario-analysis'
   | 'supply-risk'
-  | 'connection-study'
+  | 'grid-connection'
   | 'prices-exposure'
-  | 'planning'
+  | 'planning-scenarios'
   | 'model-data'
 
 export type Workspace = {
@@ -29,37 +28,22 @@ export const WORKSPACES: Workspace[] = [
       'explain-a-day',
       'five-minute-replay',
       'merit-order',
-      'marginal-units',
-      'native-week',
+      'backcast',
     ],
-  },
-  {
-    id: 'scenario-analysis',
-    label: 'Scenario analysis',
-    summary: 'Change the base case, run it, and compare the result.',
-    primary: 'quick-scenario',
-    slugs: ['quick-scenario', 'compare', 'saved-runs', 'cross-run', 'ensembles'],
   },
   {
     id: 'supply-risk',
-    label: 'Supply risk',
-    summary: 'Check outages, reserves, contingencies, and shortfall risk.',
+    label: 'Supply and risk',
+    summary: 'Check outages, demand thresholds, and shortfall risk.',
     primary: 'adequacy',
-    slugs: [
-      'adequacy',
-      'reliability',
-      'n-1',
-      'load-sweep',
-      'window-band',
-      'price-duration',
-    ],
+    slugs: ['adequacy', 'reliability', 'load-sweep', 'window-band'],
   },
   {
-    id: 'connection-study',
-    label: 'Connection study',
-    summary: 'Check a site against grid limits, transfers, and regional prices.',
+    id: 'grid-connection',
+    label: 'Grid and connection',
+    summary: 'Screen a site and review recorded and modeled grid transfers.',
     primary: 'siting',
-    slugs: ['siting', 'coupled-flows', 'nodal-prices', 'regional-split'],
+    slugs: ['siting', 'coupled-flows', 'nodal-prices'],
   },
   {
     id: 'prices-exposure',
@@ -68,38 +52,34 @@ export const WORKSPACES: Workspace[] = [
     primary: 'contract-position',
     slugs: [
       'contract-position',
-      'bill-impact',
       'capture-prices',
-      'forward-prices',
       'market-power',
       'reserve-market',
       'emissions',
+      'portfolio',
     ],
   },
   {
-    id: 'planning',
-    label: 'Planning',
-    summary: 'Test future demand, new capacity, and portfolio outcomes.',
-    primary: 'long-term',
-    slugs: ['long-term', 'expansion-mix', 'future-year', 'multi-year-path', 'portfolio'],
+    id: 'planning-scenarios',
+    label: 'Planning and scenarios',
+    summary: 'Change inputs, compare cases, and review future demand sensitivity.',
+    primary: 'quick-scenario',
+    slugs: [
+      'forward-prices',
+      'long-term',
+      'native-week',
+      'quick-scenario',
+      'compare',
+      'saved-runs',
+    ],
   },
   {
     id: 'model-data',
     label: 'Model and data',
-    summary: 'Review replay accuracy, assumptions, and editable inputs.',
-    primary: 'backcast',
+    summary: 'Review validation, sources, and editable inputs.',
+    primary: 'model-inputs',
     utility: true,
-    slugs: [
-      'backcast',
-      'loss-validation',
-      'commitment-test',
-      'assumptions',
-      'generators',
-      'fuels',
-      'interfaces',
-      'regions',
-      'storage',
-    ],
+    slugs: ['loss-validation', 'model-inputs'],
   },
 ]
 
@@ -118,13 +98,16 @@ export function workspaceCoverage(slugs: string[]) {
   }
 }
 
-export type EvidenceKind = 'recorded' | 'replayed' | 'scenario' | 'assumed'
+export type EvidenceKind =
+  'recorded' | 'derived' | 'replayed' | 'scenario' | 'assumed' | 'mixed'
 
 export const EVIDENCE_LABELS: Record<EvidenceKind, string> = {
   recorded: 'Recorded',
+  derived: 'Derived from records',
   replayed: 'Model replay',
   scenario: 'Scenario result',
   assumed: 'Assumption',
+  mixed: 'Recorded and modeled',
 }
 
 export type Evidence = {
@@ -134,50 +117,40 @@ export type Evidence = {
   note: string
 }
 
-const RECORDED = new Set([
+const RECORDED = new Set(['reserve-market'])
+
+const DERIVED = new Set(['market-power', 'loss-validation'])
+
+const MIXED = new Set([
+  'chronology',
   'explain-a-day',
-  'five-minute-replay',
   'adequacy',
+  'coupled-flows',
   'nodal-prices',
-  'market-power',
 ])
 
 const SCENARIO = new Set([
   'quick-scenario',
   'compare',
-  'saved-runs',
-  'cross-run',
-  'ensembles',
   'siting',
-  'bill-impact',
   'contract-position',
   'forward-prices',
   'long-term',
-  'expansion-mix',
-  'future-year',
-  'multi-year-path',
   'portfolio',
+  'native-week',
+  'saved-runs',
 ])
 
-const ASSUMED = new Set([
-  'assumptions',
-  'generators',
-  'fuels',
-  'interfaces',
-  'regions',
-  'storage',
-])
+const ASSUMED = new Set(['model-inputs'])
 
 const SCENARIO_REACTIVE = new Set([
   'chronology',
   'merit-order',
   'adequacy',
   'reliability',
-  'n-1',
   'load-sweep',
   'window-band',
   'coupled-flows',
-  'regional-split',
   'emissions',
   'contract-position',
 ])
@@ -195,11 +168,24 @@ export function evidenceForSlug(slug: string, hasScenarioEdits = false): Evidenc
     return {
       kind: 'recorded',
       source: 'IEMOP public market records',
-      resolution:
-        slug === 'five-minute-replay'
-          ? '5-minute dispatch intervals'
-          : 'Published record',
-      note: 'The screen reads published or directly derived market records.',
+      resolution: 'Published market record',
+      note: 'Values in this screen come from the cited market records.',
+    }
+  }
+  if (DERIVED.has(slug)) {
+    return {
+      kind: 'derived',
+      source: 'Published records, calculated measures',
+      resolution: 'Derived statistic',
+      note: 'The source values are published records; the displayed measure is calculated.',
+    }
+  }
+  if (MIXED.has(slug)) {
+    return {
+      kind: 'mixed',
+      source: 'IEMOP records beside a labeled model calculation',
+      resolution: 'Depends on the panel',
+      note: 'Recorded and modeled values are labeled separately in this screen.',
     }
   }
   if (SCENARIO.has(slug)) {

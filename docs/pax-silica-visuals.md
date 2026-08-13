@@ -19,13 +19,14 @@ The 3,000 MW Pax Silica block is larger than the Visayas or Mindanao block.
 BCDA announced the project figure. It is future demand and sits outside the
 recorded Luzon total.
 
-## The solar and battery project signed for New Clark City covers 4.1% of the electricity Pax Silica needs for a day
+## The modeled 500 MW solar component produces 4.1% of Pax Silica's daily electricity on a cloudless day
 
 ![One day of Pax Silica demand and output from a 500 MW solar farm](pax-silica-figs/acwa.png)
 
-ACWA Power leased 500 hectares for up to 500 MW of solar with batteries. The
-chart uses a cloudless-day solar profile. It peaks at 390 MW and reaches zero by
-7pm. The daily energy equals 4.1 percent of a flat 3,000 MW load.
+ACWA Power leased 500 hectares for a project announced as solar with batteries.
+The chart models only the stated 500 MW solar component because no battery power
+or energy rating was published. The daily solar energy equals 4.1 percent of a
+flat 3,000 MW load.
 
 ## Running Pax Silica on solar power alone would need 122 km² of panels
 
@@ -36,13 +37,13 @@ profile. MTerra Solar supplies the land-density reference. The resulting 122
 square kilometers exceeds New Clark City's 94.5 square kilometers. The map uses
 Metro Manila only as a familiar area comparison.
 
-## The one route feeding Pax Silica delivers only a quarter of what it needs
+## An assumed circuit rating produces 769 MW of modeled headroom, not a site connection limit
 
 ![Existing and missing 230 kilovolt routes for Pax Silica](pax-silica-figs/wires.png)
 
-The mapped feeding route has 769 MW of room at 7pm on 25 June 2026. The model
-uses a 400 MW class rating for each circuit because NGCP publishes no rating.
-Three more two-circuit routes of the same class would cover the 2,231 MW gap.
+The illustration uses a 400 MW class rating for each circuit because NGCP does
+not publish the actual ratings. The 769 MW result is an arithmetic sensitivity,
+not available service or an interconnection recommendation.
 
 ## NGCP's two most recent long-distance builds took 13 and 9 months between first power and full service
 
@@ -52,16 +53,16 @@ Hermosa-San Jose took 13 months from first power to full service. The
 Mindanao-Visayas link took 9 months. BCDA targets the Pax Silica substation for
 the end of 2028. The comparison does not predict its completion date.
 
-## Serving Pax Silica from the grid would double the modeled price of Luzon electricity
+## The stated cost-stack assumptions move the modeled result from coal to oil
 
 ![Luzon supply blocks with present demand and Pax Silica demand](pax-silica-figs/priceb.png)
 
-The cost model places a typical 12,018 MW evening on the P6.00/kWh coal block.
-Adding 3,000 MW moves the last needed supply to the P12.00 oil block. This is a
-flat-block model result. It is not a price forecast, and the site route cannot
-carry the full added load.
+The cost model places a typical 12,018 MW evening on the ₱6.00/kWh coal block.
+Adding 3,000 MW moves the last needed supply to the assumed ₱12.00/kWh oil
+block. This is a flat-block cost sensitivity, not a market-price or bill
+forecast.
 
-## Even with its own 2,500 MW power station, one generator down leaves 331 MW of Pax Silica with no power
+## A chosen 2,500 MW station and 600 MW unit produce a 331 MW gap in this illustration
 
 ![Normal and generator-outage supply cases for a 2,500 MW local station](pax-silica-figs/own.png)
 
@@ -69,7 +70,7 @@ The 2,500 MW station and 600 MW unit are examples chosen for this case. They are
 not BCDA announcements. With the unit unavailable, the local station and 769 MW
 route leave 331 MW unmet. A 417 MW outage leaves 148 MW unmet.
 
-## The water Pax Silica asked for is 1.4 to 1.9 times the daily water planned for everyone in Makati
+## Pax Silica's stated water demand is 1.4 to 1.9 times Makati's household planning benchmark
 
 ![Pax Silica water demand compared with household planning figures for Makati](pax-silica-figs/water.png)
 

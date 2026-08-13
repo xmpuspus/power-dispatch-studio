@@ -1,18 +1,13 @@
-"""Open all 42 studio views by deep link, shoot each one, tile them into a sheet.
+"""Open all Studio views by deep link, shoot each one, and tile them into a sheet.
 
-The README has to show what the studio can do without downloading 42 clips.
-GitHub applies no lazy loading, so an embedded GIF per view would cost about
-200 MB on open. One contact sheet costs well under a megabyte and every tile is
-a real screenshot of the running app.
-
-It also checks all 42 deep links. `#v=<slug>` is
+The script also checks every deep link. `#v=<slug>` is
 read by `studio/src/shell/nav.ts`, and nothing else opens every slug. A slug
 that stops resolving leaves the shell on its previous view, so the script
 compares the shell's own current-view label against the label `nav.ts` declares
 and fails on any mismatch. Without that check, a broken link could show the
 previous view without reporting an error.
 
-    bash scripts/vercel_build.sh          # or: cd studio && npm run build -- --base=/studio/
+    bash scripts/vercel_build.sh
     cp web/serve.py .vercel_out/ && (cd .vercel_out && python3 serve.py 5200 &)
     python3 build/shoot_view_sheet.py
 
@@ -33,14 +28,10 @@ NAV = ROOT / "studio" / "src" / "shell" / "nav.ts"
 OUT = ROOT / "docs" / "views-contact-sheet.png"
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:5200/studio/"
 W, H = 1360, 850
-# 39 tiles: 6 across leaves 3 empty slots in the last row, 5 across leaves 1 and
-# makes every tile a fifth of the render width instead of a sixth. GitHub shows
-# a README image at about 948 px, and the tile labels have to survive that.
+# Five columns keep each view large enough to inspect on the generated sheet.
 COLS = 5
 
-# The tile is the main pane only. The rail and the run dock are identical in all
-# 39 shots, so including them would spend 40 percent of every tile on the same
-# pixels and shrink the thing the tile is actually for.
+# The tile is the main pane only. The rail and run dock repeat on every route.
 LABEL_JS = r"""
 (args) => {
   const [group, label] = args;
@@ -48,7 +39,11 @@ LABEL_JS = r"""
   if (!main) return;
   main.style.position = 'relative';
   let el = document.getElementById('sheet-cap');
-  if (!el) { el = document.createElement('div'); el.id = 'sheet-cap'; main.appendChild(el); }
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sheet-cap';
+    main.appendChild(el);
+  }
   el.style.cssText = `position:absolute;left:0;right:0;top:0;z-index:2147483647;
     font-family:'Fira Sans',system-ui,sans-serif;background:#0b0e13;color:#e9edf2;
     padding:13px 20px;border-bottom:3px solid #e2725b;display:flex;
@@ -139,23 +134,36 @@ async def shoot(shots: Path) -> list[dict]:
 
 
 def tile(shots: Path, n: int) -> None:
-    rows = (n + COLS - 1) // COLS
-    subprocess.run(
+    files = sorted(shots.glob("*.png"))
+    cell_w, cell_h = 430, 270
+    filters = []
+    layout = []
+    for i in range(n):
+        filters.append(
+            f"[{i}:v]scale={cell_w}:{cell_h}:force_original_aspect_ratio=decrease,"
+            f"pad={cell_w}:{cell_h}:(ow-iw)/2:(oh-ih)/2:color=#0b0e13[v{i}]"
+        )
+        layout.append(f"{(i % COLS) * cell_w}_{(i // COLS) * cell_h}")
+    inputs = "".join(f"[v{i}]" for i in range(n))
+    filters.append(
+        f"{inputs}xstack=inputs={n}:layout={'|'.join(layout)}:fill=#0b0e13[out]"
+    )
+    command = ["ffmpeg", "-v", "error", "-y"]
+    for path in files:
+        command.extend(["-i", str(path)])
+    command.extend(
         [
-            "ffmpeg",
-            "-v",
-            "error",
-            "-y",
-            "-framerate",
-            "1",
-            "-i",
-            str(shots / "%02d.png"),
-            "-vf",
-            f"scale=430:-1,tile={COLS}x{rows}:margin=6:padding=6:color=#0b0e13",
+            "-filter_complex",
+            ";".join(filters),
+            "-map",
+            "[out]",
             "-frames:v",
             "1",
             str(OUT),
-        ],
+        ]
+    )
+    subprocess.run(
+        command,
         check=True,
     )
     subprocess.run(["sips", "-Z", "1900", str(OUT)], capture_output=True)
@@ -169,7 +177,8 @@ async def main() -> None:
     bad = [r for r in rows if not r["ok"]]
     size = OUT.stat().st_size / 1048576
     print(
-        f"\n{len(rows)} views, {len(bad)} wrong -> {OUT.relative_to(ROOT)} ({size:.2f} MB)"
+        f"\n{len(rows)} views, {len(bad)} wrong -> "
+        f"{OUT.relative_to(ROOT)} ({size:.2f} MB)"
     )
     if bad:
         sys.exit(
