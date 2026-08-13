@@ -11,9 +11,66 @@ local installation.
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![PyPI](https://img.shields.io/pypi/v/power-dispatch-studio?color=blue)](https://pypi.org/project/power-dispatch-studio/)
 
-[<img width="820" alt="Philippine grid map. It shows supply, limits, regional prices, market records, and links to the analyst workspace." src="docs/hero.gif">](https://power-dispatch-studio.vercel.app)
+[<img width="820" alt="Philippine grid map with regional prices, demand, supply, inter-island links, and recorded constraints." src="docs/hero.png">](https://power-dispatch-studio.vercel.app)
 
-## Start with an analyst task
+## Use the Studio in five minutes
+
+The browser needs no account or installation. Start with a recorded day, then
+save the base run before changing assumptions.
+
+### Replay a recorded market day
+
+1. Open [Hourly market replay](https://power-dispatch-studio.vercel.app/studio/#v=chronology).
+2. Choose an **Observed day** and island grid. Click an hour in the 24-hour
+   strip to read its recorded price, replay price, demand, and price-setting block.
+3. Under **Dispatch engine**, switch between **Cost model** and **Observed
+   offers**. The offer option is available only on days with a published offer book.
+4. Open **Evidence and sources** before using a result. It names the source,
+   date, resolution, and whether the value was recorded or calculated.
+5. Use **Copy link** to share the same date, grid, window, and scenario. Use
+   **Export CSV** for the hourly rows.
+
+[![Recording: choose a date, grid, and hour; switch to observed offers; open evidence; copy the exact view.](docs/studio-shell.gif)](docs/studio-shell.mp4)
+
+[Download the market-day recording as MP4](docs/studio-shell.mp4).
+
+### Run, save, and compare a scenario
+
+1. In **Hourly market replay**, press **Save run** to keep the base case.
+2. Open [Scenario builder](https://power-dispatch-studio.vercel.app/studio/#v=quick-scenario)
+   and change only the inputs needed for the case.
+3. Press **Run _N_ edits**. Do not use the scenario result until the top bar says
+   **Results current**.
+4. Return to **Hourly market replay**, choose **Day** or **Week ending**, wait for
+   the day totals to update, and press **Save run** again.
+5. Open [Saved runs](https://power-dispatch-studio.vercel.app/studio/#v=saved-runs).
+   The comparison table highlights changed prices, unserved energy, and the
+   value of price differences across constrained links. The hourly chart starts
+   on the grid with the largest mean-price change; use its selector to choose
+   another grid.
+6. Use **CSV** for hourly data, **Report** for a standalone HTML report,
+   **Restore** to reopen a case, or **Export runs** to back up the browser archive.
+
+[![Recording: save the base run, add a 4,000 MW flat-load stress test to Visayas, run it, save again, and compare both runs.](docs/analyst-walkthrough.gif)](docs/analyst-walkthrough.mp4)
+
+[Download the scenario recording as MP4](docs/analyst-walkthrough.mp4).
+
+Saved scenarios and runs stay in that browser. Nothing is uploaded.
+
+### Read the status before reading the number
+
+| Label | Meaning |
+|---|---|
+| **Recorded** | Published market or grid record. The evidence panel names the file and period. |
+| **Modeled** or **replay** | Calculated by the simplified dispatch model. Compare it with the recorded value where one exists. |
+| **Estimated** | Built from a stated assumption, such as an unpublished line rating. It is not confirmed site connection capacity. |
+| **User-supplied** | Loaded from your CSV and kept in your browser. |
+| **Unavailable** | The required public value was not found. The Studio does not replace it with zero. |
+
+Prices are shown in pesos per kilowatt-hour (₱/kWh), power in megawatts (MW),
+and energy over time in megawatt-hours (MWh).
+
+## Choose a view by task
 
 | Task | Start here |
 |---|---|
@@ -24,7 +81,7 @@ local installation.
 | Inspect the geographic record | [Open the public map](https://power-dispatch-studio.vercel.app) for supply, constraints, prices, and named infrastructure. |
 | Run from Python or a script | Install `power-dispatch-studio`, then run `power-dispatch run --date 2026-06-17`. See the [worked examples](examples/). |
 
-## Data and calculations included
+## What the project includes
 
 - **Nightly IEMOP archive.** The market operator publishes a rolling 90-day
   window. This repository fetches it every night, and Git history keeps files
@@ -42,7 +99,7 @@ local installation.
 **[Read the eleven findings](docs/findings.md)** for the supporting evidence.
 The **[Studio view catalog](docs/studio-views.md)** lists every deep link.
 
-The README downloads 6.0 MB of media across 1 file. The findings and Studio
+The README downloads 3.2 MB of media across 3 files. The findings and Studio
 catalog link to the remaining media instead of embedding it here.
 
 ## Related power-system tools

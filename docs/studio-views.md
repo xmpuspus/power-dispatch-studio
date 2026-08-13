@@ -29,21 +29,17 @@ CSV. The scheduled build also writes archive CSV files to
 [`web/data/exports/`](../web/data/exports/). Their columns are documented in
 [`web/data/exports/index.json`](../web/data/exports/index.json).
 
-### Workflow navigation and search
+### Replay a recorded market day
 
-The navigation groups views by the question they answer. The clip below shows
-three ways to move through the studio.
+The clip below follows the first workflow in the project README.
 
-- **Search.** Press Cmd K, then type a task or market term. Search matches view
-  labels, descriptions, and related terms.
-- **Workspaces.** Market day, Supply and risk, Grid and connection, Prices and
-  exposure, Planning and scenarios, and Model and data group related work.
-- **Context.** Date, grid, scenario, and run controls appear only when the
-  current view uses them.
-- **Evidence.** Each route labels its values as recorded,
-  calculated, replayed, assumed, or mixed.
+- Choose a recorded day and island grid.
+- Click one hour to read the recorded price, replay price, demand, and
+  price-setting block.
+- Switch between the cost model and the published offer book.
+- Open the source panel and copy a link to the exact view.
 
-![The Studio shell with workflow navigation, market-date context, the 24-hour market strip, a searchable view catalog, and regional results with evidence status.](studio-shell.gif)
+![Recording: choose a date, grid, and hour; switch to observed offers; open evidence; copy the exact view.](studio-shell.gif)
 
 **Every view has a URL.** The interface writes `#v=<slug>` as you move, beside the
 `#m=` scenario share, so
@@ -90,8 +86,9 @@ recording per view.
 </details>
 
 The
-[analyst walkthrough](findings.md#analyst-workflow-covers-replay-accuracy-scenarios-and-exports)
-shows the full workflow.
+[scenario walkthrough](findings.md#save-compare-and-export-a-scenario-in-the-browser)
+shows how to save the base run, run a changed case, save it, compare both, and
+export the results.
 [`build/record_analyst_walkthrough.py`](../build/record_analyst_walkthrough.py)
 rebuilds it from the running app. Four shorter recordings cover specific tasks.
 [Explain a day](../studio/docs/view-explain.gif),
@@ -130,7 +127,7 @@ needed. [`docs/scenario-schema.md`](scenario-schema.md) lists the
 keys and the three settings that a browser round trip drops. The Python and
 browser tests both read `tests/fixtures/scenario_example.json`.
 
-**This page downloads 3.1 MB of media across 1 file.** Longer recordings are
+**This page downloads 1.1 MB of media across 1 file.** Longer recordings are
 links. The catalog uses 26 direct links.
 
 `python3 tests/test_readme_views.py` re-measures that total against the files on

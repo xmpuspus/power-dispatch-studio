@@ -1,187 +1,136 @@
-"""Record the studio shell: workflows, market context, evidence, and deep links.
+"""Record the README's market-day walkthrough from the running Studio.
 
-The recording shows how an analyst moves between tasks, keeps the market date
-visible, checks the source state, and shares a direct link to a result.
-
-The recording stays short because the static studio interface uses about 0.09
-MB per second at 820 px, compared with 0.22 MB for the moving map.
+The clip follows the first workflow documented in README.md: choose a recorded
+day and grid, inspect one hour, switch from the cost model to the published
+offer book, open the evidence, and copy a shareable link.
 
     bash scripts/vercel_build.sh
     cp web/serve.py .vercel_out/ && (cd .vercel_out && python3 serve.py 5200 &)
     python3 build/record_studio_shell.py
 
-Writes docs/studio-shell.gif and docs/studio-shell.mp4.
+An optional first argument replaces the default Studio URL. The script writes
+docs/studio-shell.gif and docs/studio-shell.mp4.
 """
 
 import asyncio
+import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
-from playwright.async_api import Page, async_playwright
+from playwright.async_api import Locator, Page, async_playwright
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:5200/studio/"
 ROOT = Path(__file__).resolve().parent.parent
-REC = Path("/tmp/shell-rec")
-REC.mkdir(exist_ok=True)
 OUT = ROOT / "docs" / "studio-shell.gif"
 W, H = 1360, 850
+HOUR_18 = re.compile(r"^18:00,")
 
-# The caption includes the address because the recording omits browser controls.
-CAP_JS = r"""
+CAPTION_JS = r"""
 (args) => {
-  const { title, url } = args;
-  let el = document.getElementById('shell-cap');
-  if (!el) { el = document.createElement('div'); el.id = 'shell-cap'; document.body.appendChild(el); }
-  el.style.cssText = `position:fixed;left:50%;transform:translateX(-50%);bottom:22px;
+  const { title, detail } = args;
+  let el = document.getElementById('readme-guide');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'readme-guide';
+    const strong = document.createElement('strong');
+    const small = document.createElement('span');
+    el.append(strong, small);
+    document.body.appendChild(el);
+  }
+  el.style.cssText = `position:fixed;left:50%;transform:translateX(-50%);bottom:20px;
     z-index:2147483647;font-family:'Fira Sans',system-ui,sans-serif;
-    background:#0b0e13;color:#e9edf2;border:1px solid #2a333f;border-radius:12px;
-    box-shadow:0 12px 44px rgba(0,0,0,.5);padding:13px 22px;width:1080px;
-    max-width:calc(100% - 44px);display:flex;align-items:center;
-    justify-content:space-between;gap:20px;`;
-  el.innerHTML = `<span style="font-size:19px;font-weight:600;">${title}</span>` +
-    (url ? `<span style="font-family:ui-monospace,Menlo,monospace;font-size:16px;
-       color:#e2725b;background:#151a21;border:1px solid #2a333f;border-radius:7px;
-       padding:5px 11px;">${url}</span>` : '');
+    background:#0b0e13;color:#e9edf2;border:1px solid #3d4a5a;border-radius:10px;
+    box-shadow:0 12px 40px rgba(0,0,0,.45);padding:12px 18px;width:980px;
+    max-width:calc(100% - 40px);display:flex;align-items:baseline;gap:16px;`;
+  const [strong, small] = el.children;
+  strong.style.cssText = 'font-size:19px;font-weight:600;flex:none;';
+  small.style.cssText = 'font-size:14px;color:#aeb9c7;';
+  strong.textContent = title;
+  small.textContent = detail || '';
+}
+"""
+
+GUIDE_CSS = """
+[data-readme-target] {
+  outline: 3px solid #e2725b !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 7px rgba(226,114,91,.16) !important;
 }
 """
 
 
-async def cap(page: Page, title: str, url: str = "") -> None:
-    await page.evaluate(CAP_JS, {"title": title, "url": url})
+async def caption(page: Page, title: str, detail: str = "") -> None:
+    await page.evaluate(CAPTION_JS, {"title": title, "detail": detail})
 
 
-async def main() -> None:
-    async with async_playwright() as pw:
-        browser = await pw.chromium.launch(headless=True)
-        ctx = await browser.new_context(
-            viewport={"width": W, "height": H},
-            record_video_dir=str(REC),
-            record_video_size={"width": W, "height": H},
-            device_scale_factor=2,
-        )
-        page = await ctx.new_page()
-        await page.goto(f"{BASE}#v=chronology", wait_until="load")
-        await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
-        # The base case is calculated on load. Run stays disabled until an edit.
-        await asyncio.sleep(3.0)
-
-        # Use a query that matches the Marginal units alias list.
-        await cap(page, "Command palette: press Cmd K and type what you want to know")
-        await asyncio.sleep(1.2)
-        await page.keyboard.press("Meta+k")
-        await page.wait_for_selector(".pal__scrim", timeout=5000)
-        await asyncio.sleep(0.7)
-        for ch in "price setter":
-            await page.keyboard.type(ch)
-            await asyncio.sleep(0.07)
-        await asyncio.sleep(1.4)
-        await page.keyboard.press("Enter")
-        await page.wait_for_selector(".pal__scrim", state="detached", timeout=5000)
-        await asyncio.sleep(1.4)
-        landed = (await page.inner_text(".bar__searchtxt")).strip()
-        if landed != "Marginal units":
-            raise SystemExit(f"command palette opened {landed!r}")
-
-        # Show the URL written by the command palette.
-        await cap(
-            page,
-            "Every view is its own URL, so a view is sendable",
-            "power-dispatch-studio.vercel.app/studio/#v=marginal-units",
-        )
-        await asyncio.sleep(2.4)
-
-        await cap(page, "Work areas keep related analyst tasks together")
-        await page.get_by_role("button", name="Supply risk", exact=False).click()
-        await asyncio.sleep(1.4)
-        await page.get_by_role("button", name="Loss of one major unit (N-1)").click()
-        await asyncio.sleep(1.8)
-        landed = (await page.inner_text(".bar__searchtxt")).strip()
-        if landed != "Loss of one major unit (N-1)":
-            raise SystemExit(f"navigation rail opened {landed!r}")
-
-        await cap(page, "Every result identifies its source, date, and resolution")
-        await asyncio.sleep(2.2)
-
-        # Move a slider and show the recalculated price without pressing Run.
-        await cap(page, "Scenario controls recalculate the result summary as they move")
-        await page.evaluate(
-            "(s) => { window.location.hash = 'v=' + s }", "quick-scenario"
-        )
-        await asyncio.sleep(1.8)
-        moved = await page.evaluate(
-            """() => {
-              const set = Object.getOwnPropertyDescriptor(
-                window.HTMLInputElement.prototype, 'value').set;
-              const el = [...document.querySelectorAll('input[type=range]')]
-                .find(r => +r.max >= 500);
-              if (!el) return false;
-              const to = Math.round(+el.max * 0.62), from = +el.value, t0 = performance.now();
-              return new Promise(r => { function f(t) { const k = Math.min(1, (t - t0) / 3000);
-                set.call(el, String(Math.round(from + (to - from) * k)));
-                el.dispatchEvent(new Event('input', { bubbles: true }));
-                k < 1 ? requestAnimationFrame(f) : r(true); } requestAnimationFrame(f); });
-            }"""
-        )
-        if not moved:
-            print("WARNING: no range slider found, the run-summary segment is missing")
-        await asyncio.sleep(2.6)
-
-        await cap(page, "Market terms stay available without leaving the analysis")
-        await page.get_by_role("button", name="Terms").click()
-        await page.get_by_placeholder("Search market terms").fill("LWAP")
-        await asyncio.sleep(2.2)
-
-        await ctx.close()
-        vid = await page.video.path()
-        await browser.close()
-        webm = REC / "shell.webm"
-        Path(vid).replace(webm)
-
-    # trim the blank + load lead so the loop opens on the first caption
-    ss = "3.4"
-    vf = "fps=11,scale=820:-1:flags=lanczos"
-    pal = REC / "pal.png"
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-y",
-            "-ss",
-            ss,
-            "-i",
-            str(webm),
-            "-vf",
-            f"{vf},palettegen=max_colors=96:stats_mode=diff",
-            str(pal),
-        ],
-        check=True,
-        capture_output=True,
+async def target(page: Page, locator: Locator) -> None:
+    await locator.scroll_into_view_if_needed()
+    await page.locator("[data-readme-target]").evaluate_all(
+        "els => els.forEach(el => el.removeAttribute('data-readme-target'))"
     )
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-y",
-            "-ss",
-            ss,
-            "-i",
-            str(webm),
-            "-i",
-            str(pal),
-            "-lavfi",
-            f"{vf}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle",
-            str(OUT),
-        ],
-        check=True,
-        capture_output=True,
-    )
-    subprocess.run(["gifsicle", "-O3", str(OUT), "-o", str(OUT)], capture_output=True)
+    await locator.evaluate("el => el.setAttribute('data-readme-target', '')")
+    box = await locator.bounding_box()
+    if box:
+        await page.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+
+
+def encode(webm: Path) -> None:
+    vf = "fps=8,scale=760:-1:flags=lanczos"
+    with tempfile.TemporaryDirectory(prefix="pds-shell-encode-") as td:
+        pal = Path(td) / "palette.png"
+        raw = Path(td) / "raw.gif"
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-v",
+                "error",
+                "-y",
+                "-ss",
+                "1.8",
+                "-i",
+                str(webm),
+                "-vf",
+                f"{vf},palettegen=max_colors=72:stats_mode=diff",
+                str(pal),
+            ],
+            check=True,
+        )
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-v",
+                "error",
+                "-y",
+                "-ss",
+                "1.8",
+                "-i",
+                str(webm),
+                "-i",
+                str(pal),
+                "-lavfi",
+                f"{vf}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle",
+                str(raw),
+            ],
+            check=True,
+        )
+        packed = subprocess.run(
+            ["gifsicle", "-O3", "--lossy=25", str(raw), "-o", str(OUT)],
+            capture_output=True,
+        )
+        if packed.returncode != 0:
+            raw.replace(OUT)
+
     mp4 = OUT.with_suffix(".mp4")
     subprocess.run(
         [
             "ffmpeg",
+            "-v",
+            "error",
             "-y",
             "-ss",
-            ss,
+            "1.8",
             "-i",
             str(webm),
             "-vf",
@@ -191,17 +140,103 @@ async def main() -> None:
             "-pix_fmt",
             "yuv420p",
             "-crf",
-            "24",
+            "25",
             "-an",
             str(mp4),
         ],
         check=True,
-        capture_output=True,
     )
+
+
+async def main() -> None:
+    with tempfile.TemporaryDirectory(prefix="pds-shell-record-") as td:
+        rec = Path(td)
+        async with async_playwright() as pw:
+            browser = await pw.chromium.launch(headless=True)
+            ctx = await browser.new_context(
+                viewport={"width": W, "height": H},
+                record_video_dir=str(rec),
+                record_video_size={"width": W, "height": H},
+                permissions=["clipboard-read", "clipboard-write"],
+            )
+            await ctx.add_init_script("localStorage.clear()")
+            page = await ctx.new_page()
+            await page.goto(f"{BASE}#v=chronology", wait_until="load")
+            await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
+            await page.add_style_tag(content=GUIDE_CSS)
+            await page.wait_for_timeout(2300)
+
+            day = page.get_by_label("Observed day to replay")
+            await caption(
+                page,
+                "1. Choose a recorded day and island grid",
+                "The date, grid and selected hour stay visible while you work.",
+            )
+            await target(page, day)
+            await day.select_option("2026-07-22")
+            await page.get_by_role("button", name="Visayas", exact=True).click()
+            await page.wait_for_timeout(1800)
+
+            hour = page.get_by_role("button", name=HOUR_18)
+            await caption(
+                page,
+                "2. Click an hour to read the market record",
+                "The strip shows recorded price, replay price, demand and the "
+                "price-setting block.",
+            )
+            await target(page, hour)
+            await hour.click()
+            await page.wait_for_timeout(2200)
+
+            offers = page.get_by_role("tab", name="Observed offers")
+            await caption(
+                page,
+                "3. Switch between the cost model and published offers",
+                "Both replays use the same recorded day and report their gap from "
+                "the market price.",
+            )
+            await target(page, offers)
+            await offers.click()
+            await page.get_by_text("the day's book, as bid", exact=True).wait_for(
+                timeout=15000
+            )
+            await page.wait_for_timeout(2500)
+
+            evidence = page.locator(".viewevidence summary")
+            await caption(
+                page,
+                "4. Open Evidence and sources before using a result",
+                "The panel names the source, date, resolution and model status.",
+            )
+            await target(page, evidence)
+            await evidence.click()
+            await page.wait_for_timeout(2600)
+
+            copy = page.get_by_role("button", name="Copy link")
+            await caption(
+                page,
+                "5. Copy the exact view",
+                "The link keeps the date, grid, run window and scenario settings.",
+            )
+            await target(page, copy)
+            await copy.click()
+            await page.get_by_text("Link copied", exact=True).wait_for(timeout=5000)
+            await page.wait_for_timeout(2400)
+
+            await ctx.close()
+            video = await page.video.path()
+            await browser.close()
+            webm = rec / "studio-shell.webm"
+            Path(video).replace(webm)
+
+        encode(webm)
+
     print(
-        f"wrote {OUT} ({OUT.stat().st_size // 1024} KB) "
-        f"and {mp4.name} ({mp4.stat().st_size // 1024} KB)"
+        f"wrote {OUT} ({OUT.stat().st_size // 1024} KB) and "
+        f"{OUT.with_suffix('.mp4').name} "
+        f"({OUT.with_suffix('.mp4').stat().st_size // 1024} KB)"
     )
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

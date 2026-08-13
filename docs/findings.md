@@ -9,7 +9,7 @@ https://power-dispatch-studio.vercel.app.
 
 ## Contents
 
-- [Analyst workflow covers replay accuracy, scenarios, and exports](#analyst-workflow-covers-replay-accuracy-scenarios-and-exports)
+- [Save, compare, and export a scenario in the browser](#save-compare-and-export-a-scenario-in-the-browser)
 - [The Leyte-Cebu link reached a binding limit on 125 of 128 days](#the-leyte-cebu-link-reached-a-binding-limit-on-125-of-128-days)
 - [Luzon reserves fell short on 76 of the window's 128 days](#luzon-reserves-fell-short-on-76-of-the-windows-128-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
@@ -22,20 +22,24 @@ https://power-dispatch-studio.vercel.app.
 - [Naming all 141 units changes no daily energy, so the model keeps its fuel blocks](#naming-all-141-units-changes-no-daily-energy-so-the-model-keeps-its-fuel-blocks)
 - [Unit commitment lowered the price correlation in all five scored series, so the linear model stays](#unit-commitment-lowered-the-price-correlation-in-all-five-scored-series-so-the-linear-model-stays)
 
-## Analyst workflow covers replay accuracy, scenarios, and exports
+## Save, compare, and export a scenario in the browser
 
-The recording starts with model coverage and limits, then checks replay accuracy
-and the unit-commitment test. It opens the annual simulation, removes both Sual
-units, reviews the contract position, builds a demand scenario, and downloads a
-file that `power-dispatch run --scenario` reads.
+The recording saves the recorded-day base run, then adds a 4,000 MW flat-load
+stress test to Visayas. That deliberately large input makes the saved daily
+difference easy to see. It is a demonstration, not a demand forecast; the
+1,500 MW DICT marker on the slider is only a reference scale. The recording
+saves the changed run and opens the automatic comparison. The saved-run table
+gives hourly CSV, standalone HTML report, restore, and archive export actions.
+The hourly comparison chart starts on the grid with the largest mean-price
+change and has a grid selector.
 
-[![The recording opens on model coverage and replay accuracy, then checks the unit-commitment result. The annual simulation shows a 2028 Luzon peak of 16,180 MW and no shortfall days. Both 647 MW Sual units are set to zero. The contract view reports plus P1.05M on the contract book, plus P150k on uncontracted load, and plus P900k net. The final step downloads the scenario file.](analyst-walkthrough.gif)](analyst-walkthrough.mp4)
+[![Recording: save the base run, add a 4,000 MW flat-load stress test to Visayas, run it, save again, and compare both runs.](analyst-walkthrough.gif)](analyst-walkthrough.mp4)
 
 Recorded from the running app by
 [`build/record_analyst_walkthrough.py`](../build/record_analyst_walkthrough.py).
-The script checks the four unsupported rows and the measured commitment result.
-It checks that the contract position changes and the download produces a
-file. Sharper as [MP4](analyst-walkthrough.mp4).
+The script checks that the edit reaches the Run button, the results become
+current, two runs are saved, and the comparison appears. Sharper as
+[MP4](analyst-walkthrough.mp4).
 
 ## The Leyte-Cebu link reached a binding limit on 125 of 128 days
 

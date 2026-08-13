@@ -106,6 +106,44 @@ wanted = re.findall(r"\]\(#([a-z0-9-]+)\)", readme)
 dead = sorted({a for a in wanted if a not in anchors})
 check(f"every in-page contents link reaches a heading (dead: {dead})", not dead)
 
+# --- the project front door is a browser how-to, not only a task index -------
+FRONT = os.path.join(ROOT, "README.md")
+with open(FRONT, encoding="utf-8") as f:
+    front = f.read()
+
+how_to_labels = [
+    "Use the Studio in five minutes",
+    "Replay a recorded market day",
+    "Run, save, and compare a scenario",
+    "Observed day",
+    "Dispatch engine",
+    "Evidence and sources",
+    "Copy link",
+    "Export CSV",
+    "Results current",
+    "Save run",
+    "Saved runs",
+    "Export runs",
+]
+for label in how_to_labels:
+    check(f"README how-to names {label!r}", label in front)
+
+front_images = set(re.findall(r"!\[[^\]]*\]\(([^)]+)\)", front))
+front_images |= set(re.findall(r'src="([^"]+)"', front))
+front_images = {q for q in front_images if not q.startswith("http")}
+expected_images = {
+    "docs/hero.png",
+    "docs/studio-shell.gif",
+    "docs/analyst-walkthrough.gif",
+}
+check(
+    f"README embeds the static overview and two how-to clips ({sorted(front_images)})",
+    front_images == expected_images,
+)
+for clip in ("docs/studio-shell.mp4", "docs/analyst-walkthrough.mp4"):
+    check(f"README links {clip}", f"]({clip})" in front)
+    check(f"{clip} exists", os.path.isfile(os.path.join(ROOT, clip)))
+
 
 # --- the stated media weight has to match the files on disk -------------------
 # GitHub applies no lazy loading, so the embedded set is what a reader downloads
@@ -150,4 +188,11 @@ weigh("docs/studio-views.md")
 check(f"the README stays under 8 MB of media ({front_mb:.1f})", front_mb < 8.0)
 
 print(f"\n{len(fails)} failures" if fails else "\nall green")
-sys.exit(1 if fails else 0)
+
+
+def test_readme_views_script():
+    assert not fails, "\n".join(fails)
+
+
+if __name__ == "__main__":
+    sys.exit(1 if fails else 0)

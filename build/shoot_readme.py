@@ -48,7 +48,8 @@ def render_html() -> str:
 <link rel="stylesheet" href="{CSS}">
 <style>
   body {{ margin:0; background:#fff; }}
-  .markdown-body {{ box-sizing:border-box; max-width:1012px; margin:0 auto; padding:32px; }}
+  .markdown-body {{ box-sizing:border-box; max-width:1012px; margin:0 auto;
+    padding:32px; }}
   @media (max-width:500px) {{ .markdown-body {{ padding:14px; }} }}
 </style></head><body><article class="markdown-body">{inner}</article></body></html>"""
 
@@ -75,7 +76,8 @@ def main() -> None:
             # a readable strip of the studio section, where the new material sits
             page.evaluate(
                 """() => { const h = [...document.querySelectorAll('h2')]
-                     .find(x => x.textContent.includes('Start with an analyst task'));
+                     .find(x => x.textContent.includes(
+                       'Use the Studio in five minutes'));
                    if (h) h.scrollIntoView(); }"""
             )
             page.wait_for_timeout(900)

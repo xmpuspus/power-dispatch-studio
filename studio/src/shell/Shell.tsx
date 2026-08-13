@@ -201,7 +201,7 @@ export function TopBar({
       {scenarioEnabled && (
         <span className="sr-only" aria-live="polite">
           {dirty
-            ? `${editCount} edits are not included in the results yet`
+            ? `${editCount} edit${editCount === 1 ? ' is' : 's are'} not included in the results yet`
             : 'Results current'}
         </span>
       )}

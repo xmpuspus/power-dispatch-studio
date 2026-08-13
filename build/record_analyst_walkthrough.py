@@ -1,268 +1,165 @@
-"""Record the arriving analyst's whole path, from model coverage to a file.
+"""Record the README's scenario, save, compare, and export walkthrough.
 
-The recording follows the checks an analyst makes before using a result: model
-coverage, stated limits, replay accuracy, and a portable scenario file.
-
-The recording follows one person through it:
-
-    for-analysts.html   model coverage and the four unsupported items
-    #v=commitment-test  a limit that carries a measurement, not an opinion
-    #v=future-year      2028 solved day by day, on published plans
-    #v=fuels            take both Sual units out of the model, then Run
-    #v=contract-position  what that edit does to a book of contracts, in pesos
-    #v=quick-scenario   drag a data center onto Luzon, watch the price move
-    Take this scenario to Python   the same run as a file the CLI reads
-
-Needs the COMBINED single-origin serve, because the first step is a real
-navigation from the map's own page into the studio:
+The clip saves a base replay, adds a 4,000 MW flat-load stress test to Visayas,
+runs it, saves the changed replay, and opens the automatic run comparison. The
+stress test is deliberately larger than the DICT scale marker so its effect is
+easy to see in the saved daily result. It is not a forecast.
 
     bash scripts/vercel_build.sh
     cp web/serve.py .vercel_out/ && (cd .vercel_out && python3 serve.py 5200 &)
     python3 build/record_analyst_walkthrough.py
 
-Writes docs/analyst-walkthrough.gif and .mp4.
+An optional first argument replaces the default site URL. The script writes
+docs/analyst-walkthrough.gif and docs/analyst-walkthrough.mp4.
 """
 
 import asyncio
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
-from playwright.async_api import Page, async_playwright
+from playwright.async_api import Locator, Page, async_playwright
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:5200"
 ROOT = Path(__file__).resolve().parent.parent
-REC = Path("/tmp/analyst-rec")
-REC.mkdir(exist_ok=True)
 OUT = ROOT / "docs" / "analyst-walkthrough.gif"
 W, H = 1360, 850
 
-CAP_JS = r"""
+CAPTION_JS = r"""
 (args) => {
-  const { title, url } = args;
-  let el = document.getElementById('walk-cap');
-  if (!el) { el = document.createElement('div'); el.id = 'walk-cap'; document.body.appendChild(el); }
-  el.style.cssText = `position:fixed;left:50%;transform:translateX(-50%);bottom:22px;
+  const { title, detail } = args;
+  let el = document.getElementById('readme-guide');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'readme-guide';
+    const strong = document.createElement('strong');
+    const small = document.createElement('span');
+    el.append(strong, small);
+    document.body.appendChild(el);
+  }
+  el.style.cssText = `position:fixed;left:50%;transform:translateX(-50%);bottom:20px;
     z-index:2147483647;font-family:'Fira Sans',system-ui,sans-serif;
-    background:#0b0e13;color:#e9edf2;border:1px solid #2a333f;border-radius:12px;
-    box-shadow:0 12px 44px rgba(0,0,0,.5);padding:13px 22px;width:1120px;
-    max-width:calc(100% - 44px);display:flex;align-items:center;
-    justify-content:space-between;gap:20px;`;
-  el.innerHTML = `<span style="font-size:19px;font-weight:600;">${title}</span>` +
-    (url ? `<span style="font-family:ui-monospace,Menlo,monospace;font-size:15px;
-       color:#e2725b;background:#151a21;border:1px solid #2a333f;border-radius:7px;
-       padding:5px 11px;">${url}</span>` : '');
+    background:#0b0e13;color:#e9edf2;border:1px solid #3d4a5a;border-radius:10px;
+    box-shadow:0 12px 40px rgba(0,0,0,.45);padding:12px 18px;width:980px;
+    max-width:calc(100% - 40px);display:flex;align-items:baseline;gap:16px;`;
+  const [strong, small] = el.children;
+  strong.style.cssText = 'font-size:19px;font-weight:600;flex:none;';
+  small.style.cssText = 'font-size:14px;color:#aeb9c7;';
+  strong.textContent = title;
+  small.textContent = detail || '';
+}
+"""
+
+GUIDE_CSS = """
+[data-readme-target] {
+  outline: 3px solid #e2725b !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 7px rgba(226,114,91,.16) !important;
 }
 """
 
 
-async def cap(page: Page, title: str, url: str = "") -> None:
-    await page.evaluate(CAP_JS, {"title": title, "url": url})
+async def caption(page: Page, title: str, detail: str = "") -> None:
+    await page.evaluate(CAPTION_JS, {"title": title, "detail": detail})
 
 
-async def scroll_to(page: Page, selector: str) -> None:
-    await page.evaluate(
-        "(s) => { const el = document.querySelector(s);"
-        " if (el) el.scrollIntoView({behavior:'smooth', block:'start'}) }",
-        selector,
+async def target(page: Page, locator: Locator) -> None:
+    await locator.scroll_into_view_if_needed()
+    await page.locator("[data-readme-target]").evaluate_all(
+        "els => els.forEach(el => el.removeAttribute('data-readme-target'))"
     )
+    await locator.evaluate("el => el.setAttribute('data-readme-target', '')")
+    box = await locator.bounding_box()
+    if box:
+        await page.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
 
 
-async def main() -> None:
-    async with async_playwright() as pw:
-        browser = await pw.chromium.launch(headless=True)
-        ctx = await browser.new_context(
-            viewport={"width": W, "height": H},
-            record_video_dir=str(REC),
-            record_video_size={"width": W, "height": H},
-            device_scale_factor=2,
-        )
-        page = await ctx.new_page()
+async def open_view(page: Page, slug: str, label: str) -> None:
+    await page.evaluate("s => { window.location.hash = 'v=' + s }", slug)
+    await page.wait_for_function(
+        "label => document.querySelector('.bar__searchtxt')"
+        "?.textContent?.trim() === label",
+        arg=label,
+        timeout=15000,
+    )
+    await page.wait_for_timeout(1500)
 
-        # 1. model coverage
-        await page.goto(f"{BASE}/for-analysts.html", wait_until="load")
-        await asyncio.sleep(2.0)
-        await cap(
-            page,
-            "Seven areas are covered, three are partial, and four are not modeled",
-            "power-dispatch-studio.vercel.app/for-analysts.html",
-        )
-        await asyncio.sleep(2.0)
-        await scroll_to(page, ".t-cap")
-        await asyncio.sleep(3.4)
-        rows = await page.evaluate(
-            "() => document.querySelectorAll('.t-cap .n').length"
-        )
-        if rows != 4:
-            raise SystemExit(
-                f"expected 4 unsupported rows in the coverage table, saw {rows}"
-            )
 
-        # 2. how close it gets, from the nightly build
-        await cap(page, "Each unsupported area includes the reason and current limit")
-        await asyncio.sleep(2.2)
-        await scroll_to(page, ".t-acc")
-        await asyncio.sleep(3.0)
-        await cap(
-            page, "The replay error is on the page, and the build rewrites it nightly"
-        )
-        await asyncio.sleep(2.6)
-
-        # 3. a limit that was measured, not asserted
-        await page.goto(f"{BASE}/studio/#v=commitment-test", wait_until="load")
-        await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
-        await asyncio.sleep(3.0)
-        await cap(
-            page,
-            "Unit commitment was built and scored. It lost in all five series",
-            "/studio/#v=commitment-test",
-        )
-        await asyncio.sleep(3.6)
-        text = await page.inner_text(".view")
-        if "-0.445" not in text:
-            raise SystemExit("the commitment view is not showing its measured delta")
-
-        # 4. a whole year, solved on published plans
-        await cap(
-            page,
-            "A whole future year solves day by day, on the published demand path",
-            "/studio/#v=future-year",
-        )
-        await page.evaluate("() => { window.location.hash = 'v=future-year' }")
-        await asyncio.sleep(4.6)
-        year = await page.inner_text(".view")
-        if "2028" not in year:
-            raise SystemExit("the future-year view is not showing a solved year")
-
-        # 5. a real model edit, so the file that comes out carries it. The
-        # levers preview and never write the model, which is right for a lever
-        # and wrong for a demo of a downloadable run.
-        await cap(
-            page,
-            "Take both 647 MW Sual units out of the model, and press Run",
-            "/studio/#v=fuels",
-        )
-        await page.evaluate("() => { window.location.hash = 'v=fuels' }")
-        await asyncio.sleep(2.4)
-        box = page.get_by_label("coal Luzon avail")
-        before_mw = float(await box.input_value())
-        await box.fill(str(before_mw - 1294))
-        await box.press("Tab")
-        await asyncio.sleep(1.6)
-        # the Run button's accessible name is its aria-label, never its text
-        label = await page.inner_text(".bar__run")
-        if label != "Run 1 edit":
-            raise SystemExit(f"the model edit did not reach Run, which reads {label!r}")
-        await page.click(".bar__run")
-        await asyncio.sleep(2.4)
-
-        # 6. the question a supplier actually brought, answered in pesos
-        await cap(
-            page,
-            "The same edit, priced against your own contract book",
-            "/studio/#v=contract-position",
-        )
-        await page.evaluate("() => { window.location.hash = 'v=contract-position' }")
-        await asyncio.sleep(4.2)
-        pos = await page.inner_text(".view")
-        if "Cover on your Luzon load" not in pos:
-            raise SystemExit("the contract view is not showing a settled position")
-        if "does not move" in pos:
-            raise SystemExit("the scenario left the position flat, so the beat is dead")
-        print(f"  position headline: {pos.splitlines()[0]}")
-
-        await cap(page, "Drag a data center onto Luzon, and every grid re-clears")
-        await page.evaluate("() => { window.location.hash = 'v=quick-scenario' }")
-        await asyncio.sleep(2.0)
-        moved = await page.evaluate(
-            """() => {
+async def move_range(page: Page, locator: Locator, value: int) -> None:
+    start = int(float(await locator.input_value()))
+    step = 100 if value >= start else -100
+    values = list(range(start + step, value, step)) + [value]
+    for next_value in values:
+        # React may replace a controlled input after each event. Evaluate on the
+        # locator again so every step reaches the live slider.
+        await locator.evaluate(
+            """(el, nextValue) => {
               const set = Object.getOwnPropertyDescriptor(
                 window.HTMLInputElement.prototype, 'value').set;
-              const el = [...document.querySelectorAll('input[type=range]')]
-                .find(r => +r.max >= 500);
-              if (!el) return false;
-              const to = Math.round(+el.max * 0.7), from = +el.value, t0 = performance.now();
-              return new Promise(r => { function f(t) { const k = Math.min(1, (t - t0) / 3200);
-                set.call(el, String(Math.round(from + (to - from) * k)));
-                el.dispatchEvent(new Event('input', { bubbles: true }));
-                k < 1 ? requestAnimationFrame(f) : r(true); } requestAnimationFrame(f); });
-            }"""
+              set.call(el, String(nextValue));
+              el.dispatchEvent(new Event('input', { bubbles: true }));
+            }""",
+            next_value,
         )
-        if not moved:
-            raise SystemExit("no demand slider found in Scenario builder")
-        await asyncio.sleep(2.8)
+        await page.wait_for_timeout(40)
 
-        # 6. the run leaves as a file the command line reads
-        await page.evaluate(
-            "() => { const h = [...document.querySelectorAll('.byo__head')]"
-            ".find(e => e.textContent.includes('Python'));"
-            " if (h) h.scrollIntoView({behavior:'smooth', block:'center'}) }"
+
+def encode(webm: Path) -> None:
+    vf = "fps=8,scale=760:-1:flags=lanczos"
+    with tempfile.TemporaryDirectory(prefix="pds-walk-encode-") as td:
+        pal = Path(td) / "palette.png"
+        raw = Path(td) / "raw.gif"
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-v",
+                "error",
+                "-y",
+                "-ss",
+                "1.8",
+                "-i",
+                str(webm),
+                "-vf",
+                f"{vf},palettegen=max_colors=72:stats_mode=diff",
+                str(pal),
+            ],
+            check=True,
         )
-        await asyncio.sleep(1.8)
-        await cap(
-            page,
-            "The same run downloads as a file, and the command line reads it back",
-            "power-dispatch run --scenario yours.json",
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-v",
+                "error",
+                "-y",
+                "-ss",
+                "1.8",
+                "-i",
+                str(webm),
+                "-i",
+                str(pal),
+                "-lavfi",
+                f"{vf}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle",
+                str(raw),
+            ],
+            check=True,
         )
-        async with page.expect_download() as dl:
-            await page.get_by_role("button", name="Download scenario").click()
-        saved = await dl.value
-        name = saved.suggested_filename
-        if not name.endswith(".json"):
-            raise SystemExit(f"the scenario download produced {name!r}")
-        await asyncio.sleep(3.2)
-        msg = await page.inner_text(".byo__msg")
-        print(f"  scenario file: {name}, studio reported {msg!r}")
+        packed = subprocess.run(
+            ["gifsicle", "-O3", "--lossy=25", str(raw), "-o", str(OUT)],
+            capture_output=True,
+        )
+        if packed.returncode != 0:
+            raw.replace(OUT)
 
-        await ctx.close()
-        vid = await page.video.path()
-        await browser.close()
-        webm = REC / "walk.webm"
-        Path(vid).replace(webm)
-
-    ss = "1.6"
-    vf = "fps=10,scale=860:-1:flags=lanczos"
-    pal = REC / "pal.png"
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-y",
-            "-ss",
-            ss,
-            "-i",
-            str(webm),
-            "-vf",
-            f"{vf},palettegen=max_colors=96:stats_mode=diff",
-            str(pal),
-        ],
-        check=True,
-        capture_output=True,
-    )
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-y",
-            "-ss",
-            ss,
-            "-i",
-            str(webm),
-            "-i",
-            str(pal),
-            "-lavfi",
-            f"{vf}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle",
-            str(OUT),
-        ],
-        check=True,
-        capture_output=True,
-    )
-    subprocess.run(["gifsicle", "-O3", str(OUT), "-o", str(OUT)], capture_output=True)
     mp4 = OUT.with_suffix(".mp4")
     subprocess.run(
         [
             "ffmpeg",
+            "-v",
+            "error",
             "-y",
             "-ss",
-            ss,
+            "1.8",
             "-i",
             str(webm),
             "-vf",
@@ -272,17 +169,171 @@ async def main() -> None:
             "-pix_fmt",
             "yuv420p",
             "-crf",
-            "24",
+            "25",
             "-an",
             str(mp4),
         ],
         check=True,
-        capture_output=True,
     )
+
+
+async def main() -> None:
+    with tempfile.TemporaryDirectory(prefix="pds-walk-record-") as td:
+        rec = Path(td)
+        async with async_playwright() as pw:
+            browser = await pw.chromium.launch(headless=True)
+            ctx = await browser.new_context(
+                viewport={"width": W, "height": H},
+                record_video_dir=str(rec),
+                record_video_size={"width": W, "height": H},
+            )
+            await ctx.add_init_script("localStorage.clear()")
+            page = await ctx.new_page()
+            await page.goto(f"{BASE}/studio/#v=chronology", wait_until="load")
+            await page.wait_for_selector('[data-testid="studio"]', timeout=20000)
+            await page.add_style_tag(content=GUIDE_CSS)
+            await page.wait_for_timeout(2300)
+            await page.get_by_label("Observed day to replay").select_option(
+                "2026-07-22"
+            )
+            await page.wait_for_timeout(1700)
+
+            save = page.get_by_role("button", name="Save run")
+            await caption(
+                page,
+                "1. Save the base run before changing it",
+                "A saved run keeps the date, inputs and hourly results in this "
+                "browser.",
+            )
+            await target(page, save)
+            await save.click()
+            await page.get_by_text("Run saved", exact=True).wait_for(timeout=5000)
+            await page.wait_for_timeout(1900)
+
+            await open_view(page, "quick-scenario", "Scenario builder")
+            await page.locator(
+                'button[title="Show Visayas in views that analyze one grid"]'
+            ).click()
+            await page.wait_for_timeout(900)
+            demand = page.locator('input[type="range"]').first
+            await caption(
+                page,
+                "2. Set one assumption",
+                "Use a 4,000 MW Visayas stress test so the saved-run difference is "
+                "easy to see. This is not a forecast.",
+            )
+            await target(page, demand)
+            await move_range(page, demand, 4000)
+            await page.wait_for_timeout(1800)
+            if await demand.input_value() != "4000":
+                raise SystemExit("the scenario slider did not reach 4,000 MW")
+            if (await page.locator(".bar__run").inner_text()).strip() != "Run 1 edit":
+                raise SystemExit("the scenario edit did not reach the Run button")
+
+            run = page.locator(".bar__run")
+            await caption(
+                page,
+                "3. Press Run before reading the scenario result",
+                "The result dock says when all saved edits are included.",
+            )
+            await target(page, run)
+            await run.click()
+            await page.get_by_text("Results current", exact=True).first.wait_for(
+                timeout=15000
+            )
+            visayas_price = await page.locator(
+                'button[title="Show Visayas in views that analyze one grid"] '
+                ".dock__price"
+            ).inner_text()
+            if "32.00" not in visayas_price:
+                raise SystemExit(
+                    "the Visayas stress case did not produce the expected price: "
+                    + repr(visayas_price)
+                )
+            await page.wait_for_timeout(2400)
+
+            await open_view(page, "chronology", "Hourly market replay")
+            await page.wait_for_function(
+                "() => document.querySelector('.view')?.innerText"
+                "?.includes('₱32.00 /kWh')",
+                timeout=15000,
+            )
+            save = page.get_by_role("button", name="Save run")
+            await caption(
+                page,
+                "4. Wait for the day totals, then save the changed run",
+                "Use Day or Week ending before saving if the comparison needs a "
+                "longer window.",
+            )
+            await target(page, save)
+            await save.click()
+            await page.get_by_text("Run saved", exact=True).wait_for(timeout=5000)
+            count = await page.evaluate(
+                """() => JSON.parse(
+                  localStorage.getItem('power-dispatch-studio-runs-v1') || '{"runs":[]}'
+                ).runs.length"""
+            )
+            if count != 2:
+                raise SystemExit(f"expected two saved runs, found {count}")
+            await page.wait_for_timeout(1900)
+
+            await open_view(page, "saved-runs", "Saved runs")
+            archive = page.locator(".panel").filter(
+                has_text="Each saved run keeps its scenario settings"
+            )
+            rows = archive.locator(".propgrid tbody tr")
+            if await rows.count() != 2:
+                raise SystemExit("Saved runs did not show the base and changed cases")
+            await caption(
+                page,
+                "5. Saved runs keeps both cases and their exits",
+                "Restore a case, download hourly CSV, or create a standalone HTML "
+                "report.",
+            )
+            await target(page, rows.first)
+            await page.wait_for_timeout(2800)
+
+            comparison_selects = page.locator(".chrono__controls select")
+            await comparison_selects.nth(0).select_option(index=1)
+            await comparison_selects.nth(1).select_option(index=0)
+            comparison = page.locator(".propgrid.compare")
+            comparison_text = await comparison.inner_text()
+            if "₱32.00" not in comparison_text or "+₱26.00" not in comparison_text:
+                raise SystemExit(
+                    "the saved-run comparison did not show the Visayas stress result: "
+                    + repr(comparison_text)
+                )
+            chart_text = await page.locator("svg.chart").last.text_content() or ""
+            if "A: Visayas" not in chart_text or "B: Visayas" not in chart_text:
+                raise SystemExit(
+                    "the comparison chart did not select the grid with the largest "
+                    "price change"
+                )
+            await comparison.evaluate(
+                "el => el.scrollIntoView({block: 'center', behavior: 'instant'})"
+            )
+            await caption(
+                page,
+                "6. Compare the two runs",
+                "Changed prices, unserved energy and congestion value are highlighted.",
+            )
+            await target(page, comparison)
+            await page.wait_for_timeout(3200)
+
+            await ctx.close()
+            video = await page.video.path()
+            await browser.close()
+            webm = rec / "analyst-walkthrough.webm"
+            Path(video).replace(webm)
+
+        encode(webm)
+
     print(
         f"wrote {OUT} ({OUT.stat().st_size // 1024} KB) and "
-        f"{mp4.name} ({mp4.stat().st_size // 1024} KB)"
+        f"{OUT.with_suffix('.mp4').name} "
+        f"({OUT.with_suffix('.mp4').stat().st_size // 1024} KB)"
     )
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

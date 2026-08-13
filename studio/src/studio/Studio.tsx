@@ -465,7 +465,7 @@ export function Studio({
             <h1 className="viewhead__title">{dest?.label ?? 'View'}</h1>
             <p className="viewhead__hint">
               {dirty && dest?.live
-                ? `${editCount} edit${editCount === 1 ? '' : 's'} are not in this yet. Press Run.`
+                ? `${editCount} edit${editCount === 1 ? ' is' : 's are'} not in this result yet. Press Run.`
                 : (dest?.hint ?? '')}
             </p>
             <span className={`viewhead__state is-${evidence.kind}`}>

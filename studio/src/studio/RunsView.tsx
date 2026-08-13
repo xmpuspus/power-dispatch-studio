@@ -39,6 +39,15 @@ function rentOf(run: SavedRun): number {
   return run.summaries.reduce((acc, x) => acc + x.leyteRentMPhp + x.mvipRentMPhp, 0)
 }
 
+function mostChangedPriceGrid(a: SavedRun, b: SavedRun): GridKey {
+  return GRIDS.reduce((largest, grid) =>
+    Math.abs(meanOf(b, grid) - meanOf(a, grid)) >
+    Math.abs(meanOf(b, largest) - meanOf(a, largest))
+      ? grid
+      : largest
+  )
+}
+
 export function RunsView({
   runs,
   onRunsChange,
@@ -52,9 +61,12 @@ export function RunsView({
 }) {
   const [aId, setAId] = useState<string>('')
   const [bId, setBId] = useState<string>('')
+  const [selectedChartGrid, setSelectedChartGrid] = useState<GridKey | null>(null)
   const [importMsg, setImportMsg] = useState<string>('')
   const a = runs.find((r) => r.id === aId) ?? runs[0]
   const b = runs.find((r) => r.id === bId) ?? runs[1]
+  const chartGrid =
+    selectedChartGrid ?? (a && b ? mostChangedPriceGrid(a, b) : ('luzon' as GridKey))
   const emissions = useEmissions()
 
   const onExportAll = () => {
@@ -304,6 +316,21 @@ export function RunsView({
                 ))}
               </select>
             </label>
+            <label className="chrono__ctl">
+              Hourly price chart
+              <select
+                className="ribbon__select"
+                value={chartGrid}
+                onChange={(e) => setSelectedChartGrid(e.target.value as GridKey)}
+                aria-label="Hourly price chart"
+              >
+                {GRIDS.map((grid) => (
+                  <option key={grid} value={grid}>
+                    {cap(grid)}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
           <ScrollBox className="propgrid-wrap">
             <table className="propgrid compare">
@@ -344,14 +371,14 @@ export function RunsView({
             <HourLines
               series={[
                 {
-                  label: 'A: Luzon',
+                  label: `A: ${cap(chartGrid)}`,
                   color: 'var(--series-modeled)',
-                  pts: a.hours.map((h) => h.price.luzon),
+                  pts: a.hours.map((h) => h.price[chartGrid]),
                 },
                 {
-                  label: 'B: Luzon',
+                  label: `B: ${cap(chartGrid)}`,
                   color: 'var(--accent)',
-                  pts: b.hours.map((h) => h.price.luzon),
+                  pts: b.hours.map((h) => h.price[chartGrid]),
                   dash: '4 3',
                 },
               ]}
