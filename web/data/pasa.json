@@ -4047,6 +4047,46 @@
    },
    "n_out": 16,
    "n_unmatched": 7
+  },
+  {
+   "date": "2026-08-13",
+   "out": [
+    "01MARVEL_G01",
+    "01MPGC_U04",
+    "01SROQUE_U01",
+    "03CALACA_G01",
+    "03PAGBIL_G01",
+    "03SLTEC_G01",
+    "05CEDC_U01",
+    "06CENPRI_U04",
+    "10AGUS5_U01",
+    "10GNPK_U02",
+    "11STEAG_U01",
+    "11STEAG_U02",
+    "12KEGGIN_G01",
+    "13SMC_U02",
+    "14SIGHYDRO_G01"
+   ],
+   "matched_mw": {
+    "luzon": 1072.7,
+    "visayas": 82.0,
+    "mindanao": 178.5
+   },
+   "matched_fuel_mw": {
+    "luzon": {
+     "coal": 938.0,
+     "hydro": 134.7
+    },
+    "visayas": {
+     "coal": 82.0
+    },
+    "mindanao": {
+     "hydro": 40.5,
+     "coal": 138.0
+    }
+   },
+   "n_out": 15,
+   "n_unmatched": 7
   }
  ],
  "resources": [

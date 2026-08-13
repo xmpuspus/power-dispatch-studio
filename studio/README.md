@@ -220,11 +220,11 @@ method page.
 
 The reserve replay uses the first five-minute reserve offer book in each hour
 and the scheduled capacity in that interval. The last needed offer sets the
-calculated price. The comparison uses 118 days and twelve grid-product groups.
+calculated price. The comparison uses 119 days and twelve grid-product groups.
 Recorded reserve prices did not set the model inputs.
 
 The calculated average is lower in all twelve groups. It is higher in 9.6
-percent of about 33,915 scored hours, by at most P0.033/kWh. Official reserve
+percent of about 34,199 scored hours, by at most P0.033/kWh. Official reserve
 prices can include lost energy revenue. Public summary files do not pair each
 plant's energy and reserve offers, so the data cannot assign the full difference
 to one cause.
@@ -236,18 +236,18 @@ The last column excludes those hours.
 <!-- reserve-table. updated from market_ops.json by scripts/verify_claims.py --write. do not hand-edit -->
 | Pool | Hours | Recorded mean | Modeled mean | Bias | Exact hours | Scarcity hours | MAE outside scarcity |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Luzon contingency (Fr) | 2,832 | P6.17 | P2.47 | -P3.70 | 48.4% | 531 | P3.27 |
-| Luzon dispatchable (Dr) | 2,829 | P2.71 | P2.01 | -P0.69 | 82.4% | 430 | P0.47 |
-| Luzon regulation up (Ru) | 2,832 | P10.06 | P6.88 | -P3.18 | 66.5% | 981 | P2.65 |
-| Luzon regulation down (Rd) | 2,832 | P9.44 | P6.88 | -P2.56 | 56.2% | 973 | P2.83 |
-| Visayas contingency (Fr) | 2,826 | P11.44 | P5.13 | -P6.30 | 47.8% | 314 | P5.82 |
-| Visayas dispatchable (Dr) | 2,776 | P5.21 | P1.96 | -P3.25 | 66.2% | 342 | P1.07 |
-| Visayas regulation up (Ru) | 2,832 | P16.33 | P11.29 | -P5.04 | 50.4% | 306 | P4.70 |
-| Visayas regulation down (Rd) | 2,832 | P14.47 | P12.37 | -P2.10 | 66.6% | 305 | P1.99 |
-| Mindanao contingency (Fr) | 2,832 | P5.36 | P1.40 | -P3.96 | 53.4% | 329 | P3.36 |
-| Mindanao dispatchable (Dr) | 2,828 | P1.05 | P0.09 | -P0.96 | 88.0% | 410 | P0.27 |
-| Mindanao regulation up (Ru) | 2,832 | P17.52 | P14.01 | -P3.52 | 73.2% | 271 | P3.49 |
-| Mindanao regulation down (Rd) | 2,832 | P16.23 | P15.34 | -P0.88 | 88.2% | 266 | P0.83 |
+| Luzon contingency (Fr) | 2,856 | P6.16 | P2.48 | -P3.68 | 48.4% | 531 | P3.25 |
+| Luzon dispatchable (Dr) | 2,853 | P2.69 | P2.00 | -P0.69 | 82.5% | 430 | P0.47 |
+| Luzon regulation up (Ru) | 2,856 | P10.03 | P6.87 | -P3.17 | 66.6% | 981 | P2.63 |
+| Luzon regulation down (Rd) | 2,856 | P9.41 | P6.85 | -P2.56 | 56.1% | 973 | P2.83 |
+| Visayas contingency (Fr) | 2,850 | P11.48 | P5.12 | -P6.35 | 47.5% | 323 | P5.86 |
+| Visayas dispatchable (Dr) | 2,796 | P5.26 | P1.96 | -P3.29 | 65.9% | 349 | P1.08 |
+| Visayas regulation up (Ru) | 2,856 | P16.38 | P11.29 | -P5.09 | 50.2% | 306 | P4.75 |
+| Visayas regulation down (Rd) | 2,856 | P14.50 | P12.39 | -P2.11 | 66.5% | 305 | P2.00 |
+| Mindanao contingency (Fr) | 2,856 | P5.47 | P1.43 | -P4.04 | 52.9% | 337 | P3.42 |
+| Mindanao dispatchable (Dr) | 2,852 | P1.06 | P0.09 | -P0.97 | 87.8% | 421 | P0.28 |
+| Mindanao regulation up (Ru) | 2,856 | P17.55 | P13.97 | -P3.58 | 72.9% | 271 | P3.56 |
+| Mindanao regulation down (Rd) | 2,856 | P16.28 | P15.40 | -P0.88 | 88.2% | 266 | P0.83 |
 <!-- /reserve-table -->
 
 Exact hours match the official price within half a centavo. On Luzon
@@ -456,7 +456,7 @@ calculation date, and archive coverage appears with the editable inputs.
 
 | Input | Source | Refresh |
 | --- | --- | --- |
-| Hourly demand and recorded prices (128 days) | IEMOP regional summaries and final load-weighted average price files. Git history keeps files after the public window rolls forward. | Daily scheduled job |
+| Hourly demand and recorded prices (129 days) | IEMOP regional summaries and final load-weighted average price files. Git history keeps files after the public window rolls forward. | Daily scheduled job |
 | Per-unit fleet (355 units) | DOE List of Existing Power Plants, grid-connected. Luzon and Mindanao as of 2025-04-30, Visayas 2025-03-31 (Internet Archive captures of the DOE's own PDFs. doe.gov.ph refuses non-PH requests). The parser refuses any grid whose rows do not reconcile to the PDF's own per-fuel subtotals | Per DOE edition |
 | Link limits | IEMOP monthly reports (Leyte-Luzon 250 MW operating limit) and the MVIP nameplate | Sourced constants |
 | Fuel costs | ERC administered coal price, Malampaya FOI, imported-LNG estimate | Sourced constants |
