@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 126,
+   "days": 127,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -49,7 +49,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 104,
+   "days": 105,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 98,
+   "days": 99,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -104,7 +104,7 @@
   {
    "equipment": "1BAUA_1LAT2",
    "days": 25,
-   "rtd_intervals": 603,
+   "rtd_intervals": 608,
    "max_overload_mw": 69.11,
    "matched": true,
    "kind": "line",
@@ -118,7 +118,7 @@
   {
    "equipment": "1BAUA_1LAT1",
    "days": 24,
-   "rtd_intervals": 592,
+   "rtd_intervals": 594,
    "max_overload_mw": 69.11,
    "matched": true,
    "kind": "line",
@@ -574,6 +574,14 @@
    "why": "station token unresolved"
   },
   {
+   "equipment": "9WMPC_TR1",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
    "equipment": "1BAUAN_TR1",
    "days": 1,
    "rtd_intervals": 67,
@@ -805,14 +813,6 @@
    "matched": true,
    "kind": "station",
    "station": "Ubay Substation"
-  },
-  {
-   "equipment": "9WMPC_TR1",
-   "days": 1,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": false,
-   "why": "station token unresolved"
   },
   {
    "equipment": "BAY_TO_BATANGAS",
