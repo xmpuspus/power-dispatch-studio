@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 129,
+   "days": 130,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -305,6 +305,14 @@
    "path_edges": 1
   },
   {
+   "equipment": "1KDAMEHV_TR3",
+   "days": 4,
+   "rtd_intervals": 55,
+   "max_overload_mw": 221.96,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
    "equipment": "3BINA_3DAS1",
    "days": 4,
    "rtd_intervals": 43,
@@ -372,14 +380,6 @@
    "max_overload_mw": 0.0,
    "matched": false,
    "why": "no plausible path in the graph"
-  },
-  {
-   "equipment": "1KDAMEHV_TR3",
-   "days": 3,
-   "rtd_intervals": 18,
-   "max_overload_mw": 221.96,
-   "matched": false,
-   "why": "station token unresolved"
   },
   {
    "equipment": "3DASMA_TR1",
@@ -474,6 +474,14 @@
    "max_overload_mw": 0.0,
    "matched": false,
    "why": "unparsed code"
+  },
+  {
+   "equipment": "1KDAMEHV_TR4",
+   "days": 2,
+   "rtd_intervals": 55,
+   "max_overload_mw": 222.83,
+   "matched": false,
+   "why": "station token unresolved"
   },
   {
    "equipment": "1BALI_1KDA1",
@@ -595,14 +603,6 @@
    "days": 1,
    "rtd_intervals": 28,
    "max_overload_mw": 0.0,
-   "matched": false,
-   "why": "station token unresolved"
-  },
-  {
-   "equipment": "1KDAMEHV_TR4",
-   "days": 1,
-   "rtd_intervals": 18,
-   "max_overload_mw": 222.83,
    "matched": false,
    "why": "station token unresolved"
   },
