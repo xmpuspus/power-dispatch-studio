@@ -1,7 +1,7 @@
 {
  "window": {
   "from": "2026-04-07",
-  "to": "2026-08-20"
+  "to": "2026-08-21"
  },
  "q1": {
   "title": "How large is announced demand beside a recent system margin?",
@@ -13,7 +13,7 @@
  "q2": {
   "title": "What do public records say about connection capacity?",
   "verdict": "They show where equipment reached a limit, but they do not publish available capacity for a specific site.",
-  "stat": "86 distinct pieces of equipment (103 monitored constraints) hit limits across the real-time and day-ahead runs on 136 archive days; the Leyte-Luzon HVDC ran at max or offline 69% of Dec 2025",
+  "stat": "86 distinct pieces of equipment (103 monitored constraints) hit limits across the real-time and day-ahead runs on 137 archive days; the Leyte-Luzon HVDC ran at max or offline 69% of Dec 2025",
   "blurb": "The inter-island links and named 230 kV lines already reach their limits often; the table names the affected equipment. Nearly every announced data-center megawatt sits on Luzon, which already supplies power south over those links. Connection capacity still has to be checked at the actual site and interval. Luzon scheduled reserves fell below the stated requirement in at least one 5-minute interval on 76 of the window's days.",
   "src": "IEMOP congestions-manifesting files; IEMOP Dec 2025 report; IEMOP outage schedules"
  },
