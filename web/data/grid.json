@@ -11,13 +11,13 @@
   },
   "bound_line_features": 31,
   "bound_stations": 20,
-  "equipment_total": 88,
-  "equipment_matched": 49
+  "equipment_total": 89,
+  "equipment_matched": 50
  },
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 135,
+   "days": 136,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -49,7 +49,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 112,
+   "days": 113,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 105,
+   "days": 106,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -500,6 +500,20 @@
    "why": "station token unresolved"
   },
   {
+   "equipment": "5CEBU_5MAN1",
+   "days": 2,
+   "rtd_intervals": 8,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Cebu City Substation",
+    "Mandaue Gas Insulated Substation"
+   ],
+   "path_km": 7.0,
+   "path_edges": 1
+  },
+  {
    "equipment": "11VILL_11JAS2",
    "days": 2,
    "rtd_intervals": 5,
@@ -520,6 +534,20 @@
    "max_overload_mw": 0.0,
    "matched": false,
    "why": "station token unresolved"
+  },
+  {
+   "equipment": "09AURO_09NAG2",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Aurora Substation & Relay",
+    "Naga Substation"
+   ],
+   "path_km": 118.2,
+   "path_edges": 1
   },
   {
    "equipment": "14KIDAP_TR1",
@@ -622,6 +650,15 @@
    "max_overload_mw": 0.0,
    "matched": false,
    "why": "station token unresolved"
+  },
+  {
+   "equipment": "14TACUR_TR4",
+   "days": 1,
+   "rtd_intervals": 7,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Tacurong Substation"
   },
   {
    "equipment": "1PANT_1CBN1",
@@ -735,20 +772,6 @@
    "station": "Pitogo Substation"
   },
   {
-   "equipment": "09AURO_09NAG2",
-   "days": 1,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": true,
-   "kind": "line",
-   "stations": [
-    "Aurora Substation & Relay",
-    "Naga Substation"
-   ],
-   "path_km": 118.2,
-   "path_edges": 1
-  },
-  {
    "equipment": "11JASA_12NAS1",
    "days": 1,
    "rtd_intervals": 0,
@@ -803,20 +826,6 @@
    "matched": true,
    "kind": "station",
    "station": "Dasmari\u00f1as Substation"
-  },
-  {
-   "equipment": "5CEBU_5MAN1",
-   "days": 1,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": true,
-   "kind": "line",
-   "stations": [
-    "Cebu City Substation",
-    "Mandaue Gas Insulated Substation"
-   ],
-   "path_km": 7.0,
-   "path_edges": 1
   },
   {
    "equipment": "5COLON_TR2",

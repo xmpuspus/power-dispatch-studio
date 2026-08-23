@@ -1,25 +1,25 @@
 {
  "window": {
   "from": "2026-04-07",
-  "to": "2026-08-22"
+  "to": "2026-08-23"
  },
- "days_covered": 138,
- "days_with_base_case_binding": 138,
- "distinct_equipment": 88,
- "constraint_records": 105,
- "total_rtd_intervals": 9010,
- "total_dap_rows": 45424,
+ "days_covered": 139,
+ "days_with_base_case_binding": 139,
+ "distinct_equipment": 89,
+ "constraint_records": 106,
+ "total_rtd_intervals": 9025,
+ "total_dap_rows": 45740,
  "league": [
   {
    "equipment": "5DAAN_4TAB2",
    "station": "05DAANBN",
    "voltage": "230",
-   "days": 135,
+   "days": 136,
    "rtd_intervals": 77,
    "rtd_days": 23,
-   "dap_rows": 13676,
-   "dap_days": 135,
-   "base_case_rows": 13753,
+   "dap_rows": 13788,
+   "dap_days": 136,
+   "base_case_rows": 13865,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5
   },
@@ -53,12 +53,12 @@
    "equipment": "LEYTE_TO_CEBU",
    "station": "LEYTE_TO",
    "voltage": "",
-   "days": 112,
+   "days": 113,
    "rtd_intervals": 0,
    "rtd_days": 0,
-   "dap_rows": 3669,
-   "dap_days": 112,
-   "base_case_rows": 3669,
+   "dap_rows": 3729,
+   "dap_days": 113,
+   "base_case_rows": 3729,
    "max_overload_mw": 0.0,
    "max_pct_of_limit": 100.0
   },
@@ -66,12 +66,12 @@
    "equipment": "5DAAN_4TAB1",
    "station": "04TABANG",
    "voltage": "230",
-   "days": 105,
+   "days": 106,
    "rtd_intervals": 34,
    "rtd_days": 6,
-   "dap_rows": 5042,
-   "dap_days": 104,
-   "base_case_rows": 5076,
+   "dap_rows": 5070,
+   "dap_days": 105,
+   "base_case_rows": 5104,
    "max_overload_mw": 11.89,
    "max_pct_of_limit": 105.9
   },
@@ -403,25 +403,25 @@
  ],
  "corridor_receipts": {
   "leyte_cebu_230kv": {
-   "days": 135,
+   "days": 136,
    "rtd_intervals": 139,
    "rtd_days": 27,
-   "dap_rows": 24511,
-   "dap_days": 135,
+   "dap_rows": 24711,
+   "dap_days": 136,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5,
    "matched_equipment": [
     {
      "name": "5DAAN_4TAB2",
-     "rows": 14068
+     "rows": 14180
     },
     {
      "name": "5DAAN_4TAB1",
-     "rows": 6913
+     "rows": 6941
     },
     {
      "name": "LEYTE_TO_CEBU",
-     "rows": 3669
+     "rows": 3729
     }
    ]
   }

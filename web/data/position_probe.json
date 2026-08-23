@@ -1,6 +1,6 @@
 {
  "generated_by": "pipeline/position_probe.py",
- "date": "2026-08-22",
+ "date": "2026-08-23",
  "scenario": "both Sual units out, 1294 MW of Luzon coal",
  "storage_mw": 1319,
  "storage_note": "the existing storage fleet is in both runs, the same way the studio carries it, so the browser reproduces these figures",
@@ -32,10 +32,10 @@
  "contracted_mw": 250,
  "book_mw": 350,
  "covered_share_pct": 66.7,
- "base_mean_spot_php_kwh": 5.9576,
+ "base_mean_spot_php_kwh": 5.6859,
  "scenario_mean_spot_php_kwh": 6.0001,
- "position_change_php": 255000.0,
- "open_cost_change_php": 153000.0,
- "net_change_php": 102000.0,
+ "position_change_php": 1885000.0,
+ "open_cost_change_php": 1131000.0,
+ "net_change_php": 754000.0,
  "note": "Energy marked against modeled spot. No capacity fee, no wheeling charge, no tax, and no credit terms."
 }

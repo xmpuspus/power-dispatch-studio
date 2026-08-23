@@ -89,7 +89,7 @@ Against the settlement-side LWAP (1,344 hours per grid).
 <!-- bc-lwap. updated from profiles.json by scripts/verify_claims.py --write. do not hand-edit -->
 | Grid | Recorded mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- | --- |
-| Luzon | P7.53/kWh | P6.00/kWh | P4.25 | -P1.53 | 0.27 | 22% |
+| Luzon | P7.53/kWh | P6.00/kWh | P4.25 | -P1.53 | 0.26 | 21% |
 | Visayas | P12.38/kWh | P6.00/kWh | P8.20 | -P6.38 | 0.12 | 33% |
 | Mindanao | P11.13/kWh | P6.00/kWh | P7.24 | -P5.13 | 0.02 | 6% |
 <!-- /bc-lwap -->
@@ -104,7 +104,7 @@ are subset statistics.
 <!-- bc-mcp. updated from profiles.json by scripts/verify_claims.py --write. do not hand-edit -->
 | Grid | Coverage | Recorded mean | Modeled mean | MAE | Bias | Correlation | High-hour hit |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Luzon | 2,028 of 2,064 h | P7.00/kWh | P6.00/kWh | P4.07 | -P1.00 | 0.35 | 29% |
+| Luzon | 2,028 of 2,064 h | P7.00/kWh | P6.00/kWh | P4.07 | -P1.00 | 0.34 | 28% |
 | Visayas | 1,297 of 2,064 h | P13.80/kWh | P6.00/kWh | P10.08 | -P7.80 | 0.08 | 24% |
 | Mindanao | 1,886 of 2,064 h | P11.36/kWh | P6.00/kWh | P8.00 | -P5.36 | 0.01 | 13% |
 <!-- /bc-mcp -->
@@ -220,11 +220,11 @@ method page.
 
 The reserve replay uses the first five-minute reserve offer book in each hour
 and the scheduled capacity in that interval. The last needed offer sets the
-calculated price. The comparison uses 128 days and twelve grid-product groups.
+calculated price. The comparison uses 129 days and twelve grid-product groups.
 Recorded reserve prices did not set the model inputs.
 
 The calculated average is lower in all twelve groups. It is higher in 9.1
-percent of about 36,747 scored hours, by at most P0.033/kWh. Official reserve
+percent of about 37,030 scored hours, by at most P0.033/kWh. Official reserve
 prices can include lost energy revenue. Public summary files do not pair each
 plant's energy and reserve offers, so the data cannot assign the full difference
 to one cause.
@@ -236,18 +236,18 @@ The last column excludes those hours.
 <!-- reserve-table. updated from market_ops.json by scripts/verify_claims.py --write. do not hand-edit -->
 | Pool | Hours | Recorded mean | Modeled mean | Bias | Exact hours | Scarcity hours | MAE outside scarcity |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Luzon contingency (Fr) | 3,072 | P6.01 | P2.36 | -P3.65 | 45.4% | 531 | P3.25 |
-| Luzon dispatchable (Dr) | 3,069 | P2.69 | P2.03 | -P0.65 | 83.3% | 430 | P0.45 |
-| Luzon regulation up (Ru) | 3,072 | P10.16 | P6.96 | -P3.20 | 66.6% | 983 | P2.73 |
-| Luzon regulation down (Rd) | 3,072 | P9.62 | P6.93 | -P2.69 | 54.7% | 975 | P2.98 |
-| Visayas contingency (Fr) | 3,066 | P11.76 | P5.17 | -P6.59 | 46.3% | 386 | P6.11 |
-| Visayas dispatchable (Dr) | 2,968 | P5.50 | P1.96 | -P3.54 | 64.0% | 396 | P1.15 |
-| Visayas regulation up (Ru) | 3,072 | P16.73 | P11.29 | -P5.44 | 49.3% | 306 | P5.17 |
-| Visayas regulation down (Rd) | 3,072 | P14.68 | P12.67 | -P2.01 | 68.3% | 305 | P1.90 |
-| Mindanao contingency (Fr) | 3,072 | P6.10 | P1.44 | -P4.66 | 50.2% | 406 | P3.75 |
-| Mindanao dispatchable (Dr) | 3,068 | P1.41 | P0.21 | -P1.20 | 85.8% | 513 | P0.32 |
-| Mindanao regulation up (Ru) | 3,072 | P17.68 | P13.52 | -P4.15 | 70.0% | 271 | P4.19 |
-| Mindanao regulation down (Rd) | 3,072 | P16.64 | P15.73 | -P0.91 | 88.4% | 266 | P0.86 |
+| Luzon contingency (Fr) | 3,096 | P5.97 | P2.34 | -P3.63 | 45.2% | 531 | P3.23 |
+| Luzon dispatchable (Dr) | 3,093 | P2.68 | P2.03 | -P0.65 | 83.4% | 430 | P0.44 |
+| Luzon regulation up (Ru) | 3,096 | P10.19 | P7.00 | -P3.19 | 66.7% | 983 | P2.72 |
+| Luzon regulation down (Rd) | 3,096 | P9.67 | P6.96 | -P2.71 | 54.7% | 975 | P3.01 |
+| Visayas contingency (Fr) | 3,090 | P11.80 | P5.16 | -P6.64 | 46.1% | 392 | P6.14 |
+| Visayas dispatchable (Dr) | 2,987 | P5.51 | P1.96 | -P3.55 | 64.0% | 401 | P1.14 |
+| Visayas regulation up (Ru) | 3,096 | P16.77 | P11.31 | -P5.46 | 49.3% | 306 | P5.20 |
+| Visayas regulation down (Rd) | 3,096 | P14.69 | P12.70 | -P2.00 | 68.5% | 305 | P1.89 |
+| Mindanao contingency (Fr) | 3,096 | P6.17 | P1.44 | -P4.72 | 49.8% | 413 | P3.78 |
+| Mindanao dispatchable (Dr) | 3,092 | P1.43 | P0.23 | -P1.20 | 85.7% | 523 | P0.33 |
+| Mindanao regulation up (Ru) | 3,096 | P17.70 | P13.49 | -P4.22 | 69.7% | 272 | P4.25 |
+| Mindanao regulation down (Rd) | 3,096 | P16.68 | P15.78 | -P0.90 | 88.5% | 266 | P0.86 |
 <!-- /reserve-table -->
 
 Exact hours match the official price within half a centavo. On Luzon
@@ -316,7 +316,7 @@ Two checks cover different questions.
    byte-for-byte linear-program text and match the saved results.
 
 2. **Recorded prices show where the cost model misses.** The comparison scores
-   dispatch against 56 market days. Luzon reaches 0.27 correlation with a
+   dispatch against 56 market days. Luzon reaches 0.26 correlation with a
    stated negative bias. Other views share the model's limits. Replay accuracy
    does not test each future case.
 
@@ -456,7 +456,7 @@ calculation date, and archive coverage appears with the editable inputs.
 
 | Input | Source | Refresh |
 | --- | --- | --- |
-| Hourly demand and recorded prices (138 days) | IEMOP regional summaries and final load-weighted average price files. Git history keeps files after the public window rolls forward. | Daily scheduled job |
+| Hourly demand and recorded prices (139 days) | IEMOP regional summaries and final load-weighted average price files. Git history keeps files after the public window rolls forward. | Daily scheduled job |
 | Per-unit fleet (355 units) | DOE List of Existing Power Plants, grid-connected. Luzon and Mindanao as of 2025-04-30, Visayas 2025-03-31 (Internet Archive captures of the DOE's own PDFs. doe.gov.ph refuses non-PH requests). The parser refuses any grid whose rows do not reconcile to the PDF's own per-fuel subtotals | Per DOE edition |
 | Link limits | IEMOP monthly reports (Leyte-Luzon 250 MW operating limit) and the MVIP nameplate | Sourced constants |
 | Fuel costs | ERC administered coal price, Malampaya FOI, imported-LNG estimate | Sourced constants |
