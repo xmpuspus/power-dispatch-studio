@@ -1,27 +1,40 @@
 {
  "window": {
   "from": "2026-04-07",
-  "to": "2026-08-23"
+  "to": "2026-08-24"
  },
- "days_covered": 139,
- "days_with_base_case_binding": 139,
+ "days_covered": 140,
+ "days_with_base_case_binding": 140,
  "distinct_equipment": 89,
  "constraint_records": 106,
  "total_rtd_intervals": 9025,
- "total_dap_rows": 45740,
+ "total_dap_rows": 45848,
  "league": [
   {
    "equipment": "5DAAN_4TAB2",
    "station": "05DAANBN",
    "voltage": "230",
-   "days": 136,
+   "days": 137,
    "rtd_intervals": 77,
    "rtd_days": 23,
-   "dap_rows": 13788,
-   "dap_days": 136,
-   "base_case_rows": 13865,
+   "dap_rows": 13863,
+   "dap_days": 137,
+   "base_case_rows": 13940,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5
+  },
+  {
+   "equipment": "LEYTE_TO_CEBU",
+   "station": "LEYTE_TO",
+   "voltage": "",
+   "days": 114,
+   "rtd_intervals": 0,
+   "rtd_days": 0,
+   "dap_rows": 3762,
+   "dap_days": 114,
+   "base_case_rows": 3762,
+   "max_overload_mw": 0.0,
+   "max_pct_of_limit": 100.0
   },
   {
    "equipment": "1EHVNGS_TR2",
@@ -46,19 +59,6 @@
    "dap_rows": 5752,
    "dap_days": 111,
    "base_case_rows": 0,
-   "max_overload_mw": 0.0,
-   "max_pct_of_limit": 100.0
-  },
-  {
-   "equipment": "LEYTE_TO_CEBU",
-   "station": "LEYTE_TO",
-   "voltage": "",
-   "days": 113,
-   "rtd_intervals": 0,
-   "rtd_days": 0,
-   "dap_rows": 3729,
-   "dap_days": 113,
-   "base_case_rows": 3729,
    "max_overload_mw": 0.0,
    "max_pct_of_limit": 100.0
   },
@@ -403,17 +403,17 @@
  ],
  "corridor_receipts": {
   "leyte_cebu_230kv": {
-   "days": 136,
+   "days": 137,
    "rtd_intervals": 139,
    "rtd_days": 27,
-   "dap_rows": 24711,
-   "dap_days": 136,
+   "dap_rows": 24819,
+   "dap_days": 137,
    "max_overload_mw": 26.73,
    "max_pct_of_limit": 112.5,
    "matched_equipment": [
     {
      "name": "5DAAN_4TAB2",
-     "rows": 14180
+     "rows": 14255
     },
     {
      "name": "5DAAN_4TAB1",
@@ -421,7 +421,7 @@
     },
     {
      "name": "LEYTE_TO_CEBU",
-     "rows": 3729
+     "rows": 3762
     }
    ]
   }
