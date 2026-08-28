@@ -10,8 +10,8 @@ https://power-dispatch-studio.vercel.app.
 ## Contents
 
 - [Save, compare, and export a scenario in the browser](#save-compare-and-export-a-scenario-in-the-browser)
-- [The Leyte-Cebu link reached a binding limit on 139 of 142 days](#the-leyte-cebu-link-reached-a-binding-limit-on-139-of-142-days)
-- [Luzon reserves fell short on 76 of the window's 142 days](#luzon-reserves-fell-short-on-76-of-the-windows-142-days)
+- [The Leyte-Cebu link reached a binding limit on 140 of 143 days](#the-leyte-cebu-link-reached-a-binding-limit-on-140-of-143-days)
+- [Luzon reserves fell short on 76 of the window's 143 days](#luzon-reserves-fell-short-on-76-of-the-windows-143-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
 - [Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.85) but reverse in Visayas (-0.58)](#modeled-loss-ranks-agree-in-luzon-072-and-mindanao-085-but-reverse-in-visayas--058)
 - [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
@@ -41,14 +41,14 @@ The script checks that the edit reaches the Run button, the results become
 current, two runs are saved, and the comparison appears. Sharper as
 [MP4](analyst-walkthrough.mp4).
 
-## The Leyte-Cebu link reached a binding limit on 139 of 142 days
+## The Leyte-Cebu link reached a binding limit on 140 of 143 days
 
 IEMOP publishes a "congestions manifesting" file that names transmission
 equipment at its binding limit for each 5-minute interval. This project archives
 and ranks those records. A row **literally named
-`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **116 of the window's 142 days**.
+`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **117 of the window's 143 days**.
 The 230 kV lines that carry that link, Tabango (Leyte) to Daanbantayan (Cebu),
-top the league. They are at a binding limit in the hourly day-ahead runs on **139 of 142
+top the league. They are at a binding limit in the hourly day-ahead runs on **140 of 143
 days**, and binding in the 5-minute real-time dispatch, the run settlement
 actually sees, on **23 days** of the window.
 
@@ -62,8 +62,8 @@ behind that statement.
 
 The same league as plain ranked bars, with no map, is [docs/constraint-league.gif](constraint-league.gif).
 
-Across the 142-day window, **89 distinct pieces of equipment** hit a limit at least
-once, in **106 monitored constraints** (a transformer is listed under each winding
+Across the 143-day window, **90 distinct pieces of equipment** hit a limit at least
+once, in **107 monitored constraints** (a transformer is listed under each winding
 voltage and a line at each terminal, so one physical asset can have more than one limit ID).
 The map ranks the constraints by days at a limit (a day counts once, so a day-ahead
 re-run cannot inflate it) and keeps the real-time and day-ahead counts in separate
@@ -89,7 +89,7 @@ The archived files pin them to one MW value in
 They record which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
-The System Operator's instruction log states why it changed dispatch. Across 139
+The System Operator's instruction log states why it changed dispatch. Across 140
 daily logs, its instructions carry a remark
 citing a line limitation **2,460 times, and 2,433 of those name the
 Leyte-Cebu link** ("Advise to discharge under MOT Raise due to
@@ -107,11 +107,11 @@ The must-run subset has a **6½ MW** median.
 
 The `so_instructions` section in the same file has both records.
 
-## Luzon reserves fell short on 76 of the window's 142 days
+## Luzon reserves fell short on 76 of the window's 143 days
 
 In the operator's real-time schedules, **Luzon reserves fell below the stated need
-on 76 of the window's 142 days**. Across the three grids, the schedules curtailed
-load on **139 grid-days (9,713.2 MWh)**. These figures describe published
+on 76 of the window's 143 days**. Across the three grids, the schedules curtailed
+load on **141 grid-days (9,825.6 MWh)**. These figures describe published
 schedules and do not forecast brownouts.
 
 The Visayas grid ran **52 consecutive days on grid alert from May 11 to July 1,
