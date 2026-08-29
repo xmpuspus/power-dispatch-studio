@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 140,
+   "days": 141,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -31,7 +31,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 117,
+   "days": 118,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 108,
+   "days": 109,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
