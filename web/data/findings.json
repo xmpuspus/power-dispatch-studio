@@ -3,9 +3,9 @@
   {
    "id": "corridor-named",
    "tag": "Recorded limit",
-   "title": "Leyte-Cebu reached a binding limit on 141 of 144 days",
-   "stat": "A row literally named LEYTE_TO_CEBU appears in the day-ahead runs on 118 of 144 days",
-   "blurb": "IEMOP's congestion files name equipment that reached its limit. The Tabango (Leyte) to Daanbantayan (Cebu) 230 kV lines had the most days at a limit, 141 of 144 archive days across the day-ahead and real-time runs, including 139 5-minute real-time intervals on 27 days. IEMOP's December 2025 report names the same transmission path.",
+   "title": "Leyte-Cebu reached a binding limit on 142 of 145 days",
+   "stat": "A row literally named LEYTE_TO_CEBU appears in the day-ahead runs on 119 of 145 days",
+   "blurb": "IEMOP's congestion files name equipment that reached its limit. The Tabango (Leyte) to Daanbantayan (Cebu) 230 kV lines had the most days at a limit, 142 of 145 archive days across the day-ahead and real-time runs, including 139 5-minute real-time intervals on 27 days. IEMOP's December 2025 report names the same transmission path.",
    "source": "IEMOP congestions-manifesting files (RTD + DAP), archive window",
    "focus": {
     "center": [
@@ -36,8 +36,8 @@
    "id": "thin-normal",
    "tag": "Reserve record",
    "title": "Scheduled reserves fell below requirement on most days",
-   "stat": "Luzon scheduled reserves fell below the stated requirement on 76 of 144 archive days",
-   "blurb": "IEMOP dispatch schedules show that load was curtailed on 143 grid-days in this window (9,923.9 MWh), and the Visayas ran short of scheduled reserves on 97 days. These are recorded operating conditions in the archive window.",
+   "stat": "Luzon scheduled reserves fell below the stated requirement on 76 of 145 archive days",
+   "blurb": "IEMOP dispatch schedules show that load was curtailed on 145 grid-days in this window (10,082.3 MWh), and the Visayas ran short of scheduled reserves on 98 days. These are recorded operating conditions in the archive window.",
    "source": "IEMOP RTD regional summaries, archive window",
    "focus": {
     "center": [
@@ -85,7 +85,7 @@
    "tag": "Visayas alerts",
    "title": "Visayas daily yellow alerts ran for 52 days",
    "stat": "Daily yellow alerts ran 2026-05-11 to 2026-07-01",
-   "blurb": "The streak ended when one 150 MW unit returned; 935.3 MW was still unavailable that day. In the same window the dispatch schedules show the Visayas short of scheduled reserves on 97 days, with 514.61 MWh of load curtailed in the schedules on 2026-06-25 alone.",
+   "blurb": "The streak ended when one 150 MW unit returned; 935.3 MW was still unavailable that day. In the same window the dispatch schedules show the Visayas short of scheduled reserves on 98 days, with 514.61 MWh of load curtailed in the schedules on 2026-06-25 alone.",
    "source": "NGCP advisories via SunStar and GMA (Jul 1-2, 2026); IEMOP RTD regional summaries",
    "focus": {
     "center": [

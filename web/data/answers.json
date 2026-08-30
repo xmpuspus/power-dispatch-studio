@@ -1,19 +1,19 @@
 {
  "window": {
   "from": "2026-04-07",
-  "to": "2026-08-28"
+  "to": "2026-08-29"
  },
  "q1": {
   "title": "How large is announced demand beside a recent system margin?",
   "verdict": "The figures are comparable in scale, but the national margin is not site connection headroom.",
   "stat": "1,500 MW forecast by 2028 vs a 3,629 MW May 2026 system margin",
-  "blurb": "DICT's 2028 forecast alone equals 41% of the whole system's May margin, and Meralco has committed 1,000 MW for 10 data centers. A data center is near-flat 24/7 load. IEMOP dispatch schedules recorded load curtailed on 143 grid days in this archive window (9,923.9 MWh). These figures establish scale; they do not establish connection headroom for a particular project.",
+  "blurb": "DICT's 2028 forecast alone equals 41% of the whole system's May margin, and Meralco has committed 1,000 MW for 10 data centers. A data center is near-flat 24/7 load. IEMOP dispatch schedules recorded load curtailed on 145 grid days in this archive window (10,082.3 MWh). These figures establish scale; they do not establish connection headroom for a particular project.",
   "src": "IEMOP May 2026 report; PCIJ (Meralco commitment); DICT forecast via BusinessWorld; IEMOP RTD regional summaries"
  },
  "q2": {
   "title": "What do public records say about connection capacity?",
   "verdict": "They show where equipment reached a limit, but they do not publish available capacity for a specific site.",
-  "stat": "90 distinct pieces of equipment (107 monitored constraints) hit limits across the real-time and day-ahead runs on 144 archive days; the Leyte-Luzon HVDC ran at max or offline 69% of Dec 2025",
+  "stat": "90 distinct pieces of equipment (107 monitored constraints) hit limits across the real-time and day-ahead runs on 145 archive days; the Leyte-Luzon HVDC ran at max or offline 69% of Dec 2025",
   "blurb": "The inter-island links and named 230 kV lines already reach their limits often; the table names the affected equipment. Nearly every announced data-center megawatt sits on Luzon, which already supplies power south over those links. Connection capacity still has to be checked at the actual site and interval. Luzon scheduled reserves fell below the stated requirement in at least one 5-minute interval on 76 of the window's days.",
   "src": "IEMOP congestions-manifesting files; IEMOP Dec 2025 report; IEMOP outage schedules"
  },
