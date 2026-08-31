@@ -272,16 +272,16 @@
    "mcp": null,
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2,
+     "coal": -80.7,
      "oil": 10.2
     }
    },
@@ -663,16 +663,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 45.1,
+     "natural_gas": -137.1,
+     "coal": 44.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -1051,16 +1051,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 45.1,
+     "natural_gas": -137.1,
+     "coal": 44.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -1441,16 +1441,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 45.1,
+     "natural_gas": -137.1,
+     "coal": 44.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -1831,16 +1831,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 45.1,
+     "natural_gas": -137.1,
+     "coal": 44.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -2219,16 +2219,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 45.1,
+     "natural_gas": -137.1,
+     "coal": 44.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -2609,16 +2609,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 45.1,
+     "natural_gas": -137.1,
+     "coal": 44.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -2997,16 +2997,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 45.1,
+     "natural_gas": -137.1,
+     "coal": 44.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -3387,16 +3387,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 45.1,
+     "natural_gas": -137.1,
+     "coal": 44.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -3777,16 +3777,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 45.1,
+     "natural_gas": -137.1,
+     "coal": 44.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -4165,16 +4165,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -4527,16 +4527,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -4915,16 +4915,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -5305,16 +5305,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -5693,16 +5693,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -6083,16 +6083,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -6473,16 +6473,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -6863,17 +6863,17 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2,
      "solar": 108.1
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -7254,16 +7254,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -7644,16 +7644,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -8034,16 +8034,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -8422,16 +8422,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -8812,16 +8812,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -9172,16 +9172,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": null
@@ -9560,16 +9560,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -9952,16 +9952,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -10316,16 +10316,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 116.8,
+     "coal": 116.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -10708,16 +10708,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 116.8,
+     "coal": 116.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -298.9,
+     "natural_gas": 283.0,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -11100,16 +11100,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -11492,16 +11492,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -11886,16 +11886,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -12278,16 +12278,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -12642,16 +12642,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -13036,16 +13036,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -13430,16 +13430,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -13825,16 +13825,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -14220,16 +14220,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -14615,16 +14615,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -15010,16 +15010,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -15404,16 +15404,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -15796,16 +15796,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -298.9,
+     "natural_gas": 283.0,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -16160,16 +16160,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -16445,16 +16445,16 @@
    "mcp": null,
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -16811,16 +16811,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -17178,16 +17178,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -17545,16 +17545,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -17912,16 +17912,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -18307,16 +18307,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -18702,16 +18702,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -19096,16 +19096,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -19490,16 +19490,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -19885,16 +19885,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": 2.8
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -20252,16 +20252,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": 2.8
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -20646,16 +20646,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": 2.8
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -21038,16 +21038,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": 2.8
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -21432,16 +21432,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -21796,16 +21796,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -22162,16 +22162,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -22528,16 +22528,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -22894,16 +22894,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -23258,16 +23258,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -23652,16 +23652,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": 208.1,
+     "natural_gas": 283.0,
+     "coal": 207.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -24016,16 +24016,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 74.6,
+     "natural_gas": -137.1,
+     "coal": 74.4,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -24382,16 +24382,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 74.6,
+     "natural_gas": -137.1,
+     "coal": 74.4,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -24750,16 +24750,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": 6.8
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 74.6,
+     "natural_gas": -137.1,
+     "coal": 74.4,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -25117,16 +25117,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 74.6,
+     "natural_gas": -137.1,
+     "coal": 74.4,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -25512,16 +25512,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 74.6,
+     "natural_gas": -137.1,
+     "coal": 74.4,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -25907,16 +25907,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -58.9,
+     "natural_gas": -137.1,
+     "coal": -59.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -26271,16 +26271,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -58.9,
+     "natural_gas": -137.1,
+     "coal": -59.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -26637,16 +26637,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -58.9,
+     "natural_gas": 283.0,
+     "coal": -59.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -27004,16 +27004,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -58.9,
+     "natural_gas": 283.0,
+     "coal": -59.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -27372,16 +27372,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -58.9,
+     "natural_gas": 283.0,
+     "coal": -59.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -27739,16 +27739,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -58.9,
+     "natural_gas": 283.0,
+     "coal": -59.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -28106,16 +28106,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -58.9,
+     "natural_gas": 283.0,
+     "coal": -59.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -28502,16 +28502,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 116.8,
+     "coal": 116.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -58.9,
+     "natural_gas": 283.0,
+     "coal": -59.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -28868,16 +28868,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 116.8,
+     "coal": 116.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": 17.1,
+     "natural_gas": 283.0,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -29236,16 +29236,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": 17.1,
+     "natural_gas": 283.0,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -29603,16 +29603,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": 17.1,
+     "natural_gas": 283.0,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -29998,16 +29998,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": 17.1,
+     "natural_gas": 283.0,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -30365,16 +30365,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 116.8,
+     "coal": 116.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": 17.1,
+     "natural_gas": 283.0,
+     "coal": 16.9,
      "biomass": 10.6
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -30731,16 +30731,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 116.8,
+     "coal": 116.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": 17.1,
+     "natural_gas": 283.0,
+     "coal": 16.9,
      "biomass": 10.6
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -31123,16 +31123,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": 17.1,
+     "natural_gas": 283.0,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -31515,16 +31515,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -298.9,
+     "natural_gas": 283.0,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -31907,16 +31907,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -298.9,
+     "natural_gas": 283.0,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": -80.2
+     "coal": -80.7
     }
    },
    "hydro_budget_mwh": {
@@ -32302,16 +32302,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -298.9,
+     "natural_gas": 283.0,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -32666,16 +32666,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -165.4,
+     "natural_gas": 283.0,
+     "coal": -165.6,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -33058,16 +33058,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -31.9,
+     "natural_gas": 283.0,
+     "coal": -32.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -33452,16 +33452,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -31.9,
+     "natural_gas": 283.0,
+     "coal": -32.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -33846,16 +33846,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": 33.0
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -31.9,
+     "natural_gas": 283.0,
+     "coal": -32.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -34241,16 +34241,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -31.9,
+     "natural_gas": 283.0,
+     "coal": -32.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -34635,16 +34635,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -31.9,
+     "natural_gas": 283.0,
+     "coal": -32.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -35029,16 +35029,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": 33.0
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -31.9,
+     "natural_gas": 283.0,
+     "coal": -32.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -35424,16 +35424,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": 33.0
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -31.9,
+     "natural_gas": 283.0,
+     "coal": -32.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -35818,16 +35818,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -31.9,
+     "natural_gas": 283.0,
+     "coal": -32.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -36212,16 +36212,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -31.9,
+     "natural_gas": 283.0,
+     "coal": -32.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -36578,16 +36578,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -165.4,
+     "natural_gas": 283.0,
+     "coal": -165.6,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -36972,16 +36972,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -165.4,
+     "natural_gas": 283.0,
+     "coal": -165.6,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -37366,16 +37366,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -298.9,
+     "natural_gas": 283.0,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -37760,16 +37760,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 281.8,
-     "coal": -298.9,
+     "natural_gas": 283.0,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -38152,16 +38152,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 42.8
+     "coal": 42.3
     }
    },
    "hydro_budget_mwh": {
@@ -38546,16 +38546,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -38938,16 +38938,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -39330,16 +39330,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": 6.8
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -39722,16 +39722,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": 6.8
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": -298.9,
+     "natural_gas": -137.1,
+     "coal": -299.1,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -40114,16 +40114,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 17.1,
+     "natural_gas": -137.1,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -40508,16 +40508,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 17.1,
+     "natural_gas": -137.1,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -40902,16 +40902,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": -33.2,
+     "coal": -33.6,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 17.1,
+     "natural_gas": -137.1,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -41296,16 +41296,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 17.1,
+     "natural_gas": -137.1,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -41688,16 +41688,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 17.1,
+     "natural_gas": -137.1,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -42080,16 +42080,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 122.3,
-     "coal": 17.1,
+     "natural_gas": 123.5,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": {
@@ -42367,16 +42367,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 122.3,
-     "coal": 17.1,
+     "natural_gas": 123.5,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 24.8
+     "coal": 24.3
     }
    },
    "hydro_budget_mwh": null
@@ -42650,16 +42650,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 17.1,
+     "natural_gas": -137.1,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -42933,16 +42933,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -43216,16 +43216,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -43499,16 +43499,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -43782,16 +43782,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 122.3,
-     "coal": 399.1,
+     "natural_gas": 123.5,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -44065,16 +44065,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 122.3,
-     "coal": 399.1,
+     "natural_gas": 123.5,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -44348,16 +44348,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 122.3,
-     "coal": 399.1,
+     "natural_gas": 123.5,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -44633,16 +44633,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -44891,16 +44891,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -45149,16 +45149,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -45407,16 +45407,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -45665,16 +45665,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -45951,16 +45951,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -46236,16 +46236,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 639.1,
+     "natural_gas": -137.1,
+     "coal": 638.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -46493,16 +46493,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 639.1,
+     "natural_gas": -137.1,
+     "coal": 638.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -46750,16 +46750,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 639.1,
+     "natural_gas": -137.1,
+     "coal": 638.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 162.8
+     "coal": 162.3
     }
    },
    "hydro_budget_mwh": null
@@ -47007,16 +47007,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 639.1,
+     "natural_gas": -137.1,
+     "coal": 638.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -47264,16 +47264,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 639.1,
+     "natural_gas": -137.1,
+     "coal": 638.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -47521,16 +47521,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 382.9,
-     "coal": 639.1,
+     "natural_gas": 384.1,
+     "coal": 638.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -47807,16 +47807,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 382.9,
-     "coal": 639.1,
+     "natural_gas": 384.1,
+     "coal": 638.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -48093,16 +48093,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": 382.9,
-     "coal": 399.1,
+     "natural_gas": 384.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -48350,16 +48350,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -48607,16 +48607,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -48865,16 +48865,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -49123,16 +49123,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -49378,16 +49378,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -49661,16 +49661,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -49946,16 +49946,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -50204,16 +50204,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -50462,16 +50462,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -50720,16 +50720,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -50978,16 +50978,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -51236,16 +51236,16 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 399.1,
+     "natural_gas": -137.1,
+     "coal": 398.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -51522,16 +51522,302 @@
    },
    "out_dev_mw": {
     "visayas": {
-     "coal": 48.8,
+     "coal": 48.4,
      "oil": -1.2
     },
     "luzon": {
-     "natural_gas": -138.3,
-     "coal": 17.1,
+     "natural_gas": -137.1,
+     "coal": 16.9,
      "biomass": -0.2
     },
     "mindanao": {
-     "coal": 57.8
+     "coal": 57.3
+    }
+   },
+   "hydro_budget_mwh": null
+  },
+  {
+   "date": "2026-08-30",
+   "market": true,
+   "demand": {
+    "luzon": [
+     7774,
+     7541,
+     7332,
+     7214,
+     7176,
+     7211,
+     7203,
+     7323,
+     7646,
+     8147,
+     8563,
+     8670,
+     8514,
+     8546,
+     8445,
+     8395,
+     8452,
+     8718,
+     9235,
+     9423,
+     9284,
+     9083,
+     8749,
+     8326
+    ],
+    "visayas": [
+     1951,
+     1879,
+     1821,
+     1780,
+     1756,
+     1721,
+     1704,
+     1728,
+     1801,
+     1894,
+     1947,
+     1998,
+     1997,
+     2049,
+     2090,
+     2095,
+     2099,
+     2147,
+     2131,
+     1989,
+     2096,
+     2139,
+     2100,
+     2004
+    ],
+    "mindanao": [
+     1966,
+     1908,
+     1857,
+     1808,
+     1775,
+     1750,
+     1708,
+     1743,
+     1794,
+     1903,
+     1992,
+     2052,
+     2110,
+     2152,
+     2172,
+     2187,
+     2116,
+     2115,
+     2323,
+     2303,
+     2262,
+     2183,
+     2118,
+     2034
+    ]
+   },
+   "net_flow": {
+    "lv": [
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     100.0,
+     66.7,
+     50.0,
+     33.0,
+     31.0,
+     43.5,
+     46.4,
+     49.4,
+     50.0,
+     50.0,
+     50.0,
+     50.0,
+     50.0,
+     50.0,
+     50.0,
+     50.0,
+     50.0,
+     87.5,
+     116.7
+    ],
+    "vm": [
+     -375.2,
+     -335.7,
+     -287.3,
+     -303.8,
+     -285.2,
+     -281.3,
+     -249.7,
+     -231.9,
+     -175.2,
+     -117.0,
+     -94.3,
+     -86.3,
+     -47.8,
+     -75.5,
+     -82.4,
+     -107.7,
+     -205.3,
+     -307.1,
+     -273.7,
+     -166.1,
+     -247.4,
+     -280.1,
+     -249.1,
+     -237.9
+    ]
+   },
+   "curtailed_mwh": {
+    "visayas": 29.8,
+    "mindanao": 311.7
+   },
+   "reserve_req_mw": {
+    "luzon": {
+     "Dr": 603.0,
+     "Fr": 605.7,
+     "Rd": 171.3,
+     "Ru": 171.3
+    },
+    "visayas": {
+     "Dr": 103.9,
+     "Fr": 125.3,
+     "Rd": 40.8,
+     "Ru": 40.8
+    },
+    "mindanao": {
+     "Dr": 110.4,
+     "Fr": 110.9,
+     "Rd": 40.8,
+     "Ru": 40.8
+    }
+   },
+   "lwap": {},
+   "mcp": {
+    "luzon": [
+     0.734,
+     -4.183,
+     0.834,
+     -0.019,
+     0.087,
+     -0.83,
+     -10.0,
+     -8.559,
+     0.059,
+     1.351,
+     2.989,
+     1.462,
+     -5.714,
+     -7.341,
+     5.67,
+     2.549,
+     2.987,
+     3.279,
+     4.917,
+     3.435,
+     2.911,
+     2.741,
+     2.772,
+     2.767
+    ],
+    "visayas": [
+     32.0,
+     32.0,
+     24.205,
+     18.929,
+     4.592,
+     4.391,
+     6.056,
+     0.0,
+     0.0,
+     null,
+     9.941,
+     4.34,
+     3.277,
+     22.661,
+     26.256,
+     28.32,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     32.0,
+     32.0
+    ],
+    "mindanao": [
+     32.0,
+     32.0,
+     32.0,
+     12.05,
+     5.114,
+     4.108,
+     2.788,
+     1.902,
+     3.328,
+     2.851,
+     8.037,
+     3.328,
+     3.915,
+     22.442,
+     31.509,
+     32.0,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     32.0
+    ]
+   },
+   "corridor_caps": {
+    "leyte": [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     0.633,
+     1.0,
+     0.833,
+     0.9,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     0.833,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   },
+   "out_dev_mw": {
+    "visayas": {
+     "coal": 48.4,
+     "oil": -1.2
+    },
+    "luzon": {
+     "natural_gas": -137.1,
+     "coal": 16.9,
+     "biomass": -0.2
+    },
+    "mindanao": {
+     "coal": 57.3
     }
    },
    "hydro_budget_mwh": null
@@ -51590,10 +51876,10 @@
  "storage_note": "The chronological run charges below the daily 25th percentile price and discharges above the 75th percentile. Those thresholds come from a calculation without storage. The snapshot views keep storage out of the energy stack, as before.",
  "reserve_req_mean_mw": {
   "luzon": {
-   "Dr": 613.8,
-   "Fr": 643.7,
-   "Rd": 214.5,
-   "Ru": 214.5
+   "Dr": 613.7,
+   "Fr": 643.4,
+   "Rd": 214.2,
+   "Ru": 214.2
   },
   "visayas": {
    "Dr": 104.3,
@@ -51603,9 +51889,9 @@
   },
   "mindanao": {
    "Dr": 117.4,
-   "Fr": 118.0,
-   "Rd": 43.4,
-   "Ru": 43.4
+   "Fr": 117.9,
+   "Rd": 43.3,
+   "Ru": 43.3
   }
  },
  "reserve_req_note": "Mean scheduled reserve requirement per grid and commodity over the archive window (RTDSUM MKT_REQT; Ru/Rd regulation, Dr dispatchable, Fr contingency mapping INFERRED as in reserve.json).",
@@ -51674,7 +51960,7 @@
     "input": {
      "date": "2026-07-22"
     },
-    "lp_sha256": "f27126a2e948bb8e10c32f92ab60fb865c7a449f3e8835f79f376b9c3e22d22c",
+    "lp_sha256": "f94a70b73f2b871a4aea2d22ed1ade42a7f06ca5e99abe64b8b73eda72c72346",
     "expect": {
      "price": {
       "luzon": [
@@ -51916,7 +52202,7 @@
       "luzon": 1500
      }
     },
-    "lp_sha256": "cb13260ab8740b9f1b5df352b2e6de02439cf25dffb25f66628d46f6e0b92ecd",
+    "lp_sha256": "1c9684f59307c9cfb2f2c3eedaf1ea2deea429caf8c3f5ce6a035dfea09f2e73",
     "expect": {
      "price": {
       "luzon": [
@@ -52008,10 +52294,10 @@
       0.0,
       0.0,
       0.0,
-      -220.8,
+      -221.8,
       -250.0,
       -250.0,
-      -180.8,
+      -181.8,
       -250.0,
       -250.0,
       -250.0,
@@ -52041,11 +52327,11 @@
       0.0,
       0.0,
       0.0,
-      -7.4,
-      -90.4,
-      -239.4,
-      -121.7,
-      -74.7,
+      -7.0,
+      -90.0,
+      -239.0,
+      -121.3,
+      -74.3,
       0.0,
       0.0,
       0.0
@@ -52165,7 +52451,7 @@
       }
      ]
     },
-    "lp_sha256": "0ff5cae18d9496f3380a9638b2603f13aaad08762b2ec360dd3f36fe68697e9d",
+    "lp_sha256": "8770fc490a5fd3345c04eafb08a13f4ce0b9a7c02c252b5535acb13252ff8cbf",
     "expect": {
      "price": {
       "luzon": [
@@ -52408,7 +52694,7 @@
      },
      "hydrology": 0.344
     },
-    "lp_sha256": "a0726d52194a743c8fd1d5e67946a4a9adf7da71edee720fbb2074842bfb25c3",
+    "lp_sha256": "7cc3cb156b9ae13fc6c265170d33c9d392c396865c20e9a7f87db419ae986316",
     "expect": {
      "price": {
       "luzon": [
@@ -52509,7 +52795,7 @@
       -250.0,
       -250.0,
       -250.0,
-      -246.4,
+      -247.3,
       -208.3,
       -229.3,
       -229.3,
@@ -52533,12 +52819,12 @@
       0.0,
       0.0,
       0.0,
-      -27.3,
-      -110.3,
-      -255.7,
-      -141.6,
-      -94.6,
-      -17.6,
+      -26.9,
+      -109.9,
+      -256.2,
+      -141.2,
+      -94.2,
+      -17.2,
       0.0,
       0.0
      ],
@@ -52652,7 +52938,7 @@
       }
      }
     },
-    "lp_sha256": "b4a1e228b705d76b5c9deb9d9817ec1fca440e66e41e9cdf1fd7375fbc2b01f9",
+    "lp_sha256": "afdffc8bd8e5a5612aec3a5d9990f2279a45e6f7ddb82a5d4281d54401d82f98",
     "expect": {
      "price": {
       "luzon": [
@@ -52744,9 +53030,9 @@
       0.0,
       0.0,
       0.0,
-      -14.8,
-      -53.8,
-      -76.8,
+      -15.8,
+      -54.8,
+      -77.8,
       0.0,
       -250.0,
       -250.0,
@@ -52777,11 +53063,11 @@
       0.0,
       0.0,
       0.0,
-      -7.4,
-      -90.4,
-      -239.4,
-      -121.7,
-      -74.7,
+      -7.0,
+      -90.0,
+      -239.0,
+      -121.3,
+      -74.3,
       0.0,
       0.0,
       0.0
@@ -52906,7 +53192,7 @@
       }
      ]
     },
-    "lp_sha256": "c1a2a576b581b807deedff523df9032b025b94ff5c4cd7aa2e83b156e73811a8",
+    "lp_sha256": "ca5ee758bbdf5bb492eae6bf510e6db545571b8dfb34437753c4bac122f3b7f1",
     "expect": {
      "price": {
       "luzon": [
@@ -52998,10 +53284,10 @@
       0.0,
       0.0,
       0.0,
-      -220.8,
+      -221.8,
       -250.0,
       -250.0,
-      -234.0,
+      -237.5,
       -250.0,
       -250.0,
       -250.0,
@@ -53031,39 +53317,39 @@
       0.0,
       0.0,
       0.0,
-      -7.4,
-      -90.4,
-      -239.4,
-      -121.7,
-      -74.7,
+      -7.0,
+      -90.0,
+      -239.0,
+      -121.3,
+      -74.3,
       0.0,
       0.0,
       0.0
      ],
      "soc_mwh": [
-      372.2,
-      912.3,
-      1602.1,
-      2508.6,
-      3190.3,
-      3738.3,
-      4286.3,
+      371.4,
+      910.7,
+      1599.7,
+      2505.4,
+      3188.7,
+      3736.7,
+      4284.7,
       4744.0,
       4744.0,
       4744.0,
-      4734.2,
-      4701.4,
+      4733.2,
+      4699.4,
       4744.0,
       4744.0,
       4744.0,
       4744.0,
       4744.0,
-      4307.8,
-      3622.8,
-      2937.8,
-      2252.8,
-      1066.6,
-      248.8,
+      4308.8,
+      3623.8,
+      2938.8,
+      2253.8,
+      1068.6,
+      249.8,
       0.0
      ],
      "shortfall_luzon": [
@@ -53146,7 +53432,7 @@
      "date": "2026-07-22",
      "reserve_deduction": true
     },
-    "lp_sha256": "807b6023ab651cec1b2820a5571ec957383a1bf7e018e1392ac4cfda3e9c680f",
+    "lp_sha256": "9dd9a3162fdbd7b5f9856e55a79ee6b25181129a96aba49085fb66d75e697747",
     "expect": {
      "price": {
       "luzon": [
@@ -53388,7 +53674,7 @@
       "luzon": 40000
      }
     },
-    "lp_sha256": "1ccd953b1ea87783dedfec2df6eb6fa9cf2534b66719197d402ca79a9cd09d17",
+    "lp_sha256": "8d607521d67d54ede3a6987798ece589489f503a4c7e4a0f329b3088684bca27",
     "expect": {
      "price": {
       "luzon": [
@@ -53513,11 +53799,11 @@
       0.0,
       0.0,
       0.0,
-      -7.4,
-      -90.4,
-      -239.4,
-      -121.7,
-      -74.7,
+      -7.0,
+      -90.0,
+      -239.0,
+      -121.3,
+      -74.3,
       0.0,
       0.0,
       0.0
@@ -54374,7 +54660,7 @@
      }
     ]
    },
-   "lp_sha256": "2b378efaef191d2bf1115a9510c6de6857455ca07ba7c5c19937af1aedaffc89",
+   "lp_sha256": "62830a914ffe3834f0bbb1df34b2999d456a4bfc483fbb205e2fc1cdcb25d832",
    "expect": {
     "price": {
      "luzon": [
@@ -54892,122 +55178,122 @@
      0.0,
      0.0,
      0.0,
-     31.4,
-     249.9,
-     692.5,
-     1719.8,
-     3319.8,
-     4919.8,
-     6519.8,
-     8119.8,
-     9719.8,
-     11319.8,
-     12919.8,
-     14519.8,
-     15795.9,
-     15795.9,
-     15795.9,
-     15795.9,
-     15795.9,
-     15795.9,
-     15795.9,
-     15795.9,
-     15721.0,
-     15660.0,
-     15660.0,
-     15660.0,
-     15660.0,
-     15660.0,
-     15660.0,
-     15660.0,
-     15660.0,
-     15660.0,
-     15660.0,
-     15660.0,
-     15731.2,
+     30.6,
+     248.3,
+     690.1,
+     1716.6,
+     3316.6,
+     4916.6,
+     6516.6,
+     8116.6,
+     9716.6,
+     11316.6,
+     12916.6,
+     14516.6,
+     15805.8,
+     15805.8,
+     15805.8,
+     15805.8,
+     15805.8,
+     15805.8,
+     15805.8,
+     15805.8,
+     15723.9,
+     15661.9,
+     15661.9,
+     15661.9,
+     15661.9,
+     15661.9,
+     15661.9,
+     15661.9,
+     15661.9,
+     15661.9,
+     15661.9,
+     15661.9,
+     15732.2,
      16000.0,
      16000.0,
      16000.0,
      16000.0,
      16000.0,
      16000.0,
-     15463.2,
-     14651.4,
-     13669.0,
-     11819.2,
-     10312.4,
-     9308.4,
-     8793.6,
-     8422.8,
-     8163.0,
-     8116.2,
-     8014.4,
-     7790.9,
-     7999.9,
-     8962.4,
-     10562.4,
-     12162.4,
-     13762.4,
-     15362.4,
+     15462.2,
+     14649.4,
+     13665.0,
+     11814.2,
+     10306.4,
+     9301.4,
+     8785.6,
+     8413.8,
+     8153.0,
+     8105.2,
+     8002.4,
+     7777.9,
+     7986.1,
+     8947.8,
+     10547.8,
+     12147.8,
+     13747.8,
+     15347.8,
      16000.0,
      16000.0,
      16000.0,
      16000.0,
      16000.0,
      16000.0,
-     15695.2,
-     15025.4,
-     13929.3,
-     12171.3,
-     10825.0,
-     9995.2,
-     9995.2,
-     9995.2,
-     9995.2,
-     10101.8,
-     10160.3,
-     10160.3,
-     10661.3,
-     11937.4,
-     13537.4,
-     15137.4,
-     15293.3,
-     15528.5,
-     15973.3,
-     15973.3,
-     15973.3,
-     15973.3,
-     15973.3,
-     15973.3,
-     15312.5,
-     14040.1,
-     12040.1,
-     10040.1,
-     8222.3,
-     6973.5,
-     6973.5,
-     6973.5,
-     6973.5,
-     6973.5,
-     6973.5,
-     6973.5,
-     6973.5,
-     6973.5,
-     6973.5,
-     6973.5,
-     6973.5,
-     7033.5,
-     7461.5,
-     7461.5,
-     7461.5,
-     7461.5,
-     7461.5,
-     7461.5,
-     6980.7,
-     5700.1,
-     3700.1,
-     1859.6,
-     674.8,
+     15694.2,
+     15023.4,
+     13925.3,
+     12166.3,
+     10819.0,
+     9988.2,
+     9988.2,
+     9988.2,
+     9988.2,
+     10094.0,
+     10151.7,
+     10151.7,
+     10651.9,
+     11927.2,
+     13527.2,
+     15127.2,
+     15317.1,
+     15551.4,
+     15995.2,
+     15995.2,
+     15995.2,
+     15995.2,
+     15995.2,
+     15995.2,
+     15333.4,
+     14055.0,
+     12055.0,
+     10055.0,
+     8236.2,
+     6986.4,
+     6986.4,
+     6986.4,
+     6986.4,
+     6986.4,
+     6986.4,
+     6986.4,
+     6986.4,
+     6986.4,
+     6986.4,
+     6986.4,
+     6986.4,
+     7045.5,
+     7472.5,
+     7472.5,
+     7472.5,
+     7472.5,
+     7472.5,
+     7472.5,
+     6990.7,
+     5703.1,
+     3703.1,
+     1861.6,
+     675.8,
      0.0,
      0.0,
      0.0,
@@ -55020,18 +55306,18 @@
      0.0,
      0.0,
      0.0,
-     402.2,
-     1200.2,
-     1568.9,
-     1568.9,
-     1568.9,
-     1568.9,
-     1568.9,
-     1568.9,
-     1532.7,
-     1532.7,
-     1293.6,
-     476.8,
+     401.3,
+     1198.3,
+     1566.0,
+     1566.0,
+     1566.0,
+     1566.0,
+     1566.0,
+     1566.0,
+     1529.2,
+     1529.2,
+     1295.6,
+     477.8,
      0.0,
      0.0,
      0.0,
@@ -55043,25 +55329,25 @@
      0.0,
      0.0,
      0.0,
-     153.8,
-     631.5,
-     1386.9,
-     1524.6,
-     1524.6,
-     1524.6,
-     1524.6,
-     1524.6,
-     1524.6,
-     1524.6,
-     1524.6,
-     787.8,
-     192.4,
+     152.8,
+     629.6,
+     1384.0,
+     1531.6,
+     1531.6,
+     1531.6,
+     1531.6,
+     1531.6,
+     1531.6,
+     1531.6,
+     1531.6,
+     789.8,
+     193.4,
      0.0
     ],
     "flow_lv": [
      -208.3,
-     -177.8,
-     -14.8,
+     -178.8,
+     -15.8,
      0.0,
      0.0,
      0.0,
@@ -55084,7 +55370,7 @@
      -220.8,
      0.0,
      -120.8,
-     -15.8,
+     -16.8,
      0.0,
      0.0,
      0.0,
@@ -55133,10 +55419,10 @@
      -250.0,
      -250.0,
      -250.0,
-     -137.8,
+     -138.8,
      0.0,
      0.0,
-     -21.8,
+     -22.8,
      0.0,
      0.0,
      0.0,
@@ -55158,8 +55444,8 @@
      -250.0,
      -250.0,
      -250.0,
-     -232.8,
-     -241.8,
+     -233.8,
+     -242.8,
      -204.3,
      0.0,
      0.0,
@@ -55180,11 +55466,11 @@
      -250.0,
      -250.0,
      -250.0,
-     -72.8,
+     -73.8,
      0.0,
      0.0,
      0.0,
-     -35.8,
+     -36.8,
      0.0,
      0.0,
      0.0,
@@ -55198,9 +55484,9 @@
      0.0,
      0.0,
      0.0,
-     -112.6,
-     -190.6,
-     -239.4,
+     -113.0,
+     -191.0,
+     -248.5,
      0.0,
      0.0,
      0.0,
@@ -55212,12 +55498,12 @@
      0.0,
      0.0,
      0.0,
-     42.4,
+     41.2,
      250.0,
      250.0,
      250.0,
      116.8,
-     166.4,
+     165.2,
      0.0,
      0.0,
      0.0,
@@ -55242,7 +55528,7 @@
        "mindanao": 6.001
       },
       "start_soc_mwh": 0.0,
-      "end_soc_mwh": 15721.0
+      "end_soc_mwh": 15723.9
      },
      {
       "date": "2026-07-20",
@@ -55256,8 +55542,8 @@
        "visayas": 6.021,
        "mindanao": 6.001
       },
-      "start_soc_mwh": 15660.0,
-      "end_soc_mwh": 9308.4
+      "start_soc_mwh": 15661.9,
+      "end_soc_mwh": 9301.4
      },
      {
       "date": "2026-07-21",
@@ -55271,8 +55557,8 @@
        "visayas": 6.022,
        "mindanao": 6.002
       },
-      "start_soc_mwh": 8793.6,
-      "end_soc_mwh": 9995.2
+      "start_soc_mwh": 8785.6,
+      "end_soc_mwh": 9988.2
      },
      {
       "date": "2026-07-22",
@@ -55286,8 +55572,8 @@
        "visayas": 6.022,
        "mindanao": 6.002
       },
-      "start_soc_mwh": 9995.2,
-      "end_soc_mwh": 6973.5
+      "start_soc_mwh": 9988.2,
+      "end_soc_mwh": 6986.4
      },
      {
       "date": "2026-07-23",
@@ -55301,7 +55587,7 @@
        "visayas": 6.023,
        "mindanao": 6.003
       },
-      "start_soc_mwh": 6973.5,
+      "start_soc_mwh": 6986.4,
       "end_soc_mwh": 0.0
      },
      {
@@ -55345,7 +55631,7 @@
       "2026-07-24",
       "2026-07-25"
      ],
-     "physical_cost": 11227967.6,
+     "physical_cost": 11228176.7,
      "mean_price": {
       "luzon": 6.377,
       "visayas": 6.003,
@@ -55391,7 +55677,7 @@
     "modeled_mean_php_kwh": 6.0,
     "mae_php_kwh": 8.199,
     "bias_php_kwh": -6.38,
-    "correlation": 0.123,
+    "correlation": 0.122,
     "high_hour_hit_rate_pct": 32.2
    },
    "mindanao": {
@@ -55440,7 +55726,7 @@
     "observed_mean_mw": 40.6,
     "modeled_mean_mw": 1.7,
     "mae_mw": 86.0,
-    "direction_agreement_pct": 5.6,
+    "direction_agreement_pct": 5.5,
     "n_decisive_hours": 1914
    },
    "vm": {
@@ -55460,7 +55746,7 @@
     "observed_mean_mw": 40.6,
     "modeled_mean_mw": 1.7,
     "mae_mw": 86.0,
-    "direction_agreement_pct": 5.6,
+    "direction_agreement_pct": 5.5,
     "n_decisive_hours": 1914,
     "observed_binding_share_pct": 55.8,
     "modeled_at_cap_share_pct": 0.1
