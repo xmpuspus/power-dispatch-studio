@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 143,
+   "days": 144,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -31,7 +31,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 120,
+   "days": 121,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 111,
+   "days": 112,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -161,6 +161,15 @@
    "why": "no plausible path in the graph"
   },
   {
+   "equipment": "5MNDUE_TR2",
+   "days": 10,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Mandaue Gas Insulated Substation"
+  },
+  {
    "equipment": "1SRAF_1SJO1",
    "days": 9,
    "rtd_intervals": 203,
@@ -173,15 +182,6 @@
    ],
    "path_km": 29.8,
    "path_edges": 2
-  },
-  {
-   "equipment": "5MNDUE_TR2",
-   "days": 9,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": true,
-   "kind": "station",
-   "station": "Mandaue Gas Insulated Substation"
   },
   {
    "equipment": "2SUCA_3BIN3",
@@ -618,6 +618,14 @@
    "why": "station token unresolved"
   },
   {
+   "equipment": "DASMA_CORR",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 58.89,
+   "matched": false,
+   "why": "station token unresolved"
+  },
+  {
    "equipment": "1BAUAN_TR1",
    "days": 1,
    "rtd_intervals": 67,
@@ -886,14 +894,6 @@
   },
   {
    "equipment": "CALACA_OUT",
-   "days": 1,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": false,
-   "why": "station token unresolved"
-  },
-  {
-   "equipment": "DASMA_CORR",
    "days": 1,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
