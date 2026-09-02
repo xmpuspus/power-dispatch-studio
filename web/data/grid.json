@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 144,
+   "days": 145,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -31,7 +31,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 121,
+   "days": 122,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -63,7 +63,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 112,
+   "days": 113,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -153,21 +153,21 @@
    "station": "Tuguegarao Substation"
   },
   {
+   "equipment": "5MNDUE_TR2",
+   "days": 11,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Mandaue Gas Insulated Substation"
+  },
+  {
    "equipment": "1MEXI_1HER2",
    "days": 10,
    "rtd_intervals": 252,
    "max_overload_mw": 197.74,
    "matched": false,
    "why": "no plausible path in the graph"
-  },
-  {
-   "equipment": "5MNDUE_TR2",
-   "days": 10,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": true,
-   "kind": "station",
-   "station": "Mandaue Gas Insulated Substation"
   },
   {
    "equipment": "1SRAF_1SJO1",
