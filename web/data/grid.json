@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 145,
+   "days": 146,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -31,9 +31,23 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 122,
+   "days": 123,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "line",
+   "stations": [
+    "Daanbantayan Cable Terminal",
+    "Tabango Substation"
+   ],
+   "path_km": 30.9,
+   "path_edges": 1
+  },
+  {
+   "equipment": "5DAAN_4TAB1",
+   "days": 114,
+   "rtd_intervals": 38,
+   "max_overload_mw": 14.06,
    "matched": true,
    "kind": "line",
    "stations": [
@@ -60,20 +74,6 @@
    "matched": true,
    "kind": "station",
    "station": "Nagsaag EHV Substation"
-  },
-  {
-   "equipment": "5DAAN_4TAB1",
-   "days": 113,
-   "rtd_intervals": 38,
-   "max_overload_mw": 14.06,
-   "matched": true,
-   "kind": "line",
-   "stations": [
-    "Daanbantayan Cable Terminal",
-    "Tabango Substation"
-   ],
-   "path_km": 30.9,
-   "path_edges": 1
   },
   {
    "equipment": "1BAUA_1BPP1",
@@ -154,7 +154,7 @@
   },
   {
    "equipment": "5MNDUE_TR2",
-   "days": 11,
+   "days": 12,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
