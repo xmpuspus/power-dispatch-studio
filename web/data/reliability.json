@@ -148,7 +148,8 @@
   "2026-08-30",
   "2026-08-31",
   "2026-09-01",
-  "2026-09-02"
+  "2026-09-02",
+  "2026-09-03"
  ],
  "series": {
   "luzon": [
@@ -1190,6 +1191,13 @@
    },
    {
     "date": "2026-09-02",
+    "load_bid_peak_mw": 158.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": 0.0,
+    "reserve_shortfall_intervals": 0
+   },
+   {
+    "date": "2026-09-03",
     "load_bid_peak_mw": 158.0,
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": 0.0,
@@ -2239,6 +2247,13 @@
     "curtailed_mwh": 0.0,
     "reserve_slack_min_mw": -123.0,
     "reserve_shortfall_intervals": 300
+   },
+   {
+    "date": "2026-09-03",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 0.0,
+    "reserve_slack_min_mw": -123.0,
+    "reserve_shortfall_intervals": 303
    }
   ],
   "mindanao": [
@@ -3284,12 +3299,19 @@
     "curtailed_mwh": 444.07,
     "reserve_slack_min_mw": -130.5,
     "reserve_shortfall_intervals": 323
+   },
+   {
+    "date": "2026-09-03",
+    "load_bid_peak_mw": 0.0,
+    "curtailed_mwh": 320.6,
+    "reserve_slack_min_mw": -121.6,
+    "reserve_shortfall_intervals": 310
    }
   ]
  },
  "totals": {
   "luzon": {
-   "days": 149,
+   "days": 150,
    "curtailment_days": 55,
    "curtailed_mwh_total": 1961.5,
    "worst_curtailment": {
@@ -3300,10 +3322,10 @@
     "reserve_shortfall_intervals": 29
    },
    "reserve_shortfall_days": 76,
-   "median_daily_min_reserve_slack_mw": -1.7
+   "median_daily_min_reserve_slack_mw": -0.9
   },
   "visayas": {
-   "days": 149,
+   "days": 150,
    "curtailment_days": 54,
    "curtailed_mwh_total": 3609.0,
    "worst_curtailment": {
@@ -3313,13 +3335,13 @@
     "reserve_slack_min_mw": -93.0,
     "reserve_shortfall_intervals": 168
    },
-   "reserve_shortfall_days": 102,
-   "median_daily_min_reserve_slack_mw": -66.2
+   "reserve_shortfall_days": 103,
+   "median_daily_min_reserve_slack_mw": -70.0
   },
   "mindanao": {
-   "days": 149,
-   "curtailment_days": 42,
-   "curtailed_mwh_total": 5845.2,
+   "days": 150,
+   "curtailment_days": 43,
+   "curtailed_mwh_total": 6165.8,
    "worst_curtailment": {
     "date": "2026-08-10",
     "load_bid_peak_mw": 0.0,
@@ -3327,7 +3349,7 @@
     "reserve_slack_min_mw": -138.0,
     "reserve_shortfall_intervals": 311
    },
-   "reserve_shortfall_days": 64,
+   "reserve_shortfall_days": 65,
    "median_daily_min_reserve_slack_mw": 0.0
   }
  }

@@ -10,10 +10,10 @@ https://power-dispatch-studio.vercel.app.
 ## Contents
 
 - [Save, compare, and export a scenario in the browser](#save-compare-and-export-a-scenario-in-the-browser)
-- [The Leyte-Cebu link reached a binding limit on 146 of 149 days](#the-leyte-cebu-link-reached-a-binding-limit-on-146-of-149-days)
-- [Luzon reserves fell short on 76 of the window's 149 days](#luzon-reserves-fell-short-on-76-of-the-windows-149-days)
+- [The Leyte-Cebu link reached a binding limit on 147 of 150 days](#the-leyte-cebu-link-reached-a-binding-limit-on-147-of-150-days)
+- [Luzon reserves fell short on 76 of the window's 150 days](#luzon-reserves-fell-short-on-76-of-the-windows-150-days)
 - [The three grids priced within P0.015 while suspended, then split to P15.72](#the-three-grids-priced-within-p0015-while-suspended-then-split-to-p1572)
-- [Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.85) but reverse in Visayas (-0.58)](#modeled-loss-ranks-agree-in-luzon-072-and-mindanao-085-but-reverse-in-visayas--058)
+- [Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.86) but reverse in Visayas (-0.57)](#modeled-loss-ranks-agree-in-luzon-072-and-mindanao-086-but-reverse-in-visayas--057)
 - [The day-by-day feed uses market records only](#the-day-by-day-feed-uses-market-records-only)
 - [The cost stack stays near P6 while recorded evening prices include scarcity and offer premiums](#the-cost-stack-stays-near-p6-while-recorded-evening-prices-include-scarcity-and-offer-premiums)
 - [Offer-book replay correlations range from 0.69 to 0.86](#offer-book-replay-correlations-range-from-069-to-086)
@@ -41,14 +41,14 @@ The script checks that the edit reaches the Run button, the results become
 current, two runs are saved, and the comparison appears. Sharper as
 [MP4](analyst-walkthrough.mp4).
 
-## The Leyte-Cebu link reached a binding limit on 146 of 149 days
+## The Leyte-Cebu link reached a binding limit on 147 of 150 days
 
 IEMOP publishes a "congestions manifesting" file that names transmission
 equipment at its binding limit for each 5-minute interval. This project archives
 and ranks those records. A row **literally named
-`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **123 of the window's 149 days**.
+`LEYTE_TO_CEBU`** shows up in the day-ahead runs on **124 of the window's 150 days**.
 The 230 kV lines that carry that link, Tabango (Leyte) to Daanbantayan (Cebu),
-top the league. They are at a binding limit in the hourly day-ahead runs on **146 of 149
+top the league. They are at a binding limit in the hourly day-ahead runs on **147 of 150
 days**, and binding in the 5-minute real-time dispatch, the run settlement
 actually sees, on **23 days** of the window.
 
@@ -62,8 +62,8 @@ behind that statement.
 
 The same league as plain ranked bars, with no map, is [docs/constraint-league.gif](constraint-league.gif).
 
-Across the 149-day window, **90 distinct pieces of equipment** hit a limit at least
-once, in **107 monitored constraints** (a transformer is listed under each winding
+Across the 150-day window, **90 distinct pieces of equipment** hit a limit at least
+once, in **108 monitored constraints** (a transformer is listed under each winding
 voltage and a line at each terminal, so one physical asset can have more than one limit ID).
 The map ranks the constraints by days at a limit (a day counts once, so a day-ahead
 re-run cannot inflate it) and keeps the real-time and day-ahead counts in separate
@@ -89,7 +89,7 @@ The archived files pin them to one MW value in
 They record which units the grid's security constraints held and where
 (`security_limits` in the same file).
 
-The System Operator's instruction log states why it changed dispatch. Across 146
+The System Operator's instruction log states why it changed dispatch. Across 147
 daily logs, its instructions carry a remark
 citing a line limitation **2,563 times, and 2,536 of those name the
 Leyte-Cebu link** ("Advise to discharge under MOT Raise due to
@@ -107,11 +107,11 @@ The must-run subset has a **6½ MW** median.
 
 The `so_instructions` section in the same file has both records.
 
-## Luzon reserves fell short on 76 of the window's 149 days
+## Luzon reserves fell short on 76 of the window's 150 days
 
 In the operator's real-time schedules, **Luzon reserves fell below the stated need
-on 76 of the window's 149 days**. Across the three grids, the schedules curtailed
-load on **151 grid-days (11,415.7 MWh)**. These figures describe published
+on 76 of the window's 150 days**. Across the three grids, the schedules curtailed
+load on **152 grid-days (11,736.3 MWh)**. These figures describe published
 schedules and do not forecast brownouts.
 
 The Visayas grid ran **52 consecutive days on grid alert from May 11 to July 1,
@@ -171,11 +171,11 @@ resumed on 2026-05-01, so the deviation stays loss-dominated.
 The repository has the recording recipe, an MP4, a GIF, and the interactive
 Prices at grid connection points view.
 
-## Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.85) but reverse in Visayas (-0.58)
+## Modeled loss ranks agree in Luzon (+0.72) and Mindanao (+0.86) but reverse in Visayas (-0.57)
 
 WESM decomposes every published locational marginal price (LMP) into an energy, a loss, and a congestion
 part, and the congestion part is small and sparse (zero through the market
-suspension, nonzero on 1.15 percent of clean-day node-hours afterward), so the
+suspension, nonzero on 1.14 percent of clean-day node-hours afterward), so the
 within-region nodal price structure the market reports is loss-dominated.
 About a thousand resources report per clean day, and the ones that resolve to a
 mapped bus become the comparison set.
@@ -187,15 +187,15 @@ So the model is
 checked against it. Marginal loss factors from the OpenStreetMap-geometry
 backbone are compared, grid by grid, against each node's recorded deviation
 from its regional price. Luzon ranks at Spearman **+0.72** over 314 nodes (72
-distinct buses, 95% confidence interval +0.59 to +0.82) and Mindanao at **+0.85** over 118
-(37 buses, +0.72 to +0.92). Visayas fails with a stable negative rank
-correlation (**-0.58**, negative on all 15 clean days). The report keeps Visayas
+distinct buses, 95% confidence interval +0.58 to +0.81) and Mindanao at **+0.86** over 118
+(37 buses, +0.74 to +0.92). Visayas fails with a stable negative rank
+correlation (**-0.57**, negative on all 15 clean days). The report keeps Visayas
 as a failed check, with the sign reversal not yet diagnosed. The comparison
 recomputes nightly as clean market days accumulate
 (`data/derived/loss_surface.json`), and the studio carries the same three
 panels under Check the model against market records, Transmission-loss check.
 
-![Three scatter panels on a dark card, one per grid. Each plots the model's marginal loss-factor deviation against the market's recorded per-node deviation, with a fitted line and a Spearman rank correlation. Luzon at plus 0.72 and Mindanao at plus 0.85 move in the same direction as the records. Visayas at minus 0.58 moves in the opposite direction.](loss-surface.gif)
+![Three scatter panels on a dark card, one per grid. Each plots the model's marginal loss-factor deviation against the market's recorded per-node deviation, with a fitted line and a Spearman rank correlation. Luzon at plus 0.72 and Mindanao at plus 0.86 move in the same direction as the records. Visayas at minus 0.57 moves in the opposite direction.](loss-surface.gif)
 
 The wholesale price affects the Meralco bill through the share of energy bought
 on the spot market. The June 2026 advisory paid
@@ -602,9 +602,9 @@ P6.00/kWh to P6.00/kWh.
 
 | Line | Change for the day |
 |---|---|
-| The contracts gain | **+P5,000** |
-| The uncontracted load costs more | **+P3,000** |
-| Net | **+P2,000** |
+| The contracts gain | **+P0** |
+| The uncontracted load costs more | **+P0** |
+| Net | **+P0** |
 
 Read the sign carefully. The supply agreement is a buy at a strike above spot, so
 a higher spot makes it worth more against buying at spot. The one third of the
