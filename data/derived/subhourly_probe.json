@@ -5,8 +5,8 @@
    "date": "2026-08-10",
    "closest_hour": 0,
    "floor_supply_vs_load_margin_pct": -2.05,
-   "observed_negative_lwap_intervals": 0,
-   "observed_min_lwap_php_kwh": 0.0
+   "observed_negative_lwap_intervals": 10,
+   "observed_min_lwap_php_kwh": -10.0
   },
   {
    "date": "2026-07-12",
@@ -40,12 +40,12 @@
    "date": "2026-08-09",
    "closest_hour": 15,
    "floor_supply_vs_load_margin_pct": 2.09,
-   "observed_negative_lwap_intervals": 0,
-   "observed_min_lwap_php_kwh": 0.0
+   "observed_negative_lwap_intervals": 28,
+   "observed_min_lwap_php_kwh": -10.21
   }
  ],
  "n_crossing_days": 6,
- "n_days_with_observed_negatives": 4,
+ "n_days_with_observed_negatives": 6,
  "min_margin_pct": -2.05,
  "deep_negative_structural": {
   "date": "2026-05-03",
@@ -56,7 +56,7 @@
   "aggregate_must_price_positive": true
  },
  "verdict": "negative_prices_need_finer_supply_data_than_public_offers",
- "note": "A tested 5-minute replay still misses the negative clearing prices omitted by the hourly replay. Two limits remain. On the crossing days the offer book's floor-priced supply (self-scheduled solar and must-run at the WESM floor plus zero-priced offers) comes within -2.05 percent of native load at the midday peak, and the book's own 48-block compaction moves about 4 percent of that supply across the zero line, wider than the margin, so a shallow interval's sign turns on supply accounting finer than the offers give. The most negative intervals do not come from the regional supply total crossing demand. At the day's lowest interval the observed price is about -P10/kWh while physical native load sits above the entire aggregate floor-priced supply, so the per-grid clear must price positive there; that -10 is a load-weighted average of nodal prices pulled to the floor by curtailed-solar pockets, which no per-grid replay reproduces at any time resolution. A clean 5-minute clear on the model's own demand basis reproduces none of the day's observed negative intervals (4 of the six days show observed negatives). Five-minute data are necessary but not sufficient. The public offers do not resolve the supply margin closely enough, and regional averages hide curtailed-solar node prices.",
+ "note": "A tested 5-minute replay still misses the negative clearing prices omitted by the hourly replay. Two limits remain. On the crossing days the offer book's floor-priced supply (self-scheduled solar and must-run at the WESM floor plus zero-priced offers) comes within -2.05 percent of native load at the midday peak, and the book's own 48-block compaction moves about 4 percent of that supply across the zero line, wider than the margin, so a shallow interval's sign turns on supply accounting finer than the offers give. The most negative intervals do not come from the regional supply total crossing demand. At the day's lowest interval the observed price is about -P10/kWh while physical native load sits above the entire aggregate floor-priced supply, so the per-grid clear must price positive there; that -10 is a load-weighted average of nodal prices pulled to the floor by curtailed-solar pockets, which no per-grid replay reproduces at any time resolution. A clean 5-minute clear on the model's own demand basis reproduces none of the day's observed negative intervals (6 of the six days show observed negatives). Five-minute data are necessary but not sufficient. The public offers do not resolve the supply margin closely enough, and regional averages hide curtailed-solar node prices.",
  "src": "https://www.iemop.ph/market-data/load-weighted-average-prices-final/",
  "disclaimer": "Statistical indicators derived from public data. Patterns may have legitimate explanations."
 }

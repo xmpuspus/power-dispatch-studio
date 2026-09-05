@@ -1,0 +1,1634 @@
+{
+ "date": "2026-07-30",
+ "n_hour_files": 24,
+ "n_rows": 73873,
+ "resources": {
+  "01ACNPC_G01": {
+   "grid": "luzon",
+   "mwh": 40.4
+  },
+  "01AGROSOL_G01": {
+   "grid": "luzon",
+   "mwh": 17.85
+  },
+  "01AMBUK_U01": {
+   "grid": "luzon",
+   "mwh": 48.68
+  },
+  "01AMBUK_U02": {
+   "grid": "luzon",
+   "mwh": 40.4
+  },
+  "01AMBUK_U03": {
+   "grid": "luzon",
+   "mwh": 117.14
+  },
+  "01AMPHAW_G01": {
+   "grid": "luzon",
+   "mwh": 158.12
+  },
+  "01ANDA_G01": {
+   "grid": "luzon",
+   "mwh": 1151.94
+  },
+  "01ANGAT_A": {
+   "grid": "luzon",
+   "mwh": 133.0
+  },
+  "01ARAYSOL_G01": {
+   "grid": "luzon",
+   "mwh": 291.47
+  },
+  "01ARAYSOL_G02": {
+   "grid": "luzon",
+   "mwh": 178.17
+  },
+  "01ARAYSOL_G03": {
+   "grid": "luzon",
+   "mwh": 144.27
+  },
+  "01ARESOL_G01": {
+   "grid": "luzon",
+   "mwh": 229.89
+  },
+  "01ARMSOL_G01": {
+   "grid": "luzon",
+   "mwh": 36.08
+  },
+  "01BAKSIP_G01": {
+   "grid": "luzon",
+   "mwh": 250.67
+  },
+  "01BAKUN_G01": {
+   "grid": "luzon",
+   "mwh": 326.4
+  },
+  "01BALSOL_G01": {
+   "grid": "luzon",
+   "mwh": 147.88
+  },
+  "01BALWIND_G01": {
+   "grid": "luzon",
+   "mwh": 247.26
+  },
+  "01BARBASOL_G01": {
+   "grid": "luzon",
+   "mwh": 579.57
+  },
+  "01BAUANG_GS1": {
+   "grid": "luzon",
+   "mwh": 0.83
+  },
+  "01BETASOL_G01": {
+   "grid": "luzon",
+   "mwh": 140.89
+  },
+  "01BINENG_G01": {
+   "grid": "luzon",
+   "mwh": 149.28
+  },
+  "01BINENG_G03": {
+   "grid": "luzon",
+   "mwh": 56.95
+  },
+  "01BINGA_U01": {
+   "grid": "luzon",
+   "mwh": 32.38
+  },
+  "01BINGA_U02": {
+   "grid": "luzon",
+   "mwh": 22.72
+  },
+  "01BINGA_U03": {
+   "grid": "luzon",
+   "mwh": 95.05
+  },
+  "01BINGA_U04": {
+   "grid": "luzon",
+   "mwh": 139.53
+  },
+  "01BONGSOL_G01": {
+   "grid": "luzon",
+   "mwh": 69.08
+  },
+  "01BOSUNG_G01": {
+   "grid": "luzon",
+   "mwh": 2.92
+  },
+  "01BT2020_G01": {
+   "grid": "luzon",
+   "mwh": 240.0
+  },
+  "01BTNSOL_G01": {
+   "grid": "luzon",
+   "mwh": 19.85
+  },
+  "01BTSOLEN_G01": {
+   "grid": "luzon",
+   "mwh": 21.27
+  },
+  "01BUGALSOL_G01": {
+   "grid": "luzon",
+   "mwh": 107.86
+  },
+  "01BUGSOL_G01": {
+   "grid": "luzon",
+   "mwh": 324.27
+  },
+  "01BULACSOL_G01": {
+   "grid": "luzon",
+   "mwh": 107.56
+  },
+  "01BULSOL_G01": {
+   "grid": "luzon",
+   "mwh": 52.12
+  },
+  "01BURGOS_G01": {
+   "grid": "luzon",
+   "mwh": 72.0
+  },
+  "01BURGOS_G02": {
+   "grid": "luzon",
+   "mwh": 16.93
+  },
+  "01BURGOS_G03": {
+   "grid": "luzon",
+   "mwh": 10.84
+  },
+  "01CABSOL_G01": {
+   "grid": "luzon",
+   "mwh": 32.56
+  },
+  "01CAGBIO_G01": {
+   "grid": "luzon",
+   "mwh": 144.0
+  },
+  "01CAGYSOL_G01": {
+   "grid": "luzon",
+   "mwh": 455.78
+  },
+  "01CALIBUNK_G01": {
+   "grid": "luzon",
+   "mwh": 25.57
+  },
+  "01CAPRIS_G01": {
+   "grid": "luzon",
+   "mwh": 128.34
+  },
+  "01CAPRIS_G02": {
+   "grid": "luzon",
+   "mwh": 91.78
+  },
+  "01CASECN_U01": {
+   "grid": "luzon",
+   "mwh": 920.54
+  },
+  "01CASECN_U02": {
+   "grid": "luzon",
+   "mwh": 1459.19
+  },
+  "01CAYBSOL_G01": {
+   "grid": "luzon",
+   "mwh": 341.97
+  },
+  "01CIP2_G01": {
+   "grid": "luzon",
+   "mwh": 77.2
+  },
+  "01CLASOL_G01": {
+   "grid": "luzon",
+   "mwh": 78.33
+  },
+  "01CONSOL_G01": {
+   "grid": "luzon",
+   "mwh": 567.08
+  },
+  "01CORDONSOL_G01": {
+   "grid": "luzon",
+   "mwh": 258.29
+  },
+  "01CURSOL_G02": {
+   "grid": "luzon",
+   "mwh": 455.7
+  },
+  "01DALSOL_G01": {
+   "grid": "luzon",
+   "mwh": 30.67
+  },
+  "01DOMSOL_G01": {
+   "grid": "luzon",
+   "mwh": 152.21
+  },
+  "01GIFT_G01": {
+   "grid": "luzon",
+   "mwh": 240.0
+  },
+  "01GIGSOL_G01": {
+   "grid": "luzon",
+   "mwh": 180.02
+  },
+  "01GNPD_U01": {
+   "grid": "luzon",
+   "mwh": 14584.83
+  },
+  "01GNPD_U02": {
+   "grid": "luzon",
+   "mwh": 14388.86
+  },
+  "01GRGOLD_G01": {
+   "grid": "luzon",
+   "mwh": 72.0
+  },
+  "01IBEC_G01": {
+   "grid": "luzon",
+   "mwh": 192.0
+  },
+  "01IBULAO_G01": {
+   "grid": "luzon",
+   "mwh": 52.62
+  },
+  "01IPOWER_G01": {
+   "grid": "luzon",
+   "mwh": 96.0
+  },
+  "01IPOWER_G02": {
+   "grid": "luzon",
+   "mwh": 82.92
+  },
+  "01LAOSOL_G01": {
+   "grid": "luzon",
+   "mwh": 666.31
+  },
+  "01LASUER_U01": {
+   "grid": "luzon",
+   "mwh": 42.15
+  },
+  "01LIMSOL_G01": {
+   "grid": "luzon",
+   "mwh": 154.31
+  },
+  "01MAEC_G01": {
+   "grid": "luzon",
+   "mwh": 115.82
+  },
+  "01MAGAT_BAT": {
+   "grid": "luzon",
+   "mwh": 12.63
+  },
+  "01MAGAT_U01": {
+   "grid": "luzon",
+   "mwh": 44.33
+  },
+  "01MAGAT_U02": {
+   "grid": "luzon",
+   "mwh": 17.07
+  },
+  "01MAGAT_U03": {
+   "grid": "luzon",
+   "mwh": 44.33
+  },
+  "01MAGAT_U04": {
+   "grid": "luzon",
+   "mwh": 20.0
+  },
+  "01MANSOK_G01": {
+   "grid": "luzon",
+   "mwh": 29.6
+  },
+  "01MARIS_U01": {
+   "grid": "luzon",
+   "mwh": 36.0
+  },
+  "01MARIS_U02": {
+   "grid": "luzon",
+   "mwh": 36.0
+  },
+  "01MARSOL_G01": {
+   "grid": "luzon",
+   "mwh": 80.46
+  },
+  "01MARVEL_G02": {
+   "grid": "luzon",
+   "mwh": 6875.37
+  },
+  "01MASIWA_G01": {
+   "grid": "luzon",
+   "mwh": 5.0
+  },
+  "01MEGASOL_G01": {
+   "grid": "luzon",
+   "mwh": 261.82
+  },
+  "01MPGC_U01": {
+   "grid": "luzon",
+   "mwh": 3197.96
+  },
+  "01MPGC_U02": {
+   "grid": "luzon",
+   "mwh": 3152.77
+  },
+  "01MPGC_U03": {
+   "grid": "luzon",
+   "mwh": 3153.68
+  },
+  "01MSINLO_G02": {
+   "grid": "luzon",
+   "mwh": 5422.2
+  },
+  "01MSINLO_G03": {
+   "grid": "luzon",
+   "mwh": 4508.36
+  },
+  "01MSINLO_G04": {
+   "grid": "luzon",
+   "mwh": 2671.42
+  },
+  "01NMHC_G01": {
+   "grid": "luzon",
+   "mwh": 62.1
+  },
+  "01NMHC_G03": {
+   "grid": "luzon",
+   "mwh": 21.44
+  },
+  "01NUEVASOL_G01": {
+   "grid": "luzon",
+   "mwh": 131.12
+  },
+  "01NWIND_G01": {
+   "grid": "luzon",
+   "mwh": 10.37
+  },
+  "01NWIND_G02": {
+   "grid": "luzon",
+   "mwh": 7.92
+  },
+  "01OLONGSOL_G01": {
+   "grid": "luzon",
+   "mwh": 1052.35
+  },
+  "01PASBUSOL_G01": {
+   "grid": "luzon",
+   "mwh": 345.59
+  },
+  "01PASQSOL_G01": {
+   "grid": "luzon",
+   "mwh": 536.42
+  },
+  "01PAVGSOL_G01": {
+   "grid": "luzon",
+   "mwh": 86.02
+  },
+  "01PETRON_G01": {
+   "grid": "luzon",
+   "mwh": 922.17
+  },
+  "01PETSOL_G01": {
+   "grid": "luzon",
+   "mwh": 217.62
+  },
+  "01PETSOL_G02": {
+   "grid": "luzon",
+   "mwh": 85.1
+  },
+  "01RASLAG_G01": {
+   "grid": "luzon",
+   "mwh": 47.02
+  },
+  "01RASLAG_G02": {
+   "grid": "luzon",
+   "mwh": 62.27
+  },
+  "01RASLAG_G03": {
+   "grid": "luzon",
+   "mwh": 91.78
+  },
+  "01RASLAG_G04": {
+   "grid": "luzon",
+   "mwh": 177.03
+  },
+  "01SABANG_G01": {
+   "grid": "luzon",
+   "mwh": 169.87
+  },
+  "01SAMLSOL_G01": {
+   "grid": "luzon",
+   "mwh": 199.61
+  },
+  "01SANMIGSOL_G01": {
+   "grid": "luzon",
+   "mwh": 297.57
+  },
+  "01SHIZEN_G01": {
+   "grid": "luzon",
+   "mwh": 247.54
+  },
+  "01SJSOL_G01": {
+   "grid": "luzon",
+   "mwh": 64.48
+  },
+  "01SMC_G01": {
+   "grid": "luzon",
+   "mwh": 3214.71
+  },
+  "01SMC_G02": {
+   "grid": "luzon",
+   "mwh": 3215.49
+  },
+  "01SMC_G03": {
+   "grid": "luzon",
+   "mwh": 3214.28
+  },
+  "01SMC_G04": {
+   "grid": "luzon",
+   "mwh": 3214.42
+  },
+  "01SNMANSOL_G01": {
+   "grid": "luzon",
+   "mwh": 349.11
+  },
+  "01SNMARSOL_G01": {
+   "grid": "luzon",
+   "mwh": 1578.09
+  },
+  "01SPABUL_G01": {
+   "grid": "luzon",
+   "mwh": 8.62
+  },
+  "01SROQUE_U02": {
+   "grid": "luzon",
+   "mwh": 360.0
+  },
+  "01SROQUE_U03": {
+   "grid": "luzon",
+   "mwh": 557.92
+  },
+  "01SUAL_G01": {
+   "grid": "luzon",
+   "mwh": 9828.08
+  },
+  "01SUAL_G02": {
+   "grid": "luzon",
+   "mwh": 9916.94
+  },
+  "01SUBSOL_G01": {
+   "grid": "luzon",
+   "mwh": 420.42
+  },
+  "01SUPSOL_G01": {
+   "grid": "luzon",
+   "mwh": 315.46
+  },
+  "01S_ENRO_G01": {
+   "grid": "luzon",
+   "mwh": 9.62
+  },
+  "01TERASU_G01": {
+   "grid": "luzon",
+   "mwh": 270.63
+  },
+  "01TERRASOL_G01": {
+   "grid": "luzon",
+   "mwh": 3618.32
+  },
+  "01T_ASIA_G01": {
+   "grid": "luzon",
+   "mwh": 23.75
+  },
+  "01YHGRN_G01": {
+   "grid": "luzon",
+   "mwh": 54.32
+  },
+  "01ZAMSOL_G01": {
+   "grid": "luzon",
+   "mwh": 15.68
+  },
+  "02ECOPRK_G01": {
+   "grid": "luzon",
+   "mwh": 16.54
+  },
+  "02ECOTAGA_G01": {
+   "grid": "luzon",
+   "mwh": 64.25
+  },
+  "02MMPP_G01": {
+   "grid": "luzon",
+   "mwh": 28.8
+  },
+  "02PNGEA_G01": {
+   "grid": "luzon",
+   "mwh": 7.2
+  },
+  "02PNGYSOL_G01": {
+   "grid": "luzon",
+   "mwh": 517.37
+  },
+  "02VALSOL_G01": {
+   "grid": "luzon",
+   "mwh": 30.08
+  },
+  "03ADISOL_G01": {
+   "grid": "luzon",
+   "mwh": 8.11
+  },
+  "03ALMNOS_BAT1": {
+   "grid": "luzon",
+   "mwh": 58.33
+  },
+  "03AWOC_G01": {
+   "grid": "luzon",
+   "mwh": 3.87
+  },
+  "03BACMAN_U01": {
+   "grid": "luzon",
+   "mwh": 1342.17
+  },
+  "03BACMAN_U02": {
+   "grid": "luzon",
+   "mwh": 1342.08
+  },
+  "03BACMAN_U03": {
+   "grid": "luzon",
+   "mwh": 480.0
+  },
+  "03BALUG_G01": {
+   "grid": "luzon",
+   "mwh": 19.87
+  },
+  "03BBEC_G01": {
+   "grid": "luzon",
+   "mwh": 105.6
+  },
+  "03BOTOCA_G01": {
+   "grid": "luzon",
+   "mwh": 115.67
+  },
+  "03CALACA_G01": {
+   "grid": "luzon",
+   "mwh": 5748.17
+  },
+  "03CALACA_G02": {
+   "grid": "luzon",
+   "mwh": 6731.23
+  },
+  "03CALIRY_G01": {
+   "grid": "luzon",
+   "mwh": 249.67
+  },
+  "03CALSOL_G01": {
+   "grid": "luzon",
+   "mwh": 226.97
+  },
+  "03CLABSOL_G01": {
+   "grid": "luzon",
+   "mwh": 303.62
+  },
+  "03CLBATO_G01": {
+   "grid": "luzon",
+   "mwh": 4.8
+  },
+  "03EERI_G01": {
+   "grid": "luzon",
+   "mwh": 6747.45
+  },
+  "03EERI_G02": {
+   "grid": "luzon",
+   "mwh": 6794.2
+  },
+  "03EERI_G03": {
+   "grid": "luzon",
+   "mwh": 6794.44
+  },
+  "03ILIJAN_G01": {
+   "grid": "luzon",
+   "mwh": 9184.17
+  },
+  "03ILIJAN_G02": {
+   "grid": "luzon",
+   "mwh": 4765.97
+  },
+  "03INARI_G01": {
+   "grid": "luzon",
+   "mwh": 31.5
+  },
+  "03KAL_G01": {
+   "grid": "luzon",
+   "mwh": 255.0
+  },
+  "03KAL_G02": {
+   "grid": "luzon",
+   "mwh": 1063.25
+  },
+  "03KAL_G04": {
+   "grid": "luzon",
+   "mwh": 1495.14
+  },
+  "03LUMBSOL_G01": {
+   "grid": "luzon",
+   "mwh": 397.0
+  },
+  "03LUNSOL_G01": {
+   "grid": "luzon",
+   "mwh": 209.15
+  },
+  "03LWERLAB_G01": {
+   "grid": "luzon",
+   "mwh": 10.03
+  },
+  "03MAJAY_G01": {
+   "grid": "luzon",
+   "mwh": 25.58
+  },
+  "03MARAGSOL_G01": {
+   "grid": "luzon",
+   "mwh": 305.57
+  },
+  "03MEC_G01": {
+   "grid": "luzon",
+   "mwh": 72.18
+  },
+  "03MGI_G02": {
+   "grid": "luzon",
+   "mwh": 288.0
+  },
+  "03MGPP_G01": {
+   "grid": "luzon",
+   "mwh": 480.0
+  },
+  "03MKBN_A": {
+   "grid": "luzon",
+   "mwh": 1572.16
+  },
+  "03MKBN_B": {
+   "grid": "luzon",
+   "mwh": 1149.83
+  },
+  "03MKBN_D": {
+   "grid": "luzon",
+   "mwh": 713.38
+  },
+  "03MKBN_E": {
+   "grid": "luzon",
+   "mwh": 432.0
+  },
+  "03NAICSOL_G01": {
+   "grid": "luzon",
+   "mwh": 22.69
+  },
+  "03ORMAT_G01": {
+   "grid": "luzon",
+   "mwh": 24.0
+  },
+  "03PAGBIL_G02": {
+   "grid": "luzon",
+   "mwh": 4597.34
+  },
+  "03PAGBIL_G03": {
+   "grid": "luzon",
+   "mwh": 6166.55
+  },
+  "03PALAK_G01": {
+   "grid": "luzon",
+   "mwh": 18.4
+  },
+  "03QPPL_G01": {
+   "grid": "luzon",
+   "mwh": 8547.79
+  },
+  "03SBPL_G01": {
+   "grid": "luzon",
+   "mwh": 8965.07
+  },
+  "03SLPGC_G01": {
+   "grid": "luzon",
+   "mwh": 3586.46
+  },
+  "03SLPGC_G02": {
+   "grid": "luzon",
+   "mwh": 3583.32
+  },
+  "03SLTEC_G01": {
+   "grid": "luzon",
+   "mwh": 2693.71
+  },
+  "03SLTEC_G02": {
+   "grid": "luzon",
+   "mwh": 2706.73
+  },
+  "03SNGAB_G01": {
+   "grid": "luzon",
+   "mwh": 2341.66
+  },
+  "03SOLACE_G01": {
+   "grid": "luzon",
+   "mwh": 417.72
+  },
+  "03STA-RI_G01": {
+   "grid": "luzon",
+   "mwh": 4499.76
+  },
+  "03STA-RI_G02": {
+   "grid": "luzon",
+   "mwh": 1638.61
+  },
+  "03STA-RI_G03": {
+   "grid": "luzon",
+   "mwh": 4588.87
+  },
+  "03STA-RI_G04": {
+   "grid": "luzon",
+   "mwh": 4588.16
+  },
+  "03STA-RI_G05": {
+   "grid": "luzon",
+   "mwh": 4741.18
+  },
+  "03STA-RI_G06": {
+   "grid": "luzon",
+   "mwh": 4715.89
+  },
+  "03TANAWON_G01": {
+   "grid": "luzon",
+   "mwh": 494.4
+  },
+  "03TANSOL_G01": {
+   "grid": "luzon",
+   "mwh": 378.52
+  },
+  "03TIBAG_G01": {
+   "grid": "luzon",
+   "mwh": 119.42
+  },
+  "03TIWI_A": {
+   "grid": "luzon",
+   "mwh": 263.25
+  },
+  "03TIWI_C": {
+   "grid": "luzon",
+   "mwh": 2087.33
+  },
+  "03UPLAB_G01": {
+   "grid": "luzon",
+   "mwh": 76.32
+  },
+  "04CLBYBNK_G01": {
+   "grid": "visayas",
+   "mwh": 14.33
+  },
+  "04IASMOD_G01": {
+   "grid": "visayas",
+   "mwh": 5.29
+  },
+  "04IASMOD_G02": {
+   "grid": "visayas",
+   "mwh": 9.43
+  },
+  "04IASMOD_G03": {
+   "grid": "visayas",
+   "mwh": 14.15
+  },
+  "04IASMOD_G04": {
+   "grid": "visayas",
+   "mwh": 3.83
+  },
+  "04IASMOD_G06": {
+   "grid": "visayas",
+   "mwh": 0.11
+  },
+  "04ISIDROSOL_G01": {
+   "grid": "visayas",
+   "mwh": 540.54
+  },
+  "04LEYTE_A": {
+   "grid": "visayas",
+   "mwh": 8012.25
+  },
+  "04LGPP_G01": {
+   "grid": "visayas",
+   "mwh": 2808.0
+  },
+  "04ORMOC_BAT": {
+   "grid": "visayas",
+   "mwh": 2.1
+  },
+  "04PHSOL_G01": {
+   "grid": "visayas",
+   "mwh": 81.49
+  },
+  "04SEPSOL_G01": {
+   "grid": "visayas",
+   "mwh": 167.9
+  },
+  "04TABAN_BAT": {
+   "grid": "visayas",
+   "mwh": 55.0
+  },
+  "04TAFTSOL_G01": {
+   "grid": "visayas",
+   "mwh": 56.03
+  },
+  "04TAFT_G01": {
+   "grid": "visayas",
+   "mwh": 208.02
+  },
+  "04UTH_G01": {
+   "grid": "visayas",
+   "mwh": 160.02
+  },
+  "05CARMENDPP_U01": {
+   "grid": "visayas",
+   "mwh": 39.08
+  },
+  "05CARMENDPP_U02": {
+   "grid": "visayas",
+   "mwh": 30.16
+  },
+  "05CARMENDPP_U03": {
+   "grid": "visayas",
+   "mwh": 50.93
+  },
+  "05CARMEN_BAT": {
+   "grid": "visayas",
+   "mwh": 54.44
+  },
+  "05CEDC_U02": {
+   "grid": "visayas",
+   "mwh": 1772.83
+  },
+  "05CEDC_U03": {
+   "grid": "visayas",
+   "mwh": 1728.82
+  },
+  "05CPPC_U01": {
+   "grid": "visayas",
+   "mwh": 6.96
+  },
+  "05CPPC_U02": {
+   "grid": "visayas",
+   "mwh": 15.1
+  },
+  "05CPPC_U04": {
+   "grid": "visayas",
+   "mwh": 61.72
+  },
+  "05CPPC_U05": {
+   "grid": "visayas",
+   "mwh": 61.39
+  },
+  "05CPPC_U06": {
+   "grid": "visayas",
+   "mwh": 29.61
+  },
+  "05CPPC_U07": {
+   "grid": "visayas",
+   "mwh": 61.18
+  },
+  "05CPPC_U08": {
+   "grid": "visayas",
+   "mwh": 29.71
+  },
+  "05CPPC_U10": {
+   "grid": "visayas",
+   "mwh": 29.69
+  },
+  "05EAUC_BAT": {
+   "grid": "visayas",
+   "mwh": 74.2
+  },
+  "05EAUC_U02": {
+   "grid": "visayas",
+   "mwh": 85.75
+  },
+  "05EAUC_U03": {
+   "grid": "visayas",
+   "mwh": 208.8
+  },
+  "05EAUC_U04": {
+   "grid": "visayas",
+   "mwh": 167.73
+  },
+  "05KSPC_G01": {
+   "grid": "visayas",
+   "mwh": 2235.82
+  },
+  "05KSPC_G02": {
+   "grid": "visayas",
+   "mwh": 2468.0
+  },
+  "05TOLSOL_G01": {
+   "grid": "visayas",
+   "mwh": 214.61
+  },
+  "05TPC_G02": {
+   "grid": "visayas",
+   "mwh": 1958.83
+  },
+  "06AMLA_G01": {
+   "grid": "visayas",
+   "mwh": 7.82
+  },
+  "06CALASOL_G01": {
+   "grid": "visayas",
+   "mwh": 825.04
+  },
+  "06CARSOL_G01": {
+   "grid": "visayas",
+   "mwh": 126.33
+  },
+  "06CENPRI_U01": {
+   "grid": "visayas",
+   "mwh": 52.51
+  },
+  "06CENPRI_U02": {
+   "grid": "visayas",
+   "mwh": 52.48
+  },
+  "06CENPRI_U03": {
+   "grid": "visayas",
+   "mwh": 52.47
+  },
+  "06CENPRI_U04": {
+   "grid": "visayas",
+   "mwh": 65.58
+  },
+  "06CENPRI_U05": {
+   "grid": "visayas",
+   "mwh": 77.54
+  },
+  "06HELIOS_G01": {
+   "grid": "visayas",
+   "mwh": 402.59
+  },
+  "06KABAN_BAT": {
+   "grid": "visayas",
+   "mwh": 15.0
+  },
+  "06MANSOL_G01": {
+   "grid": "visayas",
+   "mwh": 207.61
+  },
+  "06MNTSOL_G01": {
+   "grid": "visayas",
+   "mwh": 54.43
+  },
+  "06NASULO_G01": {
+   "grid": "visayas",
+   "mwh": 1080.0
+  },
+  "06PAL1A_U01": {
+   "grid": "visayas",
+   "mwh": 831.23
+  },
+  "06PAL1A_U02": {
+   "grid": "visayas",
+   "mwh": 835.2
+  },
+  "06PAL1A_U03": {
+   "grid": "visayas",
+   "mwh": 847.2
+  },
+  "06PAL2A_U02": {
+   "grid": "visayas",
+   "mwh": 302.3
+  },
+  "06PAL2A_U03": {
+   "grid": "visayas",
+   "mwh": 453.6
+  },
+  "06SACASL_G01": {
+   "grid": "visayas",
+   "mwh": 83.28
+  },
+  "06SACASL_G02": {
+   "grid": "visayas",
+   "mwh": 77.29
+  },
+  "06SACSUN_G01": {
+   "grid": "visayas",
+   "mwh": 244.05
+  },
+  "06SLYSOL_G01": {
+   "grid": "visayas",
+   "mwh": 101.03
+  },
+  "06SLYSOL_G02": {
+   "grid": "visayas",
+   "mwh": 91.19
+  },
+  "06SLYSOL_G03": {
+   "grid": "visayas",
+   "mwh": 82.2
+  },
+  "06SONEG_BAT": {
+   "grid": "visayas",
+   "mwh": 3.88
+  },
+  "06VISTASOL_G01": {
+   "grid": "visayas",
+   "mwh": 224.56
+  },
+  "07BDPP_U01": {
+   "grid": "visayas",
+   "mwh": 27.4
+  },
+  "07BDPP_U02": {
+   "grid": "visayas",
+   "mwh": 27.11
+  },
+  "07BDPP_U03": {
+   "grid": "visayas",
+   "mwh": 28.68
+  },
+  "07BDPP_U04": {
+   "grid": "visayas",
+   "mwh": 26.83
+  },
+  "07BIDPP_G01": {
+   "grid": "visayas",
+   "mwh": 101.33
+  },
+  "07DAGSOL_G01": {
+   "grid": "visayas",
+   "mwh": 89.04
+  },
+  "07LOBOC_G01": {
+   "grid": "visayas",
+   "mwh": 23.92
+  },
+  "07LOBOC_G02": {
+   "grid": "visayas",
+   "mwh": 25.88
+  },
+  "07SEVILL_G01": {
+   "grid": "visayas",
+   "mwh": 52.9
+  },
+  "07TPLPB4_U01": {
+   "grid": "visayas",
+   "mwh": 18.93
+  },
+  "07TPLPB4_U02": {
+   "grid": "visayas",
+   "mwh": 17.34
+  },
+  "07TPLPB4_U03": {
+   "grid": "visayas",
+   "mwh": 12.37
+  },
+  "07TPLPB4_U04": {
+   "grid": "visayas",
+   "mwh": 14.89
+  },
+  "08NABASDPP_U01": {
+   "grid": "visayas",
+   "mwh": 23.12
+  },
+  "08NABASDPP_U02": {
+   "grid": "visayas",
+   "mwh": 26.64
+  },
+  "08PALM_G01": {
+   "grid": "visayas",
+   "mwh": 3070.25
+  },
+  "08PDPP1_U03": {
+   "grid": "visayas",
+   "mwh": 5.08
+  },
+  "08PDPP1_U05": {
+   "grid": "visayas",
+   "mwh": 4.41
+  },
+  "08PEDC_U01": {
+   "grid": "visayas",
+   "mwh": 1500.93
+  },
+  "08PEDC_U02": {
+   "grid": "visayas",
+   "mwh": 1576.69
+  },
+  "08PEDC_U03": {
+   "grid": "visayas",
+   "mwh": 2910.28
+  },
+  "08PWIND_G01": {
+   "grid": "visayas",
+   "mwh": 19.97
+  },
+  "08PWIND_G02": {
+   "grid": "visayas",
+   "mwh": 14.34
+  },
+  "08SLWIND_G01": {
+   "grid": "visayas",
+   "mwh": 8.52
+  },
+  "08STBPB1_U01": {
+   "grid": "visayas",
+   "mwh": 35.17
+  },
+  "08STBPB1_U02": {
+   "grid": "visayas",
+   "mwh": 35.86
+  },
+  "08STBPB1_U04": {
+   "grid": "visayas",
+   "mwh": 14.43
+  },
+  "08SUWECO_G01": {
+   "grid": "visayas",
+   "mwh": 126.71
+  },
+  "08TIMBA_G01": {
+   "grid": "visayas",
+   "mwh": 137.0
+  },
+  "09JIMDSL_U01": {
+   "grid": "mindanao",
+   "mwh": 2.39
+  },
+  "09JIMDSL_U02": {
+   "grid": "mindanao",
+   "mwh": 2.9
+  },
+  "09LIBPOWR_G01": {
+   "grid": "mindanao",
+   "mwh": 144.0
+  },
+  "09PANABNK_U01": {
+   "grid": "mindanao",
+   "mwh": 2.51
+  },
+  "09PANABNK_U02": {
+   "grid": "mindanao",
+   "mwh": 10.91
+  },
+  "09SANGALI_BAT": {
+   "grid": "mindanao",
+   "mwh": 4.33
+  },
+  "09WMPC_U01": {
+   "grid": "mindanao",
+   "mwh": 11.82
+  },
+  "09WMPC_U02": {
+   "grid": "mindanao",
+   "mwh": 106.92
+  },
+  "09WMPC_U03": {
+   "grid": "mindanao",
+   "mwh": 11.37
+  },
+  "09WMPC_U04": {
+   "grid": "mindanao",
+   "mwh": 98.2
+  },
+  "09WMPC_U05": {
+   "grid": "mindanao",
+   "mwh": 11.35
+  },
+  "09WMPC_U06": {
+   "grid": "mindanao",
+   "mwh": 90.42
+  },
+  "09WMPC_U07": {
+   "grid": "mindanao",
+   "mwh": 86.23
+  },
+  "09WMPC_U08": {
+   "grid": "mindanao",
+   "mwh": 82.29
+  },
+  "09WMPC_U09": {
+   "grid": "mindanao",
+   "mwh": 119.59
+  },
+  "09WMPC_U10": {
+   "grid": "mindanao",
+   "mwh": 79.43
+  },
+  "10AGUS1_U01": {
+   "grid": "mindanao",
+   "mwh": 528.0
+  },
+  "10AGUS1_U02": {
+   "grid": "mindanao",
+   "mwh": 528.0
+  },
+  "10AGUS2_U01": {
+   "grid": "mindanao",
+   "mwh": 702.5
+  },
+  "10AGUS2_U02": {
+   "grid": "mindanao",
+   "mwh": 702.5
+  },
+  "10AGUS2_U03": {
+   "grid": "mindanao",
+   "mwh": 720.0
+  },
+  "10AGUS4_U01": {
+   "grid": "mindanao",
+   "mwh": 1128.0
+  },
+  "10AGUS4_U02": {
+   "grid": "mindanao",
+   "mwh": 1152.0
+  },
+  "10AGUS5_U02": {
+   "grid": "mindanao",
+   "mwh": 540.0
+  },
+  "10AGUS6_U01": {
+   "grid": "mindanao",
+   "mwh": 360.0
+  },
+  "10AGUS6_U02": {
+   "grid": "mindanao",
+   "mwh": 360.0
+  },
+  "10AGUS6_U03": {
+   "grid": "mindanao",
+   "mwh": 1200.0
+  },
+  "10AGUS6_U04": {
+   "grid": "mindanao",
+   "mwh": 480.0
+  },
+  "10AGUS6_U05": {
+   "grid": "mindanao",
+   "mwh": 840.0
+  },
+  "10AGUS7_U01": {
+   "grid": "mindanao",
+   "mwh": 288.0
+  },
+  "10AGUS7_U02": {
+   "grid": "mindanao",
+   "mwh": 312.0
+  },
+  "10GNPK_U01": {
+   "grid": "mindanao",
+   "mwh": 2878.91
+  },
+  "10GNPK_U03": {
+   "grid": "mindanao",
+   "mwh": 2879.41
+  },
+  "10GNPK_U04": {
+   "grid": "mindanao",
+   "mwh": 2870.0
+  },
+  "10IDP1_U02": {
+   "grid": "mindanao",
+   "mwh": 39.89
+  },
+  "10IDP1_U03": {
+   "grid": "mindanao",
+   "mwh": 42.09
+  },
+  "10IDP1_U04": {
+   "grid": "mindanao",
+   "mwh": 46.92
+  },
+  "10IDP1_U05": {
+   "grid": "mindanao",
+   "mwh": 34.81
+  },
+  "10IDP1_U06": {
+   "grid": "mindanao",
+   "mwh": 29.91
+  },
+  "10IDP1_U07": {
+   "grid": "mindanao",
+   "mwh": 39.73
+  },
+  "10IDP1_U08": {
+   "grid": "mindanao",
+   "mwh": 37.52
+  },
+  "10IDP1_U09": {
+   "grid": "mindanao",
+   "mwh": 33.41
+  },
+  "10IDP1_U10": {
+   "grid": "mindanao",
+   "mwh": 19.42
+  },
+  "10IDP1_U11": {
+   "grid": "mindanao",
+   "mwh": 27.34
+  },
+  "10IDP1_U12": {
+   "grid": "mindanao",
+   "mwh": 32.42
+  },
+  "10IDP2_U01": {
+   "grid": "mindanao",
+   "mwh": 0.14
+  },
+  "10IDP2_U02": {
+   "grid": "mindanao",
+   "mwh": 0.13
+  },
+  "10IDP2_U03": {
+   "grid": "mindanao",
+   "mwh": 0.27
+  },
+  "10IDP2_U04": {
+   "grid": "mindanao",
+   "mwh": 0.12
+  },
+  "10IDP2_U05": {
+   "grid": "mindanao",
+   "mwh": 0.11
+  },
+  "10IDP2_U06": {
+   "grid": "mindanao",
+   "mwh": 0.11
+  },
+  "10IDP2_U07": {
+   "grid": "mindanao",
+   "mwh": 0.11
+  },
+  "10LIAN_G01": {
+   "grid": "mindanao",
+   "mwh": 119.52
+  },
+  "10LIAN_G02": {
+   "grid": "mindanao",
+   "mwh": 53.21
+  },
+  "10MEGC_G01": {
+   "grid": "mindanao",
+   "mwh": 88.0
+  },
+  "11FDC_U01": {
+   "grid": "mindanao",
+   "mwh": 2845.96
+  },
+  "11FDC_U02": {
+   "grid": "mindanao",
+   "mwh": 3209.83
+  },
+  "11FDC_U03": {
+   "grid": "mindanao",
+   "mwh": 2883.65
+  },
+  "11FGBPC_G01": {
+   "grid": "mindanao",
+   "mwh": 38.4
+  },
+  "11JASA_BAT": {
+   "grid": "mindanao",
+   "mwh": 1.7
+  },
+  "11KBSOL_G01": {
+   "grid": "mindanao",
+   "mwh": 39.28
+  },
+  "11KEGMAR_G01": {
+   "grid": "mindanao",
+   "mwh": 17.4
+  },
+  "11KIRAS_G01": {
+   "grid": "mindanao",
+   "mwh": 41.29
+  },
+  "11MALADU_G01": {
+   "grid": "mindanao",
+   "mwh": 228.0
+  },
+  "11MANFOR_G01": {
+   "grid": "mindanao",
+   "mwh": 608.75
+  },
+  "11MANFOR_G02": {
+   "grid": "mindanao",
+   "mwh": 350.67
+  },
+  "11MARAMSOL_G01": {
+   "grid": "mindanao",
+   "mwh": 196.46
+  },
+  "11MINBAL_G01": {
+   "grid": "mindanao",
+   "mwh": 2961.58
+  },
+  "11MINBU_G01": {
+   "grid": "mindanao",
+   "mwh": 114.81
+  },
+  "11MISAMSOL_G01": {
+   "grid": "mindanao",
+   "mwh": 82.74
+  },
+  "11MNCBLG_G01": {
+   "grid": "mindanao",
+   "mwh": 100.8
+  },
+  "11MNRGY_G01": {
+   "grid": "mindanao",
+   "mwh": 102.0
+  },
+  "11MNRGY_G02": {
+   "grid": "mindanao",
+   "mwh": 197.87
+  },
+  "11NBPC_G01": {
+   "grid": "mindanao",
+   "mwh": 23.98
+  },
+  "11PACERM_G01": {
+   "grid": "mindanao",
+   "mwh": 15.68
+  },
+  "11PULA4_U01": {
+   "grid": "mindanao",
+   "mwh": 1560.78
+  },
+  "11PULA4_U03": {
+   "grid": "mindanao",
+   "mwh": 1440.0
+  },
+  "11PULANAI_G01": {
+   "grid": "mindanao",
+   "mwh": 386.61
+  },
+  "11STEAG_U02": {
+   "grid": "mindanao",
+   "mwh": 2400.61
+  },
+  "11VILLA_BAT": {
+   "grid": "mindanao",
+   "mwh": 15.86
+  },
+  "12ASIGA_G01": {
+   "grid": "mindanao",
+   "mwh": 79.5
+  },
+  "12KEGTAN_G01": {
+   "grid": "mindanao",
+   "mwh": 24.99
+  },
+  "12LKMAINIT_G01": {
+   "grid": "mindanao",
+   "mwh": 199.24
+  },
+  "12NACSUR_G01": {
+   "grid": "mindanao",
+   "mwh": 77.0
+  },
+  "12PKSFRA_U02": {
+   "grid": "mindanao",
+   "mwh": 36.62
+  },
+  "12TM2_U01": {
+   "grid": "mindanao",
+   "mwh": 2.29
+  },
+  "12TM2_U02": {
+   "grid": "mindanao",
+   "mwh": 647.72
+  },
+  "13AGUA_G01": {
+   "grid": "mindanao",
+   "mwh": 50.4
+  },
+  "13DCPP_U01": {
+   "grid": "mindanao",
+   "mwh": 3212.12
+  },
+  "13DCPP_U02": {
+   "grid": "mindanao",
+   "mwh": 3211.7
+  },
+  "13DIGSOL_G01": {
+   "grid": "mindanao",
+   "mwh": 81.47
+  },
+  "13EUROH_G01": {
+   "grid": "mindanao",
+   "mwh": 28.63
+  },
+  "13MACO_BAT": {
+   "grid": "mindanao",
+   "mwh": 2.47
+  },
+  "13MAGDBNK_U01": {
+   "grid": "mindanao",
+   "mwh": 19.85
+  },
+  "13MAGDBNK_U02": {
+   "grid": "mindanao",
+   "mwh": 22.38
+  },
+  "13MAGDBNK_U03": {
+   "grid": "mindanao",
+   "mwh": 23.53
+  },
+  "13MALITA_BAT": {
+   "grid": "mindanao",
+   "mwh": 1.42
+  },
+  "13MATIBNK_G01": {
+   "grid": "mindanao",
+   "mwh": 116.22
+  },
+  "13MPCDIG_G01": {
+   "grid": "mindanao",
+   "mwh": 104.74
+  },
+  "13SIBULAN_G01": {
+   "grid": "mindanao",
+   "mwh": 918.67
+  },
+  "13SMC_U01": {
+   "grid": "mindanao",
+   "mwh": 3194.4
+  },
+  "13TALOM1_G01": {
+   "grid": "mindanao",
+   "mwh": 12.0
+  },
+  "13TALOM23_G01": {
+   "grid": "mindanao",
+   "mwh": 54.88
+  },
+  "13TM1_U01": {
+   "grid": "mindanao",
+   "mwh": 644.74
+  },
+  "13TUDAY2_G01": {
+   "grid": "mindanao",
+   "mwh": 168.78
+  },
+  "14ALMADA_G01": {
+   "grid": "mindanao",
+   "mwh": 26.41
+  },
+  "14ASTROSOL_G01": {
+   "grid": "mindanao",
+   "mwh": 111.55
+  },
+  "14BIOGS_G01": {
+   "grid": "mindanao",
+   "mwh": 24.0
+  },
+  "14LAMSAN_G01": {
+   "grid": "mindanao",
+   "mwh": 319.96
+  },
+  "14MTAPO_U01": {
+   "grid": "mindanao",
+   "mwh": 1104.0
+  },
+  "14MTAPO_U02": {
+   "grid": "mindanao",
+   "mwh": 1056.0
+  },
+  "14NVSOL_G01": {
+   "grid": "mindanao",
+   "mwh": 24.04
+  },
+  "14PKPSOC_G01": {
+   "grid": "mindanao",
+   "mwh": 80.36
+  },
+  "14SARANG_U01": {
+   "grid": "mindanao",
+   "mwh": 2519.2
+  },
+  "14SUPKOR_G01": {
+   "grid": "mindanao",
+   "mwh": 36.44
+  },
+  "14TANTASOL_G01": {
+   "grid": "mindanao",
+   "mwh": 140.2
+  }
+ },
+ "per_grid_total_mwh": {
+  "luzon": 248552.3,
+  "visayas": 40696.3,
+  "mindanao": 58221.8
+ },
+ "reconciliation": {
+  "luzon": {
+   "dipcef_mwh": 248552.3,
+   "rtdsum_mwh": 249291.3,
+   "gap_pct": 0.3
+  },
+  "visayas": {
+   "dipcef_mwh": 40696.3,
+   "rtdsum_mwh": 40521.5,
+   "gap_pct": 0.43
+  },
+  "mindanao": {
+   "dipcef_mwh": 58221.8,
+   "rtdsum_mwh": 58250.1,
+   "gap_pct": 0.05
+  }
+ },
+ "note": "Per-resource daily energy from DIPCEF SCHED_MW (5-minute schedules, final run), derived at archive time because the raw hourly zips are too heavy to commit; the regional totals must reconcile to RTDSUM within 2 percent or the day is refused."
+}
