@@ -4525,6 +4525,981 @@
     ]
    },
    "reserve_price_max": 24.4115
+  },
+  {
+   "date": "2026-07-26",
+   "market": true,
+   "lwap": {
+    "luzon": 3.903,
+    "visayas": 5.259,
+    "mindanao": 4.905
+   },
+   "spread": 1.356,
+   "curtailed_mwh": null,
+   "out_matched_mw": {
+    "luzon": 576.6,
+    "visayas": 82.0,
+    "mindanao": 145.5
+   },
+   "hydro_budget_mwh": {
+    "luzon": 3465.9,
+    "visayas": 239.4,
+    "mindanao": 15653.4
+   },
+   "n_advisories": 64,
+   "n_hvdc_advisories": 16,
+   "n_alert_advisories": 0,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 19.4996
+  },
+  {
+   "date": "2026-07-27",
+   "market": true,
+   "lwap": {
+    "luzon": 6.494,
+    "visayas": 11.495,
+    "mindanao": 10.943
+   },
+   "spread": 5.001,
+   "curtailed_mwh": null,
+   "out_matched_mw": {
+    "luzon": 316.0,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": {
+    "luzon": 3865.5,
+    "visayas": 286.6,
+    "mindanao": 16284.6
+   },
+   "n_advisories": 37,
+   "n_hvdc_advisories": 8,
+   "n_alert_advisories": 0,
+   "binding": {
+    "rtd_binding_rows": 17,
+    "top_equipment": [
+     {
+      "name": "1EHVNGS_TR2",
+      "rows": 17
+     }
+    ]
+   },
+   "reserve_price_max": 24.5653
+  },
+  {
+   "date": "2026-07-28",
+   "market": true,
+   "lwap": {
+    "luzon": 5.967,
+    "visayas": 11.61,
+    "mindanao": 11.822
+   },
+   "spread": 5.855,
+   "curtailed_mwh": null,
+   "out_matched_mw": {
+    "luzon": 698.0,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": {
+    "luzon": 4192.9,
+    "visayas": 377.0,
+    "mindanao": 16926.5
+   },
+   "n_advisories": 43,
+   "n_hvdc_advisories": 4,
+   "n_alert_advisories": 0,
+   "binding": {
+    "rtd_binding_rows": 3,
+    "top_equipment": [
+     {
+      "name": "1EHVNGS_TR2",
+      "rows": 3
+     }
+    ]
+   },
+   "reserve_price_max": 23.9353
+  },
+  {
+   "date": "2026-07-29",
+   "market": true,
+   "lwap": {
+    "luzon": 5.227,
+    "visayas": 16.582,
+    "mindanao": 17.244
+   },
+   "spread": 12.017,
+   "curtailed_mwh": null,
+   "out_matched_mw": {
+    "luzon": 832.7,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": {
+    "luzon": 3858.7,
+    "visayas": 270.2,
+    "mindanao": 15630.6
+   },
+   "n_advisories": 36,
+   "n_hvdc_advisories": 4,
+   "n_alert_advisories": 0,
+   "binding": {
+    "rtd_binding_rows": 4,
+    "top_equipment": [
+     {
+      "name": "1BAUA_1LAT1",
+      "rows": 3
+     },
+     {
+      "name": "1BAUA_1LAT2",
+      "rows": 1
+     }
+    ]
+   },
+   "reserve_price_max": 24.0874
+  },
+  {
+   "date": "2026-07-30",
+   "market": true,
+   "lwap": {
+    "luzon": 5.68,
+    "visayas": 15.162,
+    "mindanao": 15.649
+   },
+   "spread": 9.969,
+   "curtailed_mwh": null,
+   "out_matched_mw": {
+    "luzon": 832.7,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": {
+    "luzon": 5464.5,
+    "visayas": 247.5,
+    "mindanao": 14598.5
+   },
+   "n_advisories": 45,
+   "n_hvdc_advisories": 2,
+   "n_alert_advisories": 0,
+   "binding": {
+    "rtd_binding_rows": 13,
+    "top_equipment": [
+     {
+      "name": "1EHVNGS_TR2",
+      "rows": 9
+     },
+     {
+      "name": "1EHVNGS_TR1",
+      "rows": 4
+     }
+    ]
+   },
+   "reserve_price_max": 24.4651
+  },
+  {
+   "date": "2026-07-31",
+   "market": true,
+   "lwap": {
+    "luzon": 5.918,
+    "visayas": 13.835,
+    "mindanao": 14.303
+   },
+   "spread": 8.385,
+   "curtailed_mwh": null,
+   "out_matched_mw": {
+    "luzon": 1093.3,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": {
+    "luzon": 4929.3,
+    "visayas": 250.3,
+    "mindanao": 14654.1
+   },
+   "n_advisories": 55,
+   "n_hvdc_advisories": 6,
+   "n_alert_advisories": 4,
+   "binding": {
+    "rtd_binding_rows": 8,
+    "top_equipment": [
+     {
+      "name": "1EHVSJ_TR2",
+      "rows": 8
+     }
+    ]
+   },
+   "reserve_price_max": 24.7927
+  },
+  {
+   "date": "2026-08-01",
+   "market": true,
+   "lwap": {
+    "luzon": 4.604,
+    "visayas": 9.027,
+    "mindanao": 9.177
+   },
+   "spread": 4.573,
+   "curtailed_mwh": null,
+   "out_matched_mw": {
+    "luzon": 1093.3,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 74,
+   "n_hvdc_advisories": 8,
+   "n_alert_advisories": 0,
+   "binding": {
+    "rtd_binding_rows": 34,
+    "top_equipment": [
+     {
+      "name": "1MEXI_1HER1",
+      "rows": 18
+     },
+     {
+      "name": "1EHVNGS_TR2",
+      "rows": 10
+     },
+     {
+      "name": "1EHVNGS_TR1",
+      "rows": 6
+     }
+    ]
+   },
+   "reserve_price_max": 24.6353
+  },
+  {
+   "date": "2026-08-02",
+   "market": true,
+   "lwap": {
+    "luzon": 3.811,
+    "visayas": 11.924,
+    "mindanao": 10.969
+   },
+   "spread": 8.113,
+   "curtailed_mwh": null,
+   "out_matched_mw": {
+    "luzon": 1093.3,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 66,
+   "n_hvdc_advisories": 8,
+   "n_alert_advisories": 0,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 21.8772
+  },
+  {
+   "date": "2026-08-03",
+   "market": true,
+   "lwap": {
+    "luzon": 3.795,
+    "visayas": 20.087,
+    "mindanao": 19.224
+   },
+   "spread": 16.292,
+   "curtailed_mwh": {
+    "visayas": 1.4
+   },
+   "out_matched_mw": {
+    "luzon": 832.7,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 54,
+   "n_hvdc_advisories": 8,
+   "n_alert_advisories": 6,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 22.7167
+  },
+  {
+   "date": "2026-08-04",
+   "market": true,
+   "lwap": {
+    "luzon": 3.556,
+    "visayas": 22.028,
+    "mindanao": 21.129
+   },
+   "spread": 18.472,
+   "curtailed_mwh": {
+    "visayas": 87.0,
+    "mindanao": 84.9
+   },
+   "out_matched_mw": {
+    "luzon": 832.7,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 63,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 5,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 24.5373
+  },
+  {
+   "date": "2026-08-05",
+   "market": true,
+   "lwap": {
+    "luzon": 2.987,
+    "visayas": 22.638,
+    "mindanao": 24.426
+   },
+   "spread": 21.439,
+   "curtailed_mwh": {
+    "visayas": 78.7,
+    "mindanao": 98.9
+   },
+   "out_matched_mw": {
+    "luzon": 832.7,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 61,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 7,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 22.8526
+  },
+  {
+   "date": "2026-08-06",
+   "market": true,
+   "lwap": {
+    "luzon": 3.796,
+    "visayas": 24.332,
+    "mindanao": 26.595
+   },
+   "spread": 22.799,
+   "curtailed_mwh": {
+    "visayas": 68.3,
+    "mindanao": 283.7
+   },
+   "out_matched_mw": {
+    "luzon": 832.7,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 45,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 5,
+   "binding": {
+    "rtd_binding_rows": 30,
+    "top_equipment": [
+     {
+      "name": "11JASA_12BUT1",
+      "rows": 30
+     }
+    ]
+   },
+   "reserve_price_max": 24.3367
+  },
+  {
+   "date": "2026-08-07",
+   "market": true,
+   "lwap": {
+    "luzon": 4.364,
+    "visayas": 24.012,
+    "mindanao": 28.716
+   },
+   "spread": 24.352,
+   "curtailed_mwh": {
+    "visayas": 1.5,
+    "mindanao": 231.2
+   },
+   "out_matched_mw": {
+    "luzon": 832.7,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 59,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 8,
+   "binding": {
+    "rtd_binding_rows": 29,
+    "top_equipment": [
+     {
+      "name": "11JASA_12BUT1",
+      "rows": 29
+     }
+    ]
+   },
+   "reserve_price_max": 23.9139
+  },
+  {
+   "date": "2026-08-08",
+   "market": true,
+   "lwap": {
+    "luzon": 4.665,
+    "visayas": 25.942,
+    "mindanao": 28.308
+   },
+   "spread": 23.643,
+   "curtailed_mwh": {
+    "visayas": 17.2,
+    "mindanao": 353.1
+   },
+   "out_matched_mw": {
+    "luzon": 832.7,
+    "visayas": 82.0,
+    "mindanao": 358.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 73,
+   "n_hvdc_advisories": 8,
+   "n_alert_advisories": 5,
+   "binding": {
+    "rtd_binding_rows": 6,
+    "top_equipment": [
+     {
+      "name": "1BAUA_1LAT2",
+      "rows": 3
+     },
+     {
+      "name": "1BAUA_1LAT1",
+      "rows": 2
+     },
+     {
+      "name": "12BISL_13NAB1",
+      "rows": 1
+     }
+    ]
+   },
+   "reserve_price_max": 24.7287
+  },
+  {
+   "date": "2026-08-09",
+   "market": true,
+   "lwap": {
+    "luzon": 1.546,
+    "visayas": 17.554,
+    "mindanao": 18.572
+   },
+   "spread": 17.026,
+   "curtailed_mwh": {
+    "mindanao": 46.3
+   },
+   "out_matched_mw": {
+    "luzon": 1072.7,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 70,
+   "n_hvdc_advisories": 4,
+   "n_alert_advisories": 6,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 24.9746
+  },
+  {
+   "date": "2026-08-10",
+   "market": true,
+   "lwap": {
+    "luzon": 4.909,
+    "visayas": 24.706,
+    "mindanao": 27.851
+   },
+   "spread": 22.942,
+   "curtailed_mwh": {
+    "mindanao": 543.8
+   },
+   "out_matched_mw": {
+    "luzon": 1072.7,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 51,
+   "n_hvdc_advisories": 2,
+   "n_alert_advisories": 14,
+   "binding": {
+    "rtd_binding_rows": 2,
+    "top_equipment": [
+     {
+      "name": "1BAUA_1LAT1",
+      "rows": 2
+     }
+    ]
+   },
+   "reserve_price_max": 22.6603
+  },
+  {
+   "date": "2026-08-11",
+   "market": true,
+   "lwap": {
+    "luzon": 7.438,
+    "visayas": 25.318,
+    "mindanao": 28.359
+   },
+   "spread": 20.921,
+   "curtailed_mwh": {
+    "mindanao": 325.8
+   },
+   "out_matched_mw": {
+    "luzon": 1072.7,
+    "visayas": 82.0,
+    "mindanao": 283.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 33,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 13,
+   "binding": {
+    "rtd_binding_rows": 16,
+    "top_equipment": [
+     {
+      "name": "1BAUA_1LAT1",
+      "rows": 9
+     },
+     {
+      "name": "1BAUA_1LAT2",
+      "rows": 6
+     },
+     {
+      "name": "1BAKUN_TR1",
+      "rows": 1
+     }
+    ]
+   },
+   "reserve_price_max": 22.5501
+  },
+  {
+   "date": "2026-08-12",
+   "market": true,
+   "lwap": {
+    "luzon": 8.262,
+    "visayas": 23.532,
+    "mindanao": 25.342
+   },
+   "spread": 17.08,
+   "curtailed_mwh": {
+    "mindanao": 256.8
+   },
+   "out_matched_mw": {
+    "luzon": 1072.7,
+    "visayas": 82.0,
+    "mindanao": 204.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 34,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 11,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 24.2035
+  },
+  {
+   "date": "2026-08-13",
+   "market": true,
+   "lwap": {
+    "luzon": 6.844,
+    "visayas": 20.925,
+    "mindanao": 23.492
+   },
+   "spread": 16.648,
+   "curtailed_mwh": {
+    "mindanao": 358.7
+   },
+   "out_matched_mw": {
+    "luzon": 1072.7,
+    "visayas": 82.0,
+    "mindanao": 178.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 34,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 13,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 24.4538
+  },
+  {
+   "date": "2026-08-14",
+   "market": true,
+   "lwap": {
+    "luzon": 5.303,
+    "visayas": 25.629,
+    "mindanao": 27.262
+   },
+   "spread": 21.959,
+   "curtailed_mwh": {
+    "mindanao": 97.6
+   },
+   "out_matched_mw": {
+    "luzon": 1593.9,
+    "visayas": 82.0,
+    "mindanao": 178.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 47,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 9,
+   "binding": {
+    "rtd_binding_rows": 7,
+    "top_equipment": [
+     {
+      "name": "1BAUA_1LAT2",
+      "rows": 5
+     },
+     {
+      "name": "1BAUA_1LAT1",
+      "rows": 2
+     }
+    ]
+   },
+   "reserve_price_max": 24.9468
+  },
+  {
+   "date": "2026-08-15",
+   "market": true,
+   "lwap": {
+    "luzon": 4.862,
+    "visayas": 19.719,
+    "mindanao": 21.078
+   },
+   "spread": 16.216,
+   "curtailed_mwh": {
+    "visayas": 63.7,
+    "mindanao": 387.2
+   },
+   "out_matched_mw": {
+    "luzon": 1593.9,
+    "visayas": 82.0,
+    "mindanao": 253.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 73,
+   "n_hvdc_advisories": 8,
+   "n_alert_advisories": 7,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 23.7155
+  },
+  {
+   "date": "2026-08-16",
+   "market": true,
+   "lwap": {
+    "luzon": 3.043,
+    "visayas": 17.586,
+    "mindanao": 18.186
+   },
+   "spread": 15.143,
+   "curtailed_mwh": {
+    "visayas": 12.4,
+    "mindanao": 163.9
+   },
+   "out_matched_mw": {
+    "luzon": 1353.9,
+    "visayas": 82.0,
+    "mindanao": 218.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 63,
+   "n_hvdc_advisories": 3,
+   "n_alert_advisories": 5,
+   "binding": {
+    "rtd_binding_rows": 36,
+    "top_equipment": [
+     {
+      "name": "1KDAMEHV_TR3",
+      "rows": 18
+     },
+     {
+      "name": "1KDAMEHV_TR4",
+      "rows": 18
+     }
+    ]
+   },
+   "reserve_price_max": 20.3375
+  },
+  {
+   "date": "2026-08-17",
+   "market": true,
+   "lwap": {
+    "luzon": 2.948,
+    "visayas": 21.623,
+    "mindanao": 23.896
+   },
+   "spread": 20.948,
+   "curtailed_mwh": {
+    "mindanao": 112.9
+   },
+   "out_matched_mw": {
+    "luzon": 832.7,
+    "visayas": 82.0,
+    "mindanao": 218.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 40,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 6,
+   "binding": {
+    "rtd_binding_rows": 74,
+    "top_equipment": [
+     {
+      "name": "1KDAMEHV_TR3",
+      "rows": 37
+     },
+     {
+      "name": "1KDAMEHV_TR4",
+      "rows": 37
+     }
+    ]
+   },
+   "reserve_price_max": 23.5855
+  },
+  {
+   "date": "2026-08-18",
+   "market": true,
+   "lwap": {
+    "luzon": 4.569,
+    "visayas": 21.077,
+    "mindanao": 22.282
+   },
+   "spread": 17.713,
+   "curtailed_mwh": {
+    "mindanao": 19.3
+   },
+   "out_matched_mw": {
+    "luzon": 698.0,
+    "visayas": 82.0,
+    "mindanao": 218.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 31,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 5,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 23.7388
+  },
+  {
+   "date": "2026-08-19",
+   "market": true,
+   "lwap": {
+    "luzon": 4.629,
+    "visayas": 19.848,
+    "mindanao": 20.543
+   },
+   "spread": 15.914,
+   "curtailed_mwh": {
+    "visayas": 97.7,
+    "mindanao": 53.8
+   },
+   "out_matched_mw": {
+    "luzon": 698.0,
+    "visayas": 82.0,
+    "mindanao": 218.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 36,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 7,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 24.8551
+  },
+  {
+   "date": "2026-08-20",
+   "market": true,
+   "lwap": {
+    "luzon": 5.267,
+    "visayas": 16.564,
+    "mindanao": 16.748
+   },
+   "spread": 11.481,
+   "curtailed_mwh": {
+    "visayas": 19.9,
+    "mindanao": 4.7
+   },
+   "out_matched_mw": {
+    "luzon": 698.0,
+    "visayas": 82.0,
+    "mindanao": 192.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 47,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 4,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 23.9844
+  },
+  {
+   "date": "2026-08-21",
+   "market": true,
+   "lwap": {
+    "luzon": 4.555,
+    "visayas": 15.073,
+    "mindanao": 14.111
+   },
+   "spread": 10.518,
+   "curtailed_mwh": null,
+   "out_matched_mw": {
+    "luzon": 698.0,
+    "visayas": 82.0,
+    "mindanao": 262.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 43,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 5,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 24.6318
+  },
+  {
+   "date": "2026-08-22",
+   "market": true,
+   "lwap": {
+    "luzon": 3.476,
+    "visayas": 15.148,
+    "mindanao": 15.411
+   },
+   "spread": 11.935,
+   "curtailed_mwh": null,
+   "out_matched_mw": {
+    "luzon": 698.0,
+    "visayas": 82.0,
+    "mindanao": 262.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 54,
+   "n_hvdc_advisories": 8,
+   "n_alert_advisories": 0,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 21.1455
+  },
+  {
+   "date": "2026-08-23",
+   "market": true,
+   "lwap": {
+    "luzon": 3.201,
+    "visayas": 13.872,
+    "mindanao": 13.967
+   },
+   "spread": 10.766,
+   "curtailed_mwh": {
+    "mindanao": 14.3
+   },
+   "out_matched_mw": {
+    "luzon": 698.0,
+    "visayas": 82.0,
+    "mindanao": 513.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 94,
+   "n_hvdc_advisories": 8,
+   "n_alert_advisories": 5,
+   "binding": {
+    "rtd_binding_rows": 15,
+    "top_equipment": [
+     {
+      "name": "5CEBU_5MAN1",
+      "rows": 8
+     },
+     {
+      "name": "14TACUR_TR4",
+      "rows": 7
+     }
+    ]
+   },
+   "reserve_price_max": 18.3119
+  },
+  {
+   "date": "2026-08-24",
+   "market": true,
+   "lwap": {
+    "luzon": 6.21,
+    "visayas": 19.653,
+    "mindanao": 21.003
+   },
+   "spread": 14.793,
+   "curtailed_mwh": {
+    "visayas": 12.7,
+    "mindanao": 293.2
+   },
+   "out_matched_mw": {
+    "luzon": 698.0,
+    "visayas": 82.0,
+    "mindanao": 337.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 45,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 7,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 24.062
+  },
+  {
+   "date": "2026-08-25",
+   "market": true,
+   "lwap": {
+    "luzon": 7.114,
+    "visayas": 24.632,
+    "mindanao": 24.801
+   },
+   "spread": 17.687,
+   "curtailed_mwh": {
+    "visayas": 47.2,
+    "mindanao": 131.4
+   },
+   "out_matched_mw": {
+    "luzon": 698.0,
+    "visayas": 82.0,
+    "mindanao": 262.5
+   },
+   "hydro_budget_mwh": null,
+   "n_advisories": 38,
+   "n_hvdc_advisories": 0,
+   "n_alert_advisories": 6,
+   "binding": {
+    "rtd_binding_rows": 0,
+    "top_equipment": []
+   },
+   "reserve_price_max": 22.4801
   }
  ],
  "note": "One row per archive day: observed daily LWAP per grid, the Visayas-Luzon spread, recorded curtailment, the operator's matched scheduled-out MW, the day's observed hydro water, advisory counts (HVDC events, alerts), the day's real-time binding constraints, and the dearest regional reserve price. Every column is observed data from the archive; nothing here is modeled.",

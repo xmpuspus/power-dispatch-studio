@@ -3,9 +3,9 @@
   {
    "id": "corridor-named",
    "tag": "Recorded limit",
-   "title": "Leyte-Cebu reached a binding limit on 147 of 150 days",
-   "stat": "A row literally named LEYTE_TO_CEBU appears in the day-ahead runs on 124 of 150 days",
-   "blurb": "IEMOP's congestion files name equipment that reached its limit. The Tabango (Leyte) to Daanbantayan (Cebu) 230 kV lines had the most days at a limit, 147 of 150 archive days across the day-ahead and real-time runs, including 139 5-minute real-time intervals on 27 days. IEMOP's December 2025 report names the same transmission path.",
+   "title": "Leyte-Cebu reached a binding limit on 148 of 151 days",
+   "stat": "A row literally named LEYTE_TO_CEBU appears in the day-ahead runs on 125 of 151 days",
+   "blurb": "IEMOP's congestion files name equipment that reached its limit. The Tabango (Leyte) to Daanbantayan (Cebu) 230 kV lines had the most days at a limit, 148 of 151 archive days across the day-ahead and real-time runs, including 139 5-minute real-time intervals on 27 days. IEMOP's December 2025 report names the same transmission path.",
    "source": "IEMOP congestions-manifesting files (RTD + DAP), archive window",
    "focus": {
     "center": [
@@ -36,8 +36,8 @@
    "id": "thin-normal",
    "tag": "Reserve record",
    "title": "Scheduled reserves fell below requirement on most days",
-   "stat": "Luzon scheduled reserves fell below the stated requirement on 76 of 150 archive days",
-   "blurb": "IEMOP dispatch schedules show that load was curtailed on 152 grid-days in this window (11,736.3 MWh), and the Visayas ran short of scheduled reserves on 103 days. These are recorded operating conditions in the archive window.",
+   "stat": "Luzon scheduled reserves fell below the stated requirement on 76 of 151 archive days",
+   "blurb": "IEMOP dispatch schedules show that load was curtailed on 154 grid-days in this window (12,003.1 MWh), and the Visayas ran short of scheduled reserves on 104 days. These are recorded operating conditions in the archive window.",
    "source": "IEMOP RTD regional summaries, archive window",
    "focus": {
     "center": [
@@ -52,8 +52,8 @@
    "id": "market-prices-geography",
    "tag": "Regional prices",
    "title": "Regional prices separated after market trading resumed",
-   "stat": "Administered window: the three grids priced within P0.015/kWh of each other. Market window: a mean daily high-to-low spread of P5.29/kWh across the three grids",
-   "blurb": "While WESM was suspended (through 2026-05-01), daily regional prices were near-identical. After trading resumed, the average prices were Luzon P7.53, Visayas P12.38, Mindanao P11.13 per kWh on average, with 38 days spreading beyond P5/kWh and a widest daily spread of P15.722/kWh on 2026-06-08. Limited transfer capacity lets regional prices separate when local supply and demand differ.",
+   "stat": "Administered window: the three grids priced within P0.015/kWh of each other. Market window: a mean daily high-to-low spread of P7.84/kWh across the three grids",
+   "blurb": "While WESM was suspended (through 2026-05-01), daily regional prices were near-identical. After trading resumed, the average prices were Luzon P6.81, Visayas P14.03, Mindanao P13.36 per kWh on average, with 67 days spreading beyond P5/kWh and a widest daily spread of P24.352/kWh on 2026-08-07. Limited transfer capacity lets regional prices separate when local supply and demand differ.",
    "source": "IEMOP load-weighted average prices (final), archive window",
    "focus": {
     "center": [
@@ -85,7 +85,7 @@
    "tag": "Visayas alerts",
    "title": "Visayas daily yellow alerts ran for 52 days",
    "stat": "Daily yellow alerts ran 2026-05-11 to 2026-07-01",
-   "blurb": "The streak ended when one 150 MW unit returned; 935.3 MW was still unavailable that day. In the same window the dispatch schedules show the Visayas short of scheduled reserves on 103 days, with 514.61 MWh of load curtailed in the schedules on 2026-06-25 alone.",
+   "blurb": "The streak ended when one 150 MW unit returned; 935.3 MW was still unavailable that day. In the same window the dispatch schedules show the Visayas short of scheduled reserves on 104 days, with 514.61 MWh of load curtailed in the schedules on 2026-06-25 alone.",
    "source": "NGCP advisories via SunStar and GMA (Jul 1-2, 2026); IEMOP RTD regional summaries",
    "focus": {
     "center": [

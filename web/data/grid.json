@@ -17,7 +17,7 @@
  "match_report": [
   {
    "equipment": "5DAAN_4TAB2",
-   "days": 147,
+   "days": 148,
    "rtd_intervals": 101,
    "max_overload_mw": 26.73,
    "matched": true,
@@ -31,7 +31,7 @@
   },
   {
    "equipment": "LEYTE_TO_CEBU",
-   "days": 124,
+   "days": 125,
    "rtd_intervals": 0,
    "max_overload_mw": 0.0,
    "matched": true,
@@ -45,7 +45,7 @@
   },
   {
    "equipment": "5DAAN_4TAB1",
-   "days": 115,
+   "days": 116,
    "rtd_intervals": 38,
    "max_overload_mw": 14.06,
    "matched": true,
@@ -575,6 +575,15 @@
    "why": "station token unresolved"
   },
   {
+   "equipment": "6AMLAN_TR2",
+   "days": 2,
+   "rtd_intervals": 0,
+   "max_overload_mw": 0.0,
+   "matched": true,
+   "kind": "station",
+   "station": "Amlan Substation"
+  },
+  {
    "equipment": "6CALASOL_TR2",
    "days": 2,
    "rtd_intervals": 0,
@@ -865,15 +874,6 @@
    ],
    "path_km": 91.2,
    "path_edges": 1
-  },
-  {
-   "equipment": "6AMLAN_TR2",
-   "days": 1,
-   "rtd_intervals": 0,
-   "max_overload_mw": 0.0,
-   "matched": true,
-   "kind": "station",
-   "station": "Amlan Substation"
   },
   {
    "equipment": "7UBAY_TR2",
